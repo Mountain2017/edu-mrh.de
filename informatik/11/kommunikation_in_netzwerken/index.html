@@ -1,0 +1,2817 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kommunikation in Netzwerken - Interaktiver Lernpfad</title>
+<style>* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #4F46E5;
+    --primary-dark: #4338CA;
+    --primary-light: #818CF8;
+    --secondary: #10B981;
+    --secondary-dark: #059669;
+    --accent: #F59E0B;
+    --danger: #EF4444;
+    --warning: #F59E0B;
+    --success: #10B981;
+    --gray-50: #F9FAFB;
+    --gray-100: #F3F4F6;
+    --gray-200: #E5E7EB;
+    --gray-300: #D1D5DB;
+    --gray-400: #9CA3AF;
+    --gray-500: #6B7280;
+    --gray-600: #4B5563;
+    --gray-700: #374151;
+    --gray-800: #1F2937;
+    --gray-900: #111827;
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    --spacing-2xl: 4rem;
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    color: var(--gray-800);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-md);
+}
+
+.navbar {
+    background: white;
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: var(--spacing-sm) 0;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.nav-brand .icon {
+    font-size: 1.5rem;
+}
+
+.nav-progress {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+#progress-text {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    font-weight: 600;
+}
+
+.progress-bar {
+    width: 200px;
+    height: 8px;
+    background: var(--gray-200);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 999px;
+    transition: width 0.5s ease;
+    width: 0%;
+}
+
+.hero {
+    background: white;
+    padding: var(--spacing-2xl) 0;
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-sm);
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero .subtitle {
+    font-size: 1.25rem;
+    color: var(--gray-600);
+    margin-bottom: var(--spacing-xl);
+}
+
+.hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-xl);
+    flex-wrap: wrap;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--spacing-md);
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+    min-width: 120px;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    margin-top: var(--spacing-xs);
+}
+
+.module {
+    background: white;
+    border-radius: var(--radius-xl);
+    margin-bottom: var(--spacing-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.module:hover {
+    box-shadow: var(--shadow-xl);
+    transform: translateY(-2px);
+}
+
+.module-header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    padding: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.module-number {
+    font-size: 0.875rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    margin-right: var(--spacing-md);
+}
+
+.module-header h2 {
+    flex: 1;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.toggle-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.toggle-icon {
+    transition: transform 0.3s ease;
+    font-size: 1.25rem;
+}
+
+.module.collapsed .toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.module-content {
+    padding: var(--spacing-xl);
+    max-height: 10000px;
+    overflow: hidden;
+    transition: max-height 0.5s ease, padding 0.5s ease;
+}
+
+.module.collapsed .module-content {
+    max-height: 0;
+    padding: 0 var(--spacing-xl);
+}
+
+.content-block {
+    margin-bottom: var(--spacing-xl);
+}
+
+.content-block h3 {
+    font-size: 1.5rem;
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-md);
+}
+
+.content-block p {
+    color: var(--gray-700);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.8;
+}
+
+.content-block ul, .content-block ol {
+    margin-left: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+}
+
+.content-block li {
+    color: var(--gray-700);
+    margin-bottom: var(--spacing-xs);
+    line-height: 1.8;
+}
+
+.info-box {
+    background: var(--gray-50);
+    border-left: 4px solid var(--primary);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    margin: var(--spacing-md) 0;
+}
+
+.info-box h4 {
+    color: var(--primary);
+    margin-bottom: var(--spacing-sm);
+    font-size: 1.125rem;
+}
+
+.info-box ul {
+    margin-left: var(--spacing-md);
+}
+
+.info-box li {
+    margin-bottom: var(--spacing-xs);
+}
+
+.interactive-demo {
+    background: var(--gray-50);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    margin: var(--spacing-lg) 0;
+}
+
+.demo-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+.device {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-lg);
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    min-width: 150px;
+}
+
+.device-icon {
+    font-size: 3rem;
+}
+
+.device-label {
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+.demo-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.875rem;
+}
+
+.demo-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.demo-btn:active {
+    transform: translateY(0);
+}
+
+.server-status {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    padding: 0.5rem 1rem;
+    background: var(--gray-100);
+    border-radius: var(--radius-sm);
+}
+
+.connection-line {
+    position: relative;
+    width: 100px;
+    height: 2px;
+    background: var(--gray-300);
+}
+
+.connection-line.response {
+    margin-top: var(--spacing-md);
+}
+
+.packet {
+    position: absolute;
+    top: -20px;
+    left: -30px;
+    background: var(--primary);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    font-weight: 600;
+    opacity: 0;
+    white-space: nowrap;
+}
+
+.packet.animate {
+    animation: movePacket 2s ease-in-out;
+}
+
+@keyframes movePacket {
+    0% { left: -30px; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { left: 100px; opacity: 0; }
+}
+
+.demo-log {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--gray-900);
+    color: var(--gray-100);
+    border-radius: var(--radius-md);
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.demo-log .log-entry {
+    margin-bottom: var(--spacing-xs);
+    opacity: 0;
+    animation: fadeIn 0.5s forwards;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+.topology-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin: var(--spacing-lg) 0;
+}
+
+.topology-card {
+    background: white;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.topology-card:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+}
+
+.topology-card h4 {
+    color: var(--primary);
+    margin-bottom: var(--spacing-md);
+    font-size: 1.125rem;
+}
+
+.topology-visual {
+    background: var(--gray-50);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.topology-svg {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+}
+
+.topology-info p {
+    font-size: 0.875rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.topology-info ul {
+    font-size: 0.875rem;
+    margin-left: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+}
+
+.topology-info li {
+    margin-bottom: 0.25rem;
+}
+
+.comparison-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin: var(--spacing-lg) 0;
+}
+
+.comparison-card {
+    background: var(--gray-50);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    border: 2px solid var(--gray-200);
+}
+
+.comparison-card h4 {
+    color: var(--primary);
+    margin-bottom: var(--spacing-md);
+    font-size: 1.125rem;
+}
+
+.ip-example {
+    background: var(--gray-900);
+    color: var(--success);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    font-family: 'Courier New', monospace;
+    font-size: 1.125rem;
+    text-align: center;
+    margin: var(--spacing-md) 0;
+}
+
+.ip-example.ipv6 {
+    font-size: 0.875rem;
+}
+
+.calculation {
+    background: white;
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    margin-top: var(--spacing-md);
+}
+
+.calculation p {
+    margin-bottom: var(--spacing-xs);
+    font-size: 0.875rem;
+}
+
+.network-diagram {
+    background: var(--gray-50);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    margin: var(--spacing-lg) 0;
+}
+
+.internet-cloud, .router-box, .home-network {
+    background: white;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-md);
+    box-shadow: var(--shadow-md);
+}
+
+.internet-cloud {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.internet-cloud h4 {
+    color: white;
+}
+
+.server-box {
+    background: rgba(255, 255, 255, 0.2);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    margin-top: var(--spacing-md);
+}
+
+.router-box {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+}
+
+.router-box h4 {
+    color: white;
+}
+
+.home-network h4 {
+    color: var(--primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.device-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.device-item {
+    background: var(--gray-50);
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+}
+
+.ip-addr {
+    font-family: 'Courier New', monospace;
+    background: rgba(255, 255, 255, 0.3);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+}
+
+.port-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--spacing-md) 0;
+    background: white;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.port-table thead {
+    background: var(--primary);
+    color: white;
+}
+
+.port-table th, .port-table td {
+    padding: var(--spacing-sm);
+    text-align: left;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.port-table tbody tr:hover {
+    background: var(--gray-50);
+}
+
+.port-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.interactive-block {
+    margin: var(--spacing-lg) 0;
+}
+
+.ip-calculator, .dns-simulator, .packet-calculator, .api-simulator {
+    background: white;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+}
+
+.binary-ip {
+    background: var(--gray-900);
+    color: var(--success);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    margin: var(--spacing-md) 0;
+    text-align: center;
+    word-break: break-all;
+}
+
+.ip-input-grid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin: var(--spacing-md) 0;
+    flex-wrap: wrap;
+}
+
+.ip-input-grid input {
+    width: 80px;
+    padding: var(--spacing-sm);
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+}
+
+.ip-input-grid input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.ip-input-grid span {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gray-600);
+}
+
+.url-breakdown {
+    background: var(--gray-50);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    margin: var(--spacing-lg) 0;
+}
+
+.url-breakdown h4 {
+    color: var(--primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.url-parts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    background: white;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.url-part {
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-right: 2px solid var(--gray-200);
+    min-width: 100px;
+    flex: 1;
+}
+
+.url-part:last-child {
+    border-right: none;
+}
+
+.part-label {
+    font-size: 0.75rem;
+    color: var(--gray-600);
+    margin-bottom: var(--spacing-xs);
+    text-align: center;
+}
+
+.part-value {
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: var(--gray-900);
+}
+
+.url-part.protocol { background: #FEE2E2; }
+.url-part.subdomain { background: #DBEAFE; }
+.url-part.domain { background: #D1FAE5; }
+.url-part.tld { background: #FEF3C7; }
+.url-part.path { background: #E9D5FF; }
+.url-part.file { background: #FCE7F3; }
+
+.sequence-diagram {
+    background: var(--gray-50);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    margin: var(--spacing-lg) 0;
+}
+
+.sequence-step {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    align-items: flex-start;
+}
+
+.step-number {
+    background: var(--primary);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.step-content {
+    flex: 1;
+    background: white;
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.step-actors {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.actor {
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+.arrow {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.step-message {
+    color: var(--gray-600);
+    font-size: 0.875rem;
+    font-style: italic;
+}
+
+.simulator-input {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+.simulator-input label {
+    width: 100%;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: var(--spacing-xs);
+}
+
+.simulator-input input {
+    flex: 1;
+    padding: var(--spacing-sm);
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+}
+
+.simulator-input input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.simulator-output, .api-request-display, .api-response-display {
+    background: var(--gray-900);
+    color: var(--success);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+    min-height: 100px;
+    white-space: pre-wrap;
+    margin-bottom: var(--spacing-sm);
+}
+
+.layer-model {
+    margin: var(--spacing-lg) 0;
+}
+
+.layer {
+    background: white;
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.layer:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateX(8px);
+}
+
+.layer-number {
+    background: var(--primary);
+    color: white;
+    width: 60px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding: var(--spacing-lg) 0;
+}
+
+.layer-content {
+    flex: 1;
+    padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.layer-content h4 {
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-xs);
+}
+
+.layer-protocols {
+    font-family: 'Courier New', monospace;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-bottom: var(--spacing-xs);
+}
+
+.layer-description {
+    color: var(--gray-600);
+    font-size: 0.875rem;
+}
+
+.layer-4 .layer-number { background: #3B82F6; }
+.layer-3 .layer-number { background: #10B981; }
+.layer-2 .layer-number { background: #F59E0B; }
+.layer-1 .layer-number { background: #8B5CF6; }
+
+.packet-flow {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: var(--spacing-lg);
+    background: var(--gray-50);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    margin: var(--spacing-lg) 0;
+}
+
+.flow-side h4 {
+    text-align: center;
+    color: var(--primary);
+    margin-bottom: var(--spacing-lg);
+}
+
+.flow-step {
+    margin-bottom: var(--spacing-md);
+}
+
+.step-label {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    margin-bottom: var(--spacing-xs);
+    text-align: center;
+}
+
+.packet-visual {
+    display: flex;
+    background: white;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.packet-header, .packet-data {
+    padding: var(--spacing-sm);
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.packet-header.eth { background: #8B5CF6; color: white; }
+.packet-header.ip { background: #F59E0B; color: white; }
+.packet-header.tcp { background: #10B981; color: white; }
+.packet-data { background: #3B82F6; color: white; flex: 1; }
+
+.arrow-down {
+    text-align: center;
+    color: var(--primary);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: var(--spacing-xs) 0;
+}
+
+.transmission-line {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.transmission-arrow {
+    font-size: 2rem;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.transmission-label {
+    margin-top: var(--spacing-md);
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+.http-methods {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+    margin: var(--spacing-lg) 0;
+}
+
+.method-card {
+    background: white;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    border: 2px solid var(--gray-200);
+}
+
+.method-card.get {
+    border-color: var(--success);
+}
+
+.method-card.post {
+    border-color: var(--primary);
+}
+
+.method-card h4 {
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-md);
+}
+
+.method-example {
+    background: var(--gray-900);
+    color: var(--success);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+    margin-bottom: var(--spacing-md);
+    word-break: break-all;
+}
+
+.payload {
+    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid var(--gray-700);
+}
+
+.payload strong {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    color: var(--warning);
+}
+
+.payload pre {
+    margin: 0;
+    color: var(--primary-light);
+}
+
+.status-codes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+    margin: var(--spacing-lg) 0;
+}
+
+.status-group {
+    background: var(--gray-50);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--primary);
+}
+
+.status-group h4 {
+    color: var(--primary);
+    margin-bottom: var(--spacing-sm);
+    font-size: 1rem;
+}
+
+.status-group ul {
+    list-style: none;
+    margin: 0;
+}
+
+.status-group li {
+    margin-bottom: var(--spacing-xs);
+    font-size: 0.875rem;
+}
+
+.api-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background: var(--gray-50);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    margin: var(--spacing-lg) 0;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+}
+
+.api-client, .api-server {
+    background: white;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    text-align: center;
+    min-width: 150px;
+}
+
+.api-client h4, .api-server h4 {
+    color: var(--primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.api-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.api-arrow.reverse {
+    flex-direction: column-reverse;
+}
+
+.arrow-line {
+    font-size: 2rem;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.arrow-label {
+    font-size: 0.75rem;
+    color: var(--gray-600);
+    font-weight: 600;
+}
+
+.code-example {
+    background: var(--gray-900);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    margin: var(--spacing-lg) 0;
+}
+
+.code-example h4 {
+    color: var(--success);
+    margin-bottom: var(--spacing-md);
+}
+
+.code-example pre {
+    margin: 0;
+}
+
+.code-example code {
+    color: var(--gray-100);
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+.simulator-controls {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.simulator-controls label {
+    width: 100%;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: var(--spacing-xs);
+}
+
+.simulator-controls select {
+    flex: 1;
+    padding: var(--spacing-sm);
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    min-width: 200px;
+}
+
+.simulator-controls select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.rendering-demo {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: var(--spacing-lg);
+    background: var(--gray-50);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    margin: var(--spacing-lg) 0;
+    align-items: center;
+}
+
+.html-source, .html-rendered {
+    background: white;
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+}
+
+.html-source h4, .html-rendered h4 {
+    color: var(--primary);
+    margin-bottom: var(--spacing-md);
+    font-size: 1rem;
+}
+
+.html-source pre {
+    background: var(--gray-900);
+    color: var(--success);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-sm);
+    overflow-x: auto;
+}
+
+.html-source code {
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+}
+
+.rendered-content {
+    border: 2px solid var(--gray-200);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-sm);
+}
+
+.rendering-arrow {
+    font-size: 2rem;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.calculator-input {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin: var(--spacing-md) 0;
+    flex-wrap: wrap;
+}
+
+.calculator-input input {
+    flex: 1;
+    padding: var(--spacing-sm);
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    min-width: 200px;
+}
+
+.calculator-input input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.hint-box {
+    background: var(--gray-50);
+    border-left: 4px solid var(--warning);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    margin: var(--spacing-md) 0;
+}
+
+.hint-btn {
+    background: var(--warning);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.875rem;
+}
+
+.hint-btn:hover {
+    background: #D97706;
+}
+
+.quiz-block {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    margin: var(--spacing-xl) 0;
+    color: white;
+}
+
+.quiz-block h3 {
+    color: white;
+    margin-bottom: var(--spacing-md);
+}
+
+.quiz {
+    background: white;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+}
+
+.quiz-question {
+    color: var(--gray-900);
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin-bottom: var(--spacing-md);
+}
+
+.quiz-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+.quiz-option {
+    background: var(--gray-100);
+    border: 2px solid var(--gray-300);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+.quiz-option:hover {
+    background: var(--gray-200);
+    border-color: var(--primary);
+}
+
+.quiz-option.correct {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+}
+
+.quiz-option.incorrect {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: white;
+}
+
+.quiz-option:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.quiz-feedback {
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    margin-top: var(--spacing-md);
+    display: none;
+}
+
+.quiz-feedback.show {
+    display: block;
+}
+
+.quiz-feedback.correct {
+    background: #D1FAE5;
+    color: #065F46;
+    border: 2px solid var(--success);
+}
+
+.quiz-feedback.incorrect {
+    background: #FEE2E2;
+    color: #991B1B;
+    border: 2px solid var(--danger);
+}
+
+.final-quiz {
+    background: linear-gradient(135deg, #F59E0B 0%, #EF4444 100%);
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-xl);
+    margin: var(--spacing-xl) 0;
+    color: white;
+}
+
+.final-quiz-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.final-quiz-header h2 {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.final-quiz-content {
+    background: white;
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+}
+
+.quiz-question-block {
+    margin-bottom: var(--spacing-xl);
+}
+
+.question-number {
+    color: var(--primary);
+    font-weight: 700;
+    margin-bottom: var(--spacing-sm);
+}
+
+.final-score {
+    background: white;
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    text-align: center;
+}
+
+.final-score h3 {
+    color: var(--gray-900);
+    margin-bottom: var(--spacing-lg);
+}
+
+.score-display {
+    display: flex;
+    justify-content: center;
+    margin: var(--spacing-xl) 0;
+}
+
+.score-circle {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: var(--shadow-xl);
+}
+
+.score-value {
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.score-total {
+    font-size: 1.5rem;
+    opacity: 0.8;
+}
+
+.score-message {
+    color: var(--gray-700);
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-lg);
+}
+
+.feedback {
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    margin-top: var(--spacing-md);
+    display: none;
+}
+
+.feedback.show {
+    display: block;
+}
+
+.feedback.success {
+    background: #D1FAE5;
+    color: #065F46;
+    border: 2px solid var(--success);
+}
+
+.feedback.error {
+    background: #FEE2E2;
+    color: #991B1B;
+    border: 2px solid var(--danger);
+}
+
+.footer {
+    background: white;
+    padding: var(--spacing-xl) 0;
+    text-align: center;
+    margin-top: var(--spacing-2xl);
+    color: var(--gray-600);
+}
+
+.footer p {
+    margin-bottom: var(--spacing-xs);
+}
+
+@media (max-width: 768px) {
+    .hero h1 { font-size: 2rem; }
+    .hero .subtitle { font-size: 1rem; }
+    .hero-stats { gap: var(--spacing-md); }
+    .module-header h2 { font-size: 1.25rem; }
+    .demo-container { flex-direction: column; }
+    .connection-line { width: 2px; height: 50px; transform: rotate(90deg); }
+    .packet-flow { grid-template-columns: 1fr; }
+    .transmission-line { transform: rotate(90deg); margin: var(--spacing-lg) 0; }
+    .rendering-demo { grid-template-columns: 1fr; }
+    .rendering-arrow { transform: rotate(90deg); }
+    .url-parts { flex-direction: column; }
+    .url-part { border-right: none; border-bottom: 2px solid var(--gray-200); }
+    .url-part:last-child { border-bottom: none; }
+}
+
+@media (max-width: 480px) {
+    .navbar .container { flex-direction: column; gap: var(--spacing-sm); }
+    .progress-bar { width: 100%; }
+    .quiz-options { grid-template-columns: 1fr; }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.loading {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+</style>
+    
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="icon">🌐</span>
+                <span>Netzwerke & Internet</span>
+            </div>
+            <div class="nav-progress">
+                <span id="progress-text">Fortschritt: 0%</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Kommunikation in Netzwerken</h1>
+            <p class="subtitle">Ein interaktiver Lernpfad für die 11. Klasse Gymnasium Bayern</p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">6</span>
+                    <span class="stat-label">Module</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">15</span>
+                    <span class="stat-label">Übungen</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">~120</span>
+                    <span class="stat-label">Minuten</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main class="container">
+        <section class="module" id="modul-1" data-module="1">
+            <div class="module-header" onclick="toggleModule(1)">
+                <span class="module-number">Modul 1</span>
+                <h2>Grundlagen der Netzwerkkommunikation</h2>
+                <button class="toggle-btn"><span class="toggle-icon">▼</span></button>
+            </div>
+            <div class="module-content">
+                <div class="content-block">
+                    <h3>Was ist ein Netzwerk?</h3>
+                    <p>Wenn Computer Daten miteinander austauschen, bilden sie ein <strong>Netzwerk</strong>. Computer sind heute in den unterschiedlichsten Gegenständen wie Smartphones, Tablets, Smart-TVs oder IoT-Geräten präsent.</p>
+                    <div class="info-box">
+                        <h4>📊 Netzwerkgrößen</h4>
+                        <ul>
+                            <li><strong>LAN (Local Area Network):</strong> Heim- bis Firmennetzwerk (bis ~1 km)</li>
+                            <li><strong>MAN (Metropolitan Area Network):</strong> Städtische Netzwerke (bis ~100 km)</li>
+                            <li><strong>WAN (Wide Area Network):</strong> Überregionale Netzwerke</li>
+                            <li><strong>GAN (Global Area Network):</strong> Weltweite Netzwerke - das Internet!</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="content-block">
+                    <h3>Client-Server Prinzip</h3>
+                    <p>Ein <strong>Client</strong> stellt eine Anfrage nach einem bestimmten Dienst, der von einem <strong>Server</strong> angeboten wird.</p>
+                    <div class="interactive-demo">
+                        <div class="demo-container">
+                            <div class="device client">
+                                <div class="device-icon">💻</div>
+                                <div class="device-label">Client</div>
+                                <button class="demo-btn" onclick="sendRequest()">Anfrage senden</button>
+                            </div>
+                            <div class="connection-line">
+                                <div class="packet" id="request-packet">📦 Request</div>
+                            </div>
+                            <div class="device server">
+                                <div class="device-icon">🖥️</div>
+                                <div class="device-label">Server</div>
+                                <div class="server-status" id="server-status">Bereit</div>
+                            </div>
+                            <div class="connection-line response">
+                                <div class="packet" id="response-packet">📦 Response</div>
+                            </div>
+                        </div>
+                        <div class="demo-log" id="demo-log"></div>
+                    </div>
+                </div>
+                <div class="quiz-block">
+                    <h3>✅ Quiz: Grundlagen</h3>
+                    <div class="quiz" data-quiz="1">
+                        <p class="quiz-question">Welches Netzwerk erstreckt sich über die ganze Welt?</p>
+                        <div class="quiz-options">
+                            <button class="quiz-option" onclick="checkAnswer(1, 0, false)">LAN</button>
+                            <button class="quiz-option" onclick="checkAnswer(1, 1, false)">WAN</button>
+                            <button class="quiz-option" onclick="checkAnswer(1, 2, true)">GAN</button>
+                            <button class="quiz-option" onclick="checkAnswer(1, 3, false)">MAN</button>
+                        </div>
+                        <div class="quiz-feedback" id="quiz-1-feedback"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="module" id="modul-2" data-module="2">
+            <div class="module-header" onclick="toggleModule(2)">
+                <span class="module-number">Modul 2</span>
+                <h2>Netzwerk-Topologien</h2>
+                <button class="toggle-btn"><span class="toggle-icon">▼</span></button>
+            </div>
+            <div class="module-content">
+                <div class="content-block">
+                    <h3>Verschiedene Topologien im Überblick</h3>
+                    <p>Zur Vernetzung der einzelnen Geräte zu einem Netzwerk gibt es verschiedene Möglichkeiten:</p>
+                </div>
+                <div class="topology-grid">
+                    <div class="topology-card">
+                        <h4>🚌 Bus-Topologie</h4>
+                        <div class="topology-visual">
+                            <svg viewBox="0 0 200 120" class="topology-svg">
+                                <line x1="20" y1="60" x2="180" y2="60" stroke="#4F46E5" stroke-width="3"/>
+                                <circle cx="50" cy="60" r="8" fill="#10B981"/>
+                                <circle cx="100" cy="60" r="8" fill="#10B981"/>
+                                <circle cx="150" cy="60" r="8" fill="#10B981"/>
+                                <line x1="50" y1="60" x2="50" y2="30" stroke="#6B7280" stroke-width="2"/>
+                                <line x1="100" y1="60" x2="100" y2="30" stroke="#6B7280" stroke-width="2"/>
+                                <line x1="150" y1="60" x2="150" y2="30" stroke="#6B7280" stroke-width="2"/>
+                                <rect x="40" y="15" width="20" height="15" fill="#3B82F6" rx="2"/>
+                                <rect x="90" y="15" width="20" height="15" fill="#3B82F6" rx="2"/>
+                                <rect x="140" y="15" width="20" height="15" fill="#3B82F6" rx="2"/>
+                            </svg>
+                        </div>
+                        <div class="topology-info">
+                            <p><strong>✅ Vorteile:</strong></p>
+                            <ul>
+                                <li>Geräteausfall irrelevant</li>
+                                <li>Geringe Kosten</li>
+                                <li>Gut erweiterbar</li>
+                            </ul>
+                            <p><strong>❌ Nachteile:</strong></p>
+                            <ul>
+                                <li>Ausfall des Hauptkabels kritisch</li>
+                                <li>Abhörgefahr (Sniffing)</li>
+                                <li>Kollisionen möglich</li>
+                            </ul>
+                            <p><strong>🎯 Anwendung:</strong> Kleine Netze, ISPs</p>
+                        </div>
+                    </div>
+                    <div class="topology-card">
+                        <h4>⭐ Stern-Topologie</h4>
+                        <div class="topology-visual">
+                            <svg viewBox="0 0 200 120" class="topology-svg">
+                                <line x1="100" y1="60" x2="50" y2="30" stroke="#4F46E5" stroke-width="2"/>
+                                <line x1="100" y1="60" x2="150" y2="30" stroke="#4F46E5" stroke-width="2"/>
+                                <line x1="100" y1="60" x2="50" y2="90" stroke="#4F46E5" stroke-width="2"/>
+                                <line x1="100" y1="60" x2="150" y2="90" stroke="#4F46E5" stroke-width="2"/>
+                                <circle cx="100" cy="60" r="12" fill="#EF4444"/>
+                                <circle cx="50" cy="30" r="8" fill="#10B981"/>
+                                <circle cx="150" cy="30" r="8" fill="#10B981"/>
+                                <circle cx="50" cy="90" r="8" fill="#10B981"/>
+                                <circle cx="150" cy="90" r="8" fill="#10B981"/>
+                            </svg>
+                        </div>
+                        <div class="topology-info">
+                            <p><strong>✅ Vorteile:</strong></p>
+                            <ul>
+                                <li>Geräteausfall unkritisch</li>
+                                <li>Geringe Kosten</li>
+                                <li>Einfache Verwaltung</li>
+                            </ul>
+                            <p><strong>❌ Nachteile:</strong></p>
+                            <ul>
+                                <li>Zentraler Knoten kritisch</li>
+                                <li>Abhängig vom Switch</li>
+                            </ul>
+                            <p><strong>🎯 Anwendung:</strong> Heimnetzwerke</p>
+                        </div>
+                    </div>
+                    <div class="topology-card">
+                        <h4>🔄 Ring-Topologie</h4>
+                        <div class="topology-visual">
+                            <svg viewBox="0 0 200 120" class="topology-svg">
+                                <circle cx="100" cy="60" r="40" fill="none" stroke="#4F46E5" stroke-width="3"/>
+                                <circle cx="100" cy="20" r="8" fill="#10B981"/>
+                                <circle cx="140" cy="60" r="8" fill="#10B981"/>
+                                <circle cx="100" cy="100" r="8" fill="#10B981"/>
+                                <circle cx="60" cy="60" r="8" fill="#10B981"/>
+                                <polygon points="110,25 120,20 120,30" fill="#F59E0B"/>
+                            </svg>
+                        </div>
+                        <div class="topology-info">
+                            <p><strong>✅ Vorteile:</strong></p>
+                            <ul>
+                                <li>Keine Kollisionen</li>
+                                <li>Pendelbetrieb möglich</li>
+                            </ul>
+                            <p><strong>❌ Nachteile:</strong></p>
+                            <ul>
+                                <li>Teure Komponenten</li>
+                                <li>Abhörgefahr</li>
+                            </ul>
+                            <p><strong>🎯 Anwendung:</strong> Früher Universitäten</p>
+                        </div>
+                    </div>
+                    <div class="topology-card">
+                        <h4>🕸️ Vermaschte Topologie</h4>
+                        <div class="topology-visual">
+                            <svg viewBox="0 0 200 120" class="topology-svg">
+                                <line x1="50" y1="30" x2="150" y2="30" stroke="#4F46E5" stroke-width="2"/>
+                                <line x1="50" y1="30" x2="50" y2="90" stroke="#4F46E5" stroke-width="2"/>
+                                <line x1="150" y1="30" x2="150" y2="90" stroke="#4F46E5" stroke-width="2"/>
+                                <line x1="50" y1="90" x2="150" y2="90" stroke="#4F46E5" stroke-width="2"/>
+                                <line x1="50" y1="30" x2="150" y2="90" stroke="#4F46E5" stroke-width="2" opacity="0.5"/>
+                                <line x1="150" y1="30" x2="50" y2="90" stroke="#4F46E5" stroke-width="2" opacity="0.5"/>
+                                <circle cx="50" cy="30" r="8" fill="#10B981"/>
+                                <circle cx="150" cy="30" r="8" fill="#10B981"/>
+                                <circle cx="50" cy="90" r="8" fill="#10B981"/>
+                                <circle cx="150" cy="90" r="8" fill="#10B981"/>
+                            </svg>
+                        </div>
+                        <div class="topology-info">
+                            <p><strong>✅ Vorteile:</strong></p>
+                            <ul>
+                                <li>Hohe Ausfallsicherheit</li>
+                                <li>Hohe Übertragungsrate</li>
+                            </ul>
+                            <p><strong>❌ Nachteile:</strong></p>
+                            <ul>
+                                <li>Schlechte Skalierung</li>
+                                <li>Hohe Kosten</li>
+                            </ul>
+                            <p><strong>🎯 Anwendung:</strong> Mesh-WiFi</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="quiz-block">
+                    <h3>✅ Quiz: Topologien</h3>
+                    <div class="quiz" data-quiz="2">
+                        <p class="quiz-question">Bei welcher Topologie ist der Ausfall des zentralen Knotens besonders kritisch?</p>
+                        <div class="quiz-options">
+                            <button class="quiz-option" onclick="checkAnswer(2, 0, false)">Bus</button>
+                            <button class="quiz-option" onclick="checkAnswer(2, 1, true)">Stern</button>
+                            <button class="quiz-option" onclick="checkAnswer(2, 2, false)">Ring</button>
+                            <button class="quiz-option" onclick="checkAnswer(2, 3, false)">Vermascht</button>
+                        </div>
+                        <div class="quiz-feedback" id="quiz-2-feedback"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="module" id="modul-3" data-module="3">
+            <div class="module-header" onclick="toggleModule(3)">
+                <span class="module-number">Modul 3</span>
+                <h2>Adressierung von Geräten</h2>
+                <button class="toggle-btn"><span class="toggle-icon">▼</span></button>
+            </div>
+            <div class="module-content">
+                <div class="content-block">
+                    <h3>IP-Adressen: Die Postanschrift im Internet</h3>
+                    <p>Jeder Rechner in einem Netzwerk erhält eine eindeutige <strong>IP-Adresse</strong> (Internet Protocol).</p>
+                    <div class="comparison-grid">
+                        <div class="comparison-card">
+                            <h4>IPv4</h4>
+                            <div class="ip-example">46.243.122.48</div>
+                            <p>4 Blöcke von 0-255 (je 1 Byte)</p>
+                            <div class="calculation">
+                                <p><strong>Anzahl Adressen:</strong></p>
+                                <p>2⁸ × 2⁸ × 2⁸ × 2⁸ = 2³²</p>
+                                <p>= 4.294.967.296</p>
+                                <p>≈ 4,3 Milliarden</p>
+                            </div>
+                        </div>
+                        <div class="comparison-card">
+                            <h4>IPv6</h4>
+                            <div class="ip-example ipv6">2607:f8b0:4006:811::2003</div>
+                            <p>8 Blöcke von 0-65535 (je 2 Byte)</p>
+                            <div class="calculation">
+                                <p><strong>Anzahl Adressen:</strong></p>
+                                <p>(2¹⁶)⁸ = 2¹²⁸</p>
+                                <p>≈ 3,4 × 10³⁸</p>
+                                <p>💡 Mehr als Sterne im Universum!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-block">
+                    <h3>Das Adressierungsproblem bei IPv4</h3>
+                    <p>Da IPv4-Adressen nicht ausreichen, teilen sich mehrere Geräte eine öffentliche IP. Im Heimnetzwerk vergibt der Router private IPs über <strong>DHCP</strong>.</p>
+                    <div class="network-diagram">
+                        <div class="internet-cloud">
+                            <h4>🌐 Internet</h4>
+                            <div class="server-box">
+                                <p>Web-Server</p>
+                                <p class="ip-addr">178.34.187.55</p>
+                            </div>
+                        </div>
+                        <div class="router-box">
+                            <h4>📡 Router</h4>
+                            <p>Öffentlich: <span class="ip-addr">84.193.52.26</span></p>
+                            <p>Privat: <span class="ip-addr">192.168.0.1</span></p>
+                        </div>
+                        <div class="home-network">
+                            <h4>🏠 Heimnetzwerk</h4>
+                            <div class="device-list">
+                                <div class="device-item">💻 Computer: <span class="ip-addr">192.168.0.45</span></div>
+                                <div class="device-item">🖨️ Drucker: <span class="ip-addr">192.168.0.64</span></div>
+                                <div class="device-item">📱 Smartphone: <span class="ip-addr">192.168.0.23</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-block">
+                    <h3>Ports und MAC-Adressen</h3>
+                    <div class="info-box">
+                        <h4>🔌 Port-Nummern</h4>
+                        <p>Da Geräte mehrere Anwendungen parallel nutzen, wird ein <strong>Port</strong> verwendet (0-65535).</p>
+                        <p><strong>Notation:</strong> IP:Port → <code>88.231.4.72:8080</code></p>
+                        <table class="port-table">
+                            <thead>
+                                <tr>
+                                    <th>Port</th>
+                                    <th>Dienst</th>
+                                    <th>Beschreibung</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>80</td><td>HTTP</td><td>Webseiten (unverschlüsselt)</td></tr>
+                                <tr><td>443</td><td>HTTPS</td><td>Webseiten (verschlüsselt)</td></tr>
+                                <tr><td>21</td><td>FTP</td><td>Dateiübertragung</td></tr>
+                                <tr><td>25</td><td>SMTP</td><td>E-Mail versenden</td></tr>
+                                <tr><td>22</td><td>SSH</td><td>Sichere Fernwartung</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="info-box">
+                        <h4>🔧 MAC-Adresse</h4>
+                        <p>Jedes Netzwerkgerät besitzt eine eindeutige Hardware-Adresse.</p>
+                        <p><strong>Format:</strong> <code>2a:03:7a:e8:32:0f</code> (6 Byte)</p>
+                        <p>⚠️ Nicht sicher zur Identifizierung (MAC-Spoofing möglich)</p>
+                    </div>
+                </div>
+                <div class="interactive-block">
+                    <h3>🎮 Übung: IP-Adresse berechnen</h3>
+                    <div class="ip-calculator">
+                        <p>Wandle die binäre IP-Adresse in dezimal um:</p>
+                        <div class="binary-ip" id="binary-ip"></div>
+                        <div class="ip-input-grid">
+                            <input type="number" min="0" max="255" id="ip-part-1" placeholder="0-255">
+                            <span>.</span>
+                            <input type="number" min="0" max="255" id="ip-part-2" placeholder="0-255">
+                            <span>.</span>
+                            <input type="number" min="0" max="255" id="ip-part-3" placeholder="0-255">
+                            <span>.</span>
+                            <input type="number" min="0" max="255" id="ip-part-4" placeholder="0-255">
+                        </div>
+                        <button class="demo-btn" onclick="checkIPAddress()">Überprüfen</button>
+                        <div class="feedback" id="ip-feedback"></div>
+                    </div>
+                </div>
+                <div class="quiz-block">
+                    <h3>✅ Quiz: Adressierung</h3>
+                    <div class="quiz" data-quiz="3">
+                        <p class="quiz-question">Welcher Port wird standardmäßig für HTTPS verwendet?</p>
+                        <div class="quiz-options">
+                            <button class="quiz-option" onclick="checkAnswer(3, 0, false)">80</button>
+                            <button class="quiz-option" onclick="checkAnswer(3, 1, true)">443</button>
+                            <button class="quiz-option" onclick="checkAnswer(3, 2, false)">21</button>
+                            <button class="quiz-option" onclick="checkAnswer(3, 3, false)">25</button>
+                        </div>
+                        <div class="quiz-feedback" id="quiz-3-feedback"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="module" id="modul-4" data-module="4">
+            <div class="module-header" onclick="toggleModule(4)">
+                <span class="module-number">Modul 4</span>
+                <h2>DNS und URL-Struktur</h2>
+                <button class="toggle-btn"><span class="toggle-icon">▼</span></button>
+            </div>
+            <div class="module-content">
+                <div class="content-block">
+                    <h3>DNS - Das Telefonbuch des Internets</h3>
+                    <p>Meist geben wir nicht die IP ein, sondern eine <strong>URL</strong>. Der <strong>DNS-Server</strong> wandelt diese in IPs um.</p>
+                    <div class="url-breakdown">
+                        <h4>Aufbau einer URL</h4>
+                        <div class="url-parts">
+                            <div class="url-part protocol">
+                                <div class="part-label">Protokoll</div>
+                                <div class="part-value">https://</div>
+                            </div>
+                            <div class="url-part subdomain">
+                                <div class="part-label">Subdomain</div>
+                                <div class="part-value">www.</div>
+                            </div>
+                            <div class="url-part domain">
+                                <div class="part-label">Domain</div>
+                                <div class="part-value">gym-kirchheim</div>
+                            </div>
+                            <div class="url-part tld">
+                                <div class="part-label">TLD</div>
+                                <div class="part-value">.de</div>
+                            </div>
+                            <div class="url-part path">
+                                <div class="part-label">Pfad</div>
+                                <div class="part-value">/cms/</div>
+                            </div>
+                            <div class="url-part file">
+                                <div class="part-label">Datei</div>
+                                <div class="part-value">index.html</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-block">
+                    <h3>Ablauf einer Website-Anfrage</h3>
+                    <div class="sequence-diagram">
+                        <div class="sequence-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <div class="step-actors">
+                                    <span class="actor">📱 Smartphone</span>
+                                    <span class="arrow">→</span>
+                                    <span class="actor">🗂️ DNS-Server</span>
+                                </div>
+                                <div class="step-message">Anfrage: IP von bahn.de</div>
+                            </div>
+                        </div>
+                        <div class="sequence-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <div class="step-actors">
+                                    <span class="actor">🗂️ DNS-Server</span>
+                                    <span class="arrow">→</span>
+                                    <span class="actor">📱 Smartphone</span>
+                                </div>
+                                <div class="step-message">Antwort: 81.200.196.33</div>
+                            </div>
+                        </div>
+                        <div class="sequence-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <div class="step-actors">
+                                    <span class="actor">📱 Smartphone</span>
+                                    <span class="arrow">→</span>
+                                    <span class="actor">🖥️ Web-Server</span>
+                                </div>
+                                <div class="step-message">HTTP-Request: Homepage</div>
+                            </div>
+                        </div>
+                        <div class="sequence-step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <div class="step-actors">
+                                    <span class="actor">🖥️ Web-Server</span>
+                                    <span class="arrow">→</span>
+                                    <span class="actor">📱 Smartphone</span>
+                                </div>
+                                <div class="step-message">HTTP-Response: HTML-Datei</div>
+                            </div>
+                        </div>
+                        <div class="sequence-step">
+                            <div class="step-number">5</div>
+                            <div class="step-content">
+                                <div class="step-actors">
+                                    <span class="actor">📱 Smartphone</span>
+                                    <span class="arrow">→</span>
+                                    <span class="actor">🖥️ Web-Server</span>
+                                </div>
+                                <div class="step-message">Ressourcen nachladen</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="interactive-block">
+                    <h3>🎮 Übung: DNS-Auflösung simulieren</h3>
+                    <div class="dns-simulator">
+                        <div class="simulator-input">
+                            <label for="url-input">Gib eine URL ein:</label>
+                            <input type="text" id="url-input" placeholder="z.B. www.google.de" value="www.bundestag.de">
+                            <button class="demo-btn" onclick="simulateDNS()">DNS-Auflösung starten</button>
+                        </div>
+                        <div class="simulator-output" id="dns-output"></div>
+                    </div>
+                </div>
+                <div class="quiz-block">
+                    <h3>✅ Quiz: DNS</h3>
+                    <div class="quiz" data-quiz="4">
+                        <p class="quiz-question">Was macht ein DNS-Server?</p>
+                        <div class="quiz-options">
+                            <button class="quiz-option" onclick="checkAnswer(4, 0, false)">Speichert Webseiten</button>
+                            <button class="quiz-option" onclick="checkAnswer(4, 1, true)">Wandelt URLs in IPs um</button>
+                            <button class="quiz-option" onclick="checkAnswer(4, 2, false)">Verschlüsselt Daten</button>
+                            <button class="quiz-option" onclick="checkAnswer(4, 3, false)">Verteilt Pakete</button>
+                        </div>
+                        <div class="quiz-feedback" id="quiz-4-feedback"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="module" id="modul-5" data-module="5">
+            <div class="module-header" onclick="toggleModule(5)">
+                <span class="module-number">Modul 5</span>
+                <h2>Das TCP/IP-Schichtenmodell</h2>
+                <button class="toggle-btn"><span class="toggle-icon">▼</span></button>
+            </div>
+            <div class="module-content">
+                <div class="content-block">
+                    <h3>Kommunikation in Schichten</h3>
+                    <p>Die Kommunikation ist in <strong>Schichten</strong> aufgeteilt. Jede hat eine spezielle Aufgabe.</p>
+                    <div class="layer-model">
+                        <div class="layer layer-4">
+                            <div class="layer-number">4</div>
+                            <div class="layer-content">
+                                <h4>Anwendungsschicht</h4>
+                                <p class="layer-protocols">HTTP, FTP, SMTP, DNS, SSH</p>
+                                <p class="layer-description">Anwendungsspezifische Protokolle</p>
+                            </div>
+                        </div>
+                        <div class="layer layer-3">
+                            <div class="layer-number">3</div>
+                            <div class="layer-content">
+                                <h4>Transportschicht</h4>
+                                <p class="layer-protocols">TCP, UDP</p>
+                                <p class="layer-description">Segmentierung und Ports</p>
+                            </div>
+                        </div>
+                        <div class="layer layer-2">
+                            <div class="layer-number">2</div>
+                            <div class="layer-content">
+                                <h4>Internetschicht</h4>
+                                <p class="layer-protocols">IP (IPv4, IPv6)</p>
+                                <p class="layer-description">Adressierung und Routing</p>
+                            </div>
+                        </div>
+                        <div class="layer layer-1">
+                            <div class="layer-number">1</div>
+                            <div class="layer-content">
+                                <h4>Netzzugangsschicht</h4>
+                                <p class="layer-protocols">Ethernet, WLAN</p>
+                                <p class="layer-description">Physische Übertragung</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-block">
+                    <h3>Datenfluss durch die Schichten</h3>
+                    <div class="packet-flow">
+                        <div class="flow-side sender">
+                            <h4>📤 Sender</h4>
+                            <div class="flow-step">
+                                <div class="step-label">Anwendung</div>
+                                <div class="packet-visual">
+                                    <div class="packet-data">DATEN</div>
+                                </div>
+                            </div>
+                            <div class="arrow-down">↓</div>
+                            <div class="flow-step">
+                                <div class="step-label">Transport</div>
+                                <div class="packet-visual">
+                                    <div class="packet-header tcp">TCP</div>
+                                    <div class="packet-data">DATEN</div>
+                                </div>
+                            </div>
+                            <div class="arrow-down">↓</div>
+                            <div class="flow-step">
+                                <div class="step-label">Internet</div>
+                                <div class="packet-visual">
+                                    <div class="packet-header ip">IP</div>
+                                    <div class="packet-header tcp">TCP</div>
+                                    <div class="packet-data">DATEN</div>
+                                </div>
+                            </div>
+                            <div class="arrow-down">↓</div>
+                            <div class="flow-step">
+                                <div class="step-label">Netzzugang</div>
+                                <div class="packet-visual">
+                                    <div class="packet-header eth">ETH</div>
+                                    <div class="packet-header ip">IP</div>
+                                    <div class="packet-header tcp">TCP</div>
+                                    <div class="packet-data">DATEN</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="transmission-line">
+                            <div class="transmission-arrow">→→→</div>
+                            <div class="transmission-label">Übertragung</div>
+                        </div>
+                        <div class="flow-side receiver">
+                            <h4>📥 Empfänger</h4>
+                            <div class="flow-step">
+                                <div class="step-label">Netzzugang</div>
+                                <div class="packet-visual">
+                                    <div class="packet-header eth">ETH</div>
+                                    <div class="packet-header ip">IP</div>
+                                    <div class="packet-header tcp">TCP</div>
+                                    <div class="packet-data">DATEN</div>
+                                </div>
+                            </div>
+                            <div class="arrow-down">↓</div>
+                            <div class="flow-step">
+                                <div class="step-label">Internet</div>
+                                <div class="packet-visual">
+                                    <div class="packet-header ip">IP</div>
+                                    <div class="packet-header tcp">TCP</div>
+                                    <div class="packet-data">DATEN</div>
+                                </div>
+                            </div>
+                            <div class="arrow-down">↓</div>
+                            <div class="flow-step">
+                                <div class="step-label">Transport</div>
+                                <div class="packet-visual">
+                                    <div class="packet-header tcp">TCP</div>
+                                    <div class="packet-data">DATEN</div>
+                                </div>
+                            </div>
+                            <div class="arrow-down">↓</div>
+                            <div class="flow-step">
+                                <div class="step-label">Anwendung</div>
+                                <div class="packet-visual">
+                                    <div class="packet-data">DATEN</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-block">
+                    <h3>TCP vs. UDP</h3>
+                    <div class="comparison-grid">
+                        <div class="comparison-card">
+                            <h4>TCP</h4>
+                            <ul>
+                                <li>✅ Verbindungsorientiert</li>
+                                <li>✅ Garantierte Zustellung</li>
+                                <li>✅ Reihenfolge eingehalten</li>
+                                <li>✅ Fehlerkorrektur</li>
+                                <li>❌ Langsamer</li>
+                            </ul>
+                            <p><strong>Verwendung:</strong> HTTP, FTP, E-Mail</p>
+                        </div>
+                        <div class="comparison-card">
+                            <h4>UDP</h4>
+                            <ul>
+                                <li>✅ Verbindungslos</li>
+                                <li>✅ Sehr schnell</li>
+                                <li>✅ Geringer Overhead</li>
+                                <li>❌ Keine Zustellgarantie</li>
+                                <li>❌ Keine Fehlerkorrektur</li>
+                            </ul>
+                            <p><strong>Verwendung:</strong> Streaming, Gaming, DNS</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="interactive-block">
+                    <h3>🎮 Übung: Paketgröße berechnen</h3>
+                    <div class="packet-calculator">
+                        <p>Ein Foto hat 2,5 MB. Max. Paketgröße: 65.535 Byte.</p>
+                        <p><strong>Wie viele Pakete werden benötigt?</strong></p>
+                        <div class="calculator-input">
+                            <input type="number" id="packet-count" placeholder="Anzahl">
+                            <button class="demo-btn" onclick="checkPacketCount()">Prüfen</button>
+                        </div>
+                        <div class="feedback" id="packet-feedback"></div>
+                        <div class="hint-box" id="packet-hint" style="display:none;">
+                            <p><strong>💡 Tipp:</strong></p>
+                            <p>1 MB = 1.048.576 Byte</p>
+                            <p>2,5 MB = 2.621.440 Byte</p>
+                            <p>Anzahl = Dateigröße ÷ Paketgröße (aufgerundet)</p>
+                        </div>
+                        <button class="hint-btn" onclick="toggleHint('packet-hint')">Tipp</button>
+                    </div>
+                </div>
+                <div class="quiz-block">
+                    <h3>✅ Quiz: Schichtenmodell</h3>
+                    <div class="quiz" data-quiz="5">
+                        <p class="quiz-question">Welche Schicht ist für Routing zuständig?</p>
+                        <div class="quiz-options">
+                            <button class="quiz-option" onclick="checkAnswer(5, 0, false)">Anwendungsschicht</button>
+                            <button class="quiz-option" onclick="checkAnswer(5, 1, false)">Transportschicht</button>
+                            <button class="quiz-option" onclick="checkAnswer(5, 2, true)">Internetschicht</button>
+                            <button class="quiz-option" onclick="checkAnswer(5, 3, false)">Netzzugangsschicht</button>
+                        </div>
+                        <div class="quiz-feedback" id="quiz-5-feedback"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="module" id="modul-6" data-module="6">
+            <div class="module-header" onclick="toggleModule(6)">
+                <span class="module-number">Modul 6</span>
+                <h2>HTTP, APIs und Client-Implementierung</h2>
+                <button class="toggle-btn"><span class="toggle-icon">▼</span></button>
+            </div>
+            <div class="module-content">
+                <div class="content-block">
+                    <h3>HTTP-Methoden: GET vs. POST</h3>
+                    <div class="http-methods">
+                        <div class="method-card get">
+                            <h4>GET-Request</h4>
+                            <div class="method-example">
+                                <code>GET http://example.com/api?date=20130528</code>
+                            </div>
+                            <ul>
+                                <li>✅ Parameter in URL</li>
+                                <li>✅ Bookmarkbar</li>
+                                <li>✅ Im Verlauf</li>
+                                <li>❌ Begrenzte Datenmenge</li>
+                                <li>❌ Nicht für sensible Daten</li>
+                            </ul>
+                            <p><strong>Verwendung:</strong> Daten abrufen</p>
+                        </div>
+                        <div class="method-card post">
+                            <h4>POST-Request</h4>
+                            <div class="method-example">
+                                <code>POST http://example.com/api</code>
+                                <div class="payload">
+                                    <strong>Payload:</strong>
+                                    <pre>{"date": "20130528"}</pre>
+                                </div>
+                            </div>
+                            <ul>
+                                <li>✅ Daten im Body</li>
+                                <li>✅ Große Datenmengen</li>
+                                <li>✅ Für sensible Daten</li>
+                                <li>❌ Nicht bookmarkbar</li>
+                                <li>❌ Nicht im Verlauf</li>
+                            </ul>
+                            <p><strong>Verwendung:</strong> Formulare, Login</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-block">
+                    <h3>HTTP-Statuscodes</h3>
+                    <div class="status-codes">
+                        <div class="status-group">
+                            <h4>2xx - Erfolg ✅</h4>
+                            <ul>
+                                <li><strong>200 OK:</strong> Erfolgreich</li>
+                                <li><strong>201 Created:</strong> Erstellt</li>
+                                <li><strong>204 No Content:</strong> Keine Daten</li>
+                            </ul>
+                        </div>
+                        <div class="status-group">
+                            <h4>3xx - Umleitung 🔄</h4>
+                            <ul>
+                                <li><strong>301:</strong> Dauerhaft verschoben</li>
+                                <li><strong>302:</strong> Temporär verschoben</li>
+                            </ul>
+                        </div>
+                        <div class="status-group">
+                            <h4>4xx - Client-Fehler ❌</h4>
+                            <ul>
+                                <li><strong>400:</strong> Bad Request</li>
+                                <li><strong>401:</strong> Unauthorized</li>
+                                <li><strong>403:</strong> Forbidden</li>
+                                <li><strong>404:</strong> Not Found</li>
+                            </ul>
+                        </div>
+                        <div class="status-group">
+                            <h4>5xx - Server-Fehler ⚠️</h4>
+                            <ul>
+                                <li><strong>500:</strong> Internal Error</li>
+                                <li><strong>503:</strong> Service Unavailable</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-block">
+                    <h3>APIs - Application Programming Interfaces</h3>
+                    <p>Eine <strong>API</strong> ist eine Schnittstelle für Programme.</p>
+                    <div class="api-diagram">
+                        <div class="api-client">
+                            <h4>📱 Client-App</h4>
+                            <p>Wetter-App</p>
+                        </div>
+                        <div class="api-arrow">
+                            <div class="arrow-label">HTTP-Request</div>
+                            <div class="arrow-line">→</div>
+                        </div>
+                        <div class="api-server">
+                            <h4>🌐 API-Server</h4>
+                            <p>Wetterdienst</p>
+                        </div>
+                        <div class="api-arrow reverse">
+                            <div class="arrow-line">←</div>
+                            <div class="arrow-label">JSON-Response</div>
+                        </div>
+                    </div>
+                    <div class="code-example">
+                        <h4>Beispiel: Wetter-API</h4>
+                        <pre><code>fetch('https://api.weather.com/v1/current?city=Munich')
+  .then(response => response.json())
+  .then(data => {
+    console.log('Temperatur:', data.temperature);
+  });</code></pre>
+                    </div>
+                </div>
+                <div class="interactive-block">
+                    <h3>🎮 Übung: API-Anfrage simulieren</h3>
+                    <div class="api-simulator">
+                        <div class="simulator-controls">
+                            <label>Wähle eine Stadt:</label>
+                            <select id="city-select">
+                                <option value="munich">München</option>
+                                <option value="berlin">Berlin</option>
+                                <option value="hamburg">Hamburg</option>
+                            </select>
+                            <button class="demo-btn" onclick="fetchWeather()">Wetter abrufen</button>
+                        </div>
+                        <div class="api-request-display" id="api-request"></div>
+                        <div class="api-response-display" id="api-response"></div>
+                    </div>
+                </div>
+                <div class="content-block">
+                    <h3>HTML-Rendering</h3>
+                    <p>Der Browser wandelt HTML-Code in eine formatierte Ausgabe um.</p>
+                    <div class="rendering-demo">
+                        <div class="html-source">
+                            <h4>HTML-Quelltext</h4>
+                            <pre><code>&lt;h1&gt;Willkommen&lt;/h1&gt;
+&lt;p&gt;Dies ist &lt;strong&gt;Beispiel&lt;/strong&gt;.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Punkt 1&lt;/li&gt;
+  &lt;li&gt;Punkt 2&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+                        </div>
+                        <div class="rendering-arrow">→</div>
+                        <div class="html-rendered">
+                            <h4>Gerendert</h4>
+                            <div class="rendered-content">
+                                <h1>Willkommen</h1>
+                                <p>Dies ist <strong>Beispiel</strong>.</p>
+                                <ul>
+                                    <li>Punkt 1</li>
+                                    <li>Punkt 2</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="quiz-block">
+                    <h3>✅ Quiz: HTTP</h3>
+                    <div class="quiz" data-quiz="6">
+                        <p class="quiz-question">Welcher Statuscode bedeutet "Not Found"?</p>
+                        <div class="quiz-options">
+                            <button class="quiz-option" onclick="checkAnswer(6, 0, false)">200</button>
+                            <button class="quiz-option" onclick="checkAnswer(6, 1, false)">301</button>
+                            <button class="quiz-option" onclick="checkAnswer(6, 2, true)">404</button>
+                            <button class="quiz-option" onclick="checkAnswer(6, 3, false)">500</button>
+                        </div>
+                        <div class="quiz-feedback" id="quiz-6-feedback"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="final-quiz">
+            <div class="final-quiz-header">
+                <h2>🏆 Abschluss-Quiz</h2>
+                <p>Teste dein Wissen über alle Module!</p>
+            </div>
+            <div class="final-quiz-content" id="final-quiz-content">
+                <div class="quiz-question-block">
+                    <p class="question-number">Frage 1 von 5</p>
+                    <p class="quiz-question">Wie viele IPv4-Adressen gibt es?</p>
+                    <div class="quiz-options">
+                        <button class="quiz-option" onclick="checkFinalAnswer(0, 0, false)">4,3 Millionen</button>
+                        <button class="quiz-option" onclick="checkFinalAnswer(0, 1, true)">4,3 Milliarden</button>
+                        <button class="quiz-option" onclick="checkFinalAnswer(0, 2, false)">4,3 Billionen</button>
+                        <button class="quiz-option" onclick="checkFinalAnswer(0, 3, false)">Unendlich</button>
+                    </div>
+                    <div class="quiz-feedback" id="final-quiz-0-feedback"></div>
+                </div>
+            </div>
+            <div class="final-score" id="final-score" style="display:none;">
+                <h3>Dein Ergebnis</h3>
+                <div class="score-display">
+                    <div class="score-circle">
+                        <span class="score-value" id="score-value">0</span>
+                        <span class="score-total">/ 5</span>
+                    </div>
+                </div>
+                <p class="score-message" id="score-message"></p>
+                <button class="demo-btn" onclick="restartQuiz()">Wiederholen</button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Netzwerke & Internet - Lernplattform Informatik Klasse 11</p>
+            <p>Basierend auf den Unterrichtsmaterialien des Gymnasiums Bayern</p>
+        </div>
+    </footer>
+
+    <script> let completedModules = new Set();
+let quizScores = {};
+let finalQuizAnswers = [];
+let currentFinalQuestion = 0;
+
+const finalQuizQuestions = [
+    {
+        question: "Wie viele IPv4-Adressen gibt es theoretisch?",
+        options: ["ca. 4,3 Millionen", "ca. 4,3 Milliarden", "ca. 4,3 Billionen", "Unendlich viele"],
+        correct: 1
+    },
+    {
+        question: "Welche Topologie hat die höchste Ausfallsicherheit?",
+        options: ["Bus", "Stern", "Ring", "Vermascht"],
+        correct: 3
+    },
+    {
+        question: "Was bedeutet DHCP?",
+        options: [
+            "Dynamic Host Configuration Protocol",
+            "Digital Host Communication Protocol",
+            "Direct HTTP Connection Protocol",
+            "Data Host Control Protocol"
+        ],
+        correct: 0
+    },
+    {
+        question: "Welche Schicht des TCP/IP-Modells ist für die Segmentierung zuständig?",
+        options: ["Anwendungsschicht", "Transportschicht", "Internetschicht", "Netzzugangsschicht"],
+        correct: 1
+    },
+    {
+        question: "Was ist der Unterschied zwischen GET und POST?",
+        options: [
+            "GET ist schneller als POST",
+            "POST sendet Daten im Body, GET in der URL",
+            "GET ist sicherer als POST",
+            "POST kann nur Texte senden"
+        ],
+        correct: 1
+    }
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+    initializeModules();
+    updateProgress();
+    loadProgress();
+    generateBinaryIP();
+});
+
+function toggleModule(moduleNumber) {
+    const module = document.getElementById(`modul-${moduleNumber}`);
+    module.classList.toggle('collapsed');
+    if (!module.classList.contains('collapsed')) {
+        markModuleVisited(moduleNumber);
+    }
+    saveProgress();
+}
+
+function initializeModules() {
+    const modules = document.querySelectorAll('.module');
+    modules.forEach((module, index) => {
+        if (index > 0) {
+            module.classList.add('collapsed');
+        }
+    });
+}
+
+function markModuleVisited(moduleNumber) {
+    completedModules.add(moduleNumber);
+    updateProgress();
+    saveProgress();
+}
+
+function updateProgress() {
+    const totalModules = 6;
+    const progress = (completedModules.size / totalModules) * 100;
+    document.getElementById('progress-fill').style.width = `${progress}%`;
+    document.getElementById('progress-text').textContent = `Fortschritt: ${Math.round(progress)}%`;
+}
+
+function sendRequest() {
+    const requestPacket = document.getElementById('request-packet');
+    const responsePacket = document.getElementById('response-packet');
+    const serverStatus = document.getElementById('server-status');
+    const demoLog = document.getElementById('demo-log');
+    
+    requestPacket.classList.remove('animate');
+    responsePacket.classList.remove('animate');
+    
+    addLogEntry(demoLog, '📤 Client sendet HTTP-Request...');
+    
+    setTimeout(() => {
+        requestPacket.classList.add('animate');
+    }, 100);
+    
+    setTimeout(() => {
+        serverStatus.textContent = 'Verarbeitet...';
+        serverStatus.style.background = '#FEF3C7';
+        addLogEntry(demoLog, '⚙️ Server verarbeitet Anfrage...');
+    }, 2000);
+    
+    setTimeout(() => {
+        responsePacket.classList.add('animate');
+        serverStatus.textContent = 'Bereit';
+        serverStatus.style.background = '#D1FAE5';
+        addLogEntry(demoLog, '📥 Server sendet HTTP-Response');
+    }, 3000);
+    
+    setTimeout(() => {
+        addLogEntry(demoLog, '✅ Übertragung abgeschlossen!');
+    }, 5000);
+}
+
+function addLogEntry(logElement, message) {
+    const entry = document.createElement('div');
+    entry.className = 'log-entry';
+    entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+    logElement.appendChild(entry);
+    logElement.scrollTop = logElement.scrollHeight;
+}
+
+let currentBinaryIP = [];
+
+function generateBinaryIP() {
+    currentBinaryIP = [];
+    const binaryDisplay = document.getElementById('binary-ip');
+    if (!binaryDisplay) return;
+    
+    let binaryString = '';
+    for (let i = 0; i < 4; i++) {
+        const decimal = Math.floor(Math.random() * 256);
+        currentBinaryIP.push(decimal);
+        const binary = decimal.toString(2).padStart(8, '0');
+        binaryString += binary;
+        if (i < 3) binaryString += '.';
+    }
+    
+    binaryDisplay.textContent = binaryString;
+}
+
+function checkIPAddress() {
+    const inputs = [
+        document.getElementById('ip-part-1'),
+        document.getElementById('ip-part-2'),
+        document.getElementById('ip-part-3'),
+        document.getElementById('ip-part-4')
+    ];
+    
+    const feedback = document.getElementById('ip-feedback');
+    let correct = true;
+    
+    inputs.forEach((input, index) => {
+        const value = parseInt(input.value);
+        if (value !== currentBinaryIP[index]) {
+            correct = false;
+        }
+    });
+    
+    feedback.classList.add('show');
+    if (correct) {
+        feedback.className = 'feedback show success';
+        feedback.textContent = '✅ Richtig! Die IP-Adresse lautet: ' + currentBinaryIP.join('.');
+        setTimeout(() => {
+            generateBinaryIP();
+            inputs.forEach(input => input.value = '');
+            feedback.classList.remove('show');
+        }, 3000);
+    } else {
+        feedback.className = 'feedback show error';
+        feedback.textContent = '❌ Leider falsch. Versuche es noch einmal! Tipp: ' + currentBinaryIP.join('.');
+    }
+}
+
+function simulateDNS() {
+    const urlInput = document.getElementById('url-input');
+    const output = document.getElementById('dns-output');
+    const url = urlInput.value.trim();
+    
+    if (!url) {
+        output.textContent = '❌ Bitte gib eine URL ein!';
+        return;
+    }
+    
+    output.textContent = '';
+    
+    addDNSLog(output, `🔍 DNS-Anfrage für: ${url}`);
+    
+    setTimeout(() => {
+        addDNSLog(output, '📡 Kontaktiere DNS-Server...');
+    }, 500);
+    
+    setTimeout(() => {
+        const ip = `${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}.${Math.floor(Math.random() * 256)}`;
+        addDNSLog(output, `✅ IP-Adresse gefunden: ${ip}`);
+    }, 1500);
+    
+    setTimeout(() => {
+        addDNSLog(output, '🌐 Verbindung wird hergestellt...');
+    }, 2500);
+    
+    setTimeout(() => {
+        addDNSLog(output, '✅ Verbindung erfolgreich!');
+    }, 3500);
+}
+
+function addDNSLog(element, message) {
+    element.textContent += message + '\n';
+}
+
+function checkPacketCount() {
+    const input = document.getElementById('packet-count');
+    const feedback = document.getElementById('packet-feedback');
+    const userAnswer = parseInt(input.value);
+    
+    const fileSize = 2.5 * 1024 * 1024;
+    const packetSize = 65535;
+    const correctAnswer = Math.ceil(fileSize / packetSize);
+    
+    feedback.classList.add('show');
+    if (userAnswer === correctAnswer) {
+        feedback.className = 'feedback show success';
+        feedback.innerHTML = `✅ Richtig! Es werden genau <strong>${correctAnswer} Pakete</strong> benötigt.<br><br>Berechnung: 2,5 MB = 2.621.440 Byte<br>2.621.440 ÷ 65.535 = 40 Pakete`;
+    } else {
+        feedback.className = 'feedback show error';
+        feedback.innerHTML = `❌ Leider falsch. Die richtige Antwort ist <strong>${correctAnswer} Pakete</strong>.<br>Versuche es noch einmal oder klicke auf "Tipp anzeigen".`;
+    }
+}
+
+function toggleHint(hintId) {
+    const hint = document.getElementById(hintId);
+    if (hint.style.display === 'none' || !hint.style.display) {
+        hint.style.display = 'block';
+    } else {
+        hint.style.display = 'none';
+    }
+}
+
+const weatherData = {
+    munich: { temp: 18, condition: 'Sonnig', icon: '☀️' },
+    berlin: { temp: 15, condition: 'Bewölkt', icon: '☁️' },
+    hamburg: { temp: 12, condition: 'Regnerisch', icon: '🌧️' }
+};
+
+function fetchWeather() {
+    const city = document.getElementById('city-select').value;
+    const requestDisplay = document.getElementById('api-request');
+    const responseDisplay = document.getElementById('api-response');
+    
+    requestDisplay.textContent = `GET https://api.weather.com/v1/current?city=${city}\n\nHeaders:\nAccept: application/json\nAuthorization: Bearer YOUR_API_KEY`;
+    
+    responseDisplay.textContent = 'Lädt...';
+    
+    setTimeout(() => {
+        const data = weatherData[city];
+        const response = {
+            status: 200,
+            data: {
+                city: city,
+                temperature: data.temp,
+                condition: data.condition,
+                icon: data.icon,
+                timestamp: new Date().toISOString()
+            }
+        };
+        
+        responseDisplay.textContent = JSON.stringify(response, null, 2);
+    }, 1000);
+}
+
+function checkAnswer(quizNumber, optionIndex, isCorrect) {
+    const quiz = document.querySelector(`[data-quiz="${quizNumber}"]`);
+    const options = quiz.querySelectorAll('.quiz-option');
+    const feedback = document.getElementById(`quiz-${quizNumber}-feedback`);
+    
+    options.forEach(option => option.disabled = true);
+    
+    options[optionIndex].classList.add(isCorrect ? 'correct' : 'incorrect');
+    
+    if (!isCorrect) {
+        options.forEach((option, index) => {
+            if (option.textContent === getCorrectAnswer(quizNumber)) {
+                option.classList.add('correct');
+            }
+        });
+    }
+    
+    feedback.classList.add('show');
+    if (isCorrect) {
+        feedback.className = 'quiz-feedback show correct';
+        feedback.textContent = '✅ Richtig! Gut gemacht!';
+        quizScores[quizNumber] = true;
+    } else {
+        feedback.className = 'quiz-feedback show incorrect';
+        feedback.textContent = '❌ Leider falsch. Die richtige Antwort ist markiert.';
+        quizScores[quizNumber] = false;
+    }
+    
+    updateProgress();
+    saveProgress();
+}
+
+function getCorrectAnswer(quizNumber) {
+    const correctAnswers = {
+        1: 'GAN',
+        2: 'Stern',
+        3: '443',
+        4: 'Wandelt URLs in IPs um',
+        5: 'Internetschicht',
+        6: '404'
+    };
+    return correctAnswers[quizNumber];
+}
+
+function checkFinalAnswer(questionIndex, optionIndex, isCorrect) {
+    const options = document.querySelectorAll('.quiz-question-block .quiz-option');
+    const feedback = document.getElementById(`final-quiz-${questionIndex}-feedback`);
+    
+    options.forEach(option => option.disabled = true);
+    
+    options[optionIndex].classList.add(isCorrect ? 'correct' : 'incorrect');
+    
+    if (!isCorrect) {
+        const correctIndex = finalQuizQuestions[questionIndex].correct;
+        options[correctIndex].classList.add('correct');
+    }
+    
+    feedback.classList.add('show');
+    if (isCorrect) {
+        feedback.className = 'quiz-feedback show correct';
+        feedback.textContent = '✅ Richtig!';
+        finalQuizAnswers[questionIndex] = true;
+    } else {
+        feedback.className = 'quiz-feedback show incorrect';
+        feedback.textContent = '❌ Leider falsch.';
+        finalQuizAnswers[questionIndex] = false;
+    }
+    
+    setTimeout(() => {
+        currentFinalQuestion++;
+        if (currentFinalQuestion < finalQuizQuestions.length) {
+            showFinalQuestion(currentFinalQuestion);
+        } else {
+            showFinalScore();
+        }
+    }, 2000);
+}
+
+function showFinalQuestion(index) {
+    const content = document.getElementById('final-quiz-content');
+    const question = finalQuizQuestions[index];
+    
+    content.innerHTML = `
+        <div class="quiz-question-block">
+            <p class="question-number">Frage ${index + 1} von ${finalQuizQuestions.length}</p>
+            <p class="quiz-question">${question.question}</p>
+            <div class="quiz-options">
+                ${question.options.map((option, i) => `
+                    <button class="quiz-option" onclick="checkFinalAnswer(${index}, ${i}, ${i === question.correct})">${option}</button>
+                `).join('')}
+            </div>
+            <div class="quiz-feedback" id="final-quiz-${index}-feedback"></div>
+        </div>
+    `;
+}
+
+function showFinalScore() {
+    const content = document.getElementById('final-quiz-content');
+    const score = document.getElementById('final-score');
+    const scoreValue = document.getElementById('score-value');
+    const scoreMessage = document.getElementById('score-message');
+    
+    content.style.display = 'none';
+    score.style.display = 'block';
+    
+    const correctAnswers = finalQuizAnswers.filter(a => a === true).length;
+    scoreValue.textContent = correctAnswers;
+    
+    if (correctAnswers === 5) {
+        scoreMessage.textContent = '🎉 Perfekt! Du hast alle Fragen richtig beantwortet!';
+    } else if (correctAnswers >= 3) {
+        scoreMessage.textContent = '👍 Gut gemacht! Du hast die meisten Fragen richtig beantwortet.';
+    } else {
+        scoreMessage.textContent = '💪 Weiter üben! Schau dir die Module noch einmal an.';
+    }
+}
+
+function restartQuiz() {
+    currentFinalQuestion = 0;
+    finalQuizAnswers = [];
+    
+    const content = document.getElementById('final-quiz-content');
+    const score = document.getElementById('final-score');
+    
+    content.style.display = 'block';
+    score.style.display = 'none';
+    
+    showFinalQuestion(0);
+}
+
+function saveProgress() {
+    const progress = {
+        completedModules: Array.from(completedModules),
+        quizScores: quizScores
+    };
+    localStorage.setItem('netzwerke-progress', JSON.stringify(progress));
+}
+
+function loadProgress() {
+    const saved = localStorage.getItem('netzwerke-progress');
+    if (saved) {
+        const progress = JSON.parse(saved);
+        completedModules = new Set(progress.completedModules);
+        quizScores = progress.quizScores || {};
+        updateProgress();
+    }
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'r' && e.ctrlKey) {
+        e.preventDefault();
+        if (confirm('Möchtest du deinen Fortschritt wirklich zurücksetzen?')) {
+            localStorage.removeItem('netzwerke-progress');
+            location.reload();
+        }
+    }
+});
+
+console.log('🌐 Netzwerke & Internet - Lernplattform geladen!');
+console.log('💡 Tipp: Drücke Strg+R um deinen Fortschritt zurückzusetzen.');
+</script>
+</body>
+</html>
