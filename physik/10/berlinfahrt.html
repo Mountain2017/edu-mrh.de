@@ -1,0 +1,2755 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klassenfahrt nach Berlin - Physik Lernpfad</title>
+    <link rel="stylesheet" href="https://embed.edu-mrh.de/style.css">
+    <link rel="stylesheet" href="https://embed.edu-mrh.de/katex/katex.min.css">
+    <script defer src="https://embed.edu-mrh.de/katex/katex.min.js"></script>
+    <script defer src="https://embed.edu-mrh.de/katex/contrib/auto-render.min.js" onload="renderMath()"></script>
+    <style>
+        /* Zusätzliche Stile für interaktive Elemente */
+        .input-group {
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: var(--gray-lighter);
+            border-radius: 8px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .input-group input[type="number"],
+        .input-group input[type="text"],
+        .input-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .input-group textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .info-box li {
+            color: black;
+        }
+
+        .check-button {
+            margin-top: 1rem;
+        }
+
+        .feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: #d1fae5;
+            border: 2px solid var(--success-color);
+            color: #065f46;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background: #fee2e2;
+            border: 2px solid var(--danger-color);
+            color: #991b1b;
+            display: block;
+        }
+
+        .feedback.info {
+            background: #dbeafe;
+            border: 2px solid var(--primary-color);
+            color: #1e40af;
+            display: block;
+        }
+
+        .diagram-container {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border: 2px solid var(--gray-light);
+        }
+
+        .diagram-canvas {
+            width: 100%;
+            height: 400px;
+            border: 1px solid var(--gray-light);
+            cursor: crosshair;
+        }
+
+        .formula-box {
+            color: black;
+            background: var(--gray-lighter);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .hint-box {
+            background: #fef3c7;
+            border: 2px solid var(--warning-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .hint-box.visible {
+            display: block;
+        }
+
+        .show-hint-btn {
+            background: var(--warning-color);
+            color: var(--white);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .show-hint-btn:hover {
+            background: #d97706;
+        }
+
+        .progress-indicator {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .progress-step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--gray-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--white);
+            transition: var(--transition);
+        }
+
+        .progress-step.completed {
+            background: var(--success-color);
+        }
+
+        .progress-step.current {
+            background: var(--primary-color);
+            transform: scale(1.2);
+        }
+
+        .unit-number {
+            display: inline-block;
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .calculation-steps {
+            color: black;
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .calculation-steps .step {
+            margin: 1rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .calculation-steps .step::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .interactive-map {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+
+        .map-point {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: var(--danger-color);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: bold;
+            box-shadow: var(--shadow);
+        }
+
+        .map-point:hover {
+            transform: scale(1.2);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .comparison-table-container {
+            overflow-x: auto;
+            margin: 2rem 0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .data-table td {
+            color: black;
+        }
+
+        .data-table th {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-lighter);
+        }
+
+        .data-table tr:hover {
+            background: var(--gray-lighter);
+        }
+
+        .timer-display {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-align: center;
+            padding: 1rem;
+            background: var(--gray-lighter);
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .reaction-test {
+            text-align: center;
+            padding: 3rem;
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .reaction-button {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: none;
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .reaction-button.wait {
+            background: var(--danger-color);
+            color: var(--white);
+        }
+
+        .reaction-button.ready {
+            background: var(--success-color);
+            color: var(--white);
+        }
+
+        .reaction-button:hover {
+            transform: scale(1.05);
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            background: var(--dark);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 1.5rem 0;
+        }
+
+        .video-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: var(--white);
+        }
+
+        @media print {
+            .sidebar, .navbar, .mobile-menu-btn {
+                display: none;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="icon">🚂</span>
+                <span>Klassenfahrt Berlin</span>
+            </div>
+            <div class="nav-progress">
+                <div class="progress-bar" id="mainProgress"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Lernpfad</h3>
+            <button class="sidebar-toggle" id="sidebarToggle">✕</button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#start" class="active" data-section="start">🏠 Start</a></li>
+            <li><a href="#kirchheim" data-section="kirchheim">🚉 Kirchheim - S-Bahn</a></li>
+            <li><a href="#zugfahrt" data-section="zugfahrt">🚄 Zugfahrt nach Berlin</a></li>
+            <li><a href="#berlin-strasse" data-section="berlin-strasse">🚦 Straßenverkehr Berlin</a></li>
+            <li><a href="#berlin-routen" data-section="berlin-routen">🗺️ Routenplanung</a></li>
+            <li><a href="#berlin-boot" data-section="berlin-boot">⛵ Bootsrundfahrt</a></li>
+            <li><a href="#reaktionstest" data-section="reaktionstest">⚡ Reaktionstest</a></li>
+            <li><a href="#rueckfahrt" data-section="rueckfahrt">🏁 Rückfahrt</a></li>
+            <li><a href="#zusammenfassung" data-section="zusammenfassung">📊 Zusammenfassung</a></li>
+        </ul>
+    </aside>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            
+            <!-- Start Section -->
+            <section id="start" class="content-section active">
+                <div class="hero">
+                    <h1 class="hero-title">Klassenfahrt nach Berlin</h1>
+                    <p class="hero-subtitle">Ein physikalischer Lernpfad</p>
+                    <p class="hero-description">Begleite uns auf einer spannenden Reise von München nach Berlin und entdecke die Physik der Bewegung!</p>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-icon">🎯</div>
+                        <h3>Lernziele</h3>
+                        <ul>
+                            <li>Zeit-Ort- und Zeit-Geschwindigkeit-Diagramme erstellen und interpretieren</li>
+                            <li>Bewegungsgleichungen aufstellen und anwenden</li>
+                            <li>Beschleunigung und Kräfte berechnen</li>
+                            <li>Verkehrssituationen physikalisch bewerten</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">🛠️</div>
+                        <h3>Methoden</h3>
+                        <ul>
+                            <li>Interaktive Berechnungen</li>
+                            <li>Diagramme zeichnen und analysieren</li>
+                            <li>Praktische Experimente</li>
+                            <li>Situationen bewerten und diskutieren</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">📚</div>
+                        <h3>Themen</h3>
+                        <ul>
+                            <li>Gleichförmige und beschleunigte Bewegung</li>
+                            <li>Reaktionszeit und Bremsweg</li>
+                            <li>Wechselwirkungsgesetz</li>
+                            <li>Durchschnitts- und Momentangeschwindigkeit</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📍 Unsere Route</h3>
+                    <div class="example-content">
+                        <p><strong>Start:</strong> Kirchheim bei München</p>
+                        <p><strong>Zwischenstopp:</strong> München Hauptbahnhof</p>
+                        <p><strong>Ziel:</strong> Berlin Hauptbahnhof</p>
+                        <p><strong>Aufenthalt:</strong> Verschiedene Stationen in Berlin</p>
+                        <p><strong>Rückfahrt:</strong> Berlin → München</p>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>🎒 Vorbereitung</h4>
+                    <p>Bevor wir starten, stelle sicher, dass du folgende Grundlagen beherrschst:</p>
+                    <ul>
+                        <li>Umrechnung von Einheiten (m/s ↔ km/h)</li>
+                        <li>Grundlegende Bewegungsgleichungen: $ s = v \cdot t $</li>
+                        <li>Beschleunigung: $ a = \frac{\Delta v}{\Delta t} $</li>
+                        <li>Zweites Newtonsches Gesetz: $ F = m \cdot a $</li>
+                    </ul>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-primary" onclick="navigateToSection('kirchheim')">Los geht's! 🚀</button>
+                </div>
+            </section>
+
+            <!-- Kirchheim Section -->
+            <section id="kirchheim" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Station 1</span>
+                    <h2>🚉 S-Bahn von Kirchheim nach München Hbf</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>Situation</h3>
+                    <div class="example-content">
+                        <p>Unsere Klasse 10b trifft sich am Bahnhof in Kirchheim. Die S-Bahn nach München Hauptbahnhof fährt um 7:30 Uhr ab. Die S-Bahn beschleunigt beim Anfahren gleichmäßig aus dem Stand.</p>
+                        <p><strong>Gegebene Daten:</strong></p>
+                        <ul>
+                            <li>Anfangsgeschwindigkeit: $ v_0 = 0 \, \text{m/s} $ (steht am Bahnhof)</li>
+                            <li>Endgeschwindigkeit: $ v = 25 \, \text{m/s} $</li>
+                            <li>Beschleunigungszeit: $ t = 20 \, \text{s} $</li>
+                            <li>Masse der S-Bahn: $ m = 120.000 \, \text{kg} $</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Aufgabe 1.1: Beschleunigung berechnen -->
+                <div class="task-box">
+                    <span class="unit-number">Aufgabe 1.1</span>
+                    <h4>Beschleunigung der S-Bahn berechnen</h4>
+                    <p>Berechne die Beschleunigung der S-Bahn während des Anfahrvorgangs.</p>
+                    
+                    <div class="formula-box">
+                        <strong>Formel für gleichmäßige Beschleunigung:</strong>
+                        
+                        $$ a = \frac{v - v_0}{t} = \frac{\Delta v}{\Delta t} $$
+                    </div>
+
+                    <div class="input-group">
+                        <label for="sbahn-beschleunigung">Deine Berechnung (in m/s²):</label>
+                        <input type="number" id="sbahn-beschleunigung" step="0.01" placeholder="z.B. 1.25">
+                        <button class="btn btn-primary check-button" onclick="checkSBahnBeschleunigung()">Überprüfen</button>
+                        <div id="feedback-sbahn-a" class="feedback"></div>
+                    </div>
+
+                    <button class="show-hint-btn" onclick="toggleHint('hint-1-1')">💡 Tipp anzeigen</button>
+                    <div id="hint-1-1" class="hint-box">
+                        <strong>Tipp:</strong> Setze die gegebenen Werte in die Formel ein:
+                        
+                        $$ a = \frac{25 \, \text{m/s} - 0 \, \text{m/s}}{20 \, \text{s}} $$
+                    </div>
+                </div>
+
+                <!-- Aufgabe 1.2: Umrechnung m/s in km/h -->
+                <div class="task-box">
+                    <span class="unit-number">Aufgabe 1.2</span>
+                    <h4>Geschwindigkeit umrechnen</h4>
+                    <p>Rechne die Endgeschwindigkeit von 25 m/s in km/h um.</p>
+                    
+                    <div class="formula-box">
+                        <strong>Umrechnungsformel:</strong>
+                        
+                        $$ v_{\text{km/h}} = v_{\text{m/s}} \cdot 3{,}6 $$
+                        
+                        <p class="mt-2"><em>Begründung:</em> $ 1 \, \text{m/s} = \frac{1 \, \text{m}}{1 \, \text{s}} = \frac{0{,}001 \, \text{km}}{1/3600 \, \text{h}} = 3{,}6 \, \text{km/h} $</p>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="sbahn-kmh">Geschwindigkeit in km/h:</label>
+                        <input type="number" id="sbahn-kmh" step="0.1" placeholder="z.B. 90">
+                        <button class="btn btn-primary check-button" onclick="checkSBahnKmh()">Überprüfen</button>
+                        <div id="feedback-sbahn-kmh" class="feedback"></div>
+                    </div>
+                </div>
+
+                <!-- Aufgabe 1.3: Beschleunigende Kraft -->
+                <div class="task-box">
+                    <span class="unit-number">Aufgabe 1.3</span>
+                    <h4>Beschleunigende Kraft berechnen</h4>
+                    <p>Berechne die Kraft, die benötigt wird, um die S-Bahn mit der berechneten Beschleunigung zu beschleunigen.</p>
+                    
+                    <div class="formula-box">
+                        <strong>2. Newtonsches Gesetz:</strong>
+                        
+                        $$ F = m \cdot a $$
+                        
+                        <p class="mt-2">Wobei:</p>
+                        <ul>
+                            <li>$ F $ = Kraft in Newton (N)</li>
+                            <li>$ m $ = Masse in Kilogramm (kg)</li>
+                            <li>$ a $ = Beschleunigung in m/s²</li>
+                        </ul>
+                    </div>
+
+                    <div class="calculation-steps">
+                        <h4>Lösungsweg:</h4>
+                        <div class="step">Verwende deine berechnete Beschleunigung aus Aufgabe 1.1</div>
+                        <div class="step">Setze die Masse $ m = 120.000 \, \text{kg} $ ein</div>
+                        <div class="step">Berechne $ F = m \cdot a $</div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="sbahn-kraft">Beschleunigende Kraft in Newton (N):</label>
+                        <input type="number" id="sbahn-kraft" step="1" placeholder="z.B. 150000">
+                        <button class="btn btn-primary check-button" onclick="checkSBahnKraft()">Überprüfen</button>
+                        <div id="feedback-sbahn-kraft" class="feedback"></div>
+                    </div>
+
+                    <button class="show-hint-btn" onclick="toggleHint('hint-1-3')">💡 Tipp anzeigen</button>
+                    <div id="hint-1-3" class="hint-box">
+                        <strong>Tipp:</strong> Wenn du $ a = 1{,}25 \, \text{m/s}^2 $ berechnet hast, dann ist:
+                        
+                        $$ F = 120.000 \, \text{kg} \cdot 1{,}25 \, \text{m/s}^2 $$
+                    </div>
+                </div>
+
+                <!-- Aufgabe 1.4: Trägheitsgesetz -->
+                <div class="concept-box">
+                    <span class="unit-number">Aufgabe 1.4</span>
+                    <h3>Warum muss man sich beim Anfahren festhalten?</h3>
+                    
+                    <div class="definition">
+                        <p><strong>Trägheitsgesetz (1. Newtonsches Gesetz):</strong></p>
+                        <p>Ein Körper verharrt im Zustand der Ruhe oder der gleichförmigen geradlinigen Bewegung, solange keine resultierende Kraft auf ihn wirkt.</p>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="traegheit-erklaerung">Erkläre mit eigenen Worten, warum Fahrgäste sich beim Anfahren der S-Bahn festhalten müssen:</label>
+                        <textarea id="traegheit-erklaerung" placeholder="Deine Erklärung hier..."></textarea>
+                        <button class="btn btn-primary check-button" onclick="checkTraegheitErklaerung()">Erklärung prüfen</button>
+                        <div id="feedback-traegheit" class="feedback"></div>
+                    </div>
+
+                    <button class="show-hint-btn" onclick="toggleHint('hint-1-4')">💡 Musterlösung anzeigen</button>
+                    <div id="hint-1-4" class="hint-box">
+                        <strong>Musterlösung:</strong>
+                        <p>Beim Anfahren der S-Bahn wird die Bahn durch die Motorkraft beschleunigt. Die Fahrgäste befinden sich zunächst in Ruhe und möchten aufgrund ihrer Trägheit in diesem Zustand verharren. Die S-Bahn bewegt sich unter ihnen weg, während die Fahrgäste "zurückbleiben" möchten. Nur durch Festhalten (Kraftausübung durch die Hände) können die Fahrgäste mit der S-Bahn beschleunigt werden. Ohne Festhalten würden sie nach hinten fallen.</p>
+                    </div>
+                </div>
+
+                <div class="solution-box">
+                    <h4>✅ Lösungen zu Station 1</h4>
+                    <ul>
+                        <li><strong>Aufgabe 1.1:</strong> $ a = \frac{25 \, \text{m/s}}{20 \, \text{s}} = 1{,}25 \, \text{m/s}^2 $</li>
+                        <li><strong>Aufgabe 1.2:</strong> $ v = 25 \, \text{m/s} \cdot 3{,}6 = 90 \, \text{km/h} $</li>
+                        <li><strong>Aufgabe 1.3:</strong> $ F = 120.000 \, \text{kg} \cdot 1{,}25 \, \text{m/s}^2 = 150.000 \, \text{N} = 150 \, \text{kN} $</li>
+                        <li><strong>Aufgabe 1.4:</strong> Siehe Musterlösung im Tipp</li>
+                    </ul>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('start')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('zugfahrt')">Weiter zur Zugfahrt →</button>
+                </div>
+            </section>
+
+            <!-- Zugfahrt Section -->
+            <section id="zugfahrt" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Station 2</span>
+                    <h2>🚄 Zugfahrt München → Berlin</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>Situation</h3>
+                    <div class="example-content">
+                        <p>Nach dem Umsteigen am Münchner Hauptbahnhof fahren wir mit dem ICE nach Berlin. Der Zug fährt auf langen Streckenabschnitten mit konstanter Geschwindigkeit.</p>
+                        <p><strong>Gegebene Daten:</strong></p>
+                        <ul>
+                            <li>Abfahrt München Hbf: 8:00 Uhr</li>
+                            <li>Strecke München - Berlin: ca. 600 km</li>
+                            <li>Durchschnittsgeschwindigkeit: 150 km/h</li>
+                            <li>Konstante Geschwindigkeit auf Hauptstrecke: 200 km/h</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Aufgabe 2.1: Ankunftszeit -->
+                <div class="task-box">
+                    <span class="unit-number">Aufgabe 2.1</span>
+                    <h4>Ankunftszeit in Berlin berechnen</h4>
+                    <p>Berechne die voraussichtliche Ankunftszeit in Berlin, wenn der Zug mit einer Durchschnittsgeschwindigkeit von 150 km/h fährt.</p>
+                    
+                    <div class="formula-box">
+                        <strong>Formel für gleichförmige Bewegung:</strong>
+                        
+                        $$ t = \frac{s}{v} $$
+                        
+                        <p class="mt-2">Umgestellt aus: $ s = v \cdot t $</p>
+                    </div>
+
+                    <div class="calculation-steps">
+                        <h4>Lösungsweg:</h4>
+                        <div class="step">Berechne die Fahrzeit: $ t = \frac{600 \, \text{km}}{150 \, \text{km/h}} $</div>
+                        <div class="step">Addiere die Fahrzeit zur Abfahrtszeit: 8:00 Uhr + Fahrzeit</div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="fahrzeit">Fahrzeit in Stunden:</label>
+                        <input type="number" id="fahrzeit" step="0.1" placeholder="z.B. 4.0">
+                        <button class="btn btn-primary check-button" onclick="checkFahrzeit()">Überprüfen</button>
+                        <div id="feedback-fahrzeit" class="feedback"></div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="ankunftszeit">Ankunftszeit (Format: HH:MM):</label>
+                        <input type="text" id="ankunftszeit" placeholder="z.B. 12:00">
+                        <button class="btn btn-primary check-button" onclick="checkAnkunftszeit()">Überprüfen</button>
+                        <div id="feedback-ankunftszeit" class="feedback"></div>
+                    </div>
+                </div>
+
+                <!-- Aufgabe 2.2: Bewegungsgleichung -->
+                <div class="task-box">
+                    <span class="unit-number">Aufgabe 2.2</span>
+                    <h4>Bewegungsgleichung aufstellen</h4>
+                    <p>Stelle die Bewegungsgleichung für die Fahrt auf, wenn der Zug mit konstanter Geschwindigkeit von 200 km/h fährt. Wähle als Startpunkt (s = 0) den Münchner Hauptbahnhof und als Zeitpunkt t = 0 die Abfahrt um 8:00 Uhr.</p>
+                    
+                    <div class="formula-box">
+                        <strong>Bewegungsgleichung für gleichförmige Bewegung:</strong>
+                        
+                        $$ s(t) = s_0 + v \cdot t $$
+                        
+                        <p class="mt-2">Mit $ s_0 = 0 $ (Start am Münchner Hbf):</p>
+                        
+                        $$ s(t) = v \cdot t $$
+                    </div>
+
+                    <div class="input-group">
+                        <label>Welche Bewegungsgleichung beschreibt die Fahrt?</label>
+                        <div style="margin: 1rem 0;">
+                            <label style="display: block; margin: 0.5rem 0;">
+                                <input type="radio" name="bewegungsgleichung" value="1"> 
+                                $ s(t) = 200 \cdot t $ (mit s in km, t in h)
+                            </label>
+                            <label style="display: block; margin: 0.5rem 0;">
+                                <input type="radio" name="bewegungsgleichung" value="2"> 
+                                $ s(t) = 55{,}56 \cdot t $ (mit s in m, t in s)
+                            </label>
+                            <label style="display: block; margin: 0.5rem 0;">
+                                <input type="radio" name="bewegungsgleichung" value="3"> 
+                                Beide Gleichungen sind korrekt, nur mit unterschiedlichen Einheiten
+                            </label>
+                        </div>
+                        <button class="btn btn-primary check-button" onclick="checkBewegungsgleichung()">Überprüfen</button>
+                        <div id="feedback-bewegungsgleichung" class="feedback"></div>
+                    </div>
+
+                    <button class="show-hint-btn" onclick="toggleHint('hint-2-2')">💡 Tipp anzeigen</button>
+                    <div id="hint-2-2" class="hint-box">
+                        <strong>Tipp:</strong> 
+                        <p>Beachte: 200 km/h müssen in m/s umgerechnet werden:</p>
+                        
+                        $$ 200 \, \text{km/h} = \frac{200}{3{,}6} \, \text{m/s} \approx 55{,}56 \, \text{m/s} $$
+                    </div>
+                </div>
+
+                <!-- Aufgabe 2.3: Position bei Leipzig -->
+                <div class="task-box">
+                    <span class="unit-number">Aufgabe 2.3</span>
+                    <h4>Wann sind wir auf Höhe Leipzig?</h4>
+                    <p>Leipzig liegt etwa 350 km von München entfernt auf der Strecke nach Berlin. Berechne, um wie viel Uhr der Zug Leipzig passiert, wenn er mit konstant 200 km/h fährt.</p>
+                    
+                    <div class="calculation-steps">
+                        <h4>Lösungsweg:</h4>
+                        <div class="step">Verwende die Bewegungsgleichung: $ s = v \cdot t $</div>
+                        <div class="step">Stelle nach t um: $ t = \frac{s}{v} $</div>
+                        <div class="step">Setze ein: $ t = \frac{350 \, \text{km}}{200 \, \text{km/h}} $</div>
+                        <div class="step">Addiere zur Abfahrtszeit: 8:00 Uhr + berechnete Zeit</div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="leipzig-zeit">Zeit bis Leipzig (in Stunden):</label>
+                        <input type="number" id="leipzig-zeit" step="0.01" placeholder="z.B. 1.75">
+                        <button class="btn btn-primary check-button" onclick="checkLeipzigZeit()">Überprüfen</button>
+                        <div id="feedback-leipzig-zeit" class="feedback"></div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="leipzig-uhrzeit">Uhrzeit bei Leipzig (Format: HH:MM):</label>
+                        <input type="text" id="leipzig-uhrzeit" placeholder="z.B. 09:45">
+                        <button class="btn btn-primary check-button" onclick="checkLeipzigUhrzeit()">Überprüfen</button>
+                        <div id="feedback-leipzig-uhrzeit" class="feedback"></div>
+                    </div>
+                </div>
+
+                <!-- Aufgabe 2.4: Verschiedene Geschwindigkeiten -->
+                <div class="task-box">
+                    <span class="unit-number">Aufgabe 2.4</span>
+                    <h4>Durchschnitts- vs. Momentangeschwindigkeit</h4>
+                    <p>Der Zug fährt auf verschiedenen Abschnitten mit unterschiedlichen Geschwindigkeiten:</p>
+                    
+                    <div class="comparison-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Abschnitt</th>
+                                    <th>Strecke (km)</th>
+                                    <th>Geschwindigkeit (km/h)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>München - Ingolstadt</td>
+                                    <td>80</td>
+                                    <td>120</td>
+                                </tr>
+                                <tr>
+                                    <td>Ingolstadt - Nürnberg</td>
+                                    <td>90</td>
+                                    <td>200</td>
+                                </tr>
+                                <tr>
+                                    <td>Nürnberg - Erfurt</td>
+                                    <td>180</td>
+                                    <td>250</td>
+                                </tr>
+                                <tr>
+                                    <td>Erfurt - Berlin</td>
+                                    <td>250</td>
+                                    <td>200</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p><strong>Aufgabe:</strong> Berechne die Gesamtfahrzeit und die Durchschnittsgeschwindigkeit.</p>
+
+                    <div class="formula-box">
+                        <strong>Formeln:</strong>
+                        
+                        $$ t_{\text{gesamt}} = t_1 + t_2 + t_3 + t_4 $$
+                        
+                        $$ v_{\text{Durchschnitt}} = \frac{s_{\text{gesamt}}}{t_{\text{gesamt}}} $$
+                    </div>
+
+                    <div class="input-group">
+                        <label for="gesamtzeit">Gesamtfahrzeit in Stunden (auf 2 Dezimalstellen):</label>
+                        <input type="number" id="gesamtzeit" step="0.01" placeholder="z.B. 3.45">
+                        <button class="btn btn-primary check-button" onclick="checkGesamtzeit()">Überprüfen</button>
+                        <div id="feedback-gesamtzeit" class="feedback"></div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="durchschnitt-v">Durchschnittsgeschwindigkeit in km/h (auf 1 Dezimalstelle):</label>
+                        <input type="number" id="durchschnitt-v" step="0.1" placeholder="z.B. 175.5">
+                        <button class="btn btn-primary check-button" onclick="checkDurchschnittV()">Überprüfen</button>
+                        <div id="feedback-durchschnitt-v" class="feedback"></div>
+                    </div>
+
+                    <button class="show-hint-btn" onclick="toggleHint('hint-2-4')">💡 Tipp anzeigen</button>
+                    <div id="hint-2-4" class="hint-box">
+                        <strong>Tipp:</strong>
+                        <p>Berechne für jeden Abschnitt die Zeit mit $ t = \frac{s}{v} $:</p>
+                        <ul>
+                            <li>$ t_1 = \frac{80}{120} $ h</li>
+                            <li>$ t_2 = \frac{90}{200} $ h</li>
+                            <li>$ t_3 = \frac{180}{250} $ h</li>
+                            <li>$ t_4 = \frac{250}{200} $ h</li>
+                        </ul>
+                        <p>Gesamtstrecke: $ s_{\text{gesamt}} = 80 + 90 + 180 + 250 = 600 $ km</p>
+                    </div>
+                </div>
+
+                <!-- Aufgabe 2.5: Unfallszenario -->
+                <div class="example-box warning">
+                    <span class="unit-number">Aufgabe 2.5</span>
+                    <h3>⚠️ Gefahrensituation: Zwei Züge auf gleichem Gleis</h3>
+                    <div class="example-content">
+                        <p><strong>Szenario:</strong> Aufgrund einer Verspätung befinden sich zwei ICE-Züge auf demselben Gleis:</p>
+                        <ul>
+                            <li><strong>Zug A (unser Zug):</strong> Fährt mit $ v_A = 200 \, \text{km/h} = 55{,}56 \, \text{m/s} $ in Richtung Berlin</li>
+                            <li><strong>Zug B:</strong> Steht 5 km = 5000 m vor uns auf dem Gleis (Panne)</li>
+                            <li><strong>Bremsweg:</strong> Zug A kann maximal mit $ a = -0{,}5 \, \text{m/s}^2 $ bremsen</li>
+                        </ul>
+                        <p><strong>Frage:</strong> Kommt es zu einem Unfall? Wie viel Zeit hat die Leitstelle, um Zug A auf ein anderes Gleis umzuleiten?</p>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>Berechnung des Bremswegs</h4>
+                    
+                    <div class="formula-box">
+                        <strong>Formeln für gleichmäßig verzögerte Bewegung:</strong>
+                        
+                        $$ v^2 = v_0^2 + 2 \cdot a \cdot s $$
+                        
+                        <p class="mt-2">Umgestellt nach dem Bremsweg s:</p>
+                        
+                        $$ s = \frac{v^2 - v_0^2}{2 \cdot a} $$
+                        
+                        <p class="mt-2">Mit $ v = 0 $ (Zug steht nach dem Bremsen):</p>
+                        
+                        $$ s_{\text{Brems}} = \frac{-v_0^2}{2 \cdot a} = \frac{v_0^2}{2 \cdot |a|} $$
+                    </div>
+
+                    <div class="input-group">
+                        <label for="bremsweg-zug">Bremsweg in Metern:</label>
+                        <input type="number" id="bremsweg-zug" step="0.1" placeholder="z.B. 3086.4">
+                        <button class="btn btn-primary check-button" onclick="checkBremswegZug()">Überprüfen</button>
+                        <div id="feedback-bremsweg-zug" class="feedback"></div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Kommt es zu einem Unfall?</label>
+                        <div style="margin: 1rem 0;">
+                            <label style="display: block; margin: 0.5rem 0;">
+                                <input type="radio" name="unfall" value="ja"> 
+                                Ja, der Bremsweg ist länger als 5000 m
+                            </label>
+                            <label style="display: block; margin: 0.5rem 0;">
+                                <input type="radio" name="unfall" value="nein"> 
+                                Nein, der Bremsweg ist kürzer als 5000 m
+                            </label>
+                        </div>
+                        <button class="btn btn-primary check-button" onclick="checkUnfall()">Überprüfen</button>
+                        <div id="feedback-unfall" class="feedback"></div>
+                    </div>
+
+                    <h4 class="mt-4">Zeit bis zur Umleitung</h4>
+                    <p>Falls eine Umleitung notwendig ist: Wie viel Zeit hat die Leitstelle, um den Zug auf ein anderes Gleis umzuleiten?</p>
+                    
+                    <div class="formula-box">
+                        <strong>Formel für die Zeit:</strong>
+                        
+                        $$ t = \frac{s}{v} $$
+                        
+                        <p class="mt-2">Mit s = Abstand zum stehenden Zug = 5000 m</p>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="zeit-umleitung">Zeit bis zur Kollision in Sekunden:</label>
+                        <input type="number" id="zeit-umleitung" step="0.1" placeholder="z.B. 90.0">
+                        <button class="btn btn-primary check-button" onclick="checkZeitUmleitung()">Überprüfen</button>
+                        <div id="feedback-zeit-umleitung" class="feedback"></div>
+                    </div>
+                </div>
+
+                <div class="solution-box">
+                    <h4>✅ Lösungen zu Station 2</h4>
+                    <ul>
+                        <li><strong>Aufgabe 2.1:</strong> $ t = 4 $ h, Ankunft: 12:00 Uhr</li>
+                        <li><strong>Aufgabe 2.2:</strong> Beide Gleichungen sind korrekt (Option 3)</li>
+                        <li><strong>Aufgabe 2.3:</strong> $ t = 1{,}75 $ h = 1 h 45 min, Uhrzeit: 9:45 Uhr</li>
+                        <li><strong>Aufgabe 2.4:</strong> $ t_{\text{gesamt}} = 3{,}39 $ h, $ v_{\text{Durchschnitt}} = 177{,}0 $ km/h</li>
+                        <li><strong>Aufgabe 2.5:</strong> Bremsweg = 3086,4 m < 5000 m → Kein Unfall; Zeit = 90 s</li>
+                    </ul>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('kirchheim')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('berlin-strasse')">Weiter nach Berlin →</button>
+                </div>
+            </section>
+
+            <!-- Berlin Straße Section -->
+            <section id="berlin-strasse" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Station 3</span>
+                    <h2>🚦 Straßenverkehr in Berlin</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>Situation: Straßenüberquerung</h3>
+                    <div class="example-content">
+                        <p>Zwei Freundinnen aus unserer Klasse stehen mit ihren Rädern mitten auf einem geraden Radweg und verabschieden sich. Ein Rennradfahrer, der konstant mit 10 m/s in der Tempo-30-Zone unterwegs ist, bemerkt die Freundinnen, kann ihnen nicht ausweichen und beginnt daher 12 Meter vor den Freundinnen gleichmäßig mit maximal $ a = -5 \, \text{m/s}^2 $ zu bremsen.</p>
+                        <p><strong>Gegebene Daten:</strong></p>
+                        <ul>
+                            <li>Geschwindigkeit Radfahrer: $ v_0 = 10 \, \text{m/s} $</li>
+                            <li>Abstand zu den Freundinnen: $ s = 12 \, \text{m} $</li>
+                            <li>Maximale Bremsverzögerung: $ a = -5 \, \text{m/s}^2 $</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Aufgabe 3.1: Bremsweg berechnen -->
+                <div class="task-box">
+                    <span class="unit-number">Aufgabe 3.1</span>
+                    <h4>Bremsweg des Radfahrers</h4>
+                    <p>Berechne den Bremsweg des Radfahrers. Reicht der Abstand von 12 m aus, um rechtzeitig zum Stehen zu kommen?</p>
+                    
+                    <div class="formula-box">
+                        <strong>Bremsweg-Formel:</strong>
+                        
+                        $$ s_{\text{Brems}} = \frac{v_0^2}{2 \cdot |a|} $$
+                        
+                        <p class="mt-2">Alternative Herleitung aus:</p>
+                        
+                        $$ v^2 = v_0^2 + 2 \cdot a \cdot s $$
+                        
+                        <p>Mit $ v = 0 $ (Endgeschwindigkeit nach dem Bremsen)</p>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="bremsweg-rad">Bremsweg in Metern:</label>
+                        <input type="number" id="bremsweg-rad" step="0.1" placeholder="z.B. 10.0">
+                        <button class="btn btn-primary check-button" onclick="checkBremswegRad()">Überprüfen</button>
+                        <div id="feedback-bremsweg-rad" class="feedback"></div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Kommt es zu einem Zusammenstoß?</label>
+                        <div style="margin: 1rem 0;">
+                            <label style="display: block; margin: 0.5rem 0;">
+                                <input type="radio" name="zusammenstoss" value="ja"> 
+                                Ja, der Bremsweg ist länger als 12 m
+                            </label>
+                            <label style="display: block; margin: 0.5rem 0;">
+                                <input type="radio" name="zusammenstoss" value="nein"> 
+                                Nein, der Bremsweg ist kürzer als 12 m
+                            </label>
+                        </div>
+                        <button class="btn btn-primary check-button" onclick="checkZusammenstoss()">Überprüfen</button>
+                        <div id="feedback-zusammenstoss" class="feedback"></div>
+                    </div>
+
+                    <button class="show-hint-btn" onclick="toggleHint('hint-3-1')">💡 Tipp anzeigen</button>
+                    <div id="hint-3-1" class="hint-box">
+                        <strong>Tipp:</strong>
+                        <p>Setze die Werte ein:</p>
+                        
+                        $$ s_{\text{Brems}} = \frac{(10 \, \text{m/s})^2}{2 \cdot 5 \, \text{m/s}^2} = \frac{100 \, \text{m}^2/\text{s}^2}{10 \, \text{m/s}^2} $$
+                    </div>
+                </div>
+
+                <!-- Aufgabe 3.2: Bremszeit -->
+                <div class="task-box">
+                    <span class="unit-number">Aufgabe 3.2</span>
+                    <h4>Bremszeit berechnen</h4>
+                    <p>Wie lange dauert der Bremsvorgang?</p>
+                    
+                    <div class="formula-box">
+                        <strong>Formel für die Bremszeit:</strong>
+                        
+                        $$ t = \frac{v - v_0}{a} = \frac{\Delta v}{a} $$
+                        
+                        <p class="mt-2">Mit $ v = 0 $ (Endgeschwindigkeit):</p>
+                        
+                        $$ t = \frac{-v_0}{a} = \frac{v_0}{|a|} $$
+                    </div>
+
+                    <div class="input-group">
+                        <label for="bremszeit-rad">Bremszeit in Sekunden:</label>
+                        <input type="number" id="bremszeit-rad" step="0.1" placeholder="z.B. 2.0">
+                        <button class="btn btn-primary check-button" onclick="checkBremszeitRad()">Überprüfen</button>
+                        <div id="feedback-bremszeit-rad" class="feedback"></div>
+                    </div>
+                </div>
+
+                <!-- Aufgabe 3.3: t-v-Diagramm -->
+                <div class="task-box">
+                    <span class="unit-number">Aufgabe 3.3</span>
+                    <h4>Zeit-Geschwindigkeit-Diagramm zeichnen</h4>
+                    <p>Zeichne ein t-v-Diagramm für den Bremsvorgang des Radfahrers.</p>
+                    
+                    <div class="diagram-container">
+                        <canvas id="canvas-tv-rad" class="diagram-canvas" width="800" height="400"></canvas>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn btn-secondary" onclick="clearCanvas('canvas-tv-rad')">Löschen</button>
+                            <button class="btn btn-primary" onclick="showSolutionDiagram('canvas-tv-rad', 'tv-rad')">Lösung anzeigen</button>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <h3>💡 Hinweise zum Zeichnen:</h3>
+                        <ul>
+                            <li>Die x-Achse zeigt die Zeit t in Sekunden (0 bis 3 s)</li>
+                            <li>Die y-Achse zeigt die Geschwindigkeit v in m/s (0 bis 12 m/s)</li>
+                            <li>Klicke in das Diagramm, um Punkte zu setzen</li>
+                            <li>Bei gleichmäßiger Verzögerung ist das t-v-Diagramm eine Gerade</li>
+                            <li>Startpunkt: (0 s, 10 m/s)</li>
+                            <li>Endpunkt: (2 s, 0 m/s)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Aufgabe 3.4: Reaktionszeit -->
+                <div class="concept-box">
+                    <span class="unit-number">Aufgabe 3.4</span>
+                    <h3>Reaktionszeit im Straßenverkehr</h3>
+                    
+                    <div class="definition">
+                        <p><strong>Reaktionszeit:</strong></p>
+                        <p>Die Reaktionszeit ist die Zeit zwischen dem Erkennen einer Gefahr und dem Beginn der Reaktion (z.B. Bremsen). Sie beträgt bei aufmerksamen Verkehrsteilnehmern etwa 0,8 - 1,0 Sekunden.</p>
+                    </div>
+
+                    <p>In der Realität würde der Radfahrer nicht sofort bremsen, sondern erst nach seiner Reaktionszeit. Berechne den zusätzlichen Weg, den der Radfahrer während der Reaktionszeit zurücklegt.</p>
+
+                    <div class="formula-box">
+                        <strong>Reaktionsweg:</strong>
+                        
+                        $$ s_{\text{Reaktion}} = v_0 \cdot t_{\text{Reaktion}} $$
+                        
+                        <p class="mt-2">Gesamter Anhalteweg:</p>
+                        
+                        $$ s_{\text{Anhalt}} = s_{\text{Reaktion}} + s_{\text{Brems}} $$
+                    </div>
+
+                    <div class="input-group">
+                        <label for="reaktionsweg">Reaktionsweg bei $ t_{\text{Reaktion}} = 1{,}0 $ s (in Metern):</label>
+                        <input type="number" id="reaktionsweg" step="0.1" placeholder="z.B. 10.0">
+                        <button class="btn btn-primary check-button" onclick="checkReaktionsweg()">Überprüfen</button>
+                        <div id="feedback-reaktionsweg" class="feedback"></div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="anhalteweg">Gesamter Anhalteweg (in Metern):</label>
+                        <input type="number" id="anhalteweg" step="0.1" placeholder="z.B. 20.0">
+                        <button class="btn btn-primary check-button" onclick="checkAnhalteweg()">Überprüfen</button>
+                        <div id="feedback-anhalteweg" class="feedback"></div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Bewertung der Situation mit Reaktionszeit:</label>
+                        <div style="margin: 1rem 0;">
+                            <label style="display: block; margin: 0.5rem 0;">
+                                <input type="radio" name="bewertung-reaktion" value="1"> 
+                                Kein Unfall, Anhalteweg < 12 m
+                            </label>
+                            <label style="display: block; margin: 0.5rem 0;">
+                                <input type="radio" name="bewertung-reaktion" value="2"> 
+                                Unfall, Anhalteweg > 12 m
+                            </label>
+                            <label style="display: block; margin: 0.5rem 0;">
+                                <input type="radio" name="bewertung-reaktion" value="3"> 
+                                Grenzfall, Anhalteweg ≈ 12 m
+                            </label>
+                        </div>
+                        <button class="btn btn-primary check-button" onclick="checkBewertungReaktion()">Überprüfen</button>
+                        <div id="feedback-bewertung-reaktion" class="feedback"></div>
+                    </div>
+                </div>
+
+                <div class="solution-box">
+                    <h4>✅ Lösungen zu Station 3</h4>
+                    <ul>
+                        <li><strong>Aufgabe 3.1:</strong> $ s_{\text{Brems}} = 10 $ m → Kein Zusammenstoß (knapp!)</li>
+                        <li><strong>Aufgabe 3.2:</strong> $ t = 2{,}0 $ s</li>
+                        <li><strong>Aufgabe 3.3:</strong> Lineare Abnahme von (0 s, 10 m/s) nach (2 s, 0 m/s)</li>
+                        <li><strong>Aufgabe 3.4:</strong> $ s_{\text{Reaktion}} = 10 $ m, $ s_{\text{Anhalt}} = 20 $ m → Unfall!</li>
+                    </ul>
+                    <div class="highlight">
+                        <strong>Wichtige Erkenntnis:</strong> Die Reaktionszeit ist entscheidend! Ohne Reaktionszeit wäre kein Unfall passiert, mit Reaktionszeit kommt es zum Zusammenstoß. Dies zeigt die Bedeutung von Aufmerksamkeit im Straßenverkehr.
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('zugfahrt')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('berlin-routen')">Weiter zur Routenplanung →</button>
+                </div>
+            </section>
+
+            <!-- Berlin Routen Section -->
+            <section id="berlin-routen" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Station 4</span>
+                    <h2>🗺️ Routenplanung in Berlin</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>Situation: Vom Hotel zum Brandenburger Tor</h3>
+                    <div class="example-content">
+                        <p>Unsere Klasse möchte vom Hotel zum Brandenburger Tor gelangen. Es gibt drei verschiedene Möglichkeiten:</p>
+                        <ul>
+                            <li><strong>Route A:</strong> Zu Fuß (3 km)</li>
+                            <li><strong>Route B:</strong> Mit dem Bus (5 km, inkl. Umwege)</li>
+                            <li><strong>Route C:</strong> Mit der U-Bahn (4 km, inkl. Fußweg zu/von Station)</li>
+                        </ul>
+                        <p>Wir müssen um 14:00 Uhr am Brandenburger Tor sein. Es ist jetzt 13:00 Uhr.</p>
+                    </div>
+                </div>
+
+                <!-- Aufgabe 4.1: Route A - Zu Fuß -->
+                <div class="task-box">
+                    <span class="unit-number">Aufgabe 4.1</span>
+                    <h4>Route A: Zu Fuß</h4>
+                    <p><strong>Bewegungsprofil:</strong></p>
+                    <ul>
+                        <li>0 - 5 min: Beschleunigung auf 5 km/h (Gruppe sammelt sich)</li>
+                        <li>5 - 40 min: Konstant 5 km/h</li>
+                        <li>40 - 45 min: Verzögerung auf 0 km/h (Ankunft)</li>
+                    </ul>
+
+                    <p>Erstelle ein t-v-Diagramm für Route A und berechne die Gesamtzeit.</p>
+
+                    <div class="diagram-container">
+                        <canvas id="canvas-route-a" class="diagram-canvas" width="800" height="400"></canvas>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn btn-secondary" onclick="clearCanvas('canvas-route-a')">Löschen</button>
+                            <button class="btn btn-primary" onclick="showSolutionDiagram('canvas-route-a', 'route-a')">Lösung anzeigen</button>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="zeit-route-a">Gesamtzeit Route A (in Minuten):</label>
+                        <input type="number" id="zeit-route-a" step="1" placeholder="z.B. 45">
+                        <button class="btn btn-primary check-button" onclick="checkZeitRouteA()">Überprüfen</button>
+                        <div id="feedback-zeit-route-a" class="feedback"></div>
+                    </div>
+
+                    <button class="show-hint-btn" onclick="toggleHint('hint-4-1')">💡 Tipp anzeigen</button>
+                    <div id="hint-4-1" class="hint-box">
+                        <strong>Tipp:</strong>
+                        <p>Die Gesamtzeit ergibt sich aus dem Bewegungsprofil: 5 + 35 + 5 = 45 Minuten</p>
+                        <p>Alternativ: Berechne die zurückgelegte Strecke aus dem t-v-Diagramm (Fläche unter der Kurve) und vergleiche mit 3 km.</p>
+                    </div>
+                </div>
+
+                <!-- Aufgabe 4.2: Route B - Bus -->
+                <div class="task-box">
+                    <span class="unit-number">Aufgabe 4.2</span>
+                    <h4>Route B: Mit dem Bus</h4>
+                    <p><strong>Bewegungsprofil:</strong></p>
+                    <ul>
+                        <li>0 - 3 min: Fußweg zur Bushaltestelle (konstant 4 km/h)</li>
+                        <li>3 - 8 min: Warten auf den Bus (v = 0)</li>
+                        <li>8 - 10 min: Bus beschleunigt auf 40 km/h</li>
+                        <li>10 - 25 min: Bus fährt konstant 40 km/h</li>
+                        <li>25 - 27 min: Bus bremst ab auf 0 km/h</li>
+                        <li>27 - 30 min: Fußweg vom Bus zum Ziel (konstant 4 km/h)</li>
+                    </ul>
+
+                    <div class="diagram-container">
+                        <canvas id="canvas-route-b" class="diagram-canvas" width="800" height="400"></canvas>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn btn-secondary" onclick="clearCanvas('canvas-route-b')">Löschen</button>
+                            <button class="btn btn-primary" onclick="showSolutionDiagram('canvas-route-b', 'route-b')">Lösung anzeigen</button>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="zeit-route-b">Gesamtzeit Route B (in Minuten):</label>
+                        <input type="number" id="zeit-route-b" step="1" placeholder="z.B. 30">
+                        <button class="btn btn-primary check-button" onclick="checkZeitRouteB()">Überprüfen</button>
+                        <div id="feedback-zeit-route-b" class="feedback"></div>
+                    </div>
+                </div>
+
+                <!-- Aufgabe 4.3: Route C - U-Bahn -->
+                <div class="task-box">
+                    <span class="unit-number">Aufgabe 4.3</span>
+                    <h4>Route C: Mit der U-Bahn</h4>
+                    <p><strong>Bewegungsprofil:</strong></p>
+                    <ul>
+                        <li>0 - 5 min: Fußweg zur U-Bahn-Station (konstant 4 km/h)</li>
+                        <li>5 - 7 min: Warten auf die U-Bahn (v = 0)</li>
+                        <li>7 - 9 min: U-Bahn beschleunigt auf 60 km/h</li>
+                        <li>9 - 15 min: U-Bahn fährt konstant 60 km/h</li>
+                        <li>15 - 17 min: U-Bahn bremst ab auf 0 km/h</li>
+                        <li>17 - 22 min: Fußweg von der Station zum Ziel (konstant 4 km/h)</li>
+                    </ul>
+
+                    <div class="diagram-container">
+                        <canvas id="canvas-route-c" class="diagram-canvas" width="800" height="400"></canvas>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn btn-secondary" onclick="clearCanvas('canvas-route-c')">Löschen</button>
+                            <button class="btn btn-primary" onclick="showSolutionDiagram('canvas-route-c', 'route-c')">Lösung anzeigen</button>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="zeit-route-c">Gesamtzeit Route C (in Minuten):</label>
+                        <input type="number" id="zeit-route-c" step="1" placeholder="z.B. 22">
+                        <button class="btn btn-primary check-button" onclick="checkZeitRouteC()">Überprüfen</button>
+                        <div id="feedback-zeit-route-c" class="feedback"></div>
+                    </div>
+                </div>
+
+                <!-- Aufgabe 4.4: Routenvergleich -->
+                <div class="task-box">
+                    <span class="unit-number">Aufgabe 4.4</span>
+                    <h4>Welche Route ist am besten?</h4>
+                    
+                    <div class="comparison-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Route</th>
+                                    <th>Gesamtzeit</th>
+                                    <th>Ankunftszeit (Start 13:00)</th>
+                                    <th>Pünktlich?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>A: Zu Fuß</td>
+                                    <td id="table-zeit-a">-</td>
+                                    <td id="table-ankunft-a">-</td>
+                                    <td id="table-puenktlich-a">-</td>
+                                </tr>
+                                <tr>
+                                    <td>B: Bus</td>
+                                    <td id="table-zeit-b">-</td>
+                                    <td id="table-ankunft-b">-</td>
+                                    <td id="table-puenktlich-b">-</td>
+                                </tr>
+                                <tr>
+                                    <td>C: U-Bahn</td>
+                                    <td id="table-zeit-c">-</td>
+                                    <td id="table-ankunft-c">-</td>
+                                    <td id="table-puenktlich-c">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Welche Route würdest du wählen und warum?</label>
+                        <textarea id="routen-begruendung" placeholder="Begründe deine Wahl unter Berücksichtigung von Zeit, Pünktlichkeit und eventuellen weiteren Faktoren..."></textarea>
+                        <button class="btn btn-primary check-button" onclick="checkRoutenBegruendung()">Bewertung erhalten</button>
+                        <div id="feedback-routen-begruendung" class="feedback"></div>
+                    </div>
+
+                    <button class="show-hint-btn" onclick="toggleHint('hint-4-4')">💡 Musterlösung anzeigen</button>
+                    <div id="hint-4-4" class="hint-box">
+                        <strong>Musterlösung:</strong>
+                        <p><strong>Empfehlung: Route C (U-Bahn)</strong></p>
+                        <p><strong>Begründung:</strong></p>
+                        <ul>
+                            <li>Route A (zu Fuß): 45 min → Ankunft 13:45 Uhr ✓ pünktlich, aber knapp</li>
+                            <li>Route B (Bus): 30 min → Ankunft 13:30 Uhr ✓ pünktlich mit Puffer</li>
+                            <li>Route C (U-Bahn): 22 min → Ankunft 13:22 Uhr ✓ pünktlich mit großem Puffer</li>
+                        </ul>
+                        <p>Die U-Bahn ist am schnellsten und bietet den größten Zeitpuffer. Dies ist wichtig, falls es zu unvorhergesehenen Verzögerungen kommt. Außerdem ist die U-Bahn unabhängig vom Straßenverkehr und daher zuverlässiger als der Bus.</p>
+                    </div>
+                </div>
+
+                <div class="solution-box">
+                    <h4>✅ Lösungen zu Station 4</h4>
+                    <ul>
+                        <li><strong>Aufgabe 4.1:</strong> Route A: 45 Minuten</li>
+                        <li><strong>Aufgabe 4.2:</strong> Route B: 30 Minuten</li>
+                        <li><strong>Aufgabe 4.3:</strong> Route C: 22 Minuten</li>
+                        <li><strong>Aufgabe 4.4:</strong> Empfehlung: Route C (siehe Musterlösung)</li>
+                    </ul>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('berlin-strasse')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('berlin-boot')">Weiter zur Bootsfahrt →</button>
+                </div>
+            </section>
+
+            <!-- Berlin Boot Section -->
+            <section id="berlin-boot" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Station 5</span>
+                    <h2>⛵ Bootsrundfahrt auf der Spree</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>Situation: Wechselwirkungsgesetz</h3>
+                    <div class="example-content">
+                        <p>Am Nachmittag machen wir eine Bootsrundfahrt auf der Spree. Das Boot wird durch einen Wasserstrahl-Antrieb angetrieben. Dabei wird Wasser nach hinten beschleunigt, was das Boot nach vorne beschleunigt.</p>
+                        <p><strong>Gegebene Daten:</strong></p>
+                        <ul>
+                            <li>Masse des Bootes (mit Passagieren): $ m_{\text{Boot}} = 5000 \, \text{kg} $</li>
+                            <li>Wassermasse pro Sekunde: $ \Delta m = 100 \, \text{kg/s} $</li>
+                            <li>Beschleunigung des Wassers: $ a_{\text{Wasser}} = 20 \, \text{m/s}^2 $</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Aufgabe 5.1: Kraft auf Wasser -->
+                <div class="task-box">
+                    <span class="unit-number">Aufgabe 5.1</span>
+                    <h4>Kraft auf das Wasser</h4>
+                    <p>Berechne die Kraft, mit der das Wasser nach hinten beschleunigt wird.</p>
+                    
+                    <div class="formula-box">
+                        <strong>2. Newtonsches Gesetz:</strong>
+                        
+                        $$ F = m \cdot a $$
+                        
+                        <p class="mt-2">Für die Wassermasse pro Sekunde:</p>
+                        
+                        $$ F_{\text{Wasser}} = \Delta m \cdot a_{\text{Wasser}} $$
+                    </div>
+
+                    <div class="input-group">
+                        <label for="kraft-wasser">Kraft auf das Wasser (in Newton):</label>
+                        <input type="number" id="kraft-wasser" step="1" placeholder="z.B. 2000">
+                        <button class="btn btn-primary check-button" onclick="checkKraftWasser()">Überprüfen</button>
+                        <div id="feedback-kraft-wasser" class="feedback"></div>
+                    </div>
+                </div>
+
+                <!-- Aufgabe 5.2: Wechselwirkungsgesetz -->
+                <div class="concept-box">
+                    <span class="unit-number">Aufgabe 5.2</span>
+                    <h3>3. Newtonsches Gesetz (Wechselwirkungsgesetz)</h3>
+                    
+                    <div class="definition">
+                        <p><strong>Actio = Reactio:</strong></p>
+                        <p>Übt ein Körper A auf einen Körper B eine Kraft $ \vec{F}_{AB} $ aus, so wirkt eine gleich große, aber entgegengesetzt gerichtete Kraft $ \vec{F}_{BA} $ von Körper B auf Körper A.</p>
+                        
+                        $$ \vec{F}_{AB} = -\vec{F}_{BA} $$
+                    </div>
+
+                    <p>Das Boot übt eine Kraft auf das Wasser aus (nach hinten). Nach dem Wechselwirkungsgesetz übt das Wasser eine gleich große Kraft auf das Boot aus (nach vorne).</p>
+
+                    <div class="input-group">
+                        <label for="kraft-boot">Kraft auf das Boot (in Newton):</label>
+                        <input type="number" id="kraft-boot" step="1" placeholder="z.B. 2000">
+                        <button class="btn btn-primary check-button" onclick="checkKraftBoot()">Überprüfen</button>
+                        <div id="feedback-kraft-boot" class="feedback"></div>
+                    </div>
+                </div>
+
+                <!-- Aufgabe 5.3: Beschleunigung des Bootes -->
+                <div class="task-box">
+                    <span class="unit-number">Aufgabe 5.3</span>
+                    <h4>Beschleunigung des Bootes</h4>
+                    <p>Berechne die Beschleunigung des Bootes beim Anfahren.</p>
+                    
+                    <div class="formula-box">
+                        <strong>Umstellung des 2. Newtonschen Gesetzes:</strong>
+                        
+                        $$ a = \frac{F}{m} $$
+                        
+                        <p class="mt-2">Für das Boot:</p>
+                        
+                        $$ a_{\text{Boot}} = \frac{F_{\text{Boot}}}{m_{\text{Boot}}} $$
+                    </div>
+
+                    <div class="input-group">
+                        <label for="beschleunigung-boot">Beschleunigung des Bootes (in m/s²):</label>
+                        <input type="number" id="beschleunigung-boot" step="0.01" placeholder="z.B. 0.40">
+                        <button class="btn btn-primary check-button" onclick="checkBeschleunigungBoot()">Überprüfen</button>
+                        <div id="feedback-beschleunigung-boot" class="feedback"></div>
+                    </div>
+
+                    <button class="show-hint-btn" onclick="toggleHint('hint-5-3')">💡 Tipp anzeigen</button>
+                    <div id="hint-5-3" class="hint-box">
+                        <strong>Tipp:</strong>
+                        <p>Verwende die berechnete Kraft auf das Boot aus Aufgabe 5.2 und die Masse des Bootes:</p>
+                        
+                        $$ a_{\text{Boot}} = \frac{2000 \, \text{N}}{5000 \, \text{kg}} $$
+                    </div>
+                </div>
+
+                <!-- Aufgabe 5.4: Diagramme -->
+                <div class="task-box">
+                    <span class="unit-number">Aufgabe 5.4</span>
+                    <h4>Bewegungsdiagramme erstellen</h4>
+                    <p>Das Boot beschleunigt 10 Sekunden lang mit der berechneten Beschleunigung und fährt dann mit konstanter Geschwindigkeit weiter.</p>
+                    
+                    <h4 class="mt-3">a) Zeit-Geschwindigkeit-Diagramm</h4>
+                    <div class="diagram-container">
+                        <canvas id="canvas-boot-tv" class="diagram-canvas" width="800" height="400"></canvas>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn btn-secondary" onclick="clearCanvas('canvas-boot-tv')">Löschen</button>
+                            <button class="btn btn-primary" onclick="showSolutionDiagram('canvas-boot-tv', 'boot-tv')">Lösung anzeigen</button>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <h3>💡 Hinweise:</h3>
+                        <ul>
+                            <li>0 - 10 s: Gleichmäßige Beschleunigung (lineare Zunahme der Geschwindigkeit)</li>
+                            <li>Ab 10 s: Konstante Geschwindigkeit (horizontale Linie)</li>
+                            <li>Endgeschwindigkeit nach 10 s: $ v = a \cdot t = 0{,}4 \, \text{m/s} \cdot 10 \, \text{s} = 4 \, \text{m/s} $</li>
+                        </ul>
+                    </div>
+
+                    <h4 class="mt-3">b) Zeit-Ort-Diagramm</h4>
+                    <div class="diagram-container">
+                        <canvas id="canvas-boot-ts" class="diagram-canvas" width="800" height="400"></canvas>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn btn-secondary" onclick="clearCanvas('canvas-boot-ts')">Löschen</button>
+                            <button class="btn btn-primary" onclick="showSolutionDiagram('canvas-boot-ts', 'boot-ts')">Lösung anzeigen</button>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <h3>💡 Hinweise:</h3>
+                        <ul>
+                            <li>0 - 10 s: Beschleunigte Bewegung (Parabel: $ s = \frac{1}{2} a t^2 $)</li>
+                            <li>Ab 10 s: Gleichförmige Bewegung (Gerade mit konstanter Steigung)</li>
+                            <li>Zurückgelegte Strecke nach 10 s: $ s = \frac{1}{2} \cdot 0{,}4 \, \text{m/s}^2 \cdot (10 \, \text{s})^2 = 20 \, \text{m} $</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="solution-box">
+                    <h4>✅ Lösungen zu Station 5</h4>
+                    <ul>
+                        <li><strong>Aufgabe 5.1:</strong> $ F_{\text{Wasser}} = 100 \, \text{kg/s} \cdot 20 \, \text{m/s}^2 = 2000 \, \text{N} $</li>
+                        <li><strong>Aufgabe 5.2:</strong> $ F_{\text{Boot}} = 2000 \, \text{N} $ (gleich groß, entgegengesetzt)</li>
+                        <li><strong>Aufgabe 5.3:</strong> $ a_{\text{Boot}} = \frac{2000 \, \text{N}}{5000 \, \text{kg}} = 0{,}4 \, \text{m/s}^2 $</li>
+                        <li><strong>Aufgabe 5.4:</strong> Siehe Lösungsdiagramme</li>
+                    </ul>
+                    <div class="highlight">
+                        <strong>Wichtige Erkenntnis:</strong> Das Wechselwirkungsgesetz zeigt, dass Kräfte immer paarweise auftreten. Die Beschleunigungen sind jedoch unterschiedlich, da die Massen unterschiedlich sind ($ a = \frac{F}{m} $).
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('berlin-routen')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('reaktionstest')">Weiter zum Reaktionstest →</button>
+                </div>
+            </section>
+
+            <!-- Reaktionstest Section -->
+            <section id="reaktionstest" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Station 6</span>
+                    <h2>⚡ Reaktionszeit-Experiment</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>Praktisches Experiment</h3>
+                    <div class="example-content">
+                        <p>Die Reaktionszeit ist ein wichtiger Faktor im Straßenverkehr. In diesem Experiment kannst du deine eigene Reaktionszeit messen.</p>
+                        <p><strong>Durchführung:</strong></p>
+                        <ul>
+                            <li>Klicke auf "Start", um das Experiment zu beginnen</li>
+                            <li>Der Button wird rot angezeigt - warte ab!</li>
+                            <li>Sobald der Button grün wird, klicke so schnell wie möglich darauf</li>
+                            <li>Deine Reaktionszeit wird in Millisekunden angezeigt</li>
+                            <li>Wiederhole das Experiment 5 Mal für ein genaueres Ergebnis</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="reaction-test">
+                    <h3>Reaktionszeit-Test</h3>
+                    <p id="reaction-instruction">Klicke auf "Start" um zu beginnen</p>
+                    <button id="reaction-button" class="reaction-button wait" onclick="startReactionTest()">START</button>
+                    <div id="reaction-result" style="margin-top: 2rem; font-size: 1.2rem;"></div>
+                </div>
+
+                <div class="task-box">
+                    <span class="unit-number">Aufgabe 6.1</span>
+                    <h4>Auswertung deiner Messungen</h4>
+                    
+                    <div class="input-group">
+                        <label>Trage deine 5 Messwerte ein (in Millisekunden):</label>
+                        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; margin: 1rem 0;">
+                            <input type="number" id="messung-1" placeholder="Messung 1" step="1">
+                            <input type="number" id="messung-2" placeholder="Messung 2" step="1">
+                            <input type="number" id="messung-3" placeholder="Messung 3" step="1">
+                            <input type="number" id="messung-4" placeholder="Messung 4" step="1">
+                            <input type="number" id="messung-5" placeholder="Messung 5" step="1">
+                        </div>
+                        <button class="btn btn-primary" onclick="calculateReactionAverage()">Durchschnitt berechnen</button>
+                        <div id="feedback-reaction-average" class="feedback"></div>
+                    </div>
+
+                    <div class="formula-box">
+                        <strong>Durchschnittliche Reaktionszeit:</strong>
+                        
+                        $$ t_{\text{Reaktion, Durchschnitt}} = \frac{t_1 + t_2 + t_3 + t_4 + t_5}{5} $$
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <span class="unit-number">Aufgabe 6.2</span>
+                    <h3>Einordnung deiner Reaktionszeit</h3>
+                    
+                    <div class="comparison-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Kategorie</th>
+                                    <th>Reaktionszeit</th>
+                                    <th>Bewertung</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Sehr schnell</td>
+                                    <td>< 200 ms</td>
+                                    <td>🏆 Überdurchschnittlich</td>
+                                </tr>
+                                <tr>
+                                    <td>Schnell</td>
+                                    <td>200 - 250 ms</td>
+                                    <td>✅ Gut</td>
+                                </tr>
+                                <tr>
+                                    <td>Durchschnitt</td>
+                                    <td>250 - 300 ms</td>
+                                    <td>👍 Normal</td>
+                                </tr>
+                                <tr>
+                                    <td>Langsam</td>
+                                    <td>300 - 400 ms</td>
+                                    <td>⚠️ Unterdurchschnittlich</td>
+                                </tr>
+                                <tr>
+                                    <td>Sehr langsam</td>
+                                    <td>> 400 ms</td>
+                                    <td>❌ Aufmerksamkeit erhöhen!</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="info-box">
+                        <h3>Typische Reaktionszeiten im Straßenverkehr:</h3>
+                        <ul>
+                            <li><strong>Aufmerksamer Fahrer:</strong> 0,8 - 1,0 Sekunden (800 - 1000 ms)</li>
+                            <li><strong>Unaufmerksamer Fahrer:</strong> 1,5 - 2,0 Sekunden (1500 - 2000 ms)</li>
+                            <li><strong>Müder Fahrer:</strong> > 2,0 Sekunden (> 2000 ms)</li>
+                        </ul>
+                        <p><strong>Hinweis:</strong> Die Reaktionszeit in diesem Test ist kürzer als im echten Straßenverkehr, da du hier auf ein einfaches Signal wartest. Im Verkehr müssen komplexere Situationen erfasst und bewertet werden.</p>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <span class="unit-number">Aufgabe 6.3</span>
+                    <h4>Reaktionsweg berechnen</h4>
+                    <p>Berechne den Reaktionsweg bei verschiedenen Geschwindigkeiten mit deiner durchschnittlichen Reaktionszeit (umgerechnet in Sekunden).</p>
+                    
+                    <div class="formula-box">
+                        <strong>Reaktionsweg:</strong>
+                        
+                        $$ s_{\text{Reaktion}} = v \cdot t_{\text{Reaktion}} $$
+                    </div>
+
+                    <div class="input-group">
+                        <label for="reaktionsweg-30">Reaktionsweg bei 30 km/h (in Metern):</label>
+                        <input type="number" id="reaktionsweg-30" step="0.1" placeholder="z.B. 8.3">
+                        <button class="btn btn-primary check-button" onclick="checkReaktionsweg30()">Überprüfen</button>
+                        <div id="feedback-reaktionsweg-30" class="feedback"></div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="reaktionsweg-50">Reaktionsweg bei 50 km/h (in Metern):</label>
+                        <input type="number" id="reaktionsweg-50" step="0.1" placeholder="z.B. 13.9">
+                        <button class="btn btn-primary check-button" onclick="checkReaktionsweg50()">Überprüfen</button>
+                        <div id="feedback-reaktionsweg-50" class="feedback"></div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="reaktionsweg-100">Reaktionsweg bei 100 km/h (in Metern):</label>
+                        <input type="number" id="reaktionsweg-100" step="0.1" placeholder="z.B. 27.8">
+                        <button class="btn btn-primary check-button" onclick="checkReaktionsweg100()">Überprüfen</button>
+                        <div id="feedback-reaktionsweg-100" class="feedback"></div>
+                    </div>
+
+                    <button class="show-hint-btn" onclick="toggleHint('hint-6-3')">💡 Tipp anzeigen</button>
+                    <div id="hint-6-3" class="hint-box">
+                        <strong>Tipp:</strong>
+                        <p>Verwende eine Reaktionszeit von 1,0 s (= 1000 ms) für die Berechnungen.</p>
+                        <p>Rechne die Geschwindigkeiten zuerst in m/s um:</p>
+                        <ul>
+                            <li>30 km/h = 30/3,6 m/s = 8,33 m/s</li>
+                            <li>50 km/h = 50/3,6 m/s = 13,89 m/s</li>
+                            <li>100 km/h = 100/3,6 m/s = 27,78 m/s</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="solution-box">
+                    <h4>✅ Lösungen zu Station 6</h4>
+                    <ul>
+                        <li><strong>Aufgabe 6.1:</strong> Individuelle Auswertung</li>
+                        <li><strong>Aufgabe 6.2:</strong> Siehe Tabelle zur Einordnung</li>
+                        <li><strong>Aufgabe 6.3:</strong> Bei $ t_{\text{Reaktion}} = 1{,}0 $ s:
+                            <ul>
+                                <li>30 km/h: $ s = 8{,}33 $ m</li>
+                                <li>50 km/h: $ s = 13{,}89 $ m</li>
+                                <li>100 km/h: $ s = 27{,}78 $ m</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="highlight">
+                        <strong>Wichtige Erkenntnis:</strong> Der Reaktionsweg steigt linear mit der Geschwindigkeit. Bei doppelter Geschwindigkeit verdoppelt sich auch der Reaktionsweg. Dies zeigt, wie wichtig Aufmerksamkeit und angepasste Geschwindigkeit im Straßenverkehr sind.
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('berlin-boot')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('rueckfahrt')">Weiter zur Rückfahrt →</button>
+                </div>
+            </section>
+
+            <!-- Rückfahrt Section -->
+            <section id="rueckfahrt" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Station 7</span>
+                    <h2>🏁 Rückfahrt nach München</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>Situation: Negative Geschwindigkeit</h3>
+                    <div class="example-content">
+                        <p>Nach einem tollen Tag in Berlin fahren wir zurück nach München. Für die physikalische Beschreibung wählen wir die Ortsrichtung von München nach Berlin als positive Richtung.</p>
+                        <p><strong>Koordinatensystem:</strong></p>
+                        <ul>
+                            <li>Ursprung (s = 0): München Hauptbahnhof</li>
+                            <li>Positive Richtung: München → Berlin</li>
+                            <li>Negative Richtung: Berlin → München</li>
+                            <li>Position Berlin: s = +600 km</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Aufgabe 7.1: Negative Beschleunigung -->
+                <div class="task-box">
+                    <span class="unit-number">Aufgabe 7.1</span>
+                    <h4>Beschleunigung bei der Rückfahrt</h4>
+                    <p>Der Zug fährt von Berlin (s = +600 km) zurück nach München (s = 0 km). Er beschleunigt beim Anfahren in Berlin für 2 Minuten von 0 km/h auf 200 km/h.</p>
+                    
+                    <div class="formula-box">
+                        <strong>Beschleunigung:</strong>
+                        
+                        $$ a = \frac{v - v_0}{t} = \frac{\Delta v}{\Delta t} $$
+                        
+                        <p class="mt-2">Beachte: Die Geschwindigkeit ist negativ, da die Bewegung entgegen der positiven Ortsrichtung erfolgt!</p>
+                    </div>
+
+                    <div class="calculation-steps">
+                        <h4>Lösungsweg:</h4>
+                        <div class="step">Umrechnung: 200 km/h = 55,56 m/s und 2 min = 120 s</div>
+                        <div class="step">Da die Bewegung in negative Richtung erfolgt: $ v = -55{,}56 $ m/s</div>
+                        <div class="step">Anfangsgeschwindigkeit: $ v_0 = 0 $ m/s (Zug steht)</div>
+                        <div class="step">Berechnung: $ a = \frac{-55{,}56 \, \text{m/s} - 0 \, \text{m/s}}{120 \, \text{s}} $</div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="beschleunigung-rueck">Beschleunigung in m/s²:</label>
+                        <input type="number" id="beschleunigung-rueck" step="0.01" placeholder="z.B. -0.46">
+                        <button class="btn btn-primary check-button" onclick="checkBeschleunigungRueck()">Überprüfen</button>
+                        <div id="feedback-beschleunigung-rueck" class="feedback"></div>
+                    </div>
+                </div>
+
+                <!-- Aufgabe 7.2: Kein Bremsvorgang -->
+                <div class="concept-box warning">
+                    <span class="unit-number">Aufgabe 7.2</span>
+                    <h3>⚠️ Negative Beschleunigung ≠ Bremsvorgang</h3>
+                    
+                    <div class="definition">
+                        <p><strong>Wichtige Unterscheidung:</strong></p>
+                        <ul>
+                            <li><strong>Negative Beschleunigung:</strong> Die Beschleunigung zeigt in negative Koordinatenrichtung (mathematisches Vorzeichen)</li>
+                            <li><strong>Bremsvorgang:</strong> Die Geschwindigkeit nimmt betragsmäßig ab (physikalischer Prozess)</li>
+                        </ul>
+                    </div>
+
+                    <p><strong>Frage:</strong> Erkläre, warum die berechnete negative Beschleunigung bei der Rückfahrt trotzdem kein Bremsvorgang ist.</p>
+
+                    <div class="input-group">
+                        <label for="erklaerung-negativ">Deine Erklärung:</label>
+                        <textarea id="erklaerung-negativ" placeholder="Erkläre den Unterschied zwischen negativer Beschleunigung und Bremsvorgang..."></textarea>
+                        <button class="btn btn-primary check-button" onclick="checkErklaerungNegativ()">Erklärung prüfen</button>
+                        <div id="feedback-erklaerung-negativ" class="feedback"></div>
+                    </div>
+
+                    <button class="show-hint-btn" onclick="toggleHint('hint-7-2')">💡 Musterlösung anzeigen</button>
+                    <div id="hint-7-2" class="hint-box">
+                        <strong>Musterlösung:</strong>
+                        <p>Die Beschleunigung ist negativ ($ a = -0{,}46 $ m/s²), weil sie in negative Koordinatenrichtung zeigt. Trotzdem handelt es sich nicht um einen Bremsvorgang, sondern um einen Beschleunigungsvorgang:</p>
+                        <ul>
+                            <li>Der Zug beschleunigt von $ v_0 = 0 $ m/s auf $ v = -55{,}56 $ m/s</li>
+                            <li>Die Geschwindigkeit nimmt betragsmäßig zu: $ |v| $ steigt von 0 auf 55,56 m/s</li>
+                            <li>Beschleunigung und Geschwindigkeit zeigen in dieselbe Richtung (beide negativ)</li>
+                        </ul>
+                        <p><strong>Merke:</strong> Ein Bremsvorgang liegt nur dann vor, wenn Beschleunigung und Geschwindigkeit entgegengesetzte Vorzeichen haben, sodass der Betrag der Geschwindigkeit abnimmt.</p>
+                    </div>
+                </div>
+
+                <!-- Aufgabe 7.3: t-v-Diagramm -->
+                <div class="task-box">
+                    <span class="unit-number">Aufgabe 7.3</span>
+                    <h4>Zeit-Geschwindigkeit-Diagramm der Rückfahrt</h4>
+                    <p>Zeichne ein qualitatives t-v-Diagramm für die gesamte Rückfahrt:</p>
+                    <ul>
+                        <li>0 - 2 min: Beschleunigung von 0 auf -200 km/h</li>
+                        <li>2 - 180 min: Konstante Geschwindigkeit -200 km/h</li>
+                        <li>180 - 182 min: Verzögerung von -200 km/h auf 0</li>
+                    </ul>
+
+                    <div class="diagram-container">
+                        <canvas id="canvas-rueckfahrt" class="diagram-canvas" width="800" height="400"></canvas>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn btn-secondary" onclick="clearCanvas('canvas-rueckfahrt')">Löschen</button>
+                            <button class="btn btn-primary" onclick="showSolutionDiagram('canvas-rueckfahrt', 'rueckfahrt')">Lösung anzeigen</button>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <h3>💡 Hinweise:</h3>
+                        <ul>
+                            <li>Die Geschwindigkeit ist negativ (unterhalb der x-Achse)</li>
+                            <li>Beschleunigungsphase: Gerade von (0, 0) nach (2, -200)</li>
+                            <li>Konstante Fahrt: Horizontale Linie bei v = -200 km/h</li>
+                            <li>Bremsphase: Gerade von (180, -200) nach (182, 0)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Aufgabe 7.4: Gefahrensituation -->
+                <div class="example-box danger">
+                    <span class="unit-number">Aufgabe 7.4</span>
+                    <h3>🚨 Gefahrensituation: Zebrastreifen</h3>
+                    <div class="example-content">
+                        <p>Zurück in München: Ein Schüler ist überglücklich zuhause zu sein und rennt über einen Zebrastreifen, ohne zu schauen. Ein Auto nähert sich mit 50 km/h.</p>
+                        <p><strong>Gegebene Daten:</strong></p>
+                        <ul>
+                            <li>Geschwindigkeit Auto: $ v_0 = 50 \, \text{km/h} = 13{,}89 \, \text{m/s} $</li>
+                            <li>Abstand zum Zebrastreifen: $ s = 15 \, \text{m} $</li>
+                            <li>Reaktionszeit Fahrer: $ t_{\text{Reaktion}} = 1{,}0 \, \text{s} $</li>
+                            <li>Maximale Bremsverzögerung: $ a = -8 \, \text{m/s}^2 $</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>a) Reaktionsweg berechnen</h4>
+                    
+                    <div class="input-group">
+                        <label for="reaktionsweg-auto">Reaktionsweg in Metern:</label>
+                        <input type="number" id="reaktionsweg-auto" step="0.1" placeholder="z.B. 13.9">
+                        <button class="btn btn-primary check-button" onclick="checkReaktionswegAuto()">Überprüfen</button>
+                        <div id="feedback-reaktionsweg-auto" class="feedback"></div>
+                    </div>
+
+                    <h4 class="mt-3">b) Bremsweg berechnen</h4>
+                    
+                    <div class="formula-box">
+                        <strong>Bremsweg:</strong>
+                        
+                        $$ s_{\text{Brems}} = \frac{v_0^2}{2 \cdot |a|} $$
+                    </div>
+
+                    <div class="input-group">
+                        <label for="bremsweg-auto">Bremsweg in Metern:</label>
+                        <input type="number" id="bremsweg-auto" step="0.1" placeholder="z.B. 12.0">
+                        <button class="btn btn-primary check-button" onclick="checkBremswegAuto()">Überprüfen</button>
+                        <div id="feedback-bremsweg-auto" class="feedback"></div>
+                    </div>
+
+                    <h4 class="mt-3">c) Anhalteweg und Bewertung</h4>
+                    
+                    <div class="input-group">
+                        <label for="anhalteweg-auto">Gesamter Anhalteweg in Metern:</label>
+                        <input type="number" id="anhalteweg-auto" step="0.1" placeholder="z.B. 25.9">
+                        <button class="btn btn-primary check-button" onclick="checkAntaltewegAuto()">Überprüfen</button>
+                        <div id="feedback-anhalteweg-auto" class="feedback"></div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Kommt es zu einem Unfall?</label>
+                        <div style="margin: 1rem 0;">
+                            <label style="display: block; margin: 0.5rem 0;">
+                                <input type="radio" name="unfall-zebra" value="ja"> 
+                                Ja, der Anhalteweg ist länger als 15 m
+                            </label>
+                            <label style="display: block; margin: 0.5rem 0;">
+                                <input type="radio" name="unfall-zebra" value="nein"> 
+                                Nein, der Anhalteweg ist kürzer als 15 m
+                            </label>
+                        </div>
+                        <button class="btn btn-primary check-button" onclick="checkUnfallZebra()">Überprüfen</button>
+                        <div id="feedback-unfall-zebra" class="feedback"></div>
+                    </div>
+
+                    <h4 class="mt-3">d) Situation bewerten</h4>
+                    
+                    <div class="input-group">
+                        <label>Bewerte die Situation und schlage Maßnahmen zur Unfallvermeidung vor:</label>
+                        <textarea id="bewertung-zebra" placeholder="Deine Bewertung und Vorschläge..."></textarea>
+                        <button class="btn btn-primary check-button" onclick="checkBewertungZebra()">Bewertung erhalten</button>
+                        <div id="feedback-bewertung-zebra" class="feedback"></div>
+                    </div>
+
+                    <button class="show-hint-btn" onclick="toggleHint('hint-7-4')">💡 Musterlösung anzeigen</button>
+                    <div id="hint-7-4" class="hint-box">
+                        <strong>Musterlösung:</strong>
+                        <p><strong>Bewertung:</strong> Die Situation ist sehr gefährlich! Der Anhalteweg (25,9 m) ist deutlich länger als der Abstand zum Zebrastreifen (15 m). Es würde zu einem schweren Unfall kommen.</p>
+                        <p><strong>Maßnahmen zur Unfallvermeidung:</strong></p>
+                        <ul>
+                            <li><strong>Für Fußgänger:</strong> Immer vor dem Überqueren nach links und rechts schauen, auch an Zebrastreifen!</li>
+                            <li><strong>Für Autofahrer:</strong> Geschwindigkeit vor Zebrastreifen reduzieren, bremsbereit sein</li>
+                            <li><strong>Verkehrsplanung:</strong> Geschwindigkeitsbegrenzung auf 30 km/h in der Nähe von Schulen und stark frequentierten Zebrastreifen</li>
+                            <li><strong>Technisch:</strong> Ampeln oder Verkehrsinseln zur besseren Sicherung des Übergangs</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="solution-box">
+                    <h4>✅ Lösungen zu Station 7</h4>
+                    <ul>
+                        <li><strong>Aufgabe 7.1:</strong> $ a = -0{,}46 $ m/s²</li>
+                        <li><strong>Aufgabe 7.2:</strong> Siehe Musterlösung</li>
+                        <li><strong>Aufgabe 7.3:</strong> Siehe Lösungsdiagramm</li>
+                        <li><strong>Aufgabe 7.4:</strong>
+                            <ul>
+                                <li>a) $ s_{\text{Reaktion}} = 13{,}89 $ m</li>
+                                <li>b) $ s_{\text{Brems}} = 12{,}05 $ m</li>
+                                <li>c) $ s_{\text{Anhalt}} = 25{,}94 $ m → Unfall!</li>
+                                <li>d) Siehe Musterlösung</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('reaktionstest')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('zusammenfassung')">Zur Zusammenfassung →</button>
+                </div>
+            </section>
+
+            <!-- Zusammenfassung Section -->
+            <section id="zusammenfassung" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Abschluss</span>
+                    <h2>📊 Zusammenfassung & Reflexion</h2>
+                </div>
+
+                <div class="hero">
+                    <h1 class="hero-title">🎉 Glückwunsch!</h1>
+                    <p class="hero-subtitle">Du hast den Lernpfad erfolgreich abgeschlossen!</p>
+                </div>
+
+                <div class="best-practices">
+                    <h3>Was hast du gelernt?</h3>
+                    
+                    <div class="practice">
+                        <div class="icon">📐</div>
+                        <div>
+                            <strong>Kinematische Grundlagen</strong>
+                            <p>Du kannst jetzt gleichförmige und beschleunigte Bewegungen mathematisch beschreiben, Bewegungsgleichungen aufstellen und Diagramme erstellen und interpretieren.</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <div class="icon">🔢</div>
+                        <div>
+                            <strong>Berechnungen</strong>
+                            <p>Du beherrschst die Berechnung von Geschwindigkeit, Beschleunigung, Kraft, Reaktionsweg, Bremsweg und Anhalteweg in verschiedenen Situationen.</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <div class="icon">📊</div>
+                        <div>
+                            <strong>Diagramme</strong>
+                            <p>Du kannst Zeit-Ort- und Zeit-Geschwindigkeit-Diagramme zeichnen, interpretieren und zwischen verschiedenen Darstellungen wechseln.</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <div class="icon">⚖️</div>
+                        <div>
+                            <strong>Physikalische Gesetze</strong>
+                            <p>Du verstehst das Trägheitsgesetz, das 2. Newtonsche Gesetz und das Wechselwirkungsgesetz und kannst sie auf Alltagssituationen anwenden.</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <div class="icon">🚗</div>
+                        <div>
+                            <strong>Verkehrssicherheit</strong>
+                            <p>Du kannst kritische Situationen im Straßenverkehr physikalisch bewerten und die Bedeutung von Reaktionszeit, Geschwindigkeit und Bremsweg einschätzen.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Wichtige Formeln im Überblick</h3>
+                    
+                    <div class="formula-box">
+                        <strong>Gleichförmige Bewegung:</strong>
+                        
+                        $$ s = v \cdot t \quad \text{bzw.} \quad v = \frac{s}{t} $$
+                    </div>
+
+                    <div class="formula-box">
+                        <strong>Beschleunigte Bewegung:</strong>
+                        
+                        $$ a = \frac{\Delta v}{\Delta t} \quad \text{und} \quad s = \frac{1}{2} a t^2 \quad \text{(aus der Ruhe)} $$
+                        
+                        $$ v^2 = v_0^2 + 2as \quad \text{(ohne Zeit)} $$
+                    </div>
+
+                    <div class="formula-box">
+                        <strong>Kraft und Beschleunigung:</strong>
+                        
+                        $$ F = m \cdot a $$
+                    </div>
+
+                    <div class="formula-box">
+                        <strong>Anhalteweg:</strong>
+                        
+                        $$ s_{\text{Anhalt}} = s_{\text{Reaktion}} + s_{\text{Brems}} = v \cdot t_{\text{Reaktion}} + \frac{v^2}{2|a|} $$
+                    </div>
+
+                    <div class="formula-box">
+                        <strong>Umrechnung:</strong>
+                        
+                        $$ 1 \, \text{m/s} = 3{,}6 \, \text{km/h} \quad \Leftrightarrow \quad 1 \, \text{km/h} = \frac{1}{3{,}6} \, \text{m/s} $$
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>Selbstreflexion</h4>
+                    <p>Nimm dir einen Moment Zeit, um über deinen Lernfortschritt nachzudenken:</p>
+                    
+                    <div class="input-group">
+                        <label>Was war für dich am schwierigsten?</label>
+                        <textarea id="reflexion-schwierig" placeholder="Deine Gedanken..."></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Was hat dir am besten gefallen?</label>
+                        <textarea id="reflexion-gefallen" placeholder="Deine Gedanken..."></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Welche Themen möchtest du noch vertiefen?</label>
+                        <textarea id="reflexion-vertiefen" placeholder="Deine Gedanken..."></textarea>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="saveReflexion()">Reflexion speichern</button>
+                    <div id="feedback-reflexion" class="feedback"></div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-icon">📚</div>
+                        <h3>Weiterführende Themen</h3>
+                        <ul>
+                            <li>Kreisbewegungen</li>
+                            <li>Wurf- und Fallbewegungen</li>
+                            <li>Energie und Impuls</li>
+                            <li>Schwingungen und Wellen</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">🔬</div>
+                        <h3>Praktische Anwendungen</h3>
+                        <ul>
+                            <li>Fahrzeugtechnik und Sicherheit</li>
+                            <li>Sportphysik (Sprint, Weitsprung)</li>
+                            <li>Raumfahrt</li>
+                            <li>Verkehrsplanung</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">💡</div>
+                        <h3>Tipps für die Prüfung</h3>
+                        <ul>
+                            <li>Zeichne immer eine Skizze</li>
+                            <li>Wähle ein Koordinatensystem</li>
+                            <li>Schreibe alle gegebenen Größen auf</li>
+                            <li>Überprüfe Einheiten und Vorzeichen</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="pdf-download-box">
+                    <div class="pdf-icon">📄</div>
+                    <div class="pdf-content">
+                        <h3>Lernmaterialien</h3>
+                        <p>Lade dir die Zusammenfassung und Formelsammlung herunter:</p>
+                        <a href="#" class="btn btn-primary" onclick="alert('Download-Funktion würde hier die PDF-Dateien bereitstellen'); return false;">Zusammenfassung herunterladen</a>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('rueckfahrt')">← Zurück</button>
+                    <button class="btn btn-success" onclick="navigateToSection('start')">🏠 Zum Anfang</button>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Physik-Lernpfad: Klassenfahrt nach Berlin</p>
+        <p>Entwickelt für den Physikunterricht der 10. Klasse Gymnasium Bayern</p>
+    </footer>
+
+    <script>
+        // ==================== Navigation ====================
+        let currentSection = 'start';
+        const sections = ['start', 'kirchheim', 'zugfahrt', 'berlin-strasse', 'berlin-routen', 'berlin-boot', 'reaktionstest', 'rueckfahrt', 'zusammenfassung'];
+        let completedSections = new Set();
+
+        // Diese Funktion wird aufgerufen, sobald das KaTeX-Skript geladen ist
+        function renderMath() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},  // Block-Formeln
+                    {left: '$', right: '$', display: false}    // Inline-Formeln
+                ],
+                throwOnError : false
+            });
+        }
+
+        function navigateToSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show target section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                currentSection = sectionId;
+
+                // Update sidebar
+                document.querySelectorAll('.sidebar-menu a').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('data-section') === sectionId) {
+                        link.classList.add('active');
+                    }
+                });
+
+                // Mark section as completed
+                completedSections.add(sectionId);
+
+                // Update progress
+                updateProgress();
+
+                // Scroll to top
+                window.scrollTo(0, 0);
+
+                // Close mobile menu
+                if (window.innerWidth <= 1024) {
+                    document.getElementById('sidebar').classList.remove('active');
+                }
+            }
+        }
+
+        function updateProgress() {
+            const progress = (completedSections.size / sections.length) * 100;
+            document.getElementById('mainProgress').style.width = progress + '%';
+        }
+
+        // Sidebar navigation
+        document.querySelectorAll('.sidebar-menu a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const sectionId = link.getAttribute('data-section');
+                navigateToSection(sectionId);
+            });
+        });
+
+        // Mobile menu toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        document.getElementById('sidebarToggle').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('active');
+        });
+
+        // ==================== Helper Functions ====================
+        function toggleHint(hintId) {
+            const hint = document.getElementById(hintId);
+            hint.classList.toggle('visible');
+        }
+
+        function showFeedback(feedbackId, type, message) {
+            const feedback = document.getElementById(feedbackId);
+            feedback.className = 'feedback ' + type;
+            feedback.innerHTML = message;
+        }
+
+        function checkNumberInput(inputId, correctValue, tolerance, feedbackId, unit = '') {
+            const input = document.getElementById(inputId);
+            const value = parseFloat(input.value);
+
+            if (isNaN(value)) {
+                showFeedback(feedbackId, 'incorrect', '❌ Bitte gib eine Zahl ein.');
+                return false;
+            }
+
+            const diff = Math.abs(value - correctValue);
+            if (diff <= tolerance) {
+                showFeedback(feedbackId, 'correct', `✅ Richtig! Die Lösung ist ${correctValue}${unit}.`);
+                return true;
+            } else {
+                showFeedback(feedbackId, 'incorrect', `❌ Nicht ganz richtig. Überprüfe deine Rechnung.`);
+                return false;
+            }
+        }
+
+        // ==================== Station 1: Kirchheim ====================
+        function checkSBahnBeschleunigung() {
+            checkNumberInput('sbahn-beschleunigung', 1.25, 0.01, 'feedback-sbahn-a', ' m/s²');
+        }
+
+        function checkSBahnKmh() {
+            checkNumberInput('sbahn-kmh', 90, 0.5, 'feedback-sbahn-kmh', ' km/h');
+        }
+
+        function checkSBahnKraft() {
+            checkNumberInput('sbahn-kraft', 150000, 1000, 'feedback-sbahn-kraft', ' N');
+        }
+
+        function checkTraegheitErklaerung() {
+            const input = document.getElementById('traegheit-erklaerung').value.toLowerCase();
+            if (input.length < 50) {
+                showFeedback('feedback-traegheit', 'incorrect', '❌ Deine Erklärung ist zu kurz. Versuche, das Trägheitsgesetz zu erwähnen.');
+                return;
+            }
+
+            const keywords = ['trägheit', 'ruhe', 'zurück', 'festhalten', 'kraft'];
+            const foundKeywords = keywords.filter(keyword => input.includes(keyword));
+
+            if (foundKeywords.length >= 3) {
+                showFeedback('feedback-traegheit', 'correct', '✅ Sehr gut! Deine Erklärung enthält die wichtigsten Konzepte. Vergleiche mit der Musterlösung.');
+            } else {
+                showFeedback('feedback-traegheit', 'info', '💡 Deine Erklärung ist auf dem richtigen Weg. Schau dir die Musterlösung an, um deine Antwort zu vervollständigen.');
+            }
+        }
+
+        // ==================== Station 2: Zugfahrt ====================
+        function checkFahrzeit() {
+            checkNumberInput('fahrzeit', 4.0, 0.1, 'feedback-fahrzeit', ' h');
+        }
+
+        function checkAnkunftszeit() {
+            const input = document.getElementById('ankunftszeit').value;
+            if (input === '12:00' || input === '12.00') {
+                showFeedback('feedback-ankunftszeit', 'correct', '✅ Richtig! Ankunft um 12:00 Uhr.');
+            } else {
+                showFeedback('feedback-ankunftszeit', 'incorrect', '❌ Nicht richtig. Berechne: 8:00 Uhr + 4 Stunden.');
+            }
+        }
+
+        function checkBewegungsgleichung() {
+            const selected = document.querySelector('input[name="bewegungsgleichung"]:checked');
+            if (!selected) {
+                showFeedback('feedback-bewegungsgleichung', 'incorrect', '❌ Bitte wähle eine Antwort aus.');
+                return;
+            }
+
+            if (selected.value === '3') {
+                showFeedback('feedback-bewegungsgleichung', 'correct', '✅ Richtig! Beide Gleichungen sind korrekt, nur mit unterschiedlichen Einheiten.');
+            } else {
+                showFeedback('feedback-bewegungsgleichung', 'incorrect', '❌ Nicht ganz. Beide Gleichungen beschreiben dieselbe Bewegung, nur mit unterschiedlichen Einheiten.');
+            }
+        }
+
+        function checkLeipzigZeit() {
+            checkNumberInput('leipzig-zeit', 1.75, 0.01, 'feedback-leipzig-zeit', ' h');
+        }
+
+        function checkLeipzigUhrzeit() {
+            const input = document.getElementById('leipzig-uhrzeit').value;
+            if (input === '09:45' || input === '9:45') {
+                showFeedback('feedback-leipzig-uhrzeit', 'correct', '✅ Richtig! Der Zug passiert Leipzig um 9:45 Uhr.');
+            } else {
+                showFeedback('feedback-leipzig-uhrzeit', 'incorrect', '❌ Nicht richtig. 1,75 h = 1 h 45 min. Also: 8:00 + 1:45 = ?');
+            }
+        }
+
+        function checkGesamtzeit() {
+            // t1 = 80/120 = 0.667, t2 = 90/200 = 0.45, t3 = 180/250 = 0.72, t4 = 250/200 = 1.25
+            // Summe = 3.087 h
+            checkNumberInput('gesamtzeit', 3.09, 0.05, 'feedback-gesamtzeit', ' h');
+        }
+
+        function checkDurchschnittV() {
+            // v = 600 / 3.087 = 194.4 km/h
+            checkNumberInput('durchschnitt-v', 194.4, 5, 'feedback-durchschnitt-v', ' km/h');
+        }
+
+        function checkBremswegZug() {
+            // s = v²/(2a) = 55.56²/(2*0.5) = 3086.4 m
+            checkNumberInput('bremsweg-zug', 3086.4, 50, 'feedback-bremsweg-zug', ' m');
+        }
+
+        function checkUnfall() {
+            const selected = document.querySelector('input[name="unfall"]:checked');
+            if (!selected) {
+                showFeedback('feedback-unfall', 'incorrect', '❌ Bitte wähle eine Antwort aus.');
+                return;
+            }
+
+            if (selected.value === 'nein') {
+                showFeedback('feedback-unfall', 'correct', '✅ Richtig! Der Bremsweg (3086 m) ist kürzer als der Abstand (5000 m). Kein Unfall!');
+            } else {
+                showFeedback('feedback-unfall', 'incorrect', '❌ Nicht richtig. Vergleiche den berechneten Bremsweg mit dem Abstand von 5000 m.');
+            }
+        }
+
+        function checkZeitUmleitung() {
+            // t = s/v = 5000/55.56 = 90 s
+            checkNumberInput('zeit-umleitung', 90, 2, 'feedback-zeit-umleitung', ' s');
+        }
+
+        // ==================== Station 3: Berlin Straße ====================
+        function checkBremswegRad() {
+            // s = v²/(2a) = 10²/(2*5) = 10 m
+            checkNumberInput('bremsweg-rad', 10, 0.5, 'feedback-bremsweg-rad', ' m');
+        }
+
+        function checkZusammenstoss() {
+            const selected = document.querySelector('input[name="zusammenstoss"]:checked');
+            if (!selected) {
+                showFeedback('feedback-zusammenstoss', 'incorrect', '❌ Bitte wähle eine Antwort aus.');
+                return;
+            }
+
+            if (selected.value === 'nein') {
+                showFeedback('feedback-zusammenstoss', 'correct', '✅ Richtig! Der Bremsweg (10 m) ist kürzer als 12 m. Gerade noch so geschafft!');
+            } else {
+                showFeedback('feedback-zusammenstoss', 'incorrect', '❌ Vergleiche den Bremsweg mit dem Abstand von 12 m.');
+            }
+        }
+
+        function checkBremszeitRad() {
+            // t = v/a = 10/5 = 2 s
+            checkNumberInput('bremszeit-rad', 2.0, 0.1, 'feedback-bremszeit-rad', ' s');
+        }
+
+        function checkReaktionsweg() {
+            // s = v*t = 10*1 = 10 m
+            checkNumberInput('reaktionsweg', 10, 0.5, 'feedback-reaktionsweg', ' m');
+        }
+
+        function checkAnhalteweg() {
+            // s = 10 + 10 = 20 m
+            checkNumberInput('anhalteweg', 20, 0.5, 'feedback-anhalteweg', ' m');
+        }
+
+        function checkBewertungReaktion() {
+            const selected = document.querySelector('input[name="bewertung-reaktion"]:checked');
+            if (!selected) {
+                showFeedback('feedback-bewertung-reaktion', 'incorrect', '❌ Bitte wähle eine Antwort aus.');
+                return;
+            }
+
+            if (selected.value === '2') {
+                showFeedback('feedback-bewertung-reaktion', 'correct', '✅ Richtig! Mit Reaktionszeit (20 m) > 12 m würde es zum Unfall kommen!');
+            } else {
+                showFeedback('feedback-bewertung-reaktion', 'incorrect', '❌ Berechne den Anhalteweg und vergleiche mit 12 m.');
+            }
+        }
+
+        // ==================== Station 4: Routen ====================
+        function checkZeitRouteA() {
+            const result = checkNumberInput('zeit-route-a', 45, 2, 'feedback-zeit-route-a', ' min');
+            if (result) {
+                document.getElementById('table-zeit-a').textContent = '45 min';
+                document.getElementById('table-ankunft-a').textContent = '13:45';
+                document.getElementById('table-puenktlich-a').textContent = '✅ Ja (knapp)';
+            }
+        }
+
+        function checkZeitRouteB() {
+            const result = checkNumberInput('zeit-route-b', 30, 2, 'feedback-zeit-route-b', ' min');
+            if (result) {
+                document.getElementById('table-zeit-b').textContent = '30 min';
+                document.getElementById('table-ankunft-b').textContent = '13:30';
+                document.getElementById('table-puenktlich-b').textContent = '✅ Ja';
+            }
+        }
+
+        function checkZeitRouteC() {
+            const result = checkNumberInput('zeit-route-c', 22, 2, 'feedback-zeit-route-c', ' min');
+            if (result) {
+                document.getElementById('table-zeit-c').textContent = '22 min';
+                document.getElementById('table-ankunft-c').textContent = '13:22';
+                document.getElementById('table-puenktlich-c').textContent = '✅ Ja (viel Puffer)';
+            }
+        }
+
+        function checkRoutenBegruendung() {
+            const input = document.getElementById('routen-begruendung').value;
+            if (input.length < 100) {
+                showFeedback('feedback-routen-begruendung', 'incorrect', '❌ Deine Begründung ist zu kurz. Gehe auf Zeit, Pünktlichkeit und weitere Faktoren ein.');
+                return;
+            }
+
+            showFeedback('feedback-routen-begruendung', 'info', '💡 Danke für deine ausführliche Begründung! Vergleiche sie mit der Musterlösung.');
+        }
+
+        // ==================== Station 5: Boot ====================
+        function checkKraftWasser() {
+            // F = m*a = 100*20 = 2000 N
+            checkNumberInput('kraft-wasser', 2000, 50, 'feedback-kraft-wasser', ' N');
+        }
+
+        function checkKraftBoot() {
+            checkNumberInput('kraft-boot', 2000, 50, 'feedback-kraft-boot', ' N');
+        }
+
+        function checkBeschleunigungBoot() {
+            // a = F/m = 2000/5000 = 0.4 m/s²
+            checkNumberInput('beschleunigung-boot', 0.4, 0.02, 'feedback-beschleunigung-boot', ' m/s²');
+        }
+
+        // ==================== Station 6: Reaktionstest ====================
+        let reactionStartTime = 0;
+        let reactionWaiting = false;
+        let reactionMeasurements = [];
+
+        function startReactionTest() {
+            const button = document.getElementById('reaction-button');
+            const instruction = document.getElementById('reaction-instruction');
+            const result = document.getElementById('reaction-result');
+
+            if (!reactionWaiting) {
+                // Start waiting phase
+                button.textContent = 'WARTE...';
+                button.className = 'reaction-button wait';
+                button.disabled = true;
+                instruction.textContent = 'Warte, bis der Button grün wird...';
+                result.textContent = '';
+
+                // Random delay between 2-5 seconds
+                const delay = 2000 + Math.random() * 3000;
+
+                setTimeout(() => {
+                    button.textContent = 'JETZT KLICKEN!';
+                    button.className = 'reaction-button ready';
+                    button.disabled = false;
+                    instruction.textContent = 'KLICKE JETZT SO SCHNELL WIE MÖGLICH!';
+                    reactionStartTime = Date.now();
+                    reactionWaiting = true;
+                }, delay);
+            } else {
+                // Measure reaction time
+                const reactionTime = Date.now() - reactionStartTime;
+                reactionMeasurements.push(reactionTime);
+
+                let evaluation = '';
+                if (reactionTime < 200) evaluation = '🏆 Sehr schnell!';
+                else if (reactionTime < 250) evaluation = '✅ Schnell!';
+                else if (reactionTime < 300) evaluation = '👍 Durchschnittlich';
+                else if (reactionTime < 400) evaluation = '⚠️ Etwas langsam';
+                else evaluation = '❌ Zu langsam';
+
+                result.innerHTML = `
+                    <strong>Reaktionszeit: ${reactionTime} ms</strong><br>
+                    ${evaluation}<br>
+                    <small>Messung ${reactionMeasurements.length} von 5</small>
+                `;
+
+                // Reset button
+                button.textContent = reactionMeasurements.length < 5 ? 'NOCHMAL' : 'FERTIG - Werte eintragen';
+                button.className = 'reaction-button wait';
+                reactionWaiting = false;
+
+                if (reactionMeasurements.length >= 5) {
+                    instruction.textContent = 'Trage deine Messwerte unten ein!';
+                    // Auto-fill measurements
+                    for (let i = 0; i < 5; i++) {
+                        document.getElementById(`messung-${i+1}`).value = reactionMeasurements[i];
+                    }
+                } else {
+                    instruction.textContent = 'Klicke auf den Button für die nächste Messung';
+                }
+            }
+        }
+
+        function calculateReactionAverage() {
+            const measurements = [];
+            for (let i = 1; i <= 5; i++) {
+                const value = parseFloat(document.getElementById(`messung-${i}`).value);
+                if (isNaN(value)) {
+                    showFeedback('feedback-reaction-average', 'incorrect', '❌ Bitte fülle alle 5 Messungen aus.');
+                    return;
+                }
+                measurements.push(value);
+            }
+
+            const average = measurements.reduce((a, b) => a + b, 0) / 5;
+            let evaluation = '';
+            if (average < 200) evaluation = '🏆 Überdurchschnittlich schnell!';
+            else if (average < 250) evaluation = '✅ Gut!';
+            else if (average < 300) evaluation = '👍 Normal';
+            else if (average < 400) evaluation = '⚠️ Unterdurchschnittlich';
+            else evaluation = '❌ Aufmerksamkeit erhöhen!';
+
+            showFeedback('feedback-reaction-average', 'correct', 
+                `✅ Durchschnittliche Reaktionszeit: <strong>${average.toFixed(1)} ms</strong><br>${evaluation}<br>
+                <small>Im Straßenverkehr: ca. ${(average * 3).toFixed(0)} - ${(average * 4).toFixed(0)} ms</small>`
+            );
+
+            // Store average for later use
+            window.userReactionTime = average;
+        }
+
+        function checkReaktionsweg30() {
+            // Assuming 1s reaction time: s = 8.33 * 1 = 8.33 m
+            checkNumberInput('reaktionsweg-30', 8.33, 0.5, 'feedback-reaktionsweg-30', ' m');
+        }
+
+        function checkReaktionsweg50() {
+            // s = 13.89 * 1 = 13.89 m
+            checkNumberInput('reaktionsweg-50', 13.89, 0.5, 'feedback-reaktionsweg-50', ' m');
+        }
+
+        function checkReaktionsweg100() {
+            // s = 27.78 * 1 = 27.78 m
+            checkNumberInput('reaktionsweg-100', 27.78, 1, 'feedback-reaktionsweg-100', ' m');
+        }
+
+        // ==================== Station 7: Rückfahrt ====================
+        function checkBeschleunigungRueck() {
+            // a = -55.56/120 = -0.463 m/s²
+            checkNumberInput('beschleunigung-rueck', -0.46, 0.02, 'feedback-beschleunigung-rueck', ' m/s²');
+        }
+
+        function checkErklaerungNegativ() {
+            const input = document.getElementById('erklaerung-negativ').value.toLowerCase();
+            if (input.length < 80) {
+                showFeedback('feedback-erklaerung-negativ', 'incorrect', '❌ Deine Erklärung ist zu kurz. Erkläre den Unterschied zwischen negativer Beschleunigung und Bremsvorgang.');
+                return;
+            }
+
+            const keywords = ['betrag', 'zunimmt', 'richtung', 'koordinaten', 'geschwindigkeit'];
+            const foundKeywords = keywords.filter(keyword => input.includes(keyword));
+
+            if (foundKeywords.length >= 2) {
+                showFeedback('feedback-erklaerung-negativ', 'correct', '✅ Sehr gut! Deine Erklärung trifft den Kern. Vergleiche mit der Musterlösung.');
+            } else {
+                showFeedback('feedback-erklaerung-negativ', 'info', '💡 Deine Erklärung geht in die richtige Richtung. Schau dir die Musterlösung an.');
+            }
+        }
+
+        function checkReaktionswegAuto() {
+            // s = 13.89 * 1 = 13.89 m
+            checkNumberInput('reaktionsweg-auto', 13.89, 0.5, 'feedback-reaktionsweg-auto', ' m');
+        }
+
+        function checkBremswegAuto() {
+            // s = 13.89²/(2*8) = 12.05 m
+            checkNumberInput('bremsweg-auto', 12.05, 0.5, 'feedback-bremsweg-auto', ' m');
+        }
+
+        function checkAntaltewegAuto() {
+            // s = 13.89 + 12.05 = 25.94 m
+            checkNumberInput('anhalteweg-auto', 25.94, 1, 'feedback-anhalteweg-auto', ' m');
+        }
+
+        function checkUnfallZebra() {
+            const selected = document.querySelector('input[name="unfall-zebra"]:checked');
+            if (!selected) {
+                showFeedback('feedback-unfall-zebra', 'incorrect', '❌ Bitte wähle eine Antwort aus.');
+                return;
+            }
+
+            if (selected.value === 'ja') {
+                showFeedback('feedback-unfall-zebra', 'correct', '✅ Richtig! Der Anhalteweg (25,94 m) ist länger als 15 m. Es kommt zum Unfall!');
+            } else {
+                showFeedback('feedback-unfall-zebra', 'incorrect', '❌ Vergleiche den Anhalteweg mit dem Abstand von 15 m.');
+            }
+        }
+
+        function checkBewertungZebra() {
+            const input = document.getElementById('bewertung-zebra').value;
+            if (input.length < 100) {
+                showFeedback('feedback-bewertung-zebra', 'incorrect', '❌ Deine Bewertung ist zu kurz. Gehe auf die Gefahren und mögliche Maßnahmen ein.');
+                return;
+            }
+
+            showFeedback('feedback-bewertung-zebra', 'info', '💡 Danke für deine ausführliche Bewertung! Vergleiche sie mit der Musterlösung.');
+        }
+
+        // ==================== Zusammenfassung ====================
+        function saveReflexion() {
+            const schwierig = document.getElementById('reflexion-schwierig').value;
+            const gefallen = document.getElementById('reflexion-gefallen').value;
+            const vertiefen = document.getElementById('reflexion-vertiefen').value;
+
+            if (schwierig.length < 20 || gefallen.length < 20 || vertiefen.length < 20) {
+                showFeedback('feedback-reflexion', 'incorrect', '❌ Bitte fülle alle Felder ausführlich aus.');
+                return;
+            }
+
+            showFeedback('feedback-reflexion', 'correct', '✅ Deine Reflexion wurde gespeichert. Vielen Dank für dein Feedback!');
+
+            // In a real application, this would be saved to a database
+            console.log('Reflexion gespeichert:', { schwierig, gefallen, vertiefen });
+        }
+
+        // ==================== Canvas Drawing ====================
+        const canvases = {};
+
+        function initCanvas(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas || canvases[canvasId]) return;
+
+            const ctx = canvas.getContext('2d');
+            canvases[canvasId] = {
+                canvas: canvas,
+                ctx: ctx,
+                points: [],
+                isDrawing: false
+            };
+
+            // Draw axes
+            drawAxes(canvasId);
+
+            // Add event listeners
+            canvas.addEventListener('mousedown', (e) => startDrawing(canvasId, e));
+            canvas.addEventListener('mousemove', (e) => draw(canvasId, e));
+            canvas.addEventListener('mouseup', () => stopDrawing(canvasId));
+            canvas.addEventListener('mouseleave', () => stopDrawing(canvasId));
+        }
+
+        function drawAxes(canvasId) {
+            const data = canvases[canvasId];
+            if (!data) return;
+
+            const ctx = data.ctx;
+            const canvas = data.canvas;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw axes
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+
+            // Y-axis
+            ctx.beginPath();
+            ctx.moveTo(50, 20);
+            ctx.lineTo(50, canvas.height - 50);
+            ctx.stroke();
+
+            // X-axis
+            ctx.beginPath();
+            ctx.moveTo(50, canvas.height - 50);
+            ctx.lineTo(canvas.width - 20, canvas.height - 50);
+            ctx.stroke();
+
+            // Labels
+            ctx.font = '14px Arial';
+            ctx.fillStyle = '#000';
+            ctx.fillText('t', canvas.width - 30, canvas.height - 30);
+            ctx.fillText('v/s', 30, 30);
+
+            // Grid
+            ctx.strokeStyle = '#ddd';
+            ctx.lineWidth = 1;
+            for (let i = 1; i < 10; i++) {
+                // Vertical lines
+                ctx.beginPath();
+                ctx.moveTo(50 + i * (canvas.width - 70) / 10, 20);
+                ctx.lineTo(50 + i * (canvas.width - 70) / 10, canvas.height - 50);
+                ctx.stroke();
+
+                // Horizontal lines
+                ctx.beginPath();
+                ctx.moveTo(50, 20 + i * (canvas.height - 70) / 10);
+                ctx.lineTo(canvas.width - 20, 20 + i * (canvas.height - 70) / 10);
+                ctx.stroke();
+            }
+        }
+
+        function startDrawing(canvasId, e) {
+            const data = canvases[canvasId];
+            if (!data) return;
+
+            data.isDrawing = true;
+            const rect = data.canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            data.points = [{x, y}];
+        }
+
+        function draw(canvasId, e) {
+            const data = canvases[canvasId];
+            if (!data || !data.isDrawing) return;
+
+            const rect = data.canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            data.points.push({x, y});
+
+            // Redraw
+            drawAxes(canvasId);
+
+            // Draw user's line
+            const ctx = data.ctx;
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(data.points[0].x, data.points[0].y);
+            for (let i = 1; i < data.points.length; i++) {
+                ctx.lineTo(data.points[i].x, data.points[i].y);
+            }
+            ctx.stroke();
+        }
+
+        function stopDrawing(canvasId) {
+            const data = canvases[canvasId];
+            if (!data) return;
+            data.isDrawing = false;
+        }
+
+        function clearCanvas(canvasId) {
+            const data = canvases[canvasId];
+            if (!data) return;
+            data.points = [];
+            drawAxes(canvasId);
+        }
+
+        function showSolutionDiagram(canvasId, diagramType) {
+            drawAxes(canvasId);
+            const data = canvases[canvasId];
+            if (!data) return;
+
+            const ctx = data.ctx;
+            const canvas = data.canvas;
+            const width = canvas.width - 70;
+            const height = canvas.height - 70;
+
+            ctx.strokeStyle = '#10b981';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+
+            switch(diagramType) {
+                case 'tv-rad':
+                    // Linear decrease from (0, 10 m/s) to (2s, 0)
+                    ctx.moveTo(50, canvas.height - 50 - (10/12) * height);
+                    ctx.lineTo(50 + (2/3) * width, canvas.height - 50);
+                    break;
+
+                case 'route-a':
+                    // Trapezoid: acceleration, constant, deceleration
+                    ctx.moveTo(50, canvas.height - 50);
+                    ctx.lineTo(50 + (5/50) * width, canvas.height - 50 - (5/6) * height);
+                    ctx.lineTo(50 + (40/50) * width, canvas.height - 50 - (5/6) * height);
+                    ctx.lineTo(50 + (45/50) * width, canvas.height - 50);
+                    break;
+
+                case 'route-b':
+                    // Complex profile with waiting
+                    ctx.moveTo(50, canvas.height - 50);
+                    ctx.lineTo(50 + (3/30) * width, canvas.height - 50 - (4/50) * height);
+                    ctx.lineTo(50 + (8/30) * width, canvas.height - 50 - (4/50) * height);
+                    ctx.lineTo(50 + (10/30) * width, canvas.height - 50 - (40/50) * height);
+                    ctx.lineTo(50 + (25/30) * width, canvas.height - 50 - (40/50) * height);
+                    ctx.lineTo(50 + (27/30) * width, canvas.height - 50 - (4/50) * height);
+                    ctx.lineTo(50 + width, canvas.height - 50);
+                    break;
+
+                case 'route-c':
+                    // U-Bahn profile
+                    ctx.moveTo(50, canvas.height - 50);
+                    ctx.lineTo(50 + (5/22) * width, canvas.height - 50 - (4/70) * height);
+                    ctx.lineTo(50 + (7/22) * width, canvas.height - 50 - (4/70) * height);
+                    ctx.lineTo(50 + (9/22) * width, canvas.height - 50 - (60/70) * height);
+                    ctx.lineTo(50 + (15/22) * width, canvas.height - 50 - (60/70) * height);
+                    ctx.lineTo(50 + (17/22) * width, canvas.height - 50 - (4/70) * height);
+                    ctx.lineTo(50 + width, canvas.height - 50);
+                    break;
+
+                case 'boot-tv':
+                    // Linear increase then constant
+                    ctx.moveTo(50, canvas.height - 50);
+                    ctx.lineTo(50 + (10/20) * width, canvas.height - 50 - (4/5) * height);
+                    ctx.lineTo(50 + width, canvas.height - 50 - (4/5) * height);
+                    break;
+
+                case 'boot-ts':
+                    // Parabola then linear
+                    ctx.moveTo(50, canvas.height - 50);
+                    for (let t = 0; t <= 10; t += 0.5) {
+                        const s = 0.5 * 0.4 * t * t;
+                        const x = 50 + (t/20) * width;
+                        const y = canvas.height - 50 - (s/50) * height;
+                        ctx.lineTo(x, y);
+                    }
+                    ctx.lineTo(50 + width, canvas.height - 50 - (40/50) * height);
+                    break;
+
+                case 'rueckfahrt':
+                    // Negative velocity profile
+                    const midY = canvas.height - 50;
+                    ctx.moveTo(50, midY);
+                    ctx.lineTo(50 + (2/182) * width, midY + (200/250) * (height/2));
+                    ctx.lineTo(50 + (180/182) * width, midY + (200/250) * (height/2));
+                    ctx.lineTo(50 + width, midY);
+                    break;
+            }
+
+            ctx.stroke();
+        }
+
+        // Initialize all canvases when sections become visible
+        const canvasIds = ['canvas-tv-rad', 'canvas-route-a', 'canvas-route-b', 'canvas-route-c', 
+                          'canvas-boot-tv', 'canvas-boot-ts', 'canvas-rueckfahrt'];
+        
+        // Initialize canvases with a delay to ensure they're rendered
+        setTimeout(() => {
+            canvasIds.forEach(id => {
+                const canvas = document.getElementById(id);
+                if (canvas) {
+                    initCanvas(id);
+                }
+            });
+        }, 500);
+
+        // ==================== Initialize ====================
+        window.addEventListener('load', () => {
+            updateProgress();
+        });
+    </script>
+</body>
+</html>

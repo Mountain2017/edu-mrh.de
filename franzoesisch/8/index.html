@@ -1,0 +1,2570 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Découvrons le Québec! 🍁</title>
+    <link rel="stylesheet" href="https://embed.edu-mrh.de/style.css">
+    <style>
+        .quebec-flag {
+            background: linear-gradient(to bottom, #003399 50%, white 50%);
+            height: 100px;
+            position: relative;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .audio-player {
+            background: var(--primary-light);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .pronunciation-box {
+            background: #fef3c7;
+            border-left: 4px solid var(--warning-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .example-box {
+            color: var(--primary-color);
+        }
+
+        .example-box p {
+            color: black;
+        }
+
+        .example-box li {
+            color: black;
+        }
+        
+        .vocab-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 1rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .vocab-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .flip-card {
+            perspective: 1000px;
+            height: 200px;
+            margin-bottom: 1rem;
+        }
+        
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            padding: 2rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .flip-card-front {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .flip-card-back {
+            background: var(--success-color);
+            color: white;
+            transform: rotateY(180deg);
+        }
+        
+        .dialogue-box {
+            background: #e0f2fe;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .speaker-a {
+            background: var(--primary-light);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+        }
+        
+        .speaker-b {
+            background: var(--secondary-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+        }
+        
+        .exercise-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            margin: 0.5rem 0;
+        }
+        
+        .exercise-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .check-button {
+            background: var(--success-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            margin-top: 0.5rem;
+        }
+        
+        .check-button:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+        
+        .feedback {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-weight: 600;
+            display: none;
+        }
+        
+        .feedback.correct {
+            background: #d1fae5;
+            color: var(--success-color);
+            display: block;
+        }
+        
+        .feedback.incorrect {
+            background: #fee2e2;
+            color: var(--danger-color);
+            display: block;
+        }
+        
+        .map-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        
+        .culture-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .culture-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+        }
+        
+        .culture-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .culture-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+        
+        .timeline-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .timeline-year {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .expression-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .expression-card h4 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .recording-box {
+            background: #fef3c7;
+            border: 2px solid var(--warning-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        
+        .partner-exercise {
+            background: #dbeafe;
+            border: 2px solid var(--primary-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
+        .writing-area {
+            width: 100%;
+            min-height: 150px;
+            padding: 1rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+        }
+        
+        .writing-area:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .word-count {
+            text-align: right;
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .quiz-option {
+            color: var(--primary-color);
+            background: white;
+            padding: 1rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .quiz-option {
+            background: white;
+            padding: 1rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .quiz-option:hover {
+            border-color: var(--primary-color);
+            background: var(--gray-lighter);
+        }
+        
+        .quiz-option.selected {
+            border-color: var(--primary-color);
+            background: var(--primary-light);
+            color: white;
+        }
+        
+        .quiz-option.correct {
+            border-color: var(--success-color);
+            background: #d1fae5;
+        }
+        
+        .quiz-option.incorrect {
+            border-color: var(--danger-color);
+            background: #fee2e2;
+        }
+        
+        #chronologyExercise .quiz-option {
+            cursor: grab;
+            transition: all 0.2s ease;
+        }
+        
+        #chronologyExercise .quiz-option:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        #chronologyExercise .quiz-option.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+        
+        #chronologyExercise .quiz-option.drag-over {
+            border-color: var(--primary-color);
+            background: var(--primary-light);
+        }
+        
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .food-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        
+        .food-item .emoji {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-indicator {
+            background: var(--gray-lighter);
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="icon">🍁</span>
+                <span>Découvrons le Québec!</span>
+            </div>
+            <div class="nav-progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+    </nav>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Chapitres</h3>
+            <button class="sidebar-toggle" id="sidebarToggle">✕</button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#" data-section="accueil" class="active">🏠 Accueil</a></li>
+            <li><a href="#" data-section="geographie">🗺️ Géographie</a></li>
+            <li><a href="#" data-section="histoire">📚 Histoire</a></li>
+            <li><a href="#" data-section="langue">🗣️ La langue québécoise</a></li>
+            <li><a href="#" data-section="culture">🎭 Culture</a></li>
+            <li><a href="#" data-section="gastronomie">🍽️ Gastronomie</a></li>
+            <li><a href="#" data-section="vocabulaire">📖 Vocabulaire</a></li>
+            <li><a href="#" data-section="dialogues">💬 Dialogues</a></li>
+            <li><a href="#" data-section="exercices">✍️ Exercices</a></li>
+            <li><a href="#" data-section="projet">🎯 Projet final</a></li>
+        </ul>
+    </aside>
+
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <main class="main-content">
+        <div class="container">
+            
+            <section id="accueil" class="content-section active">
+                <div class="hero">
+                    <h1 class="hero-title">Bienvenue au Québec! 🍁</h1>
+                    <p class="hero-subtitle">Découvrons la Belle Province</p>
+                    <p class="hero-description">Une aventure linguistique et culturelle au cœur du Canada francophone</p>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-icon">🗺️</div>
+                        <h3>Géographie</h3>
+                        <ul>
+                            <li>Plus grande province du Canada</li>
+                            <li>1,5 million de km²</li>
+                            <li>8,5 millions d'habitants</li>
+                            <li>Capitale: Québec</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">🗣️</div>
+                        <h3>Langue</h3>
+                        <ul>
+                            <li>Français: langue officielle</li>
+                            <li>80% francophones</li>
+                            <li>Accent unique</li>
+                            <li>Expressions typiques</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">🎭</div>
+                        <h3>Culture</h3>
+                        <ul>
+                            <li>Mélange franco-américain</li>
+                            <li>Festivals renommés</li>
+                            <li>Musique variée</li>
+                            <li>Traditions vivantes</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🎯 Objectifs d'apprentissage</h3>
+                    <div class="example-content">
+                        <p><strong>Dans ce module, tu vas:</strong></p>
+                        <ul>
+                            <li>Découvrir la géographie et l'histoire du Québec</li>
+                            <li>Apprendre des expressions québécoises typiques</li>
+                            <li>Comprendre les différences avec le français de France</li>
+                            <li>Pratiquer des dialogues de la vie quotidienne</li>
+                            <li>Explorer la culture et les traditions québécoises</li>
+                            <li>Créer ton propre projet sur le Québec</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="geographie" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Chapitre 1</span>
+                    <h2>La géographie du Québec</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>🗺️ Situation géographique</h3>
+                    <div class="example-content">
+                        <p>Le Québec est situé dans l'est du Canada. C'est la plus grande province canadienne avec une superficie de 1,5 million de km² - trois fois la France!</p>
+                        
+                        <div class="map-container">
+                            <p style="font-size: 4rem;">🗺️</p>
+                            <p><strong>Frontières:</strong></p>
+                            <ul style="text-align: left; max-width: 500px; margin: 1rem auto;">
+                                <li><strong>Nord:</strong> Océan Arctique</li>
+                                <li><strong>Est:</strong> Terre-Neuve-et-Labrador</li>
+                                <li><strong>Sud:</strong> États-Unis (New York, Vermont, etc.)</li>
+                                <li><strong>Ouest:</strong> Ontario</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🏙️ Les grandes villes</h3>
+                    <div class="culture-grid">
+                        <div class="culture-card">
+                            <div class="icon">🏛️</div>
+                            <h4>Québec</h4>
+                            <p><strong>La capitale</strong></p>
+                            <p>540 000 habitants</p>
+                            <p>Vieux-Québec (UNESCO)</p>
+                        </div>
+
+                        <div class="culture-card">
+                            <div class="icon">🌆</div>
+                            <h4>Montréal</h4>
+                            <p><strong>La métropole</strong></p>
+                            <p>1,8 million d'habitants</p>
+                            <p>Ville bilingue et cosmopolite</p>
+                        </div>
+
+                        <div class="culture-card">
+                            <div class="icon">🏔️</div>
+                            <h4>Gatineau</h4>
+                            <p><strong>Près d'Ottawa</strong></p>
+                            <p>280 000 habitants</p>
+                            <p>Région de la capitale nationale</p>
+                        </div>
+
+                        <div class="culture-card">
+                            <div class="icon">🌲</div>
+                            <h4>Saguenay</h4>
+                            <p><strong>Au nord</strong></p>
+                            <p>145 000 habitants</p>
+                            <p>Fjord du Saguenay</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>✍️ Exercice d'écriture - À toi!</h4>
+                    <p><strong>Décris ta région en français et compare-la avec le Québec:</strong></p>
+                    <textarea class="writing-area" id="writingEx1" placeholder="Écris au moins 80 mots..."></textarea>
+                    <div class="word-count" id="wordCount1">0 mots</div>
+                    <p class="mt-2"><strong>Aide:</strong></p>
+                    <ul>
+                        <li>J'habite à... / dans la région de...</li>
+                        <li>Ma ville/région a... habitants</li>
+                        <li>Il y a... (des montagnes, des lacs, etc.)</li>
+                        <li>Contrairement au Québec, nous avons/n'avons pas...</li>
+                        <li>Le climat est... (plus chaud, plus froid, similaire)</li>
+                    </ul>
+                </div>
+
+                <div class="example-box warning">
+                    <h3>🗣️ Exercice oral - En partenaire</h3>
+                    <div class="example-content">
+                        <p><strong>Jeu de rôle: Interview d'un Québécois</strong></p>
+                        <p>Travaillez à deux. Une personne joue le rôle d'un journaliste allemand, l'autre d'un Québécois qui présente sa région.</p>
+                        
+                        <div class="partner-exercise">
+                            <p><strong>👤 Journaliste - Questions possibles:</strong></p>
+                            <ul>
+                                <li>Où habites-tu exactement au Québec?</li>
+                                <li>Comment est ta ville? Qu'est-ce qu'il y a à voir?</li>
+                                <li>Combien d'habitants y a-t-il dans ta ville?</li>
+                                <li>Quel temps fait-il en hiver? Et en été?</li>
+                                <li>Qu'est-ce que tu aimes le plus dans ta région?</li>
+                                <li>Est-ce qu'il y a des endroits touristiques?</li>
+                            </ul>
+                            
+                            <p class="mt-2"><strong>🍁 Québécois - Réponds avec des détails:</strong></p>
+                            <ul>
+                                <li>Utilise le vocabulaire appris</li>
+                                <li>Décris le paysage, le climat, les activités</li>
+                                <li>Parle des saisons (très importantes au Québec!)</li>
+                            </ul>
+                        </div>
+                        <p class="mt-2">⏱️ <strong>Durée:</strong> 5 minutes - Puis changez les rôles!</p>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>❄️ Le climat québécois</h3>
+                    <div class="definition">
+                        <p><strong>Le Québec a un climat continental avec quatre saisons très marquées:</strong></p>
+                    </div>
+                    
+                    <div class="culture-grid">
+                        <div class="culture-card">
+                            <div class="icon">❄️</div>
+                            <h4>Hiver</h4>
+                            <p>Décembre - Mars</p>
+                            <p>-10°C à -25°C</p>
+                            <p>Beaucoup de neige!</p>
+                        </div>
+
+                        <div class="culture-card">
+                            <div class="icon">🌸</div>
+                            <h4>Printemps</h4>
+                            <p>Avril - Mai</p>
+                            <p>5°C à 15°C</p>
+                            <p>La nature se réveille</p>
+                        </div>
+
+                        <div class="culture-card">
+                            <div class="icon">☀️</div>
+                            <h4>Été</h4>
+                            <p>Juin - Août</p>
+                            <p>20°C à 30°C</p>
+                            <p>Chaud et agréable</p>
+                        </div>
+
+                        <div class="culture-card">
+                            <div class="icon">🍂</div>
+                            <h4>Automne</h4>
+                            <p>Septembre - Novembre</p>
+                            <p>5°C à 15°C</p>
+                            <p>Les couleurs magnifiques</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="histoire" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Chapitre 2</span>
+                    <h2>L'histoire du Québec</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>📚 Une histoire fascinante</h3>
+                    <div class="example-content">
+                        <p>L'histoire du Québec est marquée par la rencontre de différentes cultures: les peuples autochtones, les colons français et l'influence britannique.</p>
+                    </div>
+                </div>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <span class="timeline-year">Avant 1534</span>
+                        <h4>Les Premiers Peuples</h4>
+                        <p>Les peuples autochtones (Iroquois, Algonquins, Inuits) vivent sur ce territoire depuis des millénaires.</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="timeline-year">1534</span>
+                        <h4>Jacques Cartier</h4>
+                        <p>L'explorateur français Jacques Cartier arrive au Québec et prend possession du territoire au nom du roi de France.</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="timeline-year">1608</span>
+                        <h4>Fondation de Québec</h4>
+                        <p>Samuel de Champlain fonde la ville de Québec. C'est le début de la Nouvelle-France.</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="timeline-year">1763</span>
+                        <h4>Traité de Paris</h4>
+                        <p>La France cède le Canada à la Grande-Bretagne. Les Canadiens français doivent vivre sous domination britannique.</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="timeline-year">1867</span>
+                        <h4>Confédération canadienne</h4>
+                        <p>Le Québec devient une province du Canada. Le français est reconnu comme langue officielle.</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="timeline-year">1960-1970</span>
+                        <h4>Révolution tranquille</h4>
+                        <p>Modernisation du Québec. Le français devient la langue de travail et d'éducation.</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <span class="timeline-year">Aujourd'hui</span>
+                        <h4>Le Québec moderne</h4>
+                        <p>Le Québec est une société francophone dynamique et multiculturelle en Amérique du Nord.</p>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>✍️ Exercice: Chronologie</h4>
+                    <p><strong>Remets les événements dans l'ordre chronologique:</strong></p>
+                    <div id="chronologyExercise">
+                        <div class="quiz-option" data-order="3" draggable="true">La Révolution tranquille</div>
+                        <div class="quiz-option" data-order="1" draggable="true">Jacques Cartier arrive au Québec</div>
+                        <div class="quiz-option" data-order="4" draggable="true">Le Québec aujourd'hui</div>
+                        <div class="quiz-option" data-order="2" draggable="true">Fondation de la ville de Québec</div>
+                    </div>
+                    <button class="check-button" onclick="checkChronology()">Vérifier</button>
+                    <div class="feedback" id="chronologyFeedback"></div>
+                </div>
+
+                <div class="example-box warning">
+                    <h3>🗣️ Exercice oral - Présentation</h3>
+                    <div class="example-content">
+                        <p><strong>Prépare une mini-présentation (2 minutes):</strong></p>
+                        <div class="recording-box">
+                            <p>🎤 <strong>Sujet:</strong> "Un événement important de l'histoire du Québec"</p>
+                            <p class="mt-2">Choisis un événement de la chronologie et présente-le à la classe:</p>
+                            <ul style="text-align: left; max-width: 600px; margin: 1rem auto;">
+                                <li>Quelle année? (En... / Au...)</li>
+                                <li>Qui? (Les personnes importantes)</li>
+                                <li>Quoi? (Qu'est-ce qui s'est passé?)</li>
+                                <li>Pourquoi c'est important?</li>
+                            </ul>
+                            <p class="mt-2"><strong>Structures utiles:</strong></p>
+                            <p>En 1608, ... / À cette époque, ... / C'était important parce que...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🏴 La devise du Québec</h3>
+                    <div class="definition">
+                        <p style="font-size: 1.5rem; text-align: center; color: var(--primary-color); font-weight: 700;">
+                            "Je me souviens"
+                        </p>
+                        <p class="mt-2">Cette devise est inscrite sur toutes les plaques d'immatriculation québécoises. Elle rappelle l'importance de l'histoire et de la culture française en Amérique du Nord.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="langue" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Chapitre 3</span>
+                    <h2>La langue québécoise</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>🗣️ Le français québécois</h3>
+                    <div class="example-content">
+                        <p>Le français québécois est différent du français de France! Il a son propre accent, son vocabulaire et ses expressions. C'est ce qui le rend unique et fascinant!</p>
+                    </div>
+                </div>
+
+                <div class="concept-box warning">
+                    <h3>🔊 L'accent québécois</h3>
+                    <div class="pronunciation-box">
+                        <h4>Caractéristiques principales:</h4>
+                        <ul>
+                            <li><strong>"tu" et "du"</strong> se prononcent "tsu" et "dzu"</li>
+                            <li><strong>Les voyelles</strong> sont souvent plus nasales</li>
+                            <li><strong>Le "r"</strong> est roulé (comme en allemand!)</li>
+                            <li><strong>Les "oi"</strong> se prononcent souvent "oè"</li>
+                        </ul>
+                        
+                        <div class="mt-2">
+                            <p><strong>Exemples:</strong></p>
+                            <ul>
+                                <li>"Tu dis" → "Tsu dis"</li>
+                                <li>"Moi" → "Moè"</li>
+                                <li>"Partir" → avec un "r" roulé</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>💬 Expressions québécoises typiques</h3>
+                    
+                    <div class="expression-card">
+                        <h4>🍁 "C'est le fun!"</h4>
+                        <p><strong>Signification:</strong> C'est amusant! C'est super!</p>
+                        <p><strong>En France:</strong> C'est sympa! / C'est génial!</p>
+                        <p><strong>Exemple:</strong> "La fête hier soir, c'était le fun!"</p>
+                    </div>
+
+                    <div class="expression-card">
+                        <h4>🍁 "Bienvenue!"</h4>
+                        <p><strong>Signification:</strong> De rien! (réponse à "merci")</p>
+                        <p><strong>En France:</strong> De rien! / Je t'en prie!</p>
+                        <p><strong>Exemple:</strong> "Merci!" - "Bienvenue!"</p>
+                    </div>
+
+                    <div class="expression-card">
+                        <h4>🍁 "Avoir de la misère"</h4>
+                        <p><strong>Signification:</strong> Avoir des difficultés</p>
+                        <p><strong>En France:</strong> Avoir du mal</p>
+                        <p><strong>Exemple:</strong> "J'ai de la misère à comprendre cet exercice."</p>
+                    </div>
+
+                    <div class="expression-card">
+                        <h4>🍁 "Être tanné(e)"</h4>
+                        <p><strong>Signification:</strong> En avoir marre</p>
+                        <p><strong>En France:</strong> En avoir assez</p>
+                        <p><strong>Exemple:</strong> "Je suis tanné de la pluie!"</p>
+                    </div>
+
+                    <div class="expression-card">
+                        <h4>🍁 "Un char"</h4>
+                        <p><strong>Signification:</strong> Une voiture</p>
+                        <p><strong>En France:</strong> Une voiture / Une bagnole</p>
+                        <p><strong>Exemple:</strong> "Mon père a acheté un nouveau char."</p>
+                    </div>
+
+                    <div class="expression-card">
+                        <h4>🍁 "Magasiner"</h4>
+                        <p><strong>Signification:</strong> Faire du shopping</p>
+                        <p><strong>En France:</strong> Faire les magasins</p>
+                        <p><strong>Exemple:</strong> "On va magasiner samedi?"</p>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>✍️ Exercice: Traduction</h4>
+                    <p><strong>Traduis ces phrases québécoises en français de France:</strong></p>
+                    
+                    <div class="mb-2">
+                        <p><strong>1.</strong> "C'est le fun, ton nouveau char!"</p>
+                        <input type="text" class="exercise-input" id="trans1" placeholder="Ta réponse...">
+                    </div>
+
+                    <div class="mb-2">
+                        <p><strong>2.</strong> "Je suis tanné, j'ai de la misère avec mes devoirs."</p>
+                        <input type="text" class="exercise-input" id="trans2" placeholder="Ta réponse...">
+                    </div>
+
+                    <div class="mb-2">
+                        <p><strong>3.</strong> "On va magasiner demain? - Oui, c'est le fun!"</p>
+                        <input type="text" class="exercise-input" id="trans3" placeholder="Ta réponse...">
+                    </div>
+
+                    <button class="check-button" onclick="checkTranslations()">Vérifier</button>
+                    <div class="feedback" id="translationFeedback"></div>
+                </div>
+
+                <div class="example-box warning">
+                    <h3>🗣️ Exercice oral - En partenaire</h3>
+                    <div class="example-content">
+                        <p><strong>Dialogue avec expressions québécoises</strong></p>
+                        <div class="partner-exercise">
+                            <p><strong>Situation:</strong> Deux amis québécois parlent de leur weekend</p>
+                            
+                            <div class="dialogue-box">
+                                <div class="speaker-a">
+                                    <strong>👤 Alex:</strong> Salut! Comment ça va?
+                                </div>
+                                <div class="speaker-b">
+                                    <strong>👤 Marie:</strong> Ça va bien! J'ai magasiné hier, c'était le fun!
+                                </div>
+                                <div class="speaker-a">
+                                    <strong>👤 Alex:</strong> Cool! Tu as acheté quelque chose?
+                                </div>
+                                <div class="speaker-b">
+                                    <strong>👤 Marie:</strong> Oui, des vêtements pour l'hiver. Il fait frette!
+                                </div>
+                                <div class="speaker-a">
+                                    <strong>👤 Alex:</strong> C'est vrai! Moi, j'ai de la misère avec le froid.
+                                </div>
+                                <div class="speaker-b">
+                                    <strong>👤 Marie:</strong> Tu vas t'habituer! Bon, je dois y aller.
+                                </div>
+                                <div class="speaker-a">
+                                    <strong>👤 Alex:</strong> OK, à plus! Merci pour la conversation!
+                                </div>
+                                <div class="speaker-b">
+                                    <strong>👤 Marie:</strong> Bienvenue! À bientôt!
+                                </div>
+                            </div>
+
+                            <p class="mt-2"><strong>À vous maintenant!</strong></p>
+                            <p>Créez votre propre dialogue en utilisant au moins 5 expressions québécoises. Jouez-le devant la classe!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>📝 Vocabulaire québécois vs français</h3>
+                    <div class="comparison-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Québécois 🍁</th>
+                                    <th>Français de France 🇫🇷</th>
+                                    <th>Allemand 🇩🇪</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Un char</td>
+                                    <td>Une voiture</td>
+                                    <td>Ein Auto</td>
+                                </tr>
+                                <tr>
+                                    <td>Magasiner</td>
+                                    <td>Faire du shopping</td>
+                                    <td>Einkaufen gehen</td>
+                                </tr>
+                                <tr>
+                                    <td>Une blonde / un chum</td>
+                                    <td>Une petite amie / un petit ami</td>
+                                    <td>Eine Freundin / ein Freund</td>
+                                </tr>
+                                <tr>
+                                    <td>Avoir de la misère</td>
+                                    <td>Avoir du mal</td>
+                                    <td>Schwierigkeiten haben</td>
+                                </tr>
+                                <tr>
+                                    <td>Être tanné(e)</td>
+                                    <td>En avoir marre</td>
+                                    <td>Die Nase voll haben</td>
+                                </tr>
+                                <tr>
+                                    <td>C'est le fun</td>
+                                    <td>C'est sympa</td>
+                                    <td>Es macht Spaß</td>
+                                </tr>
+                                <tr>
+                                    <td>Il fait frette</td>
+                                    <td>Il fait froid</td>
+                                    <td>Es ist kalt</td>
+                                </tr>
+                                <tr>
+                                    <td>Une tuque</td>
+                                    <td>Un bonnet</td>
+                                    <td>Eine Mütze</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="culture" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Chapitre 4</span>
+                    <h2>Culture et traditions</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>🎭 La culture québécoise</h3>
+                    <div class="example-content">
+                        <p>La culture québécoise est un mélange unique de traditions françaises, d'influences amérindiennes et de modernité nord-américaine. Elle se caractérise par sa joie de vivre et sa fierté culturelle!</p>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🎉 Les festivals et événements</h3>
+                    <div class="culture-grid">
+                        <div class="culture-card">
+                            <div class="icon">❄️</div>
+                            <h4>Carnaval de Québec</h4>
+                            <p><strong>Février</strong></p>
+                            <p>Le plus grand carnaval d'hiver du monde!</p>
+                            <p>Mascotte: Bonhomme Carnaval</p>
+                        </div>
+
+                        <div class="culture-card">
+                            <div class="icon">🎵</div>
+                            <h4>Festival d'été de Québec</h4>
+                            <p><strong>Juillet</strong></p>
+                            <p>11 jours de concerts</p>
+                            <p>Plus de 300 spectacles</p>
+                        </div>
+
+                        <div class="culture-card">
+                            <div class="icon">🎪</div>
+                            <h4>Festival Juste pour rire</h4>
+                            <p><strong>Juillet - Montréal</strong></p>
+                            <p>Festival d'humour</p>
+                            <p>Le plus grand au monde</p>
+                        </div>
+
+                        <div class="culture-card">
+                            <div class="icon">🎬</div>
+                            <h4>Festival du cinéma</h4>
+                            <p><strong>Septembre - Montréal</strong></p>
+                            <p>Films du monde entier</p>
+                            <p>Découverte de talents</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🎵 La musique québécoise</h3>
+                    <div class="example-content">
+                        <p>La musique est très importante dans la culture québécoise!</p>
+                        
+                        <div class="culture-grid">
+                            <div class="culture-card">
+                                <div class="icon">🎸</div>
+                                <h4>Céline Dion</h4>
+                                <p>Chanteuse internationale</p>
+                                <p>Née à Charlemagne, Québec</p>
+                            </div>
+
+                            <div class="culture-card">
+                                <div class="icon">🎤</div>
+                                <h4>Arcade Fire</h4>
+                                <p>Groupe rock indie</p>
+                                <p>Basé à Montréal</p>
+                            </div>
+
+                            <div class="culture-card">
+                                <div class="icon">🎻</div>
+                                <h4>Musique traditionnelle</h4>
+                                <p>Violon, accordéon</p>
+                                <p>Danses folkloriques</p>
+                            </div>
+
+                            <div class="culture-card">
+                                <div class="icon">🎹</div>
+                                <h4>Chanson québécoise</h4>
+                                <p>Gilles Vigneault</p>
+                                <p>Félix Leclerc</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>✍️ Exercice d'écriture - Comparaison culturelle</h4>
+                    <p><strong>Compare un festival québécois avec un festival allemand/bavarois:</strong></p>
+                    <textarea class="writing-area" id="writingEx2" placeholder="Écris au moins 100 mots..."></textarea>
+                    <div class="word-count" id="wordCount2">0 mots</div>
+                    
+                    <div class="mt-2">
+                        <p><strong>Points à comparer:</strong></p>
+                        <ul>
+                            <li>Quelle est la période de l'année?</li>
+                            <li>Quelles sont les activités principales?</li>
+                            <li>Qu'est-ce qui est similaire?</li>
+                            <li>Qu'est-ce qui est différent?</li>
+                            <li>Lequel préfères-tu et pourquoi?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🏒 Le sport au Québec</h3>
+                    <div class="example-content">
+                        <p><strong>Le hockey sur glace</strong> est LE sport national! Les Québécois sont passionnés par le hockey.</p>
+                        
+                        <div class="culture-card">
+                            <div class="icon">🏒</div>
+                            <h4>Les Canadiens de Montréal</h4>
+                            <p>L'équipe la plus célèbre</p>
+                            <p>Surnommée "Le Tricolore" ou "Les Habs"</p>
+                            <p>24 fois champions de la Coupe Stanley!</p>
+                        </div>
+
+                        <p class="mt-2"><strong>Autres sports populaires:</strong></p>
+                        <ul>
+                            <li>⛷️ <strong>Ski et snowboard</strong> - Les Laurentides sont parfaites!</li>
+                            <li>🚴 <strong>Vélo</strong> - Montréal a d'excellentes pistes cyclables</li>
+                            <li>🛶 <strong>Canoë et kayak</strong> - Sur les nombreux lacs et rivières</li>
+                            <li>⚽ <strong>Football (soccer)</strong> - De plus en plus populaire</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="example-box warning">
+                    <h3>🗣️ Exercice oral - Présentation</h3>
+                    <div class="example-content">
+                        <div class="recording-box">
+                            <p>🎤 <strong>Prépare une présentation de 3 minutes:</strong></p>
+                            <p class="mt-2"><strong>Sujet au choix:</strong></p>
+                            <ul style="text-align: left; max-width: 600px; margin: 1rem auto;">
+                                <li>Un festival québécois qui t'intéresse</li>
+                                <li>Un musicien ou groupe québécois</li>
+                                <li>Le hockey au Québec</li>
+                                <li>Une tradition québécoise</li>
+                            </ul>
+                            
+                            <p class="mt-2"><strong>Structure:</strong></p>
+                            <ol style="text-align: left; max-width: 600px; margin: 1rem auto;">
+                                <li>Introduction: Présente ton sujet</li>
+                                <li>Développement: Donne des détails intéressants</li>
+                                <li>Conclusion: Pourquoi tu as choisi ce sujet</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🎨 Arts et littérature</h3>
+                    <div class="culture-grid">
+                        <div class="culture-card">
+                            <div class="icon">🎪</div>
+                            <h4>Cirque du Soleil</h4>
+                            <p>Fondé à Montréal en 1984</p>
+                            <p>Spectacles dans le monde entier</p>
+                        </div>
+
+                        <div class="culture-card">
+                            <div class="icon">📚</div>
+                            <h4>Littérature</h4>
+                            <p>Michel Tremblay</p>
+                            <p>Gabrielle Roy</p>
+                        </div>
+
+                        <div class="culture-card">
+                            <div class="icon">🎬</div>
+                            <h4>Cinéma</h4>
+                            <p>Denis Villeneuve</p>
+                            <p>Xavier Dolan</p>
+                        </div>
+
+                        <div class="culture-card">
+                            <div class="icon">🎭</div>
+                            <h4>Théâtre</h4>
+                            <p>Tradition forte</p>
+                            <p>Nombreuses compagnies</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="gastronomie" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Chapitre 5</span>
+                    <h2>La gastronomie québécoise</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>🍽️ La cuisine du Québec</h3>
+                    <div class="example-content">
+                        <p>La gastronomie québécoise est copieuse et réconfortante! Elle mélange traditions françaises et influences nord-américaines. Parfait pour les longs hivers froids!</p>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🍴 Les plats typiques</h3>
+                    
+                    <div class="food-grid">
+                        <div class="food-item">
+                            <div class="emoji">🍟</div>
+                            <h4>Poutine</h4>
+                            <p>LE plat québécois!</p>
+                            <p>Frites + sauce + fromage</p>
+                        </div>
+
+                        <div class="food-item">
+                            <div class="emoji">🥧</div>
+                            <h4>Tourtière</h4>
+                            <p>Tourte à la viande</p>
+                            <p>Plat de Noël traditionnel</p>
+                        </div>
+
+                        <div class="food-item">
+                            <div class="emoji">🥓</div>
+                            <h4>Fèves au lard</h4>
+                            <p>Haricots au sirop d'érable</p>
+                            <p>Avec du bacon</p>
+                        </div>
+
+                        <div class="food-item">
+                            <div class="emoji">🥞</div>
+                            <h4>Crêpes au sirop d'érable</h4>
+                            <p>Petit-déjeuner typique</p>
+                            <p>Délicieux!</p>
+                        </div>
+
+                        <div class="food-item">
+                            <div class="emoji">🧀</div>
+                            <h4>Fromage en grains</h4>
+                            <p>"Squeaky cheese"</p>
+                            <p>Fait du bruit quand on le mange!</p>
+                        </div>
+
+                        <div class="food-item">
+                            <div class="emoji">🥩</div>
+                            <h4>Smoked meat</h4>
+                            <p>Viande fumée de Montréal</p>
+                            <p>En sandwich</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🍁 Le sirop d'érable</h3>
+                    <div class="example-content">
+                        <p>Le Québec produit <strong>70% du sirop d'érable mondial</strong>! C'est un symbole national.</p>
+                        
+                        <div class="culture-grid">
+                            <div class="culture-card">
+                                <div class="icon">🌳</div>
+                                <h4>Production</h4>
+                                <p>Récolte au printemps</p>
+                                <p>Mars-avril</p>
+                                <p>Dans les érablières</p>
+                            </div>
+
+                            <div class="culture-card">
+                                <div class="icon">🍯</div>
+                                <h4>Utilisation</h4>
+                                <p>Sur les crêpes</p>
+                                <p>Dans les desserts</p>
+                                <p>En cuisine</p>
+                            </div>
+
+                            <div class="culture-card">
+                                <div class="icon">🏠</div>
+                                <h4>Cabane à sucre</h4>
+                                <p>Restaurant traditionnel</p>
+                                <p>Dans les érablières</p>
+                                <p>Expérience authentique</p>
+                            </div>
+                        </div>
+
+                        <div class="pronunciation-box mt-2">
+                            <p><strong>🍁 Vocabulaire important:</strong></p>
+                            <ul>
+                                <li><strong>Une érablière</strong> = plantation d'érables</li>
+                                <li><strong>La tire d'érable</strong> = sirop versé sur la neige</li>
+                                <li><strong>Une cabane à sucre</strong> = restaurant dans l'érablière</li>
+                                <li><strong>Le temps des sucres</strong> = période de récolte</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>✍️ Exercice: La recette de la poutine</h4>
+                    <p><strong>Complète la recette avec les mots manquants:</strong></p>
+                    
+                    <div class="example-box" style="background: white;">
+                        <h4>🍟 Recette de la poutine classique</h4>
+                        
+                        <p><strong>Ingrédients:</strong></p>
+                        <ul>
+                            <li>Des <input type="text" class="exercise-input" id="ing1" style="width: 150px; display: inline-block;"> (pommes de terre frites)</li>
+                            <li>Du <input type="text" class="exercise-input" id="ing2" style="width: 150px; display: inline-block;"> en grains</li>
+                            <li>De la <input type="text" class="exercise-input" id="ing3" style="width: 150px; display: inline-block;"> brune chaude</li>
+                        </ul>
+
+                        <p class="mt-2"><strong>Préparation:</strong></p>
+                        <ol>
+                            <li>Préparer les frites bien <input type="text" class="exercise-input" id="prep1" style="width: 150px; display: inline-block;"></li>
+                            <li>Mettre les frites dans un <input type="text" class="exercise-input" id="prep2" style="width: 150px; display: inline-block;"></li>
+                            <li>Ajouter le fromage en <input type="text" class="exercise-input" id="prep3" style="width: 150px; display: inline-block;"></li>
+                            <li>Verser la sauce <input type="text" class="exercise-input" id="prep4" style="width: 150px; display: inline-block;"></li>
+                            <li>Servir immédiatement et <input type="text" class="exercise-input" id="prep5" style="width: 150px; display: inline-block;">!</li>
+                        </ol>
+                    </div>
+
+                    <button class="check-button" onclick="checkRecipe()">Vérifier</button>
+                    <div class="feedback" id="recipeFeedback"></div>
+                </div>
+
+                <div class="example-box warning">
+                    <h3>🗣️ Exercice oral - Au restaurant</h3>
+                    <div class="example-content">
+                        <p><strong>Jeu de rôle: Dans un restaurant québécois</strong></p>
+                        
+                        <div class="partner-exercise">
+                            <p><strong>Situation:</strong> Tu es dans un restaurant typique au Québec avec un ami.</p>
+                            
+                            <div class="dialogue-box">
+                                <p><strong>👨‍🍳 Serveur/Serveuse:</strong></p>
+                                <ul>
+                                    <li>Accueille les clients</li>
+                                    <li>Présente les spécialités</li>
+                                    <li>Prend la commande</li>
+                                    <li>Recommande des plats</li>
+                                </ul>
+
+                                <p class="mt-2"><strong>👥 Clients:</strong></p>
+                                <ul>
+                                    <li>Demandez des informations sur les plats</li>
+                                    <li>Posez des questions sur les ingrédients</li>
+                                    <li>Commandez des plats typiques</li>
+                                    <li>Demandez l'addition</li>
+                                </ul>
+                            </div>
+
+                            <p class="mt-2"><strong>Expressions utiles:</strong></p>
+                            <ul>
+                                <li>"Qu'est-ce que vous recommandez?"</li>
+                                <li>"C'est quoi exactement, la poutine?"</li>
+                                <li>"Je voudrais essayer..."</li>
+                                <li>"Est-ce que c'est épicé?"</li>
+                                <li>"L'addition, s'il vous plaît!"</li>
+                            </ul>
+                        </div>
+
+                        <p class="mt-2">⏱️ <strong>Durée:</strong> 5-7 minutes - Changez les rôles!</p>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🍰 Les desserts québécois</h3>
+                    <div class="food-grid">
+                        <div class="food-item">
+                            <div class="emoji">🥧</div>
+                            <h4>Tarte au sucre</h4>
+                            <p>Très sucrée!</p>
+                            <p>À base de sirop d'érable</p>
+                        </div>
+
+                        <div class="food-item">
+                            <div class="emoji">🍰</div>
+                            <h4>Pouding chômeur</h4>
+                            <p>Gâteau traditionnel</p>
+                            <p>Avec sauce au caramel</p>
+                        </div>
+
+                        <div class="food-item">
+                            <div class="emoji">🍪</div>
+                            <h4>Pets de sœur</h4>
+                            <p>Pâtisserie roulée</p>
+                            <p>Avec cassonade</p>
+                        </div>
+
+                        <div class="food-item">
+                            <div class="emoji">🥮</div>
+                            <h4>Grands-pères</h4>
+                            <p>Boulettes sucrées</p>
+                            <p>Dans le sirop d'érable</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="vocabulaire" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Chapitre 6</span>
+                    <h2>Vocabulaire essentiel</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>📖 Apprends le vocabulaire!</h3>
+                    <div class="example-content">
+                        <p>Voici le vocabulaire essentiel pour parler du Québec. Clique sur les cartes pour révéler la traduction!</p>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🗺️ Géographie et nature</h3>
+                    <div class="culture-grid">
+                        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <p>Une érablière</p>
+                                </div>
+                                <div class="flip-card-back">
+                                    <p>Ein Ahornwald</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <p>Un fleuve</p>
+                                </div>
+                                <div class="flip-card-back">
+                                    <p>Ein Fluss</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <p>Une chute d'eau</p>
+                                </div>
+                                <div class="flip-card-back">
+                                    <p>Ein Wasserfall</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <p>Un lac</p>
+                                </div>
+                                <div class="flip-card-back">
+                                    <p>Ein See</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <p>La neige</p>
+                                </div>
+                                <div class="flip-card-back">
+                                    <p>Der Schnee</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <p>Le froid</p>
+                                </div>
+                                <div class="flip-card-back">
+                                    <p>Die Kälte</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🏙️ La ville</h3>
+                    <div class="culture-grid">
+                        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <p>Un quartier</p>
+                                </div>
+                                <div class="flip-card-back">
+                                    <p>Ein Stadtviertel</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <p>Le centre-ville</p>
+                                </div>
+                                <div class="flip-card-back">
+                                    <p>Die Innenstadt</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <p>Un gratte-ciel</p>
+                                </div>
+                                <div class="flip-card-back">
+                                    <p>Ein Wolkenkratzer</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <p>Le métro</p>
+                                </div>
+                                <div class="flip-card-back">
+                                    <p>Die U-Bahn</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <p>Un pont</p>
+                                </div>
+                                <div class="flip-card-back">
+                                    <p>Eine Brücke</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <p>Une rue</p>
+                                </div>
+                                <div class="flip-card-back">
+                                    <p>Eine Straße</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🎭 Culture et loisirs</h3>
+                    <div class="culture-grid">
+                        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <p>Un festival</p>
+                                </div>
+                                <div class="flip-card-back">
+                                    <p>Ein Festival</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <p>Un spectacle</p>
+                                </div>
+                                <div class="flip-card-back">
+                                    <p>Eine Vorstellung</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <p>Le hockey</p>
+                                </div>
+                                <div class="flip-card-back">
+                                    <p>Das Eishockey</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <p>Le ski</p>
+                                </div>
+                                <div class="flip-card-back">
+                                    <p>Das Skifahren</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <p>Un concert</p>
+                                </div>
+                                <div class="flip-card-back">
+                                    <p>Ein Konzert</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <p>Une fête</p>
+                                </div>
+                                <div class="flip-card-back">
+                                    <p>Ein Fest</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>✍️ Exercice: Complète les phrases</h4>
+                    <p><strong>Utilise le vocabulaire appris:</strong></p>
+                    
+                    <div class="mb-2">
+                        <p><strong>1.</strong> En hiver, il y a beaucoup de __________ au Québec.</p>
+                        <input type="text" class="exercise-input" id="vocab1">
+                    </div>
+
+                    <div class="mb-2">
+                        <p><strong>2.</strong> Le Saint-Laurent est un grand __________ qui traverse le Québec.</p>
+                        <input type="text" class="exercise-input" id="vocab2">
+                    </div>
+
+                    <div class="mb-2">
+                        <p><strong>3.</strong> Les Québécois adorent le __________ sur glace.</p>
+                        <input type="text" class="exercise-input" id="vocab3">
+                    </div>
+
+                    <div class="mb-2">
+                        <p><strong>4.</strong> Le Carnaval de Québec est un grand __________ d'hiver.</p>
+                        <input type="text" class="exercise-input" id="vocab4">
+                    </div>
+
+                    <div class="mb-2">
+                        <p><strong>5.</strong> On récolte le sirop d'érable dans une __________.</p>
+                        <input type="text" class="exercise-input" id="vocab5">
+                    </div>
+
+                    <button class="check-button" onclick="checkVocab()">Vérifier</button>
+                    <div class="feedback" id="vocabFeedback"></div>
+                </div>
+
+                <div class="example-box warning">
+                    <h3>🗣️ Exercice oral - Memory game</h3>
+                    <div class="example-content">
+                        <div class="partner-exercise">
+                            <p><strong>Jeu de mémoire avec un partenaire:</strong></p>
+                            
+                            <p><strong>Règles:</strong></p>
+                            <ol>
+                                <li>Écrivez 20 mots de vocabulaire sur des cartes (10 en français, 10 en allemand)</li>
+                                <li>Mélangez les cartes et placez-les face cachée</li>
+                                <li>À tour de rôle, retournez deux cartes</li>
+                                <li>Si c'est une paire (français-allemand), prononcez le mot en français</li>
+                                <li>Le joueur avec le plus de paires gagne!</li>
+                            </ol>
+
+                            <p class="mt-2"><strong>Variante:</strong> Utilisez les mots dans une phrase complète!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="dialogues" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Chapitre 7</span>
+                    <h2>Dialogues pratiques</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>💬 Situations de la vie quotidienne</h3>
+                    <div class="example-content">
+                        <p>Pratique ces dialogues pour améliorer ton français oral! Travaille avec un partenaire.</p>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🏨 Dialogue 1: À l'hôtel</h3>
+                    <div class="dialogue-box">
+                        <div class="speaker-a">
+                            <strong>👤 Réceptionniste:</strong> Bonjour! Bienvenue à l'Hôtel du Vieux-Québec. Comment puis-je vous aider?
+                        </div>
+                        <div class="speaker-b">
+                            <strong>👤 Client:</strong> Bonjour! J'ai une réservation au nom de Schmidt.
+                        </div>
+                        <div class="speaker-a">
+                            <strong>👤 Réceptionniste:</strong> Parfait! Oui, je vois. Une chambre double pour trois nuits, c'est bien ça?
+                        </div>
+                        <div class="speaker-b">
+                            <strong>👤 Client:</strong> Oui, c'est exact. Est-ce que le petit-déjeuner est inclus?
+                        </div>
+                        <div class="speaker-a">
+                            <strong>👤 Réceptionniste:</strong> Oui, le petit-déjeuner est servi de 7h à 10h au restaurant. Voici votre clé, vous êtes à la chambre 305.
+                        </div>
+                        <div class="speaker-b">
+                            <strong>👤 Client:</strong> Merci beaucoup! Est-ce qu'il y a un ascenseur?
+                        </div>
+                        <div class="speaker-a">
+                            <strong>👤 Réceptionniste:</strong> Oui, juste là à droite. Bon séjour!
+                        </div>
+                        <div class="speaker-b">
+                            <strong>👤 Client:</strong> Merci, bienvenue!
+                        </div>
+                    </div>
+
+                    <div class="task-box mt-2">
+                        <h4>🎭 À toi de jouer!</h4>
+                        <p>Avec ton partenaire, créez une variante de ce dialogue:</p>
+                        <ul>
+                            <li>Changez le nombre de nuits</li>
+                            <li>Ajoutez une question sur le WiFi</li>
+                            <li>Demandez des recommandations de restaurants</li>
+                            <li>Utilisez des expressions québécoises!</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🍽️ Dialogue 2: Au restaurant</h3>
+                    <div class="dialogue-box">
+                        <div class="speaker-a">
+                            <strong>👨‍🍳 Serveur:</strong> Bonsoir! Avez-vous réservé?
+                        </div>
+                        <div class="speaker-b">
+                            <strong>👤 Client 1:</strong> Non, nous sommes deux. Est-ce qu'il y a de la place?
+                        </div>
+                        <div class="speaker-a">
+                            <strong>👨‍🍳 Serveur:</strong> Oui, pas de problème. Suivez-moi! Voici le menu.
+                        </div>
+                        <div class="speaker-b">
+                            <strong>👤 Client 2:</strong> Merci! Qu'est-ce que vous recommandez comme spécialité québécoise?
+                        </div>
+                        <div class="speaker-a">
+                            <strong>👨‍🍳 Serveur:</strong> Notre poutine est excellente! Et la tourtière est faite maison.
+                        </div>
+                        <div class="speaker-b">
+                            <strong>👤 Client 1:</strong> Parfait! Je vais prendre la poutine. Et toi?
+                        </div>
+                        <div class="speaker-b">
+                            <strong>👤 Client 2:</strong> Moi, je voudrais essayer la tourtière. C'est épicé?
+                        </div>
+                        <div class="speaker-a">
+                            <strong>👨‍🍳 Serveur:</strong> Non, pas du tout. C'est savoureux mais pas épicé. Et comme boisson?
+                        </div>
+                        <div class="speaker-b">
+                            <strong>👤 Client 1:</strong> Deux eaux minérales, s'il vous plaît.
+                        </div>
+                        <div class="speaker-a">
+                            <strong>👨‍🍳 Serveur:</strong> Parfait! Ça arrive dans quelques minutes!
+                        </div>
+                    </div>
+
+                    <div class="task-box mt-2">
+                        <h4>🎭 Exercice en groupe de 3</h4>
+                        <p>Jouez cette scène et ajoutez:</p>
+                        <ul>
+                            <li>Une commande de dessert</li>
+                            <li>Une question sur les ingrédients</li>
+                            <li>La demande de l'addition</li>
+                            <li>Un compliment sur le repas</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🗺️ Dialogue 3: Demander son chemin</h3>
+                    <div class="dialogue-box">
+                        <div class="speaker-a">
+                            <strong>👤 Touriste:</strong> Excusez-moi, je cherche le Château Frontenac. Pouvez-vous m'aider?
+                        </div>
+                        <div class="speaker-b">
+                            <strong>👤 Québécois:</strong> Bien sûr! C'est pas loin d'ici. Vous êtes à pied?
+                        </div>
+                        <div class="speaker-a">
+                            <strong>👤 Touriste:</strong> Oui, je préfère marcher pour découvrir la ville.
+                        </div>
+                        <div class="speaker-b">
+                            <strong>👤 Québécois:</strong> Parfait! Alors, vous allez tout droit sur cette rue, puis vous tournez à droite à la deuxième rue.
+                        </div>
+                        <div class="speaker-a">
+                            <strong>👤 Touriste:</strong> D'accord, tout droit puis à droite...
+                        </div>
+                        <div class="speaker-b">
+                            <strong>👤 Québécois:</strong> Oui! Après, vous continuez et vous allez voir le Château. C'est un grand bâtiment, vous pouvez pas le manquer!
+                        </div>
+                        <div class="speaker-a">
+                            <strong>👤 Touriste:</strong> C'est à combien de minutes à pied?
+                        </div>
+                        <div class="speaker-b">
+                            <strong>👤 Québécois:</strong> Environ 10 minutes. C'est le fun, vous allez passer par le Vieux-Québec!
+                        </div>
+                        <div class="speaker-a">
+                            <strong>👤 Touriste:</strong> Super! Merci beaucoup pour votre aide!
+                        </div>
+                        <div class="speaker-b">
+                            <strong>👤 Québécois:</strong> Bienvenue! Bonne visite!
+                        </div>
+                    </div>
+
+                    <div class="pronunciation-box mt-2">
+                        <p><strong>📍 Vocabulaire pour les directions:</strong></p>
+                        <ul>
+                            <li><strong>Tout droit</strong> = geradeaus</li>
+                            <li><strong>À droite</strong> = rechts</li>
+                            <li><strong>À gauche</strong> = links</li>
+                            <li><strong>Tourner</strong> = abbiegen</li>
+                            <li><strong>Continuer</strong> = weitergehen</li>
+                            <li><strong>Traverser</strong> = überqueren</li>
+                            <li><strong>Au coin de la rue</strong> = an der Straßenecke</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🛍️ Dialogue 4: Faire du shopping</h3>
+                    <div class="dialogue-box">
+                        <div class="speaker-a">
+                            <strong>👤 Vendeur:</strong> Bonjour! Je peux vous aider?
+                        </div>
+                        <div class="speaker-b">
+                            <strong>👤 Client:</strong> Oui, je cherche un cadeau typiquement québécois pour ma famille en Allemagne.
+                        </div>
+                        <div class="speaker-a">
+                            <strong>👤 Vendeur:</strong> Parfait! On a du sirop d'érable, des produits artisanaux, des vêtements...
+                        </div>
+                        <div class="speaker-b">
+                            <strong>👤 Client:</strong> Le sirop d'érable, c'est une bonne idée! Vous avez différentes tailles?
+                        </div>
+                        <div class="speaker-a">
+                            <strong>👤 Vendeur:</strong> Oui, on a des petites bouteilles à 12 dollars et des grandes à 25 dollars.
+                        </div>
+                        <div class="speaker-b">
+                            <strong>👤 Client:</strong> Je vais prendre trois petites bouteilles. Et vous avez aussi des tuques?
+                        </div>
+                        <div class="speaker-a">
+                            <strong>👤 Vendeur:</strong> Oui, juste là! On a plusieurs couleurs. Celle-ci avec la feuille d'érable est très populaire.
+                        </div>
+                        <div class="speaker-b">
+                            <strong>👤 Client:</strong> Elle est belle! Je la prends. Ça fait combien en tout?
+                        </div>
+                        <div class="speaker-a">
+                            <strong>👤 Vendeur:</strong> Ça fait 56 dollars. Vous payez comment?
+                        </div>
+                        <div class="speaker-b">
+                            <strong>👤 Client:</strong> Par carte, s'il vous plaît.
+                        </div>
+                        <div class="speaker-a">
+                            <strong>👤 Vendeur:</strong> Parfait! Voilà votre reçu. Merci et bonne journée!
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>🎭 Grand exercice oral - Créez votre dialogue!</h4>
+                    <p><strong>En groupes de 2-3, créez un dialogue original sur une de ces situations:</strong></p>
+                    
+                    <div class="exercise-grid">
+                        <div class="exercise-card">
+                            <h4>🏒 Au match de hockey</h4>
+                            <p>Tu vas voir un match des Canadiens de Montréal avec un ami québécois</p>
+                        </div>
+
+                        <div class="exercise-card">
+                            <h4>❄️ Au Carnaval</h4>
+                            <p>Tu participes au Carnaval de Québec et tu parles avec d'autres visiteurs</p>
+                        </div>
+
+                        <div class="exercise-card">
+                            <h4>🍁 À la cabane à sucre</h4>
+                            <p>Tu visites une cabane à sucre et tu découvres la production de sirop d'érable</p>
+                        </div>
+
+                        <div class="exercise-card">
+                            <h4>🎵 Au festival</h4>
+                            <p>Tu es au Festival d'été de Québec et tu rencontres des jeunes québécois</p>
+                        </div>
+                    </div>
+
+                    <p class="mt-2"><strong>Critères:</strong></p>
+                    <ul>
+                        <li>Durée: 3-5 minutes</li>
+                        <li>Utilisez au moins 5 expressions québécoises</li>
+                        <li>Incluez du vocabulaire spécifique au Québec</li>
+                        <li>Soyez créatifs et amusants!</li>
+                    </ul>
+
+                    <p class="mt-2"><strong>Présentation:</strong> Jouez votre dialogue devant la classe!</p>
+                </div>
+            </section>
+
+            <section id="exercices" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Chapitre 8</span>
+                    <h2>Exercices interactifs</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>✍️ Teste tes connaissances!</h3>
+                    <div class="example-content">
+                        <p>Voici des exercices pour vérifier ce que tu as appris sur le Québec.</p>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>📝 Quiz 1: Géographie et histoire</h3>
+                    
+                    <div class="mb-2">
+                        <p><strong>1. Quelle est la capitale du Québec?</strong></p>
+                        <div class="quiz-option" data-answer="correct" onclick="selectQuizOption(this, 'quiz1')">Québec</div>
+                        <div class="quiz-option" data-answer="incorrect" onclick="selectQuizOption(this, 'quiz1')">Montréal</div>
+                        <div class="quiz-option" data-answer="incorrect" onclick="selectQuizOption(this, 'quiz1')">Ottawa</div>
+                        <div class="quiz-option" data-answer="incorrect" onclick="selectQuizOption(this, 'quiz1')">Toronto</div>
+                    </div>
+
+                    <div class="mb-2">
+                        <p><strong>2. En quelle année Samuel de Champlain a-t-il fondé la ville de Québec?</strong></p>
+                        <div class="quiz-option" data-answer="incorrect" onclick="selectQuizOption(this, 'quiz2')">1534</div>
+                        <div class="quiz-option" data-answer="correct" onclick="selectQuizOption(this, 'quiz2')">1608</div>
+                        <div class="quiz-option" data-answer="incorrect" onclick="selectQuizOption(this, 'quiz2')">1763</div>
+                        <div class="quiz-option" data-answer="incorrect" onclick="selectQuizOption(this, 'quiz2')">1867</div>
+                    </div>
+
+                    <div class="mb-2">
+                        <p><strong>3. Quel pourcentage du sirop d'érable mondial est produit au Québec?</strong></p>
+                        <div class="quiz-option" data-answer="incorrect" onclick="selectQuizOption(this, 'quiz3')">50%</div>
+                        <div class="quiz-option" data-answer="incorrect" onclick="selectQuizOption(this, 'quiz3')">60%</div>
+                        <div class="quiz-option" data-answer="correct" onclick="selectQuizOption(this, 'quiz3')">70%</div>
+                        <div class="quiz-option" data-answer="incorrect" onclick="selectQuizOption(this, 'quiz3')">80%</div>
+                    </div>
+
+                    <div class="mb-2">
+                        <p><strong>4. Quelle est la devise du Québec?</strong></p>
+                        <div class="quiz-option" data-answer="incorrect" onclick="selectQuizOption(this, 'quiz4')">Liberté, Égalité, Fraternité</div>
+                        <div class="quiz-option" data-answer="correct" onclick="selectQuizOption(this, 'quiz4')">Je me souviens</div>
+                        <div class="quiz-option" data-answer="incorrect" onclick="selectQuizOption(this, 'quiz4')">Vive le Québec libre</div>
+                        <div class="quiz-option" data-answer="incorrect" onclick="selectQuizOption(this, 'quiz4')">La Belle Province</div>
+                    </div>
+
+                    <button class="check-button" onclick="checkAllQuiz()">Vérifier toutes les réponses</button>
+                    <div class="feedback" id="quizFeedback"></div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🗣️ Quiz 2: Langue et expressions</h3>
+                    
+                    <div class="mb-2">
+                        <p><strong>5. Que signifie "C'est le fun" en français de France?</strong></p>
+                        <div class="quiz-option" data-answer="incorrect" onclick="selectQuizOption(this, 'quiz5')">C'est drôle</div>
+                        <div class="quiz-option" data-answer="correct" onclick="selectQuizOption(this, 'quiz5')">C'est sympa/génial</div>
+                        <div class="quiz-option" data-answer="incorrect" onclick="selectQuizOption(this, 'quiz5')">C'est bizarre</div>
+                        <div class="quiz-option" data-answer="incorrect" onclick="selectQuizOption(this, 'quiz5')">C'est difficile</div>
+                    </div>
+
+                    <div class="mb-2">
+                        <p><strong>6. Comment dit-on "voiture" en québécois?</strong></p>
+                        <div class="quiz-option" data-answer="incorrect" onclick="selectQuizOption(this, 'quiz6')">Une auto</div>
+                        <div class="quiz-option" data-answer="correct" onclick="selectQuizOption(this, 'quiz6')">Un char</div>
+                        <div class="quiz-option" data-answer="incorrect" onclick="selectQuizOption(this, 'quiz6')">Une bagnole</div>
+                        <div class="quiz-option" data-answer="incorrect" onclick="selectQuizOption(this, 'quiz6')">Un véhicule</div>
+                    </div>
+
+                    <div class="mb-2">
+                        <p><strong>7. Que répond un Québécois quand on lui dit "Merci"?</strong></p>
+                        <div class="quiz-option" data-answer="incorrect" onclick="selectQuizOption(this, 'quiz7')">De rien</div>
+                        <div class="quiz-option" data-answer="correct" onclick="selectQuizOption(this, 'quiz7')">Bienvenue</div>
+                        <div class="quiz-option" data-answer="incorrect" onclick="selectQuizOption(this, 'quiz7')">Je t'en prie</div>
+                        <div class="quiz-option" data-answer="incorrect" onclick="selectQuizOption(this, 'quiz7')">Pas de problème</div>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>✍️ Exercice d'écriture: Carte postale</h4>
+                    <p><strong>Tu es en vacances au Québec. Écris une carte postale à ton ami(e) en Allemagne (120-150 mots):</strong></p>
+                    
+                    <textarea class="writing-area" id="postcardEx" placeholder="Cher/Chère..., Je suis au Québec depuis..."></textarea>
+                    <div class="word-count" id="wordCountPostcard">0 mots</div>
+
+                    <div class="pronunciation-box mt-2">
+                        <p><strong>Inclus dans ta carte postale:</strong></p>
+                        <ul>
+                            <li>Où tu es exactement (ville, région)</li>
+                            <li>Ce que tu as fait/visité</li>
+                            <li>Un plat typique que tu as mangé</li>
+                            <li>Le temps qu'il fait</li>
+                            <li>Tes impressions (utilise des expressions québécoises!)</li>
+                            <li>Ce que tu vas faire ensuite</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>✍️ Exercice: Complète le texte</h4>
+                    <p><strong>Complète ce texte sur le Québec avec les mots manquants:</strong></p>
+                    
+                    <div class="example-box" style="background: white;">
+                        <p>Le Québec est la plus grande <input type="text" class="exercise-input" id="cloze1" style="width: 150px; display: inline-block;"> du Canada. 
+                        Sa capitale est <input type="text" class="exercise-input" id="cloze2" style="width: 150px; display: inline-block;">, mais la plus grande ville est 
+                        <input type="text" class="exercise-input" id="cloze3" style="width: 150px; display: inline-block;">. Le français est la langue 
+                        <input type="text" class="exercise-input" id="cloze4" style="width: 150px; display: inline-block;"> du Québec.</p>
+
+                        <p class="mt-2">Le Québec est célèbre pour son <input type="text" class="exercise-input" id="cloze5" style="width: 150px; display: inline-block;"> d'érable. 
+                        En hiver, il fait très <input type="text" class="exercise-input" id="cloze6" style="width: 150px; display: inline-block;"> et il y a beaucoup de 
+                        <input type="text" class="exercise-input" id="cloze7" style="width: 150px; display: inline-block;">. Le sport le plus populaire est le 
+                        <input type="text" class="exercise-input" id="cloze8" style="width: 150px; display: inline-block;"> sur glace.</p>
+
+                        <p class="mt-2">Les Québécois utilisent des expressions spéciales. Par exemple, ils disent "C'est le 
+                        <input type="text" class="exercise-input" id="cloze9" style="width: 150px; display: inline-block;">" pour dire "C'est sympa". 
+                        Quand on dit merci, ils répondent "<input type="text" class="exercise-input" id="cloze10" style="width: 150px; display: inline-block;">".</p>
+                    </div>
+
+                    <button class="check-button" onclick="checkCloze()">Vérifier</button>
+                    <div class="feedback" id="clozeFeedback"></div>
+                </div>
+
+                <div class="example-box warning">
+                    <h3>🗣️ Exercice oral final - Présentation</h3>
+                    <div class="example-content">
+                        <div class="recording-box">
+                            <p>🎤 <strong>Présentation orale: "Mon voyage au Québec"</strong></p>
+                            
+                            <p class="mt-2"><strong>Imagine que tu as passé une semaine au Québec. Prépare une présentation de 5 minutes:</strong></p>
+                            
+                            <div class="partner-exercise">
+                                <p><strong>Structure de la présentation:</strong></p>
+                                <ol>
+                                    <li><strong>Introduction (30 sec)</strong>
+                                        <ul>
+                                            <li>Salue la classe</li>
+                                            <li>Présente ton sujet</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Itinéraire (1 min)</strong>
+                                        <ul>
+                                            <li>Quelles villes as-tu visitées?</li>
+                                            <li>Combien de temps dans chaque endroit?</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Activités (2 min)</strong>
+                                        <ul>
+                                            <li>Qu'est-ce que tu as fait?</li>
+                                            <li>Qu'est-ce que tu as vu?</li>
+                                            <li>Utilise le passé composé!</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Gastronomie (1 min)</strong>
+                                        <ul>
+                                            <li>Quels plats as-tu essayés?</li>
+                                            <li>Qu'est-ce que tu as aimé?</li>
+                                        </ul>
+                                    </li>
+                                    <li><strong>Conclusion (30 sec)</strong>
+                                        <ul>
+                                            <li>Ton impression générale</li>
+                                            <li>Recommanderais-tu le Québec?</li>
+                                        </ul>
+                                    </li>
+                                </ol>
+
+                                <p class="mt-2"><strong>Critères d'évaluation:</strong></p>
+                                <ul>
+                                    <li>✅ Utilisation d'expressions québécoises</li>
+                                    <li>✅ Vocabulaire varié et précis</li>
+                                    <li>✅ Prononciation claire</li>
+                                    <li>✅ Structure logique</li>
+                                    <li>✅ Créativité et enthousiasme</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="projet" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Chapitre 9</span>
+                    <h2>Projet final</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>🎯 Ton projet sur le Québec</h3>
+                    <div class="example-content">
+                        <p>C'est le moment de montrer tout ce que tu as appris! Choisis un projet créatif sur le Québec.</p>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>📋 Choix de projets</h3>
+                    
+                    <div class="exercise-grid">
+                        <div class="exercise-card">
+                            <h4>🎬 Vidéo touristique</h4>
+                            <p><strong>Durée: 3-5 minutes</strong></p>
+                            <p>Crée une vidéo promotionnelle pour attirer des touristes au Québec</p>
+                            <ul>
+                                <li>Présente les attractions</li>
+                                <li>Montre la culture</li>
+                                <li>Parle de la gastronomie</li>
+                                <li>Utilise de la musique québécoise</li>
+                            </ul>
+                        </div>
+
+                        <div class="exercise-card">
+                            <h4>📰 Magazine digital</h4>
+                            <p><strong>8-10 pages</strong></p>
+                            <p>Crée un magazine sur le Québec avec différentes rubriques</p>
+                            <ul>
+                                <li>Article sur l'histoire</li>
+                                <li>Interview d'un Québécois (fictif)</li>
+                                <li>Recettes québécoises</li>
+                                <li>Guide touristique</li>
+                            </ul>
+                        </div>
+
+                        <div class="exercise-card">
+                            <h4>🎭 Pièce de théâtre</h4>
+                            <p><strong>10-15 minutes</strong></p>
+                            <p>Écris et joue une pièce qui se passe au Québec</p>
+                            <ul>
+                                <li>Minimum 3 personnages</li>
+                                <li>Utilise des expressions québécoises</li>
+                                <li>Inclus des éléments culturels</li>
+                                <li>Costumes et décors</li>
+                            </ul>
+                        </div>
+
+                        <div class="exercise-card">
+                            <h4>🎨 Exposition culturelle</h4>
+                            <p><strong>Poster + présentation</strong></p>
+                            <p>Crée une exposition sur un aspect du Québec</p>
+                            <ul>
+                                <li>Recherche approfondie</li>
+                                <li>Support visuel attractif</li>
+                                <li>Objets/images authentiques</li>
+                                <li>Présentation orale (5 min)</li>
+                            </ul>
+                        </div>
+
+                        <div class="exercise-card">
+                            <h4>🎵 Playlist commentée</h4>
+                            <p><strong>10 chansons + analyses</strong></p>
+                            <p>Crée une playlist de musique québécoise</p>
+                            <ul>
+                                <li>Différents styles musicaux</li>
+                                <li>Biographie des artistes</li>
+                                <li>Analyse des paroles</li>
+                                <li>Présentation audio/vidéo</li>
+                            </ul>
+                        </div>
+
+                        <div class="exercise-card">
+                            <h4>🍽️ Livre de recettes</h4>
+                            <p><strong>8-10 recettes</strong></p>
+                            <p>Crée un livre de cuisine québécoise illustré</p>
+                            <ul>
+                                <li>Recettes traditionnelles</li>
+                                <li>Photos ou illustrations</li>
+                                <li>Histoire de chaque plat</li>
+                                <li>Dégustation en classe!</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>📝 Planification du projet</h4>
+                    <p><strong>Remplis ce formulaire pour planifier ton projet:</strong></p>
+                    
+                    <div class="mb-2">
+                        <p><strong>1. Quel projet choisis-tu?</strong></p>
+                        <textarea class="exercise-input" id="projectChoice" rows="2" placeholder="Décris ton choix..."></textarea>
+                    </div>
+
+                    <div class="mb-2">
+                        <p><strong>2. Pourquoi ce projet t'intéresse?</strong></p>
+                        <textarea class="exercise-input" id="projectWhy" rows="3" placeholder="Explique tes raisons..."></textarea>
+                    </div>
+
+                    <div class="mb-2">
+                        <p><strong>3. Travailles-tu seul(e) ou en groupe?</strong></p>
+                        <textarea class="exercise-input" id="projectGroup" rows="2" placeholder="Seul(e) ou avec qui?"></textarea>
+                    </div>
+
+                    <div class="mb-2">
+                        <p><strong>4. Quelles ressources vas-tu utiliser?</strong></p>
+                        <textarea class="exercise-input" id="projectResources" rows="3" placeholder="Livres, Internet, interviews..."></textarea>
+                    </div>
+
+                    <div class="mb-2">
+                        <p><strong>5. Planning (étapes et dates):</strong></p>
+                        <textarea class="exercise-input" id="projectPlanning" rows="4" placeholder="Semaine 1: Recherche, Semaine 2: ..."></textarea>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>✅ Critères d'évaluation</h3>
+                    
+                    <div class="comparison-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Critère</th>
+                                    <th>Points</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Contenu</strong></td>
+                                    <td>30 points</td>
+                                    <td>Informations précises et complètes sur le Québec</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Langue française</strong></td>
+                                    <td>25 points</td>
+                                    <td>Grammaire, vocabulaire, expressions québécoises</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Créativité</strong></td>
+                                    <td>20 points</td>
+                                    <td>Originalité et présentation attractive</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Recherche</strong></td>
+                                    <td>15 points</td>
+                                    <td>Sources variées et fiables</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Présentation</strong></td>
+                                    <td>10 points</td>
+                                    <td>Clarté, organisation, qualité visuelle</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="example-box warning">
+                    <h3>💡 Conseils pour réussir</h3>
+                    <div class="example-content">
+                        <div class="key-points">
+                            <div class="key-point">
+                                <div class="number">1</div>
+                                <div>
+                                    <strong>Commence tôt!</strong>
+                                    <p>Ne laisse pas tout pour la dernière minute. Un bon projet demande du temps.</p>
+                                </div>
+                            </div>
+
+                            <div class="key-point">
+                                <div class="number">2</div>
+                                <div>
+                                    <strong>Fais des recherches approfondies</strong>
+                                    <p>Utilise plusieurs sources: livres, sites web fiables, vidéos, interviews.</p>
+                                </div>
+                            </div>
+
+                            <div class="key-point">
+                                <div class="number">3</div>
+                                <div>
+                                    <strong>Sois créatif!</strong>
+                                    <p>N'aie pas peur d'être original. Les meilleurs projets sont ceux qui sortent de l'ordinaire.</p>
+                                </div>
+                            </div>
+
+                            <div class="key-point">
+                                <div class="number">4</div>
+                                <div>
+                                    <strong>Utilise le français!</strong>
+                                    <p>Tout ton projet doit être en français. Utilise des expressions québécoises pour plus d'authenticité.</p>
+                                </div>
+                            </div>
+
+                            <div class="key-point">
+                                <div class="number">5</div>
+                                <div>
+                                    <strong>Demande de l'aide</strong>
+                                    <p>N'hésite pas à poser des questions à ton professeur ou à tes camarades.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🌐 Ressources utiles</h3>
+                    
+                    <div class="culture-grid">
+                        <div class="culture-card">
+                            <div class="icon">🌍</div>
+                            <h4>Sites web officiels</h4>
+                            <ul style="text-align: left;">
+                                <li>Québec Original (tourisme)</li>
+                                <li>Office québécois de la langue française</li>
+                                <li>Bibliothèque et Archives nationales du Québec</li>
+                            </ul>
+                        </div>
+
+                        <div class="culture-card">
+                            <div class="icon">📺</div>
+                            <h4>Vidéos</h4>
+                            <ul style="text-align: left;">
+                                <li>Documentaires sur le Québec</li>
+                                <li>Chaînes YouTube québécoises</li>
+                                <li>Films québécois</li>
+                            </ul>
+                        </div>
+
+                        <div class="culture-card">
+                            <div class="icon">📚</div>
+                            <h4>Livres</h4>
+                            <ul style="text-align: left;">
+                                <li>Guides touristiques</li>
+                                <li>Livres d'histoire</li>
+                                <li>Romans québécois</li>
+                            </ul>
+                        </div>
+
+                        <div class="culture-card">
+                            <div class="icon">🎵</div>
+                            <h4>Musique</h4>
+                            <ul style="text-align: left;">
+                                <li>Spotify: playlists québécoises</li>
+                                <li>Artistes québécois</li>
+                                <li>Musique traditionnelle</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🎉 Présentation finale</h3>
+                    <div class="example-content">
+                        <p><strong>Date de présentation:</strong> À définir avec ton professeur</p>
+                        
+                        <div class="pronunciation-box">
+                            <p><strong>Le jour de la présentation:</strong></p>
+                            <ul>
+                                <li>📅 Arrive à l'heure et prépare ton matériel</li>
+                                <li>🎤 Parle clairement et avec enthousiasme</li>
+                                <li>👥 Regarde ton public (pas seulement tes notes!)</li>
+                                <li>⏱️ Respecte le temps imparti</li>
+                                <li>❓ Prépare-toi à répondre aux questions</li>
+                                <li>😊 Profite de ce moment pour partager ta passion!</li>
+                            </ul>
+                        </div>
+
+                        <p class="mt-2"><strong>Après la présentation:</strong></p>
+                        <p>Tu recevras un feedback de ton professeur et de tes camarades. C'est une excellente opportunité d'apprendre et de progresser!</p>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-success" onclick="showCongratulations()">🎉 J'ai terminé le module!</button>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <div class="modal hidden" id="congratsModal">
+        <div class="modal-content">
+            <h2>🎉 Félicitations!</h2>
+            <p>Tu as terminé le module sur le Québec!</p>
+            
+            <h3>Ce que tu as appris:</h3>
+            <ul>
+                <li>✅ La géographie et l'histoire du Québec</li>
+                <li>✅ Les expressions et l'accent québécois</li>
+                <li>✅ La culture et les traditions</li>
+                <li>✅ La gastronomie typique</li>
+                <li>✅ Le vocabulaire essentiel</li>
+                <li>✅ Des dialogues pratiques</li>
+            </ul>
+
+            <h3>Prochaines étapes:</h3>
+            <ul>
+                <li>🎯 Complète ton projet final</li>
+                <li>🗣️ Continue à pratiquer ton français</li>
+                <li>🍁 Peut-être un jour, visite le Québec!</li>
+            </ul>
+
+            <div class="modal-buttons">
+                <button class="btn btn-primary" onclick="closeModal()">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p><strong>Découvrons le Québec!</strong> - Module pédagogique pour le français A2+</p>
+            <p>🍁 Créé pour les élèves de 8e classe - Gymnasium Bayern</p>
+            <p>© 2024 - Tous droits réservés</p>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation
+        const sections = document.querySelectorAll('.content-section');
+        const menuLinks = document.querySelectorAll('.sidebar-menu a');
+        const progressBar = document.getElementById('progressBar');
+        const sidebar = document.getElementById('sidebar');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+
+        menuLinks.forEach((link, index) => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const sectionId = link.getAttribute('data-section');
+                
+                sections.forEach(section => section.classList.remove('active'));
+                menuLinks.forEach(l => l.classList.remove('active'));
+                
+                document.getElementById(sectionId).classList.add('active');
+                link.classList.add('active');
+                
+                const progress = ((index + 1) / menuLinks.length) * 100;
+                progressBar.style.width = progress + '%';
+                
+                if (window.innerWidth <= 1024) {
+                    sidebar.classList.remove('active');
+                }
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+        });
+
+        // Word counters
+        function setupWordCounter(textareaId, counterId) {
+            const textarea = document.getElementById(textareaId);
+            const counter = document.getElementById(counterId);
+            
+            if (textarea && counter) {
+                textarea.addEventListener('input', () => {
+                    const words = textarea.value.trim().split(/\s+/).filter(word => word.length > 0);
+                    counter.textContent = words.length + ' mots';
+                });
+            }
+        }
+
+        setupWordCounter('writingEx1', 'wordCount1');
+        setupWordCounter('writingEx2', 'wordCount2');
+        setupWordCounter('postcardEx', 'wordCountPostcard');
+
+        // Exercise functions
+        function checkChronology() {
+            const feedback = document.getElementById('chronologyFeedback');
+            const items = document.querySelectorAll('#chronologyExercise .quiz-option');
+            const currentOrder = Array.from(items).map(el => parseInt(el.getAttribute('data-order')));
+            const isCorrect = JSON.stringify(currentOrder) === JSON.stringify([1, 2, 3, 4]);
+            
+            if (isCorrect) {
+                feedback.className = 'feedback correct';
+                feedback.textContent = "✅ Parfait! L'ordre chronologique est correct!";
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedback.innerHTML = "❌ L'ordre n'est pas correct. L'ordre correct est:<br>1. Jacques Cartier arrives au Québec (1534)<br>2. Fondation de la ville de Québec (1608)<br>3. La Révolution tranquille (1960-1970)<br>4. Le Québec aujourd'hui";
+            }
+        }
+        
+        // Drag and drop functionality for chronology exercise
+        let draggedElement = null;
+        
+        function setupChronologyDragDrop() {
+            const container = document.getElementById('chronologyExercise');
+            const items = container.querySelectorAll('.quiz-option');
+            
+            items.forEach(item => {
+                item.addEventListener('dragstart', (e) => {
+                    draggedElement = item;
+                    item.classList.add('dragging');
+                });
+                
+                item.addEventListener('dragend', (e) => {
+                    draggedElement = null;
+                    item.classList.remove('dragging');
+                    items.forEach(el => el.classList.remove('drag-over'));
+                });
+                
+                item.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    if (item !== draggedElement) {
+                        item.classList.add('drag-over');
+                    }
+                });
+                
+                item.addEventListener('dragleave', (e) => {
+                    item.classList.remove('drag-over');
+                });
+                
+                item.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    if (item !== draggedElement && draggedElement) {
+                        const allItems = Array.from(container.querySelectorAll('.quiz-option'));
+                        const draggedIndex = allItems.indexOf(draggedElement);
+                        const targetIndex = allItems.indexOf(item);
+                        
+                        if (draggedIndex < targetIndex) {
+                            item.parentNode.insertBefore(draggedElement, item.nextSibling);
+                        } else {
+                            item.parentNode.insertBefore(draggedElement, item);
+                        }
+                    }
+                    item.classList.remove('drag-over');
+                });
+            });
+        }
+        
+        // Initialize chronology drag-drop when document is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            setupChronologyDragDrop();
+        });
+
+        function checkTranslations() {
+            const feedback = document.getElementById('translationFeedback');
+            feedback.innerHTML = `
+                <strong>Solutions possibles:</strong><br>
+                1. "C'est sympa/génial, ta nouvelle voiture!"<br>
+                2. "J'en ai marre, j'ai du mal avec mes devoirs."<br>
+                3. "On fait du shopping demain? - Oui, c'est sympa!"
+            `;
+            feedback.className = 'feedback correct';
+        }
+
+        function checkRecipe() {
+            const feedback = document.getElementById('recipeFeedback');
+            feedback.innerHTML = `
+                <strong>Solution:</strong><br>
+                Ingrédients: frites, fromage, sauce<br>
+                Préparation: croustillantes, plat, grains, chaude, déguster
+            `;
+            feedback.className = 'feedback correct';
+        }
+
+        function checkVocab() {
+            const feedback = document.getElementById('vocabFeedback');
+            feedback.innerHTML = `
+                <strong>Solutions:</strong><br>
+                1. neige<br>
+                2. fleuve<br>
+                3. hockey<br>
+                4. festival<br>
+                5. érablière
+            `;
+            feedback.className = 'feedback correct';
+        }
+
+        function selectQuizOption(element, quizId) {
+            const parent = element.parentElement;
+            const options = parent.querySelectorAll('.quiz-option');
+            
+            options.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+        }
+
+        function checkAllQuiz() {
+            const feedback = document.getElementById('quizFeedback');
+            let correct = 0;
+            let total = 7;
+            
+            for (let i = 1; i <= total; i++) {
+                const quizId = 'quiz' + i;
+                const selected = document.querySelector(`[onclick*="${quizId}"].selected`);
+                
+                if (selected) {
+                    if (selected.getAttribute('data-answer') === 'correct') {
+                        selected.classList.add('correct');
+                        correct++;
+                    } else {
+                        selected.classList.add('incorrect');
+                    }
+                }
+            }
+            
+            const percentage = Math.round((correct / total) * 100);
+            
+            if (percentage >= 80) {
+                feedback.innerHTML = `🎉 Excellent! Tu as ${correct}/${total} bonnes réponses (${percentage}%)!`;
+                feedback.className = 'feedback correct';
+            } else if (percentage >= 60) {
+                feedback.innerHTML = `👍 Bien! Tu as ${correct}/${total} bonnes réponses (${percentage}%). Continue comme ça!`;
+                feedback.className = 'feedback correct';
+            } else {
+                feedback.innerHTML = `📚 Tu as ${correct}/${total} bonnes réponses (${percentage}%). Révise le module et réessaie!`;
+                feedback.className = 'feedback incorrect';
+            }
+        }
+
+        function checkCloze() {
+            const feedback = document.getElementById('clozeFeedback');
+            feedback.innerHTML = `
+                <strong>Solutions:</strong><br>
+                1. province, 2. Québec, 3. Montréal, 4. officielle, 5. sirop,
+                6. froid, 7. neige, 8. hockey, 9. fun, 10. Bienvenue
+            `;
+            feedback.className = 'feedback correct';
+        }
+
+        function showCongratulations() {
+            document.getElementById('congratsModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('congratsModal').classList.add('hidden');
+        }
+
+        // Close modal on outside click
+        document.getElementById('congratsModal').addEventListener('click', (e) => {
+            if (e.target.id === 'congratsModal') {
+                closeModal();
+            }
+        });
+
+        // Initialize progress bar
+        progressBar.style.width = '10%';
+    </script>
+</body>
+</html>

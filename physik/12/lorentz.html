@@ -1,0 +1,2047 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lorentzkraft und Relativistik - Interaktiver Lernpfad</title>
+    <link rel="stylesheet" href="https://embed-ide.edu-mrh.de/style.css">
+    <link rel="stylesheet" href="https://embed-ide.edu-mrh.de/katex/katex.min.css">
+    <script defer src="https://embed-ide.edu-mrh.de/katex/katex.min.js"></script>
+    <script defer src="https://embed-ide.edu-mrh.de/katex/contrib/auto-render.min.js" onload="renderMath()"></script>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .unit {
+            margin-bottom: 40px;
+            border-left: 5px solid #667eea;
+            padding-left: 20px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .unit h2 {
+            color: #667eea;
+            margin-top: 0;
+        }
+
+        .unit h3 {
+            color: #764ba2;
+            margin-top: 25px;
+        }
+
+        .theory-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .theory-box li {
+            margin-left: 20px;
+        }
+
+        .formula-box {
+            background: #fff3e0;
+            border: 2px solid #ff9800;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .task-box {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .task-box h4 {
+            color: #f44336;
+            margin-top: 0;
+        }
+
+        .task-box p {
+            color: #000000;
+            margin-top: 0;
+        }
+
+        .task-box li {
+            color: #000000;
+            margin-top: 0;
+        }
+
+        .task-box td {
+            color: #000000;
+            margin-top: 0;
+        }
+
+
+        .hint-box {
+            background: #fff9c4;
+            border-left: 4px solid #fbc02d;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .hint-box li {
+            
+            
+            margin-left: 20px;
+            
+        }
+
+        .solution-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .solution-box.show {
+            display: block;
+        }
+
+        .interactive-area {
+            background: white;
+            border: 2px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+
+        input[type="number"], input[type="text"] {
+            padding: 10px;
+            margin: 5px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            width: 150px;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        button.secondary {
+            background: #4caf50;
+        }
+
+        button.secondary:hover {
+            background: #45a049;
+        }
+
+        .result-display {
+            background: #f5f5f5;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-weight: bold;
+            min-height: 30px;
+        }
+
+        canvas {
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            display: block;
+            margin: 20px auto;
+            background: white;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        table th {
+            background: #667eea;
+            color: white;
+        }
+
+        table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .vector-display {
+            font-family: 'Courier New', monospace;
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .note {
+            font-style: italic;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .highlight {
+            background: yellow;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+
+        /* ===== SIDEBAR & BURGER MENU ===== */
+        .burger-menu {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: #667eea;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            cursor: pointer;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .burger-menu span {
+            width: 28px;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .burger-menu.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .burger-menu.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .burger-menu.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            position: fixed;
+            left: -320px;
+            top: 0;
+            width: 300px;
+            height: 100vh;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            overflow-y: auto;
+            transition: left 0.3s ease;
+            z-index: 1000;
+            box-shadow: 4px 0 12px rgba(0,0,0,0.15);
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar h3 {
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-size: 1.3em;
+            color: white;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            padding-bottom: 15px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar li {
+            margin: 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px 15px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin-bottom: 8px;
+        }
+
+        .sidebar a:hover {
+            background: rgba(255,255,255,0.2);
+            padding-left: 25px;
+        }
+
+        .sidebar a.active {
+            background: rgba(255,255,255,0.3);
+            font-weight: bold;
+            border-left: 4px solid white;
+            padding-left: 25px;
+        }
+
+        /* Unit active styling */
+        .unit.active {
+            border-left-color: #ff6b6b;
+            background: #fff8f8;
+        }
+
+        /* Overlay für mobile */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        .sidebar-overlay.open {
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .burger-menu {
+                display: flex;
+            }
+
+            body {
+                padding-top: 0;
+            }
+
+            .container {
+                margin-left: 0;
+                padding: 20px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .burger-menu {
+                display: none;
+            }
+
+            .sidebar {
+                left: 0;
+            }
+
+            .sidebar-overlay {
+                display: none !important;
+            }
+
+            body {
+                display: flex;
+            }
+
+            .container {
+                flex: 1;
+                margin-left: 320px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Burger Menu Button -->
+    <button id="burgerMenu" class="burger-menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar" class="sidebar">
+        <h3>Inhaltsverzeichnis</h3>
+        <ul id="navList">
+            <li><a href="#unit1" data-section="unit1">1. Grundlagen Lorentzkraft</a></li>
+            <li><a href="#unit2" data-section="unit2">2. Kreisbewegung & Bahnradius</a></li>
+            <li><a href="#unit3" data-section="unit3">3. Wien-Filter</a></li>
+            <li><a href="#unit4" data-section="unit4">4. Relativistische Effekte</a></li>
+            <li><a href="#unit5" data-section="unit5">5. Teilchenbeschleuniger</a></li>
+            <li><a href="#unit6" data-section="unit6">6. Abschlusstest</a></li>
+        </ul>
+    </nav>
+
+    <!-- Overlay für Sidebar auf mobile -->
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <div class="container">
+        <h1>⚡ Lorentzkraft und Relativistik</h1>
+        <div class="subtitle">Ein interaktiver Lernpfad für die 12. Klasse</div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar">0%</div>
+        </div>
+
+        <!-- Einheit 1: Grundlagen der Lorentzkraft -->
+        <div class="unit" id="unit1">
+            <h2>Einheit 1: Grundlagen der Lorentzkraft</h2>
+
+            <h3>1.1 Hinführung: Geladene Teilchen im Magnetfeld</h3>
+            <div class="theory-box">
+                <p>Stell dir vor, ein Elektron bewegt sich durch ein Magnetfeld. Was passiert mit ihm?</p>
+                <p><strong>Beobachtung:</strong> Das Elektron wird abgelenkt – aber nicht in Richtung des Magnetfelds, sondern senkrecht dazu!</p>
+                <p>Diese Kraft, die auf bewegte Ladungen im Magnetfeld wirkt, nennen wir <strong>Lorentzkraft</strong>.</p>
+            </div>
+
+            <h3>1.2 Die Lorentzkraft-Formel</h3>
+            <div class="formula-box">
+                $$ \vec{F}_L = q \cdot (\vec{v} \times \vec{B}) $$
+                <p style="margin-top: 15px; font-size: 0.9em;">
+                    $q$ = Ladung (in C) | $\vec{v}$ = Geschwindigkeit (in m/s) | $\vec{B}$ = magnetische Flussdichte (in T)
+                </p>
+            </div>
+
+            <div class="theory-box">
+                <p><strong>Betrag der Lorentzkraft:</strong></p>
+                
+                $$ F_L = |q| \cdot v \cdot B \cdot \sin(\alpha) $$
+                
+                <p>wobei $\alpha$ der Winkel zwischen $\vec{v}$ und $\vec{B}$ ist.</p>
+                <p><strong>Spezialfall:</strong> Wenn $\vec{v} \perp \vec{B}$ (senkrecht), dann $\sin(90°) = 1$ und:</p>
+                
+                $$ F_L = |q| \cdot v \cdot B $$
+            </div>
+
+            <h3>1.3 Überlegung: Richtung der Kraft</h3>
+            <div class="task-box">
+                <h4>🤔 Denkaufgabe 1</h4>
+                <p>Ein Elektron ($q = -1{,}6 \cdot 10^{-19}$ C) bewegt sich mit $v = 10^6$ m/s nach rechts. Das Magnetfeld zeigt senkrecht aus der Bildschirmebene heraus.</p>
+                <p><strong>Aufgabe:</strong> Überlege mit der Drei-Finger-Regel (oder Rechte-Hand-Regel für positive Ladungen), in welche Richtung die Kraft wirkt.</p>
+                <ol>
+                    <li>Zeichne die Situation auf Papier</li>
+                    <li>Wende die Drei-Finger-Regel an (Daumen = Bewegungsrichtung, Zeigefinger = Magnetfeld, Mittelfinger = Kraft)</li>
+                    <li>Beachte: Für Elektronen (negative Ladung) ist die Kraftrichtung umgekehrt!</li>
+                </ol>
+            </div>
+
+            <div class="hint-box">
+                <strong>💡 Hinweis:</strong> Bei negativen Ladungen zeigt die Kraft in die entgegengesetzte Richtung zur Rechte-Hand-Regel. Nutze die Linke-Hand-Regel oder drehe das Ergebnis um 180°.
+            </div>
+
+            <h3>1.4 Interaktive Berechnung</h3>
+            <div class="interactive-area">
+                <h4>Berechne die Lorentzkraft</h4>
+                <p>Gegeben: Ein Teilchen bewegt sich senkrecht zum Magnetfeld.</p>
+                <label>Ladung q (in C): <input type="number" id="charge1" value="1.6e-19" step="any"></label><br>
+                <label>Geschwindigkeit v (in m/s): <input type="number" id="velocity1" value="1000000" step="any"></label><br>
+                <label>Magnetfeld B (in T): <input type="number" id="bfield1" value="0.5" step="any"></label><br>
+                <button onclick="calculateLorentz1()">Berechnen</button>
+                <div class="result-display" id="result1"></div>
+            </div>
+
+            <h3>1.5 Praktische Aufgabe</h3>
+            <div class="task-box">
+                <h4>📝 Aufgabe 1: Elektron im Magnetfeld</h4>
+                <p>Ein Elektron wird in einem Magnetfeld der Stärke $B = 0{,}2$ T mit einer Geschwindigkeit von $v = 5 \cdot 10^6$ m/s senkrecht zu den Feldlinien eingeschossen.</p>
+                <p><strong>Berechne:</strong></p>
+                <ol>
+                    <li>Die Lorentzkraft auf das Elektron</li>
+                    <li>Die Beschleunigung des Elektrons (Masse: $m_e = 9{,}11 \cdot 10^{-31}$ kg)</li>
+                    <li>Den Radius der Kreisbahn (Hinweis: Lorentzkraft = Zentripetalkraft)</li>
+                </ol>
+            </div>
+
+            <div class="hint-box">
+                <strong>💡 Lösungsweg:</strong>
+                <ol>
+                    <li>Nutze $F_L = |q| \cdot v \cdot B$</li>
+                    <li>Verwende $F = m \cdot a$ umgestellt zu $a = F/m$</li>
+                    <li>Setze $F_L = F_Z$ mit $F_Z = \frac{m \cdot v^2}{r}$ und löse nach $r$ auf</li>
+                </ol>
+            </div>
+
+            <button class="secondary" onclick="toggleSolution('solution1')">Lösung anzeigen</button>
+            <div class="solution-box" id="solution1">
+                <h4>✅ Lösung Aufgabe 1</h4>
+                <p><strong>1. Lorentzkraft:</strong></p>
+                
+                $$ F_L = |q| \cdot v \cdot B = 1{,}6 \cdot 10^{-19} \text{ C} \cdot 5 \cdot 10^6 \text{ m/s} \cdot 0{,}2 \text{ T} $$
+                
+                $$ F_L = 1{,}6 \cdot 10^{-13} \text{ N} $$
+                
+                <p><strong>2. Beschleunigung:</strong></p>
+                
+                $$ a = \frac{F_L}{m_e} = \frac{1{,}6 \cdot 10^{-13} \text{ N}}{9{,}11 \cdot 10^{-31} \text{ kg}} = 1{,}76 \cdot 10^{17} \text{ m/s}^2 $$
+                
+                <p><strong>3. Radius der Kreisbahn:</strong></p>
+                <p>Gleichsetzen: $F_L = F_Z$</p>
+                
+                $$ |q| \cdot v \cdot B = \frac{m \cdot v^2}{r} $$
+                
+                $$ r = \frac{m \cdot v}{|q| \cdot B} = \frac{9{,}11 \cdot 10^{-31} \text{ kg} \cdot 5 \cdot 10^6 \text{ m/s}}{1{,}6 \cdot 10^{-19} \text{ C} \cdot 0{,}2 \text{ T}} $$
+                
+                $$ r = 1{,}42 \cdot 10^{-4} \text{ m} = 0{,}142 \text{ mm} $$
+            </div>
+
+            <h3>1.6 Visualisierung: Kreisbahn im Magnetfeld</h3>
+            <div class="interactive-area">
+                <h4>Simulation: Teilchen auf Kreisbahn</h4>
+                <p>Beobachte, wie ein geladenes Teilchen auf einer Kreisbahn abgelenkt wird.</p>
+                <canvas id="canvas1" width="600" height="400"></canvas>
+                <button onclick="startAnimation1()">Animation starten</button>
+                <button onclick="stopAnimation1()">Stoppen</button>
+                <button onclick="resetAnimation1()">Zurücksetzen</button>
+            </div>
+        </div>
+
+        <!-- Einheit 2: Kreisbewegung und Bahnradius -->
+        <div class="unit" id="unit2">
+            <h2>Einheit 2: Kreisbewegung und Bahnradius</h2>
+
+            <h3>2.1 Herleitung des Bahnradius</h3>
+            <div class="theory-box">
+                <p>Wenn ein geladenes Teilchen senkrecht in ein homogenes Magnetfeld eintritt, bewegt es sich auf einer Kreisbahn.</p>
+                <p><strong>Warum?</strong> Die Lorentzkraft steht immer senkrecht zur Geschwindigkeit und wirkt als Zentripetalkraft.</p>
+            </div>
+
+            <div class="formula-box">
+                <p><strong>Gleichgewichtsbedingung:</strong></p>
+                
+                $$ F_L = F_Z $$
+                
+                $$ q \cdot v \cdot B = \frac{m \cdot v^2}{r} $$
+                
+                <p style="margin-top: 15px;"><strong>Bahnradius:</strong></p>
+                
+                $$ r = \frac{m \cdot v}{q \cdot B} $$
+            </div>
+
+            <h3>2.2 Überlegung: Abhängigkeiten</h3>
+            <div class="task-box">
+                <h4>🤔 Denkaufgabe 2</h4>
+                <p>Analysiere die Formel $r = \frac{m \cdot v}{q \cdot B}$</p>
+                <p><strong>Beantworte folgende Fragen:</strong></p>
+                <ol>
+                    <li>Was passiert mit dem Radius, wenn die Geschwindigkeit verdoppelt wird?</li>
+                    <li>Wie ändert sich der Radius, wenn das Magnetfeld verstärkt wird?</li>
+                    <li>Warum haben schwerere Teilchen (größere Masse) bei gleicher Geschwindigkeit einen größeren Bahnradius?</li>
+                    <li>Ein Proton und ein Elektron haben die gleiche Geschwindigkeit. Welches hat den größeren Bahnradius? (Masse Proton: $m_p = 1{,}67 \cdot 10^{-27}$ kg)</li>
+                </ol>
+            </div>
+
+            <div class="hint-box">
+                <strong>💡 Tipp:</strong> Schaue dir die Formel genau an. Was steht im Zähler, was im Nenner? Proportionalitäten helfen: $r \sim v$ bedeutet "r ist proportional zu v".
+            </div>
+
+            <h3>2.3 Interaktiver Radius-Rechner</h3>
+            <div class="interactive-area">
+                <h4>Berechne den Bahnradius</h4>
+                <label>Masse m (in kg): <input type="number" id="mass2" value="9.11e-31" step="any"></label><br>
+                <label>Geschwindigkeit v (in m/s): <input type="number" id="velocity2" value="1000000" step="any"></label><br>
+                <label>Ladung q (in C): <input type="number" id="charge2" value="1.6e-19" step="any"></label><br>
+                <label>Magnetfeld B (in T): <input type="number" id="bfield2" value="0.1" step="any"></label><br>
+                <button onclick="calculateRadius()">Radius berechnen</button>
+                <button onclick="compareParticles()">Proton vs. Elektron vergleichen</button>
+                <div class="result-display" id="result2"></div>
+            </div>
+
+            <h3>2.4 Umlaufzeit und Frequenz</h3>
+            <div class="theory-box">
+                <p>Die Zeit für einen vollständigen Umlauf (Periode) berechnet sich aus:</p>
+                
+                $$ T = \frac{2\pi r}{v} = \frac{2\pi m}{q \cdot B} $$
+                
+                <p><strong>Interessant:</strong> Die Umlaufzeit ist unabhängig von der Geschwindigkeit!</p>
+                <p>Die Frequenz (Zyklotronfrequenz) ist:</p>
+                
+                $$ f = \frac{1}{T} = \frac{q \cdot B}{2\pi m} $$
+            </div>
+
+            <div class="task-box">
+                <h4>📝 Aufgabe 2: Massenspektrometer</h4>
+                <p>In einem Massenspektrometer werden Ionen mit gleicher Ladung $q = 1{,}6 \cdot 10^{-19}$ C und gleicher Geschwindigkeit $v = 10^5$ m/s in ein Magnetfeld $B = 0{,}5$ T geschickt.</p>
+                <p><strong>Gegeben:</strong></p>
+                <ul>
+                    <li>Ion A: Masse $m_A = 20 \cdot 1{,}66 \cdot 10^{-27}$ kg (Neon-20)</li>
+                    <li>Ion B: Masse $m_B = 22 \cdot 1{,}66 \cdot 10^{-27}$ kg (Neon-22)</li>
+                </ul>
+                <p><strong>Berechne:</strong></p>
+                <ol>
+                    <li>Die Bahnradien beider Ionen</li>
+                    <li>Den Abstand der Auftreffpunkte auf dem Detektor (Durchmesser-Differenz)</li>
+                    <li>Die Umlaufzeiten beider Ionen</li>
+                </ol>
+            </div>
+
+            <div class="hint-box">
+                <strong>💡 Hinweise:</strong>
+                <ul>
+                    <li>Atomare Masseneinheit: $u = 1{,}66 \cdot 10^{-27}$ kg</li>
+                    <li>Der Detektor misst den Durchmesser $d = 2r$</li>
+                    <li>Nutze die hergeleiteten Formeln für $r$ und $T$</li>
+                </ul>
+            </div>
+
+            <button class="secondary" onclick="toggleSolution('solution2')">Lösung anzeigen</button>
+            <div class="solution-box" id="solution2">
+                <h4>✅ Lösung Aufgabe 2</h4>
+                <p><strong>1. Bahnradien:</strong></p>
+                <p>Für Ion A (Neon-20):</p>
+                
+                $$ r_A = \frac{m_A \cdot v}{q \cdot B} = \frac{20 \cdot 1{,}66 \cdot 10^{-27} \text{ kg} \cdot 10^5 \text{ m/s}}{1{,}6 \cdot 10^{-19} \text{ C} \cdot 0{,}5 \text{ T}} $$
+                
+                $$ r_A = \frac{3{,}32 \cdot 10^{-21}}{8 \cdot 10^{-20}} = 0{,}0415 \text{ m} = 4{,}15 \text{ cm} $$
+                
+                <p>Für Ion B (Neon-22):</p>
+                
+                $$ r_B = \frac{22 \cdot 1{,}66 \cdot 10^{-27} \cdot 10^5}{1{,}6 \cdot 10^{-19} \cdot 0{,}5} = 0{,}0457 \text{ m} = 4{,}57 \text{ cm} $$
+                
+                <p><strong>2. Abstand der Auftreffpunkte:</strong></p>
+                
+                $$ \Delta d = 2(r_B - r_A) = 2(4{,}57 - 4{,}15) \text{ cm} = 0{,}84 \text{ cm} = 8{,}4 \text{ mm} $$
+                
+                <p><strong>3. Umlaufzeiten:</strong></p>
+                
+                $$ T_A = \frac{2\pi m_A}{q \cdot B} = \frac{2\pi \cdot 20 \cdot 1{,}66 \cdot 10^{-27}}{1{,}6 \cdot 10^{-19} \cdot 0{,}5} = 2{,}61 \cdot 10^{-6} \text{ s} = 2{,}61 \text{ μs} $$
+                
+                $$ T_B = \frac{2\pi \cdot 22 \cdot 1{,}66 \cdot 10^{-27}}{1{,}6 \cdot 10^{-19} \cdot 0{,}5} = 2{,}87 \cdot 10^{-6} \text{ s} = 2{,}87 \text{ μs} $$
+            </div>
+
+            <h3>2.5 Visualisierung: Massenspektrometer</h3>
+            <div class="interactive-area">
+                <h4>Simulation: Trennung von Isotopen</h4>
+                <canvas id="canvas2" width="600" height="400"></canvas>
+                <label>Masse Ion 1 (u): <input type="number" id="mass2a" value="20" min="1" max="100"></label>
+                <label>Masse Ion 2 (u): <input type="number" id="mass2b" value="22" min="1" max="100"></label><br>
+                <label>Magnetfeld B (T): <input type="number" id="bfield2sim" value="0.5" step="0.1" min="0.1" max="2"></label>
+                <button onclick="startAnimation2()">Simulation starten</button>
+            </div>
+        </div>
+
+        <!-- Einheit 3: Geschwindigkeitsfilter (Wien-Filter) -->
+        <div class="unit" id="unit3">
+            <h2>Einheit 3: Geschwindigkeitsfilter (Wien-Filter)</h2>
+
+            <h3>3.1 Hinführung: Kombination von E- und B-Feld</h3>
+            <div class="theory-box">
+                <p>Problem: Wie können wir Teilchen mit einer bestimmten Geschwindigkeit auswählen, unabhängig von ihrer Masse?</p>
+                <p><strong>Lösung:</strong> Wir überlagern ein elektrisches Feld und ein Magnetfeld so, dass sich die Kräfte für eine bestimmte Geschwindigkeit aufheben.</p>
+            </div>
+
+            <div class="formula-box">
+                <p><strong>Kräftegleichgewicht im Wien-Filter:</strong></p>
+                
+                $$ F_E = F_L $$
+                
+                $$ q \cdot E = q \cdot v \cdot B $$
+                
+                <p style="margin-top: 15px;"><strong>Ausgewählte Geschwindigkeit:</strong></p>
+                
+                $$ v = \frac{E}{B} $$
+            </div>
+
+            <h3>3.2 Überlegung: Funktionsweise</h3>
+            <div class="task-box">
+                <h4>🤔 Denkaufgabe 3</h4>
+                <p>Ein Wien-Filter besteht aus einem elektrischen Feld $E$ (nach oben) und einem Magnetfeld $B$ (in die Bildschirmebene hinein).</p>
+                <p><strong>Überlege:</strong></p>
+                <ol>
+                    <li>Ein positiv geladenes Teilchen fliegt von links nach rechts. In welche Richtung wirkt die elektrische Kraft?</li>
+                    <li>In welche Richtung wirkt die Lorentzkraft? (Nutze die Rechte-Hand-Regel)</li>
+                    <li>Für welche Geschwindigkeit heben sich die Kräfte auf?</li>
+                    <li>Was passiert mit Teilchen, die schneller sind als $v = E/B$?</li>
+                    <li>Was passiert mit langsameren Teilchen?</li>
+                </ol>
+            </div>
+
+            <div class="hint-box">
+                <strong>💡 Tipp:</strong> Zeichne die Situation auf! Markiere die Richtungen von $\vec{E}$, $\vec{B}$, $\vec{v}$, $\vec{F}_E$ und $\vec{F}_L$. Überlege, welche Kraft überwiegt, wenn $v \neq E/B$.
+            </div>
+
+            <h3>3.3 Interaktiver Wien-Filter</h3>
+            <div class="interactive-area">
+                <h4>Berechne die Filtergeschwindigkeit</h4>
+                <label>Elektrisches Feld E (V/m): <input type="number" id="efield3" value="10000" step="any"></label><br>
+                <label>Magnetfeld B (T): <input type="number" id="bfield3" value="0.05" step="any"></label><br>
+                <button onclick="calculateWienFilter()">Geschwindigkeit berechnen</button>
+                <div class="result-display" id="result3"></div>
+            </div>
+
+            <h3>3.4 Praktische Aufgabe</h3>
+            <div class="task-box">
+                <h4>📝 Aufgabe 3: Teilchenselektion</h4>
+                <p>Ein Wien-Filter soll Protonen mit einer Geschwindigkeit von $v = 2 \cdot 10^6$ m/s auswählen.</p>
+                <p><strong>Gegeben:</strong></p>
+                <ul>
+                    <li>Magnetfeld: $B = 0{,}1$ T</li>
+                    <li>Proton: $q = 1{,}6 \cdot 10^{-19}$ C, $m = 1{,}67 \cdot 10^{-27}$ kg</li>
+                </ul>
+                <p><strong>Berechne:</strong></p>
+                <ol>
+                    <li>Die erforderliche elektrische Feldstärke $E$</li>
+                    <li>Die elektrische Kraft auf ein Proton mit der richtigen Geschwindigkeit</li>
+                    <li>Die Lorentzkraft auf dasselbe Proton</li>
+                    <li>Die Spannung zwischen den Platten, wenn der Plattenabstand $d = 2$ cm beträgt</li>
+                </ol>
+                <p><strong>Zusatzfrage:</strong> Ein Proton mit $v = 3 \cdot 10^6$ m/s tritt in den Filter ein. In welche Richtung wird es abgelenkt?</p>
+            </div>
+
+            <div class="hint-box">
+                <strong>💡 Hinweise:</strong>
+                <ul>
+                    <li>Nutze $v = E/B$ umgestellt zu $E = v \cdot B$</li>
+                    <li>Berechne beide Kräfte einzeln und vergleiche sie</li>
+                    <li>Für die Spannung: $U = E \cdot d$</li>
+                    <li>Bei höherer Geschwindigkeit ist $F_L > F_E$</li>
+                </ul>
+            </div>
+
+            <button class="secondary" onclick="toggleSolution('solution3')">Lösung anzeigen</button>
+            <div class="solution-box" id="solution3">
+                <h4>✅ Lösung Aufgabe 3</h4>
+                <p><strong>1. Elektrische Feldstärke:</strong></p>
+                
+                $$ E = v \cdot B = 2 \cdot 10^6 \text{ m/s} \cdot 0{,}1 \text{ T} = 2 \cdot 10^5 \text{ V/m} $$
+                
+                <p><strong>2. Elektrische Kraft:</strong></p>
+                
+                $$ F_E = q \cdot E = 1{,}6 \cdot 10^{-19} \text{ C} \cdot 2 \cdot 10^5 \text{ V/m} = 3{,}2 \cdot 10^{-14} \text{ N} $$
+                
+                <p><strong>3. Lorentzkraft:</strong></p>
+                
+                $$ F_L = q \cdot v \cdot B = 1{,}6 \cdot 10^{-19} \text{ C} \cdot 2 \cdot 10^6 \text{ m/s} \cdot 0{,}1 \text{ T} = 3{,}2 \cdot 10^{-14} \text{ N} $$
+                
+                <p><strong>Vergleich:</strong> $F_E = F_L$ ✓ (Kräftegleichgewicht)</p>
+                
+                <p><strong>4. Spannung:</strong></p>
+                
+                $$ U = E \cdot d = 2 \cdot 10^5 \text{ V/m} \cdot 0{,}02 \text{ m} = 4000 \text{ V} = 4 \text{ kV} $$
+                
+                <p><strong>Zusatzfrage:</strong> Bei $v = 3 \cdot 10^6$ m/s:</p>
+                
+                $$ F_L = 1{,}6 \cdot 10^{-19} \cdot 3 \cdot 10^6 \cdot 0{,}1 = 4{,}8 \cdot 10^{-14} \text{ N} $$
+                
+                <p>Da $F_L > F_E$, wird das Proton in Richtung der Lorentzkraft abgelenkt (nach unten, wenn $\vec{E}$ nach oben zeigt).</p>
+            </div>
+
+            <h3>3.5 Visualisierung: Wien-Filter</h3>
+            <div class="interactive-area">
+                <h4>Simulation: Geschwindigkeitsselektion</h4>
+                <canvas id="canvas3" width="600" height="400"></canvas>
+                <label>E-Feld (kV/m): <input type="number" id="efield3sim" value="100" step="10"></label>
+                <label>B-Feld (T): <input type="number" id="bfield3sim" value="0.05" step="0.01"></label><br>
+                <button onclick="startAnimation3()">Verschiedene Geschwindigkeiten zeigen</button>
+            </div>
+        </div>
+
+        <!-- Einheit 4: Relativistische Effekte -->
+        <div class="unit" id="unit4">
+            <h2>Einheit 4: Relativistische Effekte</h2>
+
+            <h3>4.1 Hinführung: Grenzen der klassischen Physik</h3>
+            <div class="theory-box">
+                <p>Bei sehr hohen Geschwindigkeiten (nahe der Lichtgeschwindigkeit $c = 3 \cdot 10^8$ m/s) versagt die klassische Mechanik!</p>
+                <p><strong>Problem:</strong> Nach Newton könnte man Teilchen beliebig beschleunigen. Aber Einstein zeigte: Nichts kann schneller als Licht sein!</p>
+                <p><strong>Lösung:</strong> Die Masse nimmt mit der Geschwindigkeit zu (relativistische Masse).</p>
+            </div>
+
+            <div class="formula-box">
+                <p><strong>Lorentz-Faktor:</strong></p>
+                
+                $$ \gamma = \frac{1}{\sqrt{1 - \frac{v^2}{c^2}}} $$
+                
+                <p style="margin-top: 15px;"><strong>Relativistische Masse:</strong></p>
+                
+                $$ m_{rel} = \gamma \cdot m_0 $$
+                
+                <p style="margin-top: 15px;"><strong>Relativistischer Bahnradius:</strong></p>
+                
+                $$ r = \frac{\gamma \cdot m_0 \cdot v}{q \cdot B} = \frac{m_0 \cdot v}{q \cdot B \cdot \sqrt{1 - \frac{v^2}{c^2}}} $$
+            </div>
+
+            <h3>4.2 Überlegung: Wann wird Relativistik wichtig?</h3>
+            <div class="task-box">
+                <h4>🤔 Denkaufgabe 4</h4>
+                <p>Berechne den Lorentz-Faktor $\gamma$ für verschiedene Geschwindigkeiten:</p>
+                <table>
+                    <tr>
+                        <th>Geschwindigkeit</th>
+                        <th>v/c</th>
+                        <th>γ (berechne!)</th>
+                        <th>Massenzunahme</th>
+                    </tr>
+                    <tr>
+                        <td>$v = 10^6$ m/s</td>
+                        <td>0,0033</td>
+                        <td><input type="number" id="gamma1" class="task-input" placeholder="γ" step="0.0001" onchange="checkAnswer(1, 0.0033)"><span id="result1"></span></td>
+                        <td><input type="number" id="mass1" class="task-input" placeholder="%" step="0.01" onchange="checkMassIncrease(1, 0.0033)"><span id="result-mass1"></span></td>
+                    </tr>
+                    <tr>
+                        <td>$v = 10^7$ m/s</td>
+                        <td>0,033</td>
+                        <td><input type="number" id="gamma2" class="task-input" placeholder="γ" step="0.0001" onchange="checkAnswer(2, 0.033)"><span id="result2"></span></td>
+                        <td><input type="number" id="mass2" class="task-input" placeholder="%" step="0.01" onchange="checkMassIncrease(2, 0.033)"><span id="result-mass2"></span></td>
+                    </tr>
+                    <tr>
+                        <td>$v = 10^8$ m/s</td>
+                        <td>0,33</td>
+                        <td><input type="number" id="gamma3" class="task-input" placeholder="γ" step="0.0001" onchange="checkAnswer(3, 0.33)"><span id="result3"></span></td>
+                        <td><input type="number" id="mass3" class="task-input" placeholder="%" step="0.01" onchange="checkMassIncrease(3, 0.33)"><span id="result-mass3"></span></td>
+                    </tr>
+                    <tr>
+                        <td>$v = 0{,}9c$</td>
+                        <td>0,9</td>
+                        <td><input type="number" id="gamma4" class="task-input" placeholder="γ" step="0.0001" onchange="checkAnswer(4, 0.9)"><span id="result4"></span></td>
+                        <td><input type="number" id="mass4" class="task-input" placeholder="%" step="0.01" onchange="checkMassIncrease(4, 0.9)"><span id="result-mass4"></span></td>
+                    </tr>
+                    <tr>
+                        <td>$v = 0{,}99c$</td>
+                        <td>0,99</td>
+                        <td><input type="number" id="gamma5" class="task-input" placeholder="γ" step="0.0001" onchange="checkAnswer(5, 0.99)"><span id="result5"></span></td>
+                        <td><input type="number" id="mass5" class="task-input" placeholder="%" step="0.01" onchange="checkMassIncrease(5, 0.99)"><span id="result-mass5"></span></td>
+                    </tr>
+                </table>
+                <p><strong>Aufgabe:</strong> Ab welcher Geschwindigkeit ist der relativistische Effekt größer als 1%? (d.h. $\gamma > 1{,}01$)</p>
+            </div>
+
+            <div class="hint-box">
+                <strong>💡 Hinweise:</strong>
+                <ul>
+                    <li>Nutze $\gamma = \frac{1}{\sqrt{1 - (v/c)^2}}$</li>
+                    <li>Massenzunahme in %: $((\gamma - 1) \cdot 100)\%$</li>
+                    <li>Für kleine $v/c$ ist $\gamma \approx 1$</li>
+                </ul>
+            </div>
+
+            <h3>4.3 Interaktiver Relativistik-Rechner</h3>
+            <div class="interactive-area">
+                <h4>Berechne relativistische Effekte</h4>
+                <label>Geschwindigkeit v (m/s): <input type="number" id="velocity4" value="100000000" step="any"></label><br>
+                <label>Ruhemasse m₀ (kg): <input type="number" id="mass4" value="9.11e-31" step="any"></label><br>
+                <button onclick="calculateRelativistic()">Berechnen</button>
+                <button onclick="plotGamma()">γ-Diagramm zeigen</button>
+                <div class="result-display" id="result4"></div>
+                <canvas id="canvas4" width="600" height="300" style="display:none;"></canvas>
+            </div>
+
+            <h3>4.4 Praktische Aufgabe</h3>
+            <div class="task-box">
+                <h4>📝 Aufgabe 4: Elektron im Teilchenbeschleuniger</h4>
+                <p>Ein Elektron wird in einem Teilchenbeschleuniger auf $v = 0{,}95c$ beschleunigt und tritt dann in ein Magnetfeld $B = 2$ T ein.</p>
+                <p><strong>Gegeben:</strong></p>
+                <ul>
+                    <li>Ruhemasse Elektron: $m_0 = 9{,}11 \cdot 10^{-31}$ kg</li>
+                    <li>Ladung: $q = -1{,}6 \cdot 10^{-19}$ C</li>
+                    <li>Lichtgeschwindigkeit: $c = 3 \cdot 10^8$ m/s</li>
+                </ul>
+                <p><strong>Berechne:</strong></p>
+                <ol>
+                    <li>Den Lorentz-Faktor $\gamma$</li>
+                    <li>Die relativistische Masse $m_{rel}$</li>
+                    <li>Den Bahnradius klassisch (mit $m_0$)</li>
+                    <li>Den Bahnradius relativistisch (mit $m_{rel}$)</li>
+                    <li>Die prozentuale Abweichung zwischen beiden Werten</li>
+                </ol>
+            </div>
+
+            <div class="hint-box">
+                <strong>💡 Lösungsschritte:</strong>
+                <ol>
+                    <li>Berechne $v = 0{,}95 \cdot 3 \cdot 10^8$ m/s</li>
+                    <li>Nutze $\gamma = \frac{1}{\sqrt{1 - 0{,}95^2}}$</li>
+                    <li>$m_{rel} = \gamma \cdot m_0$</li>
+                    <li>$r_{klassisch} = \frac{m_0 \cdot v}{|q| \cdot B}$</li>
+                    <li>$r_{rel} = \frac{m_{rel} \cdot v}{|q| \cdot B}$</li>
+                </ol>
+            </div>
+
+            <button class="secondary" onclick="toggleSolution('solution4')">Lösung anzeigen</button>
+            <div class="solution-box" id="solution4">
+                <h4>✅ Lösung Aufgabe 4</h4>
+                <p><strong>Geschwindigkeit:</strong></p>
+                
+                $$ v = 0{,}95c = 0{,}95 \cdot 3 \cdot 10^8 \text{ m/s} = 2{,}85 \cdot 10^8 \text{ m/s} $$
+                
+                <p><strong>1. Lorentz-Faktor:</strong></p>
+                
+                $$ \gamma = \frac{1}{\sqrt{1 - 0{,}95^2}} = \frac{1}{\sqrt{1 - 0{,}9025}} = \frac{1}{\sqrt{0{,}0975}} = \frac{1}{0{,}312} = 3{,}20 $$
+                
+                <p><strong>2. Relativistische Masse:</strong></p>
+                
+                $$ m_{rel} = 3{,}20 \cdot 9{,}11 \cdot 10^{-31} \text{ kg} = 2{,}92 \cdot 10^{-30} \text{ kg} $$
+                
+                <p><strong>3. Klassischer Bahnradius:</strong></p>
+                
+                $$ r_{kl} = \frac{9{,}11 \cdot 10^{-31} \cdot 2{,}85 \cdot 10^8}{1{,}6 \cdot 10^{-19} \cdot 2} = \frac{2{,}60 \cdot 10^{-22}}{3{,}2 \cdot 10^{-19}} = 8{,}11 \cdot 10^{-4} \text{ m} = 0{,}811 \text{ mm} $$
+                
+                <p><strong>4. Relativistischer Bahnradius:</strong></p>
+                
+                $$ r_{rel} = \gamma \cdot r_{kl} = 3{,}20 \cdot 0{,}811 \text{ mm} = 2{,}60 \text{ mm} $$
+                
+                <p><strong>5. Prozentuale Abweichung:</strong></p>
+                
+                $$ \frac{r_{rel} - r_{kl}}{r_{kl}} \cdot 100\% = \frac{2{,}60 - 0{,}811}{0{,}811} \cdot 100\% = 220\% $$
+                
+                <p><strong>Interpretation:</strong> Der relativistische Bahnradius ist 3,2-mal größer als der klassische! Bei hohen Geschwindigkeiten sind relativistische Korrekturen essentiell.</p>
+            </div>
+
+            <h3>4.5 Energiebetrachtung</h3>
+            <div class="theory-box">
+                <p><strong>Relativistische Gesamtenergie:</strong></p>
+                
+                $$ E_{ges} = \gamma \cdot m_0 \cdot c^2 $$
+                
+                <p><strong>Ruheenergie:</strong></p>
+                
+                $$ E_0 = m_0 \cdot c^2 $$
+                
+                <p><strong>Kinetische Energie:</strong></p>
+                
+                $$ E_{kin} = (\gamma - 1) \cdot m_0 \cdot c^2 $$
+                
+                <p>Für Elektronen: $E_0 = 0{,}511$ MeV (Mega-Elektronenvolt)</p>
+            </div>
+
+            <div class="task-box">
+                <h4>📝 Aufgabe 5: Energie im Beschleuniger</h4>
+                <p>Ein Elektron wird auf $\gamma = 10$ beschleunigt.</p>
+                <p><strong>Berechne:</strong></p>
+                <ol>
+                    <li>Die Geschwindigkeit des Elektrons (als Vielfaches von $c$)</li>
+                    <li>Die kinetische Energie in MeV</li>
+                    <li>Die Gesamtenergie in MeV</li>
+                    <li>Den Bahnradius in einem Magnetfeld von $B = 1$ T</li>
+                </ol>
+            </div>
+
+            <div class="hint-box">
+                <strong>💡 Hinweise:</strong>
+                <ul>
+                    <li>Aus $\gamma = 10$ folgt: $\frac{1}{\sqrt{1 - v^2/c^2}} = 10$</li>
+                    <li>Löse nach $v/c$ auf: $1 - v^2/c^2 = 1/100$</li>
+                    <li>$E_{kin} = (\gamma - 1) \cdot 0{,}511$ MeV</li>
+                </ul>
+            </div>
+
+            <button class="secondary" onclick="toggleSolution('solution5')">Lösung anzeigen</button>
+            <div class="solution-box" id="solution5">
+                <h4>✅ Lösung Aufgabe 5</h4>
+                <p><strong>1. Geschwindigkeit:</strong></p>
+                
+                $$ \gamma = 10 = \frac{1}{\sqrt{1 - v^2/c^2}} $$
+                
+                $$ \sqrt{1 - v^2/c^2} = 0{,}1 $$
+                
+                $$ 1 - v^2/c^2 = 0{,}01 $$
+                
+                $$ v^2/c^2 = 0{,}99 $$
+                
+                $$ v = 0{,}995c = 2{,}985 \cdot 10^8 \text{ m/s} $$
+                
+                <p><strong>2. Kinetische Energie:</strong></p>
+                
+                $$ E_{kin} = (10 - 1) \cdot 0{,}511 \text{ MeV} = 9 \cdot 0{,}511 \text{ MeV} = 4{,}60 \text{ MeV} $$
+                
+                <p><strong>3. Gesamtenergie:</strong></p>
+                
+                $$ E_{ges} = 10 \cdot 0{,}511 \text{ MeV} = 5{,}11 \text{ MeV} $$
+                
+                <p><strong>4. Bahnradius:</strong></p>
+                
+                $$ r = \frac{\gamma \cdot m_0 \cdot v}{|q| \cdot B} = \frac{10 \cdot 9{,}11 \cdot 10^{-31} \cdot 2{,}985 \cdot 10^8}{1{,}6 \cdot 10^{-19} \cdot 1} $$
+                
+                $$ r = \frac{2{,}72 \cdot 10^{-21}}{1{,}6 \cdot 10^{-19}} = 1{,}70 \cdot 10^{-2} \text{ m} = 1{,}70 \text{ cm} $$
+            </div>
+        </div>
+
+        <!-- Einheit 5: Teilchenbeschleuniger -->
+        <div class="unit" id="unit5">
+            <h2>Einheit 5: Teilchenbeschleuniger</h2>
+
+            <h3>5.1 Hinführung: Warum Teilchenbeschleuniger?</h3>
+            <div class="theory-box">
+                <p>Teilchenbeschleuniger sind die größten und komplexesten Maschinen der Menschheit. Sie dienen:</p>
+                <ul>
+                    <li>Der Grundlagenforschung (z.B. Higgs-Boson am CERN)</li>
+                    <li>Der Medizin (Strahlentherapie gegen Krebs)</li>
+                    <li>Der Materialforschung (Synchrotron-Strahlung)</li>
+                </ul>
+                <p><strong>Prinzip:</strong> Geladene Teilchen werden durch elektrische Felder beschleunigt und durch Magnetfelder auf Kreisbahnen gehalten.</p>
+            </div>
+
+            <h3>5.2 Das Zyklotron</h3>
+            <div class="theory-box">
+                <p><strong>Funktionsweise:</strong></p>
+                <ul>
+                    <li>Zwei halbkreisförmige Elektroden (Duanten)</li>
+                    <li>Homogenes Magnetfeld senkrecht zur Bewegungsebene</li>
+                    <li>Wechselspannung zwischen den Duanten</li>
+                </ul>
+                <p><strong>Wichtig:</strong> Die Umlaufzeit ist unabhängig von der Geschwindigkeit!</p>
+                
+                $$ T = \frac{2\pi m}{q \cdot B} = \text{konstant} $$
+                
+                <p>Daher kann man mit konstanter Frequenz beschleunigen:</p>
+                
+                $$ f_{Zyklotron} = \frac{q \cdot B}{2\pi m} $$
+            </div>
+
+            <div class="task-box">
+                <h4>🤔 Denkaufgabe 5</h4>
+                <p>Ein Zyklotron beschleunigt Protonen.</p>
+                <p><strong>Gegeben:</strong> $B = 1{,}5$ T</p>
+                <p><strong>Überlege:</strong></p>
+                <ol>
+                    <li>Warum muss die Frequenz der Wechselspannung genau zur Umlaufzeit passen?</li>
+                    <li>Berechne die Zyklotronfrequenz für Protonen</li>
+                    <li>Was passiert, wenn die Protonen zu schnell werden (relativistisch)?</li>
+                    <li>Warum funktioniert ein Zyklotron nicht für Elektronen bei hohen Energien?</li>
+                </ol>
+            </div>
+
+            <h3>5.3 Interaktiver Zyklotron-Rechner</h3>
+            <div class="interactive-area">
+                <h4>Berechne Zyklotron-Parameter</h4>
+                <label>Teilchen:
+                    <select id="particle5">
+                        <option value="proton">Proton</option>
+                        <option value="deuteron">Deuteron (²H)</option>
+                        <option value="alpha">Alpha-Teilchen (⁴He²⁺)</option>
+                    </select>
+                </label><br>
+                <label>Magnetfeld B (T): <input type="number" id="bfield5" value="1.5" step="0.1"></label><br>
+                <label>Maximaler Radius (m): <input type="number" id="radius5" value="0.5" step="0.1"></label><br>
+                <button onclick="calculateCyclotron()">Parameter berechnen</button>
+                <div class="result-display" id="result5"></div>
+            </div>
+
+            <h3>5.4 Das Synchrotron</h3>
+            <div class="theory-box">
+                <p><strong>Problem des Zyklotrons:</strong> Bei hohen Energien wird die Masse relativistisch größer, die Umlaufzeit ändert sich!</p>
+                <p><strong>Lösung: Synchrotron</strong></p>
+                <ul>
+                    <li>Das Magnetfeld wird während der Beschleunigung erhöht</li>
+                    <li>Die Frequenz der Beschleunigungsspannung wird angepasst</li>
+                    <li>Teilchen bleiben auf konstantem Radius</li>
+                </ul>
+                <p><strong>Beispiel:</strong> Large Hadron Collider (LHC) am CERN</p>
+                <ul>
+                    <li>Umfang: 27 km</li>
+                    <li>Energie: 13 TeV (Tera-Elektronenvolt)</li>
+                    <li>Magnetfeld: bis 8,3 T</li>
+                    <li>Geschwindigkeit: 0,9999999c</li>
+                </ul>
+            </div>
+
+            <div class="task-box">
+                <h4>📝 Aufgabe 6: Der LHC</h4>
+                <p>Im LHC werden Protonen auf eine Energie von $E = 7$ TeV beschleunigt.</p>
+                <p><strong>Gegeben:</strong></p>
+                <ul>
+                    <li>Ruheenergie Proton: $E_0 = 938$ MeV $= 0{,}938$ GeV</li>
+                    <li>Bahnradius: $r = 4{,}3$ km</li>
+                    <li>$1$ TeV $= 10^{12}$ eV $= 1000$ GeV</li>
+                </ul>
+                <p><strong>Berechne:</strong></p>
+                <ol>
+                    <li>Den Lorentz-Faktor $\gamma$ (Hinweis: $E = \gamma \cdot E_0$)</li>
+                    <li>Die Geschwindigkeit als Bruchteil von $c$ (auf 6 Nachkommastellen)</li>
+                    <li>Das erforderliche Magnetfeld $B$</li>
+                    <li>Die Umlaufzeit und Frequenz</li>
+                    <li>Wie viele Umläufe macht ein Proton pro Sekunde?</li>
+                </ol>
+            </div>
+
+            <div class="hint-box">
+                <strong>💡 Hinweise:</strong>
+                <ul>
+                    <li>$\gamma = E/E_0 = 7000 \text{ GeV} / 0{,}938 \text{ GeV}$</li>
+                    <li>Aus $\gamma$ folgt: $v/c = \sqrt{1 - 1/\gamma^2}$</li>
+                    <li>$B = \frac{\gamma \cdot m_0 \cdot v}{q \cdot r}$ oder nutze $p = \gamma \cdot m_0 \cdot v$</li>
+                    <li>Impuls in eV/c: $p = \sqrt{E^2 - E_0^2}/c$</li>
+                </ul>
+            </div>
+
+            <button class="secondary" onclick="toggleSolution('solution6')">Lösung anzeigen</button>
+            <div class="solution-box" id="solution6">
+                <h4>✅ Lösung Aufgabe 6</h4>
+                <p><strong>1. Lorentz-Faktor:</strong></p>
+                
+                $$ \gamma = \frac{E}{E_0} = \frac{7000 \text{ GeV}}{0{,}938 \text{ GeV}} = 7461 $$
+                
+                <p><strong>2. Geschwindigkeit:</strong></p>
+                
+                $$ \frac{v}{c} = \sqrt{1 - \frac{1}{\gamma^2}} = \sqrt{1 - \frac{1}{7461^2}} = \sqrt{1 - 1{,}80 \cdot 10^{-8}} $$
+                
+                $$ \frac{v}{c} = 0{,}999999991 $$
+                
+                $$ v = 2{,}99999997 \cdot 10^8 \text{ m/s} $$
+                
+                <p><strong>3. Magnetfeld:</strong></p>
+                <p>Nutze die Impuls-Energie-Beziehung:</p>
+                
+                $$ p = \frac{\sqrt{E^2 - E_0^2}}{c} = \frac{\sqrt{7000^2 - 0{,}938^2}}{c} \text{ GeV/c} \approx 7000 \text{ GeV/c} $$
+                
+                <p>Umrechnung in SI-Einheiten: $p = 7000 \cdot 10^9 \cdot 1{,}6 \cdot 10^{-19} / c$</p>
+                
+                $$ p = \frac{1{,}12 \cdot 10^{-6}}{3 \cdot 10^8} = 3{,}73 \cdot 10^{-15} \text{ kg·m/s} $$
+                
+                <p>Magnetfeld:</p>
+                
+                $$ B = \frac{p}{q \cdot r} = \frac{3{,}73 \cdot 10^{-15}}{1{,}6 \cdot 10^{-19} \cdot 4300} = 5{,}42 \text{ T} $$
+                
+                <p><strong>4. Umlaufzeit:</strong></p>
+                
+                $$ T = \frac{2\pi r}{v} = \frac{2\pi \cdot 4300}{2{,}99999997 \cdot 10^8} = 9{,}00 \cdot 10^{-5} \text{ s} = 90{,}0 \text{ μs} $$
+                
+                $$ f = \frac{1}{T} = 11{,}1 \text{ kHz} $$
+                
+                <p><strong>5. Umläufe pro Sekunde:</strong></p>
+                
+                $$ n = f = 11100 \text{ Umläufe/s} $$
+            </div>
+
+            <h3>5.5 Visualisierung: Teilchenbeschleuniger</h3>
+            <div class="interactive-area">
+                <h4>Simulation: Beschleunigung im Zyklotron</h4>
+                <canvas id="canvas5" width="600" height="600"></canvas>
+                <label>Beschleunigungsspannung (kV): <input type="number" id="voltage5" value="50" step="10"></label>
+                <label>Magnetfeld (T): <input type="number" id="bfield5sim" value="1.0" step="0.1"></label><br>
+                <button onclick="startAnimation5()">Simulation starten</button>
+                <button onclick="stopAnimation5()">Stoppen</button>
+                <div class="result-display" id="result5sim"></div>
+            </div>
+
+            <h3>5.6 Zusammenfassung und Vergleich</h3>
+            <table>
+                <tr>
+                    <th>Beschleuniger-Typ</th>
+                    <th>Prinzip</th>
+                    <th>Energie-Bereich</th>
+                    <th>Vorteil</th>
+                    <th>Nachteil</th>
+                </tr>
+                <tr>
+                    <td>Zyklotron</td>
+                    <td>Konstantes B-Feld, konstante Frequenz</td>
+                    <td>Bis ~20 MeV</td>
+                    <td>Einfacher Aufbau</td>
+                    <td>Relativistische Grenze</td>
+                </tr>
+                <tr>
+                    <td>Synchrozyklotron</td>
+                    <td>Konstantes B-Feld, variable Frequenz</td>
+                    <td>Bis ~1 GeV</td>
+                    <td>Höhere Energien</td>
+                    <td>Komplexere Steuerung</td>
+                </tr>
+                <tr>
+                    <td>Synchrotron</td>
+                    <td>Variables B-Feld, variable Frequenz</td>
+                    <td>Bis TeV-Bereich</td>
+                    <td>Sehr hohe Energien</td>
+                    <td>Sehr aufwendig</td>
+                </tr>
+                <tr>
+                    <td>Linearbeschleuniger</td>
+                    <td>Gerade Strecke, Beschleunigungsstrecken</td>
+                    <td>Variabel</td>
+                    <td>Keine Synchrotronstrahlung</td>
+                    <td>Sehr lang</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Abschlusstest -->
+        <div class="unit" id="unit6">
+            <h2>Abschlusstest: Lorentzkraft und Relativistik</h2>
+
+            <h3>Komplexe Anwendungsaufgabe</h3>
+            <div class="task-box">
+                <h4>📝 Abschlussaufgabe: Massenspektrometer mit relativistischen Korrekturen</h4>
+                <p>Ein modernes Massenspektrometer arbeitet mit folgenden Parametern:</p>
+                <ul>
+                    <li>Beschleunigungsspannung: $U = 500$ kV</li>
+                    <li>Magnetfeld: $B = 0{,}8$ T</li>
+                    <li>Zu analysierende Ionen: Uran-235 und Uran-238 (jeweils einfach ionisiert)</li>
+                </ul>
+                <p><strong>Aufgaben:</strong></p>
+                <ol>
+                    <li><strong>Beschleunigung:</strong> Berechne die Geschwindigkeit der Ionen nach der Beschleunigung (klassisch). Nutze: $q \cdot U = \frac{1}{2} m v^2$</li>
+                    <li><strong>Relativistische Korrektur:</strong> Prüfe, ob relativistische Effekte relevant sind (berechne $\gamma$ für beide Isotope)</li>
+                    <li><strong>Bahnradien:</strong> Berechne die Bahnradien beider Isotope (klassisch und relativistisch)</li>
+                    <li><strong>Trennschärfe:</strong> Berechne den Abstand der Auftreffpunkte auf dem Detektor</li>
+                    <li><strong>Auflösungsvermögen:</strong> Berechne $R = \frac{m}{\Delta m}$ mit $\Delta m = m_{238} - m_{235}$</li>
+                    <li><strong>Wien-Filter:</strong> Welche elektrische Feldstärke wäre nötig, um nur U-235 durchzulassen?</li>
+                </ol>
+                <p><strong>Daten:</strong></p>
+                <ul>
+                    <li>Masse U-235: $m_{235} = 235 \cdot 1{,}66 \cdot 10^{-27}$ kg</li>
+                    <li>Masse U-238: $m_{238} = 238 \cdot 1{,}66 \cdot 10^{-27}$ kg</li>
+                    <li>Ladung: $q = 1{,}6 \cdot 10^{-19}$ C</li>
+                </ul>
+            </div>
+
+            <div class="hint-box">
+                <strong>💡 Lösungsansätze:</strong>
+                <ol>
+                    <li>Aus $q \cdot U = \frac{1}{2} m v^2$ folgt: $v = \sqrt{\frac{2qU}{m}}$</li>
+                    <li>Berechne $v/c$ und dann $\gamma = \frac{1}{\sqrt{1-(v/c)^2}}$</li>
+                    <li>$r = \frac{m \cdot v}{q \cdot B}$ klassisch, $r = \frac{\gamma \cdot m \cdot v}{q \cdot B}$ relativistisch</li>
+                    <li>$\Delta d = 2(r_{238} - r_{235})$</li>
+                    <li>$R = \frac{\bar{m}}{\Delta m}$ mit $\bar{m} = \frac{235+238}{2}$</li>
+                    <li>$E = v \cdot B$ mit der Geschwindigkeit von U-235</li>
+                </ol>
+            </div>
+
+            <button class="secondary" onclick="toggleSolution('solutionFinal')">Lösung anzeigen</button>
+            <div class="solution-box" id="solutionFinal">
+                <h4>✅ Lösung Abschlussaufgabe</h4>
+                
+                <p><strong>1. Geschwindigkeiten (klassisch):</strong></p>
+                <p>Für U-235:</p>
+                
+                $$ v_{235} = \sqrt{\frac{2 \cdot 1{,}6 \cdot 10^{-19} \cdot 5 \cdot 10^5}{235 \cdot 1{,}66 \cdot 10^{-27}}} = \sqrt{\frac{1{,}6 \cdot 10^{-13}}{3{,}90 \cdot 10^{-25}}} $$
+                
+                $$ v_{235} = \sqrt{4{,}10 \cdot 10^{11}} = 6{,}40 \cdot 10^5 \text{ m/s} $$
+                
+                <p>Für U-238:</p>
+                
+                $$ v_{238} = \sqrt{\frac{2 \cdot 1{,}6 \cdot 10^{-19} \cdot 5 \cdot 10^5}{238 \cdot 1{,}66 \cdot 10^{-27}}} = 6{,}34 \cdot 10^5 \text{ m/s} $$
+                
+                <p><strong>2. Relativistische Korrektur:</strong></p>
+                <p>Für U-235:</p>
+                
+                $$ \frac{v_{235}}{c} = \frac{6{,}40 \cdot 10^5}{3 \cdot 10^8} = 0{,}00213 $$
+                
+                $$ \gamma_{235} = \frac{1}{\sqrt{1 - 0{,}00213^2}} = \frac{1}{\sqrt{0{,}999995}} = 1{,}0000023 $$
+                
+                <p>Für U-238: $\gamma_{238} = 1{,}0000022$</p>
+                <p><strong>Fazit:</strong> Relativistische Effekte sind vernachlässigbar klein (< 0,0003%)</p>
+                
+                <p><strong>3. Bahnradien (klassisch ausreichend):</strong></p>
+                <p>Für U-235:</p>
+                
+                $$ r_{235} = \frac{235 \cdot 1{,}66 \cdot 10^{-27} \cdot 6{,}40 \cdot 10^5}{1{,}6 \cdot 10^{-19} \cdot 0{,}8} $$
+                
+                $$ r_{235} = \frac{2{,}50 \cdot 10^{-18}}{1{,}28 \cdot 10^{-19}} = 1{,}95 \text{ m} $$
+                
+                <p>Für U-238:</p>
+                
+                $$ r_{238} = \frac{238 \cdot 1{,}66 \cdot 10^{-27} \cdot 6{,}34 \cdot 10^5}{1{,}6 \cdot 10^{-19} \cdot 0{,}8} = 1{,}97 \text{ m} $$
+                
+                <p><strong>4. Trennschärfe:</strong></p>
+                
+                $$ \Delta d = 2(r_{238} - r_{235}) = 2(1{,}97 - 1{,}95) = 0{,}04 \text{ m} = 4 \text{ cm} $$
+                
+                <p><strong>5. Auflösungsvermögen:</strong></p>
+                
+                $$ R = \frac{\bar{m}}{\Delta m} = \frac{236{,}5}{3} = 78{,}8 $$
+                
+                <p><strong>6. Wien-Filter für U-235:</strong></p>
+                
+                $$ E = v_{235} \cdot B = 6{,}40 \cdot 10^5 \text{ m/s} \cdot 0{,}8 \text{ T} = 5{,}12 \cdot 10^5 \text{ V/m} = 512 \text{ kV/m} $$
+            </div>
+
+            <h3>Reflexionsfragen</h3>
+            <div class="task-box">
+                <h4>🤔 Abschließende Überlegungen</h4>
+                <ol>
+                    <li>Erkläre mit eigenen Worten, warum die Lorentzkraft keine Arbeit verrichtet.</li>
+                    <li>Warum ist die Lorentzkraft essentiell für Teilchenbeschleuniger?</li>
+                    <li>Ab welcher Geschwindigkeit werden relativistische Korrekturen wichtig? Gib eine Faustregel an.</li>
+                    <li>Vergleiche die Funktionsweise eines Massenspektrometers mit der eines Teilchenbeschleunigers.</li>
+                    <li>Welche Rolle spielt die Lorentzkraft in der modernen Physik und Technologie?</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button onclick="window.scrollTo(0,0)">Nach oben</button>
+            <button onclick="updateProgress(100)">Lernpfad abschließen</button>
+        </div>
+    </div>
+
+    <script>
+        // Fortschrittsbalken
+        let completedTasks = 0;
+        const totalTasks = 6;
+
+        // Diese Funktion wird aufgerufen, sobald das KaTeX-Skript geladen ist
+        function renderMath() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},  // Block-Formeln
+                    {left: '$', right: '$', display: false}    // Inline-Formeln
+                ],
+                throwOnError : false
+            });
+        }
+
+        function updateProgress(percent) {
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = percent + '%';
+            progressBar.textContent = Math.round(percent) + '%';
+        }
+
+        // Lösungen ein-/ausblenden
+        function toggleSolution(id) {
+            const solution = document.getElementById(id);
+            solution.classList.toggle('show');
+            if (solution.classList.contains('show')) {
+                completedTasks++;
+                updateProgress((completedTasks / totalTasks) * 100);
+            }
+        }
+
+        // Einheit 1: Lorentzkraft-Berechnung
+        function calculateLorentz1() {
+            const q = parseFloat(document.getElementById('charge1').value);
+            const v = parseFloat(document.getElementById('velocity1').value);
+            const B = parseFloat(document.getElementById('bfield1').value);
+            
+            const F = Math.abs(q) * v * B;
+            
+            document.getElementById('result1').innerHTML = `
+                <strong>Ergebnis:</strong><br>
+                Lorentzkraft: F<sub>L</sub> = ${F.toExponential(3)} N<br>
+                <em>Hinweis: Die Kraft steht senkrecht zu v und B.</em>
+            `;
+        }
+
+        // Animation 1: Kreisbahn
+        let animation1;
+        let angle1 = 0;
+        function startAnimation1() {
+            const canvas = document.getElementById('canvas1');
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 120;
+            
+            stopAnimation1();
+            animation1 = setInterval(() => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Magnetfeld (Kreuze für "in die Ebene hinein")
+                ctx.fillStyle = '#ccc';
+                for (let i = 50; i < canvas.width; i += 40) {
+                    for (let j = 50; j < canvas.height; j += 40) {
+                        ctx.beginPath();
+                        ctx.arc(i, j, 2, 0, 2 * Math.PI);
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.moveTo(i - 5, j);
+                        ctx.lineTo(i + 5, j);
+                        ctx.moveTo(i, j - 5);
+                        ctx.lineTo(i, j + 5);
+                        ctx.strokeStyle = '#999';
+                        ctx.stroke();
+                    }
+                }
+                
+                // Kreisbahn
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                ctx.strokeStyle = '#667eea';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Teilchen
+                const x = centerX + radius * Math.cos(angle1);
+                const y = centerY + radius * Math.sin(angle1);
+                ctx.beginPath();
+                ctx.arc(x, y, 8, 0, 2 * Math.PI);
+                ctx.fillStyle = '#f44336';
+                ctx.fill();
+                
+                // Geschwindigkeitsvektor
+                const vx = -Math.sin(angle1) * 30;
+                const vy = Math.cos(angle1) * 30;
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(x + vx, y + vy);
+                ctx.strokeStyle = '#4caf50';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                
+                // Kraftvektor (zeigt zum Zentrum)
+                const fx = -Math.cos(angle1) * 40;
+                const fy = -Math.sin(angle1) * 40;
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(x + fx, y + fy);
+                ctx.strokeStyle = '#ff9800';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                
+                // Beschriftungen
+                ctx.fillStyle = '#000';
+                ctx.font = '14px Arial';
+                ctx.fillText('v', x + vx + 5, y + vy);
+                ctx.fillText('F_L', x + fx + 5, y + fy);
+                ctx.fillText('B (⊗)', 20, 30);
+                
+                angle1 += 0.03;
+            }, 30);
+        }
+
+        function stopAnimation1() {
+            if (animation1) clearInterval(animation1);
+        }
+
+        function resetAnimation1() {
+            stopAnimation1();
+            angle1 = 0;
+            const canvas = document.getElementById('canvas1');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Einheit 2: Radius-Rechner
+        function calculateRadius() {
+            const m = parseFloat(document.getElementById('mass2').value);
+            const v = parseFloat(document.getElementById('velocity2').value);
+            const q = parseFloat(document.getElementById('charge2').value);
+            const B = parseFloat(document.getElementById('bfield2').value);
+            
+            const r = (m * v) / (Math.abs(q) * B);
+            const T = (2 * Math.PI * m) / (Math.abs(q) * B);
+            const f = 1 / T;
+            
+            document.getElementById('result2').innerHTML = `
+                <strong>Ergebnis:</strong><br>
+                Bahnradius: r = ${r.toExponential(3)} m = ${(r * 1000).toFixed(3)} mm<br>
+                Umlaufzeit: T = ${T.toExponential(3)} s<br>
+                Frequenz: f = ${f.toExponential(3)} Hz<br>
+            `;
+        }
+
+        function compareParticles() {
+            const v = parseFloat(document.getElementById('velocity2').value);
+            const B = parseFloat(document.getElementById('bfield2').value);
+            const q = 1.6e-19;
+            
+            const m_e = 9.11e-31;
+            const m_p = 1.67e-27;
+            
+            const r_e = (m_e * v) / (q * B);
+            const r_p = (m_p * v) / (q * B);
+            
+            document.getElementById('result2').innerHTML = `
+                <strong>Vergleich Elektron vs. Proton:</strong><br>
+                Elektron: r<sub>e</sub> = ${r_e.toExponential(3)} m = ${(r_e * 1000).toFixed(3)} mm<br>
+                Proton: r<sub>p</sub> = ${r_p.toExponential(3)} m = ${(r_p * 100).toFixed(3)} cm<br>
+                Verhältnis: r<sub>p</sub>/r<sub>e</sub> = ${(r_p/r_e).toFixed(0)}<br>
+                <em>Das Proton hat bei gleicher Geschwindigkeit einen ${(r_p/r_e).toFixed(0)}-mal größeren Bahnradius!</em>
+            `;
+        }
+
+        // Animation 2: Massenspektrometer
+        let animation2;
+        function startAnimation2() {
+            const canvas = document.getElementById('canvas2');
+            const ctx = canvas.getContext('2d');
+            const m1 = parseFloat(document.getElementById('mass2a').value) * 1.66e-27;
+            const m2 = parseFloat(document.getElementById('mass2b').value) * 1.66e-27;
+            const B = parseFloat(document.getElementById('bfield2sim').value);
+            const v = 1e5;
+            const q = 1.6e-19;
+            
+            const r1 = (m1 * v) / (q * B);
+            const r2 = (m2 * v) / (q * B);
+            
+            const scale = 100; // Skalierung für Darstellung
+            const startX = 50;
+            const startY = canvas.height / 2;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Eintrittsspalt
+            ctx.fillStyle = '#333';
+            ctx.fillRect(startX - 5, startY - 30, 5, 60);
+            
+            // Magnetfeld-Bereich
+            ctx.fillStyle = 'rgba(102, 126, 234, 0.1)';
+            ctx.fillRect(startX, 0, canvas.width - startX, canvas.height);
+            
+            // Bahnen
+            ctx.beginPath();
+            ctx.arc(startX, startY, r1 * scale, -Math.PI/2, Math.PI/2);
+            ctx.strokeStyle = '#4caf50';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.arc(startX, startY, r2 * scale, -Math.PI/2, Math.PI/2);
+            ctx.strokeStyle = '#f44336';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Detektor
+            ctx.fillStyle = '#333';
+            ctx.fillRect(startX + 2 * r1 * scale - 5, 0, 5, canvas.height);
+            ctx.fillRect(startX + 2 * r2 * scale - 5, 0, 5, canvas.height);
+            
+            // Beschriftungen
+            ctx.fillStyle = '#000';
+            ctx.font = '14px Arial';
+            ctx.fillText(`Ion 1 (r = ${(r1*100).toFixed(2)} cm)`, startX + 20, 30);
+            ctx.fillText(`Ion 2 (r = ${(r2*100).toFixed(2)} cm)`, startX + 20, 50);
+            ctx.fillText(`Δd = ${((r2-r1)*2*100).toFixed(2)} cm`, startX + 20, 70);
+        }
+
+        // Einheit 3: Wien-Filter
+        function calculateWienFilter() {
+            const E = parseFloat(document.getElementById('efield3').value);
+            const B = parseFloat(document.getElementById('bfield3').value);
+            
+            const v = E / B;
+            
+            document.getElementById('result3').innerHTML = `
+                <strong>Ergebnis:</strong><br>
+                Filtergeschwindigkeit: v = E/B = ${v.toExponential(3)} m/s<br>
+                Das entspricht ${(v/3e8*100).toFixed(2)}% der Lichtgeschwindigkeit.<br>
+                <em>Nur Teilchen mit dieser Geschwindigkeit passieren unabgelenkt!</em>
+            `;
+        }
+
+        // Animation 3: Wien-Filter
+        let animation3;
+        function startAnimation3() {
+            const canvas = document.getElementById('canvas3');
+            const ctx = canvas.getContext('2d');
+            const E = parseFloat(document.getElementById('efield3sim').value) * 1000;
+            const B = parseFloat(document.getElementById('bfield3sim').value);
+            const v_target = E / B;
+            
+            const particles = [
+                {v: v_target * 0.8, y: 200, color: '#f44336', label: '0.8v₀'},
+                {v: v_target, y: 250, color: '#4caf50', label: 'v₀'},
+                {v: v_target * 1.2, y: 300, color: '#2196F3', label: '1.2v₀'}
+            ];
+            
+            let x = 0;
+            stopAnimation1();
+            animation3 = setInterval(() => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Platten
+                ctx.fillStyle = '#333';
+                ctx.fillRect(100, 50, 400, 10);
+                ctx.fillRect(100, 340, 400, 10);
+                
+                // E-Feld (Pfeile)
+                ctx.strokeStyle = '#ff9800';
+                ctx.lineWidth = 2;
+                for (let i = 150; i < 500; i += 50) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 70);
+                    ctx.lineTo(i, 120);
+                    ctx.stroke();
+                    // Pfeilspitze
+                    ctx.beginPath();
+                    ctx.moveTo(i - 5, 110);
+                    ctx.lineTo(i, 120);
+                    ctx.lineTo(i + 5, 110);
+                    ctx.stroke();
+                }
+                
+                // B-Feld (Kreuze)
+                ctx.fillStyle = '#666';
+                ctx.font = '20px Arial';
+                for (let i = 150; i < 500; i += 50) {
+                    ctx.fillText('⊗', i, 200);
+                }
+                
+                // Teilchen
+                particles.forEach(p => {
+                    const q = 1.6e-19;
+                    const m = 9.11e-31;
+                    const F_E = q * E;
+                    const F_L = q * p.v * B;
+                    const F_net = F_E - F_L;
+                    const a = F_net / m;
+                    const t = x / p.v;
+                    const dy = 0.5 * a * t * t * 1e10; // Skalierung
+                    
+                    ctx.beginPath();
+                    ctx.arc(100 + x, p.y + dy, 6, 0, 2 * Math.PI);
+                    ctx.fillStyle = p.color;
+                    ctx.fill();
+                    
+                    ctx.fillStyle = '#000';
+                    ctx.font = '12px Arial';
+                    ctx.fillText(p.label, 10, p.y + 5);
+                });
+                
+                x += 2;
+                if (x > 400) x = 0;
+            }, 30);
+        }
+
+        // Einheit 4: Relativistik
+        function calculateRelativistic() {
+            const v = parseFloat(document.getElementById('velocity4').value);
+            const m0 = parseFloat(document.getElementById('mass4').value);
+            const c = 3e8;
+            
+            const beta = v / c;
+            const gamma = 1 / Math.sqrt(1 - beta * beta);
+            const m_rel = gamma * m0;
+            const increase = (gamma - 1) * 100;
+            
+            document.getElementById('result4').innerHTML = `
+                <strong>Ergebnis:</strong><br>
+                Geschwindigkeit: v = ${v.toExponential(3)} m/s = ${(beta*100).toFixed(2)}% von c<br>
+                Lorentz-Faktor: γ = ${gamma.toFixed(4)}<br>
+                Ruhemasse: m₀ = ${m0.toExponential(3)} kg<br>
+                Relativistische Masse: m<sub>rel</sub> = ${m_rel.toExponential(3)} kg<br>
+                Massenzunahme: ${increase.toFixed(2)}%<br>
+                <em>${increase > 1 ? 'Relativistische Effekte sind signifikant!' : 'Relativistische Effekte sind vernachlässigbar.'}</em>
+            `;
+        }
+
+        function plotGamma() {
+            const canvas = document.getElementById('canvas4');
+            canvas.style.display = 'block';
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Achsen
+            ctx.beginPath();
+            ctx.moveTo(50, 250);
+            ctx.lineTo(550, 250);
+            ctx.moveTo(50, 250);
+            ctx.lineTo(50, 20);
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Beschriftungen
+            ctx.fillStyle = '#000';
+            ctx.font = '14px Arial';
+            ctx.fillText('v/c', 520, 270);
+            ctx.fillText('γ', 30, 30);
+            ctx.fillText('0', 40, 270);
+            ctx.fillText('1', 540, 270);
+            
+            // Gamma-Kurve
+            ctx.beginPath();
+            ctx.moveTo(50, 250);
+            for (let i = 0; i <= 500; i++) {
+                const beta = i / 500;
+                const gamma = 1 / Math.sqrt(1 - beta * beta);
+                const x = 50 + i;
+                const y = 250 - Math.min(gamma * 20, 230);
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.strokeStyle = '#667eea';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            // Markierungen
+            const marks = [0.5, 0.9, 0.99];
+            marks.forEach(beta => {
+                const gamma = 1 / Math.sqrt(1 - beta * beta);
+                const x = 50 + beta * 500;
+                const y = 250 - Math.min(gamma * 20, 230);
+                ctx.beginPath();
+                ctx.arc(x, y, 5, 0, 2 * Math.PI);
+                ctx.fillStyle = '#f44336';
+                ctx.fill();
+                ctx.fillStyle = '#000';
+                ctx.fillText(`${beta}c: γ=${gamma.toFixed(2)}`, x + 10, y);
+            });
+        }
+
+        // Einheit 5: Zyklotron
+        function calculateCyclotron() {
+            const particle = document.getElementById('particle5').value;
+            const B = parseFloat(document.getElementById('bfield5').value);
+            const r_max = parseFloat(document.getElementById('radius5').value);
+            
+            let m, q, name;
+            if (particle === 'proton') {
+                m = 1.67e-27;
+                q = 1.6e-19;
+                name = 'Proton';
+            } else if (particle === 'deuteron') {
+                m = 2 * 1.67e-27;
+                q = 1.6e-19;
+                name = 'Deuteron';
+            } else {
+                m = 4 * 1.67e-27;
+                q = 2 * 1.6e-19;
+                name = 'Alpha-Teilchen';
+            }
+            
+            const f = (q * B) / (2 * Math.PI * m);
+            const v_max = (q * B * r_max) / m;
+            const E_kin = 0.5 * m * v_max * v_max / 1.6e-19; // in eV
+            
+            document.getElementById('result5').innerHTML = `
+                <strong>Ergebnis für ${name}:</strong><br>
+                Zyklotronfrequenz: f = ${f.toExponential(3)} Hz = ${(f/1e6).toFixed(2)} MHz<br>
+                Maximale Geschwindigkeit: v<sub>max</sub> = ${v_max.toExponential(3)} m/s<br>
+                Kinetische Energie: E<sub>kin</sub> = ${E_kin.toExponential(3)} eV = ${(E_kin/1e6).toFixed(2)} MeV<br>
+                <em>Die Frequenz ist unabhängig von der Geschwindigkeit (nicht-relativistisch)!</em>
+            `;
+        }
+
+        // Animation 5: Zyklotron
+        let animation5;
+        let angle5 = 0;
+        let radius5 = 20;
+        function startAnimation5() {
+            const canvas = document.getElementById('canvas5');
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            
+            stopAnimation5();
+            radius5 = 20;
+            angle5 = 0;
+            
+            animation5 = setInterval(() => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Duanten
+                ctx.fillStyle = 'rgba(102, 126, 234, 0.3)';
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, 250, 0, Math.PI);
+                ctx.closePath();
+                ctx.fill();
+                
+                ctx.fillStyle = 'rgba(118, 75, 162, 0.3)';
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, 250, Math.PI, 2 * Math.PI);
+                ctx.closePath();
+                ctx.fill();
+                
+                // Trennlinie
+                ctx.beginPath();
+                ctx.moveTo(centerX - 250, centerY);
+                ctx.lineTo(centerX + 250, centerY);
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                
+                // Spiralbahn
+                ctx.beginPath();
+                let r = 20;
+                for (let a = 0; a <= angle5; a += 0.1) {
+                    const x = centerX + r * Math.cos(a);
+                    const y = centerY + r * Math.sin(a);
+                    if (a === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                    r += 0.3;
+                }
+                ctx.strokeStyle = '#4caf50';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Teilchen
+                const x = centerX + radius5 * Math.cos(angle5);
+                const y = centerY + radius5 * Math.sin(angle5);
+                ctx.beginPath();
+                ctx.arc(x, y, 8, 0, 2 * Math.PI);
+                ctx.fillStyle = '#f44336';
+                ctx.fill();
+                
+                // Beschriftungen
+                ctx.fillStyle = '#000';
+                ctx.font = '16px Arial';
+                ctx.fillText('Duant 1', centerX - 100, centerY - 200);
+                ctx.fillText('Duant 2', centerX - 100, centerY + 220);
+                ctx.fillText('B ⊗', centerX - 20, centerY - 20);
+                
+                angle5 += 0.05;
+                radius5 += 0.3;
+                
+                if (radius5 > 250) {
+                    stopAnimation5();
+                    document.getElementById('result5sim').innerHTML = `
+                        <strong>Simulation beendet!</strong><br>
+                        Das Teilchen hat den maximalen Radius erreicht.
+                    `;
+                }
+            }, 30);
+        }
+
+        function stopAnimation5() {
+            if (animation5) clearInterval(animation5);
+        }
+
+        // Validierungsfunktionen für Denkaufgabe 4
+        function calculateGamma(vOverC) {
+            // γ = 1 / √(1 - (v/c)²)
+            const denominator = Math.sqrt(1 - (vOverC * vOverC));
+            return 1 / denominator;
+        }
+
+        function calculateMassIncrease(gamma) {
+            // Massenzunahme in % = ((γ - 1) × 100)%
+            return (gamma - 1) * 100;
+        }
+
+        function checkAnswer(rowNumber, vOverC) {
+            const inputId = `gamma${rowNumber}`;
+            const resultId = `result${rowNumber}`;
+            const input = document.getElementById(inputId);
+            const resultSpan = document.getElementById(resultId);
+            
+            const userValue = parseFloat(input.value);
+            const correctValue = calculateGamma(vOverC);
+            const tolerance = 0.01; // Toleranz von ±0.01
+            
+            if (isNaN(userValue)) {
+                resultSpan.innerHTML = '';
+                return;
+            }
+            
+            if (Math.abs(userValue - correctValue) <= tolerance) {
+                resultSpan.innerHTML = ' ✅';
+                resultSpan.style.color = '#4caf50';
+                input.style.backgroundColor = '#e8f5e9';
+            } else {
+                resultSpan.innerHTML = ` ❌ (Richtig: ${correctValue.toFixed(4)})`;
+                resultSpan.style.color = '#f44336';
+                input.style.backgroundColor = '#ffebee';
+            }
+        }
+
+        function checkMassIncrease(rowNumber, vOverC) {
+            const inputId = `mass${rowNumber}`;
+            const resultId = `result-mass${rowNumber}`;
+            const input = document.getElementById(inputId);
+            const resultSpan = document.getElementById(resultId);
+            
+            const userValue = parseFloat(input.value);
+            const gamma = calculateGamma(vOverC);
+            const correctValue = calculateMassIncrease(gamma);
+            const tolerance = 0.5; // Toleranz von ±0.5%
+            
+            if (isNaN(userValue)) {
+                resultSpan.innerHTML = '';
+                return;
+            }
+            
+            if (Math.abs(userValue - correctValue) <= tolerance) {
+                resultSpan.innerHTML = ' ✅';
+                resultSpan.style.color = '#4caf50';
+                input.style.backgroundColor = '#e8f5e9';
+            } else {
+                resultSpan.innerHTML = ` ❌ (Richtig: ${correctValue.toFixed(2)}%)`;
+                resultSpan.style.color = '#f44336';
+                input.style.backgroundColor = '#ffebee';
+            }
+        }
+
+        // Initialisierung
+        window.onload = function() {
+            updateProgress(0);
+            initNavigation();
+        };
+
+        // ===== NAVIGATION & SIDEBAR ===== 
+        function initNavigation() {
+            const burgerMenu = document.getElementById('burgerMenu');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const navLinks = document.querySelectorAll('#navList a');
+
+            // Burger Menu Toggle
+            burgerMenu.addEventListener('click', () => {
+                burgerMenu.classList.toggle('active');
+                sidebar.classList.toggle('open');
+                overlay.classList.toggle('open');
+            });
+
+            // Overlay Click schließt Sidebar
+            overlay.addEventListener('click', () => {
+                burgerMenu.classList.remove('active');
+                sidebar.classList.remove('open');
+                overlay.classList.remove('open');
+            });
+
+            // Navigation Links
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const sectionId = link.getAttribute('data-section');
+                    navigateToSection(sectionId);
+                    
+                    // Sidebar schließen auf mobile
+                    if (window.innerWidth <= 768) {
+                        burgerMenu.classList.remove('active');
+                        sidebar.classList.remove('open');
+                        overlay.classList.remove('open');
+                    }
+                });
+            });
+
+            // URL Hash ändern und Navigation bei Seitenladung
+            window.addEventListener('hashchange', () => {
+                const hash = window.location.hash.substring(1);
+                if (hash.startsWith('unit')) {
+                    navigateToSection(hash);
+                }
+            });
+
+            // Initiale Navigation von URL
+            const initialHash = window.location.hash.substring(1);
+            if (initialHash.startsWith('unit')) {
+                navigateToSection(initialHash);
+            }
+
+            // Update active section beim Scrollen (optional)
+            updateActiveSectionOnScroll();
+        }
+
+        function navigateToSection(sectionId) {
+            // Update URL
+            window.location.hash = '#' + sectionId;
+
+            // Remove all active classes
+            document.querySelectorAll('.unit').forEach(unit => {
+                unit.classList.remove('active');
+            });
+            document.querySelectorAll('#navList a').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // Add active class to section
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.classList.add('active');
+                
+                // Scroll to section
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            // Update nav link
+            const navLink = document.querySelector(`[data-section="${sectionId}"]`);
+            if (navLink) {
+                navLink.classList.add('active');
+            }
+        }
+
+        function updateActiveSectionOnScroll() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.id;
+                        
+                        // Update URL without scrolling
+                        if (window.location.hash !== '#' + id) {
+                            window.history.replaceState(null, null, '#' + id);
+                        }
+
+                        // Update active states
+                        document.querySelectorAll('.unit').forEach(u => {
+                            u.classList.remove('active');
+                        });
+                        document.querySelectorAll('#navList a').forEach(a => {
+                            a.classList.remove('active');
+                        });
+
+                        entry.target.classList.add('active');
+                        const navLink = document.querySelector(`[data-section="${id}"]`);
+                        if (navLink) {
+                            navLink.classList.add('active');
+                        }
+                    }
+                });
+            }, { threshold: 0.3 });
+
+            // Observe all units
+            document.querySelectorAll('.unit').forEach(unit => {
+                observer.observe(unit);
+            });
+        }
+    </script>
+</body>
+</html>
