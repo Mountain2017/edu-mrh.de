@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zahlenumrechnung - Interaktive Übungen</title>
+    <link rel="stylesheet" href="https://embed.edu-mrh.de/style.css">
+    <style>
+        /* Zusätzliche spezifische Styles */
+        .exercise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .exercise-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .exercise-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .exercise-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .conversion-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .conversion-table th {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .conversion-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .conversion-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .conversion-table tr:hover {
+            background: var(--gray-lighter);
+        }
+
+        .conversion-table input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .conversion-table input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .conversion-table input.correct {
+            border-color: var(--success-color);
+            background: #d1fae5;
+        }
+
+        .conversion-table input.incorrect {
+            border-color: var(--danger-color);
+            background: #fee2e2;
+        }
+
+        .base-selector {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1.5rem 0;
+        }
+
+        .base-option {
+            background: var(--gray-lighter);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .base-option:hover {
+            background: var(--primary-light);
+            color: var(--white);
+            transform: translateY(-3px);
+        }
+
+        .base-option.selected {
+            background: var(--primary-color);
+            color: var(--white);
+            border-color: var(--primary-color);
+        }
+
+        .base-option .base-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .base-option .base-name {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .number-display {
+            background: var(--gray-lighter);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            margin: 1.5rem 0;
+            border-left: 6px solid var(--primary-color);
+        }
+
+        .number-display .label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .number-display .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-family: 'Courier New', monospace;
+        }
+
+        .number-display .subscript {
+            font-size: 1rem;
+            color: var(--gray);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .stat-card .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .difficulty-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .difficulty-badge.easy {
+            background: var(--success-color);
+            color: var(--white);
+        }
+
+        .difficulty-badge.medium {
+            background: var(--warning-color);
+            color: var(--white);
+        }
+
+        .difficulty-badge.hard {
+            background: var(--danger-color);
+            color: var(--white);
+        }
+
+        .reference-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+        }
+
+        .reference-box h4 {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .reference-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .reference-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .reference-item strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1.5rem 0;
+        }
+
+        .button-group .btn {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .input-group {
+            background: var(--gray-lighter);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Courier New', monospace;
+            transition: var(--transition);
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .result-display {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin: 1.5rem 0;
+            border-left: 6px solid var(--success-color);
+        }
+
+        .result-display h5 {
+            color: var(--success-color);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .result-display .result-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+        }
+
+        .conversion-steps {
+            background: var(--gray-lighter);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .conversion-steps .step {
+            padding: 0.5rem 0;
+            font-family: 'Courier New', monospace;
+            color: var(--dark);
+        }
+
+        @media (max-width: 768px) {
+            .exercise-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .base-selector {
+                flex-direction: column;
+            }
+
+            .base-option {
+                min-width: 100%;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .button-group .btn {
+                width: 100%;
+            }
+
+            .conversion-table {
+                font-size: 0.9rem;
+            }
+
+            .conversion-table th,
+            .conversion-table td {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="icon">🔢</span>
+                <span>Zahlenumrechnung</span>
+            </div>
+            <div class="nav-progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Übungsmodi</h3>
+            <button class="sidebar-toggle" id="sidebarToggle">✕</button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#" class="nav-link active" data-section="home">🏠 Startseite</a></li>
+            <li><a href="#" class="nav-link" data-section="easy">🟢 Einfach</a></li>
+            <li><a href="#" class="nav-link" data-section="medium">🟡 Mittel</a></li>
+            <li><a href="#" class="nav-link" data-section="hard">🔴 Schwer</a></li>
+            <li><a href="#" class="nav-link" data-section="dynamic">⚡ Dynamisch</a></li>
+            <li><a href="#" class="nav-link" data-section="reference">📚 Referenz</a></li>
+        </ul>
+    </aside>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Home Section -->
+            <section id="home" class="content-section active">
+                <div class="hero">
+                    <h1 class="hero-title">Zahlenumrechnung</h1>
+                    <p class="hero-subtitle">Interaktive Übungen für verschiedene Zahlensysteme</p>
+                    <p class="hero-description">Lerne die Umrechnung zwischen Binär, Oktal, Dezimal und Hexadezimal</p>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-icon">🟢</div>
+                        <h3>Einfach</h3>
+                        <span class="difficulty-badge easy">Anfänger</span>
+                        <p>Grundlegende Umrechnungen zwischen:</p>
+                        <ul>
+                            <li>Binär (Basis 2)</li>
+                            <li>Dezimal (Basis 10)</li>
+                            <li>Hexadezimal (Basis 16)</li>
+                        </ul>
+                        <button class="btn btn-success mt-2" onclick="navigateToSection('easy')">
+                            Starten →
+                        </button>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">🟡</div>
+                        <h3>Mittel</h3>
+                        <span class="difficulty-badge medium">Fortgeschritten</span>
+                        <p>Erweiterte Umrechnungen mit:</p>
+                        <ul>
+                            <li>Binär (Basis 2)</li>
+                            <li>Oktal (Basis 8)</li>
+                            <li>Dezimal (Basis 10)</li>
+                            <li>Hexadezimal (Basis 16)</li>
+                        </ul>
+                        <button class="btn btn-warning mt-2" onclick="navigateToSection('medium')">
+                            Starten →
+                        </button>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">🔴</div>
+                        <h3>Schwer</h3>
+                        <span class="difficulty-badge hard">Experte</span>
+                        <p>Gemischte Aufgaben mit allen Basen:</p>
+                        <ul>
+                            <li>Zufällige Kombinationen</li>
+                            <li>Alle Zahlensysteme</li>
+                            <li>Komplexere Zahlen</li>
+                        </ul>
+                        <button class="btn btn-danger mt-2" onclick="navigateToSection('hard')">
+                            Starten →
+                        </button>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">⚡</div>
+                        <h3>Dynamisch</h3>
+                        <span class="difficulty-badge medium">Flexibel</span>
+                        <p>Wähle selbst:</p>
+                        <ul>
+                            <li>Beliebige Quellbasis (2-36)</li>
+                            <li>Beliebige Zielbasis (2-36)</li>
+                            <li>Eigene Zahlen eingeben</li>
+                            <li>Sofortige Überprüfung</li>
+                        </ul>
+                        <button class="btn btn-primary mt-2" onclick="navigateToSection('dynamic')">
+                            Starten →
+                        </button>
+                    </div>
+                </div>
+
+                <div class="reference-box">
+                    <h4>📊 Zahlensystem-Übersicht</h4>
+                    <div class="reference-grid">
+                        <div class="reference-item">
+                            <strong>Binär (Basis 2)</strong>
+                            <p>Ziffern: 0, 1</p>
+                            <p>Beispiel: 1011₂ = 11₁₀</p>
+                        </div>
+                        <div class="reference-item">
+                            <strong>Oktal (Basis 8)</strong>
+                            <p>Ziffern: 0-7</p>
+                            <p>Beispiel: 13₈ = 11₁₀</p>
+                        </div>
+                        <div class="reference-item">
+                            <strong>Dezimal (Basis 10)</strong>
+                            <p>Ziffern: 0-9</p>
+                            <p>Beispiel: 11₁₀</p>
+                        </div>
+                        <div class="reference-item">
+                            <strong>Hexadezimal (Basis 16)</strong>
+                            <p>Ziffern: 0-9, A-F</p>
+                            <p>Beispiel: B₁₆ = 11₁₀</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-primary" onclick="navigateToSection('easy')">
+                        Los geht's! →
+                    </button>
+                </div>
+            </section>
+
+            <!-- Easy Section -->
+            <section id="easy" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Level 1</span>
+                    <h2>Einfach - Grundumwandlungen</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>🟢 Binär, Dezimal und Hexadezimal</h3>
+                    <div class="example-content">
+                        <p>Übe die Umrechnung zwischen den drei wichtigsten Zahlensystemen.</p>
+                        <p><strong>Hinweis:</strong> Die Indizes (z.B. ₂, ₁₀, ₁₆) müssen NICHT eingegeben werden.</p>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="easyCorrect">0</div>
+                        <div class="stat-label">Richtig</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="easyIncorrect">0</div>
+                        <div class="stat-label">Falsch</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="easyTotal">10</div>
+                        <div class="stat-label">Gesamt</div>
+                    </div>
+                </div>
+
+                <table class="conversion-table" id="easyTable">
+                    <thead>
+                        <tr>
+                            <th>Von</th>
+                            <th>Nach</th>
+                            <th>Deine Antwort</th>
+                        </tr>
+                    </thead>
+                    <tbody id="easyTableBody">
+                        <!-- Wird durch JavaScript gefüllt -->
+                    </tbody>
+                </table>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="checkAnswersEasy()">Prüfen</button>
+                    <button class="btn btn-secondary" onclick="generateEasyExercises()">Neue Aufgaben</button>
+                    <button class="btn btn-outline" onclick="resetEasy()">Zurücksetzen</button>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('home')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('medium')">Weiter →</button>
+                </div>
+            </section>
+
+            <!-- Medium Section -->
+            <section id="medium" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Level 2</span>
+                    <h2>Mittel - Mit Oktal</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>🟡 Alle vier Zahlensysteme</h3>
+                    <div class="example-content">
+                        <p>Jetzt kommt Oktal (Basis 8) hinzu. Übe alle möglichen Kombinationen!</p>
+                        <p><strong>Tipp:</strong> Oktal verwendet nur die Ziffern 0-7.</p>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="mediumCorrect">0</div>
+                        <div class="stat-label">Richtig</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="mediumIncorrect">0</div>
+                        <div class="stat-label">Falsch</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="mediumTotal">12</div>
+                        <div class="stat-label">Gesamt</div>
+                    </div>
+                </div>
+
+                <table class="conversion-table" id="mediumTable">
+                    <thead>
+                        <tr>
+                            <th>Von</th>
+                            <th>Nach</th>
+                            <th>Deine Antwort</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mediumTableBody">
+                        <!-- Wird durch JavaScript gefüllt -->
+                    </tbody>
+                </table>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="checkAnswersMedium()">Prüfen</button>
+                    <button class="btn btn-secondary" onclick="generateMediumExercises()">Neue Aufgaben</button>
+                    <button class="btn btn-outline" onclick="resetMedium()">Zurücksetzen</button>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('easy')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('hard')">Weiter →</button>
+                </div>
+            </section>
+
+            <!-- Hard Section -->
+            <section id="hard" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Level 3</span>
+                    <h2>Schwer - Gemischte Basen</h2>
+                </div>
+
+                <div class="example-box warning">
+                    <h3>🔴 Herausforderung!</h3>
+                    <div class="example-content">
+                        <p>Zufällige Kombinationen aller Zahlensysteme mit größeren Zahlen.</p>
+                        <p><strong>Achtung:</strong> Hier wird es anspruchsvoll!</p>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="hardCorrect">0</div>
+                        <div class="stat-label">Richtig</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="hardIncorrect">0</div>
+                        <div class="stat-label">Falsch</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="hardTotal">15</div>
+                        <div class="stat-label">Gesamt</div>
+                    </div>
+                </div>
+
+                <table class="conversion-table" id="hardTable">
+                    <thead>
+                        <tr>
+                            <th>Von</th>
+                            <th>Nach</th>
+                            <th>Deine Antwort</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hardTableBody">
+                        <!-- Wird durch JavaScript gefüllt -->
+                    </tbody>
+                </table>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="checkAnswersHard()">Prüfen</button>
+                    <button class="btn btn-secondary" onclick="generateHardExercises()">Neue Aufgaben</button>
+                    <button class="btn btn-outline" onclick="resetHard()">Zurücksetzen</button>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('medium')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('dynamic')">Weiter →</button>
+                </div>
+            </section>
+
+            <!-- Dynamic Section -->
+            <section id="dynamic" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Freier Modus</span>
+                    <h2>Dynamisch - Beliebige Basen</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>⚡ Wähle deine eigenen Basen</h3>
+                    <div class="example-content">
+                        <p>Konvertiere zwischen beliebigen Zahlensystemen von Basis 2 bis Basis 36.</p>
+                        <p><strong>Info:</strong> Basis 36 verwendet 0-9 und A-Z.</p>
+                    </div>
+                </div>
+
+                <div class="exercise-card">
+                    <h4>Eingabe</h4>
+                    <div class="input-group">
+                        <label>Zahl eingeben:</label>
+                        <input type="text" id="dynamicNumber" placeholder="z.B. 1010 oder FF">
+                    </div>
+                    <div class="input-group">
+                        <label>Von Basis:</label>
+                        <select id="dynamicFromBase">
+                            <!-- Wird durch JavaScript gefüllt -->
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Nach Basis:</label>
+                        <select id="dynamicToBase">
+                            <!-- Wird durch JavaScript gefüllt -->
+                        </select>
+                    </div>
+                    <button class="btn btn-success" onclick="convertDynamic()">Umrechnen</button>
+                </div>
+
+                <div id="dynamicResult" style="display: none;">
+                    <div class="result-display">
+                        <h5>✅ Ergebnis:</h5>
+                        <div class="result-value" id="dynamicResultValue"></div>
+                        <div class="conversion-steps" id="dynamicSteps"></div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🎯 Schnellwahl</h3>
+                    <div class="base-selector">
+                        <div class="base-option" onclick="setDynamicBases(2, 10)">
+                            <div class="base-number">2→10</div>
+                            <div class="base-name">Binär zu Dezimal</div>
+                        </div>
+                        <div class="base-option" onclick="setDynamicBases(10, 2)">
+                            <div class="base-number">10→2</div>
+                            <div class="base-name">Dezimal zu Binär</div>
+                        </div>
+                        <div class="base-option" onclick="setDynamicBases(16, 10)">
+                            <div class="base-number">16→10</div>
+                            <div class="base-name">Hex zu Dezimal</div>
+                        </div>
+                        <div class="base-option" onclick="setDynamicBases(10, 16)">
+                            <div class="base-number">10→16</div>
+                            <div class="base-name">Dezimal zu Hex</div>
+                        </div>
+                        <div class="base-option" onclick="setDynamicBases(8, 10)">
+                            <div class="base-number">8→10</div>
+                            <div class="base-name">Oktal zu Dezimal</div>
+                        </div>
+                        <div class="base-option" onclick="setDynamicBases(2, 16)">
+                            <div class="base-number">2→16</div>
+                            <div class="base-name">Binär zu Hex</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('hard')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('reference')">Zur Referenz →</button>
+                </div>
+            </section>
+
+            <!-- Reference Section -->
+            <section id="reference" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Hilfe</span>
+                    <h2>Referenz & Umrechnungstabellen</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>📚 Umrechnungsmethoden</h3>
+                    <div class="example-content">
+                        <h4>Von Dezimal zu anderer Basis:</h4>
+                        <ol>
+                            <li>Teile die Dezimalzahl durch die Zielbasis</li>
+                            <li>Notiere den Rest</li>
+                            <li>Wiederhole mit dem Ergebnis der Division</li>
+                            <li>Lies die Reste von unten nach oben</li>
+                        </ol>
+
+                        <div class="highlight-box mt-3">
+                            <h5>Beispiel: 13₁₀ → Binär</h5>
+                            <pre style="background: var(--dark); color: #e2e8f0; padding: 1rem; border-radius: 8px;">13 ÷ 2 = 6 Rest 1
+6 ÷ 2 = 3 Rest 0
+3 ÷ 2 = 1 Rest 1
+1 ÷ 2 = 0 Rest 1
+
+Ergebnis (von unten nach oben): 1101₂</pre>
+                        </div>
+
+                        <h4 class="mt-4">Von anderer Basis zu Dezimal:</h4>
+                        <ol>
+                            <li>Multipliziere jede Ziffer mit Basis^Position</li>
+                            <li>Position beginnt rechts bei 0</li>
+                            <li>Addiere alle Ergebnisse</li>
+                        </ol>
+
+                        <div class="highlight-box mt-3">
+                            <h5>Beispiel: 1101₂ → Dezimal</h5>
+                            <pre style="background: var(--dark); color: #e2e8f0; padding: 1rem; border-radius: 8px;">1×2³ + 1×2² + 0×2¹ + 1×2⁰
+= 1×8 + 1×4 + 0×2 + 1×1
+= 8 + 4 + 0 + 1
+= 13₁₀</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🔢 Umrechnungstabelle (0-20)</h3>
+                    <table class="conversion-table">
+                        <thead>
+                            <tr>
+                                <th>Dezimal</th>
+                                <th>Binär</th>
+                                <th>Oktal</th>
+                                <th>Hexadezimal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="referenceTable">
+                            <!-- Wird durch JavaScript gefüllt -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="reference-box">
+                    <h4>💡 Wichtige Tipps</h4>
+                    <div class="reference-grid">
+                        <div class="reference-item">
+                            <strong>Binär (Basis 2)</strong>
+                            <p>Nur 0 und 1</p>
+                            <p>Wichtig für Computer</p>
+                            <p>Jede Stelle = Potenz von 2</p>
+                        </div>
+                        <div class="reference-item">
+                            <strong>Oktal (Basis 8)</strong>
+                            <p>Ziffern 0-7</p>
+                            <p>3 Binärstellen = 1 Oktalstelle</p>
+                            <p>Früher in Unix verwendet</p>
+                        </div>
+                        <div class="reference-item">
+                            <strong>Dezimal (Basis 10)</strong>
+                            <p>Unser Alltagssystem</p>
+                            <p>Ziffern 0-9</p>
+                            <p>Basis für Umrechnungen</p>
+                        </div>
+                        <div class="reference-item">
+                            <strong>Hexadezimal (Basis 16)</strong>
+                            <p>Ziffern 0-9, A-F</p>
+                            <p>4 Binärstellen = 1 Hexstelle</p>
+                            <p>Kompakte Darstellung</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🎓 Schnelle Umrechnungen</h3>
+                    <div class="example-content">
+                        <h4>Binär ↔ Hexadezimal:</h4>
+                        <p>Gruppiere Binärziffern in 4er-Blöcken (von rechts):</p>
+                        <div class="highlight mt-2">
+                            <p><strong>Beispiel:</strong> 11010110₂</p>
+                            <p>Gruppierung: 1101 0110</p>
+                            <p>Umrechnung: D 6</p>
+                            <p>Ergebnis: D6₁₆</p>
+                        </div>
+
+                        <h4 class="mt-4">Binär ↔ Oktal:</h4>
+                        <p>Gruppiere Binärziffern in 3er-Blöcken (von rechts):</p>
+                        <div class="highlight mt-2">
+                            <p><strong>Beispiel:</strong> 11010110₂</p>
+                            <p>Gruppierung: 011 010 110</p>
+                            <p>Umrechnung: 3 2 6</p>
+                            <p>Ergebnis: 326₈</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('dynamic')">← Zurück</button>
+                    <button class="btn btn-success" onclick="navigateToSection('home')">🏠 Zur Startseite</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Zahlenumrechnung - Interaktive Lernplattform</p>
+            <p>Übe die Umrechnung zwischen verschiedenen Zahlensystemen</p>
+        </div>
+    </footer>
+
+    <script>
+        // ==================== Global Variables ====================
+        const baseNames = {
+            2: 'Binär',
+            8: 'Oktal',
+            10: 'Dezimal',
+            16: 'Hexadezimal'
+        };
+
+        let easyExercises = [];
+        let mediumExercises = [];
+        let hardExercises = [];
+
+        let easyStats = { correct: 0, incorrect: 0 };
+        let mediumStats = { correct: 0, incorrect: 0 };
+        let hardStats = { correct: 0, incorrect: 0 };
+
+        // ==================== Navigation ====================
+        function navigateToSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            document.getElementById(sectionId).classList.add('active');
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.section === sectionId) {
+                    link.classList.add('active');
+                }
+            });
+
+            const sections = ['home', 'easy', 'medium', 'hard', 'dynamic', 'reference'];
+            const currentIndex = sections.indexOf(sectionId);
+            const progress = (currentIndex / (sections.length - 1)) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('sidebar').classList.remove('active');
+        }
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                navigateToSection(link.dataset.section);
+            });
+        });
+
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        document.getElementById('sidebarToggle').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('active');
+        });
+
+        // ==================== Conversion Functions ====================
+        function convertToBase(number, fromBase, toBase) {
+            const decimal = parseInt(number, fromBase);
+            if (isNaN(decimal)) return null;
+            return decimal.toString(toBase).toUpperCase();
+        }
+
+        function getBaseName(base) {
+            return baseNames[base] || `Basis ${base}`;
+        }
+
+        function generateRandomNumber(base, maxDigits) {
+            const maxValue = Math.pow(base, maxDigits) - 1;
+            const value = Math.floor(Math.random() * maxValue) + 1;
+            return value.toString(base).toUpperCase();
+        }
+
+        // ==================== Easy Mode ====================
+        function generateEasyExercises() {
+            easyExercises = [];
+            const bases = [2, 10, 16];
+            const combinations = [
+                [2, 10], [10, 2], [16, 10], [10, 16], [2, 16], [16, 2]
+            ];
+
+            for (let i = 0; i < 10; i++) {
+                const [fromBase, toBase] = combinations[i % combinations.length];
+                const number = generateRandomNumber(fromBase, fromBase === 2 ? 6 : (fromBase === 16 ? 2 : 2));
+                const answer = convertToBase(number, fromBase, toBase);
+                
+                easyExercises.push({
+                    from: number,
+                    fromBase: fromBase,
+                    toBase: toBase,
+                    answer: answer
+                });
+            }
+
+            displayEasyExercises();
+        }
+
+        function displayEasyExercises() {
+            const tbody = document.getElementById('easyTableBody');
+            tbody.innerHTML = '';
+
+            easyExercises.forEach((ex, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><code>${ex.from}</code> <sub>${ex.fromBase}</sub> (${getBaseName(ex.fromBase)})</td>
+                    <td>${getBaseName(ex.toBase)} (Basis ${ex.toBase})</td>
+                    <td><input type="text" id="easy-${index}" data-index="${index}" placeholder="Antwort"></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function checkAnswersEasy() {
+            let correct = 0;
+            let incorrect = 0;
+
+            easyExercises.forEach((ex, index) => {
+                const input = document.getElementById(`easy-${index}`);
+                const userAnswer = input.value.trim().toUpperCase();
+                
+                if (userAnswer === ex.answer) {
+                    input.classList.remove('incorrect');
+                    input.classList.add('correct');
+                    correct++;
+                } else {
+                    input.classList.remove('correct');
+                    input.classList.add('incorrect');
+                    incorrect++;
+                }
+            });
+
+            easyStats.correct += correct;
+            easyStats.incorrect += incorrect;
+
+            document.getElementById('easyCorrect').textContent = easyStats.correct;
+            document.getElementById('easyIncorrect').textContent = easyStats.incorrect;
+        }
+
+        function resetEasy() {
+            easyStats = { correct: 0, incorrect: 0 };
+            document.getElementById('easyCorrect').textContent = '0';
+            document.getElementById('easyIncorrect').textContent = '0';
+            generateEasyExercises();
+        }
+
+        // ==================== Medium Mode ====================
+        function generateMediumExercises() {
+            mediumExercises = [];
+            const bases = [2, 8, 10, 16];
+            
+            for (let i = 0; i < 12; i++) {
+                const fromBase = bases[Math.floor(Math.random() * bases.length)];
+                let toBase;
+                do {
+                    toBase = bases[Math.floor(Math.random() * bases.length)];
+                } while (toBase === fromBase);
+
+                const maxDigits = fromBase === 2 ? 6 : (fromBase === 8 ? 3 : 2);
+                const number = generateRandomNumber(fromBase, maxDigits);
+                const answer = convertToBase(number, fromBase, toBase);
+                
+                mediumExercises.push({
+                    from: number,
+                    fromBase: fromBase,
+                    toBase: toBase,
+                    answer: answer
+                });
+            }
+
+            displayMediumExercises();
+        }
+
+        function displayMediumExercises() {
+            const tbody = document.getElementById('mediumTableBody');
+            tbody.innerHTML = '';
+
+            mediumExercises.forEach((ex, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><code>${ex.from}</code> <sub>${ex.fromBase}</sub> (${getBaseName(ex.fromBase)})</td>
+                    <td>${getBaseName(ex.toBase)} (Basis ${ex.toBase})</td>
+                    <td><input type="text" id="medium-${index}" data-index="${index}" placeholder="Antwort"></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function checkAnswersMedium() {
+            let correct = 0;
+            let incorrect = 0;
+
+            mediumExercises.forEach((ex, index) => {
+                const input = document.getElementById(`medium-${index}`);
+                const userAnswer = input.value.trim().toUpperCase();
+                
+                if (userAnswer === ex.answer) {
+                    input.classList.remove('incorrect');
+                    input.classList.add('correct');
+                    correct++;
+                } else {
+                    input.classList.remove('correct');
+                    input.classList.add('incorrect');
+                    incorrect++;
+                }
+            });
+
+            mediumStats.correct += correct;
+            mediumStats.incorrect += incorrect;
+
+            document.getElementById('mediumCorrect').textContent = mediumStats.correct;
+            document.getElementById('mediumIncorrect').textContent = mediumStats.incorrect;
+        }
+
+        function resetMedium() {
+            mediumStats = { correct: 0, incorrect: 0 };
+            document.getElementById('mediumCorrect').textContent = '0';
+            document.getElementById('mediumIncorrect').textContent = '0';
+            generateMediumExercises();
+        }
+
+        // ==================== Hard Mode ====================
+        function generateHardExercises() {
+            hardExercises = [];
+            const bases = [2, 8, 10, 16];
+            
+            for (let i = 0; i < 15; i++) {
+                const fromBase = bases[Math.floor(Math.random() * bases.length)];
+                let toBase;
+                do {
+                    toBase = bases[Math.floor(Math.random() * bases.length)];
+                } while (toBase === fromBase);
+
+                const maxDigits = fromBase === 2 ? 8 : (fromBase === 8 ? 4 : 3);
+                const number = generateRandomNumber(fromBase, maxDigits);
+                const answer = convertToBase(number, fromBase, toBase);
+                
+                hardExercises.push({
+                    from: number,
+                    fromBase: fromBase,
+                    toBase: toBase,
+                    answer: answer
+                });
+            }
+
+            displayHardExercises();
+        }
+
+        function displayHardExercises() {
+            const tbody = document.getElementById('hardTableBody');
+            tbody.innerHTML = '';
+
+            hardExercises.forEach((ex, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><code>${ex.from}</code> <sub>${ex.fromBase}</sub> (${getBaseName(ex.fromBase)})</td>
+                    <td>${getBaseName(ex.toBase)} (Basis ${ex.toBase})</td>
+                    <td><input type="text" id="hard-${index}" data-index="${index}" placeholder="Antwort"></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function checkAnswersHard() {
+            let correct = 0;
+            let incorrect = 0;
+
+            hardExercises.forEach((ex, index) => {
+                const input = document.getElementById(`hard-${index}`);
+                const userAnswer = input.value.trim().toUpperCase();
+                
+                if (userAnswer === ex.answer) {
+                    input.classList.remove('incorrect');
+                    input.classList.add('correct');
+                    correct++;
+                } else {
+                    input.classList.remove('correct');
+                    input.classList.add('incorrect');
+                    incorrect++;
+                }
+            });
+
+            hardStats.correct += correct;
+            hardStats.incorrect += incorrect;
+
+            document.getElementById('hardCorrect').textContent = hardStats.correct;
+            document.getElementById('hardIncorrect').textContent = hardStats.incorrect;
+        }
+
+        function resetHard() {
+            hardStats = { correct: 0, incorrect: 0 };
+            document.getElementById('hardCorrect').textContent = '0';
+            document.getElementById('hardIncorrect').textContent = '0';
+            generateHardExercises();
+        }
+
+        // ==================== Dynamic Mode ====================
+        function initializeDynamicMode() {
+            const fromSelect = document.getElementById('dynamicFromBase');
+            const toSelect = document.getElementById('dynamicToBase');
+
+            for (let i = 2; i <= 36; i++) {
+                const option1 = document.createElement('option');
+                option1.value = i;
+                option1.textContent = `Basis ${i}` + (baseNames[i] ? ` (${baseNames[i]})` : '');
+                fromSelect.appendChild(option1);
+
+                const option2 = document.createElement('option');
+                option2.value = i;
+                option2.textContent = `Basis ${i}` + (baseNames[i] ? ` (${baseNames[i]})` : '');
+                toSelect.appendChild(option2);
+            }
+
+            fromSelect.value = 10;
+            toSelect.value = 2;
+        }
+
+        function setDynamicBases(from, to) {
+            document.getElementById('dynamicFromBase').value = from;
+            document.getElementById('dynamicToBase').value = to;
+            document.querySelectorAll('.base-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            event.target.closest('.base-option').classList.add('selected');
+        }
+
+        function convertDynamic() {
+            const number = document.getElementById('dynamicNumber').value.trim().toUpperCase();
+            const fromBase = parseInt(document.getElementById('dynamicFromBase').value);
+            const toBase = parseInt(document.getElementById('dynamicToBase').value);
+
+            if (!number) {
+                alert('Bitte gib eine Zahl ein!');
+                return;
+            }
+
+            const result = convertToBase(number, fromBase, toBase);
+
+            if (result === null) {
+                alert('Ungültige Eingabe für die gewählte Basis!');
+                return;
+            }
+
+            document.getElementById('dynamicResultValue').textContent = result;
+            
+            const decimal = parseInt(number, fromBase);
+            const steps = document.getElementById('dynamicSteps');
+            steps.innerHTML = `
+                <div class="step"><strong>Schritt 1:</strong> ${number}<sub>${fromBase}</sub> → Dezimal</div>
+                <div class="step">Dezimalwert: ${decimal}<sub>10</sub></div>
+                <div class="step"><strong>Schritt 2:</strong> ${decimal}<sub>10</sub> → Basis ${toBase}</div>
+                <div class="step">Ergebnis: ${result}<sub>${toBase}</sub></div>
+            `;
+
+            document.getElementById('dynamicResult').style.display = 'block';
+        }
+
+        // ==================== Reference Table ====================
+        function generateReferenceTable() {
+            const tbody = document.getElementById('referenceTable');
+            tbody.innerHTML = '';
+
+            for (let i = 0; i <= 20; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${i}</td>
+                    <td><code>${i.toString(2)}</code></td>
+                    <td><code>${i.toString(8)}</code></td>
+                    <td><code>${i.toString(16).toUpperCase()}</code></td>
+                `;
+                tbody.appendChild(row);
+            }
+        }
+
+        // ==================== Initialize ====================
+        window.addEventListener('load', () => {
+            document.getElementById('progressBar').style.width = '0%';
+            generateEasyExercises();
+            generateMediumExercises();
+            generateHardExercises();
+            initializeDynamicMode();
+            generateReferenceTable();
+        });
+    </script>
+</body>
+</html>
