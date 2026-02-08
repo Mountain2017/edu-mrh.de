@@ -1,0 +1,1823 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kommunikation in Netzwerken - Interaktiver Lernpfad</title>
+    <link rel="stylesheet" href="https://embed.edu-mrh.de/style.css">
+    <style>
+        /* Zusätzliche spezifische Styles */
+        .quiz-container {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .quiz-question h4 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .quiz-option {
+            background: var(--gray-lighter);
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .quiz-option:hover {
+            background: var(--primary-light);
+            color: var(--white);
+            transform: translateX(5px);
+        }
+
+        .quiz-option.correct {
+            background: var(--success-color);
+            color: var(--white);
+        }
+
+        .quiz-option.incorrect {
+            background: var(--danger-color);
+            color: var(--white);
+        }
+
+        .topology-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .topology-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .topology-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .topology-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .topology-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .pros-cons {
+            text-align: left;
+            margin-top: 1rem;
+        }
+
+        .pros-cons ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .pros-cons li {
+            padding: 0.25rem 0 0.25rem 1.5rem;
+            position: relative;
+            font-size: 0.9rem;
+        }
+
+        .pros-cons .pros li::before {
+            content: "✅";
+            position: absolute;
+            left: 0;
+        }
+
+        .pros-cons .cons li::before {
+            content: "❌";
+            position: absolute;
+            left: 0;
+        }
+
+        .ip-calculator {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .binary-display {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .binary-octet {
+            background: var(--gray-lighter);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .binary-octet .decimal {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .binary-octet .binary {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .layer-model {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .layer {
+            background: var(--gray-lighter);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 6px solid var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .layer:hover {
+            transform: translateX(10px);
+            box-shadow: var(--shadow);
+        }
+
+        .layer:nth-child(1) { border-left-color: #ef4444; }
+        .layer:nth-child(2) { border-left-color: #f59e0b; }
+        .layer:nth-child(3) { border-left-color: #10b981; }
+        .layer:nth-child(4) { border-left-color: #3b82f6; }
+
+        .layer h4 {
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .layer .protocols {
+            font-family: 'Courier New', monospace;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .comparison-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .comparison-card .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .comparison-card .badge.reliable {
+            background: var(--success-color);
+            color: var(--white);
+        }
+
+        .comparison-card .badge.fast {
+            background: var(--warning-color);
+            color: var(--white);
+        }
+
+        .url-breakdown {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .url-part {
+            background: var(--gray-lighter);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .url-part .label {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .url-part .value {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            color: var(--dark);
+            flex: 1;
+        }
+
+        .dns-flow {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .dns-step {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--gray-lighter);
+            border-radius: 8px;
+        }
+
+        .dns-step .step-number {
+            background: var(--primary-color);
+            color: var(--white);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .status-code-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .status-code {
+            background: var(--gray-lighter);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .status-code:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow);
+        }
+
+        .status-code .code {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-code.success .code { color: var(--success-color); }
+        .status-code.redirect .code { color: #3b82f6; }
+        .status-code.client-error .code { color: var(--warning-color); }
+        .status-code.server-error .code { color: var(--danger-color); }
+
+        .final-quiz {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--white);
+            padding: 3rem 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .final-quiz h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .quiz-progress {
+            background: rgba(255, 255, 255, 0.2);
+            height: 8px;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .quiz-progress-bar {
+            background: var(--white);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .quiz-result {
+            background: var(--white);
+            color: var(--dark);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .quiz-result.show {
+            display: block;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 1rem 0;
+        }
+
+        .exercise-box {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            border-left: 6px solid var(--secondary-color);
+        }
+
+        .exercise-input {
+            background: var(--gray-lighter);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .exercise-input label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .exercise-input input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .exercise-input input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .network-diagram {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .diagram-box {
+            background: var(--gray-lighter);
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: inline-block;
+            min-width: 200px;
+        }
+
+        .diagram-arrow {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin: 1rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .binary-display {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .topology-grid,
+            .comparison-grid,
+            .status-code-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .url-part {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .dns-step {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="icon">🌐</span>
+                <span>Netzwerke & Internet</span>
+            </div>
+            <div class="nav-progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Module</h3>
+            <button class="sidebar-toggle" id="sidebarToggle">✕</button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#" class="nav-link active" data-section="home">🏠 Startseite</a></li>
+            <li><a href="#" class="nav-link" data-section="grundlagen">📡 Grundlagen</a></li>
+            <li><a href="#" class="nav-link" data-section="topologien">🔗 Topologien</a></li>
+            <li><a href="#" class="nav-link" data-section="adressierung">🏷️ Adressierung</a></li>
+            <li><a href="#" class="nav-link" data-section="dns">🌍 DNS & URLs</a></li>
+            <li><a href="#" class="nav-link" data-section="schichten">📚 Schichtenmodell</a></li>
+            <li><a href="#" class="nav-link" data-section="http">🌐 HTTP & APIs</a></li>
+            <li><a href="#" class="nav-link" data-section="quiz">🏆 Abschluss-Quiz</a></li>
+        </ul>
+    </aside>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Home Section -->
+            <section id="home" class="content-section active">
+                <div class="hero">
+                    <h1 class="hero-title">Kommunikation in Netzwerken</h1>
+                    <p class="hero-subtitle">Ein interaktiver Lernpfad für die 11. Klasse Gymnasium Bayern</p>
+                    <p class="hero-description">Verstehe, wie Computer miteinander kommunizieren</p>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-icon">📡</div>
+                        <h3>Grundlagen</h3>
+                        <ul>
+                            <li>Was ist ein Netzwerk?</li>
+                            <li>Client-Server-Prinzip</li>
+                            <li>Netzwerkgrößen (LAN, WAN, Internet)</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">🔗</div>
+                        <h3>Topologien</h3>
+                        <ul>
+                            <li>Bus-Topologie</li>
+                            <li>Stern-Topologie</li>
+                            <li>Ring-Topologie</li>
+                            <li>Vermaschte Topologie</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">🏷️</div>
+                        <h3>Adressierung</h3>
+                        <ul>
+                            <li>IP-Adressen (IPv4 & IPv6)</li>
+                            <li>Ports</li>
+                            <li>MAC-Adressen</li>
+                            <li>DHCP & NAT</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">🌍</div>
+                        <h3>DNS & URLs</h3>
+                        <ul>
+                            <li>Domain Name System</li>
+                            <li>URL-Struktur</li>
+                            <li>DNS-Auflösung</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">📚</div>
+                        <h3>Schichtenmodell</h3>
+                        <ul>
+                            <li>TCP/IP-Modell</li>
+                            <li>Protokolle</li>
+                            <li>TCP vs. UDP</li>
+                            <li>Paketierung</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">🌐</div>
+                        <h3>HTTP & APIs</h3>
+                        <ul>
+                            <li>HTTP-Methoden</li>
+                            <li>Statuscodes</li>
+                            <li>APIs</li>
+                            <li>HTML-Rendering</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-primary" onclick="navigateToSection('grundlagen')">
+                        Los geht's! →
+                    </button>
+                </div>
+            </section>
+
+            <!-- Grundlagen Section -->
+            <section id="grundlagen" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Modul 1</span>
+                    <h2>Grundlagen der Netzwerkkommunikation</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>📡 Was ist ein Netzwerk?</h3>
+                    <div class="example-content">
+                        <p>Wenn Computer Daten miteinander austauschen, bilden sie ein <strong>Netzwerk</strong>. Computer sind heute in den unterschiedlichsten Gegenständen wie Smartphones, Tablets, Smart-TVs oder IoT-Geräten präsent.</p>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>📊 Netzwerkgrößen</h3>
+                    <div class="definition-grid">
+                        <div class="definition-card">
+                            <div class="def-icon">🏠</div>
+                            <h4>PAN</h4>
+                            <p><strong>Personal Area Network</strong></p>
+                            <p>Persönliches Netzwerk (z.B. Bluetooth)</p>
+                            <p>Reichweite: ~10m</p>
+                        </div>
+
+                        <div class="definition-card">
+                            <div class="def-icon">🏢</div>
+                            <h4>LAN</h4>
+                            <p><strong>Local Area Network</strong></p>
+                            <p>Lokales Netzwerk (z.B. Heimnetzwerk, Schule)</p>
+                            <p>Reichweite: ~100m</p>
+                        </div>
+
+                        <div class="definition-card">
+                            <div class="def-icon">🏙️</div>
+                            <h4>WAN</h4>
+                            <p><strong>Wide Area Network</strong></p>
+                            <p>Weitverkehrsnetz (z.B. Stadtwerke)</p>
+                            <p>Reichweite: mehrere km</p>
+                        </div>
+
+                        <div class="definition-card">
+                            <div class="def-icon">🌍</div>
+                            <h4>Internet</h4>
+                            <p><strong>Worldwide Network</strong></p>
+                            <p>Weltweites Netzwerk</p>
+                            <p>Reichweite: global</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>👥 Client-Server Prinzip</h3>
+                    <div class="example-content">
+                        <p>Ein <strong>Client</strong> stellt eine Anfrage nach einem bestimmten Dienst, der von einem <strong>Server</strong> angeboten wird.</p>
+                        
+                        <div class="network-diagram">
+                            <div class="diagram-box">
+                                <h4>💻 Client</h4>
+                                <p>Stellt Anfrage</p>
+                                <p><em>z.B. Webbrowser</em></p>
+                            </div>
+                            <div class="diagram-arrow">→</div>
+                            <div class="diagram-box">
+                                <h4>🖥️ Server</h4>
+                                <p>Liefert Antwort</p>
+                                <p><em>z.B. Webserver</em></p>
+                            </div>
+                        </div>
+
+                        <div class="highlight-box mt-3">
+                            <h5>💡 Beispiel:</h5>
+                            <p>Wenn du eine Website aufrufst, ist dein Browser der <strong>Client</strong> und der Computer, der die Website bereitstellt, ist der <strong>Server</strong>.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-container">
+                    <div class="quiz-question">
+                        <h4>✅ Quiz: Grundlagen</h4>
+                        <p>Welches Netzwerk erstreckt sich über die ganze Welt?</p>
+                    </div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">
+                            <span>A) LAN (Local Area Network)</span>
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">
+                            <span>B) WAN (Wide Area Network)</span>
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">
+                            <span>C) Internet</span>
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">
+                            <span>D) PAN (Personal Area Network)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('home')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('topologien')">Weiter →</button>
+                </div>
+            </section>
+
+            <!-- Topologien Section -->
+            <section id="topologien" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Modul 2</span>
+                    <h2>Netzwerk-Topologien</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>🔗 Verschiedene Topologien im Überblick</h3>
+                    <div class="example-content">
+                        <p>Zur Vernetzung der einzelnen Geräte zu einem Netzwerk gibt es verschiedene Möglichkeiten:</p>
+                    </div>
+                </div>
+
+                <div class="topology-grid">
+                    <div class="topology-card">
+                        <div class="topology-icon">🚌</div>
+                        <h4>Bus-Topologie</h4>
+                        <p>Alle Geräte sind an einem gemeinsamen Übertragungsmedium (Bus) angeschlossen.</p>
+                        <div class="pros-cons">
+                            <h5>Vorteile:</h5>
+                            <ul class="pros">
+                                <li>Einfacher Aufbau</li>
+                                <li>Kostengünstig</li>
+                                <li>Wenig Kabel</li>
+                            </ul>
+                            <h5 class="mt-2">Nachteile:</h5>
+                            <ul class="cons">
+                                <li>Kabelbruch = Totalausfall</li>
+                                <li>Kollisionen möglich</li>
+                                <li>Schwer erweiterbar</li>
+                            </ul>
+                        </div>
+                        <div class="highlight mt-2">
+                            <strong>Anwendung:</strong> Kleine Netze, ISPs
+                        </div>
+                    </div>
+
+                    <div class="topology-card">
+                        <div class="topology-icon">⭐</div>
+                        <h4>Stern-Topologie</h4>
+                        <p>Alle Geräte sind mit einem zentralen Knoten (Switch/Hub) verbunden.</p>
+                        <div class="pros-cons">
+                            <h5>Vorteile:</h5>
+                            <ul class="pros">
+                                <li>Ausfall eines Geräts = kein Problem</li>
+                                <li>Einfache Erweiterung</li>
+                                <li>Keine Kollisionen</li>
+                            </ul>
+                            <h5 class="mt-2">Nachteile:</h5>
+                            <ul class="cons">
+                                <li>Zentraler Knoten = Single Point of Failure</li>
+                                <li>Viel Kabel nötig</li>
+                                <li>Teurer als Bus</li>
+                            </ul>
+                        </div>
+                        <div class="highlight mt-2">
+                            <strong>Anwendung:</strong> Heimnetzwerke, Büros
+                        </div>
+                    </div>
+
+                    <div class="topology-card">
+                        <div class="topology-icon">🔄</div>
+                        <h4>Ring-Topologie</h4>
+                        <p>Geräte sind in einem geschlossenen Ring verbunden. Daten fließen in eine Richtung.</p>
+                        <div class="pros-cons">
+                            <h5>Vorteile:</h5>
+                            <ul class="pros">
+                                <li>Keine Kollisionen</li>
+                                <li>Gleichmäßige Datenübertragung</li>
+                                <li>Vorhersagbare Performance</li>
+                            </ul>
+                            <h5 class="mt-2">Nachteile:</h5>
+                            <ul class="cons">
+                                <li>Ausfall eines Geräts = Problem</li>
+                                <li>Schwer zu erweitern</li>
+                                <li>Komplexe Fehlersuche</li>
+                            </ul>
+                        </div>
+                        <div class="highlight mt-2">
+                            <strong>Anwendung:</strong> Früher in Universitäten
+                        </div>
+                    </div>
+
+                    <div class="topology-card">
+                        <div class="topology-icon">🕸️</div>
+                        <h4>Vermaschte Topologie</h4>
+                        <p>Jedes Gerät ist mit mehreren anderen Geräten verbunden.</p>
+                        <div class="pros-cons">
+                            <h5>Vorteile:</h5>
+                            <ul class="pros">
+                                <li>Sehr ausfallsicher</li>
+                                <li>Alternative Routen</li>
+                                <li>Hohe Redundanz</li>
+                            </ul>
+                            <h5 class="mt-2">Nachteile:</h5>
+                            <ul class="cons">
+                                <li>Sehr teuer</li>
+                                <li>Viel Kabel</li>
+                                <li>Komplexe Verwaltung</li>
+                            </ul>
+                        </div>
+                        <div class="highlight mt-2">
+                            <strong>Anwendung:</strong> Mesh-WiFi, kritische Infrastruktur
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-container">
+                    <div class="quiz-question">
+                        <h4>✅ Quiz: Topologien</h4>
+                        <p>Bei welcher Topologie ist der Ausfall des zentralen Knotens besonders kritisch?</p>
+                    </div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">
+                            <span>A) Bus-Topologie</span>
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">
+                            <span>B) Stern-Topologie</span>
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">
+                            <span>C) Ring-Topologie</span>
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">
+                            <span>D) Vermaschte Topologie</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('grundlagen')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('adressierung')">Weiter →</button>
+                </div>
+            </section>
+
+            <!-- Adressierung Section -->
+            <section id="adressierung" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Modul 3</span>
+                    <h2>Adressierung von Geräten</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>🏷️ IP-Adressen: Die Postanschrift im Internet</h3>
+                    <div class="example-content">
+                        <p>Jeder Rechner in einem Netzwerk erhält eine eindeutige <strong>IP-Adresse</strong> (Internet Protocol).</p>
+                    </div>
+                </div>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>IPv4</h4>
+                        <span class="badge reliable">Aktueller Standard</span>
+                        <p><strong>Format:</strong> 4 Blöcke von 0-255 (je 1 Byte)</p>
+                        <p><strong>Beispiel:</strong> 192.168.0.1</p>
+                        <div class="highlight mt-2">
+                            <p><strong>Anzahl Adressen:</strong></p>
+                            <p>2⁸ × 2⁸ × 2⁸ × 2⁸ = 2³²</p>
+                            <p>= 4.294.967.296</p>
+                            <p>≈ 4,3 Milliarden</p>
+                        </div>
+                    </div>
+
+                    <div class="comparison-card">
+                        <h4>IPv6</h4>
+                        <span class="badge fast">Zukunft</span>
+                        <p><strong>Format:</strong> 8 Blöcke von 0-65535 (je 2 Byte)</p>
+                        <p><strong>Beispiel:</strong> 2001:0db8:85a3::8a2e:0370:7334</p>
+                        <div class="highlight mt-2">
+                            <p><strong>Anzahl Adressen:</strong></p>
+                            <p>(2¹⁶)⁸ = 2¹²⁸</p>
+                            <p>≈ 3,4 × 10³⁸</p>
+                            <p>💡 Mehr als Sterne im Universum!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box warning">
+                    <h3>⚠️ Das Adressierungsproblem bei IPv4</h3>
+                    <div class="example-content">
+                        <p>Da IPv4-Adressen nicht ausreichen, teilen sich mehrere Geräte eine öffentliche IP. Im Heimnetzwerk vergibt der Router private IPs über <strong>DHCP</strong>.</p>
+                        
+                        <div class="network-diagram mt-3">
+                            <div class="diagram-box">
+                                <h4>🌐 Internet</h4>
+                                <p>Web-Server</p>
+                                <p><code>178.34.187.55</code></p>
+                            </div>
+                            <div class="diagram-arrow">↔</div>
+                            <div class="diagram-box">
+                                <h4>📡 Router</h4>
+                                <p>Öffentlich: <code>84.193.52.26</code></p>
+                                <p>Privat: <code>192.168.0.1</code></p>
+                            </div>
+                            <div class="diagram-arrow">↔</div>
+                            <div class="diagram-box">
+                                <h4>🏠 Heimnetzwerk</h4>
+                                <p>Laptop: <code>192.168.0.10</code></p>
+                                <p>Handy: <code>192.168.0.11</code></p>
+                                <p>Tablet: <code>192.168.0.12</code></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🔌 Ports und MAC-Adressen</h3>
+                    <div class="definition-grid">
+                        <div class="definition-card">
+                            <div class="def-icon">🔌</div>
+                            <h4>Port-Nummern</h4>
+                            <p>Da Geräte mehrere Anwendungen parallel nutzen, wird ein <strong>Port</strong> verwendet (0-65535).</p>
+                            <p class="mt-2"><strong>Notation:</strong> IP:Port</p>
+                            <p><code>88.231.4.72:8080</code></p>
+                            <ul class="mt-2">
+                                <li>HTTP: 80</li>
+                                <li>HTTPS: 443</li>
+                                <li>FTP: 21</li>
+                                <li>SSH: 22</li>
+                            </ul>
+                        </div>
+
+                        <div class="definition-card">
+                            <div class="def-icon">🔧</div>
+                            <h4>MAC-Adresse</h4>
+                            <p>Jedes Netzwerkgerät besitzt eine eindeutige <strong>Hardware-Adresse</strong>.</p>
+                            <p class="mt-2"><strong>Format:</strong> 6 Byte</p>
+                            <p><code>2a:03:7a:e8:32:0f</code></p>
+                            <div class="highlight mt-2">
+                                <p>⚠️ <strong>Wichtig:</strong></p>
+                                <p>Nicht sicher zur Identifizierung (MAC-Spoofing möglich)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise-box">
+                    <h4>🎮 Übung: IP-Adresse berechnen</h4>
+                    <p>Wandle die binäre IP-Adresse in dezimal um:</p>
+                    <div class="exercise-input">
+                        <label>Binär: 11000000.10101000.00000001.00001010</label>
+                    </div>
+                    <div class="binary-display" id="ipCalculator">
+                        <div class="binary-octet">
+                            <div class="decimal">192</div>
+                            <div class="binary">11000000</div>
+                        </div>
+                        <div class="binary-octet">
+                            <div class="decimal">168</div>
+                            <div class="binary">10101000</div>
+                        </div>
+                        <div class="binary-octet">
+                            <div class="decimal">1</div>
+                            <div class="binary">00000001</div>
+                        </div>
+                        <div class="binary-octet">
+                            <div class="decimal">10</div>
+                            <div class="binary">00001010</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-success" onclick="showIPSolution()">Lösung anzeigen</button>
+                    <div id="ipSolution" class="result-box mt-2" style="display: none;">
+                        <h5>✅ Lösung:</h5>
+                        <p><strong>Dezimal:</strong> 192.168.1.10</p>
+                        <p>Dies ist eine typische private IP-Adresse in einem Heimnetzwerk!</p>
+                    </div>
+                </div>
+
+                <div class="quiz-container">
+                    <div class="quiz-question">
+                        <h4>✅ Quiz: Adressierung</h4>
+                        <p>Welcher Port wird standardmäßig für HTTPS verwendet?</p>
+                    </div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">
+                            <span>A) Port 80</span>
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">
+                            <span>B) Port 21</span>
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">
+                            <span>C) Port 443</span>
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">
+                            <span>D) Port 22</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('topologien')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('dns')">Weiter →</button>
+                </div>
+            </section>
+
+            <!-- DNS Section -->
+            <section id="dns" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Modul 4</span>
+                    <h2>DNS und URL-Struktur</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>🌍 DNS - Das Telefonbuch des Internets</h3>
+                    <div class="example-content">
+                        <p>Meist geben wir nicht die IP ein, sondern eine <strong>URL</strong>. Der <strong>DNS-Server</strong> wandelt diese in IPs um.</p>
+                    </div>
+                </div>
+
+                <div class="url-breakdown">
+                    <h3>🔗 Aufbau einer URL</h3>
+                    <div class="url-part">
+                        <div class="label">Protokoll</div>
+                        <div class="value">https://</div>
+                        <div class="description">Legt fest, wie Daten übertragen werden (HTTP, HTTPS, FTP, ...)</div>
+                    </div>
+                    <div class="url-part">
+                        <div class="label">Subdomain</div>
+                        <div class="value">www.</div>
+                        <div class="description">Optional: Unterbereich der Domain (z.B. blog., shop., mail.)</div>
+                    </div>
+                    <div class="url-part">
+                        <div class="label">Domain</div>
+                        <div class="value">example.com</div>
+                        <div class="description">Hauptadresse der Website</div>
+                    </div>
+                    <div class="url-part">
+                        <div class="label">Pfad</div>
+                        <div class="value">/products/shoes</div>
+                        <div class="description">Spezifische Seite oder Ressource auf dem Server</div>
+                    </div>
+                    <div class="url-part">
+                        <div class="label">Parameter</div>
+                        <div class="value">?size=42&color=blue</div>
+                        <div class="description">Zusätzliche Informationen für den Server</div>
+                    </div>
+                </div>
+
+                <div class="dns-flow">
+                    <h3>🔄 Ablauf einer Website-Anfrage</h3>
+                    <div class="dns-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <strong>Eingabe im Browser</strong>
+                            <p>Du gibst "www.example.com" ein</p>
+                        </div>
+                    </div>
+                    <div class="dns-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <strong>DNS-Anfrage</strong>
+                            <p>Browser fragt DNS-Server: "Welche IP hat example.com?"</p>
+                        </div>
+                    </div>
+                    <div class="dns-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <strong>DNS-Antwort</strong>
+                            <p>DNS-Server antwortet: "93.184.216.34"</p>
+                        </div>
+                    </div>
+                    <div class="dns-step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <strong>HTTP-Anfrage</strong>
+                            <p>Browser sendet Anfrage an IP 93.184.216.34</p>
+                        </div>
+                    </div>
+                    <div class="dns-step">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <strong>Server-Antwort</strong>
+                            <p>Webserver sendet HTML, CSS, JavaScript zurück</p>
+                        </div>
+                    </div>
+                    <div class="dns-step">
+                        <div class="step-number">6</div>
+                        <div class="step-content">
+                            <strong>Rendering</strong>
+                            <p>Browser zeigt die Website an</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise-box">
+                    <h4>🎮 Übung: DNS-Auflösung simulieren</h4>
+                    <p>Welche IP-Adresse gehört zu welcher Domain?</p>
+                    <div class="exercise-input">
+                        <label>Domain: google.com</label>
+                        <input type="text" id="dnsInput1" placeholder="IP-Adresse eingeben">
+                    </div>
+                    <button class="btn btn-success" onclick="checkDNS()">Prüfen</button>
+                    <div id="dnsResult" class="result-box mt-2" style="display: none;">
+                        <h5>💡 Hinweis:</h5>
+                        <p>Große Websites haben oft mehrere IP-Adressen für Load-Balancing!</p>
+                        <p>Google hat z.B.: 142.250.185.46, 172.217.16.142, ...</p>
+                    </div>
+                </div>
+
+                <div class="quiz-container">
+                    <div class="quiz-question">
+                        <h4>✅ Quiz: DNS</h4>
+                        <p>Was macht ein DNS-Server?</p>
+                    </div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">
+                            <span>A) Speichert Websites</span>
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">
+                            <span>B) Wandelt Domain-Namen in IP-Adressen um</span>
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">
+                            <span>C) Verschlüsselt Daten</span>
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">
+                            <span>D) Verteilt E-Mails</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('adressierung')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('schichten')">Weiter →</button>
+                </div>
+            </section>
+
+            <!-- Schichtenmodell Section -->
+            <section id="schichten" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Modul 5</span>
+                    <h2>Das TCP/IP-Schichtenmodell</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>📚 Kommunikation in Schichten</h3>
+                    <div class="example-content">
+                        <p>Die Kommunikation ist in <strong>Schichten</strong> aufgeteilt. Jede hat eine spezielle Aufgabe.</p>
+                    </div>
+                </div>
+
+                <div class="layer-model">
+                    <h3>🏗️ Die 4 Schichten des TCP/IP-Modells</h3>
+                    <div class="layer">
+                        <h4>4. Anwendungsschicht (Application Layer)</h4>
+                        <div class="protocols">HTTP, FTP, SMTP, DNS, SSH</div>
+                        <div class="description">Anwendungsspezifische Protokolle für Browser, E-Mail, Dateiübertragung</div>
+                    </div>
+                    <div class="layer">
+                        <h4>3. Transportschicht (Transport Layer)</h4>
+                        <div class="protocols">TCP, UDP</div>
+                        <div class="description">Segmentierung der Daten, Ports, Fehlerkorrektur</div>
+                    </div>
+                    <div class="layer">
+                        <h4>2. Internetschicht (Internet Layer)</h4>
+                        <div class="protocols">IP (IPv4, IPv6)</div>
+                        <div class="description">Adressierung und Routing zwischen Netzwerken</div>
+                    </div>
+                    <div class="layer">
+                        <h4>1. Netzzugangsschicht (Network Access Layer)</h4>
+                        <div class="protocols">Ethernet, WLAN</div>
+                        <div class="description">Physische Übertragung der Daten (Kabel, Funk)</div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📦 Datenfluss durch die Schichten</h3>
+                    <div class="example-content">
+                        <div class="comparison-grid">
+                            <div class="comparison-card">
+                                <h4>📤 Sender</h4>
+                                <div class="layer-model">
+                                    <div class="layer" style="border-left-color: #ef4444;">
+                                        <strong>4. Anwendung</strong>
+                                        <p>Erstellt Nachricht</p>
+                                    </div>
+                                    <div class="diagram-arrow">↓</div>
+                                    <div class="layer" style="border-left-color: #f59e0b;">
+                                        <strong>3. Transport</strong>
+                                        <p>+ Port, Segmentierung</p>
+                                    </div>
+                                    <div class="diagram-arrow">↓</div>
+                                    <div class="layer" style="border-left-color: #10b981;">
+                                        <strong>2. Internet</strong>
+                                        <p>+ IP-Adressen</p>
+                                    </div>
+                                    <div class="diagram-arrow">↓</div>
+                                    <div class="layer" style="border-left-color: #3b82f6;">
+                                        <strong>1. Netzzugang</strong>
+                                        <p>+ MAC-Adressen, Übertragung</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="comparison-card">
+                                <h4>📥 Empfänger</h4>
+                                <div class="layer-model">
+                                    <div class="layer" style="border-left-color: #3b82f6;">
+                                        <strong>1. Netzzugang</strong>
+                                        <p>Empfängt Daten, entfernt MAC</p>
+                                    </div>
+                                    <div class="diagram-arrow">↑</div>
+                                    <div class="layer" style="border-left-color: #10b981;">
+                                        <strong>2. Internet</strong>
+                                        <p>Prüft IP, entfernt IP-Header</p>
+                                    </div>
+                                    <div class="diagram-arrow">↑</div>
+                                    <div class="layer" style="border-left-color: #f59e0b;">
+                                        <strong>3. Transport</strong>
+                                        <p>Setzt Segmente zusammen</p>
+                                    </div>
+                                    <div class="diagram-arrow">↑</div>
+                                    <div class="layer" style="border-left-color: #ef4444;">
+                                        <strong>4. Anwendung</strong>
+                                        <p>Zeigt Nachricht an</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>⚔️ TCP vs. UDP</h3>
+                    <div class="comparison-grid">
+                        <div class="comparison-card">
+                            <h4>TCP</h4>
+                            <span class="badge reliable">Zuverlässig</span>
+                            <ul class="mt-2">
+                                <li><strong>✅ Verbindungsorientiert</strong></li>
+                                <li>Garantierte Zustellung</li>
+                                <li>Reihenfolge wird eingehalten</li>
+                                <li>Fehlerkorrektur</li>
+                                <li>Langsamer (Overhead)</li>
+                            </ul>
+                            <div class="highlight mt-2">
+                                <strong>Verwendung:</strong>
+                                <p>HTTP, FTP, E-Mail</p>
+                            </div>
+                        </div>
+
+                        <div class="comparison-card">
+                            <h4>UDP</h4>
+                            <span class="badge fast">Schnell</span>
+                            <ul class="mt-2">
+                                <li><strong>⚡ Verbindungslos</strong></li>
+                                <li>Keine Zustellgarantie</li>
+                                <li>Reihenfolge egal</li>
+                                <li>Keine Fehlerkorrektur</li>
+                                <li>Schneller (weniger Overhead)</li>
+                            </ul>
+                            <div class="highlight mt-2">
+                                <strong>Verwendung:</strong>
+                                <p>Streaming, Gaming, DNS</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise-box">
+                    <h4>🎮 Übung: Paketgröße berechnen</h4>
+                    <p>Ein Foto hat 2,5 MB. Die maximale Paketgröße beträgt 65.535 Byte.</p>
+                    <p><strong>Frage:</strong> Wie viele Pakete werden benötigt?</p>
+                    <div class="exercise-input">
+                        <label>Deine Antwort:</label>
+                        <input type="number" id="packetInput" placeholder="Anzahl Pakete">
+                    </div>
+                    <button class="btn btn-success" onclick="checkPackets()">Prüfen</button>
+                    <div id="packetResult" class="result-box mt-2" style="display: none;">
+                        <h5>💡 Lösung:</h5>
+                        <p>1 MB = 1.048.576 Byte</p>
+                        <p>2,5 MB = 2.621.440 Byte</p>
+                        <p>Anzahl Pakete = 2.621.440 ÷ 65.535 = 40 Pakete (aufgerundet)</p>
+                    </div>
+                </div>
+
+                <div class="quiz-container">
+                    <div class="quiz-question">
+                        <h4>✅ Quiz: Schichtenmodell</h4>
+                        <p>Welche Schicht ist für das Routing zwischen Netzwerken zuständig?</p>
+                    </div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">
+                            <span>A) Anwendungsschicht</span>
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">
+                            <span>B) Transportschicht</span>
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">
+                            <span>C) Internetschicht</span>
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">
+                            <span>D) Netzzugangsschicht</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('dns')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('http')">Weiter →</button>
+                </div>
+            </section>
+
+            <!-- HTTP Section -->
+            <section id="http" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Modul 6</span>
+                    <h2>HTTP, APIs und Client-Implementierung</h2>
+                </div>
+
+                <div class="example-box">
+                    <h3>🌐 HTTP-Methoden: GET vs. POST</h3>
+                    <div class="example-content">
+                        <div class="comparison-grid">
+                            <div class="comparison-card">
+                                <h4>GET-Request</h4>
+                                <span class="badge reliable">Daten abrufen</span>
+                                <ul class="mt-2">
+                                    <li>Fordert Daten an</li>
+                                    <li>Parameter in URL sichtbar</li>
+                                    <li>Kann gecacht werden</li>
+                                    <li>Im Browser-Verlauf</li>
+                                    <li>Idempotent (wiederholbar)</li>
+                                </ul>
+                                <div class="highlight mt-2">
+                                    <strong>Beispiel:</strong>
+                                    <p><code>GET /search?q=netzwerke</code></p>
+                                </div>
+                            </div>
+
+                            <div class="comparison-card">
+                                <h4>POST-Request</h4>
+                                <span class="badge fast">Daten senden</span>
+                                <ul class="mt-2">
+                                    <li>Sendet Daten zum Server</li>
+                                    <li>Parameter im Body (unsichtbar)</li>
+                                    <li>Wird nicht gecacht</li>
+                                    <li>Nicht im Verlauf</li>
+                                    <li>Nicht idempotent</li>
+                                </ul>
+                                <div class="highlight mt-2">
+                                    <strong>Verwendung:</strong>
+                                    <p>Formulare, Login, Uploads</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>📊 HTTP-Statuscodes</h3>
+                    <div class="status-code-grid">
+                        <div class="status-code success">
+                            <div class="code">200</div>
+                            <div class="description">OK - Erfolg</div>
+                        </div>
+                        <div class="status-code success">
+                            <div class="code">201</div>
+                            <div class="description">Created - Erstellt</div>
+                        </div>
+                        <div class="status-code redirect">
+                            <div class="code">301</div>
+                            <div class="description">Moved Permanently</div>
+                        </div>
+                        <div class="status-code redirect">
+                            <div class="code">302</div>
+                            <div class="description">Found - Umleitung</div>
+                        </div>
+                        <div class="status-code client-error">
+                            <div class="code">400</div>
+                            <div class="description">Bad Request</div>
+                        </div>
+                        <div class="status-code client-error">
+                            <div class="code">401</div>
+                            <div class="description">Unauthorized</div>
+                        </div>
+                        <div class="status-code client-error">
+                            <div class="code">403</div>
+                            <div class="description">Forbidden</div>
+                        </div>
+                        <div class="status-code client-error">
+                            <div class="code">404</div>
+                            <div class="description">Not Found</div>
+                        </div>
+                        <div class="status-code server-error">
+                            <div class="code">500</div>
+                            <div class="description">Internal Server Error</div>
+                        </div>
+                        <div class="status-code server-error">
+                            <div class="code">503</div>
+                            <div class="description">Service Unavailable</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🔌 APIs - Application Programming Interfaces</h3>
+                    <div class="example-content">
+                        <p>Eine <strong>API</strong> ist eine Schnittstelle, über die Programme miteinander kommunizieren können.</p>
+                        
+                        <div class="network-diagram mt-3">
+                            <div class="diagram-box">
+                                <h4>📱 Client-App</h4>
+                                <p>Wetter-App</p>
+                                <p>Sendet Anfrage</p>
+                            </div>
+                            <div class="diagram-arrow">→</div>
+                            <div class="diagram-box">
+                                <h4>🌐 API-Server</h4>
+                                <p>Wetterdienst</p>
+                                <p>Liefert JSON-Daten</p>
+                            </div>
+                        </div>
+
+                        <div class="highlight-box mt-3">
+                            <h5>📋 Beispiel: Wetter-API</h5>
+                            <p><strong>Request:</strong></p>
+                            <p><code>GET https://api.weather.com/v1/forecast?city=Munich</code></p>
+                            <p class="mt-2"><strong>Response (JSON):</strong></p>
+                            <pre style="background: var(--dark); color: #e2e8f0; padding: 1rem; border-radius: 8px; overflow-x: auto;">{
+  "city": "Munich",
+  "temperature": 18,
+  "condition": "sunny",
+  "humidity": 65
+}</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise-box">
+                    <h4>🎮 Übung: API-Anfrage simulieren</h4>
+                    <p>Erstelle eine GET-Anfrage für eine Wetter-API:</p>
+                    <div class="exercise-input">
+                        <label>Stadt:</label>
+                        <input type="text" id="cityInput" placeholder="z.B. Berlin">
+                    </div>
+                    <button class="btn btn-success" onclick="simulateAPI()">API-Anfrage senden</button>
+                    <div id="apiResult" class="result-box mt-2" style="display: none;"></div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🎨 HTML-Rendering</h3>
+                    <div class="example-content">
+                        <p>Der Browser wandelt HTML-Code in eine formatierte Ausgabe um.</p>
+                        
+                        <div class="comparison-grid mt-3">
+                            <div class="comparison-card">
+                                <h4>HTML-Quelltext</h4>
+                                <pre style="background: var(--dark); color: #e2e8f0; padding: 1rem; border-radius: 8px; overflow-x: auto; text-align: left;">&lt;h1&gt;Willkommen&lt;/h1&gt;
+&lt;p&gt;Dies ist &lt;strong&gt;fett&lt;/strong&gt;.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Punkt 1&lt;/li&gt;
+  &lt;li&gt;Punkt 2&lt;/li&gt;
+&lt;/ul&gt;</pre>
+                            </div>
+
+                            <div class="comparison-card">
+                                <h4>Gerendert</h4>
+                                <div style="background: var(--gray-lighter); padding: 1.5rem; border-radius: 8px; text-align: left;">
+                                    <h1 style="margin: 0 0 1rem 0;">Willkommen</h1>
+                                    <p>Dies ist <strong>fett</strong>.</p>
+                                    <ul>
+                                        <li>Punkt 1</li>
+                                        <li>Punkt 2</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-container">
+                    <div class="quiz-question">
+                        <h4>✅ Quiz: HTTP</h4>
+                        <p>Welcher HTTP-Statuscode bedeutet "Not Found"?</p>
+                    </div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">
+                            <span>A) 200</span>
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">
+                            <span>B) 301</span>
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">
+                            <span>C) 404</span>
+                        </div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">
+                            <span>D) 500</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('schichten')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('quiz')">Zum Abschluss-Quiz →</button>
+                </div>
+            </section>
+
+            <!-- Final Quiz Section -->
+            <section id="quiz" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Finale</span>
+                    <h2>Abschluss-Quiz</h2>
+                </div>
+
+                <div class="final-quiz">
+                    <h3>🏆 Teste dein Wissen!</h3>
+                    <p>Beantworte 5 Fragen über alle Module</p>
+                    <div class="quiz-progress">
+                        <div class="quiz-progress-bar" id="finalQuizProgress"></div>
+                    </div>
+                    <button class="btn btn-success" onclick="startFinalQuiz()">Quiz starten</button>
+                </div>
+
+                <div id="finalQuizContainer" style="display: none;">
+                    <div class="quiz-container">
+                        <div class="quiz-question">
+                            <h4 id="finalQuizQuestion"></h4>
+                        </div>
+                        <div class="quiz-options" id="finalQuizOptions"></div>
+                        <button class="btn btn-primary mt-3" onclick="nextFinalQuestion()" id="nextQuizBtn" style="display: none;">
+                            Nächste Frage →
+                        </button>
+                    </div>
+                </div>
+
+                <div class="quiz-result" id="finalQuizResult">
+                    <h4>🎉 Quiz abgeschlossen!</h4>
+                    <div class="score-display" id="finalScore">0/5</div>
+                    <p id="scoreMessage"></p>
+                    <div class="navigation-buttons mt-3">
+                        <button class="btn btn-secondary" onclick="startFinalQuiz()">🔄 Nochmal versuchen</button>
+                        <button class="btn btn-success" onclick="navigateToSection('home')">🏠 Zur Startseite</button>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('http')">← Zurück</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Netzwerke & Internet - Lernplattform Informatik Klasse 11</p>
+            <p>Basierend auf den Unterrichtsmaterialien des Gymnasiums Bayern</p>
+        </div>
+    </footer>
+
+    <script>
+        // ==================== Global Variables ====================
+        let currentFinalQuizQuestion = 0;
+        let finalQuizScore = 0;
+        let finalQuizAnswered = false;
+
+        const finalQuizQuestions = [
+            {
+                question: "Wie viele IPv4-Adressen gibt es theoretisch?",
+                options: [
+                    "Etwa 4,3 Millionen",
+                    "Etwa 43 Millionen",
+                    "Etwa 4,3 Milliarden",
+                    "Unendlich viele"
+                ],
+                correct: 2
+            },
+            {
+                question: "Welche Topologie hat einen Single Point of Failure im zentralen Knoten?",
+                options: [
+                    "Bus-Topologie",
+                    "Stern-Topologie",
+                    "Ring-Topologie",
+                    "Vermaschte Topologie"
+                ],
+                correct: 1
+            },
+            {
+                question: "Welches Protokoll garantiert die Zustellung von Paketen?",
+                options: [
+                    "UDP",
+                    "IP",
+                    "TCP",
+                    "HTTP"
+                ],
+                correct: 2
+            },
+            {
+                question: "Was macht ein DNS-Server?",
+                options: [
+                    "Speichert Websites",
+                    "Wandelt Domain-Namen in IP-Adressen um",
+                    "Verschlüsselt Daten",
+                    "Verteilt E-Mails"
+                ],
+                correct: 1
+            },
+            {
+                question: "Welcher HTTP-Statuscode steht für 'OK - Erfolg'?",
+                options: [
+                    "404",
+                    "500",
+                    "301",
+                    "200"
+                ],
+                correct: 3
+            }
+        ];
+
+        // ==================== Navigation ====================
+        function navigateToSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show target section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Update sidebar active state
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.section === sectionId) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Update progress bar
+            const sections = ['home', 'grundlagen', 'topologien', 'adressierung', 'dns', 'schichten', 'http', 'quiz'];
+            const currentIndex = sections.indexOf(sectionId);
+            const progress = (currentIndex / (sections.length - 1)) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Close mobile menu
+            document.getElementById('sidebar').classList.remove('active');
+        }
+
+        // Sidebar navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = link.dataset.section;
+                navigateToSection(section);
+            });
+        });
+
+        // Mobile menu toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        document.getElementById('sidebarToggle').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('active');
+        });
+
+        // ==================== Quiz Functions ====================
+        function checkAnswer(element, isCorrect) {
+            // Disable all options
+            const options = element.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+            });
+
+            // Mark answer
+            if (isCorrect) {
+                element.classList.add('correct');
+            } else {
+                element.classList.add('incorrect');
+                // Show correct answer
+                options.forEach(opt => {
+                    if (opt !== element && !opt.classList.contains('incorrect')) {
+                        opt.classList.add('correct');
+                    }
+                });
+            }
+        }
+
+        // ==================== Exercise Functions ====================
+        function showIPSolution() {
+            document.getElementById('ipSolution').style.display = 'block';
+        }
+
+        function checkDNS() {
+            document.getElementById('dnsResult').style.display = 'block';
+        }
+
+        function checkPackets() {
+            const input = document.getElementById('packetInput').value;
+            const result = document.getElementById('packetResult');
+            result.style.display = 'block';
+            
+            if (input == 40) {
+                result.innerHTML = `
+                    <h5>✅ Richtig!</h5>
+                    <p>1 MB = 1.048.576 Byte</p>
+                    <p>2,5 MB = 2.621.440 Byte</p>
+                    <p>Anzahl Pakete = 2.621.440 ÷ 65.535 = 40 Pakete (aufgerundet)</p>
+                `;
+                result.style.background = '#d1fae5';
+                result.style.borderColor = 'var(--success-color)';
+                result.style.color = 'var(--success-color)';
+            } else {
+                result.innerHTML = `
+                    <h5>❌ Nicht ganz...</h5>
+                    <p>💡 Tipp: Rechne zuerst MB in Byte um, dann teile durch die Paketgröße.</p>
+                    <p>1 MB = 1.048.576 Byte</p>
+                `;
+                result.style.background = '#fee2e2';
+                result.style.borderColor = 'var(--danger-color)';
+                result.style.color = 'var(--danger-color)';
+            }
+        }
+
+        function simulateAPI() {
+            const city = document.getElementById('cityInput').value.trim();
+            const result = document.getElementById('apiResult');
+            
+            if (!city) {
+                result.innerHTML = `
+                    <h5>❌ Fehler</h5>
+                    <p>Bitte gib eine Stadt ein!</p>
+                `;
+                result.style.display = 'block';
+                return;
+            }
+
+            const temp = Math.floor(Math.random() * 20) + 10;
+            const conditions = ['sunny', 'cloudy', 'rainy', 'partly cloudy'];
+            const condition = conditions[Math.floor(Math.random() * conditions.length)];
+            
+            result.innerHTML = `
+                <h5>✅ API-Response (JSON):</h5>
+                <pre style="background: var(--dark); color: #e2e8f0; padding: 1rem; border-radius: 8px; overflow-x: auto;">{
+  "city": "${city}",
+  "temperature": ${temp},
+  "condition": "${condition}",
+  "humidity": ${Math.floor(Math.random() * 40) + 40}
+}</pre>
+            `;
+            result.style.display = 'block';
+        }
+
+        // ==================== Final Quiz Functions ====================
+        function startFinalQuiz() {
+            currentFinalQuizQuestion = 0;
+            finalQuizScore = 0;
+            finalQuizAnswered = false;
+            
+            document.querySelector('.final-quiz').style.display = 'none';
+            document.getElementById('finalQuizContainer').style.display = 'block';
+            document.getElementById('finalQuizResult').classList.remove('show');
+            
+            showFinalQuestion();
+        }
+
+        function showFinalQuestion() {
+            const question = finalQuizQuestions[currentFinalQuizQuestion];
+            document.getElementById('finalQuizQuestion').textContent = 
+                `Frage ${currentFinalQuizQuestion + 1} von ${finalQuizQuestions.length}: ${question.question}`;
+            
+            const optionsContainer = document.getElementById('finalQuizOptions');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'quiz-option';
+                optionDiv.innerHTML = `<span>${option}</span>`;
+                optionDiv.onclick = () => selectFinalAnswer(index, question.correct);
+                optionsContainer.appendChild(optionDiv);
+            });
+            
+            document.getElementById('nextQuizBtn').style.display = 'none';
+            finalQuizAnswered = false;
+            
+            // Update progress
+            const progress = ((currentFinalQuizQuestion + 1) / finalQuizQuestions.length) * 100;
+            document.getElementById('finalQuizProgress').style.width = progress + '%';
+        }
+
+        function selectFinalAnswer(selected, correct) {
+            if (finalQuizAnswered) return;
+            
+            finalQuizAnswered = true;
+            const options = document.querySelectorAll('#finalQuizOptions .quiz-option');
+            
+            options.forEach((opt, index) => {
+                opt.style.pointerEvents = 'none';
+                if (index === correct) {
+                    opt.classList.add('correct');
+                } else if (index === selected) {
+                    opt.classList.add('incorrect');
+                }
+            });
+            
+            if (selected === correct) {
+                finalQuizScore++;
+            }
+            
+            document.getElementById('nextQuizBtn').style.display = 'block';
+        }
+
+        function nextFinalQuestion() {
+            currentFinalQuizQuestion++;
+            
+            if (currentFinalQuizQuestion < finalQuizQuestions.length) {
+                showFinalQuestion();
+            } else {
+                showFinalResult();
+            }
+        }
+
+        function showFinalResult() {
+            document.getElementById('finalQuizContainer').style.display = 'none';
+            document.getElementById('finalQuizResult').classList.add('show');
+            document.getElementById('finalScore').textContent = `${finalQuizScore}/${finalQuizQuestions.length}`;
+            
+            const percentage = (finalQuizScore / finalQuizQuestions.length) * 100;
+            let message = '';
+            
+            if (percentage === 100) {
+                message = '🌟 Perfekt! Du hast alle Fragen richtig beantwortet!';
+            } else if (percentage >= 80) {
+                message = '🎉 Sehr gut! Du hast das Thema verstanden!';
+            } else if (percentage >= 60) {
+                message = '👍 Gut gemacht! Wiederhole einige Themen für ein besseres Ergebnis.';
+            } else {
+                message = '📚 Übe noch ein wenig! Gehe die Module nochmal durch.';
+            }
+            
+            document.getElementById('scoreMessage').textContent = message;
+        }
+
+        // ==================== Initialize ====================
+        window.addEventListener('load', () => {
+            document.getElementById('progressBar').style.width = '0%';
+        });
+    </script>
+</body>
+</html>
