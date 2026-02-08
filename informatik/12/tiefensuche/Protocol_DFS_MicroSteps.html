@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROTOCOL: DEEP SEARCH // MICRO-STEPS</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --text-color: #c9d1d9;
+            --accent-color: #39d353;
+            --cyan: #00e5ff;
+            --orange: #d29922;
+            --panel-bg: #161b22;
+            --border: 1px solid #30363d;
+            --font-mono: 'Consolas', monospace;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; line-height: 1.5; }
+        .container { max-width: 900px; margin: 0 auto; }
+        
+        h1, h2, h3 { color: var(--cyan); text-transform: uppercase; letter-spacing: 1px; }
+        .stage { display: none; background: var(--panel-bg); border: var(--border); padding: 25px; margin-bottom: 20px; border-radius: 6px; animation: fadeIn 0.5s; }
+        .stage.active { display: block; }
+
+        /* Code Builder Elements */
+        .code-pool { display: flex; flex-wrap: wrap; gap: 8px; background: #222; padding: 15px; border-radius: 5px; margin: 10px 0; border: 1px dashed #555; }
+        .code-bit { background: #333; color: #fff; padding: 8px 12px; border-radius: 4px; cursor: pointer; border: 1px solid #555; font-family: var(--font-mono); user-select: none; transition: 0.2s; }
+        .code-bit:hover { background: var(--cyan); color: #000; }
+        .code-bit.distractor { border-color: #ff5555; } /* Only visible via inspect usually, logical check happens in JS */
+        
+        .drop-zone { min-height: 50px; background: #000; border: 1px solid var(--accent-color); display: flex; align-items: center; gap: 5px; padding: 10px; flex-wrap: wrap; font-family: var(--font-mono); color: var(--accent-color); margin-bottom: 10px; }
+        
+        button { background: transparent; color: var(--cyan); border: 1px solid var(--cyan); padding: 10px 20px; cursor: pointer; font-weight: bold; margin-top: 15px; }
+        button:hover { background: var(--cyan); color: #000; }
+        
+        .feedback { margin-top: 10px; font-weight: bold; min-height: 24px; }
+        .success { color: var(--accent-color); } .error { color: #ff5555; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>/// DEEP SEARCH PROTOCOL: LEVEL 4-6 ///</h1>
+    
+    <div style="background: #21262d; padding: 10px; border-left: 4px solid var(--orange); margin-bottom: 20px;">
+        <strong>STATUS:</strong> Grundstruktur steht. Wir müssen nun den Kern-Algorithmus Zeile für Zeile zusammensetzen.
+    </div>
+
+    <div id="stage4" class="stage active">
+        <h2>Level 4: Der Scanner (Nachbarn suchen)</h2>
+        <p>Wir stehen auf einem Knoten und wollen <strong>alle</strong> möglichen anderen Knoten anschauen, um zu prüfen, ob sie Nachbarn sind.</p>
+        
+        <h3>Schritt 4.1: Die Auswahl</h3>
+        <p>Welcher algorithmische Baustein eignet sich am besten, um eine **bekannte Anzahl** an Knoten (0 bis anzKnoten) nacheinander abzulaufen?</p>
+        <div style="display:flex; gap:10px; margin-bottom:20px;">
+            <label><input type="radio" name="l4_1" value="while"> While-Schleife (Wdh. mit Bedingung)</label>
+            <label><input type="radio" name="l4_1" value="for"> For-Schleife (Zählschleife)</label>
+            <label><input type="radio" name="l4_1" value="if"> Bedingte Anweisung (If-Else)</label>
+        </div>
+        <button onclick="check4_1()">Auswahl bestätigen</button>
+        <div id="fb4_1" class="feedback"></div>
+
+        <div id="part4_2" style="display:none; border-top: 1px solid #444; margin-top: 20px; padding-top: 10px;">
+            <h3>Schritt 4.2: Code-Konstruktion</h3>
+            <p>Baue den Kopf der Schleife zusammen.</p>
+            
+            <div class="drop-zone" id="zone4"></div>
+            
+            <div class="code-pool">
+                <div class="code-bit" onclick="addCode('zone4', 'i++')">i++</div>
+                <div class="code-bit" onclick="addCode('zone4', '(')">(</div>
+                <div class="code-bit" onclick="addCode('zone4', 'i < anzKnoten;')">i < anzKnoten;</div>
+                <div class="code-bit" onclick="addCode('zone4', 'while')">while</div>
+                <div class="code-bit" onclick="addCode('zone4', ')')">)</div>
+                <div class="code-bit" onclick="addCode('zone4', 'i <= anzKnoten;')">i <= anzKnoten;</div>
+                    <div class="code-bit" onclick="addCode('zone4', 'int i=0;')">int i=0;</div>
+                <div class="code-bit" onclick="addCode('zone4', 'for')">for</div>
+                <div class="code-bit" onclick="addCode('zone4', 'int k=0;')">int k=0;</div>
+                <div class="code-bit" onclick="addCode('zone4', '{')">{</div>
+                <div class="code-bit" onclick="addCode('zone4', 'do')">do</div>
+                <div class="code-bit" onclick="addCode('zone4', '}')">}</div>
+                <div class="code-bit" onclick="addCode('zone4', 'k++')">k++</div>
+                <div class="code-bit" onclick="addCode('zone4', 'k < anzKnoten')">k &lt; anzKnoten</div>
+                <div class="code-bit" onclick="addCode('zone4', 'while (')">if (</div>
+                <div class="code-bit" onclick="addCode('zone4', ');')">);</div>
+
+            </div>
+            
+            <button onclick="resetZone('zone4')">Reset</button>
+            <button onclick="check4_2()">Code kompilieren</button>
+            <div id="fb4_2" class="feedback"></div>
+        </div>
+    </div>
+
+    <div id="stage5" class="stage">
+        <h2>Level 5: Die Entscheidung (If-Logik)</h2>
+        <p>Wir haben nun eine Zählvariable <code>i</code>, die alle Knotennummern durchläuft.</p>
+        <p>Wir müssen nun prüfen: <strong>"Darf ich zu Knoten i gehen?"</strong></p>
+        
+        <h3>Schritt 5.1: Die Datenquellen</h3>
+        <p>Welche zwei Bedingungen müssen <strong>gleichzeitig</strong> wahr sein?</p>
+        <div style="margin-left: 20px;">
+            <label style="display:block;"><input type="checkbox" id="c5_1"> Es muss eine Kante in der Adjazenzmatrix <code>adja</code> existieren.</label>
+            <label style="display:block;"><input type="checkbox" id="c5_3"> Der Knoten <code>i</code> muss der Zielknoten sein.</label>
+            <label style="display:block;"><input type="checkbox" id="c5_2"> Der Knoten <code>i</code> darf noch nicht im Array <code>besucht</code> markiert sein.</label>
+            <label style="display:block;"><input type="checkbox" id="c5_4"> <code>i</code> muss kleiner als <code>aktuellerKnoten</code> sein.</label>
+        </div>
+        <button onclick="check5_1()">Logik prüfen</button>
+        <div id="fb5_1" class="feedback"></div>
+
+        <div id="part5_2" style="display:none; border-top: 1px solid #444; margin-top: 20px; padding-top: 10px;">
+            <h3>Schritt 5.2: Syntax-Montage</h3>
+            <p>Setze die IF-Bedingung zusammen. Achte auf die korrekten Arrays und Indizes!</p>
+            <p><em>Tipp: Wir sind bei <code>aktuellerKnoten</code> und schauen zu <code>i</code>.</em></p>
+
+            <div class="drop-zone" id="zone5"></div>
+            
+            <div class="code-pool">
+
+                <div class="code-bit" onclick="addCode('zone5', 'besucht[i]')">besucht[i]</div>
+                <div class="code-bit" onclick="addCode('zone5', '(')">(</div>
+                <div class="code-bit" onclick="addCode('zone5', '!besucht[i]')">!besucht[i]</div>
+                <div class="code-bit" onclick="addCode('zone5', '||')">||</div>
+                <div class="code-bit" onclick="addCode('zone5', 'adja[i][i]')">adja[i][i]</div>
+                <div class="code-bit" onclick="addCode('zone5', 'besucht[aktuellerKnoten]')">besucht[aktuellerKnoten]</div>
+                <div class="code-bit" onclick="addCode('zone5', 'adja[aktuellerKnoten][i]')">adja[aktuellerKnoten][i]</div>
+                <div class="code-bit" onclick="addCode('zone5', '&&')">&&</div>
+                <div class="code-bit" onclick="addCode('zone5', ')')">)</div>
+                <div class="code-bit" onclick="addCode('zone5', '{')">{</div>
+                <div class="code-bit" onclick="addCode('zone5', 'if')">if</div>
+                <div class="code-bit" onclick="addCode('zone5', 'while')">while</div>
+                <div class="code-bit" onclick="addCode('zone5', '!besucht[aktuellerKnoten]')">!besucht[aktuellerKnoten]</div>
+                <div class="code-bit" onclick="addCode('zone5', 'adja[i][aktuellerKnoten]')">adja[i][aktuellerKnoten]</div>
+                
+                <div class="code-bit" onclick="addCode('zone5', '== true')">== true</div>
+                <div class="code-bit" onclick="addCode('zone5', 'false')">false</div>
+
+            </div>
+
+            <button onclick="resetZone('zone5')">Reset</button>
+            <button onclick="check5_2()">Bedingung prüfen</button>
+            <div id="fb5_2" class="feedback"></div>
+        </div>
+    </div>
+
+    <div id="stage6" class="stage">
+        <h2>Level 6: Der Abstieg (Rekursion)</h2>
+        <p>Die Bedingung ist wahr: Es gibt einen Weg zu <code>i</code> und wir waren dort noch nicht.</p>
+        <p>Jetzt rufen wir unsere Funktion erneut auf. Aber Achtung bei den Parametern!</p>
+        
+        <h3>Schritt 6.1: Parameter-Wahl</h3>
+        <p>Die Methode heißt: <code>tiefensucheRekursiv(int aktuellerKnoten, int zielKnoten, boolean[] besucht)</code></p>
+        <p>Wir rufen sie nun innerhalb der Schleife auf. Welchen Wert übergeben wir als <strong>neuen</strong> Startpunkt?</p>
+        
+        <select id="sel6" style="padding: 10px; background: #000; color: #fff; border: 1px solid #555;">
+            <option value="">-- Wähle --</option>
+            <option value="aktuell">aktuellerKnoten</option>
+            <option value="i">i</option>
+            <option value="start">startKnoten</option>
+            <option value="i+1">i + 1</option>
+            
+            
+        </select>
+
+        <select id="sel7" style="padding: 10px; background: #000; color: #fff; border: 1px solid #555;">
+            <option value="">-- , das bedeutet --</option>
+            <option value="aktuell">Wir bleiben stehen</option>
+            <option value="i+1">Wir überspringen einen</option>
+            <option value="i">Wir gehen zum Nachbarn</option>
+            <option value="start">Wir fangen von vorne an</option>
+            
+            
+        </select>
+        
+        <button onclick="check6()">Aufruf validieren</button>
+        <div id="fb6" class="feedback"></div>
+        
+        <div id="finalMessage" style="display:none; margin-top: 20px; border: 2px solid var(--accent-color); padding: 15px;">
+            <h3 style="color: var(--accent-color);">SYSTEM UNLOCKED</h3>
+            <p>Du hast alle Komponenten im Kopf zusammengesetzt. Gehe jetzt in den Java-Workspace.</p>
+            <p>Implementiere <strong>TODO 3 (Schleife)</strong>, <strong>TODO 4 (Bedingung)</strong> und <strong>TODO 5 (Rekursion)</strong> genau so, wie du es hier gebaut hast.</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // --- UTILS ---
+    function nextStage(num) {
+        document.querySelectorAll('.stage').forEach(el => el.classList.remove('active'));
+        document.getElementById('stage' + num).classList.add('active');
+        window.scrollTo(0,0);
+    }
+    
+    function addCode(zoneId, text) {
+        const zone = document.getElementById(zoneId);
+        const span = document.createElement('span');
+        span.className = 'code-bit';
+        span.innerText = text;
+        zone.appendChild(span);
+    }
+    
+    function resetZone(zoneId) {
+        document.getElementById(zoneId).innerHTML = '';
+        if(zoneId === 'zone4') document.getElementById('fb4_2').innerText = '';
+        if(zoneId === 'zone5') document.getElementById('fb5_2').innerText = '';
+    }
+
+    // --- LEVEL 4 ---
+    function check4_1() {
+        const sel = document.querySelector('input[name="l4_1"]:checked');
+        const fb = document.getElementById('fb4_1');
+        if(!sel) { fb.innerText = "Bitte wählen."; return; }
+        
+        if(sel.value === 'for') {
+            fb.innerHTML = "<span class='success'>Korrekt. Wir kennen die Anzahl der Knoten, daher ist eine Zählschleife ideal.</span>";
+            document.getElementById('part4_2').style.display = 'block';
+        } else {
+            fb.innerHTML = "<span class='error'>Nicht optimal. Wir wollen eine feste Anzahl (anzKnoten) durchlaufen.</span>";
+        }
+    }
+
+    function check4_2() {
+        // Expected: for ( int i=0; i < anzKnoten; i++ ) {
+        const zone = document.getElementById('zone4');
+        const text = zone.innerText.replace(/\s/g, ''); // Remove whitespace
+        const valid = "for(inti=0;i<anzKnoten;i++){";
+        
+        if(text === valid) {
+            document.getElementById('fb4_2').innerHTML = "<span class='success'>Loop Syntax Verified. Scanner Online.</span>";
+            setTimeout(() => nextStage(5), 1500);
+        } else if (text.includes("i<=anzKnoten")) {
+            document.getElementById('fb4_2').innerHTML = "<span class='error'>Fehler: 'i <= anzKnoten' würde zu einem IndexOutOfBounds Fehler führen! Arrays starten bei 0.</span>";
+        } else if (text.includes("k=0")) {
+             document.getElementById('fb4_2').innerHTML = "<span class='error'>Variable 'k' definiert, aber wir nutzen 'i' standardmäßig.</span>";
+        } else {
+            document.getElementById('fb4_2').innerHTML = "<span class='error'>Syntax Error. Reihenfolge prüfen.</span>";
+        }
+    }
+
+    // --- LEVEL 5 ---
+    function check5_1() {
+        const c1 = document.getElementById('c5_1').checked;
+        const c2 = document.getElementById('c5_2').checked;
+        const c3 = document.getElementById('c5_3').checked;
+        const c4 = document.getElementById('c5_4').checked;
+        
+        if(c1 && c2 && !c3 && !c4) {
+            document.getElementById('fb5_1').innerHTML = "<span class='success'>Logik korrekt identifiziert.</span>";
+            document.getElementById('part5_2').style.display = 'block';
+        } else {
+            document.getElementById('fb5_1').innerHTML = "<span class='error'>Falsch. Wir suchen JEDEN Nachbarn (Kante existiert), der noch UNBEKANNT ist.</span>";
+        }
+    }
+
+    function check5_2() {
+        // if ( adja[aktuellerKnoten][i] && !besucht[i] ) {
+        const text = document.getElementById('zone5').innerText.replace(/\s/g, '');
+        const valid = "if(adja[aktuellerKnoten][i]&&!besucht[i]){";
+        const valid2 = "if(!besucht[i]&&adja[aktuellerKnoten][i]){";
+        
+        if(text === valid || text === valid2) {
+            document.getElementById('fb5_2').innerHTML = "<span class='success'>Decision Logic Verified.</span>";
+            setTimeout(() => nextStage(6), 1500);
+        } else if (text.includes("||")) {
+            document.getElementById('fb5_2').innerHTML = "<span class='error'>ODER (||) ist falsch. BEIDE Bedingungen müssen wahr sein.</span>";
+        } else if (!text.includes("!besucht")) {
+            document.getElementById('fb5_2').innerHTML = "<span class='error'>Wir dürfen nur zu Knoten, die NICHT (!) besucht sind.</span>";
+        } else {
+            document.getElementById('fb5_2').innerHTML = "<span class='error'>Syntax Error. Reihenfolge oder Array-Zugriff prüfen.</span>";
+        }
+    }
+
+    // --- LEVEL 6 ---
+    function check6() {
+        const val1 = document.getElementById('sel6').value;
+        const val2 = document.getElementById('sel7').value;
+        if(val1 === 'i' && val2 === 'i') {
+            document.getElementById('fb6').innerHTML = "<span class='success'>Korrekt. 'i' wird zum neuen 'aktuellenKnoten' im nächsten Aufruf, da wir zum Nachbarn gehen.</span>";
+            document.getElementById('finalMessage').style.display = 'block';
+        } else {
+            document.getElementById('fb6').innerHTML = "<span class='error'>Denk nach: Wo wollen wir hingehen? Welchen Knoten wollen wir als nächstes prüfen?</span>";
+        }
+    }
+</script>
+
+</body>
+</html>

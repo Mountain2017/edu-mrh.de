@@ -1,0 +1,32 @@
+{
+   "name": "12-2-2 Tiefensuche",
+   "id": 941249,
+   "modules": [
+      {
+         "name": "Hauptprogramm",
+         "text": "World world = new World(600, 800);\nGraph graph = new Graph(); \n\n// ------------------------------------------------------------------\n// AUFGABE 1 (MODIFY): Das Netzwerk aufbauen\n// Schau auf der Website in Level 3 nach den Verbindungen.\n// ------------------------------------------------------------------\n\n// graph.kanteHinzufügen(?, ?);\n\n\n\n// ------------------------------------------------------------------\n// AUFGABE 2 (TEST): Matrix prüfen\n// ------------------------------------------------------------------\n// graph.printAdja();\n\n\n// ------------------------------------------------------------------\n// AUFGABE 3 (RUN): Die Suche starten\n// Erst einkommentieren, wenn Level 6 erreicht ist!\n// ------------------------------------------------------------------\n// graph.tiefensuche(0, 4);\n\n\n// ////////////////////////////////////////////////////////////////////////////////////////// //\n// MISSION BRIEFING:                                                                          //\n// 1. Öffne 'index.html' im Browser.                                                          //\n// 2. Arbeite die PRIMM-Phasen (Predict, Run, Investigate) durch.                             //\n// 3. Implementiere den Code erst, wenn die Website dich dazu auffordert!                     //\n// ////////////////////////////////////////////////////////////////////////////////////////// // ",
+         "identical_to_repository_version": false,
+         "repository_file_version": -1,
+         "isFolder": false
+      },
+      {
+         "name": "Graph",
+         "text": "/**\n * Die Graph-Klasse. Hier findet die Magie statt.\n */\npublic class Graph\n{\n   Knoten[] knoten;\n   boolean [][] adja; \n   int maxAnzahl = 5; \n   int anzKnoten = 5; \n   \n   Graph()\n   {\n      knoten = new Knoten[maxAnzahl];\n      for (int i = 0; i < anzKnoten; i++) {\n         knoten[i] = new Knoten(); \n         knoten[i].setKnotenname((String)i);\n         knoten[i].moveTo(100 + ((i % 3 * 200)), 100 + (i * 100));\n         new Text(knoten[i].getCenterX() - 8, knoten[i].getCenterY() - 16, 32, i);\n      }\n      // Adjazenzmatrix initialisieren\n      adja = new boolean [maxAnzahl][maxAnzahl]; \n   }\n\n    /**\n     * (MODIFY) Fügt eine Verbindung hinzu.\n     */\n   void kanteHinzufügen(int start, int ende) \n   {\n      if(start < 0 || start >= anzKnoten || ende < 0 || ende >= anzKnoten) {\n         println(\"Fehler: Knoten existiert nicht.\");\n         return;\n      } \n      \n      // TODO: Implementiere hier das Eintragen in die Matrix 'adja'.\n      // Eine Verbindung ist ungerichtet (Hin- und Rückweg!)\n      \n      \n      \n      zeichneKante(start, ende);\n   } \n\n   /**\n    * (MAKE) Die Wrapper-Methode.\n    * Bereitet das 'Gedächtnis' vor und ruft die Rekursion auf.\n    */\n   void tiefensuche(int startKnoten, int zielKnoten) {\n      // Sicherheitscheck\n      if(startKnoten >= maxAnzahl || startKnoten < 0 || zielKnoten >= maxAnzahl || zielKnoten < 0) return;\n\n      for (int i = 0; i < anzKnoten; i++) {\n         knoten[i].setFillColor(Color.grau);\n      }\n\n      \n\n      // TODO: Implementiere die Vorbereitung gemäß Level 5 der Website.\n      // 1. Besucht-Array erstellen\n      // 2. Farben zurücksetzen (optional: knoten[i].setFillColor(Color.grau))\n      // 3. Rekursive Methode aufrufen\n      // 4. Ergebnis ausgeben\n\n\n   }\n\n   /**\n    * (MAKE) Die rekursive Tiefensuche.\n    * Das Herzstück des Algorithmus.\n    */\n   boolean tiefensucheRekursiv(int aktuellerKnoten, int zielKnoten, boolean[] besucht) {\n\n      // TODO: Implementiere die komplette Logik gemäß Level 6 der Website.\n      // Erinnere dich an die Reihenfolge aus dem Drag & Drop Puzzle!\n      \n      // 1. Markieren & Visualisieren\n      \n      // 2. Basisfall prüfen (Ziel erreicht?)\n      \n      // 3. Schleife über alle Knoten (Nachbarn suchen)\n         // Falls Kante existiert UND Nachbar nicht besucht:\n             // Rekursiver Abstieg...\n             // Wenn Abstieg erfolgreich -> return true\n      \n      \n      return false; // Wenn alle Wege Sackgassen waren\n   }\n\n   // Hilfsmethode zur Ausgabe der Matrix (für Investigate Phase)\n   void printAdja() {\n      println(\"Adjazenzmatrix:\");\n      for (int x = 0; x < anzKnoten; x++) {\n         for (int y = 0; y < anzKnoten; y++) {\n            if(adja[x][y]) print(\"1 \"); else print(\"0 \");\n         }\n         println();\n      } \n      println(); \n   }\n\n   void zeichneKante(int start, int ende) {\n      double sX = knoten[start].getCenterX(); \n      double sY = knoten[start].getCenterY();\n      double eX = knoten[ende].getCenterX();\n      double eY = knoten[ende].getCenterY();\n      double dist = Vector2.distance(sX, sY, eX, eY);\n      double angle = new Vector2(eX - sX, eY - sY).getAngleDeg(); \n      Rectangle r = new Rectangle(sX, sY, 10, dist);\n      r.setFillColor(Color.white); r.setAlpha(0.6); \n      r.rotate(90 - angle, sX, sY);\n   }\n}\n",
+         "identical_to_repository_version": false,
+         "repository_file_version": -1,
+         "isFolder": false
+      },
+      {
+         "name": "Knoten",
+         "text": "class Knoten extends Circle {\n   private String knotenname = \"Knoten X\"; \n   Knoten() {\n      setFillColor(Color.orange);\n   }\n   void setKnotenname(String n) { knotenname = n; }\n}",
+         "identical_to_repository_version": false,
+         "repository_file_version": -1,
+         "isFolder": false
+      }
+   ],
+   "settings": {
+      "libraries": []
+   },
+   "parent_folder_id": 930099,
+   "isFolder": false
+}

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROTOCOL: DEEP SEARCH // PRIMM SEQUENCE</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --text-color: #c9d1d9;
+            --accent-color: #39d353; /* Success Green */
+            --cyan: #00e5ff; /* Matrix Cyan */
+            --panel-bg: #161b22;
+            --border: 1px solid #30363d;
+            --font-mono: 'Consolas', 'Courier New', monospace;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; line-height: 1.5; }
+        .container { max-width: 900px; margin: 0 auto; }
+        
+        /* Typography */
+        h1, h2 { text-transform: uppercase; letter-spacing: 1px; color: var(--cyan); border-bottom: 1px solid var(--cyan); padding-bottom: 10px; }
+        .mono { font-family: var(--font-mono); color: #ff7b72; background: #21262d; padding: 2px 5px; border-radius: 4px; }
+        
+        /* Layout */
+        .stage { display: none; background: var(--panel-bg); border: var(--border); padding: 25px; margin-bottom: 20px; border-radius: 6px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .stage.active { display: block; animation: fadeIn 0.6s; }
+        .primm-badge { background: var(--accent-color); color: #000; font-weight: bold; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; vertical-align: middle; }
+
+        /* Interactive Elements */
+        input[type="text"], input[type="number"], select { background: #0d1117; border: 1px solid #30363d; color: #fff; padding: 8px; border-radius: 4px; font-family: var(--font-mono); }
+        button { background: transparent; color: var(--cyan); border: 1px solid var(--cyan); padding: 10px 20px; cursor: pointer; font-weight: bold; transition: all 0.3s; margin-top: 15px; }
+        button:hover { background: var(--cyan); color: #000; box-shadow: 0 0 15px var(--cyan); }
+        
+        /* Grid Puzzle */
+        .matrix-grid { display: grid; grid-template-columns: repeat(4, 50px); gap: 5px; margin: 20px 0; }
+        .matrix-cell { width: 50px; height: 50px; background: #21262d; display: flex; align-items: center; justify-content: center; border: 1px solid #555; cursor: pointer; user-select: none; }
+        .matrix-cell.active { background: var(--accent-color); color: #000; font-weight: bold; }
+        .matrix-header { font-weight: bold; color: var(--cyan); border: none; background: transparent; }
+
+        /* Drag & Drop Sort */
+        .sortable-list { list-style: none; padding: 0; margin: 20px 0; border: 1px dashed #555; padding: 10px; }
+        .sortable-item { background: #21262d; border: 1px solid #30363d; padding: 10px; margin-bottom: 5px; cursor: grab; font-family: var(--font-mono); }
+        .sortable-item:active { cursor: grabbing; background: #30363d; }
+        
+        /* Code Cloze */
+        .code-block { background: #000; padding: 20px; font-family: var(--font-mono); white-space: pre-wrap; border-left: 4px solid var(--cyan); line-height: 2; }
+        .cloze-input { width: 120px; border-bottom: 2px solid var(--accent-color); border-top: none; border-left: none; border-right: none; text-align: center; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .feedback { margin-top: 10px; font-weight: bold; min-height: 24px; }
+        .success { color: var(--accent-color); } .error { color: #ff7b72; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>/// SYSTEM REBOOT: TIEFENSUCHE ///</h1>
+    
+    <div id="stage1" class="stage active">
+        <h2><span class="primm-badge">P</span> PREDICT: Analyse</h2>
+        <p>Lade die Datei <code>12-2-2 Tiefensuche.json</code> in den Workspace.</p>
+        <p>Schau dir den Konstruktor der Klasse <code>Graph</code> und die Klasse <code>Knoten</code> an, ohne den Code auszuführen.</p>
+        <p><strong>Frage 1:</strong> Wie viele Knoten werden maximal erstellt?</p>
+        <input type="number" id="inp1-1" placeholder="Anzahl">
+        
+        <p><strong>Frage 2:</strong> Welche Datenstruktur wird verwendet, um zu speichern, welche Knoten verbunden sind?</p>
+        <select id="inp1-2">
+            <option value="">-- Wählen --</option>
+            <option value="list">ArrayList</option>
+            <option value="matrix">2D Array (Matrix)</option>
+            <option value="tree">Binärbaum</option>
+        </select>
+
+        <button onclick="checkStage1()">Prüfung starten</button>
+        <div id="fb1" class="feedback"></div>
+    </div>
+
+    <div id="stage2" class="stage">
+        <h2><span class="primm-badge">R</span> RUN & <span class="primm-badge">I</span> INVESTIGATE</h2>
+        <p><strong>Aufgabe:</strong> Starte das Programm (Run). Du siehst die Knoten, aber keine Verbindungen.</p>
+        <p>Wir müssen verstehen, wie die Adjazenzmatrix <code>adja[][]</code> funktioniert. Stell dir vor, wir verbinden <strong>0 mit 1</strong> und <strong>1 mit 2</strong>.</p>
+        <p>Klicke die entsprechenden Felder in der Matrix an, die dann auf <code>true</code> (Grün) stehen müssen.</p>
+        <p><em>Hinweis: Der Graph ist ungerichtet (Hinweg = Rückweg). Zeilen = Start, Spalten = Ziel.</em></p>
+
+        <div class="matrix-grid" id="matrix">
+            <div class="matrix-cell matrix-header"></div>
+            <div class="matrix-cell matrix-header">0</div>
+            <div class="matrix-cell matrix-header">1</div>
+            <div class="matrix-cell matrix-header">2</div>
+            
+            <div class="matrix-cell matrix-header">0</div>
+            <div class="matrix-cell" onclick="toggle(this)" data-row="0" data-col="0">F</div>
+            <div class="matrix-cell" onclick="toggle(this)" data-row="0" data-col="1">F</div>
+            <div class="matrix-cell" onclick="toggle(this)" data-row="0" data-col="2">F</div>
+
+            <div class="matrix-cell matrix-header">1</div>
+            <div class="matrix-cell" onclick="toggle(this)" data-row="1" data-col="0">F</div>
+            <div class="matrix-cell" onclick="toggle(this)" data-row="1" data-col="1">F</div>
+            <div class="matrix-cell" onclick="toggle(this)" data-row="1" data-col="2">F</div>
+
+            <div class="matrix-cell matrix-header">2</div>
+            <div class="matrix-cell" onclick="toggle(this)" data-row="2" data-col="0">F</div>
+            <div class="matrix-cell" onclick="toggle(this)" data-row="2" data-col="1">F</div>
+            <div class="matrix-cell" onclick="toggle(this)" data-row="2" data-col="2">F</div>
+        </div>
+
+        <button onclick="checkStage2()">Matrix validieren</button>
+        <div id="fb2" class="feedback"></div>
+    </div>
+
+    <div id="stage3" class="stage">
+        <h2><span class="primm-badge">M</span> MODIFY: Das Netz bauen</h2>
+        <p>Du hast die Struktur verstanden. Zeit, den Code anzupassen.</p>
+        <p><strong>Coding Mission 1:</strong></p>
+        <ol>
+            <li>Öffne <code>kanteHinzufügen</code> in der Klasse <code>Graph</code>.</li>
+            <li>Implementiere das Setzen der <code>true</code> Werte in das Array <code>adja</code> (Hin- und Rückweg!).</li>
+            <li>Gehe ins <strong>Hauptprogramm</strong> und erstelle folgende Verbindungen (siehe TODOs):</li>
+        </ol>
+        <ul>
+            <li>0 - 1</li>
+            <li>1 - 2</li>
+            <li>1 - 3</li>
+            <li>0 - 3</li>
+            <li>2 - 4</li>
+        </ul>
+        <p>Führe das Programm aus. Siehst du die weißen Linien? Wenn ja, weiter.</p>
+        <button onclick="nextStage(4)">Netzwerk steht. Weiter.</button>
+    </div>
+
+    <div id="stage4" class="stage">
+        <h2><span class="primm-badge">M</span> MAKE: Algorithmus-Logik</h2>
+        <p>Wir implementieren die <strong>Tiefensuche</strong>. Bevor wir den Code schreiben, müssen wir den rekursiven Ablauf sortieren.</p>
+        <p>Bringe die Schritte der Methode <code>tiefensucheRekursiv(knoten)</code> in die richtige logische Reihenfolge (Drag & Drop):</p>
+
+        <ul class="sortable-list" id="sortList">
+            <li class="sortable-item" draggable="true" data-id="4">Rekursiver Aufruf für den Nachbarn starten.</li>
+            <li class="sortable-item" draggable="true" data-id="2">Schleife über alle möglichen Nachbarn (i).</li>
+            <li class="sortable-item" draggable="true" data-id="3">Prüfen: Gibt es Kante UND ist Nachbar noch nicht besucht?</li>
+            <li class="sortable-item" draggable="true" data-id="0">Aktuellen Knoten als 'besucht' markieren.</li>
+            <li class="sortable-item" draggable="true" data-id="1">Basisfall prüfen: Bin ich am Ziel? Wenn ja -> return true.</li>
+        </ul>
+
+        <button onclick="checkStage4()">Logik prüfen</button>
+        <div id="fb4" class="feedback"></div>
+    </div>
+
+    <div id="stage5" class="stage">
+        <h2><span class="primm-badge">M</span> MAKE: Die Start-Methode</h2>
+        <p>Jetzt wird programmiert. Wir beginnen mit der Wrapper-Methode <code>tiefensuche(start, ziel)</code>.</p>
+        <p>Fülle diesen Lückentext aus, um den Code für deine IDE vorzubereiten:</p>
+        
+        <div class="code-block">
+    void tiefensuche(int start, int ziel) {
+       // 1. Gedächtnis erstellen
+       <input type="text" class="cloze-input" id="c5-1" placeholder="Datentyp?">[] besucht = new <input type="text" class="cloze-input" id="c5-1" placeholder="Datentyp?">[anzKnoten];
+       
+       // 2. Rekursion starten
+       <input type="text" class="cloze-input" id="c5-1" placeholder="Datentyp?"> gefunden = <input type="text" class="cloze-input" id="c5-2" placeholder="Methodenname">(start, ziel, besucht);
+       
+       if (gefunden) {
+           println("Weg gefunden!");
+       }
+    }
+        </div>
+
+        <button onclick="checkStage5()">Code-Check</button>
+        <div id="fb5" class="feedback"></div>
+    </div>
+
+    <div id="stage6" class="stage">
+        <h2><span class="primm-badge">M</span> MAKE: Die Rekursion</h2>
+        <p>Das Finale. Implementiere nun die Methode <code>tiefensucheRekursiv</code> komplett in Java.</p>
+        <p><strong>Die Anforderungen an deinen Code:</strong></p>
+        <ul>
+            <li>Markiere <code>besucht ???</code>.</li>
+            <li>Wenn <code>?? ziel</code>: Gib <code>???</code> zurück.</li>
+            <li>Laufe durch alle(?) Knoten.</li>
+            <li>Wenn <code>adja</code> ? UND <code>!??</code>:</li>
+            <li>-> Rufe rekursiv auf. Wenn das Ergebnis <code>?</code> ist, ????.</li>
+            <li>Wenn die Schleife durchläuft ohne Erfolg: ??</li>
+        </ul>
+        <p>Sobald der Code kompiliert und im Hauptprogramm der Test läuft ("GEFUNDEN"), hast du die Mission erfüllt.</p>
+         <a href="Protocol_DFS_MicroSteps.html"><h3 style="color:var(--accent-color)">PROTOCOL: DEEP SEARCH // MICRO-STEPS</h3></a> 
+    </div>
+
+</div>
+
+<script>
+    // Utility for switching stages
+    function nextStage(num) {
+        document.querySelectorAll('.stage').forEach(el => el.classList.remove('active'));
+        document.getElementById('stage' + num).classList.add('active');
+        window.scrollTo(0,0);
+    }
+
+    // LEVEL 1 CHECK
+    function checkStage1() {
+        const val1 = document.getElementById('inp1-1').value;
+        const val2 = document.getElementById('inp1-2').value;
+        const fb = document.getElementById('fb1');
+        
+        if (val1 == 5 && val2 === 'matrix') {
+            fb.innerHTML = "<span class='success'>Analyse korrekt. Zugriff gewährt.</span>";
+            setTimeout(() => nextStage(2), 1500);
+        } else {
+            fb.innerHTML = "<span class='error'>Fehlerhafte Analyse. Prüfe 'maxAnzahl' und den Variablentyp von 'adja'.</span>";
+        }
+    }
+
+    // LEVEL 2 CHECK (Matrix)
+    function toggle(el) {
+        if(el.classList.contains('active')) {
+            el.classList.remove('active');
+            el.innerText = 'F';
+        } else {
+            el.classList.add('active');
+            el.innerText = 'T';
+        }
+    }
+
+    function checkStage2() {
+        // Target: 0-1, 1-0, 1-2, 2-1 set to True.
+        const cells = document.querySelectorAll('.matrix-cell:not(.matrix-header)');
+        let correct = true;
+        
+        // Map of required True indices (row * 3 + col) for a 3x3 grid (0,1,2)
+        // Row 0: [0][1] is index 1
+        // Row 1: [1][0] is index 3, [1][2] is index 5
+        // Row 2: [2][1] is index 7
+        const required = [1, 3, 5, 7]; 
+
+        cells.forEach((cell, index) => {
+            const isActive = cell.classList.contains('active');
+            const isReq = required.includes(index);
+            if (isActive !== isReq) correct = false;
+        });
+
+        const fb = document.getElementById('fb2');
+        if (correct) {
+            fb.innerHTML = "<span class='success'>Matrix-Muster erkannt. Datenstruktur verifiziert.</span>";
+            setTimeout(() => nextStage(3), 1500);
+        } else {
+            fb.innerHTML = "<span class='error'>Fehler in der Matrix. Denke an Hin- UND Rückweg für 0-1 und 1-2.</span>";
+        }
+    }
+
+    // LEVEL 4 CHECK (Sorting)
+    // --- Touch & Drag Support für Level 4 ---
+    const list = document.getElementById('sortList');
+    let draggedItem = null;
+
+    // Gemeinsame Logik für Positionierung
+    function getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll('.sortable-item:not(.dragging)')];
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) { 
+                return { offset: offset, element: child }; 
+            } else { 
+                return closest; 
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    // Maus-Events (Standard)
+    list.addEventListener('dragstart', (e) => { 
+        draggedItem = e.target; 
+        e.target.classList.add('dragging');
+    });
+
+    list.addEventListener('dragend', (e) => { 
+        e.target.classList.remove('dragging');
+        draggedItem = null; 
+    });
+
+    list.addEventListener('dragover', (e) => { 
+        e.preventDefault(); 
+        const afterElement = getDragAfterElement(list, e.clientY); 
+        if (afterElement == null) { 
+            list.appendChild(draggedItem); 
+        } else { 
+            list.insertBefore(draggedItem, afterElement); 
+        } 
+    });
+
+    // Touch-Events (iOS / Android)
+    list.addEventListener('touchstart', (e) => {
+        draggedItem = e.target.closest('.sortable-item');
+        draggedItem.classList.add('dragging');
+        // Verhindert Scrollen während des Draggens
+        e.preventDefault(); 
+    }, { passive: false });
+
+    list.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const afterElement = getDragAfterElement(list, touch.clientY);
+        if (afterElement == null) {
+            list.appendChild(draggedItem);
+        } else {
+            list.insertBefore(draggedItem, afterElement);
+        }
+    }, { passive: false });
+
+    list.addEventListener('touchend', (e) => {
+        draggedItem.classList.remove('dragging');
+        draggedItem = null;
+    });
+
+    function checkStage4() {
+        const items = document.querySelectorAll('.sortable-item');
+        const currentOrder = Array.from(items).map(i => i.getAttribute('data-id'));
+        // Correct Order: 0 (Markieren), 1 (Basis), 2 (Schleife), 3 (Prüfung), 4 (Rekursion)
+        // Note: Logic can vary slightly, but Markieren MUST be before recursion logic to prevent loops.
+        // Let's accept: 0, 1, 2, 3, 4
+        
+        const fb = document.getElementById('fb4');
+        if (JSON.stringify(currentOrder) === JSON.stringify(["0", "1", "2", "3", "4"])) {
+            fb.innerHTML = "<span class='success'>Algorithmus-Logik kompiliert.</span>";
+            setTimeout(() => nextStage(5), 1500);
+        } else {
+            fb.innerHTML = "<span class='error'>Reihenfolge inkorrekt. Tipp: Erst markieren, dann Ziel prüfen, dann Nachbarn suchen.</span>";
+        }
+    }
+
+    // LEVEL 5 CHECK (Cloze)
+    function checkStage5() {
+        const c1 = document.getElementById('c5-1').value.trim();
+        const c2 = document.getElementById('c5-2').value.trim();
+        
+        if (c1 === 'boolean' && c2.includes('tiefensucheRekursiv')) {
+            document.getElementById('fb5').innerHTML = "<span class='success'>Syntax korrekt. Implementiere dies nun in Java!</span>";
+            setTimeout(() => nextStage(6), 2000);
+        } else {
+            document.getElementById('fb5').innerHTML = "<span class='error'>Syntax Fehler. Datentyp? Methodenname?</span>";
+        }
+    }
+</script>
+
+</body>
+</html>
