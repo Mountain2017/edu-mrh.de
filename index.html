@@ -5,43 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Übersicht Gymnasium Bayern | edu-mrh 2026</title>
     <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    
     <style>
-        /* --- Ergänzende Styles für die mobile Navigation --- */
+        /* --- ZUSÄTZLICHES CSS FÜR MOBILE NAVIGATION --- */
         
+        /* Basis-Layout Variablen */
         :root {
             --sidebar-width: 280px;
-            --primary-color: #007bff;
+            --header-height: 60px; /* Annahme für Navbar-Höhe */
+            --primary-color: #007bff; /* Beispiel-Farbe */
         }
 
-        /* Standard-Layout Korrekturen */
         body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
+            /* Sicherstellen, dass Body den Platz korrekt verwaltet */
+            overflow-x: hidden; 
+            background-color: #f4f6f9;
         }
 
+        /* Sidebar Standard (Desktop) */
         .sidebar {
             width: var(--sidebar-width);
             position: fixed;
-            left: 0;
-            top: 60px; /* Höhe der Navbar */
+            top: var(--header-height);
             bottom: 0;
-            background: #f8f9fa;
+            left: 0;
+            background: #ffffff;
+            border-right: 1px solid #dee2e6;
             transition: transform 0.3s ease-in-out;
             z-index: 1000;
-            border-right: 1px solid #ddd;
+            overflow-y: auto;
         }
 
+        /* Main Content Standard (Desktop) */
         .main-content {
-            margin-left: var(--sidebar-width);
-            padding-top: 20px;
-            transition: margin 0.3s ease;
+            margin-left: var(--sidebar-width); /* Platz für Sidebar lassen */
+            padding: 20px;
+            transition: margin-left 0.3s ease-in-out;
+            margin-top: var(--header-height);
         }
 
         /* Mobile Menu Button Styling */
         .mobile-menu-btn {
-            display: none; /* Versteckt auf Desktop */
+            display: none; /* Auf Desktop ausgeblendet */
             position: fixed;
             bottom: 20px;
             right: 20px;
@@ -53,44 +58,64 @@
             border-radius: 50%;
             cursor: pointer;
             z-index: 1100;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
+            padding: 0;
         }
 
         .mobile-menu-btn span {
             display: block;
-            width: 25px;
-            height: 3px;
-            background: white;
-            transition: 0.3s;
+            width: 24px;
+            height: 2px;
+            background-color: white;
+            transition: all 0.3s ease-in-out;
+            border-radius: 2px;
         }
 
-        /* Mobile Zustände (unter 1024px) */
+        /* --- RESPONSIVE DESIGN (Tablets & Smartphones) --- */
         @media (max-width: 1024px) {
+            
+            /* Sidebar standardmäßig ausblenden */
             .sidebar {
-                transform: translateX(-100%); /* Ausgeblendet */
-                top: 0; /* Volle Höhe auf Mobile */
+                transform: translateX(-100%);
+                top: 0; /* Auf Mobile überdeckt sie auch den Header */
+                width: 280px;
+                box-shadow: 5px 0 15px rgba(0,0,0,0.1);
             }
 
+            /* Klasse zum Einblenden */
             .sidebar.open {
-                transform: translateX(0); /* Eingeblendet */
+                transform: translateX(0);
             }
 
+            /* Main Content nimmt volle Breite ein */
             .main-content {
-                margin-left: 0; /* Kein Platzhalter links */
+                margin-left: 0;
             }
 
+            /* Button anzeigen */
             .mobile-menu-btn {
-                display: flex; /* Sichtbar auf Mobile */
+                display: flex;
             }
 
-            /* Animation zum "X" */
-            .mobile-menu-btn.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-            .mobile-menu-btn.active span:nth-child(2) { opacity: 0; }
-            .mobile-menu-btn.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+            /* Button Animation zu 'X' wenn aktiv */
+            .mobile-menu-btn.active span:nth-child(1) {
+                transform: translateY(7px) rotate(45deg);
+            }
+            .mobile-menu-btn.active span:nth-child(2) {
+                opacity: 0;
+            }
+            .mobile-menu-btn.active span:nth-child(3) {
+                transform: translateY(-7px) rotate(-45deg);
+            }
+            
+            /* Navbar Anpassung */
+            .navbar {
+                z-index: 900; /* Sidebar muss drüber liegen */
+            }
         }
     </style>
 </head>
@@ -119,10 +144,11 @@
             <li><a href="#englisch" data-section="Englisch">Englisch</a></li>
             <li><a href="./franzoesisch/franzoesisch.html" data-section="Franzoesisch">Französisch</a></li>
             <li><a href="contribute.html">Zum Projekt Beitragen</a></li>
+            <li><a href="contribute.html#impressum" data-section="Impressum">Impressum</a></li>
         </ul>
     </aside>
 
-    <button class="mobile-menu-btn" id="mobileMenuBtn">
+     <button class="mobile-menu-btn" id="mobileMenuBtn">
         <span></span>
         <span></span>
         <span></span>
@@ -130,61 +156,242 @@
 
     <main class="main-content">
         <div class="container">
-            <section class="hero">
-                <h1 class="hero-title">Gymnasium Bayern</h1>
-                <p class="hero-subtitle">Zentrale Ressourcen & Fachportale 2026</p>
-            </section>
+            
+            <section id="Startseite" class="content-section active">
+                <section class="hero">
+                    <h1 class="hero-title">Gymnasium Bayern</h1>
+                    <p class="hero-subtitle">Zentrale Ressourcen & Fachportale 2026</p>
+                    <p class="hero-description">Wählen Sie ein Fach aus oder beteiligen Sie sich an der Entwicklung unserer freien Lernmaterialien.</p>
+                </section>
 
-            <div class="info-grid">
-                <div class="info-card">
-                    <div class="info-icon">💻</div>
-                    <h3>Informatik</h3>
-                    <p>Lehrplaninhalte für alle Jahrgangsstufen von NuT 6 bis zur Oberstufe Klasse 13.</p>
-                    <div class="mt-2">
-                        <a href="./informatik/informatik.html" class="btn btn-primary">Zum Fachbereich</a>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-icon">💻</div>
+                        <h3>Informatik</h3>
+                        <p>Lehrplaninhalte für alle Jahrgangsstufen von NuT 6 bis zur Oberstufe Klasse 13.</p>
+                        <div class="mt-2">
+                            <a href="./informatik/informatik.html" class="btn btn-primary">Zum Fachbereich</a>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">⚛️</div>
+                        <h3>Physik</h3>
+                        <p>Materialien zur klassischen Mechanik, Elektrizitätslehre und moderner Quantenphysik.</p>
+                        <div class="mt-2">
+                            <a href="./physik/physik.html" class="btn btn-primary">Zum Fachbereich</a>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">🇬🇧</div>
+                        <h3>Englisch</h3>
+                        <p>Vokabeltraining, Grammatik-Units und Literaturanalysen für die Mittel- und Oberstufe.</p>
+                        <div class="mt-2">
+                            <a href="#" class="btn btn-primary">Zum Fachbereich</a>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">🇫🇷</div>
+                        <h3>Französisch</h3>
+                        <p>Ressourcen für die bayerischen Lernbereiche (G9) und Vorbereitung auf DELF-Prüfungen.</p>
+                        <div class="mt-2">
+                            <a href="./franzoesisch/franzoesisch.html" class="btn btn-primary">Zum Fachbereich</a>
+                        </div>
                     </div>
                 </div>
+
+                <div class="task-box mt-4">
+                    <h4>Werde Teil von edu-mrh! 🚀</h4>
+                    <p>Du hast eigene Materialien oder Verbesserungsvorschläge für das bayerische Curriculum 2026?</p>
+                    <ul class="mt-2">
+                        <li>Erstelle neue Aufgabenblätter</li>
+                        <li>Korrigiere Fehler in den Lehrplanzusammenfassungen</li>
+                        <li>Teile deine Best-Practice Beispiele</li>
+                    </ul>
+                    <a href="contribute.html" class="btn btn-success">Jetzt mitmachen</a>
                 </div>
+            </section>
+            
+            <section id="Informatik" class="content-section" style="display:none;"></section>
+            <section id="Physik" class="content-section" style="display:none;"></section>
+            <section id="Englisch" class="content-section" style="display:none;"></section>
+            <section id="Franzoesisch" class="content-section" style="display:none;"></section>
+            <section id="Impressum" class="content-section" style="display:none;"></section>
+
         </div>
     </main>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-            const sidebar = document.getElementById('sidebar');
-            const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="contribute.html#impressum">Impressum & Datenschutz</a></p>
+        </div>
+    </footer>
+    
+    <script> 
+// ==================== //
+// Navigation & Routing //
+// ==================== //
 
-            // Toggle Funktion
-            function toggleSidebar() {
-                sidebar.classList.toggle('open');
-                mobileMenuBtn.classList.toggle('active');
+let currentSection = 'Startseite';
+const sections = [
+    'Startseite',
+    'Informatik',
+    'Physik',
+    'Englisch',
+    'Franzoesisch',
+    'Impressum'
+];
+
+// Initialisierung beim Laden der Seite
+document.addEventListener('DOMContentLoaded', function() {
+    // Diese Funktionen wurden definiert oder gemockt, um Fehler zu vermeiden
+    initializeNavigation();
+    initializeSidebar(); 
+    initializeMobileMenu(); // Wichtig: Mobile Menu init
+    
+    // Hash aus URL laden oder Standardsektion verwenden
+    const hash = window.location.hash.substring(1);
+    if (hash && sections.includes(hash)) {
+        currentSection = hash;
+    }
+    
+    // Initialanzeige
+    showSection(currentSection);
+    updateSidebarActive(currentSection);
+});
+
+// Hash-Change Handler für Browser-Navigation
+window.addEventListener('hashchange', function() {
+    const hash = window.location.hash.substring(1);
+    if (hash && sections.includes(hash)) {
+        navigateToSectionWithoutHash(hash);
+    }
+});
+
+// Navigation initialisieren
+function initializeNavigation() {
+    // Sidebar-Links auswählen (genauer Selektor auf <a> tags)
+    const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const section = this.getAttribute('data-section');
+            
+            // Nur interne Links abfangen
+            if (section && sections.includes(section)) {
+                e.preventDefault();
+                navigateToSection(section);
             }
-
-            mobileMenuBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                toggleSidebar();
-            });
-
-            // Schließen, wenn man auf einen Link klickt (wichtig für Mobile)
-            sidebarLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    if (window.innerWidth <= 1024) {
-                        sidebar.classList.remove('open');
-                        mobileMenuBtn.classList.remove('active');
-                    }
-                });
-            });
-
-            // Schließen, wenn man außerhalb der Sidebar klickt
-            document.addEventListener('click', function(event) {
-                const isClickInsideSidebar = sidebar.contains(event.target);
-                const isClickOnButton = mobileMenuBtn.contains(event.target);
-
-                if (!isClickInsideSidebar && !isClickOnButton && sidebar.classList.contains('open')) {
-                    toggleSidebar();
-                }
-            });
         });
-    </script>
+    });
+}
+
+function initializeSidebar() {
+    // Falls zusätzliche Sidebar-Logik nötig ist (hier leer)
+}
+
+// --- NEU: Mobile Menu Logik ---
+function initializeMobileMenu() {
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const sidebar = document.getElementById('sidebar');
+
+    if(mobileBtn && sidebar) {
+        // Toggle beim Button-Klick
+        mobileBtn.addEventListener('click', function(e) {
+            e.stopPropagation(); // Verhindert sofortiges Schließen durch document-click
+            toggleMobileSidebar();
+        });
+
+        // Schließen beim Klick auf den Rest der Seite
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth <= 1024 && 
+                sidebar.classList.contains('open') && 
+                !sidebar.contains(e.target) && 
+                !mobileBtn.contains(e.target)) {
+                closeMobileSidebar();
+            }
+        });
+    }
+}
+
+function toggleMobileSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const btn = document.getElementById('mobileMenuBtn');
+    sidebar.classList.toggle('open');
+    btn.classList.toggle('active');
+}
+
+function closeMobileSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const btn = document.getElementById('mobileMenuBtn');
+    if (sidebar) sidebar.classList.remove('open');
+    if (btn) btn.classList.remove('active');
+}
+// -----------------------------
+
+// Zu einer Sektion navigieren
+function navigateToSection(sectionId) {
+    if (!sections.includes(sectionId)) return;
+    
+    // URL mit Hash aktualisieren
+    window.location.hash = sectionId;
+    
+    // Navigation durchführen
+    navigateToSectionWithoutHash(sectionId);
+}
+
+// Zu einer Sektion navigieren ohne Hash zu setzen (für hashchange Event)
+function navigateToSectionWithoutHash(sectionId) {
+    if (!sections.includes(sectionId)) return;
+    
+    currentSection = sectionId;
+    showSection(sectionId);
+    updateSidebarActive(sectionId);
+    
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Mobile: Sidebar schließen wenn man navigiert
+    if (window.innerWidth <= 1024) {
+        closeMobileSidebar();
+    }
+}
+
+// Sektion anzeigen
+function showSection(sectionId) {
+    // Alle Sektionen ausblenden
+    document.querySelectorAll('.content-section').forEach(section => {
+        // Wir verstecken die Section, indem wir 'display: none' setzen oder class entfernen
+        // Hier nutzen wir einfache Display-Logik
+        section.style.display = 'none';
+        section.classList.remove('active');
+    });
+    
+    // Gewählte Sektion anzeigen
+    const targetSection = document.getElementById(sectionId);
+    if (targetSection) {
+        targetSection.style.display = 'block';
+        targetSection.classList.add('active');
+    }
+}
+
+// Sidebar aktiven Link aktualisieren
+function updateSidebarActive(sectionId) {
+    document.querySelectorAll('.sidebar-menu a').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('data-section') === sectionId) {
+            link.classList.add('active');
+        }
+    });
+}
+
+// Platzhalter für Funktionen, die im ursprünglichen Skript aufgerufen wurden, aber fehlten
+function initializeProgressBar() {}
+function updateProgressBar() {}
+function loadProgress() {}
+function saveProgress() {}
+
+</script>
 </body>
 </html>
