@@ -5,6 +5,94 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Übersicht Gymnasium Bayern | edu-mrh 2026</title>
     <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <style>
+        /* --- Ergänzende Styles für die mobile Navigation --- */
+        
+        :root {
+            --sidebar-width: 280px;
+            --primary-color: #007bff;
+        }
+
+        /* Standard-Layout Korrekturen */
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            position: fixed;
+            left: 0;
+            top: 60px; /* Höhe der Navbar */
+            bottom: 0;
+            background: #f8f9fa;
+            transition: transform 0.3s ease-in-out;
+            z-index: 1000;
+            border-right: 1px solid #ddd;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding-top: 20px;
+            transition: margin 0.3s ease;
+        }
+
+        /* Mobile Menu Button Styling */
+        .mobile-menu-btn {
+            display: none; /* Versteckt auf Desktop */
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1100;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .mobile-menu-btn span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background: white;
+            transition: 0.3s;
+        }
+
+        /* Mobile Zustände (unter 1024px) */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%); /* Ausgeblendet */
+                top: 0; /* Volle Höhe auf Mobile */
+            }
+
+            .sidebar.open {
+                transform: translateX(0); /* Eingeblendet */
+            }
+
+            .main-content {
+                margin-left: 0; /* Kein Platzhalter links */
+            }
+
+            .mobile-menu-btn {
+                display: flex; /* Sichtbar auf Mobile */
+            }
+
+            /* Animation zum "X" */
+            .mobile-menu-btn.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+            .mobile-menu-btn.active span:nth-child(2) { opacity: 0; }
+            .mobile-menu-btn.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        }
+    </style>
 </head>
 <body>
 
@@ -20,22 +108,20 @@
         </div>
     </nav>
 
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <h3>Navigation</h3>
         </div>
         <ul class="sidebar-menu">
-            <li><a href="#" class="active">Startseite</a></li>
-            <li><a href="./informatik/informatik.html">Informatik</a></li>
-            <li><a href="./physik/physik.html">Physik</a></li>
-            <li><a href="#englisch">Englisch</a></li>
-            <li><a href="./franzoesisch/franzoesisch.html">Französisch</a></li>
+            <li><a href="#" class="active" data-section="Startseite">Startseite</a></li>
+            <li><a href="./informatik/informatik.html" data-section="Informatik">Informatik</a></li>
+            <li><a href="./physik/physik.html" data-section="Physik">Physik</a></li>
+            <li><a href="#englisch" data-section="Englisch">Englisch</a></li>
+            <li><a href="./franzoesisch/franzoesisch.html" data-section="Franzoesisch">Französisch</a></li>
             <li><a href="contribute.html">Zum Projekt Beitragen</a></li>
-            <li><a href="contribute.html#impressum">Impressum & Datenschutzerklärung</a></li>
         </ul>
     </aside>
 
-     <!-- Mobile Menu Button -->
     <button class="mobile-menu-btn" id="mobileMenuBtn">
         <span></span>
         <span></span>
@@ -44,15 +130,12 @@
 
     <main class="main-content">
         <div class="container">
-            
             <section class="hero">
                 <h1 class="hero-title">Gymnasium Bayern</h1>
                 <p class="hero-subtitle">Zentrale Ressourcen & Fachportale 2026</p>
-                <p class="hero-description">Wählen Sie ein Fach aus oder beteiligen Sie sich an der Entwicklung unserer freien Lernmaterialien.</p>
             </section>
 
             <div class="info-grid">
-                
                 <div class="info-card">
                     <div class="info-icon">💻</div>
                     <h3>Informatik</h3>
@@ -61,55 +144,47 @@
                         <a href="./informatik/informatik.html" class="btn btn-primary">Zum Fachbereich</a>
                     </div>
                 </div>
-
-                <div class="info-card">
-                    <div class="info-icon">⚛️</div>
-                    <h3>Physik</h3>
-                    <p>Materialien zur klassischen Mechanik, Elektrizitätslehre und moderner Quantenphysik.</p>
-                    <div class="mt-2">
-                        <a href="./physik/physik.html" class="btn btn-primary">Zum Fachbereich</a>
-                    </div>
                 </div>
-
-                <div class="info-card">
-                    <div class="info-icon">🇬🇧</div>
-                    <h3>Englisch</h3>
-                    <p>Vokabeltraining, Grammatik-Units und Literaturanalysen für die Mittel- und Oberstufe.</p>
-                    <div class="mt-2">
-                        <a href="#" class="btn btn-primary">Zum Fachbereich</a>
-                    </div>
-                </div>
-
-                <div class="info-card">
-                    <div class="info-icon">🇫🇷</div>
-                    <h3>Französisch</h3>
-                    <p>Ressourcen für die bayerischen Lernbereiche (G9) und Vorbereitung auf DELF-Prüfungen.</p>
-                    <div class="mt-2">
-                        <a href="./franzoesisch/franzoesisch.html" class="btn btn-primary">Zum Fachbereich</a>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="task-box mt-4">
-                <h4>Werde Teil von edu-mrh! 🚀</h4>
-                <p>Du hast eigene Materialien oder Verbesserungsvorschläge für das bayerische Curriculum 2026?</p>
-                <ul class="mt-2">
-                    <li>Erstelle neue Aufgabenblätter</li>
-                    <li>Korrigiere Fehler in den Lehrplanzusammenfassungen</li>
-                    <li>Teile deine Best-Practice Beispiele</li>
-                </ul>
-                <a href="contribute.html" class="btn btn-success">Jetzt mitmachen</a>
-            </div>
-
         </div>
     </main>
 
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2026 edu-mrh.de | <a href="contribute.html#impressum">Impressum & Datenschutz</a></p>
-        </div>
-    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
 
+            // Toggle Funktion
+            function toggleSidebar() {
+                sidebar.classList.toggle('open');
+                mobileMenuBtn.classList.toggle('active');
+            }
+
+            mobileMenuBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleSidebar();
+            });
+
+            // Schließen, wenn man auf einen Link klickt (wichtig für Mobile)
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 1024) {
+                        sidebar.classList.remove('open');
+                        mobileMenuBtn.classList.remove('active');
+                    }
+                });
+            });
+
+            // Schließen, wenn man außerhalb der Sidebar klickt
+            document.addEventListener('click', function(event) {
+                const isClickInsideSidebar = sidebar.contains(event.target);
+                const isClickOnButton = mobileMenuBtn.contains(event.target);
+
+                if (!isClickInsideSidebar && !isClickOnButton && sidebar.classList.contains('open')) {
+                    toggleSidebar();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
