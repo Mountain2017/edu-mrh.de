@@ -12,12 +12,11 @@
         /* Basis-Layout Variablen */
         :root {
             --sidebar-width: 280px;
-            --header-height: 60px; /* Annahme für Navbar-Höhe */
-            --primary-color: #007bff; /* Beispiel-Farbe */
+            --header-height: 60px;
+            --primary-color: #007bff;
         }
 
         body {
-            /* Sicherstellen, dass Body den Platz korrekt verwaltet */
             overflow-x: hidden; 
             background-color: #f4f6f9;
         }
@@ -38,7 +37,7 @@
 
         /* Main Content Standard (Desktop) */
         .main-content {
-            margin-left: var(--sidebar-width); /* Platz für Sidebar lassen */
+            margin-left: var(--sidebar-width);
             padding: 20px;
             transition: margin-left 0.3s ease-in-out;
             margin-top: var(--header-height);
@@ -46,7 +45,7 @@
 
         /* Mobile Menu Button Styling */
         .mobile-menu-btn {
-            display: none; /* Auf Desktop ausgeblendet */
+            display: none;
             position: fixed;
             bottom: 20px;
             right: 20px;
@@ -81,7 +80,7 @@
             /* Sidebar standardmäßig ausblenden */
             .sidebar {
                 transform: translateX(-100%);
-                top: 0; /* Auf Mobile überdeckt sie auch den Header */
+                top: 0;
                 width: 280px;
                 box-shadow: 5px 0 15px rgba(0,0,0,0.1);
             }
@@ -114,7 +113,7 @@
             
             /* Navbar Anpassung */
             .navbar {
-                z-index: 900; /* Sidebar muss drüber liegen */
+                z-index: 900;
             }
         }
     </style>
@@ -138,13 +137,13 @@
             <h3>Navigation</h3>
         </div>
         <ul class="sidebar-menu">
-            <li><a href="#" class="active" data-section="Startseite">Startseite</a></li>
-            <li><a href="./informatik/informatik.html" data-section="Informatik">Informatik</a></li>
-            <li><a href="./physik/physik.html" data-section="Physik">Physik</a></li>
-            <li><a href="#englisch" data-section="Englisch">Englisch</a></li>
-            <li><a href="./franzoesisch/franzoesisch.html" data-section="Franzoesisch">Französisch</a></li>
+            <li><a href="#Startseite" class="active" data-section="Startseite">Startseite</a></li>
+            <li><a href="./informatik/informatik.html">Informatik</a></li>
+            <li><a href="./physik/physik.html">Physik</a></li>
+            <li><a href="#Englisch" data-section="Englisch">Englisch</a></li>
+            <li><a href="./franzoesisch/franzoesisch.html">Französisch</a></li>
             <li><a href="contribute.html">Zum Projekt Beitragen</a></li>
-            <li><a href="contribute.html#impressum" data-section="Impressum">Impressum</a></li>
+            <li><a href="contribute.html#impressum">Impressum</a></li>
         </ul>
     </aside>
 
@@ -188,7 +187,7 @@
                         <h3>Englisch</h3>
                         <p>Vokabeltraining, Grammatik-Units und Literaturanalysen für die Mittel- und Oberstufe.</p>
                         <div class="mt-2">
-                            <a href="#" class="btn btn-primary">Zum Fachbereich</a>
+                            <a href="#Englisch" class="btn btn-primary">Zum Fachbereich</a>
                         </div>
                     </div>
 
@@ -214,11 +213,13 @@
                 </div>
             </section>
             
-            <section id="Informatik" class="content-section" style="display:none;"></section>
-            <section id="Physik" class="content-section" style="display:none;"></section>
-            <section id="Englisch" class="content-section" style="display:none;"></section>
-            <section id="Franzoesisch" class="content-section" style="display:none;"></section>
-            <section id="Impressum" class="content-section" style="display:none;"></section>
+            <section id="Englisch" class="content-section" style="display:none;">
+                <section class="hero">
+                    <h1 class="hero-title">Englisch</h1>
+                    <p class="hero-subtitle">Coming Soon</p>
+                    <p class="hero-description">Dieser Bereich befindet sich noch im Aufbau.</p>
+                </section>
+            </section>
 
         </div>
     </main>
@@ -235,21 +236,12 @@
 // ==================== //
 
 let currentSection = 'Startseite';
-const sections = [
-    'Startseite',
-    'Informatik',
-    'Physik',
-    'Englisch',
-    'Franzoesisch',
-    'Impressum'
-];
+const sections = ['Startseite', 'Englisch']; // Nur interne Sektionen
 
 // Initialisierung beim Laden der Seite
 document.addEventListener('DOMContentLoaded', function() {
-    // Diese Funktionen wurden definiert oder gemockt, um Fehler zu vermeiden
     initializeNavigation();
-    initializeSidebar(); 
-    initializeMobileMenu(); // Wichtig: Mobile Menu init
+    initializeMobileMenu();
     
     // Hash aus URL laden oder Standardsektion verwenden
     const hash = window.location.hash.substring(1);
@@ -272,8 +264,7 @@ window.addEventListener('hashchange', function() {
 
 // Navigation initialisieren
 function initializeNavigation() {
-    // Sidebar-Links auswählen (genauer Selektor auf <a> tags)
-    const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
+    const sidebarLinks = document.querySelectorAll('.sidebar-menu a[data-section]');
     sidebarLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             const section = this.getAttribute('data-section');
@@ -287,11 +278,7 @@ function initializeNavigation() {
     });
 }
 
-function initializeSidebar() {
-    // Falls zusätzliche Sidebar-Logik nötig ist (hier leer)
-}
-
-// --- NEU: Mobile Menu Logik ---
+// Mobile Menu Logik
 function initializeMobileMenu() {
     const mobileBtn = document.getElementById('mobileMenuBtn');
     const sidebar = document.getElementById('sidebar');
@@ -299,7 +286,7 @@ function initializeMobileMenu() {
     if(mobileBtn && sidebar) {
         // Toggle beim Button-Klick
         mobileBtn.addEventListener('click', function(e) {
-            e.stopPropagation(); // Verhindert sofortiges Schließen durch document-click
+            e.stopPropagation();
             toggleMobileSidebar();
         });
 
@@ -311,6 +298,16 @@ function initializeMobileMenu() {
                 !mobileBtn.contains(e.target)) {
                 closeMobileSidebar();
             }
+        });
+
+        // Schließen bei Navigation zu externen Links
+        const externalLinks = document.querySelectorAll('.sidebar-menu a:not([data-section])');
+        externalLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 1024) {
+                    closeMobileSidebar();
+                }
+            });
         });
     }
 }
@@ -328,7 +325,6 @@ function closeMobileSidebar() {
     if (sidebar) sidebar.classList.remove('open');
     if (btn) btn.classList.remove('active');
 }
-// -----------------------------
 
 // Zu einer Sektion navigieren
 function navigateToSection(sectionId) {
@@ -341,7 +337,7 @@ function navigateToSection(sectionId) {
     navigateToSectionWithoutHash(sectionId);
 }
 
-// Zu einer Sektion navigieren ohne Hash zu setzen (für hashchange Event)
+// Zu einer Sektion navigieren ohne Hash zu setzen
 function navigateToSectionWithoutHash(sectionId) {
     if (!sections.includes(sectionId)) return;
     
@@ -362,8 +358,6 @@ function navigateToSectionWithoutHash(sectionId) {
 function showSection(sectionId) {
     // Alle Sektionen ausblenden
     document.querySelectorAll('.content-section').forEach(section => {
-        // Wir verstecken die Section, indem wir 'display: none' setzen oder class entfernen
-        // Hier nutzen wir einfache Display-Logik
         section.style.display = 'none';
         section.classList.remove('active');
     });
@@ -385,12 +379,6 @@ function updateSidebarActive(sectionId) {
         }
     });
 }
-
-// Platzhalter für Funktionen, die im ursprünglichen Skript aufgerufen wurden, aber fehlten
-function initializeProgressBar() {}
-function updateProgressBar() {}
-function loadProgress() {}
-function saveProgress() {}
 
 </script>
 </body>
