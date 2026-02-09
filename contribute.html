@@ -44,27 +44,8 @@
         .dot.red { background: #ff5f56; } .dot.yellow { background: #ffbd2e; } .dot.green { background: #27c93f; }
         .browser-content { padding: 0; background: white; }
 
-        /* Mobile Burger Menu */
-        .burger-menu {
-            display: none; flex-direction: column; gap: 5px; cursor: pointer;
-            background: none; border: none; padding: 8px;
-        }
-        .burger-menu span {
-            width: 24px; height: 2px; background: var(--text-color);
-            border-radius: 2px; transition: var(--transition);
-        }
-        .burger-menu.active span:nth-child(1) {
-            transform: rotate(45deg) translate(8px, 8px);
-        }
-        .burger-menu.active span:nth-child(2) {
-            opacity: 0;
-        }
-        .burger-menu.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(8px, -8px);
-        }
-
         /* Mobile Sidebar */
-        @media (max-width: 768px) {
+        @media (max-width: 368px) {
             .burger-menu { display: flex; }
             .sidebar {
                 position: fixed; top: 0; left: 0; width: 250px; height: 100vh;
@@ -81,11 +62,6 @@
 
     <nav class="navbar">
         <div class="container">
-            <button class="burger-menu" id="burgerMenu" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
             <div class="nav-brand">
                 <span style="font-size: 1.5rem;">👨‍🏫</span>
                 <span>CS Teacher Community</span>
@@ -321,7 +297,7 @@ WICHTIG: Beende deine Antwort erst wenn ALLE Codezeilen fertig sind, NICHT VORHE
 
     <script>
     // Burger Menu Toggle
-    const burgerMenu = document.getElementById('burgerMenu');
+    const burgerMenu = document.getElementById('mobileMenuBtn');
     const sidebar = document.getElementById('sidebar');
     
     if (burgerMenu) {
@@ -394,7 +370,11 @@ WICHTIG: Beende deine Antwort erst wenn ALLE Codezeilen fertig sind, NICHT VORHE
         let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
         let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
         let scrolled = (winScroll / height) * 100;
-        document.getElementById("pageProgress").style.width = scrolled + "%";
+        // Progress bar nur aktualisieren wenn Element existiert
+        const progressBar = document.getElementById("pageProgress");
+        if (progressBar) {
+            progressBar.style.width = scrolled + "%";
+        }
     };
 
     // Deep-Link Initialisierung beim Laden der Seite

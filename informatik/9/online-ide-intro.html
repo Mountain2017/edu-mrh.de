@@ -1634,7 +1634,8 @@ public class MeinAbschluss {
         </div>
     </footer>
 
-    <script> // ==================== //
+    <script> 
+// ==================== //
 // Navigation & Routing //
 // ==================== //
 
@@ -1658,7 +1659,25 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeSidebar();
     initializeProgressBar();
     initializeMobileMenu();
+    
+    // Hash aus URL laden oder Standardsektion verwenden
+    const hash = window.location.hash.substring(1);
+    if (hash && sections.includes(hash)) {
+        currentSection = hash;
+    }
+    
+    showSection(currentSection);
+    updateSidebarActive(currentSection);
+    updateProgressBar();
     loadProgress();
+});
+
+// Hash-Change Handler für Browser-Navigation
+window.addEventListener('hashchange', function() {
+    const hash = window.location.hash.substring(1);
+    if (hash && sections.includes(hash)) {
+        navigateToSectionWithoutHash(hash);
+    }
 });
 
 // Navigation initialisieren
@@ -1679,6 +1698,17 @@ function initializeNavigation() {
 
 // Zu einer Sektion navigieren
 function navigateToSection(sectionId) {
+    if (!sections.includes(sectionId)) return;
+    
+    // URL mit Hash aktualisieren
+    window.location.hash = sectionId;
+    
+    // Navigation durchführen
+    navigateToSectionWithoutHash(sectionId);
+}
+
+// Zu einer Sektion navigieren ohne Hash zu setzen (für hashchange Event)
+function navigateToSectionWithoutHash(sectionId) {
     if (!sections.includes(sectionId)) return;
     
     currentSection = sectionId;
