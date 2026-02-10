@@ -101,11 +101,6 @@ class SiteManager {
         this.setupResizeHandler();
         this.setupAccessibility();
         
-        // Load saved progress
-        if (CONFIG.enableProgressTracking) {
-            this.loadProgress();
-        }
-        
         // Handle initial navigation
         this.handleInitialNavigation();
         
@@ -575,61 +570,6 @@ class SiteManager {
         document.querySelectorAll(CONFIG.selectors.modal).forEach(modal => {
             this.closeModal(modal);
         });
-    }
-
-    // ==========================================
-    // PROGRESS TRACKING
-    // ==========================================
-
-    saveProgress() {
-        if (!CONFIG.enableProgressTracking) return;
-        
-        try {
-            localStorage.setItem(CONFIG.progressStorageKey, STATE.currentSection);
-            localStorage.setItem(CONFIG.progressTimestampKey, new Date().toISOString());
-        } catch (e) {
-            console.warn('Could not save progress:', e);
-        }
-    }
-
-    loadProgress() {
-        if (!CONFIG.enableProgressTracking) return;
-
-        try {
-            const savedSection = localStorage.getItem(CONFIG.progressStorageKey);
-            const timestamp = localStorage.getItem(CONFIG.progressTimestampKey);
-
-            if (savedSection && STATE.sections.includes(savedSection) && timestamp) {
-                const lastVisit = new Date(timestamp);
-                const now = new Date();
-                const daysSince = (now - lastVisit) / (1000 * 60 * 60 * 24);
-
-                // Only offer to resume if within expiry period
-                if (daysSince < CONFIG.progressExpiryDays) {
-                    const resume = confirm(
-                        'Möchtest du dort weitermachen, wo du aufgehört hast?\n\n' +
-                        'Letzter Besuch: ' + lastVisit.toLocaleDateString('de-DE')
-                    );
-
-                    if (resume) {
-                        this.navigateToSection(savedSection);
-                    }
-                }
-            }
-        } catch (e) {
-            console.warn('Could not load progress:', e);
-        }
-    }
-
-    clearProgress() {
-        if (!CONFIG.enableProgressTracking) return;
-
-        try {
-            localStorage.removeItem(CONFIG.progressStorageKey);
-            localStorage.removeItem(CONFIG.progressTimestampKey);
-        } catch (e) {
-            console.warn('Could not clear progress:', e);
-        }
     }
 
     // ==========================================
