@@ -398,7 +398,7 @@ class SiteManager {
     // ==========================================
     // NAVIGATION METHODS
     // ==========================================
-
+    
     navigateToSection(sectionId) {
         if (!STATE.sections.includes(sectionId)) {
             console.warn(`Section "${sectionId}" not found`);
