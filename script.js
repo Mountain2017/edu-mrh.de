@@ -690,6 +690,19 @@ class SiteManager {
 // ==========================================
 
 /**
+ * Load and render KaTeX-Script
+ */ 
+        function renderMath() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},  
+                    {left: '$', right: '$', display: false}    
+                ],
+                throwOnError : false
+            });
+        }
+
+/**
  * Toggle solution visibility
  */
 function toggleSolution(solutionId) {
