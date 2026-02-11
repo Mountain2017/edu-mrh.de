@@ -17,8 +17,8 @@ const CONFIG = {
     enableHashNavigation: true,
     enableKeyboardNavigation: true,
     
-    // Progress
-    enableProgressTracking: true,
+    // Progress Tracking
+    enableProgressTracking: false,
     progressStorageKey: 'site_progress',
     progressTimestampKey: 'site_progress_timestamp',
     progressExpiryDays: 7,
@@ -129,28 +129,25 @@ class SiteManager {
 
     // Setup Navigation
     setupNavigation() {
-        const sidebarLinks = document.querySelectorAll(CONFIG.selectors.sidebarLink);
-        
-        sidebarLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const section = link.getAttribute('data-section') || link.getAttribute('href')?.substring(1);
-                if (section) {
-                    this.navigateToSection(section);
-                }
-            });
-        });
+    const sidebarLinks = document.querySelectorAll(CONFIG.selectors.sidebarLink);
+    
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
 
-        // Hash change handler
-        if (CONFIG.enableHashNavigation) {
-            window.addEventListener('hashchange', () => {
-                const hash = window.location.hash.substring(1);
-                if (hash && STATE.sections.includes(hash)) {
-                    this.navigateToSectionWithoutHash(hash);
-                }
-            });
-        }
-    }
+            if (href && !href.startsWith('#')) {
+                return;
+            }
+
+            e.preventDefault();
+            
+            const section = link.getAttribute('data-section') || href?.substring(1);
+            if (section) {
+                this.navigateToSection(section);
+            }
+        });
+    });
+}
 
     // Setup Sidebar
     setupSidebar() {
@@ -417,10 +414,6 @@ class SiteManager {
         this.showSection(sectionId);
         this.updateSidebarActive(sectionId);
         this.updateProgressBar();
-        
-        if (CONFIG.enableProgressTracking) {
-            this.saveProgress();
-        }
 
         // Scroll to top
         if (CONFIG.enableSmoothScroll) {
