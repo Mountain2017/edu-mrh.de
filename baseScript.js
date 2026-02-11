@@ -1,30 +1,27 @@
 /**
  * ==========================================
- * NAVIGATION BASICS - Simplified Script
+ * BASE SCRIPT - Complete Navigation System
  * ==========================================
+ * Ersetzt edu-mrh.de/embed/baseScript.js
  * Grundlegende Navigation mit Scroll-Funktionalität
- * Sidebar, Navbar, Mobile Menu ohne Section-Toggle
  */
 
 'use strict';
 
-// ==========================================
-// CONFIGURATION
-// ==========================================
 const NAV_CONFIG = {
     scrollOffset: 80,
     smoothScroll: true,
     scrollDuration: 800,
     mobileBreakpoint: 1024,
     selectors: {
-        navbar: '.navbar',
-        sidebar: '.sidebar',
-        sidebarMenu: '.sidebar-menu',
-        sidebarLink: '.sidebar-menu a',
-        sidebarToggle: '#sidebarToggle',
-        mobileMenuBtn: '#mobileMenuBtn',
-        sections: 'section[id], .section[id]',
-        progressBar: '#progressBar'
+        navbar: '.navbar, nav, header.navbar',
+        sidebar: '.sidebar, .side-nav, aside',
+        sidebarMenu: '.sidebar-menu, .nav-menu, .side-menu',
+        sidebarLink: '.sidebar-menu a, .nav-menu a, .side-menu a, nav a[href^="#"]',
+        sidebarToggle: '.sidebar-toggle, #sidebarToggle, .close-sidebar',
+        mobileMenuBtn: '.mobile-menu-btn, #mobileMenuBtn, .burger-menu, .menu-toggle',
+        sections: 'section[id], .section[id], main section[id], article[id]',
+        progressBar: '.progress-bar, #progressBar, .scroll-progress'
     },
     enableHashNavigation: true,
     enableProgressBar: true,
@@ -32,29 +29,24 @@ const NAV_CONFIG = {
     updateUrlOnScroll: false
 };
 
-// ==========================================
-// STATE
-// ==========================================
 const NAV_STATE = {
     isMobile: false,
     sidebarOpen: false,
     currentSection: null,
     sections: [],
     scrolling: false,
-    lastScrollTop: 0
+    lastScrollTop: 0,
+    initialized: false
 };
 
-// ==========================================
-// MAIN NAVIGATION CLASS
-// ==========================================
-class BasicNavigation {
+class BaseNavigation {
     constructor(config = {}) {
         this.config = { ...NAV_CONFIG, ...config };
         this.init();
     }
 
     init() {
-        console.log('🧭 Initializing Basic Navigation...');
+        console.log('🧭 Initializing Base Navigation System...');
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.setup());
         } else {
@@ -63,6 +55,10 @@ class BasicNavigation {
     }
 
     setup() {
+        if (NAV_STATE.initialized) {
+            console.warn('Navigation already initialized');
+            return;
+        }
         this.detectDevice();
         this.collectSections();
         this.setupNavbar();
@@ -72,79 +68,109 @@ class BasicNavigation {
         this.setupProgressBar();
         this.setupResizeHandler();
         this.setupKeyboardNavigation();
+        this.setupAccessibility();
         this.updateActiveSection();
-        console.log('✅ Basic Navigation initialized');
+        NAV_STATE.initialized = true;
+        console.log('✅ Base Navigation System initialized');
+        console.log(`📄 Sections found: ${NAV_STATE.sections.length}`);
+        window.dispatchEvent(new CustomEvent('baseScriptLoaded', { detail: { sections: NAV_STATE.sections.map(s => s.id) } }));
     }
 
     detectDevice() {
         NAV_STATE.isMobile = window.innerWidth <= this.config.mobileBreakpoint;
         document.body.classList.toggle('is-mobile', NAV_STATE.isMobile);
+        document.body.classList.toggle('is-desktop', !NAV_STATE.isMobile);
     }
 
     collectSections() {
         const sectionElements = document.querySelectorAll(this.config.selectors.sections);
-        NAV_STATE.sections = Array.from(sectionElements).map(section => ({
-            id: section.id,
-            element: section,
-            offsetTop: section.offsetTop,
-            offsetBottom: section.offsetTop + section.offsetHeight
-        }));
-        console.log(`📄 Found ${NAV_STATE.sections.length} sections`);
+        NAV_STATE.sections = Array.from(sectionElements).filter(section => section.id && section.id.trim() !== '').map(section => ({ id: section.id, element: section, offsetTop: section.offsetTop, offsetBottom: section.offsetTop + section.offsetHeight }));
+        if (NAV_STATE.sections.length === 0) {
+            console.warn('⚠️ No sections with IDs found!');
+        } else {
+            console.log('📍 Sections:', NAV_STATE.sections.map(s => s.id).join(', '));
+        }
     }
 
     setupNavbar() {
         const navbar = document.querySelector(this.config.selectors.navbar);
-        if (!navbar) return;
+        if (!navbar) {
+            console.warn('⚠️ Navbar not found');
+            return;
+        }
         let lastScroll = 0;
+        let ticking = false;
         window.addEventListener('scroll', () => {
-            const currentScroll = window.pageYOffset;
-            navbar.classList.toggle('scrolled', currentScroll > 50);
-            if (currentScroll > lastScroll && currentScroll > 100) {
-                navbar.style.transform = 'translateY(-100%)';
-            } else {
-                navbar.style.transform = 'translateY(0)';
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const currentScroll = window.pageYOffset;
+                    navbar.classList.toggle('scrolled', currentScroll > 50);
+                    if (currentScroll > lastScroll && currentScroll > 100) {
+                        navbar.style.transform = 'translateY(-100%)';
+                        navbar.style.transition = 'transform 0.3s ease';
+                    } else {
+                        navbar.style.transform = 'translateY(0)';
+                    }
+                    lastScroll = currentScroll;
+                    ticking = false;
+                });
+                ticking = true;
             }
-            lastScroll = currentScroll;
         });
     }
 
     setupSidebar() {
         const sidebarLinks = document.querySelectorAll(this.config.selectors.sidebarLink);
+        if (sidebarLinks.length === 0) {
+            console.warn('⚠️ No sidebar links found');
+            return;
+        }
+        console.log(`🔗 Found ${sidebarLinks.length} navigation links`);
         sidebarLinks.forEach(link => {
             link.addEventListener('click', (e) => {
-                e.preventDefault();
                 const targetId = this.getTargetId(link);
-                if (targetId) {
+                if (targetId && NAV_STATE.sections.find(s => s.id === targetId)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log(`→ Navigating to: ${targetId}`);
                     this.scrollToSection(targetId);
                     if (NAV_STATE.isMobile) {
-                        this.closeSidebar();
+                        setTimeout(() => this.closeSidebar(), 300);
                     }
                 }
             });
         });
-        const sidebarToggle = document.querySelector(this.config.selectors.sidebarToggle);
-        if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', () => {
+        const sidebarToggles = document.querySelectorAll(this.config.selectors.sidebarToggle);
+        sidebarToggles.forEach(toggle => {
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
                 this.closeSidebar();
             });
-        }
+        });
         document.addEventListener('click', (e) => {
-            if (!NAV_STATE.isMobile) return;
+            if (!NAV_STATE.isMobile || !NAV_STATE.sidebarOpen) return;
             const sidebar = document.querySelector(this.config.selectors.sidebar);
-            const mobileMenuBtn = document.querySelector(this.config.selectors.mobileMenuBtn);
-            if (sidebar && !sidebar.contains(e.target) && mobileMenuBtn && !mobileMenuBtn.contains(e.target)) {
+            const mobileMenuBtns = document.querySelectorAll(this.config.selectors.mobileMenuBtn);
+            const clickedMobileBtn = Array.from(mobileMenuBtns).some(btn => btn.contains(e.target));
+            if (sidebar && !sidebar.contains(e.target) && !clickedMobileBtn) {
                 this.closeSidebar();
             }
         });
     }
 
     setupMobileMenu() {
-        const mobileMenuBtn = document.querySelector(this.config.selectors.mobileMenuBtn);
-        if (mobileMenuBtn) {
-            mobileMenuBtn.addEventListener('click', () => {
+        const mobileMenuBtns = document.querySelectorAll(this.config.selectors.mobileMenuBtn);
+        if (mobileMenuBtns.length === 0) {
+            console.warn('⚠️ No mobile menu buttons found');
+            return;
+        }
+        console.log(`📱 Found ${mobileMenuBtns.length} mobile menu button(s)`);
+        mobileMenuBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
                 this.toggleSidebar();
             });
-        }
+        });
     }
 
     setupScrollSpy() {
@@ -161,15 +187,16 @@ class BasicNavigation {
         if (this.config.enableHashNavigation) {
             window.addEventListener('hashchange', () => {
                 const hash = window.location.hash.substring(1);
-                if (hash) {
+                if (hash && NAV_STATE.sections.find(s => s.id === hash)) {
                     this.scrollToSection(hash, false);
                 }
             });
             const initialHash = window.location.hash.substring(1);
-            if (initialHash) {
+            if (initialHash && NAV_STATE.sections.find(s => s.id === initialHash)) {
                 setTimeout(() => {
+                    console.log(`🎯 Scrolling to initial hash: ${initialHash}`);
                     this.scrollToSection(initialHash, false);
-                }, 100);
+                }, 300);
             }
         }
     }
@@ -197,7 +224,7 @@ class BasicNavigation {
         const documentHeight = document.documentElement.scrollHeight;
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         const scrollPercentage = (scrollTop / (documentHeight - windowHeight)) * 100;
-        progressBar.style.width = `${Math.min(scrollPercentage, 100)}%`;
+        progressBar.style.width = `${Math.min(Math.max(scrollPercentage, 0), 100)}%`;
     }
 
     updateActiveSection() {
@@ -226,8 +253,10 @@ class BasicNavigation {
             const targetId = this.getTargetId(link);
             if (targetId === sectionId) {
                 link.classList.add('active');
+                link.setAttribute('aria-current', 'true');
             } else {
                 link.classList.remove('active');
+                link.removeAttribute('aria-current');
             }
         });
     }
@@ -235,7 +264,7 @@ class BasicNavigation {
     scrollToSection(sectionId, updateHash = true) {
         const section = NAV_STATE.sections.find(s => s.id === sectionId);
         if (!section) {
-            console.warn(`Section "${sectionId}" not found`);
+            console.warn(`⚠️ Section "${sectionId}" not found`);
             return;
         }
         NAV_STATE.scrolling = true;
@@ -246,7 +275,7 @@ class BasicNavigation {
                 if (updateHash && this.config.enableHashNavigation) {
                     this.updateHash(sectionId);
                 }
-                this.updateActiveSection();
+                setTimeout(() => this.updateActiveSection(), 100);
             });
         } else {
             window.scrollTo(0, targetPosition);
@@ -281,17 +310,18 @@ class BasicNavigation {
     toggleSidebar() {
         NAV_STATE.sidebarOpen = !NAV_STATE.sidebarOpen;
         const sidebar = document.querySelector(this.config.selectors.sidebar);
-        const mobileMenuBtn = document.querySelector(this.config.selectors.mobileMenuBtn);
+        const mobileMenuBtns = document.querySelectorAll(this.config.selectors.mobileMenuBtn);
         if (sidebar) {
-            sidebar.classList.toggle('active');
-            sidebar.classList.toggle('open');
+            sidebar.classList.toggle('active', NAV_STATE.sidebarOpen);
+            sidebar.classList.toggle('open', NAV_STATE.sidebarOpen);
         }
-        if (mobileMenuBtn) {
-            mobileMenuBtn.classList.toggle('active');
-        }
+        mobileMenuBtns.forEach(btn => {
+            btn.classList.toggle('active', NAV_STATE.sidebarOpen);
+        });
         if (NAV_STATE.isMobile) {
             document.body.style.overflow = NAV_STATE.sidebarOpen ? 'hidden' : '';
         }
+        console.log(`📱 Sidebar ${NAV_STATE.sidebarOpen ? 'opened' : 'closed'}`);
     }
 
     openSidebar() {
@@ -339,12 +369,32 @@ class BasicNavigation {
         });
     }
 
-    getTargetId(link) {
+    setupAccessibility() {
+        const skipLink = document.createElement('a');
+        skipLink.href = '#main-content';
+        skipLink.className = 'skip-link';
+        skipLink.textContent = 'Zum Hauptinhalt springen';
+        skipLink.style.cssText = 'position:absolute;top:-40px;left:0;background:#3b82f6;color:white;padding:8px;text-decoration:none;z-index:100;';
+        skipLink.addEventListener('focus', function() { this.style.top = '0'; });
+        skipLink.addEventListener('blur', function() { this.style.top = '-40px'; });
+        document.body.insertBefore(skipLink, document.body.firstChild);
+    }
+
+        getTargetId(link) {
         let targetId = link.getAttribute('data-section');
         if (!targetId) {
             const href = link.getAttribute('href');
             if (href && href.startsWith('#')) {
                 targetId = href.substring(1);
+            }
+        }
+        if (!targetId) {
+            const onclick = link.getAttribute('onclick');
+            if (onclick) {
+                const match = onclick.match(/['"]([^'"]+)['"]/);
+                if (match) {
+                    targetId = match[1];
+                }
             }
         }
         return targetId;
@@ -378,9 +428,6 @@ class BasicNavigation {
     }
 }
 
-// ==========================================
-// UTILITY FUNCTIONS
-// ==========================================
 function scrollToTop(smooth = true) {
     if (smooth) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -587,10 +634,18 @@ function truncate(str, length = 100, suffix = '...') {
     return str.substring(0, length) + suffix;
 }
 
-// ==========================================
-// GLOBAL INSTANCE
-// ==========================================
-let basicNavigation;
+let baseNavigation;
+
+function initNavigation() {
+    if (baseNavigation) {
+        console.warn('Navigation already exists');
+        return;
+    }
+    baseNavigation = new BaseNavigation();
+    window.baseNavigation = baseNavigation;
+    window.eduMrhLoaded = true;
+    console.log('🎉 Base Navigation System loaded successfully!');
+}
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initNavigation);
@@ -598,23 +653,11 @@ if (document.readyState === 'loading') {
     initNavigation();
 }
 
-function initNavigation() {
-    basicNavigation = new BasicNavigation();
-    window.basicNavigation = basicNavigation;
-    console.log('🎉 Navigation Basics loaded successfully!');
-}
-
-// ==========================================
-// PERFORMANCE MONITORING
-// ==========================================
 window.addEventListener('load', () => {
     const loadTime = performance.now();
     console.log(`⚡ Page loaded in: ${Math.round(loadTime)}ms`);
 });
 
-// ==========================================
-// ERROR HANDLING
-// ==========================================
 window.addEventListener('error', (e) => {
     console.error('❌ Global Error:', e.error);
 });
@@ -623,12 +666,9 @@ window.addEventListener('unhandledrejection', (e) => {
     console.error('❌ Unhandled Promise Rejection:', e.reason);
 });
 
-// ==========================================
-// EXPORT
-// ==========================================
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
-        BasicNavigation,
+        BaseNavigation,
         scrollToTop,
         scrollToElement,
         isElementInViewport,
@@ -653,4 +693,4 @@ if (typeof module !== 'undefined' && module.exports) {
     };
 }
 
-console.log('%c🚀 Navigation Basics Loaded!', 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 10px 20px; border-radius: 5px; font-size: 14px; font-weight: bold;');
+console.log('%c🚀 Base Script Loaded!', 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 10px 20px; border-radius: 5px; font-size: 14px; font-weight: bold;');
