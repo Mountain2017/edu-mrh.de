@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Physik-Protokoll: Federpendel (G9 Bayern)</title>
+    <script src="https://edu-mrh.de/embed/charts.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; max-width: 1000px; margin: 20px auto; padding: 20px; background-color: #f4f7f9; color: #333; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 25px; }
+        h1, h2, h3 { color: #1a5276; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .header-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 10px; }
+        .sim-container { display: flex; gap: 30px; align-items: center; background: #e8f4f8; padding: 20px; border-radius: 10px; }
+        canvas { background: white; border: 1px solid #ccc; border-radius: 8px; }
+        .watch-box { flex: 1; text-align: center; }
+        .stopwatch-display { font-size: 2.5em; font-family: 'Courier New', monospace; background: #2c3e50; color: #ecf0f1; padding: 10px; border-radius: 8px; margin-bottom: 15px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #dee2e6; padding: 10px; text-align: center; }
+        th { background-color: #3498db; color: white; }
+        input, textarea, select { width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; }
+        .instruction-text { background: #fff3cd; padding: 15px; border-left: 5px solid #ffc107; margin: 15px 0; font-weight: bold; }
+        .btn { padding: 10px 18px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s; margin: 5px; }
+        .btn-start { background: #27ae60; color: white; }
+        .btn-stop { background: #e67e22; color: white; }
+        .btn-reset { background: #7f8c8d; color: white; }
+        .btn-check { background: #f39c12; color: white; margin-top: 15px; }
+        .btn-pdf { background: #e74c3c; color: white; width: 100%; font-size: 1.2em; margin-top: 30px; }
+        .prop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin: 15px 0; }
+        .prop-item { background: #f9f9f9; padding: 10px; border: 1px solid #eee; border-radius: 6px; }
+        .feedback { margin-top: 10px; font-weight: bold; min-height: 1.2em; }
+        .chart-container { height: 350px; margin-top: 20px; }
+        @media print { .no-print, .btn, .axis-controls, .controls-area { display: none !important; } body { background: white; margin: 0; } .card { box-shadow: none; border: 1px solid #eee; break-inside: avoid; } }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>Versuchsprotokoll: Federpendel</h1>
+    <div class="header-grid">
+        <div><label>Name(n):</label><input type="text"></div>
+        <div><label>Datum:</label><input type="date"></div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>1. Hypothesen</h2>
+    <label>Hypothese zur Abhängigkeit der Schwingungsdauer <i>T</i> von der Masse <i>m</i>:</label>
+    <textarea rows="2"></textarea>
+    <label style="margin-top: 10px; display: block;">Hypothese zur Abhängigkeit der Schwingungsdauer <i>T</i> von der Federhärte <i>D</i>:</label>
+    <textarea rows="2"></textarea>
+</div>
+
+<div class="card no-print">
+    <h2>2. Simulation & Manuelle Stoppuhr</h2>
+    <div class="sim-container">
+        <canvas id="simCanvas" width="200" height="350"></canvas>
+        <div class="watch-box">
+            <div class="stopwatch-display" id="watch">0.00 s</div>
+            <button class="btn btn-start" onclick="startWatch()">Start</button>
+            <button class="btn btn-stop" onclick="stopWatch()">Stop</button>
+            <button class="btn btn-reset" onclick="resetWatch()">Reset</button>
+            <div class="controls-area" style="margin-top: 25px; text-align: left;">
+                <label>Eingestellte Masse <b>m</b>: <span id="mDisp">0.50</span> kg</label>
+                <input type="range" id="mRange" min="0.1" max="2.0" step="0.1" value="0.5" oninput="updateSimParams()">
+                <label style="margin-top: 15px; display: block;">Eingestellte Federhärte <b>D</b>: <span id="dDisp">15</span> N/m</label>
+                <input type="range" id="dRange" min="5" max="50" step="1" value="15" oninput="updateSimParams()">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>3. Messreihe 1: Variation der Masse (D = konst.)</h2>
+    <table>
+        <thead><tr><th>Masse m (kg)</th><th>Zeit t für 10 Schwingungen (s)</th><th>Periodendauer T (s)</th></tr></thead>
+        <tbody id="table1">
+            <tr><td><input type="number" step="0.01" class="m-val"></td><td><input type="number" step="0.01" class="t-val" oninput="calcT(this)"></td><td class="res-T">-</td></tr>
+            <tr><td><input type="number" step="0.01" class="m-val"></td><td><input type="number" step="0.01" class="t-val" oninput="calcT(this)"></td><td class="res-T">-</td></tr>
+            <tr><td><input type="number" step="0.01" class="m-val"></td><td><input type="number" step="0.01" class="t-val" oninput="calcT(this)"></td><td class="res-T">-</td></tr>
+            <tr><td><input type="number" step="0.01" class="m-val"></td><td><input type="number" step="0.01" class="t-val" oninput="calcT(this)"></td><td class="res-T">-</td></tr>
+            <tr><td><input type="number" step="0.01" class="m-val"></td><td><input type="number" step="0.01" class="t-val" oninput="calcT(this)"></td><td class="res-T">-</td></tr>
+        </tbody>
+    </table>
+    
+    <div class="instruction-text">
+        Untersuche bei welchen Wahlmöglichkeiten für die x- und y-Achse das Diagramm einen direkt proportionalen Zusammenhang darstellt.
+    </div>
+
+    <div class="axis-controls">
+        X-Achse: <select id="x1" style="width:140px;"><option value="m">m</option><option value="m2">m²</option><option value="m_sqrt">√m</option><option value="m_inv">1/m</option></select>
+        Y-Achse: <select id="y1" style="width:140px;"><option value="T">T</option><option value="T2">T²</option><option value="T_inv">1/T</option></select>
+        <button class="btn" style="background:#3498db; color:white;" onclick="renderChart1()">Diagramm 1 aktualisieren</button>
+    </div>
+    <div class="chart-container"><canvas id="chart1"></canvas></div>
+</div>
+
+<div class="card">
+    <h2>4. Messreihe 2: Variation der Federhärte (m = konst.)</h2>
+    <table>
+        <thead><tr><th>Federhärte D (N/m)</th><th>Zeit t für 10 Schwingungen (s)</th><th>Periodendauer T (s)</th></tr></thead>
+        <tbody id="table2">
+            <tr><td><input type="number" step="0.1" class="D-val"></td><td><input type="number" step="0.01" class="t2-val" oninput="calcT(this)"></td><td class="res-T">-</td></tr>
+            <tr><td><input type="number" step="0.1" class="D-val"></td><td><input type="number" step="0.01" class="t2-val" oninput="calcT(this)"></td><td class="res-T">-</td></tr>
+            <tr><td><input type="number" step="0.1" class="D-val"></td><td><input type="number" step="0.01" class="t2-val" oninput="calcT(this)"></td><td class="res-T">-</td></tr>
+            <tr><td><input type="number" step="0.1" class="D-val"></td><td><input type="number" step="0.01" class="t2-val" oninput="calcT(this)"></td><td class="res-T">-</td></tr>
+            <tr><td><input type="number" step="0.1" class="D-val"></td><td><input type="number" step="0.01" class="t2-val" oninput="calcT(this)"></td><td class="res-T">-</td></tr>
+        </tbody>
+    </table>
+
+    <div class="instruction-text">
+        Untersuche bei welchen Wahlmöglichkeiten für die x- und y-Achse das Diagramm einen direkt proportionalen Zusammenhang darstellt.
+    </div>
+
+    <div class="axis-controls">
+        X-Achse: <select id="x2" style="width:140px;"><option value="D">D</option><option value="D_inv">1/D</option><option value="D_sqrt">√D</option><option value="D2">D²</option></select>
+        Y-Achse: <select id="y2" style="width:140px;"><option value="T2">T²</option><option value="T">T</option><option value="T_inv">1/T</option></select>
+        <button class="btn" style="background:#3498db; color:white;" onclick="renderChart2()">Diagramm 2 aktualisieren</button>
+    </div>
+    <div class="chart-container"><canvas id="chart2"></canvas></div>
+</div>
+
+<div class="card">
+    <h2>5. Auswertung & Mathematisierung</h2>
+    <p>Wählen Sie basierend auf Ihren Graphen die korrekten Proportionalitäten aus:</p>
+    <h3>Zusammenhang mit der Masse m</h3>
+    <div class="prop-grid"><div class="prop-item"><input type="checkbox"> T ~ m</div><div class="prop-item"><input type="checkbox" data-correct="true"> T² ~ m</div><div class="prop-item"><input type="checkbox" data-correct="true"> T ~ √m</div><div class="prop-item"><input type="checkbox"> T² ~ 1/m</div></div>
+    <h3>Zusammenhang mit der Federhärte D</h3>
+    <div class="prop-grid"><div class="prop-item"><input type="checkbox"> T² ~ D</div><div class="prop-item"><input type="checkbox" data-correct="true"> T² ~ 1/D</div><div class="prop-item"><input type="checkbox"> T ~ D</div><div class="prop-item"><input type="checkbox" data-correct="true"> T ~ 1/√D</div></div>
+    <button class="btn btn-check" onclick="checkCorrect()">Auswahl prüfen</button><div id="fb" class="feedback"></div>
+    <label style="margin-top: 20px; display: block;">Herleitung der finalen Formel für T:</label><textarea rows="2"></textarea>
+</div>
+
+<div class="card">
+    <h2>6. Messunsicherheiten und Fehlerbetrachtung</h2>
+    <p>Reflektieren Sie kritisch über die Genauigkeit Ihrer Messungen und führen Sie eine fundierte Fehlerbetrachtung durch. Gehen Sie dabei auf folgende Punkte ein:</p>
+    <ul><li>Identifizieren Sie mögliche Ursachen für Messunsicherheiten.</li><li>Erläutern Sie Maßnahmen zur Minimierung dieser Einflüsse, die Sie bereits angewandt haben oder noch anwenden könnten.</li></ul>
+    <textarea rows="6"></textarea>
+</div>
+
+<button class="btn btn-pdf no-print" onclick="window.print()">Als PDF exportieren</button>
+
+<script>
+    let startTime, timerInterval, running = false;
+    function startWatch() { if(!running) { startTime = Date.now() - (parseFloat(document.getElementById("watch").innerText)*1000 || 0); timerInterval = setInterval(() => { document.getElementById("watch").innerText = ((Date.now()-startTime)/1000).toFixed(2) + " s"; }, 10); running = true; } }
+    function stopWatch() { clearInterval(timerInterval); running = false; }
+    function resetWatch() { stopWatch(); document.getElementById("watch").innerText = "0.00 s"; }
+
+    const canvas = document.getElementById('simCanvas');
+    const ctx = canvas.getContext('2d');
+    let m = 0.5, D = 15;
+    function updateSimParams() { m = parseFloat(document.getElementById('mRange').value); D = parseFloat(document.getElementById('dRange').value); document.getElementById('mDisp').innerText = m.toFixed(2); document.getElementById('dDisp').innerText = D; }
+    function draw() { ctx.clearRect(0,0,200,350); let omega = Math.sqrt(D/m); let y = 150 + 70 * Math.sin(omega * (Date.now()/1000)); ctx.beginPath(); ctx.moveTo(100,20); for(let i=0; i<=20; i++) ctx.lineTo(100 + (i%2==0?15:-15), 20 + (y-40)/20*i); ctx.strokeStyle="#34495e"; ctx.lineWidth=2; ctx.stroke(); ctx.fillStyle="#e67e22"; ctx.fillRect(75,y,50,30); requestAnimationFrame(draw); }
+    draw();
+
+    function calcT(el) { let row = el.closest('tr'); let t10 = parseFloat(el.value); if(t10) { row.querySelector('.res-T').innerText = (t10/10).toFixed(3); } }
+
+    let c1, c2;
+    function renderChart1() {
+        let xKey = document.getElementById('x1').value; let yKey = document.getElementById('y1').value;
+        let data = [{x: 0, y: 0}];
+        Array.from(document.querySelectorAll('#table1 tr')).forEach(tr => {
+            let mv = parseFloat(tr.querySelector('.m-val').value); let Tv = parseFloat(tr.querySelector('.res-T').innerText);
+            if(!isNaN(mv) && !isNaN(Tv)) {
+                let x = (xKey==='m')?mv:(xKey==='m2')?mv*mv:(xKey==='m_sqrt')?Math.sqrt(mv):1/mv;
+                let y = (yKey==='T')?Tv:Tv*Tv; data.push({x, y});
+            }
+        });
+        if(c1) c1.destroy();
+        c1 = new Chart(document.getElementById('chart1'), { type: 'scatter', data: { datasets: [{ label: 'Messreihe 1 (inkl. 0|0)', data: data, backgroundColor: '#3498db' }] }, options: { scales: { x: { title: { display: true, text: xKey }, min: 0 }, y: { title: { display: true, text: yKey }, min: 0 } } } });
+    }
+
+    function renderChart2() {
+        let xKey = document.getElementById('x2').value; let yKey = document.getElementById('y2').value;
+        let data = [{x: 0, y: 0}];
+        Array.from(document.querySelectorAll('#table2 tr')).forEach(tr => {
+            let Dv = parseFloat(tr.querySelector('.D-val').value); let Tv = parseFloat(tr.querySelector('.res-T').innerText);
+            if(!isNaN(Dv) && !isNaN(Tv)) {
+                let x = (xKey==='D')?Dv:(xKey==='D_inv')?1/Dv:(xKey==='D_sqrt')?Math.sqrt(Dv):Dv*Dv;
+                let y = (yKey==='T2')?Tv*Tv:Tv; data.push({x, y});
+            }
+        });
+        if(c2) c2.destroy();
+        c2 = new Chart(document.getElementById('chart2'), { type: 'scatter', data: { datasets: [{ label: 'Messreihe 2 (inkl. 0|0)', data: data, backgroundColor: '#e74c3c' }] }, options: { scales: { x: { title: { display: true, text: xKey }, min: 0 }, y: { title: { display: true, text: yKey }, min: 0 } } } });
+    }
+
+    function checkCorrect() {
+        let ok = true;
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            if((cb.checked && !cb.getAttribute('data-correct')) || (!cb.checked && cb.getAttribute('data-correct'))) ok = false;
+        });
+        let fb = document.getElementById('fb');
+        fb.innerText = ok ? "✅ Richtig!" : "❌ Nicht ganz korrekt.";
+        fb.style.color = ok ? "green" : "red";
+    }
+</script>
+</body>
+</html>
