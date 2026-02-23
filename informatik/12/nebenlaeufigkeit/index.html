@@ -602,407 +602,1229 @@
             </section>
 
             <!-- Chapter 5: Java -->
-            <section id="chapter5" class="content-section">
-                <div class="chapter-header">
-                    <span class="chapter-number">Kapitel 5</span>
-                    <h2>Nebenläufigkeit in Java</h2>
-                </div>
+<section id="chapter5" class="content-section">
+    <div class="chapter-header">
+        <span class="chapter-number">Kapitel 5</span>
+        <h2>Nebenläufigkeit in Java</h2>
+    </div>
 
-                <div class="pdf-download-box">
-                    <div class="pdf-icon">📄</div>
-                    <div class="pdf-content">
-                        <h3>📚 Arbeitsunterlagen</h3>
-                        <p>Bitte bearbeitet das folgende Aufgabenblatt:</p>
-                        <a href="4-4 und 4-5 Betriebsmittelprobleme.pdf" download target="_blank"
-                            rel="noopener noreferrer" class="btn btn-primary" style="display: inline-block; margin-top: 1rem;">
-                            ⬇️ PDF herunterladen: 4-4 und 4-5 Betriebsmittelprobleme.pdf
-                        </a>
-                    </div>
-                </div>
+    <div class="pdf-download-box">
+        <div class="pdf-icon">📄</div>
+        <div class="pdf-content">
+            <h3>📚 Arbeitsunterlagen</h3>
+            <p>Bitte bearbeitet das folgende Aufgabenblatt:</p>
+            <a href="4-4 und 4-5 Betriebsmittelprobleme.pdf" download target="_blank"
+                rel="noopener noreferrer" class="btn btn-primary" style="display: inline-block; margin-top: 1rem;">
+                ⬇️ PDF herunterladen: 4-4 und 4-5 Betriebsmittelprobleme.pdf
+            </a>
+        </div>
+    </div>
 
-                <div class="info-box">
-                    <p>Java bietet die Möglichkeit, einzelne Programmteile (Threads) quasi-parallel ablaufen zu lassen.</p>
-                </div>
+    <div class="info-box">
+        <p>Java bietet die Möglichkeit, einzelne Programmteile (Threads) quasi-parallel ablaufen zu lassen.</p>
+    </div>
 
-                <div class="concept-box">
-                    <h3>🔧 Thread-Erstellung in Java</h3>
-                    <p>Ein Thread ist in Java immer die Instanz einer Klasse, die das Interface <code>Runnable</code> implementiert hat.</p>
-                    
-                    <p><strong>Zwei Möglichkeiten zur Thread-Erstellung:</strong></p>
-                    <ol>
-                        <li>Subklasse von <code>Thread</code> erstellen</li>
-                        <li>Interface <code>Runnable</code> implementieren</li>
-                    </ol>
-                </div>
-
-                <div class="ide-container">
-                    <h4 class="ide-title">🔧 Thread-Erstellung Live Demo</h4>
-                    <div class="java-online" 
-                         style="width: 100%; height: 450px;" 
-                         data-java-online="{ 'id': 'ThreadDemo_1', 'speed': 1000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true }">
-                        <script type="text/plain" title="MeinThread.java">
-class MeinThread extends Thread {
-    @Override
-    public void run() {
-        // Code, der im Thread ausgeführt werden soll
-        for (int i = 0; i < 10; i++) {
-            System.out.println("Thread läuft: " + i);
-            try {
-                Thread.sleep(1000); // 1 Sekunde warten
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        }
-    }
-}
-
-// Verwendung:
-MeinThread thread = new MeinThread();
-thread.start(); // Thread starten (nicht run() aufrufen!)
-                        </script>
-                    </div>
-                </div>
-
-                <div class="ide-container">
-                    <h4 class="ide-title">🔧 Runnable Interface Live Demo</h4>
-                    <div class="java-online" 
-                         style="width: 100%; height: 450px;" 
-                         data-java-online="{ 'id': 'ThreadDemo_2', 'speed': 1000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true }">
-                        <script type="text/plain" title="MeineAufgabe.java">
-class MeineAufgabe implements Runnable {
-    @Override
-    public void run() {
-        // Code, der im Thread ausgeführt werden soll
-        for (int i = 0; i < 10; i++) {
-            System.out.println("Runnable läuft: " + i);
-            try {
-                Thread.sleep(1000); // 1 Sekunde warten
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        }
-    }
-}
-
-// Verwendung:
-Thread thread = new Thread(new MeineAufgabe());
-thread.start();
-                        </script>
-                    </div>
-                </div>
-
-                <div class="concept-box warning">
-                    <h3>🔒 Synchronisation in Java</h3>
-                    <p>Die Synchronisation der Threads erfolgt mit:</p>
-                    
-                    <div class="sync-methods">
-                        <div class="sync-method">
-                            <h4><code>synchronized</code></h4>
-                            <p>Etabliert einen Monitor für einen kritischen Bereich. Gleichzeitig darf nur ein Thread auf das Objekt zugreifen.</p>
-                        </div>
-
-                        <div class="sync-method">
-                            <h4><code>wait()</code></h4>
-                            <p>Legt den eigenen Prozess schlafen und gibt den Monitor für andere Prozesse frei.</p>
-                        </div>
-
-                        <div class="sync-method">
-                            <h4><code>notify()</code></h4>
-                            <p>Stößt die Prozesse, die durch wait() angehalten wurden, wieder an.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="example-box">
-                    <h3>🍽️ Klassisches Beispiel: Producer-Consumer-Problem</h3>
-                    <p>Das Erzeuger-Verbraucher-Problem ist eine klassische Problemstellung der Prozesssynchronisation.</p>
-                    
-                    <p><strong>Szenario:</strong></p>
-                    <p>Ein Roboter (Erzeuger) füllt eine Kiste und legt sie auf einem Zwischenspeicherplatz mit begrenzter Kapazität ab. Die Kiste wird dann von einem zweiten Roboter (Verbraucher) abgeholt. Auf den Zwischenspeicherplatz darf immer nur ein Roboter zugreifen.</p>
-                </div>
-
-                <div class="ide-container">
-                    <h4 class="ide-title">🍽️ Producer-Consumer-Problem Live Demo</h4>
-                    <div class="java-online" 
-                         style="width: 100%; height: 500px;" 
-                         data-java-online="{ 'id': 'ProducerConsumerDemo', 'speed': 1000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true }">
-                    <script type="text/plain" title="Depot.java">
-class Depot {
-    private int buffer;
-    private boolean empty = true;
-
-    // Synchronized: Nur ein Thread kann gleichzeitig zugreifen
-    public synchronized int get() {
-        // Warten, wenn Depot leer ist
-        if (empty) {
-            try {
-                Thread.sleep(1000); // 1 Sekunde warten
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        }
+    <div class="concept-box">
+        <h3>🔧 Thread-Erstellung in Java</h3>
+        <p>Ein Thread ist in Java immer die Instanz einer Klasse, die das Interface <code>Runnable</code> implementiert hat.</p>
         
-        System.out.println("Abgeholt: " + buffer);
-        empty = true;
-        notify(); // Producer aufwecken
-        return buffer;
-    }
+        <p><strong>Zwei Möglichkeiten zur Thread-Erstellung:</strong></p>
+        <ol>
+            <li>Subklasse von <code>Thread</code> erstellen</li>
+            <li>Interface <code>Runnable</code> implementieren</li>
+        </ol>
+    </div>
 
-    public synchronized void put(int value) {
-        // Warten, wenn Depot voll ist
-        if (!empty) {
-            try {
-                Thread.sleep(1000); // 1 Sekunde warten
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        }
-        
-        buffer = value;
-        empty = false;
-        System.out.println("Hinzugefügt: " + buffer);
-        notify(); // Consumer aufwecken
-    }
-}
-                    </script>
-                    <script type="text/plain" title="Consumer.java">
-class MeinConsumer extends Thread {
-    private Depot depot;
+    <!-- AUFGABE 1: PRIMM - Predict, Run, Investigate, Modify -->
+    <div class="chapter-header" style="margin-top: 3rem;">
+        <span class="chapter-number">Aufgabe 1</span>
+        <h2>Thread und Runnable verstehen (PRIMM)</h2>
+    </div>
 
-    public MeinConsumer(Depot depot) {
-        this.depot = depot;
-    }
+    <div class="task-box">
+        <h4>📝 Arbeitsaufträge - Teil 1: Predict & Run</h4>
+        <ol>
+            <li><strong>Predict:</strong> Lies den Code unten durch. Was erwartest du als Ausgabe? In welcher Reihenfolge werden die Ausgaben erscheinen?</li>
+            <li><strong>Run:</strong> Führe den Code mehrmals aus. Was beobachtest du?</li>
+            <li><strong>Investigate:</strong> Warum ist die Ausgabe nicht immer gleich? Was passiert mit "Main beendet"?</li>
+        </ol>
+    </div>
 
-    @Override
-    public void run() {
-        for (int i = 0; i < 10; i++) {
-            depot.get(); // Wert aus Depot holen
-            
-            try {
-                Thread.sleep(1000); // 1 Sekunde warten
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        }
-    }
-}
-                    </script>
-                    <script type="text/plain" title="Producer.java">
-class Producer extends Thread {
-    private Depot depot;
+    <div class="ide-container">
+        <h4 class="ide-title">🔧 Thread vs. Runnable - Experimentieren</h4>
+        <div class="java-online" 
+             style="width: 100%; height: 550px;" 
+             data-java-online="{ 'id': 'ThreadRunnableDemo', 'speed': 1000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true }">
+            <script type="text/plain" title="Hauptprogramm.java">
+// Variante 1 – Thread-Klasse
+MyThread t1 = new MyThread("Thread-Klasse");
+t1.start();
 
-    public Producer(Depot depot) {
-        this.depot = depot;
-    }
+// Variante 2 – Runnable
+Thread t2 = new Thread(new MyRunnable("Runnable"));
+t2.start();
 
-    @Override
-    public void run() {
-        for (int i = 0; i < 10; i++) {
-            depot.put(i); // Wert ins Depot legen
-            
-            try {
-                Thread.sleep(1000); // 1 Sekunde warten
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        }
-    }
-}
-                    </script>
-                    <script type="text/plain" title="ProducerConsumerDemo.java">
-public class ProducerConsumerDemo {
-    public static void main(String[] args) {
-        // Gemeinsames Depot erstellen
-        Depot depot = new Depot();
-        
-        // Producer und Consumer erstellen
-        Producer producer = new Producer(depot);
-        MeinConsumer consumer = new MeinConsumer(depot);
-        
-        // Threads starten
-        producer.start();
-        consumer.start();
-        
-        // Auf Beendigung warten
-        try {
-            Thread.sleep(1000); // 1 Sekunde warten
-        } catch (Exception e) {
+System.out.println("Main beendet");
+            </script>
+            <script type="text/plain" title="MyThread.java">
+class MyThread extends Thread {
+
+   private String name;
+
+   public MyThread(String name) {
+      this.name = name;
+   }
+
+   public void run() {
+      for (int i = 0; i < 5; i++) {
+         System.out.println(name + " läuft: " + i);
+         try {
+            //Hier kann es vorkommen, dass eine Exception fliegt, 
+            // daher muss dieser Code mit einem try - catch Block 
+            // umgeben werden, um dies abzufangen. 
+            Thread.sleep(10); 
+         } catch(Exception e) { 
             System.out.println(e.getMessage());
-        }
-        
-        System.out.println("Fertig!");
-    }
+         }
+      }
+   }
 }
-                    </script>
-                    </div>
+            </script>
+            <script type="text/plain" title="MyRunnable.java">
+class MyRunnable implements Runnable {
+
+   private String name;
+
+   public MyRunnable(String name) {
+      this.name = name;
+   }
+
+   public void run() {
+      for (int i = 0; i < 5; i++) {
+         System.out.println(name + " läuft: " + i);
+         try {
+            Thread.sleep(10); // hier entsprechend ebenso
+         } catch(Exception e) { 
+            System.out.println(e.getMessage());
+         }
+      }
+   }
+}
+            </script>
+        </div>
+    </div>
+
+    <div class="task-box" style="margin-top: 2rem;">
+        <h4>📝 Arbeitsaufträge - Teil 2: Modify & Make</h4>
+        <ol start="4">
+            <li><strong>Modify:</strong> Ändere die Sleep-Zeit auf unterschiedliche Werte (z.B. 100ms vs. 10ms). Was passiert?</li>
+            <li><strong>Modify:</strong> Erstelle einen dritten Thread (egal ob Thread oder Runnable). Beobachte das Verhalten.</li>
+            <li><strong>Make:</strong> Erkläre den Unterschied zwischen <code>start()</code> und <code>run()</code>. Was würde passieren, wenn du <code>run()</code> direkt aufrufst?</li>
+        </ol>
+        <button class="btn btn-secondary" onclick="toggleSolution('solution_aufgabe1')">Lösung anzeigen</button>
+    </div>
+
+    <div id="solution_aufgabe1" class="solution-box hidden">
+        <h4>✅ Lösung zu Aufgabe 1</h4>
+        
+        <p><strong>Zu 1-3: Predict, Run, Investigate:</strong></p>
+        <ul>
+            <li>Die Ausgaben erscheinen in <strong>nicht-deterministischer Reihenfolge</strong></li>
+            <li>"Main beendet" erscheint oft <strong>vor</strong> den Thread-Ausgaben, weil der Hauptthread nicht auf die anderen wartet</li>
+            <li>Die Threads laufen <strong>parallel/quasi-parallel</strong> - das Betriebssystem entscheidet über die Reihenfolge</li>
+            <li>Bei mehrfacher Ausführung kann die Reihenfolge variieren</li>
+        </ul>
+
+        <p><strong>Zu 4: Sleep-Zeit ändern:</strong></p>
+        <p class="highlight">Längere Sleep-Zeiten führen zu mehr "Durchmischung" der Ausgaben, da andere Threads mehr Zeit bekommen.</p>
+
+        <p><strong>Zu 5: Dritter Thread:</strong></p>
+        <p>Mit drei Threads wird die Ausgabe noch stärker durchmischt - alle drei konkurrieren um CPU-Zeit.</p>
+
+        <p><strong>Zu 6: start() vs. run():</strong></p>
+        <div class="highlight">
+            <p><strong>start():</strong> Startet einen neuen Thread und ruft dann run() in diesem Thread auf</p>
+            <p><strong>run():</strong> Führt den Code im aktuellen Thread aus (kein neuer Thread!)</p>
+            <p>→ Direkter Aufruf von run() würde sequentiell ablaufen, nicht parallel!</p>
+        </div>
+    </div>
+
+    <!-- AUFGABE 2: Synchronisation mit synchronized -->
+    <div class="chapter-header" style="margin-top: 3rem;">
+        <span class="chapter-number">Aufgabe 2</span>
+        <h2>Race Conditions und synchronized (PRIMM)</h2>
+    </div>
+
+    <div class="concept-box warning">
+        <h3>🔒 Das Problem: Race Conditions</h3>
+        <p>Wenn mehrere Threads gleichzeitig auf dieselbe Variable zugreifen, können <strong>Race Conditions</strong> auftreten:</p>
+        <ul>
+            <li>Thread A liest den Wert</li>
+            <li>Thread B liest den gleichen Wert</li>
+            <li>Beide erhöhen ihn</li>
+            <li>Beide schreiben zurück → <strong>Ein Inkrement geht verloren!</strong></li>
+        </ul>
+    </div>
+
+    <div class="task-box">
+        <h4>📝 Arbeitsaufträge - Teil 1: Das Problem erkennen</h4>
+        <ol>
+            <li><strong>TODO1:</strong> Tausche <code>long</code> durch <code>int</code> in der increment-Methode und führe den Code mehrfach aus.</li>
+            <li>Beschreibe deine Beobachtungen: Ist der Endstand immer korrekt?</li>
+            <li>Erkläre, warum das Ergebnis oft falsch ist (Race Condition!)</li>
+        </ol>
+    </div>
+
+    <div class="ide-container">
+        <h4 class="ide-title">🔧 Counter Problem - Race Condition</h4>
+        <div class="java-online" 
+             style="width: 100%; height: 550px;" 
+             data-java-online="{ 'id': 'CounterProblem', 'speed': 1000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true }">
+            <script type="text/plain" title="Hauptprogramm.java">
+Counter counter = new Counter();
+   
+Worker w1 = new Worker(counter);
+Worker w2 = new Worker(counter);
+   
+w1.start();
+w2.start();
+            </script>
+            <script type="text/plain" title="Counter.java">
+class Counter {
+
+   public int count = 0;
+   
+   // zur Veranschaulichung komplizierter als nötig
+   public void increment() { 
+      // TODO1 Tausche long durch int und führe mehrfach aus. 
+      // Beschreibe deine Beobachtungen und erkläre sie
+      long currentcount = count; 
+      currentcount = currentcount + 1; 
+      count = (int)currentcount;
+   }
+}
+            </script>
+            <script type="text/plain" title="Worker.java">
+class Worker extends Thread {
+
+   private Counter counter;
+
+   public Worker(Counter counter) {
+      this.counter = counter;
+   }
+
+   public void run() {
+      int anzahlWdh = 100000;
+      for (int i = 0; i < anzahlWdh; i++) {
+         counter.increment();
+      } 
+      System.out.println("Erwartet: " + 2 * anzahlWdh + " Endstand: " + counter.count);
+   }
+}
+            </script>
+        </div>
+    </div>
+
+    <div class="task-box" style="margin-top: 2rem;">
+        <h4>📝 Arbeitsaufträge - Teil 2: Die Lösung implementieren</h4>
+        <ol start="4">
+            <li><strong>TODO2:</strong> Füge das Schlüsselwort <code>synchronized</code> vor die increment-Methode ein:
+                <pre>public synchronized void increment() { ... }</pre>
+            </li>
+            <li>Führe den Code erneut mehrfach aus. Was hat sich geändert?</li>
+            <li>Erkläre, wie <code>synchronized</code> das Problem löst (Stichwort: Monitor, kritischer Abschnitt)</li>
+            <li><strong>Bonus:</strong> Was würde passieren, wenn jeder Worker sein eigenes Counter-Objekt hätte?</li>
+        </ol>
+        <button class="btn btn-secondary" onclick="toggleSolution('solution_aufgabe2')">Lösung anzeigen</button>
+    </div>
+
+    <div id="solution_aufgabe2" class="solution-box hidden">
+        <h4>✅ Lösung zu Aufgabe 2</h4>
+        
+        <p><strong>Zu 1-3: Beobachtungen und Erklärung:</strong></p>
+        <div class="highlight">
+            <p><strong>Beobachtung:</strong> Der Endstand ist meist kleiner als 200.000 und variiert bei jedem Durchlauf!</p>
+            <p><strong>Erklärung (Race Condition):</strong></p>
+            <ul>
+                <li>Thread 1 liest count = 1000</li>
+                <li>Thread 2 liest count = 1000 (bevor Thread 1 zurückschreibt!)</li>
+                <li>Thread 1 berechnet 1001 und schreibt zurück</li>
+                <li>Thread 2 berechnet ebenfalls 1001 und überschreibt</li>
+                <li>→ Statt 1002 ist count nur 1001 - ein Inkrement ging verloren!</li>
+            </ul>
+        </div>
+
+        <p><strong>Zu 4-6: synchronized als Lösung:</strong></p>
+        <div class="highlight">
+            <p><strong>Mit synchronized:</strong> Der Endstand ist immer korrekt (200.000)</p>
+            <p><strong>Wie es funktioniert:</strong></p>
+            <ul>
+                <li><code>synchronized</code> erstellt einen <strong>Monitor</strong> um die Methode</li>
+                <li>Nur ein Thread darf gleichzeitig die Methode ausführen</li>
+                <li>Andere Threads müssen warten, bis der Monitor frei ist</li>
+                <li>→ Die increment-Operation wird <strong>atomar</strong> (unteilbar)</li>
+            </ul>
+        </div>
+
+        <p><strong>Zu 7: Bonus - Eigene Counter-Objekte:</strong></p>
+        <p class="highlight">Wenn jeder Worker sein eigenes Counter-Objekt hätte, gäbe es keine Race Condition, da keine gemeinsame Ressource existiert. Aber: Das Gesamtergebnis wäre dann auf zwei Objekte verteilt!</p>
+    </div>
+
+    <!-- AUFGABE 3: Semaphor-Prinzip mit synchronized auf Objekten -->
+    <div class="chapter-header" style="margin-top: 3rem;">
+        <span class="chapter-number">Aufgabe 3</span>
+        <h2>Semaphore und Objekt-Synchronisation (PRIMM)</h2>
+    </div>
+
+    <div class="concept-box">
+        <h3>🔐 Synchronisation auf Objektebene</h3>
+        <p><code>synchronized</code> kann nicht nur auf Methoden, sondern auch auf <strong>spezifische Objekte</strong> angewendet werden:</p>
+        <ul>
+            <li>Jedes Objekt hat einen <strong>Monitor</strong> (Semaphor)</li>
+            <li>Nur ein Thread kann den Monitor eines Objekts gleichzeitig besitzen</li>
+            <li>Verschiedene Objekte haben verschiedene Monitore!</li>
+        </ul>
+    </div>
+
+    <div class="task-box">
+        <h4>📝 Arbeitsaufträge - Teil 1: Investigate</h4>
+        <ol>
+            <li><strong>TODO1.1:</strong> Wofür wird die Klasse <code>ThePrinter</code> benötigt?</li>
+            <li><strong>TODO1.2:</strong> Wofür wird das Objekt <code>printer1</code> benötigt?</li>
+            <li><strong>Run:</strong> Führe den Code aus und beobachte die Ausgabe. Sind die Ausgaben durcheinander oder geordnet?</li>
+        </ol>
+    </div>
+
+    <div class="ide-container">
+        <h4 class="ide-title">🔧 Printer Synchronisation - Semaphor-Prinzip</h4>
+        <div class="java-online" 
+             style="width: 100%; height: 600px;" 
+             data-java-online="{ 'id': 'PrinterSync', 'speed': 1000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true }">
+            <script type="text/plain" title="Hauptprogramm.java">
+//TODO1.2: Wofür wird dieses Objekt benötigt? 
+ThePrinter printer1 = new ThePrinter();
+
+//TODO1.3: Erstelle 2 weitere ThePrinter Objekte und gib jedem 
+// Thread ein unterschiedliches printer Objekt. Beschreibe den Unterschied 
+// und begründe ihn! 
+TestThread m1 = new TestThread("THREAD 1", printer1);
+TestThread m2 = new TestThread("THREAD 2", printer1);
+TestThread m3 = new TestThread("THREAD 3", printer1);
+
+m1.start(); 
+m2.start();
+m3.start();
+            </script>
+             <script type="text/plain" title="TestThread.java">
+public class TestThread extends Thread {
+   String name;
+   ThePrinter thePrinter;
+
+   public TestThread(String name, ThePrinter theDemo) {
+      this.thePrinter = theDemo;
+      this.name = name;
+   }
+
+   @Override
+   public void run() {
+      //thePrinter.printingStuff(name);
+      thePrinter.printingStuffSync(name);
+   }
+}
+            </script>
+            <script type="text/plain" title="ThePrinter.java">
+//TODO1.1: Wofür wird diese Klasse benötigt? 
+public class ThePrinter {
+   public synchronized void printingStuffSync(String name) {
+      for (int i = 0; i < 10; i++) {
+         System.out.println(name + " :: " + i);
+         try {
+            Thread.sleep(1);
+         } catch(Exception e) {
+            System.out.println(e.getMessage());
+         }
+      }
+   }
+
+   public void printingStuff(String name) {
+      for (int i = 0; i < 10; i++) {
+         System.out.println(name + " :: " + i);
+         try {
+            Thread.sleep(1);
+         } catch(Exception e) {
+            System.out.println(e.getMessage());
+         }
+      }
+   }
+}
+            </script>
+        </div>
+    </div>
+
+    <div class="task-box" style="margin-top: 2rem;">
+        <h4>📝 Arbeitsaufträge - Teil 2: Modify & Compare</h4>
+        <ol start="4">
+            <li><strong>TODO1.3:</strong> Erstelle 2 weitere ThePrinter-Objekte (<code>printer2</code>, <code>printer3</code>)</li>
+            <li>Gib jedem Thread ein unterschiedliches printer-Objekt (m1 → printer1, m2 → printer2, m3 → printer3)</li>
+            <li>Beschreibe den Unterschied im Verhalten und begründe ihn!</li>
+            <li><strong>Modify:</strong> Kommentiere <code>printingStuffSync</code> aus und aktiviere <code>printingStuff</code>. Was ändert sich?</li>
+        </ol>
+        <button class="btn btn-secondary" onclick="toggleSolution('solution_aufgabe3')">Lösung anzeigen</button>
+    </div>
+
+    <div id="solution_aufgabe3" class="solution-box hidden">
+        <h4>✅ Lösung zu Aufgabe 3</h4>
+        
+        <p><strong>Zu 1-3: Investigate:</strong></p>
+        <div class="highlight">
+            <p><strong>TODO1.1 - ThePrinter Klasse:</strong></p>
+            <p>Die Klasse kapselt die Druck-Funktionalität und dient als <strong>gemeinsame Ressource</strong>, auf die mehrere Threads zugreifen.</p>
+            
+            <p><strong>TODO1.2 - printer1 Objekt:</strong></p>
+            <p>Das Objekt ist der <strong>Monitor</strong> für die Synchronisation. Alle Threads, die auf dasselbe printer1-Objekt zugreifen, müssen sich den Monitor teilen.</p>
+            
+            <p><strong>Beobachtung:</strong> Die Ausgaben sind <strong>geordnet</strong> - jeder Thread druckt seine 10 Zeilen komplett, bevor der nächste dran kommt.</p>
+        </div>
+
+        <p><strong>Zu 4-6: Modify & Compare:</strong></p>
+        <div class="highlight">
+            <p><strong>Mit verschiedenen printer-Objekten:</strong></p>
+            <ul>
+                <li>Jeder Thread hat seinen eigenen Monitor (sein eigenes printer-Objekt)</li>
+                <li>Die Threads können <strong>parallel</strong> drucken</li>
+                <li>Die Ausgaben sind <strong>durcheinander</strong></li>
+                <li>→ <code>synchronized</code> wirkt nur auf dasselbe Objekt!</li>
+            </ul>
+            
+            <p><strong>Mit printingStuff (ohne synchronized):</strong></p>
+            <ul>
+                <li>Auch mit einem gemeinsamen printer-Objekt sind die Ausgaben durcheinander</li>
+                <li>Kein Monitor schützt den kritischen Bereich</li>
+                <li>→ <code>synchronized</code> ist notwendig für geordnete Ausgabe!</li>
+            </ul>
+        </div>
+
+        <p><strong>Wichtige Erkenntnis:</strong></p>
+        <p class="highlight"><strong>synchronized</strong> bindet den Monitor an ein <strong>spezifisches Objekt</strong>. Verschiedene Objekte = verschiedene Monitore = keine Synchronisation zwischen ihnen!</p>
+    </div>
+
+    <!-- Merkzettel: Synchronisation -->
+    <div class="concept-box" style="margin-top: 3rem;">
+        <h3>💡 Merkzettel: Synchronisation</h3>
+        <div class="key-points">
+            <div class="key-point">
+                <span class="number">1</span>
+                <div>
+                    <strong>Parallele Prozesse können indirekt voneinander abhängig sein</strong>
+                    <p>→ Synchronisation (= Abstimmung paralleler Vorgänge aufeinander)</p>
                 </div>
-
-                <div class="example-box danger">
-                    <h3>🍴 Klassisches Problem: Speisende Philosophen</h3>
-                    <p>Das Philosophenproblem ist ein klassisches Beispiel für die Notwendigkeit einer Prozess-Synchronisation.</p>
-                    
-                    <p><strong>Szenario:</strong></p>
-                    <p>Es sitzen fünf Philosophen an einem runden Tisch, und jeder hat einen Teller mit Spaghetti vor sich. Zum Essen von Spaghetti benötigt jeder Philosoph zwei Gabeln. Allerdings sind nur fünf Gabeln vorhanden, die zwischen den Tellern liegen.</p>
-                    
-                    <p><strong>Das Problem:</strong></p>
-                    <ul>
-                        <li>Jeder Philosoph greift zuerst die linke, dann die rechte Gabel</li>
-                        <li>Wenn alle gleichzeitig ihre linke Gabel nehmen, wartet jeder auf die rechte</li>
-                        <li>Niemand kann essen → <strong>Deadlock!</strong></li>
-                    </ul>
-
-                    <p><strong>Lösungsansätze:</strong></p>
-                    <ul>
-                        <li>Maximal 4 Philosophen gleichzeitig am Tisch</li>
-                        <li>Asymmetrische Lösung (ein Philosoph greift erst rechts)</li>
-                        <li>Beide Gabeln atomar (gleichzeitig) aufnehmen</li>
-                        <li>Timeout-Mechanismus</li>
-                    </ul>
+            </div>
+            <div class="key-point">
+                <span class="number">2</span>
+                <div>
+                    <strong>Aufgrund knapper Betriebsmittel können Konflikte auftreten</strong>
+                    <p>→ Konfliktmanagement (z.B. durch wechselseitigen Ausschluss)</p>
                 </div>
+            </div>
+        </div>
+    </div>
 
-                <div class="ide-container">
-                    <h4 class="ide-title">🍴 Speisende Philosophen Live Demo</h4>
-                    <div class="java-online" 
-                         style="width: 100%; height: 550px;" 
-                         data-java-online="{ 'id': 'PhilosophersDemo', 'speed': 1000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true }">
-                        <script type="text/plain" title="Gabel.java">
+    <div class="concept-box warning" style="margin-top: 2rem;">
+        <h3>🔒 Synchronisation in Java</h3>
+        <p>Die Synchronisation der Threads erfolgt mit:</p>
+        
+        <div class="sync-methods">
+            <div class="sync-method">
+                <h4><code>synchronized</code></h4>
+                <p>Etabliert einen Monitor für einen kritischen Bereich. Gleichzeitig darf nur ein Thread auf das Objekt zugreifen.</p>
+            </div>
+
+            <div class="sync-method">
+                <h4><code>wait()</code></h4>
+                <p>Legt den eigenen Prozess schlafen und gibt den Monitor für andere Prozesse frei.</p>
+            </div>
+
+            <div class="sync-method">
+                <h4><code>notify()</code></h4>
+                <p>Stößt die Prozesse, die durch wait() angehalten wurden, wieder an.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRODUCER-CONSUMER PROBLEM -->
+    <div class="chapter-header" style="margin-top: 3rem;">
+        <span class="chapter-number">Aufgabe 4</span>
+        <h2>Producer-Consumer-Problem (PRIMM)</h2>
+    </div>
+
+    <div class="example-box">
+        <h3>🍽️ Klassisches Beispiel: Producer-Consumer-Problem</h3>
+        <p>Das Erzeuger-Verbraucher-Problem ist eine klassische Problemstellung der Prozesssynchronisation.</p>
+        
+        <p><strong>Szenario:</strong></p>
+        <p>Ein Roboter (Erzeuger) füllt eine Kiste und legt sie auf einem Zwischenspeicherplatz mit begrenzter Kapazität ab. Die Kiste wird dann von einem zweiten Roboter (Verbraucher) abgeholt. Auf den Zwischenspeicherplatz darf immer nur ein Roboter zugreifen.</p>
+    </div>
+
+    <div class="task-box">
+        <h4>📝 Arbeitsaufträge - Teil 1: Investigate</h4>
+        <ol>
+            <li><strong>TODO0:</strong> Untersuche die Klassen Buffer, Consumer und Producer. Was machen sie?</li>
+            <li><strong>TODO1a:</strong> Probiere Buffer1 und Buffer2 mit verschiedenen waitingTimes für Consumer und Producer aus (z.B. Producer schnell, Consumer langsam und umgekehrt)</li>
+            <li><strong>TODO1b:</strong> Erkläre die Unterschiede im Verhalten zwischen Buffer1 und Buffer2</li>
+        </ol>
+    </div>
+
+    <div class="ide-container">
+        <h4 class="ide-title">🍽️ Producer-Consumer-Problem</h4>
+        <div class="java-online" 
+             style="width: 100%; height: 650px;" 
+             data-java-online="{ 'id': 'ProducerConsumerProblem', 'speed': 1000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true }">
+            <script type="text/plain" title="Hauptprogramm.java">
+//TODO0 Untersuche die Klassen Buffer, Consumer und Producer
+
+//TODO1 a) Probiere Buffer1 und Buffer2 mit verschiedenen waitingtimes für c und p 
+//b) Erkläre die Unterschiede im Verhalten
+
+//TODO2 a) untersuche die einzelnen Buffer Klassen hinsichtlich 
+// ihrer Unterschiede und funktionsweisen 
+// b) Begründe das Verhalten aus TODO1
+
+//TODO3 -- siehe Buffer3
+
+
+
+//Auswählen welcher Buffer genutzt werden soll
+Buffer buffer = new Buffer1();
+
+MyProducer p1 = new MyProducer(buffer);
+MyProducer p2 = new MyProducer(buffer);
+MyConsumer c = new MyConsumer(buffer);
+
+System.out.println(buffer.name + " startet");
+p1.setWaitingTime(50); 
+p1.start();
+p2.setWaitingTime(50); 
+p2.start();
+
+c.setWaitingTime(500); 
+c.start();
+            </script>
+             <script type="text/plain" title="Buffer.java">
+class Buffer {
+
+   public int count = 0;
+   public final int capacity = 5;
+   public String name = "generic Buffer";
+
+   Buffer(String name) {
+      this.name = name; 
+   }
+
+   public void place() {
+      if(count >= capacity) {
+         System.out.println("Dinge dürfen nicht passieren!");
+      }
+
+      count++;
+      System.out.println("Produziert -> count = " + count);
+   }
+
+   public void take() {
+      if(count <= 0) {
+         System.out.println("Dinge dürfen nicht passieren!");
+      }
+
+      count--;
+      System.out.println("Konsumiert -> count = " + count);
+   }
+}
+            </script>
+            <script type="text/plain" title="MyConsumer.java">
+class MyConsumer extends Thread {
+
+   private Buffer buffer;
+   private int waitingTime = 50; 
+
+   public MyConsumer(Buffer buffer) {
+      this.buffer = buffer;
+   }
+
+   public void run() {
+      while (true) {
+         buffer.take();
+         try {
+            Thread.sleep(waitingTime);
+         } catch(Exception e) {
+            System.out.println(e.getMessage());
+         }
+      }
+   }
+
+   void setWaitingTime(int waitingTime){
+      this.waitingTime = waitingTime;
+   }
+}
+            </script>
+            <script type="text/plain" title="MyProducer.java">
+class MyProducer extends Thread {
+
+   private Buffer buffer;
+   private int waitingTime = 50; 
+
+   public MyProducer(Buffer buffer) {
+      this.buffer = buffer;
+   }
+
+   public void run() {
+      while (true) {
+         buffer.place();
+         try {
+            Thread.sleep(waitingTime);
+         } catch(Exception e) {
+            System.out.println(e.getMessage());
+         }
+      }
+   }
+
+   void setWaitingTime(int waitingTime){
+      this.waitingTime = waitingTime;
+   }
+}
+            </script>
+            <script type="text/plain" title="Buffer1.java">
+class Buffer1 extends Buffer {
+
+   Buffer1() {
+      super("PCB1");
+   }
+
+   @Override
+   public void place() {
+      if(count >= capacity) {
+         System.out.println("!!! PRODUCER: Buffer voll, trotzdem Produktion gestartet");
+      }
+
+      count++;
+      System.out.println("Produziert -> count = " + count);
+   }
+
+   @Override
+   public void take() {
+      if(count <= 0) {
+         System.out.println("!!! CONSUMER: Buffer leer, trotzdem Konsum gestartet");
+      }
+
+      count--;
+      System.out.println("Konsumiert -> count = " + count);
+   }
+}
+            </script>
+            <script type="text/plain" title="Buffer2.java">
+class Buffer2 extends Buffer {
+
+   Buffer2() {
+      super("PCB2");
+   }
+
+   @Override
+   public synchronized void place() {
+      if(count >= capacity) {
+         System.out.println("Producer wartet NICHT, obwohl voll (Busy Waiting)");
+         return;
+      }
+
+      count++;
+      System.out.println("Produziert -> count = " + count);
+   }
+
+   @Override
+   public synchronized void take() {
+      if(count <= 0) {
+         System.out.println("MyConsumer wartet NICHT, obwohl leer (Busy Waiting)");
+         return;
+      }
+
+      count--;
+      System.out.println("Konsumiert -> count = " + count);
+   }
+}
+            </script>
+            <script type="text/plain" title="Buffer3.java">
+class Buffer3 extends Buffer {
+
+   Buffer3() {
+      super("PCB3");
+   }
+
+   //TODO3 a) Implementiere: Solange die Kapazität voll ist, darf nun nichts hinzugefügt werden 
+   // und es muss gewartet werden. Nach erfolgreicher Produktion bzw. Ablage 
+   // sollen die Konsumenten informiert werden um ihre arbeit wieder aufzunehmen.
+   // b) gleiches umgekehrt für das herunternehmen vom Buffer
+   // c) Probiere das Verhalten mit notify() und notifyAll() und erkläre warum hier 
+   // eine Wiederholung mit Bedingung verwendet werden muss statt einer bedingten Anweisung.
+
+   @Override
+   public synchronized void place() {
+      
+      try {
+         System.out.println("Producer wartet...");
+         // TODO hier fehlt noch was
+      } catch(Exception e) {
+         System.out.println(e.getMessage());
+      }
+
+      count++;
+      System.out.println("Produziert -> count = " + count);
+      // TODO hier fehlt noch was
+   }
+
+   @Override
+   public synchronized void take() {
+
+      System.out.println("Consumer wartet...");
+
+      count--;
+      System.out.println("Konsumiert -> count = " + count);
+   }
+}
+            </script>
+        </div>
+    </div>
+
+    <div class="task-box" style="margin-top: 2rem;">
+        <h4>📝 Arbeitsaufträge - Teil 2: Analyze & Compare</h4>
+        <ol start="4">
+            <li><strong>TODO2a:</strong> Untersuche die einzelnen Buffer-Klassen (Buffer1, Buffer2, Buffer3) hinsichtlich ihrer Unterschiede und Funktionsweisen</li>
+            <li><strong>TODO2b:</strong> Begründe das Verhalten aus TODO1 anhand des Codes</li>
+        </ol>
+        <button class="btn btn-secondary" onclick="toggleSolution('solution_aufgabe4_teil2')">Lösung Teil 2 anzeigen</button>
+    </div>
+
+    <div id="solution_aufgabe4_teil2" class="solution-box hidden">
+        <h4>✅ Lösung zu Aufgabe 4 - Teil 2</h4>
+        
+        <p><strong>Zu TODO0: Klassen-Übersicht:</strong></p>
+        <div class="highlight">
+            <ul>
+                <li><strong>Buffer:</strong> Verwaltet einen Puffer mit begrenzter Kapazität (5 Plätze)</li>
+                <li><strong>MyProducer:</strong> Produziert kontinuierlich Items und legt sie im Buffer ab</li>
+                <li><strong>MyConsumer:</strong> Konsumiert kontinuierlich Items aus dem Buffer</li>
+            </ul>
+        </div>
+
+        <p><strong>Zu TODO1a & 1b: Verhalten der Buffer:</strong></p>
+        <div class="highlight">
+            <p><strong>Buffer1 (ohne Synchronisation):</strong></p>
+            <ul>
+                <li>Keine Synchronisation → <strong>Race Conditions!</strong></li>
+                <li>count kann negativ oder > capacity werden</li>
+                <li>Fehlermeldungen erscheinen häufig</li>
+                <li>Produzent produziert auch wenn voll, Consumer konsumiert auch wenn leer</li>
+            </ul>
+
+            <p><strong>Buffer2 (mit synchronized und return):</strong></p>
+            <ul>
+                <li>Methoden sind synchronized → kein gleichzeitiger Zugriff</li>
+                <li>Bei vollem Buffer: Producer gibt auf (return) → <strong>Busy Waiting</strong></li>
+                <li>Bei leerem Buffer: Consumer gibt auf (return) → <strong>Busy Waiting</strong></li>
+                <li>count bleibt im gültigen Bereich, aber ineffizient (viele vergebliche Versuche)</li>
+            </ul>
+        </div>
+
+        <p><strong>Zu TODO2a & 2b: Code-Analyse:</strong></p>
+        <div class="highlight">
+            <p><strong>Buffer1:</strong> Keine Schutzmechanismen → Chaos</p>
+            <p><strong>Buffer2:</strong> synchronized verhindert Race Conditions, aber return führt zu Busy Waiting (Thread versucht es immer wieder, verschwendet CPU-Zeit)</p>
+            <p><strong>Buffer3:</strong> Soll wait() und notify() nutzen für effiziente Synchronisation (siehe TODO3)</p>
+        </div>
+    </div>
+
+    <div class="task-box" style="margin-top: 2rem;">
+        <h4>📝 Arbeitsaufträge - Teil 3: Make (TODO3)</h4>
+        <ol start="6">
+            <li><strong>TODO3a:</strong> Implementiere in Buffer3: Solange die Kapazität voll ist, darf nichts hinzugefügt werden und es muss gewartet werden (<code>wait()</code>). Nach erfolgreicher Produktion sollen die Konsumenten informiert werden (<code>notify()</code> oder <code>notifyAll()</code>)</li>
+            <li><strong>TODO3b:</strong> Gleiches umgekehrt für das Herunternehmen vom Buffer</li>
+            <li><strong>TODO3c:</strong> Probiere das Verhalten mit <code>notify()</code> und <code>notifyAll()</code>. Erkläre, warum hier eine Wiederholung mit Bedingung (<code>while</code>) verwendet werden muss statt einer bedingten Anweisung (<code>if</code>)</li>
+        </ol>
+        <button class="btn btn-secondary" onclick="toggleSolution('solution_aufgabe4_teil3')">Lösung Teil 3 anzeigen</button>
+    </div>
+
+    <div id="solution_aufgabe4_teil3" class="solution-box hidden">
+        <h4>✅ Lösung zu Aufgabe 4 - Teil 3 (TODO3)</h4>
+        
+        <p><strong>Implementierung Buffer3:</strong></p>
+        <pre>
+@Override
+public synchronized void place() {
+   try {
+      while (count >= capacity) {
+         System.out.println("Producer wartet...");
+         wait();
+      }
+   } catch(Exception e) {
+      System.out.println(e.getMessage());
+   }
+
+   count++;
+   System.out.println("Produziert -> count = " + count);
+   notifyAll(); // oder notify()
+}
+
+@Override
+public synchronized void take() {
+   try {
+      while (count <= 0) {
+         System.out.println("Consumer wartet...");
+         wait();
+      }
+   } catch(Exception e) {
+      System.out.println(e.getMessage());
+   }
+
+   count--;
+   System.out.println("Konsumiert -> count = " + count);
+   notifyAll(); // oder notify()
+}
+        </pre>
+
+        <p><strong>Zu TODO3c: while vs. if und notify() vs. notifyAll():</strong></p>
+        <div class="highlight">
+            <p><strong>Warum while statt if?</strong></p>
+            <ul>
+                <li>Nach <code>wait()</code> muss die Bedingung <strong>erneut geprüft</strong> werden!</li>
+                <li>Es könnte ein anderer Thread die Ressource bereits genommen haben</li>
+                <li><strong>Spurious Wakeups:</strong> Thread kann auch ohne notify() aufwachen</li>
+                <li>→ <code>while</code> garantiert, dass die Bedingung wirklich erfüllt ist</li>
+            </ul>
+
+            <p><strong>notify() vs. notifyAll():</strong></p>
+            <ul>
+                <li><strong>notify():</strong> Weckt einen zufälligen wartenden Thread auf</li>
+                <li><strong>notifyAll():</strong> Weckt alle wartenden Threads auf</li>
+                <li>Mit mehreren Producern und Consumern ist <strong>notifyAll() sicherer</strong></li>
+                <li>notify() könnte den falschen Thread aufwecken (z.B. Producer weckt Producer)</li>
+            </ul>
+        </div>
+
+        <p><strong>Wichtige Konzepte:</strong></p>
+        <div class="highlight">
+            <ul>
+                <li><strong>wait():</strong> Gibt den Monitor frei und wartet (Thread schläft)</li>
+                <li><strong>notify()/notifyAll():</strong> Weckt wartende Threads auf</li>
+                <li><strong>synchronized:</strong> Notwendig für wait() und notify()</li>
+                <li>→ Effiziente Synchronisation ohne Busy Waiting!</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- SPEISENDE PHILOSOPHEN -->
+    <div class="chapter-header" style="margin-top: 3rem;">
+        <span class="chapter-number">Aufgabe 5</span>
+        <h2>Speisende Philosophen - Deadlock (PRIMM)</h2>
+    </div>
+
+    <div class="example-box danger">
+        <h3>🍴 Klassisches Problem: Speisende Philosophen</h3>
+        <p>Das Philosophenproblem ist ein klassisches Beispiel für die Notwendigkeit einer Prozess-Synchronisation.</p>
+        
+        <p><strong>Szenario:</strong></p>
+        <p>Es sitzen fünf Philosophen an einem runden Tisch, und jeder hat einen Teller mit Spaghetti vor sich. Zum Essen von Spaghetti benötigt jeder Philosoph zwei Gabeln. Allerdings sind nur fünf Gabeln vorhanden, die zwischen den Tellern liegen.</p>
+        
+        <p><strong>Das Problem:</strong></p>
+        <ul>
+            <li>Jeder Philosoph greift zuerst die linke, dann die rechte Gabel</li>
+            <li>Wenn alle gleichzeitig ihre linke Gabel nehmen, wartet jeder auf die rechte</li>
+            <li>Niemand kann essen → <strong>Deadlock!</strong></li>
+        </ul>
+    </div>
+
+    <div class="concept-box warning">
+        <h3>💡 Merkzettel: Verklemmung</h3>
+        <p class="highlight">Der wechselseitige Ausschluss genügt nicht – parallele Prozesse können sich sogar gegenseitig blockieren!</p>
+        <p><strong>Verklemmung (Deadlock):</strong> Zwei oder mehr Prozesse warten gegenseitig auf Ressourcen, die der jeweils andere hält.</p>
+        <p><strong>Lösung:</strong> Blockaden müssen erkannt und aufgelöst werden (Schutz durch Prozesskommunikation)</p>
+    </div>
+
+    <div class="task-box">
+        <h4>📝 Arbeitsaufträge - Teil 1: Deadlock provozieren</h4>
+        <ol>
+            <li><strong>Predict:</strong> Was wird passieren, wenn alle Philosophen gleichzeitig versuchen zu essen?</li>
+            <li><strong>Run:</strong> Führe den Code aus. Beobachte, was passiert. Kommt es zu einem Deadlock?</li>
+            <li><strong>Investigate:</strong> Analysiere den Code. Warum entsteht der Deadlock? Welche Bedingungen müssen erfüllt sein?</li>
+        </ol>
+    </div>
+
+    <div class="ide-container">
+        <h4 class="ide-title">🍴 Speisende Philosophen - Deadlock Version</h4>
+        <div class="java-online" 
+             style="width: 100%; height: 650px;" 
+             data-java-online="{ 'id': 'PhilosophersDeadlock', 'speed': 1000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true }">
+            <script type="text/plain" title="Hauptprogramm.java">
+// Gabeln erstellen
+Gabel[] gabeln = new Gabel[5];
+for (int i = 0; i < 5; i++) {
+    gabeln[i] = new Gabel(i);
+}
+
+// Philosophen erstellen und starten
+Philosoph[] philosophen = new Philosoph[5];
+for (int i = 0; i < 5; i++) {
+    philosophen[i] = new Philosoph(i, gabeln[i], gabeln[(i + 1) % 5]);
+    philosophen[i].start();
+}
+
+System.out.println("Alle Philosophen gestartet - beobachte möglichen Deadlock!");
+            </script>
+             <script type="text/plain" title="Gabel.java">
 class Gabel {
-    private boolean verfuegbar = true;
-    private int nummer;
+   private boolean verfuegbar = true;
+   private int nummer;
 
-    public Gabel(int nummer) {
-        this.nummer = nummer;
-    }
+   public Gabel(int nummer) {
+      this.nummer = nummer;
+   }
 
-    public synchronized void aufnehmen() {
-        while (!verfuegbar) {
-            wait(); // Warten, bis Gabel frei ist
-        }
-        verfuegbar = false;
-        System.out.println("Gabel " + nummer + " aufgenommen");
-    }
-
-    public synchronized void ablegen() {
-        verfuegbar = true;
-        System.out.println("Gabel " + nummer + " abgelegt");
-        notify(); // Wartende Philosophen benachrichtigen
-    }
-}
-                        </script>
-                        <script type="text/plain" title="Philosoph.java">
-class Philosoph extends Thread {
-    private int nummer;
-    private Gabel linkeGabel;
-    private Gabel rechteGabel;
-
-    public Philosoph(int nummer, Gabel links, Gabel rechts) {
-        this.nummer = nummer;
-        this.linkeGabel = links;
-        this.rechteGabel = rechts;
-    }
-
-    private void denken() {
-        System.out.println("Philosoph " + nummer + " denkt");
-        sleep((int)(Math.random() * 1000));
-    }
-
-    private void essen(){
-        System.out.println("Philosoph " + nummer + " isst");
-        sleep((int)(Math.random() * 1000));
-    }
-
-    @Override
-    public void run() {
-        try {
-            for (int i = 0; i < 5; i++) {
-                denken();
-                
-                // Gabeln aufnehmen
-                linkeGabel.aufnehmen();
-                rechteGabel.aufnehmen();
-                
-                essen();
-                
-                // Gabeln ablegen
-                linkeGabel.ablegen();
-                rechteGabel.ablegen();
-            }
-        } catch (Exception e) {
+   public synchronized void aufnehmen() {
+      while (!verfuegbar) {
+         System.out.println("Gabel " + nummer + " ist besetzt, warte...");
+         try {
+            wait(); // Warten, bis Gabel frei ist   
+         } catch(Exception e) {
             System.out.println(e.getMessage());
-        }
-    }
+         }
+      }
+      verfuegbar = false;
+      System.out.println("Gabel " + nummer + " aufgenommen");
+   }
+
+   public synchronized void ablegen() {
+      verfuegbar = true;
+      System.out.println("Gabel " + nummer + " abgelegt");
+      notifyAll(); // Wartende Philosophen benachrichtigen
+   }
+    
+   public int getNummer() {
+      return nummer;
+   }
 }
-                        </script>
-                        <script type="text/plain" title="Main.java">
-public class PhilosophersDemo {
-    public static void main(String[] args) {
-        // Gabeln erstellen
-        Gabel[] gabeln = new Gabel[5];
-        for (int i = 0; i < 5; i++) {
-            gabeln[i] = new Gabel(i);
-        }
+            </script>
+            <script type="text/plain" title="Philosoph.java">
+class Philosoph extends Thread {
+   private int nummer;
+   private Gabel linkeGabel;
+   private Gabel rechteGabel;
+
+   public Philosoph(int nummer, Gabel links, Gabel rechts) {
+      this.nummer = nummer;
+      this.linkeGabel = links;
+      this.rechteGabel = rechts;
+   }
+
+   private void denken() {
+      System.out.println("Philosoph " + nummer + " denkt");
+      try {
+         Thread.sleep((int)(Math.random() * 100));
+      } catch(Exception e) {
+         System.out.println(e.getMessage());
+      }
+   }
+
+   private void essen() {
+      System.out.println("Philosoph " + nummer + " isst");
+      try { 
+         Thread.sleep((int)(Math.random() * 100));
+      } catch(Exception e) {
+         System.out.println(e.getMessage());
+      }
+   }
+
+   @Override
+   public void run() {
+      try {
+         for (int i = 0; i < 3; i++) {
+            denken();
+                
+            // DEADLOCK-GEFAHR: Alle nehmen erst linke Gabel
+            System.out.println("Philosoph " + nummer + " versucht linke Gabel " + linkeGabel.getNummer() + " aufzunehmen");
+            linkeGabel.aufnehmen();
+                
+            System.out.println("Philosoph " + nummer + " versucht rechte Gabel " + rechteGabel.getNummer() + " aufzunehmen");
+            rechteGabel.aufnehmen();
+                
+            essen();
+                
+            // Gabeln ablegen
+            linkeGabel.ablegen();
+            rechteGabel.ablegen();
+         }
+         System.out.println("Philosoph " + nummer + " ist fertig!");
+      } catch(Exception e) {
+         System.out.println("Philosoph " + nummer + " wurde unterbrochen");
+      }
+   }
+}
+            </script>
+        </div>
+    </div>
+
+    <div class="task-box" style="margin-top: 2rem;">
+        <h4>📝 Arbeitsaufträge - Teil 2: Lösung implementieren</h4>
+        <ol start="4">
+            <li><strong>Analyze:</strong> Welche Lösungsansätze gibt es für das Deadlock-Problem?</li>
+            <li><strong>Make:</strong> Implementiere eine der folgenden Lösungen:
+                <ul>
+                    <li><strong>Lösung 1:</strong> Asymmetrische Lösung - Ein Philosoph greift erst die rechte Gabel</li>
+                    <li><strong>Lösung 2:</strong> Maximal 4 Philosophen gleichzeitig am Tisch (Semaphor)</li>
+                    <li><strong>Lösung 3:</strong> Beide Gabeln atomar (gleichzeitig) aufnehmen</li>
+                </ul>
+            </li>
+            <li><strong>Test:</strong> Teste deine Lösung mehrfach. Tritt noch ein Deadlock auf?</li>
+        </ol>
+        <button class="btn btn-secondary" onclick="toggleSolution('solution_aufgabe5')">Lösungsansätze anzeigen</button>
+    </div>
+
+    <div id="solution_aufgabe5" class="solution-box hidden">
+        <h4>✅ Lösung zu Aufgabe 5 - Speisende Philosophen</h4>
         
-        // Philosophen erstellen und starten
-        Philosoph[] philosophen = new Philosoph[5];
-        for (int i = 0; i < 5; i++) {
-            philosophen[i] = new Philosoph(i, gabeln[i], gabeln[(i + 1) % 5]);
-            philosophen[i].start();
+        <p><strong>Zu 1-3: Deadlock-Analyse:</strong></p>
+        <div class="highlight">
+            <p><strong>Warum entsteht der Deadlock?</strong></p>
+            <ul>
+                <li>Alle 5 Philosophen nehmen gleichzeitig ihre linke Gabel</li>
+                <li>Jeder wartet nun auf die rechte Gabel</li>
+                <li>Aber die rechte Gabel ist die linke Gabel des Nachbarn!</li>
+                <li>→ Zirkuläres Warten: 0→1→2→3→4→0</li>
+            </ul>
+
+            <p><strong>Bedingungen für Deadlock (alle 4 müssen erfüllt sein):</strong></p>
+            <ol>
+                <li><strong>Mutual Exclusion:</strong> Ressource kann nur von einem Prozess genutzt werden</li>
+                <li><strong>Hold and Wait:</strong> Prozess hält Ressource und wartet auf weitere</li>
+                <li><strong>No Preemption:</strong> Ressource kann nicht entzogen werden</li>
+                <li><strong>Circular Wait:</strong> Zirkuläre Wartekette</li>
+            </ol>
+        </div>
+
+        <p><strong>Zu 4-6: Lösungsansätze:</strong></p>
+
+        <div class="highlight">
+            <p><strong>Lösung 1: Asymmetrische Lösung (einfachste!)</strong></p>
+            <p>Ein Philosoph (z.B. der letzte) greift die Gabeln in umgekehrter Reihenfolge:</p>
+            <pre>
+// In Philosoph.java, in der run()-Methode:
+if (nummer == 4) {
+    // Philosoph 4 nimmt erst rechte, dann linke Gabel
+    rechteGabel.aufnehmen();
+    linkeGabel.aufnehmen();
+} else {
+    // Alle anderen: erst links, dann rechts
+    linkeGabel.aufnehmen();
+    rechteGabel.aufnehmen();
+}
+            </pre>
+            <p>→ Bricht die zirkuläre Wartekette!</p>
+        </div>
+
+        <div class="highlight">
+            <p><strong>Lösung 2: Maximal 4 Philosophen am Tisch</strong></p>
+            <p>Verwende einen Semaphor, der maximal 4 Philosophen gleichzeitig zulässt:</p>
+            <pre>
+// Neue Klasse oder in Hauptprogramm:
+class TischSemaphor {
+    private int plaetze = 4;
+    
+    public synchronized void betreten() throws InterruptedException {
+        while (plaetze == 0) {
+            wait();
         }
+        plaetze--;
+        System.out.println("Philosoph betritt Tisch, " + plaetze + " Plätze frei");
+    }
+    
+    public synchronized void verlassen() {
+        plaetze++;
+        System.out.println("Philosoph verlässt Tisch, " + plaetze + " Plätze frei");
+        notifyAll();
     }
 }
-                        </script>
-                    </div>
+
+// In Philosoph.run():
+tischSemaphor.betreten();
+// ... essen ...
+tischSemaphor.verlassen();
+            </pre>
+            <p>→ Mindestens ein Philosoph kann immer beide Gabeln nehmen!</p>
+        </div>
+
+        <div class="highlight">
+            <p><strong>Lösung 3: Beide Gabeln atomar aufnehmen</strong></p>
+            <p>Verwende ein gemeinsames Lock-Objekt für beide Gabeln:</p>
+            <pre>
+// Neue Methode in einer Manager-Klasse:
+class GabelManager {
+    public synchronized void nimmBeideGabeln(Gabel links, Gabel rechts) 
+            throws InterruptedException {
+        links.aufnehmen();
+        rechts.aufnehmen();
+    }
+    
+    public synchronized void legeBeideGabelnAb(Gabel links, Gabel rechts) {
+        links.ablegen();
+        rechts.ablegen();
+    }
+}
+
+// In Philosoph.run():
+gabelManager.nimmBeideGabeln(linkeGabel, rechteGabel);
+essen();
+gabelManager.legeBeideGabelnAb(linkeGabel, rechteGabel);
+            </pre>
+            <p>→ Verhindert Hold-and-Wait!</p>
+        </div>
+
+        <p><strong>Empfehlung:</strong></p>
+        <p class="highlight">Die <strong>asymmetrische Lösung</strong> ist am einfachsten zu implementieren und sehr effektiv. Sie bricht die zirkuläre Wartekette, indem ein Philosoph die Reihenfolge ändert.</p>
+    </div>
+
+    <!-- Strategien zur Konfliktvermeidung -->
+    <div class="strategy-grid" style="margin-top: 3rem;">
+        <h3>📊 Strategien zur Vermeidung bzw. Lösung von Konflikten</h3>
+        
+        <div class="strategy-card">
+            <h4>Wechselseitiger Ausschluss (exklusiv)</h4>
+            <ul>
+                <li><strong>Monitor</strong> (engl. to monitor = überwachen)</li>
+                <li><strong>Kritische Abschnitte</strong> (Critical Section)</li>
+                <li>Konfliktmanagement</li>
+                <li>Prozesskommunikation</li>
+            </ul>
+        </div>
+
+        <div class="strategy-card">
+            <h4>Zeitliche Synchronisation (inklusiv)</h4>
+            <ul>
+                <li><strong>Meeting Room</strong></li>
+                <li><strong>Barriere</strong> (Barrier)</li>
+                <li>Gegenseitige Abstimmung (z.B. Warten)</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Best Practices -->
+    <div class="best-practices" style="margin-top: 3rem;">
+        <h3>✅ Best Practices für Thread-Programmierung</h3>
+        
+        <div class="practice">
+            <span class="icon">1️⃣</span>
+            <div>
+                <strong>Minimiere kritische Abschnitte</strong>
+                <p>Halte synchronized-Blöcke so kurz wie möglich</p>
+            </div>
+        </div>
+
+        <div class="practice">
+            <span class="icon">2️⃣</span>
+            <div>
+                <strong>Vermeide Deadlocks</strong>
+                <p>Definiere eine feste Reihenfolge für das Sperren von Ressourcen</p>
+            </div>
+        </div>
+
+        <div class="practice">
+            <span class="icon">3️⃣</span>
+            <div>
+                <strong>Nutze höhere Abstraktionen</strong>
+                <p>Verwende java.util.concurrent (ExecutorService, CountDownLatch, etc.)</p>
+            </div>
+        </div>
+
+        <div class="practice">
+            <span class="icon">4️⃣</span>
+            <div>
+                <strong>Teste gründlich</strong>
+                <p>Thread-Probleme sind oft schwer reproduzierbar</p>
+            </div>
+        </div>
+
+        <div class="practice">
+            <span class="icon">5️⃣</span>
+            <div>
+                <strong>Dokumentiere Thread-Safety</strong>
+                <p>Markiere Klassen und Methoden klar als thread-safe oder nicht</p>
+            </div>
+        </div>
+
+        <div class="practice">
+            <span class="icon">6️⃣</span>
+            <div>
+                <strong>Verwende while statt if bei wait()</strong>
+                <p>Prüfe Bedingungen nach dem Aufwachen erneut (Spurious Wakeups!)</p>
+            </div>
+        </div>
+
+        <div class="practice">
+            <span class="icon">7️⃣</span>
+            <div>
+                <strong>Bevorzuge notifyAll() über notify()</strong>
+                <p>Sicherer bei mehreren wartenden Threads unterschiedlicher Typen</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Zusammenfassung -->
+    <div class="concept-box" style="margin-top: 3rem;">
+        <h3>📚 Zusammenfassung: Nebenläufigkeit in Java</h3>
+        
+        <div class="key-points">
+            <div class="key-point">
+                <span class="number">1</span>
+                <div>
+                    <strong>Thread-Erstellung</strong>
+                    <p>Zwei Wege: extends Thread oder implements Runnable. Starten mit start(), nicht run()!</p>
                 </div>
-
-                <div class="best-practices">
-                    <h3>✅ Best Practices für Thread-Programmierung</h3>
-                    
-                    <div class="practice">
-                        <span class="icon">1️⃣</span>
-                        <div>
-                            <strong>Minimiere kritische Abschnitte</strong>
-                            <p>Halte synchronized-Blöcke so kurz wie möglich</p>
-                        </div>
-                    </div>
-
-                    <div class="practice">
-                        <span class="icon">2️⃣</span>
-                        <div>
-                            <strong>Vermeide Deadlocks</strong>
-                            <p>Definiere eine feste Reihenfolge für das Sperren von Ressourcen</p>
-                        </div>
-                    </div>
-
-                    <div class="practice">
-                        <span class="icon">3️⃣</span>
-                        <div>
-                            <strong>Nutze höhere Abstraktionen</strong>
-                            <p>Verwende java.util.concurrent (ExecutorService, CountDownLatch, etc.)</p>
-                        </div>
-                    </div>
-
-                    <div class="practice">
-                        <span class="icon">4️⃣</span>
-                        <div>
-                            <strong>Teste gründlich</strong>
-                            <p>Thread-Probleme sind oft schwer reproduzierbar</p>
-                        </div>
-                    </div>
-
-                    <div class="practice">
-                        <span class="icon">5️⃣</span>
-                        <div>
-                            <strong>Dokumentiere Thread-Safety</strong>
-                            <p>Markiere Klassen und Methoden klar als thread-safe oder nicht</p>
-                        </div>
-                    </div>
+            </div>
+            
+            <div class="key-point">
+                <span class="number">2</span>
+                <div>
+                    <strong>Race Conditions</strong>
+                    <p>Gleichzeitiger Zugriff auf gemeinsame Ressourcen führt zu Inkonsistenzen. Lösung: synchronized</p>
                 </div>
-
-                <div class="navigation-buttons">
-                    <button class="btn btn-outline" onclick="navigateToChapter(4)">← Zurück</button>
-                    <button class="btn btn-success" onclick="showCompletion()">Abschließen ✓</button>
+            </div>
+            
+            <div class="key-point">
+                <span class="number">3</span>
+                <div>
+                    <strong>Monitore und Semaphore</strong>
+                    <p>synchronized bindet an Objekte. Verschiedene Objekte = verschiedene Monitore!</p>
                 </div>
-            </section>
+            </div>
+            
+            <div class="key-point">
+                <span class="number">4</span>
+                <div>
+                    <strong>wait() und notify()</strong>
+                    <p>Effiziente Synchronisation ohne Busy Waiting. Immer mit while-Schleife verwenden!</p>
+                </div>
+            </div>
+            
+            <div class="key-point">
+                <span class="number">5</span>
+                <div>
+                    <strong>Deadlock-Vermeidung</strong>
+                    <p>Zirkuläre Warteketten vermeiden durch: Reihenfolge, Begrenzung oder atomare Operationen</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation-buttons">
+        <button class="btn btn-outline" onclick="navigateToChapter(4)">← Zurück</button>
+        <button class="btn btn-success" onclick="showCompletion()">Abschließen ✓</button>
+    </div>
+</section>
+
 
             <!-- Completion Modal -->
             <div id="completionModal" class="modal hidden">
