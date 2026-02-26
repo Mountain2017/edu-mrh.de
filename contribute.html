@@ -224,45 +224,176 @@ public class Start {
                     <a href="script.js" download="script.js" class="btn btn-secondary" style="padding: 5px 12px; font-size: 0.8rem;">📥 script.js herunterladen</a>
                 </div>
                 <div class="copy-wrapper">
-                    <pre id="prompt-text" style="white-space: pre-wrap; font-size: 0.9rem; color: #a5b4fc;">Du bist ein Assistent für Informatiklehrer. Erstelle eine HTML-Seite für eine Unterrichtseinheit zum Thema [THEMA HIER EINFÜGEN].
+                    <pre id="prompt-text" style="white-space: pre-wrap; font-size: 0.9rem; color: #a5b4fc;">Du bist ein Experte für die Erstellung von Unterrichtsmaterialien als Webseiten. Erstelle eine vollständige, produktionsreife HTML-Seite für eine Unterrichtseinheit zum Thema [THEMA HIER EINFÜGEN] für die Jahrgangsstufe [JAHRGANGSSTUFE] im Fachbereich [FACHBEREICH].
 
-Beachte folgende technische Vorgaben strikt:
+TECHNISCHE ANFORDERUNGEN (STRIKT EINHALTEN):
 
-1. Nutze dieses CSS-Framework und binde es im Head ein:
+1. DOKUMENTSTRUKTUR:
+- Erstelle eine valide HTML5-Seite mit vollständigem DOCTYPE, head und body
+- Setze die Sprache auf Deutsch: &lt;html lang="de"&gt;
+- Verwende UTF-8 Encoding: &lt;meta charset="UTF-8"&gt;
+- Füge Viewport-Meta-Tag hinzu: &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+- Setze einen aussagekräftigen &lt;title&gt; im Format: "[Thema] - [Fachbereich] - edu-mrh.de"
+- Füge eine Meta-Description hinzu (max. 160 Zeichen)
+- Füge am Anfang des body folgende Metadaten als Kommentar ein:
+&lt;!--
+Fachbereich: [FACHBEREICH]
+Jahrgangsstufe: [STUFE]
+Thema: [THEMA]
+Erstellt: [AKTUELLES DATUM]
+Version: 1.0
+--&gt;
+
+2. CSS-FRAMEWORK (PFLICHT - im &lt;head&gt; einbinden):
 &lt;link rel="stylesheet" href="https://edu-mrh.de/embed/style.css"&gt;
-Die Datei ist auch als Textdatei unten angefügt.
 
-2. Nutze dieses JS-Framework und binde es im Head ein:
+3. JAVASCRIPT-FRAMEWORK (PFLICHT - im &lt;head&gt; einbinden):
 &lt;script defer src="https://edu-mrh.de/embed/script.js"&gt;&lt;/script&gt;
-Die Datei ist auch als Textdatei unten angefügt.
 
-3. Binde (sofern nötig) die die Katex Rendering für Mathe so ein:
+4. FAVICON (PFLICHT):
+&lt;link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png"&gt;
+
+5. NAVIGATION (PFLICHT):
+Erstelle eine Navigation mit folgender Struktur:
+&lt;nav class="navbar"&gt;
+    &lt;div class="nav-brand"&gt;
+        &lt;span class="icon"&gt;[PASSENDES ICON AUS LISTE WÄHLEN]&lt;/span&gt;
+        &lt;a href="https://edu-mrh.de/"&gt;edu-mrh.de&lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div class="nav-links"&gt;
+        &lt;a href="https://edu-mrh.de/[FACHBEREICH]/[FACHBEREICH].html#jahrgang-[JAHRGANGSSTUFE]" class="btn btn-outline"&gt;Übersicht&lt;/a&gt;
+        &lt;a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline"&gt;Impressum&lt;/a&gt;
+    &lt;/div&gt;
+&lt;/nav&gt;
+
+ICON-AUSWAHL (wähle das passendste):
+- 🖥️ für Informatik
+- 🔢 für Mathematik
+- ⚛️ für Physik
+- 🧪 für Chemie
+- 🌱 für Biologie
+- 📚 für Sprachen
+- 🌍 für Geographie/Geschichte
+- 🎨 für Kunst/Kreatives
+
+ERSETZE in der Navigation:
+- [FACHBEREICH] durch den konkreten Fachbereich in Kleinbuchstaben (z.B. "informatik", "mathematik")
+- [JAHRGANGSSTUFE] durch die Zahl (z.B. "7", "10", "11")
+
+6. KATEX FÜR MATHEMATIK (NUR bei mathematischen Inhalten):
+Falls mathematische Formeln benötigt werden, binde im &lt;head&gt; ein:
 &lt;link rel="stylesheet" href="https://edu-mrh.de/embed/katex/katex.min.css"&gt;
 &lt;script defer src="https://edu-mrh.de/embed/katex/katex.min.js"&gt;&lt;/script&gt;
 &lt;script defer src="https://edu-mrh.de/embed/katex/contrib/auto-render.min.js" onload="renderMath()"&gt;&lt;/script&gt;
 
-4. Binde (sofern nötig) die Online-IDE so ein:
+Nutze für Formeln:
+- Inline: $Formel$ (z.B. $x^2 + y^2 = z^2$)
+- Display: $$Formel$$ (z.B. $$\\int_0^\\infty e^{-x^2} dx$$)
+
+7. ONLINE-IDE FÜR JAVA (NUR bei Programmieraufgaben):
+Falls Java-Code-Editor benötigt wird, binde im &lt;head&gt; ein:
 &lt;link rel="stylesheet" href="https://edu-mrh.de/embed/include/online-ide-embedded.css"&gt;
 &lt;script type="module" src="https://edu-mrh.de/embed/include/online-ide-embedded.js"&gt;&lt;/script&gt;
-und setze den Java-Code im Editor nach diesem Schema innerhalb des jeweiligen divs um:
-&lt;div class="java-online" 
-    style="width: 100%; height: 500px;" 
-    data-java-online="{ 'id': '$idFestlegen$', 'speed': 1000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true }"&gt;
-    &lt;script type="text/plain" title="$nameVergeben$.java"&gt;
-    // Java-Code hier
+
+EDITOR-EINBINDUNG im body:
+&lt;div class="java-online" style="width: 100%; height: 500px;" data-java-online='{ "id": "eindeutige-id-hier", "speed": 1000, "withBottomPanel": true, "withFileList": true, "withConsole": true }'&gt;
+    &lt;script type="text/plain" title="Hauptklasse.java"&gt;
+public class Hauptklasse {
+    public static void main(String[] args) {
+        // Code hier
+    }
+}
+    &lt;/script&gt;
+    &lt;script type="text/plain" title="ZweiteKlasse.java"&gt;
+public class ZweiteKlasse {
+    // Weitere Klasse hier
+}
     &lt;/script&gt;
 &lt;/div&gt;
-Mehrere Klassen innerhalb eines Workspaces stehen im selben div aber in unterschiedlichen &lt;script&gt;-Tags.
 
-5. Nutze für das Layout die CSS-Klassen:
-- `container` für den Hauptbereich.
-- `chapter-header` mit `chapter-number` für Überschriften.
-- `info-box`, `task-box` oder `warning-box` für Hinweise.
-- `java-online` div für den Editor Code.
+WICHTIG für IDs: Verwende sprechende, eindeutige IDs im Format: [thema]-[aufgabe]-[nummer] (z.B. "schleifen-uebung-01")
 
-Erstelle eine Website mit HTML, CSS und JS. Der Stil soll modern, freundlich und übersichtlich sein.
+LAYOUT UND STRUKTUR:
 
-WICHTIG: Beende deine Antwort erst wenn ALLE Codezeilen fertig sind, NICHT VORHER.</pre>
+HAUPTCONTAINER (umschließt gesamten Inhalt):
+&lt;div class="container"&gt;
+    &lt;!-- Gesamter Inhalt hier --&gt;
+&lt;/div&gt;
+
+KAPITEL-HEADER:
+&lt;div class="chapter-header"&gt;
+    &lt;span class="chapter-number"&gt;[Nummer]&lt;/span&gt;
+    &lt;h1&gt;[Kapiteltitel]&lt;/h1&gt;
+&lt;/div&gt;
+
+CONTENT-BOXEN (verwende passende Typen):
+
+INFO-BOX (für Erklärungen, Definitionen):
+&lt;div class="info-box"&gt;
+    &lt;h3&gt;💡 Wichtig&lt;/h3&gt;
+    &lt;p&gt;Inhalt hier...&lt;/p&gt;
+&lt;/div&gt;
+
+TASK-BOX (für Aufgaben):
+&lt;div class="task-box"&gt;
+    &lt;h3&gt;✏️ Aufgabe [Nummer]&lt;/h3&gt;
+    &lt;p&gt;Aufgabenstellung...&lt;/p&gt;
+&lt;/div&gt;
+
+WARNING-BOX (für Warnungen, häufige Fehler):
+&lt;div class="warning-box"&gt;
+    &lt;h3&gt;⚠️ Achtung&lt;/h3&gt;
+    &lt;p&gt;Warnung...&lt;/p&gt;
+&lt;/div&gt;
+
+INHALTLICHE ANFORDERUNGEN:
+
+STRUKTUR DER UNTERRICHTSEINHEIT:
+1. Einleitung (Motivation, Lernziele)
+2. Theorieteil (Erklärungen mit Beispielen)
+3. Praktische Übungen (mindestens 3 Aufgaben mit steigendem Schwierigkeitsgrad)
+4. Zusammenfassung (Kernpunkte wiederholen)
+5. Weiterführende Links (optional)
+
+DIDAKTISCHE PRINZIPIEN:
+- Klare, verständliche Sprache (altersgerecht)
+- Schrittweise Steigerung der Komplexität
+- Konkrete Beispiele vor abstrakten Konzepten
+- Visuelle Unterstützung durch Boxen und Strukturierung
+- Interaktive Elemente (bei Programmierung: lauffähiger Code)
+- Selbstkontrolle ermöglichen (Lösungshinweise)
+
+CODE-QUALITÄT (bei Programmieraufgaben):
+- Vollständiger, lauffähiger Code
+- Sinnvolle Variablennamen (deutsch oder englisch, konsistent)
+- Kommentare für komplexe Stellen
+- Best Practices der Sprache beachten
+- Fehlerbehandlung wo sinnvoll
+
+QUALITÄTSSICHERUNG - PRÜFE VOR ABSCHLUSS:
+- Alle Ressourcen korrekt eingebunden
+- Navigation vollständig ausgefüllt (keine Platzhalter wie [FACHBEREICH])
+- Alle IDs eindeutig
+- Code syntaktisch korrekt
+- Rechtschreibung und Grammatik
+- Responsive Design (funktioniert auf mobilen Geräten)
+- Accessibility (alt-Texte, semantisches HTML)
+
+AUSGABEFORMAT:
+
+KRITISCH: Gib den VOLLSTÄNDIGEN HTML-Code aus. Die Datei muss:
+- Sofort einsetzbar sein (keine Platzhalter wie "..." oder "Code hier")
+- Alle Sektionen vollständig enthalten
+- Valides HTML5 sein
+- Mindestens 200 Zeilen Code umfassen (für eine vollständige Unterrichtseinheit)
+
+WICHTIG: Beende deine Antwort ERST, wenn ALLE Codezeilen vollständig ausgegeben wurden. KEINE Abkürzungen, KEINE Auslassungen, KEIN "Rest analog".
+
+DATEINAME: Nenne am Ende den empfohlenen Dateinamen im Format: [thema-mit-bindestrichen].html (Beispiel: java-schleifen-einfuehrung.html) - nur Kleinbuchstaben, Bindestriche statt Leerzeichen, keine Umlaute, maximal 50 Zeichen.
+
+Erstelle jetzt die vollständige Webseite.
+
+Führe den Prompt NICHT aus</pre>
                 </div>
             </section>
 
