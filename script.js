@@ -99,7 +99,6 @@ class SiteManager {
         this.setupKeyboardNavigation();
         this.setupScrollEffects();
         this.setupResizeHandler();
-        this.setupAccessibility();
         
         // Handle initial navigation
         this.handleInitialNavigation();
@@ -129,7 +128,7 @@ class SiteManager {
 
     // Setup Navigation
     setupNavigation() {
-    const sidebarLinks = document.querySelectorAll(CONFIG.selectors.sidebarLink);
+    const sidebarLinks = document.querySelectorAll(`${CONFIG.selectors.sidebarLink}, .js-nav-link`);
     
     sidebarLinks.forEach(link => {
         link.addEventListener('click', (e) => {
