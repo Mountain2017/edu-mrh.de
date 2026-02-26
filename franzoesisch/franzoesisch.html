@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Französisch Gymnasium Bayern | edu-mrh 2026</title>
     <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
 </head>
 <body>
 
@@ -179,6 +180,42 @@
             <p><a href="https://edu-mrh.de/contribute.html#impressum">Impressum</a></p>
         </div>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const sidebar = document.querySelector('.sidebar');
+            const menuLinks = document.querySelectorAll('.sidebar-menu a');
+
+            // 1. Toggle Sidebar visibility
+            mobileMenuBtn.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                mobileMenuBtn.classList.toggle('is-open'); // Optional: for hamburger animation
+            });
+
+            // 2. Smooth Scroll and Auto-Close Sidebar
+            menuLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault(); // Prevent default anchor jump
+
+                    const targetId = link.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+
+                    if (targetElement) {
+                        // Scroll to the section
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+
+                        // Close the sidebar after clicking (on mobile)
+                        sidebar.classList.remove('active');
+                        mobileMenuBtn.classList.remove('is-open');
+                    }
+                });
+            });
+        });
+    </script>
 
 </body>
 </html>
