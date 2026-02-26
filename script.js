@@ -321,28 +321,6 @@ class SiteManager {
         }
     }
 
-    // Setup Accessibility
-    setupAccessibility() {
-        // Skip link
-        const skipLink = document.createElement('a');
-        skipLink.href = '#main-content';
-        skipLink.className = 'skip-link';
-        skipLink.textContent = 'Zum Hauptinhalt springen';
-        
-        skipLink.addEventListener('focus', function() {
-            this.style.top = '0';
-        });
-        
-        skipLink.addEventListener('blur', function() {
-            this.style.top = '-40px';
-        });
-        
-        document.body.insertBefore(skipLink, document.body.firstChild);
-
-        // Focus management
-        this.setupFocusManagement();
-    }
-
     setupFocusManagement() {
         // Trap focus in modals
         document.addEventListener('keydown', (e) => {

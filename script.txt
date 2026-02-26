@@ -17,8 +17,8 @@ const CONFIG = {
     enableHashNavigation: true,
     enableKeyboardNavigation: true,
     
-    // Progress
-    enableProgressTracking: true,
+    // Progress Tracking
+    enableProgressTracking: false,
     progressStorageKey: 'site_progress',
     progressTimestampKey: 'site_progress_timestamp',
     progressExpiryDays: 7,
@@ -101,11 +101,6 @@ class SiteManager {
         this.setupResizeHandler();
         this.setupAccessibility();
         
-        // Load saved progress
-        if (CONFIG.enableProgressTracking) {
-            this.loadProgress();
-        }
-        
         // Handle initial navigation
         this.handleInitialNavigation();
         
@@ -134,28 +129,25 @@ class SiteManager {
 
     // Setup Navigation
     setupNavigation() {
-        const sidebarLinks = document.querySelectorAll(CONFIG.selectors.sidebarLink);
-        
-        sidebarLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const section = link.getAttribute('data-section') || link.getAttribute('href')?.substring(1);
-                if (section) {
-                    this.navigateToSection(section);
-                }
-            });
-        });
+    const sidebarLinks = document.querySelectorAll(CONFIG.selectors.sidebarLink);
+    
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
 
-        // Hash change handler
-        if (CONFIG.enableHashNavigation) {
-            window.addEventListener('hashchange', () => {
-                const hash = window.location.hash.substring(1);
-                if (hash && STATE.sections.includes(hash)) {
-                    this.navigateToSectionWithoutHash(hash);
-                }
-            });
-        }
-    }
+            if (href && !href.startsWith('#')) {
+                return;
+            }
+
+            e.preventDefault();
+            
+            const section = link.getAttribute('data-section') || href?.substring(1);
+            if (section) {
+                this.navigateToSection(section);
+            }
+        });
+    });
+}
 
     // Setup Sidebar
     setupSidebar() {
@@ -329,28 +321,6 @@ class SiteManager {
         }
     }
 
-    // Setup Accessibility
-    setupAccessibility() {
-        // Skip link
-        const skipLink = document.createElement('a');
-        skipLink.href = '#main-content';
-        skipLink.className = 'skip-link';
-        skipLink.textContent = 'Zum Hauptinhalt springen';
-        
-        skipLink.addEventListener('focus', function() {
-            this.style.top = '0';
-        });
-        
-        skipLink.addEventListener('blur', function() {
-            this.style.top = '-40px';
-        });
-        
-        document.body.insertBefore(skipLink, document.body.firstChild);
-
-        // Focus management
-        this.setupFocusManagement();
-    }
-
     setupFocusManagement() {
         // Trap focus in modals
         document.addEventListener('keydown', (e) => {
@@ -398,7 +368,7 @@ class SiteManager {
     // ==========================================
     // NAVIGATION METHODS
     // ==========================================
-
+    
     navigateToSection(sectionId) {
         if (!STATE.sections.includes(sectionId)) {
             console.warn(`Section "${sectionId}" not found`);
@@ -422,10 +392,6 @@ class SiteManager {
         this.showSection(sectionId);
         this.updateSidebarActive(sectionId);
         this.updateProgressBar();
-        
-        if (CONFIG.enableProgressTracking) {
-            this.saveProgress();
-        }
 
         // Scroll to top
         if (CONFIG.enableSmoothScroll) {
@@ -578,61 +544,6 @@ class SiteManager {
     }
 
     // ==========================================
-    // PROGRESS TRACKING
-    // ==========================================
-
-    saveProgress() {
-        if (!CONFIG.enableProgressTracking) return;
-        
-        try {
-            localStorage.setItem(CONFIG.progressStorageKey, STATE.currentSection);
-            localStorage.setItem(CONFIG.progressTimestampKey, new Date().toISOString());
-        } catch (e) {
-            console.warn('Could not save progress:', e);
-        }
-    }
-
-    loadProgress() {
-        if (!CONFIG.enableProgressTracking) return;
-
-        try {
-            const savedSection = localStorage.getItem(CONFIG.progressStorageKey);
-            const timestamp = localStorage.getItem(CONFIG.progressTimestampKey);
-
-            if (savedSection && STATE.sections.includes(savedSection) && timestamp) {
-                const lastVisit = new Date(timestamp);
-                const now = new Date();
-                const daysSince = (now - lastVisit) / (1000 * 60 * 60 * 24);
-
-                // Only offer to resume if within expiry period
-                if (daysSince < CONFIG.progressExpiryDays) {
-                    const resume = confirm(
-                        'Möchtest du dort weitermachen, wo du aufgehört hast?\n\n' +
-                        'Letzter Besuch: ' + lastVisit.toLocaleDateString('de-DE')
-                    );
-
-                    if (resume) {
-                        this.navigateToSection(savedSection);
-                    }
-                }
-            }
-        } catch (e) {
-            console.warn('Could not load progress:', e);
-        }
-    }
-
-    clearProgress() {
-        if (!CONFIG.enableProgressTracking) return;
-
-        try {
-            localStorage.removeItem(CONFIG.progressStorageKey);
-            localStorage.removeItem(CONFIG.progressTimestampKey);
-        } catch (e) {
-            console.warn('Could not clear progress:', e);
-        }
-    }
-
-    // ==========================================
     // UTILITY METHODS
     // ==========================================
 
@@ -688,6 +599,19 @@ class SiteManager {
 // ==========================================
 // UTILITY FUNCTIONS
 // ==========================================
+
+/**
+ * Load and render KaTeX-Script
+ */ 
+        function renderMath() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},  
+                    {left: '$', right: '$', display: false}    
+                ],
+                throwOnError : false
+            });
+        }
 
 /**
  * Toggle solution visibility
