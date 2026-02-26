@@ -1,0 +1,2761 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filius Netzwerk-Tutorial - Schritt für Schritt zum Netzwerkprofi</title>
+    
+    <!-- Community Styles -->
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    
+    <style>
+        /* Zusätzliche Styles für Filius-Tutorial */
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            position: relative;
+        }
+        
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gray-lighter);
+            z-index: 0;
+        }
+        
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+        
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gray-lighter);
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            transition: var(--transition);
+        }
+        
+        .step.active .step-circle {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.2);
+        }
+        
+        .step.completed .step-circle {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .step-label {
+            font-size: 0.75rem;
+            text-align: center;
+            color: var(--gray);
+            max-width: 100px;
+        }
+        
+        .step.active .step-label {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .network-diagram {
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .network-diagram img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .device-box {
+            color: black;
+            display: inline-block;
+            background: var(--gray-lighter);
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin: 0.5rem;
+            border: 2px solid var(--primary-light);
+        }
+        
+        .device-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .connection-line {
+            display: inline-block;
+            width: 60px;
+            height: 2px;
+            background: var(--primary-color);
+            margin: 0 1rem;
+            vertical-align: middle;
+        }
+        
+        .question-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+            border-left: 6px solid var(--warning-color);
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            margin: 2rem 0;
+        }
+        
+        .question-box h4 {
+            color: var(--warning-color);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .answer-reveal {
+            background: white;
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .answer-reveal.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .config-box {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+            position: relative;
+        }
+        
+        .config-label {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            position: absolute;
+            top: -10px;
+            left: 1rem;
+        }
+        
+        .checklist {
+            background: white;
+            border: 2px solid var(--success-color);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .checklist-item {
+            color: black;
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            background: var(--gray-lighter);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .checklist-item:hover {
+            background: #d1fae5;
+        }
+        
+        .checklist-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 1rem;
+            cursor: pointer;
+        }
+        
+        .troubleshooting {
+            background: #fee2e2;
+            border: 2px solid var(--danger-color);
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            margin: 2rem 0;
+        }
+        
+        .troubleshooting h4 {
+            color: var(--danger-color);
+            margin-bottom: 1rem;
+        }
+        
+        .download-highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: var(--radius-md);
+            margin: 2rem 0;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .download-highlight h3 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+        
+        .download-steps {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-top: 1rem;
+        }
+        
+        .download-steps ol {
+            margin-left: 1.5rem;
+        }
+        
+        .download-steps li {
+            margin: 0.75rem 0;
+            line-height: 1.6;
+        }
+        
+        .important-note {
+            color: black;
+            background: #fef3c7;
+            border: 3px solid var(--warning-color);
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin: 1rem 0;
+            font-weight: 600;
+        }
+        
+        .subnet-calculator {
+            background: white;
+            border: 2px solid var(--primary-color);
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            margin: 2rem 0;
+        }
+        
+        .ip-example {
+            display: inline-block;
+            background: var(--primary-light);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+        
+        @media (max-width: 768px) {
+            .step-indicator {
+                flex-wrap: wrap;
+            }
+            
+            .step {
+                margin-bottom: 1rem;
+            }
+            
+            .device-box {
+                display: block;
+                margin: 1rem 0;
+            }
+            
+            .connection-line {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="icon">🖥️</span>
+                <a href="https://edu-mrh.de/">edu-mrh.de</a>
+            </div>
+            <div class="nav-links">
+                <a href="https://edu-mrh.de/informatik/informatik.html#jahrgang-7" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>📚 Inhalte</h3>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#intro" class="active" data-section="intro">🏠 Einführung</a></li>
+            <li><a href="#installation" data-section="installation">💾 Installation</a></li>
+            <li><a href="#grundlagen" data-section="grundlagen">🔧 Grundlagen</a></li>
+            <li><a href="#level1" data-section="level1">📶 Level 1: Heimnetzwerk</a></li>
+            <li><a href="#level2" data-section="level2">🌐 Level 2: Erweitertes Netzwerk</a></li>
+            <li><a href="#level3" data-section="level3">🏢 Level 3: Subnetting</a></li>
+            <li><a href="#level4" data-section="level4">🌍 Level 4: Gateway & Router</a></li>
+            <li><a href="#level5" data-section="level5">🖥️ Level 5: Server-Dienste</a></li>
+            <li><a href="#level6" data-section="level6">🏗️ Level 6: Komplexe Netzwerke</a></li>
+            <li><a href="#troubleshooting" data-section="troubleshooting">🔍 Problemlösung</a></li>
+            <li><a href="#abschluss" data-section="abschluss">🎓 Abschluss</a></li>
+        </ul>
+    </aside>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+
+            <!-- Intro Section -->
+            <section id="intro" class="content-section active">
+                <div class="hero">
+                    <h1 class="hero-title">🌐 Filius Netzwerk-Tutorial</h1>
+                    <p class="hero-subtitle">Vom einfachen Heimnetzwerk zum komplexen Unternehmensnetzwerk</p>
+                    <p class="hero-description">
+                        Willkommen zum interaktiven Filius-Tutorial! Hier lernst du Schritt für Schritt, wie Computernetzwerke funktionieren. 
+                        Wir beginnen ganz einfach und steigern uns zu komplexen Netzwerkstrukturen mit Subnets, Gateways und Servern.
+                    </p>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <span class="info-icon">🎯</span>
+                        <h3>Lernziele</h3>
+                        <ul>
+                            <li>Netzwerkkomponenten verstehen</li>
+                            <li>IP-Adressen konfigurieren</li>
+                            <li>Subnetting anwenden</li>
+                            <li>Server-Dienste einrichten</li>
+                            <li>Komplexe Netzwerke planen</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-icon">⏱️</span>
+                        <h3>Zeitaufwand</h3>
+                        <ul>
+                            <li>Grundlagen: 45 Minuten</li>
+                            <li>Level 1-3: 90 Minuten</li>
+                            <li>Level 4-6: 120 Minuten</li>
+                            <li>Gesamt: ca. 4-5 Stunden</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-icon">📋</span>
+                        <h3>Voraussetzungen</h3>
+                        <ul>
+                            <li>Computer mit Windows/Mac/Linux</li>
+                            <li>Java installiert (JRE 8 oder höher)</li>
+                            <li>Grundkenntnisse in Informatik</li>
+                            <li>Neugier und Geduld 😊</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="concept-box info">
+                    <h3>💡 Was ist Filius?</h3>
+                    <p>
+                        <strong>Filius</strong> ist ein Netzwerksimulator, der speziell für den Informatikunterricht entwickelt wurde. 
+                        Mit Filius kannst du virtuelle Netzwerke aufbauen, ohne echte Hardware zu benötigen.
+                    </p>
+                    <div class="definition">
+                        <p><strong>Vorteile von Filius:</strong></p>
+                        <ul>
+                            <li>✅ Kostenlos und Open Source</li>
+                            <li>✅ Einfache Bedienung per Drag & Drop</li>
+                            <li>✅ Realistische Simulation von Netzwerkprotokollen</li>
+                            <li>✅ Keine Gefahr, echte Netzwerke zu beschädigen</li>
+                            <li>✅ Ideal zum Experimentieren und Lernen</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="chapter-header">
+                    <span class="chapter-number">Übersicht</span>
+                    <h2>Deine Lernreise</h2>
+                </div>
+
+                <div class="step-indicator">
+                    <div class="step completed">
+                        <div class="step-circle">1</div>
+                        <span class="step-label">Installation</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-circle">2</div>
+                        <span class="step-label">Grundlagen</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-circle">3</div>
+                        <span class="step-label">Heimnetzwerk</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-circle">4</div>
+                        <span class="step-label">Subnetting</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-circle">5</div>
+                        <span class="step-label">Server</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-circle">6</div>
+                        <span class="step-label">Komplex</span>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <a href="#installation" class="btn btn-primary btn-lg js-nav-link">Los geht's! 🚀</a>
+                </div>
+            </section>
+
+            <!-- Installation Section -->
+            <section id="installation" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Schritt 1</span>
+                    <h2>💾 Filius installieren</h2>
+                </div>
+
+                <div class="download-highlight">
+                    <h3>⚠️ WICHTIG: Download und Installation</h3>
+                    <p>Folge diesen Schritten genau, um Filius korrekt zu installieren:</p>
+                    
+                    <div class="download-steps">
+                        <ol>
+                            <li>
+                                <strong>Besuche die offizielle Filius-Website:</strong><br>
+                                <a href="https://www.lernsoftware-filius.de/Herunterladen" target="_blank" style="color: white; text-decoration: underline;">
+                                    🔗 www.lernsoftware-filius.de/Herunterladen
+                                </a>
+                            </li>
+                            <li>
+                                <strong>Lade die ZIP-Datei der ALTEN VERSION herunter</strong><br>
+                                (Die alte Version ist stabiler für Lernzwecke)
+                            </li>
+                            <li class="important-note">
+                                🔴 <strong>WICHTIG:</strong> Entpacke die ZIP-Datei vollständig!<br>
+                                Rechtsklick → "Alle extrahieren" oder "Entpacken nach..."
+                            </li>
+                            <li>
+                                <strong>Öffne den entpackten Ordner</strong>
+                            </li>
+                            <li>
+                                <strong>Doppelklick auf die Datei "filius.jar"</strong><br>
+                                (Falls das nicht funktioniert, siehe Problemlösung unten)
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>🖥️ Systemanforderungen</h3>
+                    <p>Stelle sicher, dass dein Computer diese Anforderungen erfüllt:</p>
+                    <ul>
+                        <li><strong>Java Runtime Environment (JRE)</strong> Version 8 oder höher</li>
+                        <li><strong>Betriebssystem:</strong> Windows, macOS oder Linux</li>
+                        <li><strong>Arbeitsspeicher:</strong> Mindestens 2 GB RAM</li>
+                        <li><strong>Festplattenspeicher:</strong> Ca. 100 MB frei</li>
+                    </ul>
+                </div>
+
+                <div class="troubleshooting">
+                    <h4>🔧 Problemlösung: Filius startet nicht?</h4>
+                    
+                    <div class="term">
+                        <strong>Problem 1: "Java ist nicht installiert"</strong>
+                        <p>
+                            <strong>Lösung:</strong> Lade Java von der offiziellen Website herunter:<br>
+                            <a href="https://www.java.com/de/download/" target="_blank">www.java.com/de/download/</a>
+                        </p>
+                    </div>
+
+                    <div class="term">
+                        <strong>Problem 2: "Die .jar-Datei öffnet sich nicht"</strong>
+                        <p>
+                            <strong>Lösung:</strong> Öffne die Eingabeaufforderung (Windows) oder Terminal (Mac/Linux) im Filius-Ordner und gib ein:<br>
+                            <code>java -jar filius.jar</code>
+                        </p>
+                    </div>
+
+                    <div class="term">
+                        <strong>Problem 3: "Ich habe die ZIP-Datei nicht entpackt"</strong>
+                        <p>
+                            <strong>Lösung:</strong> Du MUSST die ZIP-Datei entpacken! Filius funktioniert nicht direkt aus der ZIP-Datei. 
+                            Rechtsklick auf die ZIP → "Alle extrahieren" → Zielordner wählen → OK
+                        </p>
+                    </div>
+                </div>
+
+                <div class="checklist">
+                    <h4>✅ Installations-Checkliste</h4>
+                    <p>Hake ab, wenn du den Schritt erledigt hast:</p>
+                    
+                    <label class="checklist-item">
+                        <input type="checkbox" id="check1">
+                        <span>Java ist auf meinem Computer installiert</span>
+                    </label>
+                    
+                    <label class="checklist-item">
+                        <input type="checkbox" id="check2">
+                        <span>Ich habe die Filius-Website besucht</span>
+                    </label>
+                    
+                    <label class="checklist-item">
+                        <input type="checkbox" id="check3">
+                        <span>Die ZIP-Datei wurde heruntergeladen</span>
+                    </label>
+                    
+                    <label class="checklist-item">
+                        <input type="checkbox" id="check4">
+                        <span>Die ZIP-Datei wurde VOLLSTÄNDIG entpackt</span>
+                    </label>
+                    
+                    <label class="checklist-item">
+                        <input type="checkbox" id="check5">
+                        <span>Filius startet erfolgreich (filius.jar)</span>
+                    </label>
+                </div>
+
+                <div class="example-box success">
+                    <h3>🎉 Geschafft!</h3>
+                    <div class="example-content">
+                        <p>
+                            Wenn Filius jetzt läuft, siehst du ein Fenster mit zwei Bereichen:
+                        </p>
+                        <ul>
+                            <li><strong>Entwurfsmodus:</strong> Hier baust du dein Netzwerk auf</li>
+                            <li><strong>Simulationsmodus:</strong> Hier testest du dein Netzwerk</li>
+                        </ul>
+                        <p class="highlight">
+                            💡 <strong>Tipp:</strong> Schau dich erst einmal in Ruhe um. Klicke auf die verschiedenen Symbole 
+                            in der Werkzeugleiste und entdecke die Komponenten!
+                        </p>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <a href="#intro" class="btn btn-outline js-nav-link" data-section="intro">← Zurück</a>
+                    <a href="#grundlagen" class="btn btn-primary js-nav-link" data-section="grundlagen">Weiter zu den Grundlagen →</a>
+                </div>
+            </section>
+
+            <!-- Grundlagen Section -->
+            <section id="grundlagen" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Schritt 2</span>
+                    <h2>🔧 Netzwerk-Grundlagen</h2>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🧩 Die wichtigsten Netzwerkkomponenten</h3>
+                    <p>Bevor wir loslegen, lernst du die Bausteine kennen, die wir brauchen:</p>
+                </div>
+
+                <div class="definition-grid">
+                    <div class="definition-card">
+                        <div class="def-icon">💻</div>
+                        <h4>Computer / Rechner</h4>
+                        <p>Ein Endgerät, das Daten senden und empfangen kann.</p>
+                        <ul>
+                            <li>Hat eine IP-Adresse</li>
+                            <li>Kann Programme ausführen</li>
+                            <li>Kommuniziert mit anderen Geräten</li>
+                        </ul>
+                    </div>
+
+                    <div class="definition-card">
+                        <div class="def-icon">📡</div>
+                        <h4>Switch / Verteiler</h4>
+                        <p>Verbindet mehrere Geräte in einem Netzwerk.</p>
+                        <ul>
+                            <li>Leitet Datenpakete weiter</li>
+                            <li>Arbeitet auf Layer 2 (Data Link)</li>
+                            <li>Kennt MAC-Adressen</li>
+                        </ul>
+                    </div>
+
+                    <div class="definition-card">
+                        <div class="def-icon">🌐</div>
+                        <h4>Router / Gateway</h4>
+                        <p>Verbindet verschiedene Netzwerke miteinander.</p>
+                        <ul>
+                            <li>Routet zwischen Netzwerken</li>
+                            <li>Arbeitet auf Layer 3 (Network)</li>
+                            <li>Kennt IP-Adressen und Routen</li>
+                        </ul>
+                    </div>
+
+                    <div class="definition-card">
+                        <div class="def-icon">🖥️</div>
+                        <h4>Server</h4>
+                        <p>Stellt Dienste für andere Computer bereit.</p>
+                        <ul>
+                            <li>Webserver (HTTP)</li>
+                            <li>DNS-Server (Namensauflösung)</li>
+                            <li>DHCP-Server (IP-Vergabe)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="concept-box info">
+                    <h3>🔢 Was ist eine IP-Adresse?</h3>
+                    <div class="definition">
+                        <p>
+                            Eine <strong>IP-Adresse</strong> ist wie eine Postadresse für Computer. 
+                            Sie besteht aus vier Zahlen zwischen 0 und 255, getrennt durch Punkte.
+                        </p>
+                        <p style="text-align: center; margin-top: 1rem;">
+                            <span class="ip-example">192.168.0.1</span>
+                            <span class="ip-example">10.0.0.5</span>
+                            <span class="ip-example">172.16.1.100</span>
+                        </p>
+                    </div>
+
+                    <h4 style="margin-top: 2rem;">📊 Aufbau einer IP-Adresse (Bsp. für Subnet 255.255.255.0)</h4>
+                    <div class="config-box">
+                        <div class="config-label">IPv4-Adresse</div>
+                        <pre>
+192  .  168  .  0  .  1
+ │       │      │     │
+ │       │      │     └─ Host-Teil (Gerät im Netzwerk)
+ │       │      └────── Netzwerk-Teil
+ │       └──────────── Netzwerk-Teil (Welches Netzwerk?)
+ └─────────────────── Netzwerk-Teil
+</pre>
+                    </div>
+
+                    <div class="important-note">
+                        ⚠️ <strong>Wichtig:</strong> Alle Geräte im gleichen Netzwerk müssen den gleichen Netzwerk-Teil haben!
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🎭 Subnetzmaske - Der Netzwerk-Teiler</h3>
+                    <p>
+                        Die <strong>Subnetzmaske</strong> bestimmt, welcher Teil der IP-Adresse zum Netzwerk gehört 
+                        und welcher Teil das einzelne Gerät identifiziert.
+                    </p>
+
+                    <div class="config-box">
+                        <div class="config-label">Standard-Subnetzmasken</div>
+                        <pre>
+255.255.255.0   → /24 → 254 mögliche Geräte
+255.255.0.0     → /16 → 65.534 mögliche Geräte
+255.0.0.0       → /8  → 16.777.214 mögliche Geräte
+</pre>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Beispiel: Netzwerk 192.168.0.0/24</h4>
+                        <p><strong>Subnetzmaske:</strong> 255.255.255.0</p>
+                        <ul>
+                            <li><strong>Netzwerk-Adresse:</strong> 192.168.0.0 (erste Adresse, nicht nutzbar)</li>
+                            <li><strong>Nutzbare Adressen:</strong> 192.168.0.1 bis 192.168.0.254</li>
+                            <li><strong>Broadcast-Adresse:</strong> 192.168.0.255 (letzte Adresse, nicht nutzbar)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="question-box">
+                    <h4>🤔 Denkaufgabe</h4>
+                    <p>
+                        Stell dir vor, du hast zwei Computer:
+                    </p>
+                    <ul>
+                        <li>Computer A: 192.168.0.10</li>
+                        <li>Computer B: 192.168.1.10</li>
+                    </ul>
+                    <p>Beide haben die Subnetzmaske 255.255.255.0</p>
+                    <p><strong>Frage:</strong> Können diese Computer direkt miteinander kommunizieren?</p>
+                    
+                    <button class="btn btn-warning" onclick="document.getElementById('answer1').classList.toggle('show')">
+                        💡 Antwort zeigen
+                    </button>
+                    
+                    <div id="answer1" class="answer-reveal">
+                        <p><strong>Antwort: NEIN! ❌</strong></p>
+                        <p>
+                            Die Computer sind in <strong>unterschiedlichen Netzwerken</strong>:
+                        </p>
+                        <ul>
+                            <li>Computer A ist im Netzwerk <strong>192.168.0.x</strong></li>
+                            <li>Computer B ist im Netzwerk <strong>192.168.1.x</strong></li>
+                        </ul>
+                        <p>
+                            Um miteinander zu kommunizieren, bräuchten sie einen <strong>Router</strong> als Vermittler!
+                        </p>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>🎯 Zusammenfassung Grundlagen</h3>
+                    <div class="key-points">
+                        <div class="key-point">
+                            <div class="number">1</div>
+                            <div>
+                                <strong>Netzwerkkomponenten</strong>
+                                <p>Computer, Switch, Router und Server haben unterschiedliche Aufgaben</p>
+                            </div>
+                        </div>
+                        <div class="key-point">
+                            <div class="number">2</div>
+                            <div>
+                                <strong>IP-Adressen</strong>
+                                <p>Jedes Gerät braucht eine eindeutige IP-Adresse im Netzwerk</p>
+                            </div>
+                        </div>
+                        <div class="key-point">
+                            <div class="number">3</div>
+                            <div>
+                                <strong>Subnetzmaske</strong>
+                                <p>Bestimmt, welche Geräte im gleichen Netzwerk sind</p>
+                            </div>
+                        </div>
+                        <div class="key-point">
+                            <div class="number">4</div>
+                            <div>
+                                <strong>Router als Vermittler</strong>
+                                <p>Verbindet verschiedene Netzwerke miteinander</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <a href="#installation" class="btn btn-outline js-nav-link">← Zurück</a>
+                    <a href="#level1" class="btn btn-primary js-nav-link">Jetzt praktisch loslegen! 🚀</a>
+                </div>
+            </section>
+
+            <!-- Level 1: Heimnetzwerk -->
+            <section id="level1" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Level 1</span>
+                    <h2>📶 Dein erstes Heimnetzwerk</h2>
+                </div>
+
+                <div class="task-box">
+                    <h4>🎯 Aufgabe: Zwei Computer verbinden</h4>
+                    <p>Baue dein erstes einfaches Netzwerk mit zwei Computern und einem Switch!</p>
+                    
+                    <div class="network-diagram">
+                        <div class="device-box">
+                            <div class="device-icon">💻</div>
+                            <div>Computer 1</div>
+                        </div>
+                        <span class="connection-line"></span>
+                        <div class="device-box">
+                            <div class="device-icon">📡</div>
+                            <div>Switch</div>
+                        </div>
+                        <span class="connection-line"></span>
+                        <div class="device-box">
+                            <div class="device-icon">💻</div>
+                            <div>Computer 2</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>📝 Schritt-für-Schritt Anleitung</h3>
+                    
+                    <div class="example-item">
+                        <h4>Schritt 1: Komponenten platzieren</h4>
+                        <ol>
+                            <li>Öffne Filius (falls noch nicht geschehen)</li>
+                            <li>Stelle sicher, dass du im <strong>Entwurfsmodus</strong> bist (oben links)</li>
+                            <li>Klicke in der Werkzeugleiste auf das <strong>Computer-Symbol</strong> 💻</li>
+                            <li>Klicke zweimal auf die Arbeitsfläche → Du hast jetzt 2 Computer</li>
+                            <li>Klicke auf das <strong>Switch-Symbol</strong> 📡</li>
+                            <li>Platziere den Switch zwischen den beiden Computern</li>
+                        </ol>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Schritt 2: Verbindungen herstellen</h4>
+                        <ol>
+                            <li>Klicke auf das <strong>Kabel-Symbol</strong> (Verbindungswerkzeug)</li>
+                            <li>Klicke auf <strong>Computer 1</strong>, dann auf den <strong>Switch</strong></li>
+                            <li>Klicke auf <strong>Computer 2</strong>, dann auf den <strong>Switch</strong></li>
+                            <li>Beide Computer sind jetzt mit dem Switch verbunden! ✅</li>
+                        </ol>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Schritt 3: IP-Adressen konfigurieren</h4>
+                        <p><strong>Computer 1 konfigurieren:</strong></p>
+                        <ol>
+                            <li>Doppelklick auf <strong>Computer 1</strong></li>
+                            <li>Gehe zum Tab <strong>"Netzwerkkonfiguration"</strong></li>
+                            <li>Trage ein:
+                                <div class="config-box">
+                                    <div class="config-label">Computer 1</div>
+                                    <pre>IP-Adresse:    192.168.0.1
+Subnetzmaske:  255.255.255.0
+Gateway:       (leer lassen)</pre>
+                                </div>
+                            </li>
+                            <li>Klicke auf <strong>"Übernehmen"</strong></li>
+                        </ol>
+
+                        <p style="margin-top: 1.5rem;"><strong>Computer 2 konfigurieren:</strong></p>
+                        <ol>
+                            <li>Doppelklick auf <strong>Computer 2</strong></li>
+                            <li>Gehe zum Tab <strong>"Netzwerkkonfiguration"</strong></li>
+                            <li>Trage ein:
+                                <div class="config-box">
+                                    <div class="config-label">Computer 2</div>
+                                    <pre>IP-Adresse:    192.168.0.2
+Subnetzmaske:  255.255.255.0
+Gateway:       (leer lassen)</pre>
+                                </div>
+                            </li>
+                            <li>Klicke auf <strong>"Übernehmen"</strong></li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="important-note">
+                    💡 <strong>Warum diese IP-Adressen?</strong><br>
+                    Beide Computer haben den gleichen Netzwerk-Teil (192.168.0), aber unterschiedliche Host-Teile (.1 und .2). 
+                    So sind sie im gleichen Netzwerk und können direkt kommunizieren!
+                </div>
+
+                <div class="task-box">
+                    <h4>🧪 Schritt 4: Netzwerk testen</h4>
+                    <ol>
+                        <li>Wechsle in den <strong>Simulationsmodus</strong> (grüner Pfeil oben links)</li>
+                        <li>Doppelklick auf <strong>Computer 1</strong></li>
+                        <li>Klicke auf <strong>"Software installieren"</strong></li>
+                        <li>Wähle <strong>"Befehlszeile"</strong> (Command Line)</li>
+                        <li>Öffne die Befehlszeile durch Doppelklick</li>
+                        <li>Gib ein: <code>ping 192.168.0.2</code></li>
+                        <li>Drücke Enter</li>
+                    </ol>
+
+                    <div class="example-box success">
+                        <h3>✅ Erfolg!</h3>
+                        <div class="example-content">
+                            <p>Wenn du Antworten siehst wie:</p>
+                            <div class="config-box">
+                                <pre>Antwort von 192.168.0.2: Zeit=1ms
+Antwort von 192.168.0.2: Zeit=1ms
+Antwort von 192.168.0.2: Zeit=1ms</pre>
+                            </div>
+                            <p>...dann funktioniert dein Netzwerk! 🎉</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-box">
+                    <h4>🤔 Reflexionsfrage</h4>
+                    <p>
+                        Du hast jetzt zwei Computer verbunden. Aber was passiert, wenn du einen <strong>dritten Computer</strong> 
+                        hinzufügen möchtest?
+                    </p>
+                    <p><strong>Überlege:</strong> Brauchst du einen zweiten Switch? Oder reicht der vorhandene?</p>
+                    
+                    <button class="btn btn-warning" onclick="document.getElementById('answer2').classList.toggle('show')">
+                        💡 Antwort zeigen
+                    </button>
+                    
+                    <div id="answer2" class="answer-reveal">
+                        <p><strong>Antwort:</strong> Der vorhandene Switch reicht! ✅</p>
+                        <p>
+                            Ein Switch hat mehrere Ports (Anschlüsse). Du kannst einfach:
+                        </p>
+                        <ol>
+                            <li>Einen dritten Computer platzieren</li>
+                            <li>Ihn mit dem Switch verbinden</li>
+                            <li>Ihm die IP-Adresse <strong>192.168.0.3</strong> geben</li>
+                        </ol>
+                        <p>
+                            <strong>Probiere es aus!</strong> Füge einen dritten Computer hinzu und teste die Verbindung.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="checklist">
+                    <h4>✅ Level 1 Checkliste</h4>
+                    
+                    <label class="checklist-item">
+                        <input type="checkbox">
+                        <span>Zwei Computer und einen Switch platziert</span>
+                    </label>
+                    
+                    <label class="checklist-item">
+                        <input type="checkbox">
+                        <span>Alle Geräte mit Kabeln verbunden</span>
+                    </label>
+                    
+                    <label class="checklist-item">
+                        <input type="checkbox">
+                        <span>IP-Adressen konfiguriert (192.168.0.1 und 192.168.0.2)</span>
+                    </label>
+                    
+                    <label class="checklist-item">
+                        <input type="checkbox">
+                        <span>Ping-Test erfolgreich durchgeführt</span>
+                    </label>
+                    
+                    <label class="checklist-item">
+                        <input type="checkbox">
+                        <span>Verstanden, warum die IP-Adressen so gewählt wurden</span>
+                    </label>
+                </div>
+
+                <div class="navigation-buttons">
+                    <a href="#grundlagen" class="btn btn-outline js-nav-link">← Zurück</a>
+                    <a href="#level2" class="btn btn-primary js-nav-link">Netzwerk erweitern →</a>
+                </div>
+            </section>
+
+            <!-- Level 2: Erweitertes Netzwerk -->
+            <section id="level2" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Level 2</span>
+                    <h2>🌐 Erweitertes Heimnetzwerk</h2>
+                </div>
+
+                <div class="question-box">
+                    <h4>🤔 Neue Herausforderung</h4>
+                    <p>
+                        Dein Heimnetzwerk wächst! Du hast jetzt:
+                    </p>
+                    <ul>
+                        <li>5 Computer</li>
+                        <li>1 Laptop</li>
+                        <li>1 Drucker</li>
+                    </ul>
+                    <p><strong>Problem:</strong> Wie organisierst du so viele Geräte? Braucht jedes eine eigene IP-Adresse?</p>
+                    
+                    <button class="btn btn-warning" onclick="document.getElementById('answer3').classList.toggle('show')">
+                        💡 Antwort zeigen
+                    </button>
+                    
+                    <div id="answer3" class="answer-reveal">
+                        <p><strong>Ja!</strong> Jedes Gerät braucht eine <strong>eindeutige IP-Adresse</strong> im Netzwerk.</p>
+                        <p>
+                            Aber keine Sorge: Mit der Subnetzmaske 255.255.255.0 hast du Platz für bis zu 254 Geräte!
+                        </p>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>🎯 Aufgabe: Großes Heimnetzwerk aufbauen</h4>
+                    
+                    <div class="network-diagram">
+                        <div style="text-align: center;">
+                            <div class="device-box">
+                                <div class="device-icon">📡</div>
+                                <div>Switch</div>
+                            </div>
+                            <div style="margin-top: 1rem;">
+                                <div class="device-box">
+                                    <div class="device-icon">💻</div>
+                                    <div>PC 1</div>
+                                </div>
+                                <div class="device-box">
+                                    <div class="device-icon">💻</div>
+                                    <div>PC 2</div>
+                                </div>
+                                <div class="device-box">
+                                    <div class="device-icon">💻</div>
+                                    <div>PC 3</div>
+                                </div>
+                                <div class="device-box">
+                                    <div class="device-icon">💻</div>
+                                    <div>PC 4</div>
+                                </div>
+                                <div class="device-box">
+                                    <div class="device-icon">💻</div>
+                                    <div>PC 5</div>
+                                </div>
+                                <div class="device-box">
+                                    <div class="device-icon">💻</div>
+                                    <div>Laptop</div>
+                                </div>
+                                <div class="device-box">
+                                    <div class="device-icon">🖨️</div>
+                                    <div>Drucker</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>📝 Aufbau-Anleitung</h3>
+                    
+                    <div class="example-item">
+                        <h4>Schritt 1: Netzwerk planen</h4>
+                        <p>Plane zuerst die IP-Adressen:</p>
+                        <div class="config-box">
+                            <div class="config-label">IP-Adressplan</div>
+                            <pre>
+Netzwerk:       192.168.1.0/24
+Subnetzmaske:   255.255.255.0
+
+PC 1:           192.168.1.10
+PC 2:           192.168.1.11
+PC 3:           192.168.1.12
+PC 4:           192.168.1.13
+PC 5:           192.168.1.14
+Laptop:         192.168.1.20
+Drucker:        192.168.1.100
+</pre>
+                        </div>
+                        <div class="important-note">
+                            💡 <strong>Tipp:</strong> Nutze logische Bereiche! PCs: 10-19, Laptops: 20-29, Drucker: 100+
+                        </div>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Schritt 2: Komponenten platzieren</h4>
+                        <ol>
+                            <li>Platziere einen <strong>Switch</strong> in der Mitte</li>
+                            <li>Füge <strong>5 Computer</strong> hinzu (benenne sie PC1 bis PC5)</li>
+                            <li>Füge einen <strong>Laptop</strong> hinzu (Notebook-Symbol)</li>
+                            <li>Füge einen <strong>Drucker</strong> hinzu (falls verfügbar, sonst weiterer Computer)</li>
+                            <li>Verbinde alle Geräte mit dem Switch</li>
+                        </ol>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Schritt 3: Geräte benennen</h4>
+                        <p>Damit du den Überblick behältst:</p>
+                        <ol>
+                            <li>Rechtsklick auf ein Gerät → <strong>"Umbenennen"</strong></li>
+                            <li>Gib aussagekräftige Namen ein: "PC1", "PC2", "Laptop-Max", "Drucker-HP"</li>
+                            <li>So erkennst du später sofort, welches Gerät welches ist!</li>
+                        </ol>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Schritt 4: IP-Adressen vergeben</h4>
+                        <p>Konfiguriere jedes Gerät einzeln nach dem Plan oben.</p>
+                        <p><strong>Beispiel für PC1:</strong></p>
+                        <ol>
+                            <li>Doppelklick auf PC1</li>
+                            <li>Tab "Netzwerkkonfiguration"</li>
+                            <li>IP-Adresse: <code>192.168.1.10</code></li>
+                            <li>Subnetzmaske: <code>255.255.255.0</code></li>
+                            <li>Gateway: (noch leer lassen)</li>
+                            <li>Übernehmen</li>
+                        </ol>
+                        <p>Wiederhole das für alle anderen Geräte!</p>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>🧪 Schritt 5: Umfassende Tests</h4>
+                    <p>Teste verschiedene Verbindungen:</p>
+                    <ol>
+                        <li>Wechsle in den <strong>Simulationsmodus</strong></li>
+                        <li>Installiere auf PC1 die <strong>Befehlszeile</strong></li>
+                        <li>Teste:
+                            <div class="config-box">
+                                <pre>ping 192.168.1.11    (PC2)
+ping 192.168.1.20    (Laptop)
+ping 192.168.1.100   (Drucker)</pre>
+                            </div>
+                        </li>
+                        <li>Teste auch von anderen Computern aus!</li>
+                    </ol>
+                </div>
+
+                <div class="question-box">
+                    <h4>🤔 Denkaufgabe: Fehlersuche</h4>
+                    <p>
+                        Stell dir vor, PC3 kann plötzlich nicht mehr mit dem Laptop kommunizieren. 
+                        Was könnten die Ursachen sein?
+                    </p>
+                    
+                    <button class="btn btn-warning" onclick="document.getElementById('answer4').classList.toggle('show')">
+                        💡 Mögliche Ursachen zeigen
+                    </button>
+                    
+                    <div id="answer4" class="answer-reveal">
+                        <p><strong>Mögliche Fehlerquellen:</strong></p>
+                        <ol>
+                            <li><strong>Kabelverbindung unterbrochen</strong> → Prüfe die Kabel</li>
+                            <li><strong>Falsche IP-Adresse</strong> → Beide müssen im gleichen Netzwerk sein (192.168.1.x)</li>
+                            <li><strong>Falsche Subnetzmaske</strong> → Beide müssen 255.255.255.0 haben</li>
+                            <li><strong>Doppelte IP-Adresse</strong> → Jedes Gerät braucht eine eindeutige IP</li>
+                            <li><strong>Switch defekt</strong> → Teste andere Verbindungen über den Switch</li>
+                        </ol>
+                        <p><strong>Systematische Fehlersuche:</strong></p>
+                        <ul>
+                            <li>Prüfe die Konfiguration beider Geräte</li>
+                            <li>Teste, ob andere Geräte erreichbar sind</li>
+                            <li>Nutze den Ping-Befehl zur Diagnose</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="concept-box info">
+                    <h3>🎓 Was du gelernt hast</h3>
+                    <div class="key-points">
+                        <div class="key-point">
+                            <div class="number">1</div>
+                            <div>
+                                <strong>Netzwerkplanung</strong>
+                                <p>Vor dem Aufbau solltest du IP-Adressen planen und dokumentieren</p>
+                            </div>
+                        </div>
+                        <div class="key-point">
+                            <div class="number">2</div>
+                            <div>
+                                <strong>Logische Struktur</strong>
+                                <p>Nutze Bereiche für verschiedene Gerätetypen (z.B. 10-19 für PCs)</p>
+                            </div>
+                        </div>
+                        <div class="key-point">
+                            <div class="number">3</div>
+                            <div>
+                                <strong>Skalierbarkeit</strong>
+                                <p>Ein Switch kann viele Geräte verbinden (typisch 8, 16 oder 24 Ports)</p>
+                            </div>
+                        </div>
+                        <div class="key-point">
+                            <div class="number">4</div>
+                            <div>
+                                <strong>Systematisches Testen</strong>
+                                <p>Teste Verbindungen systematisch, um Fehler schnell zu finden</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <a href="#level1" class="btn btn-outline js-nav-link">← Zurück</a>
+                    <a href="#level3" class="btn btn-primary js-nav-link">Subnetting lernen →</a>
+                </div>
+            </section>
+
+            <!-- Level 3: Subnetting -->
+            <section id="level3" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Level 3</span>
+                    <h2>🏢 Netzwerke aufteilen - Subnetting</h2>
+                </div>
+
+                <div class="question-box">
+                    <h4>🤔 Warum Netzwerke aufteilen?</h4>
+                    <p>
+                        Stell dir vor, du bist in einer großen Firma mit 200 Computern. 
+                        Alle sind im gleichen Netzwerk. Was könnte problematisch sein?
+                    </p>
+                    
+                    <button class="btn btn-warning" onclick="document.getElementById('answer5').classList.toggle('show')">
+                        💡 Probleme zeigen
+                    </button>
+                    
+                    <div id="answer5" class="answer-reveal">
+                        <p><strong>Probleme bei großen Netzwerken:</strong></p>
+                        <ul>
+                            <li>🐌 <strong>Langsam:</strong> Viele Broadcast-Nachrichten belasten das Netzwerk</li>
+                            <li>🔒 <strong>Unsicher:</strong> Jeder kann mit jedem kommunizieren</li>
+                            <li>😵 <strong>Unübersichtlich:</strong> Schwer zu verwalten</li>
+                            <li>⚠️ <strong>Fehleranfällig:</strong> Ein Problem betrifft alle</li>
+                        </ul>
+                        <p><strong>Lösung: Subnetting!</strong> Teile das große Netzwerk in kleinere, logische Bereiche auf.</p>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🧩 Was ist Subnetting?</h3>
+                    <div class="definition">
+                        <p>
+                            <strong>Subnetting</strong> bedeutet, ein großes Netzwerk in mehrere kleinere <strong>Subnetze</strong> 
+                            (Teilnetze) aufzuteilen. Jedes Subnetz ist ein eigenständiges Netzwerk.
+                        </p>
+                    </div>
+
+                    <h4 style="margin-top: 2rem;">📊 Beispiel: Firma mit 3 Abteilungen</h4>
+                    <div class="network-diagram">
+                        <div style="text-align: left; max-width: 600px; margin: 0 auto;">
+                            <div style="background: #dbeafe; padding: 1rem; border-radius: 8px; margin: 0.5rem 0;">
+                                <strong>🏭 Produktion:</strong> 192.168.1.0/24 (bis zu 254 Geräte)
+                            </div>
+                            <div style="background: #d1fae5; padding: 1rem; border-radius: 8px; margin: 0.5rem 0;">
+                                <strong>💼 Verwaltung:</strong> 192.168.2.0/24 (bis zu 254 Geräte)
+                            </div>
+                            <div style="background: #fef3c7; padding: 1rem; border-radius: 8px; margin: 0.5rem 0;">
+                                <strong>🔬 Entwicklung:</strong> 192.168.3.0/24 (bis zu 254 Geräte)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="important-note">
+                        ⚠️ <strong>Wichtig:</strong> Computer in verschiedenen Subnetzen können NICHT direkt miteinander kommunizieren. 
+                        Sie brauchen einen <strong>Router</strong> als Vermittler!
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>🎯 Aufgabe: Zwei Subnetze erstellen</h4>
+                    <p>Baue ein Netzwerk mit zwei getrennten Abteilungen:</p>
+                    
+                    <div class="config-box">
+                        <div class="config-label">Netzwerkplan</div>
+                        <pre>
+Abteilung A (Marketing):
+  Netzwerk:     192.168.10.0/24
+  Computer 1:   192.168.10.1
+  Computer 2:   192.168.10.2
+  Computer 3:   192.168.10.3
+
+Abteilung B (Buchhaltung):
+  Netzwerk:     192.168.20.0/24
+  Computer 1:   192.168.20.1
+  Computer 2:   192.168.20.2
+  Computer 3:   192.168.20.3
+</pre>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>📝 Aufbau-Anleitung</h3>
+                    
+                    <div class="example-item">
+                        <h4>Schritt 1: Zwei getrennte Netzwerke aufbauen</h4>
+                        <ol>
+                            <li>Platziere <strong>Switch 1</strong> (für Abteilung A)</li>
+                            <li>Verbinde 3 Computer mit Switch 1</li>
+                            <li>Konfiguriere sie mit IPs aus dem Bereich 192.168.10.x</li>
+                            <li><br></li>
+                            <li>Platziere <strong>Switch 2</strong> (für Abteilung B)</li>
+                            <li>Verbinde 3 Computer mit Switch 2</li>
+                            <li>Konfiguriere sie mit IPs aus dem Bereich 192.168.20.x</li>
+                        </ol>
+                        <div class="important-note">
+                            💡 Die beiden Switches sind NICHT miteinander verbunden! Das sind zwei getrennte Netzwerke.
+                        </div>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Schritt 2: Innerhalb der Abteilungen testen</h4>
+                        <ol>
+                            <li>Wechsle in den Simulationsmodus</li>
+                            <li>Teste in Abteilung A:
+                                <div class="config-box">
+                                    <pre>Von 192.168.10.1 → ping 192.168.10.2  ✅ Funktioniert!</pre>
+                                </div>
+                            </li>
+                            <li>Teste in Abteilung B:
+                                <div class="config-box">
+                                    <pre>Von 192.168.20.1 → ping 192.168.20.2  ✅ Funktioniert!</pre>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Schritt 3: Zwischen Abteilungen testen</h4>
+                        <ol>
+                            <li>Versuche von Abteilung A zu Abteilung B:
+                                <div class="config-box">
+                                    <pre>Von 192.168.10.1 → ping 192.168.20.1  ❌ Funktioniert NICHT!</pre>
+                                </div>
+                            </li>
+                            <li><strong>Warum nicht?</strong> Die Netzwerke sind getrennt!</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="question-box">
+                    <h4>🤔 Reflexionsfrage</h4>
+                    <p>
+                        Du hast jetzt zwei getrennte Netzwerke. Aber manchmal muss die Buchhaltung mit dem Marketing kommunizieren. 
+                        Wie könntest du das ermöglichen?
+                    </p>
+                    
+                    <button class="btn btn-warning" onclick="document.getElementById('answer6').classList.toggle('show')">
+                        💡 Lösung zeigen
+                    </button>
+                    
+                    <div id="answer6" class="answer-reveal">
+                        <p><strong>Lösung: Ein Router!</strong> 🌐</p>
+                        <p>
+                            Ein Router kann zwischen verschiedenen Netzwerken vermitteln. Das lernst du im nächsten Level!
+                        </p>
+                        <p>Der Router würde:</p>
+                        <ul>
+                            <li>Mit beiden Switches verbunden sein</li>
+                            <li>In jedem Netzwerk eine IP-Adresse haben</li>
+                            <li>Datenpakete zwischen den Netzwerken weiterleiten</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subnet-calculator">
+                    <h3>🧮 Subnetz-Rechner (Übersicht)</h3>
+                    <p>Hier sind die wichtigsten Subnetzmasken und ihre Eigenschaften:</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Subnetzmaske</th>
+                                <th>CIDR</th>
+                                <th>Nutzbare IPs</th>
+                                <th>Verwendung</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>255.255.255.252</td>
+                                <td>/30</td>
+                                <td>2</td>
+                                <td>Punkt-zu-Punkt (Router-Verbindungen)</td>
+                            </tr>
+                            <tr>
+                                <td>255.255.255.0</td>
+                                <td>/24</td>
+                                <td>254</td>
+                                <td>Kleine bis mittlere Netzwerke</td>
+                            </tr>
+                            <tr>
+                                <td>255.255.0.0</td>
+                                <td>/16</td>
+                                <td>65.534</td>
+                                <td>Große Netzwerke</td>
+                            </tr>
+                            <tr>
+                                <td>255.0.0.0</td>
+                                <td>/8</td>
+                                <td>16.777.214</td>
+                                <td>Sehr große Netzwerke</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="concept-box info">
+                    <h3>🎓 Zusammenfassung Level 3</h3>
+                    <div class="key-points">
+                        <div class="key-point">
+                            <div class="number">1</div>
+                            <div>
+                                <strong>Subnetting trennt Netzwerke</strong>
+                                <p>Verschiedene Subnetze sind logisch getrennt</p>
+                            </div>
+                        </div>
+                        <div class="key-point">
+                            <div class="number">2</div>
+                            <div>
+                                <strong>Vorteile der Trennung</strong>
+                                <p>Mehr Sicherheit, bessere Performance, einfachere Verwaltung</p>
+                            </div>
+                        </div>
+                        <div class="key-point">
+                            <div class="number">3</div>
+                            <div>
+                                <strong>Kommunikation zwischen Subnetzen</strong>
+                                <p>Braucht einen Router als Vermittler</p>
+                            </div>
+                        </div>
+                        <div class="key-point">
+                            <div class="number">4</div>
+                            <div>
+                                <strong>Planung ist wichtig</strong>
+                                <p>Überlege dir vorher, wie du dein Netzwerk aufteilen möchtest</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <a href="#level2" class="btn btn-outline js-nav-link">← Zurück</a>
+                    <a href="#level4" class="btn btn-primary js-nav-link">Router einsetzen →</a>
+                </div>
+            </section>
+
+            <!-- Level 4: Gateway & Router -->
+            <section id="level4" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Level 4</span>
+                    <h2>🌍 Router & Gateway - Netzwerke verbinden</h2>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🌐 Was ist ein Router?</h3>
+                    <div class="definition">
+                        <p>
+                            Ein <strong>Router</strong> (auch Gateway genannt) ist ein Gerät, das verschiedene Netzwerke miteinander verbindet. 
+                            Er leitet Datenpakete zwischen den Netzwerken weiter.
+                        </p>
+                    </div>
+
+                    <h4 style="margin-top: 2rem;">🔑 Wichtige Eigenschaften eines Routers:</h4>
+                    <ul>
+                        <li>✅ Hat <strong>mehrere Netzwerkschnittstellen</strong> (mindestens 2)</li>
+                        <li>✅ Hat in <strong>jedem verbundenen Netzwerk eine eigene IP-Adresse</strong></li>
+                        <li>✅ Kennt <strong>Routing-Tabellen</strong> (wohin welche Pakete geschickt werden)</li>
+                        <li>✅ Kann Pakete zwischen verschiedenen Netzwerken <strong>weiterleiten</strong></li>
+                    </ul>
+                </div>
+
+                <div class="task-box">
+                    <h4>🎯 Aufgabe: Zwei Netzwerke mit Router verbinden</h4>
+                    <p>Verbinde die beiden Abteilungen aus Level 3 mit einem Router!</p>
+                    
+                    <div class="network-diagram">
+                        <div style="text-align: center;">
+                            <div style="color: black; background: #dbeafe; padding: 1rem; border-radius: 8px; display: inline-block; margin: 0.5rem;">
+                                <strong>Netzwerk A</strong><br>
+                                192.168.10.0/24<br>
+                                <div class="device-box" style="margin-top: 0.5rem;">
+                                    <div class="device-icon">💻</div>
+                                    <div>PC: .10.1</div>
+                                </div>
+                                <div class="device-box">
+                                    <div class="device-icon">💻</div>
+                                    <div>PC: .10.2</div>
+                                </div>
+                            </div>
+                            
+                            <div style="margin: 1rem 0;">
+                                <div class="device-box" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                                    <div class="device-icon">🌐</div>
+                                    <div><strong>ROUTER</strong></div>
+                                    <div style="font-size: 0.8rem;">192.168.10.254</div>
+                                    <div style="font-size: 0.8rem;">192.168.20.254</div>
+                                </div>
+                            </div>
+                            
+                            <div style="color: black; background: #d1fae5; padding: 1rem; border-radius: 8px; display: inline-block; margin: 0.5rem;">
+                                <strong>Netzwerk B</strong><br>
+                                192.168.20.0/24<br>
+                                <div class="device-box" style="margin-top: 0.5rem;">
+                                    <div class="device-icon">💻</div>
+                                    <div>PC: .20.1</div>
+                                </div>
+                                <div class="device-box">
+                                    <div class="device-icon">💻</div>
+                                    <div>PC: .20.2</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>📝 Schritt-für-Schritt Anleitung</h3>
+                    
+                    <div class="example-item">
+                        <h4>Schritt 1: Netzwerke vorbereiten</h4>
+                        <p>Nutze dein Netzwerk aus Level 3 oder baue es neu auf:</p>
+                        <ul>
+                            <li><strong>Netzwerk A:</strong> 192.168.10.0/24 mit 2-3 Computern</li>
+                            <li><strong>Netzwerk B:</strong> 192.168.20.0/24 mit 2-3 Computern</li>
+                            <li>Jedes Netzwerk hat einen eigenen Switch</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Schritt 2: Router platzieren und verbinden</h4>
+                        <ol>
+                            <li>Platziere einen <strong>Router</strong> zwischen den beiden Switches</li>
+                            <li>Verbinde den Router mit <strong>Switch A</strong> (Netzwerk 192.168.10.0)</li>
+                            <li>Verbinde den Router mit <strong>Switch B</strong> (Netzwerk 192.168.20.0)</li>
+                        </ol>
+                        <div class="important-note">
+                            💡 Der Router hat jetzt zwei Netzwerkkarten - eine für jedes Netzwerk!
+                        </div>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Schritt 3: Router konfigurieren</h4>
+                        <ol>
+                            <li>Doppelklick auf den <strong>Router</strong></li>
+                            <li>Gehe zu <strong>"Netzwerkkonfiguration"</strong></li>
+                            <li>Du siehst zwei Netzwerkschnittstellen!</li>
+                            <li><strong>Schnittstelle 1</strong> (zu Netzwerk A):
+                                <div class="config-box">
+                                    <div class="config-label">Router Interface 1</div>
+                                    <pre>IP-Adresse:    192.168.10.254
+Subnetzmaske:  255.255.255.0</pre>
+                                </div>
+                            </li>
+                            <li><strong>Schnittstelle 2</strong> (zu Netzwerk B):
+                                <div class="config-box">
+                                    <div class="config-label">Router Interface 2</div>
+                                    <pre>IP-Adresse:    192.168.20.254
+Subnetzmaske:  255.255.255.0</pre>
+                                </div>
+                            </li>
+                            <li>Klicke auf <strong>"Übernehmen"</strong></li>
+                        </ol>
+                        <div class="important-note">
+                            💡 <strong>Warum .254?</strong> Das ist Konvention - die letzte nutzbare IP wird oft für den Router verwendet.
+                        </div>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Schritt 4: Gateway in den Computern eintragen</h4>
+                        <p>Jetzt müssen die Computer wissen, dass der Router ihr Gateway ist!</p>
+                        
+                        <p><strong>Für alle Computer in Netzwerk A:</strong></p>
+                        <ol>
+                            <li>Doppelklick auf Computer</li>
+                            <li>Netzwerkkonfiguration</li>
+                            <li>Gateway: <code>192.168.10.254</code></li>
+                            <li>Übernehmen</li>
+                        </ol>
+
+                        <p style="margin-top: 1rem;"><strong>Für alle Computer in Netzwerk B:</strong></p>
+                        <ol>
+                            <li>Doppelklick auf Computer</li>
+                            <li>Netzwerkkonfiguration</li>
+                            <li>Gateway: <code>192.168.20.254</code></li>
+                            <li>Übernehmen</li>
+                        </ol>
+
+                        <div class="config-box">
+                            <div class="config-label">Beispiel: Computer in Netzwerk A</div>
+                            <pre>IP-Adresse:    192.168.10.1
+Subnetzmaske:  255.255.255.0
+Gateway:       192.168.10.254  ← NEU!</pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>🧪 Schritt 5: Verbindung testen</h4>
+                    <ol>
+                        <li>Wechsle in den <strong>Simulationsmodus</strong></li>
+                        <li>Öffne die Befehlszeile auf einem Computer in Netzwerk A (z.B. 192.168.10.1)</li>
+                        <li>Teste die Verbindung zu Netzwerk B:
+                            <div class="config-box">
+                                <pre>ping 192.168.20.1</pre>
+                            </div>
+                        </li>
+                        <li>Teste auch von Netzwerk B zu Netzwerk A!</li>
+                    </ol>
+
+                    <div class="example-box success">
+                        <h3>✅ Erfolg!</h3>
+                        <div class="example-content">
+                            <p>Wenn du Antworten erhältst, funktioniert das Routing! 🎉</p>
+                            <div class="config-box">
+                                <pre>Antwort von 192.168.20.1: Zeit=2ms
+Antwort von 192.168.20.1: Zeit=2ms</pre>
+                            </div>
+                            <p>Die Pakete werden jetzt über den Router weitergeleitet!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-box">
+                    <h4>🤔 Verständnisfrage</h4>
+                    <p>
+                        Was passiert, wenn du das Gateway bei einem Computer NICHT einträgst?
+                    </p>
+                    
+                    <button class="btn btn-warning" onclick="document.getElementById('answer7').classList.toggle('show')">
+                        💡 Antwort zeigen
+                    </button>
+                    
+                    <div id="answer7" class="answer-reveal">
+                        <p><strong>Antwort:</strong></p>
+                        <p>
+                            Der Computer kann dann <strong>nur mit Geräten im eigenen Netzwerk</strong> kommunizieren!
+                        </p>
+                        <p><strong>Warum?</strong></p>
+                        <ul>
+                            <li>Der Computer prüft: "Ist das Ziel im gleichen Netzwerk?"</li>
+                            <li>Wenn NEIN: "Wo ist mein Gateway?" → Kein Gateway eingetragen → ❌ Fehler!</li>
+                            <li>Das Gateway ist der "Ausgang" aus dem eigenen Netzwerk</li>
+                        </ul>
+                        <p><strong>Teste es:</strong> Entferne das Gateway bei einem Computer und versuche, ins andere Netzwerk zu pingen!</p>
+                    </div>
+                </div>
+
+                <div class="concept-box info">
+                    <h3>🔍 Wie funktioniert Routing?</h3>
+                    <p>Schauen wir uns an, was passiert, wenn Computer A (192.168.10.1) zu Computer B (192.168.20.1) pingt:</p>
+                    
+                    <div class="example-item">
+                        <h4>Schritt 1: Computer A prüft das Ziel</h4>
+                        <p>
+                            "Ist 192.168.20.1 im gleichen Netzwerk wie ich (192.168.10.x)?"<br>
+                            → <strong>NEIN!</strong> Also muss ich das Paket an mein Gateway schicken.
+                        </p>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Schritt 2: Paket geht zum Router</h4>
+                        <p>
+                            Computer A sendet das Paket an 192.168.10.254 (sein Gateway)
+                        </p>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Schritt 3: Router leitet weiter</h4>
+                        <p>
+                            Der Router prüft: "192.168.20.1 ist in meinem anderen Netzwerk!"<br>
+                            → Router leitet das Paket über seine zweite Schnittstelle (192.168.20.254) weiter
+                        </p>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Schritt 4: Paket erreicht Ziel</h4>
+                        <p>
+                            Computer B (192.168.20.1) empfängt das Paket und sendet eine Antwort zurück<br>
+                            → Die Antwort nimmt den gleichen Weg zurück (über den Router)
+                        </p>
+                    </div>
+                </div>
+
+                <div class="checklist">
+                    <h4>✅ Level 4 Checkliste</h4>
+                    
+                    <label class="checklist-item">
+                        <input type="checkbox">
+                        <span>Zwei getrennte Netzwerke aufgebaut</span>
+                    </label>
+                    
+                    <label class="checklist-item">
+                        <input type="checkbox">
+                        <span>Router platziert und mit beiden Switches verbunden</span>
+                    </label>
+                    
+                    <label class="checklist-item">
+                        <input type="checkbox">
+                        <span>Router mit zwei IP-Adressen konfiguriert</span>
+                    </label>
+                    
+                    <label class="checklist-item">
+                        <input type="checkbox">
+                        <span>Gateway in allen Computern eingetragen</span>
+                    </label>
+                    
+                    <label class="checklist-item">
+                        <input type="checkbox">
+                        <span>Erfolgreicher Ping zwischen den Netzwerken</span>
+                    </label>
+                    
+                    <label class="checklist-item">
+                        <input type="checkbox">
+                        <span>Verstanden, wie Routing funktioniert</span>
+                    </label>
+                </div>
+
+                <div class="navigation-buttons">
+                    <a href="#level3" class="btn btn-outline js-nav-link">← Zurück</a>
+                    <a href="#level5" class="btn btn-primary js-nav-link">Server einrichten →</a>
+                </div>
+            </section>
+
+            <!-- Level 5: Server-Dienste -->
+            <section id="level5" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Level 5</span>
+                    <h2>🖥️ Server-Dienste einrichten</h2>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🌟 Was sind Server-Dienste?</h3>
+                    <div class="definition">
+                        <p>
+                            Ein <strong>Server</strong> ist ein Computer, der Dienste für andere Computer (Clients) bereitstellt. 
+                            In Filius kannst du verschiedene Server-Typen simulieren.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="definition-grid">
+                    <div class="definition-card">
+                        <div class="def-icon">🌐</div>
+                        <h4>Webserver</h4>
+                        <p>Stellt Webseiten bereit (HTTP/HTTPS)</p>
+                        <ul>
+                            <li>Hostet HTML-Seiten</li>
+                            <li>Antwortet auf Browser-Anfragen</li>
+                            <li>Port: 80 (HTTP)</li>
+                        </ul>
+                    </div>
+
+                    <div class="definition-card">
+                        <div class="def-icon">📧</div>
+                        <h4>DNS-Server</h4>
+                        <p>Übersetzt Namen in IP-Adressen</p>
+                        <ul>
+                            <li>www.beispiel.de → 192.168.1.10</li>
+                            <li>Wie ein Telefonbuch</li>
+                            <li>Port: 53</li>
+                        </ul>
+                    </div>
+
+                    <div class="definition-card">
+                        <div class="def-icon">🔧</div>
+                        <h4>DHCP-Server</h4>
+                        <p>Vergibt automatisch IP-Adressen</p>
+                        <ul>
+                            <li>Keine manuelle Konfiguration nötig</li>
+                            <li>Verwaltet IP-Pool</li>
+                            <li>Port: 67/68</li>
+                        </ul>
+                    </div>
+
+                    <div class="definition-card">
+                        <div class="def-icon">✉️</div>
+                        <h4>E-Mail-Server</h4>
+                        <p>Sendet und empfängt E-Mails</p>
+                        <ul>
+                            <li>SMTP (Senden)</li>
+                            <li>POP3/IMAP (Empfangen)</li>
+                            <li>Port: 25, 110, 143</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>🎯 Aufgabe 1: Webserver einrichten</h4>
+                    <p>Richte einen Webserver ein und greife mit einem Client darauf zu!</p>
+                </div>
+
+                <div class="concept-box">
+                    <h3>📝 Webserver-Anleitung</h3>
+                    
+                    <div class="example-item">
+                        <h4>Schritt 1: Netzwerk vorbereiten</h4>
+                        <ol>
+                            <li>Erstelle ein einfaches Netzwerk:
+                                <ul>
+                                    <li>1 Switch</li>
+                                    <li>1 Server (für den Webserver)</li>
+                                    <li>2-3 Clients (normale Computer)</li>
+                                </ul>
+                            </li>
+                            <li>Konfiguriere die IP-Adressen:
+                                <div class="config-box">
+                                    <div class="config-label">IP-Plan</div>
+                                    <pre>Server:    192.168.1.10
+Client 1:  192.168.1.20
+Client 2:  192.168.1.21
+Alle:      Subnetzmaske 255.255.255.0</pre>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Schritt 2: Webserver installieren</h4>
+                        <ol>
+                            <li>Wechsle in den <strong>Simulationsmodus</strong></li>
+                            <li>Doppelklick auf den <strong>Server</strong></li>
+                            <li>Klicke auf <strong>"Software installieren"</strong></li>
+                            <li>Wähle <strong>"Webserver"</strong></li>
+                            <li>Doppelklick auf den Webserver in der Software-Liste</li>
+                            <li>Der Webserver öffnet sich</li>
+                        </ol>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Schritt 3: Webseite erstellen</h4>
+                        <ol>
+                            <li>Im Webserver-Fenster siehst du einen Editor</li>
+                            <li>Erstelle eine einfache HTML-Seite:
+                                <div class="config-box">
+                                    <div class="config-label">index.html</div>
+                                    <pre>&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Mein erster Server&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Willkommen auf meinem Server!&lt;/h1&gt;
+    &lt;p&gt;Das ist meine erste Webseite in Filius.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+                                </div>
+                            </li>
+                            <li>Klicke auf <strong>"Speichern"</strong></li>
+                            <li>Klicke auf <strong>"Starten"</strong> (grüner Pfeil)</li>
+                        </ol>
+                        <div class="important-note">
+                            ✅ Der Webserver läuft jetzt und wartet auf Anfragen!
+                        </div>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Schritt 4: Mit Browser zugreifen</h4>
+                        <ol>
+                            <li>Doppelklick auf <strong>Client 1</strong></li>
+                            <li>Installiere die Software <strong>"Webbrowser"</strong></li>
+                            <li>Öffne den Webbrowser</li>
+                            <li>Gib in die Adresszeile ein: <code>http://192.168.1.10</code></li>
+                            <li>Drücke Enter</li>
+                        </ol>
+
+                        <div class="example-box success">
+                            <h3>🎉 Geschafft!</h3>
+                            <div class="example-content">
+                                <p>Du solltest jetzt deine Webseite sehen! Der Client hat die Seite vom Server abgerufen.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>🎯 Aufgabe 2: DNS-Server einrichten</h4>
+                    <p>Jetzt wird es komfortabler! Statt IP-Adressen wollen wir Namen verwenden.</p>
+                </div>
+
+                <div class="concept-box">
+                    <h3>📝 DNS-Server-Anleitung</h3>
+                    
+                    <div class="example-item">
+                        <h4>Schritt 1: DNS-Server installieren</h4>
+                        <ol>
+                            <li>Füge einen weiteren Server hinzu (oder nutze den vorhandenen)</li>
+                            <li>IP-Adresse: <code>192.168.1.5</code></li>
+                            <li>Installiere die Software <strong>"DNS-Server"</strong></li>
+                            <li>Öffne den DNS-Server</li>
+                        </ol>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Schritt 2: DNS-Einträge erstellen</h4>
+                        <ol>
+                            <li>Im DNS-Server klicke auf <strong>"Neuer Eintrag"</strong></li>
+                            <li>Erstelle einen Eintrag:
+                                <div class="config-box">
+                                    <div class="config-label">DNS-Eintrag</div>
+                                    <pre>Domain:      www.meinserver.de
+IP-Adresse:  192.168.1.10</pre>
+                                </div>
+                            </li>
+                            <li>Klicke auf <strong>"Hinzufügen"</strong></li>
+                            <li>Starte den DNS-Server</li>
+                        </ol>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Schritt 3: DNS in Clients konfigurieren</h4>
+                        <ol>
+                            <li>Gehe zu jedem Client</li>
+                            <li>Öffne die <strong>Netzwerkkonfiguration</strong></li>
+                            <li>Trage ein:
+                                <div class="config-box">
+                                    <div class="config-label">Client-Konfiguration</div>
+                                    <pre>DNS-Server:  192.168.1.5</pre>
+                                </div>
+                            </li>
+                            <li>Übernehmen</li>
+                        </ol>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Schritt 4: Mit Namen zugreifen</h4>
+                        <ol>
+                            <li>Öffne den Webbrowser auf einem Client</li>
+                            <li>Gib ein: <code>http://www.meinserver.de</code></li>
+                            <li>Drücke Enter</li>
+                        </ol>
+
+                        <div class="example-box success">
+                            <h3>🎉 Perfekt!</h3>
+                            <div class="example-content">
+                                <p>
+                                    Der DNS-Server hat den Namen in die IP-Adresse übersetzt, und der Browser konnte die Seite laden!
+                                </p>
+                                <p><strong>Was ist passiert?</strong></p>
+                                <ol>
+                                    <li>Browser fragt DNS-Server: "Was ist die IP von www.meinserver.de?"</li>
+                                    <li>DNS-Server antwortet: "Das ist 192.168.1.10"</li>
+                                    <li>Browser verbindet sich mit 192.168.1.10</li>
+                                    <li>Webserver sendet die Seite</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-box">
+                    <h4>🤔 Experimentier-Aufgabe</h4>
+                    <p>
+                        Erstelle mehrere DNS-Einträge für verschiedene "Webseiten":
+                    </p>
+                    <ul>
+                        <li>www.firma.de → Server 1</li>
+                        <li>www.shop.de → Server 2</li>
+                        <li>www.blog.de → Server 3</li>
+                    </ul>
+                    <p>Richte mehrere Webserver ein und teste, ob du alle über ihre Namen erreichen kannst!</p>
+                </div>
+
+                <div class="concept-box info">
+                    <h3>🎓 Zusammenfassung Level 5</h3>
+                    <div class="key-points">
+                        <div class="key-point">
+                            <div class="number">1</div>
+                            <div>
+                                <strong>Server stellen Dienste bereit</strong>
+                                <p>Webserver, DNS, DHCP, E-Mail - jeder hat eine spezielle Aufgabe</p>
+                            </div>
+                        </div>
+                        <div class="key-point">
+                            <div class="number">2</div>
+                            <div>
+                                <strong>Client-Server-Modell</strong>
+                                <p>Clients fragen an, Server antworten</p>
+                            </div>
+                        </div>
+                        <div class="key-point">
+                            <div class="number">3</div>
+                            <div>
+                                <strong>DNS macht das Leben einfacher</strong>
+                                <p>Namen statt IP-Adressen merken</p>
+                            </div>
+                        </div>
+                        <div class="key-point">
+                            <div class="number">4</div>
+                            <div>
+                                <strong>Ports sind wichtig</strong>
+                                <p>Jeder Dienst hat seinen eigenen Port (HTTP: 80, DNS: 53)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <a href="#level4" class="btn btn-outline js-nav-link">← Zurück</a>
+                    <a href="#level6" class="btn btn-primary js-nav-link">Komplexe Netzwerke →</a>
+                </div>
+            </section>
+
+            <!-- Level 6: Komplexe Netzwerke -->
+            <section id="level6" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Level 6</span>
+                    <h2>🏗️ Komplexe Unternehmensnetzwerke</h2>
+                </div>
+
+                <div class="hero" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <h2 style="color: white;">🎯 Die Meisteraufgabe</h2>
+                    <p>
+                        Jetzt kombinierst du alles, was du gelernt hast! Baue ein realistisches Unternehmensnetzwerk 
+                        mit mehreren Standorten, Subnetzen und verschiedenen Servern.
+                    </p>
+                </div>
+
+                <div class="task-box">
+                    <h4>🏢 Szenario: Mittelständisches Unternehmen</h4>
+                    <p><strong>Die Firma "TechCorp" hat folgende Anforderungen:</strong></p>
+                    
+                    <div class="example-item">
+                        <h4>Standort 1: Hauptsitz (Netzwerk 192.168.10.0/24)</h4>
+                        <ul>
+                            <li><strong>Verwaltung:</strong> 5 Computer (192.168.10.10 - .14)</li>
+                            <li><strong>Buchhaltung:</strong> 3 Computer (192.168.10.20 - .22)</li>
+                            <li><strong>Server:</strong>
+                                <ul>
+                                    <li>Webserver (192.168.10.5)</li>
+                                    <li>DNS-Server (192.168.10.6)</li>
+                                    <li>Dateiserver (192.168.10.7)</li>
+                                </ul>
+                            </li>
+                            <li><strong>Router:</strong> Gateway 192.168.10.1</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Standort 2: Produktionshalle (Netzwerk 192.168.20.0/24)</h4>
+                        <ul>
+                            <li><strong>Produktion:</strong> 4 Computer (192.168.20.10 - .13)</li>
+                            <li><strong>Qualitätskontrolle:</strong> 2 Computer (192.168.20.20 - .21)</li>
+                            <li><strong>Router:</strong> Gateway 192.168.20.1</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Standort 3: Entwicklung (Netzwerk 192.168.30.0/24)</h4>
+                        <ul>
+                            <li><strong>Entwickler:</strong> 6 Computer (192.168.30.10 - .15)</li>
+                            <li><strong>Testserver:</strong> 2 Server (192.168.30.5 - .6)</li>
+                            <li><strong>Router:</strong> Gateway 192.168.30.1</li>
+                        </ul>
+                    </div>
+
+                    <div class="important-note">
+                        🎯 <strong>Ziel:</strong> Alle Standorte sollen miteinander kommunizieren können, 
+                        und alle Mitarbeiter sollen auf die Server im Hauptsitz zugreifen können!
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>📝 Aufbau-Strategie</h3>
+                    
+                    <div class="example-item">
+                        <h4>Phase 1: Einzelne Standorte aufbauen</h4>
+                        <ol>
+                            <li>Baue jeden Standort als <strong>separates Netzwerk</strong> auf</li>
+                            <li>Nutze für jeden Standort einen eigenen Switch</li>
+                            <li>Konfiguriere alle Geräte mit den richtigen IP-Adressen</li>
+                            <li>Teste die Kommunikation <strong>innerhalb</strong> jedes Standorts</li>
+                        </ol>
+                        <div class="important-note">
+                            💡 <strong>Tipp:</strong> Arbeite systematisch! Erst wenn ein Standort funktioniert, zum nächsten!
+                        </div>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Phase 2: Router platzieren</h4>
+                        <ol>
+                            <li>Platziere für jeden Standort einen Router</li>
+                            <li>Verbinde jeden Router mit dem Switch seines Standorts</li>
+                            <li>Konfiguriere die Router mit den Gateway-Adressen (.1)</li>
+                            <li>Trage in allen Computern das Gateway ein</li>
+                        </ol>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Phase 3: Zentral-Router einrichten</h4>
+                        <p>Jetzt wird es spannend! Die Standorte müssen verbunden werden.</p>
+                        <ol>
+                            <li>Platziere einen <strong>Zentral-Router</strong> in der Mitte</li>
+                            <li>Dieser Router verbindet alle drei Standort-Router</li>
+                            <li>Erstelle ein <strong>Verbindungsnetzwerk</strong> zwischen den Routern:
+                                <div class="config-box">
+                                    <div class="config-label">Router-Verbindungsnetz</div>
+                                    <pre>Netzwerk:        10.0.0.0/30
+Zentral-Router:  10.0.0.1
+Router Standort 1: 10.0.0.2
+
+Netzwerk:        10.0.0.4/30
+Zentral-Router:  10.0.0.5
+Router Standort 2: 10.0.0.6
+
+Netzwerk:        10.0.0.8/30
+Zentral-Router:  10.0.0.9
+Router Standort 3: 10.0.0.10</pre>
+                                </div>
+                            </li>
+                        </ol>
+                        <div class="important-note">
+                            💡 <strong>Warum /30?</strong> Für Router-zu-Router-Verbindungen brauchen wir nur 2 IP-Adressen!
+                        </div>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Phase 4: Routing-Tabellen konfigurieren</h4>
+                        <p>Die Router müssen wissen, wie sie Pakete weiterleiten sollen.</p>
+                        <ol>
+                            <li>Öffne jeden Router</li>
+                            <li>Gehe zu <strong>"Routing"</strong> oder <strong>"Routing-Tabelle"</strong></li>
+                            <li>Füge Routen hinzu, z.B. für Router Standort 1:
+                                <div class="config-box">
+                                    <div class="config-label">Routing-Tabelle Standort 1</div>
+                                    <pre>Ziel-Netzwerk    Subnetzmaske      Gateway
+192.168.20.0     255.255.255.0     10.0.0.1
+192.168.30.0     255.255.255.0     10.0.0.1</pre>
+                                </div>
+                            </li>
+                            <li>Das bedeutet: "Für Pakete zu 192.168.20.x oder 192.168.30.x, sende sie an 10.0.0.1 (Zentral-Router)"</li>
+                        </ol>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>Phase 5: Server einrichten</h4>
+                        <ol>
+                            <li>Richte im Hauptsitz die Server ein:
+                                <ul>
+                                    <li><strong>Webserver:</strong> Firmen-Intranet</li>
+                                    <li><strong>DNS-Server:</strong> Namen für alle Server</li>
+                                    <li><strong>Dateiserver:</strong> Gemeinsame Dateien</li>
+                                </ul>
+                            </li>
+                            <li>Konfiguriere DNS-Einträge:
+                                <div class="config-box">
+                                    <div class="config-label">DNS-Einträge</div>
+                                    <pre>intranet.techcorp.local  → 192.168.10.5
+files.techcorp.local     → 192.168.10.7
+dns.techcorp.local       → 192.168.10.6</pre>
+                                </div>
+                            </li>
+                            <li>Trage in ALLEN Computern den DNS-Server ein: <code>192.168.10.6</code></li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>🧪 Phase 6: Umfassende Tests</h4>
+                    <p>Teste systematisch alle Verbindungen:</p>
+                    
+                    <div class="checklist">
+                        <h4>✅ Test-Checkliste</h4>
+                        
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Standort 1: Alle Computer können untereinander kommunizieren</span>
+                        </label>
+                        
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Standort 2: Alle Computer können untereinander kommunizieren</span>
+                        </label>
+                        
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Standort 3: Alle Computer können untereinander kommunizieren</span>
+                        </label>
+                        
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Standort 1 → Standort 2: Ping erfolgreich</span>
+                        </label>
+                        
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Standort 1 → Standort 3: Ping erfolgreich</span>
+                        </label>
+                        
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Standort 2 → Standort 3: Ping erfolgreich</span>
+                        </label>
+                        
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Alle Standorte können auf Webserver zugreifen</span>
+                        </label>
+                        
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>DNS-Auflösung funktioniert von allen Standorten</span>
+                        </label>
+                        
+                        <label class="checklist-item">
+                            <input type="checkbox">
+                            <span>Zugriff auf Dateiserver von allen Standorten möglich</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="concept-box info">
+                    <h3>🎓 Erweiterte Konzepte</h3>
+                    
+                    <div class="example-item">
+                        <h4>🔒 Sicherheit durch Segmentierung</h4>
+                        <p>
+                            Durch die Aufteilung in Subnetze hast du automatisch mehr Sicherheit:
+                        </p>
+                        <ul>
+                            <li>Broadcast-Domänen sind getrennt → weniger Netzwerklast</li>
+                            <li>Router können Firewall-Regeln anwenden</li>
+                            <li>Probleme in einem Netzwerk betreffen nicht die anderen</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>📊 Redundanz und Ausfallsicherheit</h4>
+                        <p><strong>Erweiterungsidee:</strong> Füge Backup-Verbindungen hinzu!</p>
+                        <ul>
+                            <li>Zweiter Zentral-Router als Backup</li>
+                            <li>Mehrere Wege zwischen Standorten</li>
+                            <li>Backup-Server für kritische Dienste</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>🌍 VLANs (Virtual LANs)</h4>
+                        <p>
+                            In echten Netzwerken würde man oft VLANs nutzen, um logische Trennung 
+                            auf einem physischen Switch zu erreichen. In Filius simulierst du das durch separate Switches.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="question-box">
+                    <h4>🤔 Herausforderung: Fehlersuche</h4>
+                    <p>
+                        Stell dir vor, Computer in Standort 3 können nicht auf den Webserver in Standort 1 zugreifen. 
+                        Wie gehst du systematisch vor, um den Fehler zu finden?
+                    </p>
+                    
+                    <button class="btn btn-warning" onclick="document.getElementById('answer8').classList.toggle('show')">
+                        💡 Systematische Fehlersuche zeigen
+                    </button>
+                    
+                    <div id="answer8" class="answer-reveal">
+                        <p><strong>Systematische Fehlersuche:</strong></p>
+                        <ol>
+                            <li><strong>Lokale Verbindung testen:</strong>
+                                <ul>
+                                    <li>Kann der Computer andere Computer in Standort 3 erreichen?</li>
+                                    <li>→ Wenn NEIN: Problem in Standort 3 (IP, Kabel, Switch)</li>
+                                </ul>
+                            </li>
+                            <li><strong>Gateway testen:</strong>
+                                <ul>
+                                    <li>Kann der Computer seinen Router (192.168.30.1) pingen?</li>
+                                    <li>→ Wenn NEIN: Gateway falsch konfiguriert</li>
+                                </ul>
+                            </li>
+                            <li><strong>Routing testen:</strong>
+                                <ul>
+                                    <li>Kann der Computer den Zentral-Router erreichen?</li>
+                                    <li>→ Wenn NEIN: Routing-Tabelle im Router Standort 3 prüfen</li>
+                                </ul>
+                            </li>
+                            <li><strong>Ziel-Netzwerk testen:</strong>
+                                <ul>
+                                    <li>Kann der Computer andere Geräte in Standort 1 pingen?</li>
+                                    <li>→ Wenn JA, aber Webserver NEIN: Problem beim Webserver</li>
+                                </ul>
+                            </li>
+                            <li><strong>Dienst testen:</strong>
+                                <ul>
+                                    <li>Läuft der Webserver überhaupt?</li>
+                                    <li>Ist die Firewall aktiv?</li>
+                                </ul>
+                            </li>
+                        </ol>
+                        <p><strong>Werkzeuge:</strong></p>
+                        <ul>
+                            <li><code>ping</code> - Erreichbarkeit testen</li>
+                            <li><code>traceroute</code> - Weg der Pakete verfolgen (falls in Filius verfügbar)</li>
+                            <li>Routing-Tabellen ansehen</li>
+                            <li>Netzwerkkonfiguration überprüfen</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="example-box success">
+                    <h3>🏆 Herzlichen Glückwunsch!</h3>
+                    <div class="example-content">
+                        <p>
+                            Wenn du das komplexe Netzwerk erfolgreich aufgebaut hast, bist du jetzt ein <strong>Netzwerk-Profi</strong>! 
+                            Du hast gelernt:
+                        </p>
+                        <ul>
+                            <li>✅ Netzwerke zu planen und strukturieren</li>
+                            <li>✅ IP-Adressen sinnvoll zu vergeben</li>
+                            <li>✅ Subnetze zu erstellen und zu verwalten</li>
+                            <li>✅ Router zu konfigurieren und Routing-Tabellen zu erstellen</li>
+                            <li>✅ Server-Dienste einzurichten und zu nutzen</li>
+                            <li>✅ Komplexe Netzwerke zu debuggen</li>
+                        </ul>
+                        <p style="margin-top: 1rem;">
+                            <strong>Das sind Fähigkeiten, die in der echten IT-Welt sehr wertvoll sind!</strong> 🎉
+                        </p>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <a href="#level5" class="btn btn-outline js-nav-link">← Zurück</a>
+                    <a href="#troubleshooting" class="btn btn-primary js-nav-link">Problemlösung →</a>
+                </div>
+            </section>
+
+            <!-- Troubleshooting Section -->
+            <section id="troubleshooting" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Hilfe</span>
+                    <h2>🔍 Problemlösung & Tipps</h2>
+                </div>
+
+                <div class="concept-box warning">
+                    <h3>⚠️ Häufige Probleme und Lösungen</h3>
+                    <p>Hier findest du Lösungen für die häufigsten Probleme in Filius:</p>
+                </div>
+
+                <div class="troubleshooting">
+                    <h4>Problem 1: Computer können nicht kommunizieren</h4>
+                    
+                    <div class="term">
+                        <strong>Symptom:</strong>
+                        <p>Ping funktioniert nicht, keine Antwort</p>
+                    </div>
+
+                    <div class="term">
+                        <strong>Mögliche Ursachen & Lösungen:</strong>
+                        <ol>
+                            <li><strong>Kabel nicht verbunden</strong>
+                                <ul>
+                                    <li>Prüfe, ob alle Kabel richtig verbunden sind</li>
+                                    <li>Kabel sollten als durchgezogene Linien sichtbar sein</li>
+                                </ul>
+                            </li>
+                            <li><strong>Falsche IP-Konfiguration</strong>
+                                <ul>
+                                    <li>Beide Computer müssen im gleichen Netzwerk sein</li>
+                                    <li>Gleiche Subnetzmaske verwenden</li>
+                                    <li>Keine doppelten IP-Adressen</li>
+                                </ul>
+                            </li>
+                            <li><strong>Nicht im Simulationsmodus</strong>
+                                <ul>
+                                    <li>Wechsle in den Simulationsmodus (grüner Pfeil)</li>
+                                    <li>Im Entwurfsmodus funktioniert keine Kommunikation</li>
+                                </ul>
+                            </li>
+                            <li><strong>Gateway fehlt</strong>
+                                <ul>
+                                    <li>Bei Kommunikation zwischen Netzwerken: Gateway eintragen</li>
+                                    <li>Gateway muss die IP des Routers sein</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="troubleshooting">
+                    <h4>Problem 2: Webserver nicht erreichbar</h4>
+                    
+                    <div class="term">
+                        <strong>Symptom:</strong>
+                        <p>Browser zeigt "Verbindung fehlgeschlagen" oder lädt endlos</p>
+                    </div>
+
+                    <div class="term">
+                        <strong>Lösungen:</strong>
+                        <ol>
+                            <li><strong>Webserver läuft nicht</strong>
+                                <ul>
+                                    <li>Öffne den Server</li>
+                                    <li>Prüfe, ob der Webserver gestartet ist (grüner Pfeil)</li>
+                                    <li>Starte ihn neu, falls nötig</li>
+                                </ul>
+                            </li>
+                            <li><strong>Falsche URL</strong>
+                                <ul>
+                                    <li>Nutze <code>http://</code> vor der IP-Adresse</li>
+                                    <li>Beispiel: <code>http://192.168.1.10</code></li>
+                                    <li>Keine Leerzeichen in der URL</li>
+                                </ul>
+                            </li>
+                            <li><strong>Netzwerkproblem</strong>
+                                <ul>
+                                    <li>Teste erst mit Ping, ob der Server erreichbar ist</li>
+                                    <li>Wenn Ping funktioniert, aber Browser nicht → Webserver-Problem</li>
+                                    <li>Wenn Ping nicht funktioniert → Netzwerk-Problem</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="troubleshooting">
+                    <h4>Problem 3: DNS funktioniert nicht</h4>
+                    
+                    <div class="term">
+                        <strong>Symptom:</strong>
+                        <p>Namen werden nicht aufgelöst, nur IP-Adressen funktionieren</p>
+                    </div>
+
+                    <div class="term">
+                        <strong>Lösungen:</strong>
+                        <ol>
+                            <li><strong>DNS-Server nicht konfiguriert</strong>
+                                <ul>
+                                    <li>Öffne die Netzwerkkonfiguration des Clients</li>
+                                    <li>Trage die IP des DNS-Servers ein</li>
+                                    <li>Übernehmen nicht vergessen!</li>
+                                </ul>
+                            </li>
+                            <li><strong>DNS-Server läuft nicht</strong>
+                                <ul>
+                                    <li>Öffne den DNS-Server</li>
+                                    <li>Starte ihn (grüner Pfeil)</li>
+                                </ul>
+                            </li>
+                            <li><strong>DNS-Eintrag fehlt</strong>
+                                <ul>
+                                    <li>Prüfe, ob der gewünschte Name im DNS-Server eingetragen ist</li>
+                                    <li>Füge fehlende Einträge hinzu</li>
+                                </ul>
+                            </li>
+                            <li><strong>DNS-Server nicht erreichbar</strong>
+                                <ul>
+                                    <li>Teste mit Ping, ob der DNS-Server erreichbar ist</li>
+                                    <li>Prüfe Gateway-Konfiguration, falls in anderem Netzwerk</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="troubleshooting">
+                    <h4>Problem 4: Routing funktioniert nicht</h4>
+                    
+                    <div class="term">
+                        <strong>Symptom:</strong>
+                        <p>Computer in verschiedenen Netzwerken können nicht kommunizieren</p>
+                    </div>
+
+                    <div class="term">
+                        <strong>Lösungen:</strong>
+                        <ol>
+                            <li><strong>Gateway nicht eingetragen</strong>
+                                <ul>
+                                    <li>Jeder Computer braucht ein Gateway</li>
+                                    <li>Gateway = IP-Adresse des Routers im eigenen Netzwerk</li>
+                                </ul>
+                            </li>
+                            <li><strong>Router falsch konfiguriert</strong>
+                                <ul>
+                                    <li>Router braucht in jedem Netzwerk eine IP-Adresse</li>
+                                    <li>Prüfe beide Schnittstellen des Routers</li>
+                                </ul>
+                            </li>
+                            <li><strong>Routing-Tabelle fehlt</strong>
+                                <ul>
+                                    <li>Bei mehreren Routern: Routing-Tabellen konfigurieren</li>
+                                    <li>Router müssen wissen, wohin sie Pakete schicken sollen</li>
+                                </ul>
+                            </li>
+                            <li><strong>Routing nicht aktiviert</strong>
+                                <ul>
+                                    <li>In manchen Filius-Versionen: "Automatisches Routing" aktivieren</li>
+                                    <li>Oder manuelle Routen eintragen</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="concept-box info">
+                    <h3>🛠️ Debugging-Strategie</h3>
+                    <p>Gehe systematisch vor, um Probleme zu finden:</p>
+                    
+                    <div class="key-points">
+                        <div class="key-point">
+                            <div class="number">1</div>
+                            <div>
+                                <strong>Isoliere das Problem</strong>
+                                <p>Funktioniert es lokal? Im gleichen Netzwerk? Zwischen Netzwerken?</p>
+                            </div>
+                        </div>
+                        <div class="key-point">
+                            <div class="number">2</div>
+                            <div>
+                                <strong>Teste Schicht für Schicht</strong>
+                                <p>Kabel → IP-Konfiguration → Gateway → Routing → Dienste</p>
+                            </div>
+                        </div>
+                        <div class="key-point">
+                            <div class="number">3</div>
+                            <div>
+                                <strong>Nutze Ping</strong>
+                                <p>Ping ist dein bester Freund zum Testen der Erreichbarkeit</p>
+                            </div>
+                        </div>
+                        <div class="key-point">
+                            <div class="number">4</div>
+                            <div>
+                                <strong>Dokumentiere deine Konfiguration</strong>
+                                <p>Schreibe IP-Adressen auf, dann findest du Fehler schneller</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="best-practices">
+                    <h3>✨ Best Practices für Filius</h3>
+                    
+                    <div class="practice">
+                        <span class="icon">📝</span>
+                        <div>
+                            <strong>Plane vor dem Bauen</strong>
+                            <p>Zeichne dein Netzwerk auf Papier und plane die IP-Adressen</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">🏷️</span>
+                        <div>
+                            <strong>Benenne Geräte sinnvoll</strong>
+                            <p>Nutze Namen wie "PC-Verwaltung-1" statt "Rechner1"</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">🎨</span>
+                        <div>
+                            <strong>Strukturiere dein Layout</strong>
+                            <p>Ordne Geräte logisch an, nutze Farben für verschiedene Bereiche</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">💾</span>
+                        <div>
+                            <strong>Speichere regelmäßig</strong>
+                            <p>Speichere dein Projekt oft, besonders vor großen Änderungen</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">🧪</span>
+                        <div>
+                            <strong>Teste schrittweise</strong>
+                            <p>Baue nicht alles auf einmal, teste nach jedem Schritt</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">📚</span>
+                        <div>
+                            <strong>Dokumentiere deine Arbeit</strong>
+                            <p>Erstelle eine Liste aller IP-Adressen und Dienste</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <a href="#level6" class="btn btn-outline js-nav-link">← Zurück</a>
+                    <a href="#abschluss" class="btn btn-primary js-nav-link">Zum Abschluss →</a>
+                </div>
+            </section>
+
+            <!-- Abschluss Section -->
+            <section id="abschluss" class="content-section">
+                <div class="hero" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;">
+                    <h1 style="color: white;">🎓 Herzlichen Glückwunsch!</h1>
+                    <p style="color: white;">
+                        Du hast das Filius-Tutorial erfolgreich abgeschlossen und bist jetzt ein Netzwerk-Experte!
+                    </p>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <span class="info-icon">🎯</span>
+                        <h3>Was du gelernt hast</h3>
+                        <ul>
+                            <li>Netzwerkkomponenten verstehen</li>
+                            <li>IP-Adressen konfigurieren</li>
+                            <li>Subnetting anwenden</li>
+                            <li>Router einrichten</li>
+                            <li>Server-Dienste nutzen</li>
+                            <li>Komplexe Netzwerke planen</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-icon">🚀</span>
+                        <h3>Nächste Schritte</h3>
+                        <ul>
+                            <li>Experimentiere mit eigenen Netzwerken</li>
+                            <li>Baue ein Schulnetzwerk nach</li>
+                            <li>Teste verschiedene Server-Dienste</li>
+                            <li>Lerne über Netzwerksicherheit</li>
+                            <li>Erkunde VLANs und VPNs</li>
+                        </ul>
+                    </div>
+                    <div class="info-card">
+                        <span class="info-icon">💡</span>
+                        <h3>Projekt-Ideen</h3>
+                        <ul>
+                            <li>Heimnetzwerk mit Smart Home</li>
+                            <li>Schul-Netzwerk mit WLAN</li>
+                            <li>Firmen-Netzwerk mit DMZ</li>
+                            <li>Internet-Simulation</li>
+                            <li>Cloud-Infrastruktur</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="concept-box">
+                    <h3>📚 Weiterführende Ressourcen</h3>
+                    <ul>
+                        <li><strong>Filius-Website:</strong> <a href="https://www.lernsoftware-filius.de" target="_blank">www.lernsoftware-filius.de</a></li>
+                        <li><strong>Filius-Forum:</strong> Tausche dich mit anderen aus</li>
+                        <li><strong>YouTube-Tutorials:</strong> Suche nach "Filius Tutorial" für Video-Anleitungen</li>
+                        <li><strong>Netzwerk-Grundlagen:</strong> Lerne mehr über TCP/IP, OSI-Modell, etc.</li>
+                    </ul>
+                </div>
+
+                <div class="example-box success">
+                    <h3>🏆 Deine Erfolge</h3>
+                    <div class="example-content">
+                        <p>Du hast in diesem Tutorial folgende Meilensteine erreicht:</p>
+                        <div class="checklist">
+                            <label class="checklist-item">
+                                <input type="checkbox" checked disabled>
+                                <span>✅ Filius erfolgreich installiert</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" checked disabled>
+                                <span>✅ Erstes Heimnetzwerk aufgebaut</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" checked disabled>
+                                <span>✅ Subnetting verstanden und angewendet</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" checked disabled>
+                                <span>✅ Router konfiguriert und Routing eingerichtet</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" checked disabled>
+                                <span>✅ Server-Dienste (Web, DNS) eingerichtet</span>
+                            </label>
+                            <label class="checklist-item">
+                                <input type="checkbox" checked disabled>
+                                <span>✅ Komplexes Unternehmensnetzwerk gebaut</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="concept-box info">
+                    <h3>💬 Feedback & Verbesserungen</h3>
+                    <p>
+                        Dieses Tutorial wird ständig verbessert. Wenn du Feedback hast oder Fehler findest, 
+                        melde dich bei deinem Lehrer oder der Plattform-Administration.
+                    </p>
+                </div>
+
+                <div class="hero" style="background: var(--gray-lighter); color: var(--dark); margin-top: 3rem;">
+                    <h2>🌟 Viel Erfolg bei deinen Netzwerk-Projekten!</h2>
+                    <p>
+                        Du hast jetzt das Wissen und die Fähigkeiten, um komplexe Netzwerke zu planen und aufzubauen. 
+                        Nutze Filius, um zu experimentieren und dein Wissen zu vertiefen!
+                    </p>
+                    <div style="margin-top: 2rem;">
+                        <a href="#intro" class="btn btn-primary btn-lg">🔄 Tutorial nochmal durchgehen</a>
+                        <a href="https://www.lernsoftware-filius.de" target="_blank" class="btn btn-secondary btn-lg">🌐 Filius-Website besuchen</a>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- JavaScript -->
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    
+    <script>
+        // Zusätzliche Funktionen für das Tutorial
+        
+        // Fortschritt speichern
+        function saveProgress(section) {
+            localStorage.setItem('filius_tutorial_progress', section);
+        }
+
+        // Fortschritt laden
+        function loadProgress() {
+            return localStorage.getItem('filius_tutorial_progress');
+        }
+
+        // Beim Laden der Seite Fortschritt wiederherstellen
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedProgress = loadProgress();
+            if (savedProgress && window.location.hash === '') {
+                window.location.hash = savedProgress;
+            }
+        });
+
+        // Fortschritt bei Navigation speichern
+        document.querySelectorAll('.sidebar-menu a, .navigation-buttons a').forEach(link => {
+            link.addEventListener('click', function() {
+                const section = this.getAttribute('href').substring(1);
+                saveProgress(section);
+            });
+        });
+
+        // Checklisten-Funktionalität
+        document.querySelectorAll('.checklist-item input[type="checkbox"]').forEach(checkbox => {
+            const checklistId = checkbox.closest('.checklist')?.id || 'default';
+            const itemIndex = Array.from(checkbox.closest('.checklist').querySelectorAll('input[type="checkbox"]')).indexOf(checkbox);
+            const storageKey = `filius_checklist_${checklistId}_${itemIndex}`;
+            
+            // Zustand laden
+            if (localStorage.getItem(storageKey) === 'true') {
+                checkbox.checked = true;
+            }
+            
+            // Zustand speichern
+            checkbox.addEventListener('change', function() {
+                localStorage.setItem(storageKey, this.checked);
+            });
+        });
+
+        // Smooth Scroll für interne Links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#' && href.length > 1) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
+        });
+
+        // Konfetti-Effekt für Erfolge (optional)
+        function celebrateSuccess() {
+            // Einfacher Konfetti-Effekt
+            const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.style.cssText = `
+                        position: fixed;
+                        width: 10px;
+                        height: 10px;
+                        background: ${colors[Math.floor(Math.random() * colors.length)]};
+                        left: ${Math.random() * 100}vw;
+                        top: -10px;
+                        border-radius: 50%;
+                        pointer-events: none;
+                        z-index: 9999;
+                        animation: fall 3s linear forwards;
+                    `;
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        // CSS für Konfetti-Animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fall {
+                to {
+                    transform: translateY(100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Feiere Erfolg beim Erreichen des Abschlusses
+        if (window.location.hash === '#abschluss') {
+            setTimeout(celebrateSuccess, 500);
+        }
+    </script>
+
+</body>
+</html>
