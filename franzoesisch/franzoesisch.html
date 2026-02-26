@@ -187,28 +187,35 @@
             const sidebar = document.querySelector('.sidebar');
             const menuLinks = document.querySelectorAll('.sidebar-menu a');
 
-            // 1. Toggle Sidebar visibility
             mobileMenuBtn.addEventListener('click', () => {
                 sidebar.classList.toggle('active');
-                mobileMenuBtn.classList.toggle('is-open'); // Optional: for hamburger animation
+                mobileMenuBtn.classList.toggle('is-open');
             });
 
-            // 2. Smooth Scroll and Auto-Close Sidebar
             menuLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
-                    e.preventDefault(); // Prevent default anchor jump
+                    e.preventDefault();
 
-                    const targetId = link.getAttribute('href');
+                    // 1. Active-Klasse verwalten
+                    menuLinks.forEach(item => {
+                        item.parentElement.classList.remove('active');
+                    });
+                    link.parentElement.classList.add('active');
+
+                    const targetId = link.getAttribute('href'); // z.B. "#jahrgang-6"
                     const targetElement = document.querySelector(targetId);
 
                     if (targetElement) {
-                        // Scroll to the section
+                        // 2. URL aktualisieren (ohne Seitensprung)
+                        history.pushState(null, null, targetId);
+
+                        // 3. Smooth Scroll ausführen
                         targetElement.scrollIntoView({
                             behavior: 'smooth',
                             block: 'start'
                         });
 
-                        // Close the sidebar after clicking (on mobile)
+                        // Sidebar schließen
                         sidebar.classList.remove('active');
                         mobileMenuBtn.classList.remove('is-open');
                     }
