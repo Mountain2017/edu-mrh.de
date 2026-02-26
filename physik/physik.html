@@ -38,9 +38,9 @@
             <li><a href="#jahrgang-7">Klasse 7 (NuT)</a></li>
             <li><a href="#jahrgang-8">Klasse 8</a></li>
             <li><a href="#jahrgang-9">Klasse 9</a></li>
-            <li><a href="#jahrgang-10" class="active">Klasse 10</a></li>
+            <li><a href="#jahrgang-10">Klasse 10</a></li>
             <li><a href="#jahrgang-11">Klasse 11</a></li>
-            <li><a href="#jahrgang-12" class="active">Klasse 12</a></li>
+            <li><a href="#jahrgang-12">Klasse 12</a></li>
             <li><a href="#jahrgang-13">Klasse 13</a></li>
         </ul>
     </aside>
@@ -98,7 +98,6 @@
                 </div>
                 <div class="example-box">
                     <p>Themenbereich Elektrizitätslehre und Atomphysik (Platzhalter).</p>
-                    <a href="./9/Federpendel.html" class="btn btn-primary">Federpendel</a>
                 </div>
             </section>
 
@@ -122,7 +121,8 @@
                     <h2>Einführungsphase Oberstufe</h2>
                 </div>
                 <div class="example-box">
-                    <p>Inhalte zur Wellenoptik und Mechanik (Platzhalter).</p>
+                    <p>Inhalte zur Wellenoptik und Mechanik.</p>
+                    <a href="./11/Federpendel.html" class="btn btn-primary">Federpendel</a>
                 </div>
             </section>
 
@@ -167,28 +167,35 @@
             const sidebar = document.querySelector('.sidebar');
             const menuLinks = document.querySelectorAll('.sidebar-menu a');
 
-            // 1. Toggle Sidebar visibility
             mobileMenuBtn.addEventListener('click', () => {
                 sidebar.classList.toggle('active');
-                mobileMenuBtn.classList.toggle('is-open'); // Optional: for hamburger animation
+                mobileMenuBtn.classList.toggle('is-open');
             });
 
-            // 2. Smooth Scroll and Auto-Close Sidebar
             menuLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
-                    e.preventDefault(); // Prevent default anchor jump
+                    e.preventDefault();
 
-                    const targetId = link.getAttribute('href');
+                    // 1. Active-Klasse verwalten
+                    menuLinks.forEach(item => {
+                        item.parentElement.classList.remove('active');
+                    });
+                    link.parentElement.classList.add('active');
+
+                    const targetId = link.getAttribute('href'); // z.B. "#jahrgang-6"
                     const targetElement = document.querySelector(targetId);
 
                     if (targetElement) {
-                        // Scroll to the section
+                        // 2. URL aktualisieren (ohne Seitensprung)
+                        history.pushState(null, null, targetId);
+
+                        // 3. Smooth Scroll ausführen
                         targetElement.scrollIntoView({
                             behavior: 'smooth',
                             block: 'start'
                         });
 
-                        // Close the sidebar after clicking (on mobile)
+                        // Sidebar schließen
                         sidebar.classList.remove('active');
                         mobileMenuBtn.classList.remove('is-open');
                     }
