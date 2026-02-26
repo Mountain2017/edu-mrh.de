@@ -1,0 +1,3288 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rekursive Datenstrukturen - Interaktiver Lernpfad</title>
+    <link rel="stylesheet" href="https://embed.edu-mrh.de/style.css">
+    <link rel="stylesheet" href="https://embed.edu-mrh.de/include/online-ide-embedded.css">
+    <script type="module" src="https://embed.edu-mrh.de/include/online-ide-embedded.js"></script>
+    <style>
+        .progress-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            padding: 0 1rem;
+        }
+        
+        .progress-step {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            background: var(--gray-lighter);
+            margin: 0 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .progress-step.completed {
+            background: var(--success-color);
+            color: var(--white);
+        }
+        
+        .progress-step.active {
+            background: var(--primary-color);
+            color: var(--white);
+            transform: scale(1.05);
+        }
+        
+        .progress-step:hover {
+            transform: scale(1.02);
+        }
+        
+        .hint-box {
+            background: #fff3cd;
+            border: 2px solid var(--warning-color);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin: 1.5rem 0;
+            display: none;
+        }
+        
+        .hint-box.visible {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .interactive-demo {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin: 2rem 0;
+        }
+        
+        .array-visualization {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .array-cell {
+            width: 80px;
+            height: 80px;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--white);
+            transition: var(--transition);
+        }
+        
+        .array-cell.filled {
+            background: var(--primary-light);
+            color: var(--white);
+        }
+        
+        .array-cell.empty {
+            background: var(--gray-lighter);
+            border-style: dashed;
+        }
+        
+        .array-index {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 0.25rem;
+        }
+        
+        .array-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .queue-visualization {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            overflow-x: auto;
+            padding: 1rem;
+        }
+        
+        .queue-node {
+            min-width: 120px;
+            padding: 1.5rem;
+            background: var(--primary-color);
+            color: var(--white);
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .queue-arrow {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+        
+        .queue-label {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: var(--gray);
+            white-space: nowrap;
+        }
+        
+        .control-panel {
+            display: flex;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .control-panel input {
+            padding: 0.75rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .comparison-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .comparison-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .pros-cons {
+            margin: 1rem 0;
+        }
+        
+        .pros-cons h5 {
+            color: var(--success-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .pros-cons.cons h5 {
+            color: var(--danger-color);
+        }
+        
+        .challenge-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            margin: 2rem 0;
+        }
+        
+        .challenge-box h4 {
+            margin-bottom: 1rem;
+        }
+        
+        .solution-toggle {
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="icon">🎓</span>
+                <span>Rekursive Datenstrukturen</span>
+            </div>
+            <div class="nav-progress">
+                <div class="progress-bar" id="mainProgressBar"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Lernpfad</h3>
+            <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#intro" class="active" data-section="intro">📚 Einführung</a></li>
+            <li><a href="#arrays" data-section="arrays">📊 Arrays & Probleme</a></li>
+            <li><a href="#queue-intro" data-section="queue-intro">🔄 Queue Konzept</a></li>
+            <li><a href="#queue-build-1" data-section="queue-build-1">🏗️ Queue bauen - Teil 1</a></li>
+            <li><a href="#queue-build-2" data-section="queue-build-2">🏗️ Queue bauen - Teil 2</a></li>
+            <li><a href="#queue-build-3" data-section="queue-build-3">🏗️ Queue bauen - Teil 3</a></li>
+            <li><a href="#interfaces" data-section="interfaces">🔌 Interfaces</a></li>
+            <li><a href="#liste-intro" data-section="liste-intro">📝 Listen Konzept</a></li>
+            <li><a href="#liste-build" data-section="liste-build">🔨 Liste implementieren</a></li>
+            <li><a href="#rekursion" data-section="rekursion">♻️ Rekursion verstehen</a></li>
+            <li><a href="#kompositum" data-section="kompositum">🎭 Kompositum Pattern</a></li>
+            <li><a href="#abschluss" data-section="abschluss">🎯 Zusammenfassung</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            
+            <!-- Intro Section -->
+            <section id="intro" class="content-section active">
+                <div class="hero">
+                    <h1 class="hero-title">Rekursive Datenstrukturen</h1>
+                    <p class="hero-subtitle">Ein interaktiver Lernpfad</p>
+                    <p class="hero-description">Lerne Schritt für Schritt, wie man effiziente Datenstrukturen selbst implementiert</p>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-icon">🎯</div>
+                        <h3>Lernziele</h3>
+                        <ul>
+                            <li>Arrays und ihre Limitierungen verstehen</li>
+                            <li>Queue (Warteschlange) von Grund auf bauen</li>
+                            <li>Listen implementieren und nutzen</li>
+                            <li>Rekursion meistern</li>
+                            <li>Design Patterns anwenden</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">⏱️</div>
+                        <h3>Zeitaufwand</h3>
+                        <ul>
+                            <li>Gesamtdauer: ca. 4-6 Stunden</li>
+                            <li>12 interaktive Kapitel</li>
+                            <li>Praktische Programmieraufgaben</li>
+                            <li>Visualisierungen & Demos</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">🛠️</div>
+                        <h3>Voraussetzungen</h3>
+                        <ul>
+                            <li>Grundkenntnisse in Java</li>
+                            <li>Klassen und Objekte</li>
+                            <li>Methoden und Parameter</li>
+                            <li>Bedingungen und Schleifen</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-primary" onclick="navigateToSection('arrays')">
+                        Los geht's! →
+                    </button>
+                </div>
+            </section>
+
+            <!-- Arrays Section -->
+            <section id="arrays" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Kapitel 1</span>
+                    <h2>Arrays und ihre Probleme</h2>
+                </div>
+
+                <div class="concept-box">
+                    <h3>📊 Was sind Arrays?</h3>
+                    <div class="definition">
+                        <p><strong>Definition:</strong> Arrays (Felder) dienen der Speicherung einer <strong>festen Anzahl</strong> von Objekten gleichen Datentyps, welche über einen Index (Positionszahl) adressiert werden können.</p>
+                    </div>
+
+                    <div class="interactive-demo">
+                        <h4>Interaktive Array-Visualisierung</h4>
+                        <div class="array-visualization" id="arrayDemo">
+                            <!-- Wird dynamisch gefüllt -->
+                        </div>
+                        <div class="control-panel">
+                            <input type="text" id="arrayInput" placeholder="Wert eingeben...">
+                            <button class="btn btn-primary" onclick="addToArray()">Hinzufügen</button>
+                            <button class="btn btn-secondary" onclick="removeFromArray()">Entfernen</button>
+                            <button class="btn btn-outline" onclick="resetArray()">Zurücksetzen</button>
+                        </div>
+                        <p class="mt-2"><strong>Aktuell belegt:</strong> <span id="arrayCount">0</span> / <span id="arrayCapacity">4</span></p>
+                    </div>
+                </div>
+
+                <div class="example-box warning">
+                    <h3>⚠️ Probleme mit Arrays</h3>
+                    <div class="example-content">
+                        <p>Vervollständige den Lückentext mit den passenden Wörtern:</p>
+                        
+                        <div class="highlight">
+                            <p>Die Belegung des Arrays ist recht umständlich. Das Feld muss zunächst erstellt und <strong>initialisiert</strong> werden, um anschließend die einzelnen Elemente an die richtige Stelle <strong>setzen</strong> zu können.</p>
+                            
+                            <p>Auch kann das Array <strong>nicht einfach erweitert</strong> werden, sondern es muss <strong>ein neues Array</strong> erstellt und alle Elemente kopiert werden.</p>
+                            
+                            <p>Zusätzlich verbraucht das Array sehr viel <strong>Speicher</strong>, auch wenn die Objekte noch <strong>nicht initialisiert</strong> sind, da bereits zum Zeitpunkt der Erstellung des Arrays entsprechend RAM <strong>allokiert</strong> wird.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>🎯 Aufgabe 1: Array-Grundlagen</h4>
+                    <ol>
+                        <li>Erstelle ein Array mit 10 Plätzen für Strings</li>
+                        <li>Belege 5 zufällige Positionen mit Namen</li>
+                        <li>Durchlaufe das Array und fülle alle leeren Felder mit "Leer"</li>
+                        <li>Gib alle Elemente mit ihrem Index aus</li>
+                    </ol>
+                    <button class="btn btn-secondary" onclick="toggleHint('hint1')">💡 Hilfe anzeigen</button>
+                </div>
+
+                <div class="hint-box" id="hint1">
+                    <h4>💡 Hilfestellung</h4>
+                    <p><strong>Array erstellen:</strong></p>
+                    <pre><code>String[] namen = new String[10];</code></pre>
+                    
+                    <p><strong>Zufällige Position:</strong></p>
+                    <pre><code>int position = (int)(Math.random() * 10);</code></pre>
+                    
+                    <p><strong>Durchlaufen:</strong></p>
+                    <pre><code>for (int i = 0; i < namen.length; i++) {
+    if (namen[i] == null) {
+        namen[i] = "Leer";
+    }
+}</code></pre>
+                </div>
+
+                <div class="ide-container">
+                    <h4 class="ide-title">💻 Programmierbereich - Array Übung</h4>
+                    <div class="java-online" 
+                         style="width: 100%; height: 500px;" 
+                         data-java-online="{ 'id': 'array-uebung', 'speed': 1000, 'withBottomPanel': true, 'withFileList': false, 'withConsole': true }">
+                        <script type="text/plain" title="ArrayUebung.java">
+// Aufgabe 1: Array-Grundlagen
+// TODO: Erstelle ein Array mit 10 Plätzen für Strings
+
+
+// TODO: Belege 5 zufällige Positionen mit Namen
+
+
+// TODO: Fülle alle leeren Felder mit "Leer"
+
+
+// TODO: Gib alle Elemente aus
+
+                        </script>
+                    </div>
+                </div>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>✅ Vorteile von Arrays</h4>
+                        <ul>
+                            <li>Schneller Zugriff über Index (O(1))</li>
+                            <li>Einfache Implementierung</li>
+                            <li>Geringer Overhead</li>
+                            <li>Zusammenhängender Speicher</li>
+                        </ul>
+                    </div>
+
+                    <div class="comparison-card">
+                        <h4>❌ Nachteile von Arrays</h4>
+                        <ul>
+                            <li>Feste Größe - nicht erweiterbar</li>
+                            <li>Speicherverschwendung bei Unterauslastung</li>
+                            <li>Einfügen/Löschen aufwendig</li>
+                            <li>Muss vorab dimensioniert werden</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>🔍 Die Lösung: Dynamische Datenstrukturen</h3>
+                    <p>Um diese Probleme zu beheben, gibt es eine Reihe von Datenstrukturen. In Java sind diese als Subinterfaces von <code>java.util.Collection</code> zusammengefasst.</p>
+                    <p>Im Folgenden werden wir die Datenstruktur <strong>Queue (Warteschlange)</strong> von Grund auf selbst implementieren!</p>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('intro')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('queue-intro')">Weiter →</button>
+                </div>
+            </section>
+
+            <!-- Queue Intro Section -->
+            <section id="queue-intro" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Kapitel 2</span>
+                    <h2>Die Queue - Konzept und Idee</h2>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🔄 Was ist eine Queue?</h3>
+                    <div class="definition">
+                        <p><strong>Queue (Warteschlange):</strong> Eine Datenstruktur, die Elemente nach dem <strong>FIFO-Prinzip</strong> verwaltet.</p>
+                        <p><strong>FIFO = First In, First Out</strong> - Das erste Element, das hinzugefügt wird, wird auch als erstes wieder entnommen.</p>
+                    </div>
+
+                    <div class="interactive-demo">
+                        <h4>Interaktive Queue-Visualisierung</h4>
+                        <div class="queue-visualization" id="queueDemo">
+                            <!-- Wird dynamisch gefüllt -->
+                        </div>
+                        <div class="control-panel">
+                            <input type="text" id="queueInput" placeholder="Element eingeben...">
+                            <button class="btn btn-primary" onclick="enqueue()">add() - Hinzufügen</button>
+                            <button class="btn btn-secondary" onclick="dequeue()">poll() - Entnehmen</button>
+                            <button class="btn btn-outline" onclick="resetQueue()">Zurücksetzen</button>
+                        </div>
+                        <p class="mt-2"><strong>Anzahl Elemente:</strong> <span id="queueCount">0</span></p>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>💡 Die grundlegende Idee</h3>
+                    <div class="example-content">
+                        <p>Statt ein großes Array zu verwenden, bei dem viele Plätze leer bleiben können, nutzen wir eine <strong>verkettete Struktur</strong>:</p>
+                        
+                        <div class="highlight">
+                            <p><strong>Jedes Element kennt:</strong></p>
+                            <ul>
+                                <li>Seine eigenen Daten (z.B. Patient, Taxi, Kunde)</li>
+                                <li>Einen Verweis auf seinen <strong>Nachfolger</strong></li>
+                            </ul>
+                        </div>
+
+                        <p>Die Queue selbst muss nur zwei Referenzen speichern:</p>
+                        <ul>
+                            <li><strong>anfang</strong> - Verweis auf das erste Element</li>
+                            <li><strong>ende</strong> - Verweis auf das letzte Element</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="strategy-grid">
+                    <h3>🎯 Queue Operationen</h3>
+                    
+                    <div class="strategy-card">
+                        <h4>add(element) - Hinzufügen</h4>
+                        <p>Fügt ein Element am <strong>Ende</strong> der Queue hinzu.</p>
+                        <ul>
+                            <li>Neues Element wird erstellt</li>
+                            <li>Aktuelles Ende verweist auf neues Element</li>
+                            <li>Neues Element wird zum neuen Ende</li>
+                        </ul>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h4>poll() - Entnehmen</h4>
+                        <p>Entfernt und gibt das Element am <strong>Anfang</strong> zurück.</p>
+                        <ul>
+                            <li>Erstes Element wird gespeichert</li>
+                            <li>Anfang wird auf Nachfolger gesetzt</li>
+                            <li>Gespeichertes Element wird zurückgegeben</li>
+                        </ul>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h4>peek() - Ansehen</h4>
+                        <p>Gibt das erste Element zurück, <strong>ohne</strong> es zu entfernen.</p>
+                        <ul>
+                            <li>Anfang wird zurückgegeben</li>
+                            <li>Queue bleibt unverändert</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="best-practices">
+                    <h3>✨ Vorteile der Queue gegenüber Arrays</h3>
+                    
+                    <div class="practice">
+                        <span class="icon">🚀</span>
+                        <div>
+                            <strong>Dynamische Größe</strong>
+                            <p>Die Queue kann beliebig wachsen - keine feste Größe nötig!</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">💾</span>
+                        <div>
+                            <strong>Effizienter Speicher</strong>
+                            <p>Es wird nur Speicher für tatsächlich vorhandene Elemente belegt.</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">⚡</span>
+                        <div>
+                            <strong>Schnelle Operationen</strong>
+                            <p>Hinzufügen und Entfernen sind O(1) - konstante Zeit!</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">🎯</span>
+                        <div>
+                            <strong>Klare Struktur</strong>
+                            <p>FIFO-Prinzip wird automatisch eingehalten.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>📚 Merke</h3>
+                    <p>Die Beziehung zwischen Objekten der gleichen Klasse nennt man <strong>rekursive Beziehung</strong>. Die „hat Nachfolger"-Beziehung zwischen den einzelnen Elementen stellt eine solche dar.</p>
+                    <p>Zur Umsetzung in Programmcode benötigen wir ein <strong>Referenzattribut</strong> mit gleichem Datentyp wie die Klasse selbst.</p>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('arrays')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('queue-build-1')">Jetzt selbst bauen! →</button>
+                </div>
+            </section>
+
+            <!-- Queue Build 1 Section -->
+            <section id="queue-build-1" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Kapitel 3</span>
+                    <h2>Queue bauen - Teil 1: Die Grundstruktur</h2>
+                </div>
+
+                <div class="task-box">
+                    <h4>🎯 Aufgabe: Erstelle die Klasse ListElement</h4>
+                    <p>Wir beginnen mit dem Baustein unserer Queue - dem einzelnen Element in der Kette.</p>
+                    
+                    <ol>
+                        <li>Erstelle eine Klasse <code>ListElement</code></li>
+                        <li>Füge ein Attribut <code>daten</code> vom Typ <code>Patient</code> hinzu</li>
+                        <li>Füge ein Attribut <code>nachfolger</code> vom Typ <code>ListElement</code> hinzu (rekursive Beziehung!)</li>
+                        <li>Erstelle einen Konstruktor, der die Daten entgegennimmt</li>
+                        <li>Erstelle Getter und Setter für beide Attribute</li>
+                    </ol>
+
+                    <button class="btn btn-secondary" onclick="toggleHint('hint-queue1')">💡 Hilfe anzeigen</button>
+                </div>
+
+                <div class="hint-box" id="hint-queue1">
+                    <h4>💡 Hilfestellung - Struktur</h4>
+                    <pre><code>public class ListElement {
+    // Attribute
+    private Patient daten;
+    private ListElement nachfolger;  // ← Rekursive Beziehung!
+    
+    // Konstruktor
+    public ListElement(Patient daten) {
+        this.daten = daten;
+        // nachfolger bleibt erstmal null
+    }
+    
+    // Getter und Setter
+    public Patient getDaten() {
+        return daten;
+    }
+    
+    public ListElement getNachfolger() {
+        return nachfolger;
+    }
+    
+    public void setNachfolger(ListElement nachfolger) {
+        this.nachfolger = nachfolger;
+    }
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🔍 Verstehe die rekursive Beziehung</h3>
+                    <div class="definition">
+                        <p>Das Besondere: Ein <code>ListElement</code> hat ein Attribut vom Typ <code>ListElement</code>!</p>
+                        <p>Dies ermöglicht die Verkettung: Element 1 → Element 2 → Element 3 → ...</p>
+                    </div>
+
+                    <div class="highlight">
+                        <p><strong>Wichtig:</strong> Der <code>nachfolger</code> ist zunächst <code>null</code>. Das bedeutet "kein Nachfolger" bzw. "Ende der Kette".</p>
+                    </div>
+                </div>
+
+                <div class="ide-container">
+                    <h4 class="ide-title">💻 Programmierbereich - ListElement</h4>
+                    <div class="java-online" 
+                         style="width: 100%; height: 600px;" 
+                         data-java-online="{ 'id': 'queue-build-1', 'speed': 1000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true }">
+                        <script type="text/plain" title="Patient.java">
+public class Patient {
+    private String name;
+    private String adresse;
+    private String krankheit;
+    private int alter;
+
+    public Patient(String name, String adresse, String krankheit, int alter) {
+        this.name = name;
+        this.adresse = adresse;
+        this.krankheit = krankheit;
+        this.alter = alter;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAdresse() {
+        return adresse;
+    }
+
+    public String getKrankheit() {
+        return krankheit;
+    }
+
+    public int getAlter() {
+        return alter;
+    }
+
+    @Override
+    public String toString() {
+        return "Patient: " + name + " (" + alter + " Jahre), " + krankheit;
+    }
+}
+                        </script>
+                        <script type="text/plain" title="ListElement.java">
+public class ListElement {
+    // TODO: Attribute hinzufügen
+    // - daten vom Typ Patient
+    // - nachfolger vom Typ ListElement (rekursiv!)
+    
+    
+    // TODO: Konstruktor erstellen
+    
+    
+    // TODO: Getter und Setter erstellen
+    
+}
+                        </script>
+                        <script type="text/plain" title="Main.java">
+// Test für ListElement
+
+// Erstelle drei Patienten
+Patient p1 = new Patient("Hans", "Musterstraße 1", "Husten", 45);
+Patient p2 = new Patient("Anna", "Beispielweg 2", "Fieber", 32);
+Patient p3 = new Patient("Peter", "Testgasse 3", "Erkältung", 28);
+
+// Erstelle ListElemente
+ListElement element1 = new ListElement(p1);
+ListElement element2 = new ListElement(p2);
+ListElement element3 = new ListElement(p3);
+
+// Verkette die Elemente
+element1.setNachfolger(element2);
+element2.setNachfolger(element3);
+
+// Teste die Verkettung
+println("Erstes Element: " + element1.getDaten());
+println("Zweites Element: " + element1.getNachfolger().getDaten());
+println("Drittes Element: " + element1.getNachfolger().getNachfolger().getDaten());
+
+// Prüfe das Ende
+if (element3.getNachfolger() == null) {
+    println("✓ Element 3 hat keinen Nachfolger - Ende der Kette!");
+}
+                        </script>
+                    </div>
+                </div>
+
+                <div class="challenge-box">
+                    <h4>🎓 Verständnisfrage</h4>
+                    <p>Warum ist es wichtig, dass <code>nachfolger</code> zunächst <code>null</code> ist?</p>
+                    <button class="btn btn-outline solution-toggle" onclick="toggleHint('answer-queue1')">Antwort zeigen</button>
+                </div>
+
+                <div class="hint-box" id="answer-queue1">
+                    <h4>✅ Antwort</h4>
+                    <p><code>null</code> signalisiert das <strong>Ende der Kette</strong>. Wenn wir durch die Queue iterieren, wissen wir: "Wenn nachfolger == null, dann sind wir am Ende angekommen."</p>
+                    <p>Ohne diese Konvention würden wir nicht wissen, wann wir aufhören sollen!</p>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('queue-intro')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('queue-build-2')">Weiter zu Teil 2 →</button>
+                </div>
+            </section>
+
+            <!-- Queue Build 2 Section -->
+            <section id="queue-build-2" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Kapitel 4</span>
+                    <h2>Queue bauen - Teil 2: Die Queue-Klasse</h2>
+                </div>
+
+                <div class="task-box">
+                    <h4>🎯 Aufgabe: Erstelle die Queue-Klasse</h4>
+                    <p>Jetzt bauen wir die Verwaltungsklasse, die die Kette von ListElementen organisiert.</p>
+                    
+                    <ol>
+                        <li>Erstelle eine Klasse <code>PatientQueue</code></li>
+                        <li>Füge Attribute <code>anfang</code> und <code>ende</code> vom Typ <code>ListElement</code> hinzu</li>
+                        <li>Erstelle einen Konstruktor (anfang und ende sind zunächst <code>null</code>)</li>
+                        <li>Implementiere die Methode <code>add(Patient patient)</code></li>
+                    </ol>
+
+                    <button class="btn btn-secondary" onclick="toggleHint('hint-queue2')">💡 Hilfe anzeigen</button>
+                </div>
+
+                <div class="hint-box" id="hint-queue2">
+                    <h4>💡 Hilfestellung - add() Methode</h4>
+                    <p>Die add-Methode muss zwei Fälle unterscheiden:</p>
+                    
+                    <p><strong>Fall 1: Queue ist leer</strong> (anfang == null)</p>
+                    <pre><code>if (anfang == null) {
+    ListElement neuesElement = new ListElement(patient);
+    anfang = neuesElement;
+    ende = neuesElement;
+    return true;
+}</code></pre>
+
+                    <p><strong>Fall 2: Queue hat bereits Elemente</strong></p>
+                    <pre><code>else {
+    ListElement neuesElement = new ListElement(patient);
+    ende.setNachfolger(neuesElement);  // Altes Ende verweist auf neues
+    ende = neuesElement;                // Neues Element wird zum Ende
+    return true;
+}</code></pre>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🔍 Warum zwei Referenzen?</h3>
+                    <div class="definition">
+                        <p><strong>anfang:</strong> Ermöglicht schnelles Entnehmen (poll) - O(1)</p>
+                        <p><strong>ende:</strong> Ermöglicht schnelles Hinzufügen (add) - O(1)</p>
+                    </div>
+
+                    <div class="highlight">
+                        <p>Ohne die <code>ende</code>-Referenz müssten wir bei jedem add() die gesamte Kette durchlaufen, um das Ende zu finden - das wäre O(n)!</p>
+                    </div>
+                </div>
+
+                <div class="ide-container">
+                    <h4 class="ide-title">💻 Programmierbereich - PatientQueue add()</h4>
+                    <div class="java-online" 
+                         style="width: 100%; height: 600px;" 
+                         data-java-online="{ 'id': 'queue-build-2', 'speed': 1000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true }">
+                        <script type="text/plain" title="Patient.java">
+public class Patient {
+    private String name;
+    private String adresse;
+    private String krankheit;
+    private int alter;
+
+    public Patient(String name, String adresse, String krankheit, int alter) {
+        this.name = name;
+        this.adresse = adresse;
+        this.krankheit = krankheit;
+        this.alter = alter;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return "Patient: " + name + " (" + alter + " Jahre), " + krankheit;
+    }
+}
+                        </script>
+                        <script type="text/plain" title="ListElement.java">
+public class ListElement {
+    private Patient daten;
+    private ListElement nachfolger;
+    
+    public ListElement(Patient daten) {
+        this.daten = daten;
+    }
+    
+    public Patient getDaten() {
+        return daten;
+    }
+    
+    public ListElement getNachfolger() {
+        return nachfolger;
+    }
+    
+    public void setNachfolger(ListElement nachfolger) {
+        this.nachfolger = nachfolger;
+    }
+}
+                        </script>
+                        <script type="text/plain" title="PatientQueue.java">
+public class PatientQueue {
+    // TODO: Attribute hinzufügen
+    private ListElement anfang;
+    private ListElement ende;
+    
+    // TODO: Konstruktor
+    public PatientQueue() {
+        // anfang und ende sind automatisch null
+    }
+    
+    // TODO: add-Methode implementieren
+    public boolean add(Patient patient) {
+        // Fall 1: Queue ist leer
+        
+        
+        // Fall 2: Queue hat bereits Elemente
+        
+        
+    }
+    
+    // Hilfsmethode zum Ausgeben
+    public void printPatients() {
+        ListElement current = anfang;
+        int position = 0;
+        
+        if (current == null) {
+            println("Queue ist leer!");
+            return;
+        }
+        
+        println("=== Patienten in der Warteschlange ===");
+        while (current != null) {
+            println(position + ": " + current.getDaten());
+            current = current.getNachfolger();
+            position++;
+        }
+    }
+}
+                        </script>
+                        <script type="text/plain" title="Main.java">
+// Test für PatientQueue add()
+
+PatientQueue queue = new PatientQueue();
+
+// Teste leere Queue
+println("Test 1: Leere Queue");
+queue.printPatients();
+println();
+
+// Füge ersten Patienten hinzu
+println("Test 2: Ersten Patienten hinzufügen");
+queue.add(new Patient("Hans", "Musterstr. 1", "Husten", 45));
+queue.printPatients();
+println();
+
+// Füge weitere Patienten hinzu
+println("Test 3: Weitere Patienten hinzufügen");
+queue.add(new Patient("Anna", "Beispielweg 2", "Fieber", 32));
+queue.add(new Patient("Peter", "Testgasse 3", "Erkältung", 28));
+queue.add(new Patient("Maria", "Probeallee 4", "Grippe", 55));
+queue.printPatients();
+                        </script>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📊 Visualisierung: Was passiert beim add()?</h3>
+                    <div class="example-content">
+                        <p><strong>Schritt 1:</strong> Queue ist leer</p>
+                        <div class="highlight">
+                            <code>anfang → null</code><br>
+                            <code>ende → null</code>
+                        </div>
+
+                        <p><strong>Schritt 2:</strong> add(Hans) - Erster Patient</p>
+                        <div class="highlight">
+                            <code>anfang → [Hans] → null</code><br>
+                            <code>ende → [Hans]</code>
+                        </div>
+
+                        <p><strong>Schritt 3:</strong> add(Anna) - Zweiter Patient</p>
+                        <div class="highlight">
+                            <code>anfang → [Hans] → [Anna] → null</code><br>
+                            <code>ende → [Anna]</code>
+                        </div>
+
+                        <p><strong>Schritt 4:</strong> add(Peter) - Dritter Patient</p>
+                        <div class="highlight">
+                            <code>anfang → [Hans] → [Anna] → [Peter] → null</code><br>
+                            <code>ende → [Peter]</code>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('queue-build-1')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('queue-build-3')">Weiter zu Teil 3 →</button>
+                </div>
+            </section>
+
+            <!-- Queue Build 3 Section -->
+            <section id="queue-build-3" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Kapitel 5</span>
+                    <h2>Queue bauen - Teil 3: poll() und peek()</h2>
+                </div>
+
+                <div class="task-box">
+                    <h4>🎯 Aufgabe: Implementiere poll() und peek()</h4>
+                    <p>Jetzt fehlen noch die Methoden zum Entnehmen und Ansehen des ersten Elements.</p>
+                    
+                    <ol>
+                        <li>Implementiere <code>poll()</code> - Entfernt und gibt das erste Element zurück</li>
+                        <li>Implementiere <code>peek()</code> - Gibt das erste Element zurück, ohne es zu entfernen</li>
+                        <li>Teste beide Methoden ausführlich</li>
+                    </ol>
+
+                    <button class="btn btn-secondary" onclick="toggleHint('hint-queue3')">💡 Hilfe anzeigen</button>
+                </div>
+
+                <div class="hint-box" id="hint-queue3">
+                    <h4>💡 Hilfestellung - poll() Methode</h4>
+                    
+                    <p><strong>Schritt-für-Schritt Anleitung:</strong></p>
+                    <ol>
+                        <li>Prüfe, ob Queue leer ist (anfang == null) → return null</li>
+                        <li>Speichere das erste Element zwischen</li>
+                        <li>Setze anfang auf den Nachfolger des ersten Elements</li>
+                        <li>Wenn anfang jetzt null ist, setze auch ende auf null (Queue ist leer)</li>
+                        <li>Gib das gespeicherte Element zurück</li>
+                    </ol>
+
+                    <pre><code>public ListElement poll() {
+    if (anfang == null) {
+        return null;  // Queue ist leer
+    }
+    
+    ListElement entferntes = anfang;
+    anfang = anfang.getNachfolger();
+    
+    if (anfang == null) {
+        ende = null;  // Queue ist jetzt leer
+    }
+    
+    return entferntes;
+}</code></pre>
+
+                    <p><strong>peek() ist einfacher:</strong></p>
+                    <pre><code>public ListElement peek() {
+    return anfang;  // Einfach anfang zurückgeben
+}</code></pre>
+                </div>
+
+                <div class="concept-box warning">
+                    <h3>⚠️ Wichtige Randfälle</h3>
+                    <div class="definition">
+                        <p><strong>Leere Queue:</strong> Was passiert, wenn poll() auf eine leere Queue aufgerufen wird?</p>
+                        <p>→ Wir geben <code>null</code> zurück und geben ggf. eine Warnung aus.</p>
+                    </div>
+
+                    <div class="definition">
+                        <p><strong>Letztes Element:</strong> Was passiert, wenn das letzte Element entfernt wird?</p>
+                        <p>→ Sowohl <code>anfang</code> als auch <code>ende</code> müssen auf <code>null</code> gesetzt werden!</p>
+                    </div>
+                </div>
+
+                <div class="ide-container">
+                    <h4 class="ide-title">💻 Programmierbereich - poll() und peek()</h4>
+                    <div class="java-online" 
+                         style="width: 100%; height: 700px;" 
+                         data-java-online="{ 'id': 'queue-build-3', 'speed': 1000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true }">
+                        <script type="text/plain" title="Patient.java">
+public class Patient {
+    private String name;
+    private String adresse;
+    private String krankheit;
+    private int alter;
+
+    public Patient(String name, String adresse, String krankheit, int alter) {
+        this.name = name;
+        this.adresse = adresse;
+        this.krankheit = krankheit;
+        this.alter = alter;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return "Patient: " + name + " (" + alter + " Jahre), " + krankheit;
+    }
+}
+                        </script>
+                        <script type="text/plain" title="ListElement.java">
+public class ListElement {
+    private Patient daten;
+    private ListElement nachfolger;
+    
+    public ListElement(Patient daten) {
+        this.daten = daten;
+    }
+    
+    public Patient getDaten() {
+        return daten;
+    }
+    
+    public ListElement getNachfolger() {
+        return nachfolger;
+    }
+    
+    public void setNachfolger(ListElement nachfolger) {
+        this.nachfolger = nachfolger;
+    }
+}
+                        </script>
+                        <script type="text/plain" title="PatientQueue.java">
+public class PatientQueue {
+    private ListElement anfang;
+    private ListElement ende;
+    
+    public PatientQueue() {
+    }
+    
+    public boolean add(Patient patient) {
+        ListElement neuesElement = new ListElement(patient);
+        
+        if (anfang == null) {
+            anfang = neuesElement;
+            ende = neuesElement;
+        } else {
+            ende.setNachfolger(neuesElement);
+            ende = neuesElement;
+        }
+        return true;
+    }
+    
+    // TODO: poll() implementieren
+    public ListElement poll() {
+        // Prüfe ob leer
+        
+        // Speichere erstes Element
+        
+        // Setze anfang auf Nachfolger
+        
+        // Prüfe ob Queue jetzt leer ist
+        
+        // Gib gespeichertes Element zurück
+        
+    }
+    
+    // TODO: peek() implementieren
+    public ListElement peek() {
+        
+    }
+    
+    public void printPatients() {
+        ListElement current = anfang;
+        int position = 0;
+        
+        if (current == null) {
+            println("Queue ist leer!");
+            return;
+        }
+        
+        println("=== Patienten in der Warteschlange ===");
+        while (current != null) {
+            println(position + ": " + current.getDaten());
+            current = current.getNachfolger();
+            position++;
+        }
+    }
+}
+                        </script>
+                        <script type="text/plain" title="Main.java">
+// Umfassender Test der Queue
+
+PatientQueue queue = new PatientQueue();
+
+// Füge Patienten hinzu
+println("=== Patienten hinzufügen ===");
+queue.add(new Patient("Hans", "Musterstr. 1", "Husten", 45));
+queue.add(new Patient("Anna", "Beispielweg 2", "Fieber", 32));
+queue.add(new Patient("Peter", "Testgasse 3", "Erkältung", 28));
+queue.add(new Patient("Maria", "Probeallee 4", "Grippe", 55));
+queue.printPatients();
+println();
+
+// Teste peek()
+println("=== peek() Test ===");
+ListElement erster = queue.peek();
+if (erster != null) {
+    println("Nächster Patient (peek): " + erster.getDaten().getName());
+}
+println("Queue nach peek():");
+queue.printPatients();
+println();
+
+// Teste poll()
+println("=== poll() Test ===");
+ListElement behandelt = queue.poll();
+if (behandelt != null) {
+    println("Behandelter Patient: " + behandelt.getDaten().getName());
+}
+println("Queue nach poll():");
+queue.printPatients();
+println();
+
+// Weitere Patienten behandeln
+println("=== Weitere Patienten behandeln ===");
+queue.poll();
+queue.poll();
+queue.printPatients();
+println();
+
+// Letzten Patienten behandeln
+println("=== Letzten Patienten behandeln ===");
+queue.poll();
+queue.printPatients();
+println();
+
+// Teste auf leerer Queue
+println("=== Test auf leerer Queue ===");
+ListElement sollNull = queue.poll();
+if (sollNull == null) {
+    println("✓ poll() auf leerer Queue gibt null zurück");
+}
+                        </script>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📊 Visualisierung: poll() in Aktion</h3>
+                    <div class="example-content">
+                        <p><strong>Ausgangssituation:</strong></p>
+                        <div class="highlight">
+                            <code>anfang → [Hans] → [Anna] → [Peter] → null</code><br>
+                            <code>ende → [Peter]</code>
+                        </div>
+
+                        <p><strong>Nach poll():</strong></p>
+                        <div class="highlight">
+                            <code>anfang → [Anna] → [Peter] → null</code><br>
+                            <code>ende → [Peter]</code><br>
+                            <code>Rückgabe: [Hans]</code>
+                        </div>
+
+                        <p><strong>Nach erneutem poll():</strong></p>
+                        <div class="highlight">
+                            <code>anfang → [Peter] → null</code><br>
+                            <code>ende → [Peter]</code><br>
+                            <code>Rückgabe: [Anna]</code>
+                        </div>
+
+                        <p><strong>Nach letztem poll():</strong></p>
+                        <div class="highlight">
+                            <code>anfang → null</code><br>
+                            <code>ende → null</code><br>
+                            <code>Rückgabe: [Peter]</code>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="challenge-box">
+                    <h4>🏆 Herausforderung: Erweitere die Queue!</h4>
+                    <p>Implementiere zusätzliche Methoden:</p>
+                    <ul>
+                        <li><code>size()</code> - Gibt die Anzahl der Elemente zurück</li>
+                        <li><code>isEmpty()</code> - Prüft, ob Queue leer ist</li>
+                        <li><code>clear()</code> - Leert die Queue komplett</li>
+                    </ul>
+                    <button class="btn btn-outline solution-toggle" onclick="toggleHint('challenge-queue3')">Lösung zeigen</button>
+                </div>
+
+                <div class="hint-box" id="challenge-queue3">
+                    <h4>✅ Lösungsvorschlag</h4>
+                    <pre><code>public int size() {
+    int count = 0;
+    ListElement current = anfang;
+    while (current != null) {
+        count++;
+        current = current.getNachfolger();
+    }
+    return count;
+}
+
+public boolean isEmpty() {
+    return anfang == null;
+}
+
+public void clear() {
+    anfang = null;
+    ende = null;
+}</code></pre>
+                </div>
+
+                <div class="best-practices">
+                    <h3>✨ Glückwunsch!</h3>
+                    <div class="practice">
+                        <span class="icon">🎉</span>
+                        <div>
+                            <strong>Du hast eine Queue selbst implementiert!</strong>
+                            <p>Du verstehst jetzt, wie dynamische Datenstrukturen funktionieren und wie sie intern aufgebaut sind.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('queue-build-2')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('interfaces')">Weiter zu Interfaces →</button>
+                </div>
+            </section>
+
+            <!-- Interfaces Section -->
+            <section id="interfaces" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Kapitel 6</span>
+                    <h2>Interfaces - Flexibilität durch Abstraktion</h2>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🔌 Was sind Interfaces?</h3>
+                    <div class="definition">
+                        <p><strong>Interface:</strong> Ein Vertrag, der festlegt, welche Methoden eine Klasse bereitstellen muss, ohne die Implementierung vorzugeben.</p>
+                    </div>
+
+                    <div class="highlight">
+                        <p><strong>Vergleich:</strong> Ein Interface ist wie ein EU-Gesetz:</p>
+                        <ul>
+                            <li>Es legt fest, <strong>was</strong> getan werden muss</li>
+                            <li>Es legt nicht fest, <strong>wie</strong> es getan wird</li>
+                            <li>Jedes Land (Klasse) kann es unterschiedlich umsetzen</li>
+                            <li>Aber alle müssen die Mindestanforderungen erfüllen</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🚗 Beispiel: Auto-Interface</h3>
+                    <div class="example-content">
+                        <p>Nahezu alle Autos haben die gleichen grundsätzlichen Steuerelemente (Lenkrad, Gaspedal, Bremse), die sie zur Verfügung stellen müssen.</p>
+                        
+                        <p>Die Modelle und deren genaues Verhalten unterscheiden sich jedoch je nach Leistung oder ob sie über ABS und Servolenkung verfügen.</p>
+
+                        <div class="highlight">
+                            <pre><code>interface Auto {
+    void lenken(int grad);
+    void beschleunigen();
+    void bremsen();
+}
+
+class SportWagen implements Auto {
+    // Schnelle Beschleunigung
+}
+
+class Familienauto implements Auto {
+    // Sanfte Beschleunigung
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="strategy-grid">
+                    <h3>📋 Eigenschaften von Interfaces</h3>
+                    
+                    <div class="strategy-card">
+                        <h4>Attribute</h4>
+                        <ul>
+                            <li>Alle Attribute sind implizit <code>public static final</code></li>
+                            <li>Also: öffentliche Konstanten</li>
+                            <li>Beispiel: <code>int MAX_SPEED = 200;</code></li>
+                        </ul>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h4>Methoden</h4>
+                        <ul>
+                            <li>Nur Methodenköpfe (Signaturen)</li>
+                            <li>Kein Methodenrumpf</li>
+                            <li>Implizit <code>public</code></li>
+                            <li>Müssen implementiert werden</li>
+                        </ul>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h4>Implementierung</h4>
+                        <ul>
+                            <li>Klasse kann mehrere Interfaces implementieren</li>
+                            <li>Keyword: <code>implements</code></li>
+                            <li>Alle Methoden müssen überschrieben werden</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>🎯 Aufgabe: DatenElement Interface</h4>
+                    <p>Erstelle ein Interface, das verschiedene Datentypen in unserer Queue ermöglicht.</p>
+                    
+                    <ol>
+                        <li>Erstelle ein Interface <code>DatenElement</code></li>
+                        <li>Definiere eine Methode <code>String toString()</code></li>
+                        <li>Lasse <code>Patient</code> und <code>Taxi</code> das Interface implementieren</li>
+                        <li>Ändere <code>ListElement</code> so, dass es <code>DatenElement</code> statt <code>Patient</code> verwendet</li>
+                    </ol>
+
+                    <button class="btn btn-secondary" onclick="toggleHint('hint-interface')">💡 Hilfe anzeigen</button>
+                </div>
+
+                <div class="hint-box" id="hint-interface">
+                    <h4>💡 Hilfestellung</h4>
+                    
+                    <p><strong>Interface erstellen:</strong></p>
+                    <pre><code>public interface DatenElement {
+    String toString();
+}</code></pre>
+
+                    <p><strong>Patient implementiert Interface:</strong></p>
+                    <pre><code>public class Patient implements DatenElement {
+    // ... Attribute ...
+    
+    @Override
+    public String toString() {
+        return "Patient: " + name + " (" + alter + " Jahre)";
+    }
+}</code></pre>
+
+                    <p><strong>ListElement verwendet Interface:</strong></p>
+                    <pre><code>public class ListElement {
+    private DatenElement daten;  // Statt Patient!
+    private ListElement nachfolger;
+    
+    public ListElement(DatenElement daten) {
+        this.daten = daten;
+    }
+    // ...
+}</code></pre>
+                </div>
+
+                <div class="ide-container">
+                    <h4 class="ide-title">💻 Programmierbereich - Interfaces</h4>
+                    <div class="java-online" 
+                         style="width: 100%; height: 700px;" 
+                         data-java-online="{ 'id': 'interfaces', 'speed': 1000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true }">
+                        <script type="text/plain" title="DatenElement.java">
+// TODO: Interface erstellen
+public interface DatenElement {
+    
+}
+                        </script>
+                        <script type="text/plain" title="Patient.java">
+// TODO: Interface implementieren
+public class Patient {
+    private String name;
+    private String adresse;
+    private String krankheit;
+    private int alter;
+
+    public Patient(String name, String adresse, String krankheit, int alter) {
+        this.name = name;
+        this.adresse = adresse;
+        this.krankheit = krankheit;
+        this.alter = alter;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    // TODO: toString() überschreiben
+    
+}
+                        </script>
+                        <script type="text/plain" title="Taxi.java">
+// TODO: Interface implementieren
+public class Taxi {
+    private int autonummer;
+    private String fahrerName;
+
+    public Taxi(int autonummer, String fahrerName) {
+        this.autonummer = autonummer;
+        this.fahrerName = fahrerName;
+    }
+
+    public String getFahrerName() {
+        return fahrerName;
+    }
+
+    public int getAutonummer() {
+        return autonummer;
+    }
+
+    // TODO: toString() überschreiben
+    
+}
+                        </script>
+                        <script type="text/plain" title="ListElement.java">
+public class ListElement {
+    // TODO: Typ ändern zu DatenElement
+    private Patient daten;
+    private ListElement nachfolger;
+    
+    // TODO: Konstruktor anpassen
+    public ListElement(Patient daten) {
+        this.daten = daten;
+    }
+    
+    // TODO: Getter anpassen
+    public Patient getDaten() {
+        return daten;
+    }
+    
+    public ListElement getNachfolger() {
+        return nachfolger;
+    }
+    
+    public void setNachfolger(ListElement nachfolger) {
+        this.nachfolger = nachfolger;
+    }
+}
+                        </script>
+                        <script type="text/plain" title="Main.java">
+// Test mit verschiedenen Datentypen
+
+// Erstelle Patienten
+DatenElement p1 = new Patient("Hans", "Musterstr. 1", "Husten", 45);
+DatenElement p2 = new Patient("Anna", "Beispielweg 2", "Fieber", 32);
+
+// Erstelle Taxis
+DatenElement t1 = new Taxi(101, "Stefan");
+DatenElement t2 = new Taxi(102, "Maria");
+
+// Erstelle ListElemente
+ListElement element1 = new ListElement(p1);
+ListElement element2 = new ListElement(t1);
+ListElement element3 = new ListElement(p2);
+ListElement element4 = new ListElement(t2);
+
+// Verkette gemischt
+element1.setNachfolger(element2);
+element2.setNachfolger(element3);
+element3.setNachfolger(element4);
+
+// Ausgabe
+println("=== Gemischte Liste ===");
+ListElement current = element1;
+int pos = 0;
+while (current != null) {
+    println(pos + ": " + current.getDaten().toString());
+    current = current.getNachfolger();
+    pos++;
+}
+                        </script>
+                    </div>
+                </div>
+
+                <div class="best-practices">
+                    <h3>✨ Vorteile von Interfaces</h3>
+                    
+                    <div class="practice">
+                        <span class="icon">🔄</span>
+                        <div>
+                            <strong>Flexibilität</strong>
+                            <p>Die Queue kann jetzt beliebige Datentypen aufnehmen - nicht nur Patienten!</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">🔗</span>
+                        <div>
+                            <strong>Lose Kopplung</strong>
+                            <p>Die Queue ist unabhängig von konkreten Klassen - sie kennt nur das Interface.</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">🎯</span>
+                        <div>
+                            <strong>Hohe Kohäsion</strong>
+                            <p>Jede Klasse hat eine klare, wohldefinierte Aufgabe.</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">📦</span>
+                        <div>
+                            <strong>Wiederverwendbarkeit</strong>
+                            <p>Die gleiche Queue-Implementierung funktioniert für alle Datentypen!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>📚 Wichtige Konzepte</h3>
+                    <p><strong>Kohäsion:</strong> Wie gut eine Programmeinheit eine logische Aufgabe abbildet. Starke Kohäsion ist gut!</p>
+                    <p><strong>Kopplung:</strong> Wie stark verschiedene Module voneinander abhängen. Lose Kopplung ist gut!</p>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('queue-build-3')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('liste-intro')">Weiter zu Listen →</button>
+                </div>
+            </section>
+
+            <!-- Liste Intro Section -->
+            <section id="liste-intro" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Kapitel 7</span>
+                    <h2>Listen - Mehr als nur eine Queue</h2>
+                </div>
+
+                <div class="concept-box">
+                    <h3>📝 Was ist eine Liste?</h3>
+                    <div class="definition">
+                        <p><strong>Liste:</strong> Eine Datenstruktur mit dem gleichen Grundaufbau wie eine Queue, aber mit erweiterten Funktionen.</p>
+                    </div>
+
+                    <div class="highlight">
+                        <p><strong>Gemeinsamkeiten mit Queue:</strong></p>
+                        <ul>
+                            <li>Verkettete Struktur (Knoten mit Nachfolgern)</li>
+                            <li>Dynamische Größe</li>
+                            <li>Referenz auf den Anfang</li>
+                        </ul>
+
+                        <p><strong>Unterschiede zur Queue:</strong></p>
+                        <ul>
+                            <li>Einfügen an beliebiger Stelle möglich</li>
+                            <li>Entfernen an beliebiger Stelle möglich</li>
+                            <li>Zugriff auf beliebige Elemente</li>
+                            <li>Nur eine Referenz nötig (anfang)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <h4>🔄 Queue (Warteschlange)</h4>
+                        <div class="pros-cons">
+                            <h5>Operationen:</h5>
+                            <ul>
+                                <li>add() - Am Ende hinzufügen</li>
+                                <li>poll() - Am Anfang entnehmen</li>
+                                <li>peek() - Anfang ansehen</li>
+                            </ul>
+                        </div>
+                        <div class="pros-cons">
+                            <h5>Prinzip:</h5>
+                            <p>FIFO - First In, First Out</p>
+                        </div>
+                        <div class="pros-cons">
+                            <h5>Referenzen:</h5>
+                            <p>anfang + ende</p>
+                        </div>
+                    </div>
+
+                    <div class="comparison-card">
+                        <h4>📝 Liste</h4>
+                        <div class="pros-cons">
+                            <h5>Operationen:</h5>
+                            <ul>
+                                <li>addFirst() - Am Anfang einfügen</li>
+                                <li>addLast() - Am Ende einfügen</li>
+                                <li>addBefore() - Vor Element einfügen</li>
+                                <li>remove() - Beliebiges Element entfernen</li>
+                                <li>contains() - Element suchen</li>
+                                <li>size() - Länge berechnen</li>
+                            </ul>
+                        </div>
+                        <div class="pros-cons">
+                            <h5>Prinzip:</h5>
+                            <p>Flexibler Zugriff</p>
+                        </div>
+                        <div class="pros-cons">
+                            <h5>Referenzen:</h5>
+                            <p>nur anfang</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🎯 Anwendungsfälle</h3>
+                    <div class="example-content">
+                        <div class="example-item">
+                            <h4>Queue verwenden für:</h4>
+                            <ul>
+                                <li>Warteschlangen (Drucker, Tickets, etc.)</li>
+                                <li>Aufgaben-Warteschlangen (Task Queues)</li>
+                                <li>Breadth-First-Search Algorithmen</li>
+                                <li>Wenn strikte FIFO-Reihenfolge wichtig ist</li>
+                            </ul>
+                        </div>
+
+                        <div class="example-item">
+                            <h4>Liste verwenden für:</h4>
+                            <ul>
+                                <li>Flexible Datensammlungen</li>
+                                <li>Wenn Einfügen/Löschen an beliebiger Stelle nötig ist</li>
+                                <li>Wenn Suche nach bestimmten Elementen wichtig ist</li>
+                                <li>Sortierte Datenstrukturen</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="strategy-grid">
+                    <h3>🔧 Neue Herausforderungen bei Listen</h3>
+                    
+                    <div class="strategy-card">
+                        <h4>Rekursion</h4>
+                        <p>Viele Listenoperationen nutzen <strong>Rekursion</strong> - eine Methode ruft sich selbst auf.</p>
+                        <p>Beispiel: Um das Ende zu finden, fragt jeder Knoten seinen Nachfolger: "Bist du das Ende?"</p>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h4>Durchreichen</h4>
+                        <p>Operationen werden von Knoten zu Knoten <strong>durchgereicht</strong>, bis der richtige Knoten gefunden ist.</p>
+                        <p>Beispiel: "Füge vor Element X ein" → Jeder Knoten prüft: "Bin ich X?" und gibt sonst weiter.</p>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h4>Randfälle</h4>
+                        <p>Besondere Aufmerksamkeit für:</p>
+                        <ul>
+                            <li>Leere Liste</li>
+                            <li>Erstes Element</li>
+                            <li>Letztes Element</li>
+                            <li>Liste mit nur einem Element</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>🎓 Was du lernen wirst</h3>
+                    <p>In den nächsten Kapiteln wirst du:</p>
+                    <ul>
+                        <li>Eine vollständige Liste implementieren</li>
+                        <li>Rekursion verstehen und anwenden</li>
+                        <li>Das Kompositum-Pattern kennenlernen</li>
+                        <li>Elegante Lösungen für komplexe Probleme finden</li>
+                    </ul>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('interfaces')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('liste-build')">Liste implementieren →</button>
+                </div>
+            </section>
+
+            <!-- Liste Build Section -->
+            <section id="liste-build" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Kapitel 8</span>
+                    <h2>Liste implementieren</h2>
+                </div>
+
+                <div class="task-box">
+                    <h4>🎯 Aufgabe: Erstelle die Klassen MeineListe und Knoten</h4>
+                    <p>Wir bauen eine Liste von Grund auf - ähnlich wie die Queue, aber mit mehr Funktionen.</p>
+                    
+                    <ol>
+                        <li>Erstelle die Klasse <code>Knoten</code> (ähnlich wie ListElement)</li>
+                        <li>Erstelle die Klasse <code>MeineListe</code> (nur mit Referenz auf <code>anfang</code>)</li>
+                        <li>Implementiere <code>addLast()</code> - fügt am Ende hinzu</li>
+                        <li>Implementiere <code>addFirst()</code> - fügt am Anfang hinzu</li>
+                    </ol>
+
+                    <button class="btn btn-secondary" onclick="toggleHint('hint-liste1')">💡 Hilfe anzeigen</button>
+                </div>
+
+                <div class="hint-box" id="hint-liste1">
+                    <h4>💡 Hilfestellung - Grundstruktur</h4>
+                    
+                    <p><strong>Knoten Klasse:</strong></p>
+                    <pre><code>public class Knoten {
+    private DatenElement daten;
+    private Knoten nachfolger;
+    
+    public Knoten(DatenElement daten) {
+        this.daten = daten;
+    }
+    
+    // Getter und Setter
+    // ...
+}</code></pre>
+
+                    <p><strong>MeineListe Klasse:</strong></p>
+                    <pre><code>public class MeineListe {
+    private Knoten anfang;
+    
+    public MeineListe() {
+        // anfang ist automatisch null
+    }
+    
+    // Methoden folgen...
+}</code></pre>
+
+                    <p><strong>addFirst() - Einfach!</strong></p>
+                    <pre><code>public void addFirst(DatenElement daten) {
+    Knoten neuerKnoten = new Knoten(daten);
+    neuerKnoten.setNachfolger(anfang);
+    anfang = neuerKnoten;
+}</code></pre>
+                </div>
+
+                <div class="concept-box warning">
+                    <h3>🤔 Herausforderung: addLast() ohne ende-Referenz</h3>
+                    <div class="definition">
+                        <p>Bei der Queue hatten wir eine <code>ende</code>-Referenz. Bei der Liste nicht!</p>
+                        <p><strong>Problem:</strong> Wie finden wir das Ende der Liste?</p>
+                        <p><strong>Lösung:</strong> Rekursion! Jeder Knoten fragt seinen Nachfolger.</p>
+                    </div>
+
+                    <div class="highlight">
+                        <p><strong>Idee:</strong></p>
+                        <ol>
+                            <li>Liste ruft <code>anfang.add(daten)</code> auf</li>
+                            <li>Knoten prüft: Habe ich einen Nachfolger?</li>
+                            <li>Wenn ja: Gib die Aufgabe an Nachfolger weiter (Rekursion!)</li>
+                            <li>Wenn nein: Ich bin das Ende, ich füge das Element an</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="ide-container">
+                    <h4 class="ide-title">💻 Programmierbereich - Liste Grundfunktionen</h4>
+                    <div class="java-online" 
+                         style="width: 100%; height: 700px;" 
+                         data-java-online="{ 'id': 'liste-build', 'speed': 1000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true }">
+                        <script type="text/plain" title="DatenElement.java">
+public interface DatenElement {
+    String toString();
+}
+                        </script>
+                        <script type="text/plain" title="Taxi.java">
+public class Taxi implements DatenElement {
+    private int autonummer;
+    private String fahrerName;
+
+    public Taxi(int autonummer, String fahrerName) {
+        this.autonummer = autonummer;
+        this.fahrerName = fahrerName;
+    }
+
+    public String getFahrerName() {
+        return fahrerName;
+    }
+
+    public int getAutonummer() {
+        return autonummer;
+    }
+
+    @Override
+    public String toString() {
+        return "Taxi #" + autonummer + " - Fahrer: " + fahrerName;
+    }
+}
+                        </script>
+                        <script type="text/plain" title="Knoten.java">
+public class Knoten {
+    private DatenElement daten;
+    private Knoten nachfolger;
+    
+    public Knoten(DatenElement daten) {
+        this.daten = daten;
+    }
+    
+    public DatenElement getDaten() {
+        return daten;
+    }
+    
+    public Knoten getNachfolger() {
+        return nachfolger;
+    }
+    
+    public void setNachfolger(Knoten nachfolger) {
+        this.nachfolger = nachfolger;
+    }
+    
+    // TODO: add-Methode für Rekursion
+    public Knoten add(DatenElement daten) {
+        // Bin ich der letzte Knoten?
+        if (nachfolger == null) {
+            // Ja! Ich füge das neue Element an
+            nachfolger = new Knoten(daten);
+            return this;
+        } else {
+            // Nein! Ich gebe die Aufgabe weiter
+            nachfolger = nachfolger.add(daten);
+            return this;
+        }
+    }
+}
+                        </script>
+                        <script type="text/plain" title="MeineListe.java">
+public class MeineListe {
+    private Knoten anfang;
+    
+    public MeineListe() {
+    }
+    
+    // TODO: addFirst implementieren
+    public void addFirst(DatenElement daten) {
+        
+    }
+    
+    // TODO: addLast implementieren (nutzt Rekursion!)
+    public void addLast(DatenElement daten) {
+        if (anfang == null) {
+            // Liste ist leer
+            anfang = new Knoten(daten);
+        } else {
+            // Gib die Aufgabe an anfang weiter
+            anfang = anfang.add(daten);
+        }
+    }
+    
+    // Hilfsmethode zum Ausgeben
+    public void print() {
+        if (anfang == null) {
+            println("Liste ist leer!");
+            return;
+        }
+        
+        println("=== Liste ===");
+        Knoten current = anfang;
+        int pos = 0;
+        while (current != null) {
+            println(pos + ": " + current.getDaten());
+            current = current.getNachfolger();
+            pos++;
+        }
+    }
+}
+                        </script>
+                        <script type="text/plain" title="Main.java">
+// Test der Liste
+
+MeineListe liste = new MeineListe();
+
+// Test addLast
+println("=== Test addLast ===");
+liste.addLast(new Taxi(101, "Albert"));
+liste.addLast(new Taxi(102, "Berta"));
+liste.addLast(new Taxi(103, "Corinna"));
+liste.print();
+println();
+
+// Test addFirst
+println("=== Test addFirst ===");
+liste.addFirst(new Taxi(100, "Zuerst"));
+liste.print();
+println();
+
+// Gemischt
+println("=== Gemischt ===");
+liste.addLast(new Taxi(104, "Am Ende"));
+liste.addFirst(new Taxi(99, "Ganz vorne"));
+liste.print();
+                        </script>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📊 Visualisierung: Rekursiver Aufruf bei addLast()</h3>
+                    <div class="example-content">
+                        <p><strong>Ausgangssituation:</strong> Liste mit 3 Elementen</p>
+                        <div class="highlight">
+                            <code>anfang → [Taxi 101] → [Taxi 102] → [Taxi 103] → null</code>
+                        </div>
+
+                        <p><strong>Aufruf:</strong> <code>liste.addLast(new Taxi(104, "Neu"))</code></p>
+
+                        <p><strong>Ablauf:</strong></p>
+                        <ol>
+                            <li>Liste: "anfang, füge das Element hinzu!"</li>
+                            <li>Knoten 101: "Ich habe einen Nachfolger, ich gebe weiter..."</li>
+                            <li>Knoten 102: "Ich habe einen Nachfolger, ich gebe weiter..."</li>
+                            <li>Knoten 103: "Ich habe keinen Nachfolger! Ich füge an: [Taxi 104]"</li>
+                        </ol>
+
+                        <p><strong>Ergebnis:</strong></p>
+                        <div class="highlight">
+                            <code>anfang → [Taxi 101] → [Taxi 102] → [Taxi 103] → [Taxi 104] → null</code>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="challenge-box">
+                    <h4>🏆 Erweiterte Aufgabe: Weitere Methoden</h4>
+                    <p>Implementiere folgende Methoden:</p>
+                    <ul>
+                        <li><code>length()</code> - Gibt die Anzahl der Elemente zurück (rekursiv!)</li>
+                        <li><code>contains(DatenElement daten)</code> - Prüft, ob Element in Liste ist (rekursiv!)</li>
+                        <li><code>remove(DatenElement daten)</code> - Entfernt ein Element (rekursiv!)</li>
+                    </ul>
+                    <button class="btn btn-outline solution-toggle" onclick="toggleHint('challenge-liste')">Lösungsansatz zeigen</button>
+                </div>
+
+                <div class="hint-box" id="challenge-liste">
+                    <h4>✅ Lösungsansatz</h4>
+                    
+                    <p><strong>length() in MeineListe:</strong></p>
+                    <pre><code>public int length() {
+    if (anfang == null) {
+        return 0;
+    }
+    return anfang.length();
+}</code></pre>
+
+                    <p><strong>length() in Knoten:</strong></p>
+                    <pre><code>public int length() {
+    if (nachfolger == null) {
+        return 1;  // Ich bin der letzte
+    }
+    return 1 + nachfolger.length();  // 1 + Rest
+}</code></pre>
+
+                    <p><strong>Tipp für remove():</strong> Der Knoten muss seinen Nachfolger "überspringen" können!</p>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('liste-intro')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('rekursion')">Rekursion verstehen →</button>
+                </div>
+            </section>
+
+            <!-- Rekursion Section -->
+            <section id="rekursion" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Kapitel 9</span>
+                    <h2>Rekursion verstehen und meistern</h2>
+                </div>
+
+                <div class="concept-box">
+                    <h3>♻️ Was ist Rekursion?</h3>
+                    <div class="definition">
+                        <p><strong>Rekursion:</strong> Eine Methode ruft sich selbst auf.</p>
+                        <p>Dies führt zu einer Verschachtelung von Methodenaufrufen, die theoretisch unendlich weiterlaufen könnte.</p>
+                    </div>
+
+                    <div class="highlight">
+                        <p><strong>Wichtig:</strong> Es muss eine <strong>Abbruchbedingung</strong> geben!</p>
+                        <p>Die Abbruchbedingung greift, wenn:</p>
+                        <ul>
+                            <li>Die Aufgabe erfolgreich gelöst werden kann (z.B. Ende der Liste erreicht)</li>
+                            <li>Die Bedingung nicht mehr erfüllt ist (z.B. Element nicht gefunden)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🎯 Beispiel: Fakultät berechnen</h3>
+                    <div class="example-content">
+                        <p><strong>Mathematische Definition:</strong></p>
+                        <div class="highlight">
+                            <p>n! = n × (n-1)!</p>
+                            <p>5! = 5 × 4! = 5 × 4 × 3! = 5 × 4 × 3 × 2 × 1 = 120</p>
+                        </div>
+
+                        <p><strong>Rekursive Implementierung:</strong></p>
+                        <pre><code>public int fakultaet(int n) {
+    if (n <= 1) {
+        return 1;  // Abbruchbedingung!
+    }
+    return n * fakultaet(n - 1);  // Rekursiver Aufruf
+}</code></pre>
+
+                        <p><strong>Ablauf für fakultaet(5):</strong></p>
+                        <ol>
+                            <li>fakultaet(5) = 5 × fakultaet(4)</li>
+                            <li>fakultaet(4) = 4 × fakultaet(3)</li>
+                            <li>fakultaet(3) = 3 × fakultaet(2)</li>
+                            <li>fakultaet(2) = 2 × fakultaet(1)</li>
+                            <li>fakultaet(1) = 1 ← Abbruch!</li>
+                            <li>Rückwärts auflösen: 2×1 = 2, 3×2 = 6, 4×6 = 24, 5×24 = 120</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="strategy-grid">
+                    <h3>🎯 Rekursion in Datenstrukturen</h3>
+                    
+                    <div class="strategy-card">
+                        <h4>add() - Hinzufügen</h4>
+                        <p><strong>Idee:</strong> "Wenn ich nicht das Ende bin, gib die Aufgabe weiter."</p>
+                        <pre><code>if (nachfolger == null) {
+    // Abbruch: Ich bin das Ende
+    nachfolger = new Knoten(daten);
+} else {
+    // Rekursion: Weitergeben
+    nachfolger.add(daten);
+}</code></pre>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h4>length() - Länge berechnen</h4>
+                        <p><strong>Idee:</strong> "Ich zähle 1, plus die Länge des Rests."</p>
+                        <pre><code>if (nachfolger == null) {
+    // Abbruch: Ich bin der letzte
+    return 1;
+} else {
+    // Rekursion: 1 + Rest
+    return 1 + nachfolger.length();
+}</code></pre>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h4>contains() - Suchen</h4>
+                        <p><strong>Idee:</strong> "Bin ich es? Wenn nicht, frag den Nachfolger."</p>
+                        <pre><code>if (daten.equals(gesucht)) {
+    // Abbruch: Gefunden!
+    return true;
+} else if (nachfolger == null) {
+    // Abbruch: Ende, nicht gefunden
+    return false;
+} else {
+    // Rekursion: Weiterfragen
+    return nachfolger.contains(gesucht);
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="interactive-demo">
+                    <h4>🎮 Interaktive Rekursions-Visualisierung</h4>
+                    <p>Wähle eine Funktion und einen Wert, um die Rekursion Schritt für Schritt zu sehen:</p>
+                    
+                    <div class="control-panel">
+                        <select id="recursionFunction" class="btn">
+                            <option value="fakultaet">Fakultät</option>
+                            <option value="fibonacci">Fibonacci</option>
+                            <option value="summe">Summe 1..n</option>
+                        </select>
+                        <input type="number" id="recursionInput" value="5" min="1" max="10">
+                        <button class="btn btn-primary" onclick="visualizeRecursion()">Visualisieren</button>
+                    </div>
+                    
+                    <div id="recursionVisualization" style="margin-top: 1rem; padding: 1rem; background: var(--gray-lighter); border-radius: 8px; min-height: 100px;">
+                        <p>Wähle eine Funktion und klicke auf "Visualisieren"</p>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>🎯 Aufgabe: Implementiere remove() rekursiv</h4>
+                    <p>Die schwierigste Methode: Ein Element aus der Liste entfernen.</p>
+                    
+                    <p><strong>Herausforderung:</strong> Der Knoten muss seinen Nachfolger "überspringen" können!</p>
+                    
+                    <ol>
+                        <li>In MeineListe: Prüfe, ob anfang das gesuchte Element ist</li>
+                        <li>Wenn ja: Setze anfang auf anfang.getNachfolger()</li>
+                        <li>Wenn nein: Gib die Aufgabe an anfang weiter (rekursiv)</li>
+                        <li>In Knoten: Prüfe, ob mein Nachfolger das gesuchte Element ist</li>
+                        <li>Wenn ja: Überspringe ihn (setze nachfolger auf nachfolger.getNachfolger())</li>
+                        <li>Wenn nein: Gib die Aufgabe an Nachfolger weiter</li>
+                    </ol>
+
+                    <button class="btn btn-secondary" onclick="toggleHint('hint-remove')">💡 Hilfe anzeigen</button>
+                </div>
+
+                <div class="hint-box" id="hint-remove">
+                    <h4>💡 Hilfestellung - remove()</h4>
+                    
+                    <p><strong>In MeineListe:</strong></p>
+                    <pre><code>public void remove(DatenElement daten) {
+    if (anfang == null) {
+        return;  // Liste ist leer
+    }
+    
+    if (anfang.getDaten().equals(daten)) {
+        // Erstes Element soll entfernt werden
+        anfang = anfang.getNachfolger();
+    } else {
+        // Gib die Aufgabe an anfang weiter
+        anfang.remove(daten);
+    }
+}</code></pre>
+
+                    <p><strong>In Knoten:</strong></p>
+                    <pre><code>public void remove(DatenElement daten) {
+    if (nachfolger == null) {
+        return;  // Kein Nachfolger, nichts zu tun
+    }
+    
+    if (nachfolger.getDaten().equals(daten)) {
+        // Mein Nachfolger soll entfernt werden
+        nachfolger = nachfolger.getNachfolger();
+    } else {
+        // Gib die Aufgabe weiter
+        nachfolger.remove(daten);
+    }
+}</code></pre>
+                </div>
+
+                <div class="ide-container">
+                    <h4 class="ide-title">💻 Programmierbereich - remove() implementieren</h4>
+                    <div class="java-online" 
+                         style="width: 100%; height: 700px;" 
+                         data-java-online="{ 'id': 'rekursion', 'speed': 1000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true }">
+                        <script type="text/plain" title="DatenElement.java">
+public interface DatenElement {
+    String toString();
+    boolean equals(DatenElement other);
+}
+                        </script>
+                        <script type="text/plain" title="Taxi.java">
+public class Taxi implements DatenElement {
+    private int autonummer;
+    private String fahrerName;
+
+    public Taxi(int autonummer, String fahrerName) {
+        this.autonummer = autonummer;
+        this.fahrerName = fahrerName;
+    }
+
+    @Override
+    public String toString() {
+        return "Taxi #" + autonummer + " - " + fahrerName;
+    }
+
+    @Override
+    public boolean equals(DatenElement other) {
+        if (!(other instanceof Taxi)) {
+            return false;
+        }
+        Taxi otherTaxi = (Taxi) other;
+        return this.autonummer == otherTaxi.autonummer;
+    }
+}
+                        </script>
+                        <script type="text/plain" title="Knoten.java">
+public class Knoten {
+    private DatenElement daten;
+    private Knoten nachfolger;
+    
+    public Knoten(DatenElement daten) {
+        this.daten = daten;
+    }
+    
+    public DatenElement getDaten() {
+        return daten;
+    }
+    
+    public Knoten getNachfolger() {
+        return nachfolger;
+    }
+    
+    public void setNachfolger(Knoten nachfolger) {
+        this.nachfolger = nachfolger;
+    }
+    
+    public Knoten add(DatenElement daten) {
+        if (nachfolger == null) {
+            nachfolger = new Knoten(daten);
+            return this;
+        } else {
+            nachfolger = nachfolger.add(daten);
+            return this;
+        }
+    }
+    
+    // TODO: remove() implementieren
+    public void remove(DatenElement daten) {
+        
+    }
+}
+                        </script>
+                        <script type="text/plain" title="MeineListe.java">
+public class MeineListe {
+    private Knoten anfang;
+    
+    public void addLast(DatenElement daten) {
+        if (anfang == null) {
+            anfang = new Knoten(daten);
+        } else {
+            anfang = anfang.add(daten);
+        }
+    }
+    
+    // TODO: remove() implementieren
+    public void remove(DatenElement daten) {
+        
+    }
+    
+    public void print() {
+        if (anfang == null) {
+            println("Liste ist leer!");
+            return;
+        }
+        
+        println("=== Liste ===");
+        Knoten current = anfang;
+        int pos = 0;
+        while (current != null) {
+            println(pos + ": " + current.getDaten());
+            current = current.getNachfolger();
+            pos++;
+        }
+    }
+}
+                        </script>
+                        <script type="text/plain" title="Main.java">
+// Test remove()
+
+MeineListe liste = new MeineListe();
+
+// Fülle Liste
+liste.addLast(new Taxi(101, "Albert"));
+liste.addLast(new Taxi(102, "Berta"));
+liste.addLast(new Taxi(103, "Corinna"));
+liste.addLast(new Taxi(104, "Dieter"));
+liste.addLast(new Taxi(105, "Emma"));
+
+println("=== Ausgangsliste ===");
+liste.print();
+println();
+
+// Entferne aus der Mitte
+println("=== Entferne Taxi 103 ===");
+liste.remove(new Taxi(103, "Corinna"));
+liste.print();
+println();
+
+// Entferne vom Anfang
+println("=== Entferne Taxi 101 ===");
+liste.remove(new Taxi(101, "Albert"));
+liste.print();
+println();
+
+// Entferne vom Ende
+println("=== Entferne Taxi 105 ===");
+liste.remove(new Taxi(105, "Emma"));
+liste.print();
+                        </script>
+                    </div>
+                </div>
+
+                <div class="best-practices">
+                    <h3>✨ Best Practices für Rekursion</h3>
+                    
+                    <div class="practice">
+                        <span class="icon">🛑</span>
+                        <div>
+                            <strong>Immer eine Abbruchbedingung!</strong>
+                            <p>Ohne Abbruchbedingung läuft die Rekursion unendlich und führt zu einem StackOverflowError.</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">🎯</span>
+                        <div>
+                            <strong>Klare Aufgabenteilung</strong>
+                            <p>Jeder rekursive Aufruf sollte das Problem verkleinern (z.B. n-1, Rest der Liste).</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">🔍</span>
+                        <div>
+                            <strong>Randfälle beachten</strong>
+                            <p>Teste immer: leere Liste, ein Element, zwei Elemente.</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">📝</span>
+                        <div>
+                            <strong>Dokumentation</strong>
+                            <p>Rekursive Methoden sind schwer zu verstehen - gute Kommentare helfen!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('liste-build')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('kompositum')">Kompositum Pattern →</button>
+                </div>
+            </section>
+
+            <!-- Kompositum Section -->
+            <section id="kompositum" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Kapitel 10</span>
+                    <h2>Das Kompositum Pattern</h2>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🎭 Was ist das Kompositum Pattern?</h3>
+                    <div class="definition">
+                        <p><strong>Kompositum (Composite Pattern):</strong> Ein Entwurfsmuster, das verwendet wird, um Fallunterscheidungen zu vermeiden.</p>
+                        <p>Alle Gemeinsamkeiten werden in einer abstrakten Klasse zusammengefasst. Für jede Ausprägung gibt es eine eigene Klasse mit eigenem Verhalten.</p>
+                    </div>
+
+                    <div class="highlight">
+                        <p><strong>Ziel:</strong> Vermeidung von <code>if (nachfolger == null)</code> Abfragen!</p>
+                        <p><strong>Lösung:</strong> Statt <code>null</code> verwenden wir ein <code>Abschluss</code>-Objekt.</p>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🔍 Problem: Viele null-Checks</h3>
+                    <div class="example-content">
+                        <p><strong>Bisheriger Code:</strong></p>
+                        <pre><code>public Knoten add(DatenElement daten) {
+    if (nachfolger == null) {  // ← null-Check
+        nachfolger = new Knoten(daten);
+        return this;
+    } else {
+        nachfolger = nachfolger.add(daten);
+        return this;
+    }
+}
+
+public int length() {
+    if (nachfolger == null) {  // ← null-Check
+        return 1;
+    } else {
+        return 1 + nachfolger.length();
+    }
+}</code></pre>
+
+                        <p><strong>Problem:</strong> In jeder Methode müssen wir prüfen, ob <code>nachfolger == null</code> ist!</p>
+                    </div>
+                </div>
+
+                <div class="strategy-grid">
+                    <h3>🎯 Die Lösung: Drei Klassen statt zwei</h3>
+                    
+                    <div class="strategy-card">
+                        <h4>ListenElement (abstrakt)</h4>
+                        <p>Definiert alle Methoden, die sowohl Knoten als auch Abschluss haben müssen.</p>
+                        <ul>
+                            <li>add()</li>
+                            <li>remove()</li>
+                            <li>length()</li>
+                            <li>contains()</li>
+                        </ul>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h4>Knoten (konkret)</h4>
+                        <p>Ein normales Element in der Liste mit Daten und Nachfolger.</p>
+                        <ul>
+                            <li>Hat Daten</li>
+                            <li>Hat Nachfolger (ListenElement!)</li>
+                            <li>Implementiert alle Methoden</li>
+                        </ul>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h4>Abschluss (konkret)</h4>
+                        <p>Markiert das Ende der Liste - ersetzt <code>null</code>!</p>
+                        <ul>
+                            <li>Keine Daten</li>
+                            <li>Kein Nachfolger</li>
+                            <li>Einfache Implementierungen</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="concept-box warning">
+                    <h3>🔑 Abstrakte Klassen vs. Interfaces</h3>
+                    <div class="definition">
+                        <p><strong>Abstrakte Klasse:</strong></p>
+                        <ul>
+                            <li>Kann nicht instanziiert werden (kein <code>new</code>)</li>
+                            <li>Kann abstrakte UND konkrete Methoden haben</li>
+                            <li>Kann Attribute haben</li>
+                            <li>Hat einen Konstruktor (für Subklassen)</li>
+                        </ul>
+                    </div>
+
+                    <div class="definition">
+                        <p><strong>Interface:</strong></p>
+                        <ul>
+                            <li>Nur Methodensignaturen (Stubs)</li>
+                            <li>Keine Implementierungen (außer default)</li>
+                            <li>Nur Konstanten als Attribute</li>
+                            <li>Kein Konstruktor</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="ide-container">
+                    <h4 class="ide-title">💻 Programmierbereich - Kompositum Pattern</h4>
+                    <div class="java-online" 
+                         style="width: 100%; height: 800px;" 
+                         data-java-online="{ 'id': 'kompositum', 'speed': 1000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true }">
+                        <script type="text/plain" title="DatenElement.java">
+public interface DatenElement {
+    String toString();
+    boolean equals(DatenElement other);
+}
+                        </script>
+                        <script type="text/plain" title="Taxi.java">
+public class Taxi implements DatenElement {
+    private int autonummer;
+    private String fahrerName;
+
+    public Taxi(int autonummer, String fahrerName) {
+        this.autonummer = autonummer;
+        this.fahrerName = fahrerName;
+    }
+
+    @Override
+    public String toString() {
+        return "Taxi #" + autonummer + " - " + fahrerName;
+    }
+
+    @Override
+    public boolean equals(DatenElement other) {
+        if (!(other instanceof Taxi)) {
+            return false;
+        }
+        Taxi otherTaxi = (Taxi) other;
+        return this.autonummer == otherTaxi.autonummer;
+    }
+}
+                        </script>
+                        <script type="text/plain" title="ListenElement.java">
+// Abstrakte Basisklasse
+public abstract class ListenElement {
+    
+    // Abstrakte Methoden - müssen implementiert werden
+    public abstract ListenElement add(DatenElement daten);
+    public abstract ListenElement remove(DatenElement daten);
+    public abstract int length();
+    public abstract boolean contains(DatenElement daten);
+    public abstract String ausgeben();
+}
+                        </script>
+                        <script type="text/plain" title="Knoten.java">
+public class Knoten extends ListenElement {
+    private DatenElement daten;
+    private ListenElement nachfolger;  // Typ ist jetzt ListenElement!
+    
+    public Knoten(DatenElement daten) {
+        this.daten = daten;
+    }
+    
+    public DatenElement getDaten() {
+        return daten;
+    }
+    
+    public void setNachfolger(ListenElement nachfolger) {
+        this.nachfolger = nachfolger;
+    }
+    
+    @Override
+    public ListenElement add(DatenElement daten) {
+        // KEIN null-Check mehr nötig!
+        nachfolger = nachfolger.add(daten);
+        return this;
+    }
+    
+    @Override
+    public ListenElement remove(DatenElement daten) {
+        if (this.daten.equals(daten)) {
+            // Ich soll entfernt werden
+            return nachfolger;
+        } else {
+            // Weitergeben
+            nachfolger = nachfolger.remove(daten);
+            return this;
+        }
+    }
+    
+    @Override
+    public int length() {
+        // KEIN null-Check mehr nötig!
+        return 1 + nachfolger.length();
+    }
+    
+    @Override
+    public boolean contains(DatenElement daten) {
+        if (this.daten.equals(daten)) {
+            return true;
+        }
+        return nachfolger.contains(daten);
+    }
+    
+    @Override
+    public String ausgeben() {
+        return daten.toString() + "\n" + nachfolger.ausgeben();
+    }
+}
+                        </script>
+                        <script type="text/plain" title="Abschluss.java">
+public class Abschluss extends ListenElement {
+    
+    @Override
+    public ListenElement add(DatenElement daten) {
+        // Ich bin das Ende - neues Element einfügen
+        Knoten neuerKnoten = new Knoten(daten);
+        neuerKnoten.setNachfolger(this);
+        return neuerKnoten;
+    }
+    
+    @Override
+    public ListenElement remove(DatenElement daten) {
+        // Nichts zu entfernen
+        return this;
+    }
+    
+    @Override
+    public int length() {
+        // Ich zähle nicht mit
+        return 0;
+    }
+    
+    @Override
+    public boolean contains(DatenElement daten) {
+        // Ich habe keine Daten
+        return false;
+    }
+    
+    @Override
+    public String ausgeben() {
+        // Nichts auszugeben
+        return "";
+    }
+}
+                        </script>
+                        <script type="text/plain" title="MeineListe.java">
+public class MeineListe {
+    private ListenElement anfang;
+    
+    public MeineListe() {
+        // Wichtig: Leere Liste hat Abschluss als anfang!
+        anfang = new Abschluss();
+    }
+    
+    public void addLast(DatenElement daten) {
+        anfang = anfang.add(daten);
+    }
+    
+    public void remove(DatenElement daten) {
+        anfang = anfang.remove(daten);
+    }
+    
+    public int length() {
+        return anfang.length();
+    }
+    
+    public boolean contains(DatenElement daten) {
+        return anfang.contains(daten);
+    }
+    
+    public void print() {
+        println("=== Liste (Länge: " + length() + ") ===");
+        String inhalt = anfang.ausgeben();
+        if (inhalt.isEmpty()) {
+            println("Liste ist leer!");
+        } else {
+            print(inhalt);
+        }
+    }
+}
+                        </script>
+                        <script type="text/plain" title="Main.java">
+// Test der Liste mit Kompositum Pattern
+
+MeineListe liste = new MeineListe();
+
+println("=== Leere Liste ===");
+liste.print();
+println();
+
+println("=== Elemente hinzufügen ===");
+liste.addLast(new Taxi(101, "Albert"));
+liste.addLast(new Taxi(102, "Berta"));
+liste.addLast(new Taxi(103, "Corinna"));
+liste.addLast(new Taxi(104, "Dieter"));
+liste.print();
+println();
+
+println("=== Suche ===");
+println("Taxi 103 enthalten? " + liste.contains(new Taxi(103, "X")));
+println("Taxi 999 enthalten? " + liste.contains(new Taxi(999, "X")));
+println();
+
+println("=== Entfernen ===");
+liste.remove(new Taxi(102, "X"));
+liste.print();
+println();
+
+println("=== Alle entfernen ===");
+liste.remove(new Taxi(101, "X"));
+liste.remove(new Taxi(103, "X"));
+liste.remove(new Taxi(104, "X"));
+liste.print();
+                        </script>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>📊 Vorher vs. Nachher</h3>
+                    <div class="example-content">
+                        <div class="comparison-grid">
+                            <div class="comparison-card">
+                                <h4>❌ Ohne Kompositum</h4>
+                                <pre><code>public int length() {
+    if (nachfolger == null) {
+        return 1;
+    } else {
+        return 1 + nachfolger.length();
+    }
+}</code></pre>
+                                <p>Viele if-Abfragen nötig!</p>
+                            </div>
+
+                            <div class="comparison-card">
+                                <h4>✅ Mit Kompositum</h4>
+                                <pre><code>// In Knoten:
+public int length() {
+    return 1 + nachfolger.length();
+}
+
+// In Abschluss:
+public int length() {
+    return 0;
+}</code></pre>
+                                <p>Keine if-Abfragen mehr!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="best-practices">
+                    <h3>✨ Vorteile des Kompositum Patterns</h3>
+                    
+                    <div class="practice">
+                        <span class="icon">🎯</span>
+                        <div>
+                            <strong>Keine null-Checks</strong>
+                            <p>Der Code wird einfacher und weniger fehleranfällig.</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">🔄</span>
+                        <div>
+                            <strong>Einheitliche Behandlung</strong>
+                            <p>Knoten und Abschluss werden gleich behandelt - beide sind ListenElemente.</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">📦</span>
+                        <div>
+                            <strong>Klare Verantwortlichkeiten</strong>
+                            <p>Jede Klasse weiß genau, was sie tun muss.</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">🚀</span>
+                        <div>
+                            <strong>Leichte Erweiterbarkeit</strong>
+                            <p>Neue Methoden können einfach hinzugefügt werden.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="challenge-box">
+                    <h4>🏆 Verständnisfrage</h4>
+                    <p>Warum ist es wichtig, dass eine leere Liste einen Abschluss als <code>anfang</code> hat und nicht <code>null</code>?</p>
+                    <button class="btn btn-outline solution-toggle" onclick="toggleHint('answer-kompositum')">Antwort zeigen</button>
+                </div>
+
+                <div class="hint-box" id="answer-kompositum">
+                    <h4>✅ Antwort</h4>
+                    <p>Wenn <code>anfang</code> ein <code>Abschluss</code> ist, können wir direkt <code>anfang.add()</code>, <code>anfang.length()</code> etc. aufrufen, ohne vorher zu prüfen, ob <code>anfang == null</code> ist!</p>
+                    <p>Der Abschluss "weiß", wie er sich verhalten muss (z.B. length() gibt 0 zurück, add() erstellt einen neuen Knoten).</p>
+                    <p>Das ist das Herzstück des Kompositum Patterns: <strong>Polymorphismus</strong> statt Fallunterscheidungen!</p>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('rekursion')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('abschluss')">Zur Zusammenfassung →</button>
+                </div>
+            </section>
+
+            <!-- Abschluss Section -->
+            <section id="abschluss" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Kapitel 11</span>
+                    <h2>Zusammenfassung und Ausblick</h2>
+                </div>
+
+                <div class="hero">
+                    <h1 class="hero-title">🎉 Glückwunsch!</h1>
+                    <p class="hero-subtitle">Du hast den Lernpfad erfolgreich abgeschlossen!</p>
+                </div>
+
+                <div class="strategy-grid">
+                    <h3>📚 Was du gelernt hast</h3>
+                    
+                    <div class="strategy-card">
+                        <h4>1. Arrays und ihre Grenzen</h4>
+                        <ul>
+                            <li>Feste Größe</li>
+                            <li>Speicherverschwendung</li>
+                            <li>Umständliches Einfügen/Löschen</li>
+                        </ul>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h4>2. Queue (Warteschlange)</h4>
+                        <ul>
+                            <li>FIFO-Prinzip</li>
+                            <li>Verkettete Struktur</li>
+                            <li>add() und poll()</li>
+                            <li>Dynamische Größe</li>
+                        </ul>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h4>3. Interfaces</h4>
+                        <ul>
+                            <li>Abstraktion durch Verträge</li>
+                            <li>Lose Kopplung</li>
+                            <li>Hohe Kohäsion</li>
+                            <li>Flexibilität</li>
+                        </ul>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h4>4. Listen</h4>
+                        <ul>
+                            <li>Flexibler als Queues</li>
+                            <li>Einfügen/Löschen überall</li>
+                            <li>Rekursive Operationen</li>
+                        </ul>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h4>5. Rekursion</h4>
+                        <ul>
+                            <li>Methode ruft sich selbst auf</li>
+                            <li>Abbruchbedingung wichtig</li>
+                            <li>Elegante Lösungen</li>
+                            <li>Durchreichen von Aufgaben</li>
+                        </ul>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h4>6. Kompositum Pattern</h4>
+                        <ul>
+                            <li>Vermeidung von null-Checks</li>
+                            <li>Abstrakte Klassen</li>
+                            <li>Polymorphismus</li>
+                            <li>Sauberer Code</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="best-practices">
+                    <h3>🎯 Wichtige Konzepte im Überblick</h3>
+                    
+                    <div class="practice">
+                        <span class="icon">🔗</span>
+                        <div>
+                            <strong>Rekursive Beziehung</strong>
+                            <p>Eine Klasse hat ein Attribut vom eigenen Typ - ermöglicht Verkettung.</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">♻️</span>
+                        <div>
+                            <strong>Rekursiver Aufruf</strong>
+                            <p>Eine Methode ruft sich selbst auf - ermöglicht elegante Lösungen für wiederholende Aufgaben.</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">🎭</span>
+                        <div>
+                            <strong>Polymorphismus</strong>
+                            <p>Verschiedene Klassen implementieren die gleiche Schnittstelle unterschiedlich.</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">📦</span>
+                        <div>
+                            <strong>Abstraktion</strong>
+                            <p>Trennung von "Was" (Interface/abstrakte Klasse) und "Wie" (konkrete Klasse).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comparison-table">
+                    <h3>📊 Vergleich der Datenstrukturen</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Eigenschaft</th>
+                                <th>Array</th>
+                                <th>Queue</th>
+                                <th>Liste</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Größe</td>
+                                <td>❌ Fix</td>
+                                <td>✅ Dynamisch</td>
+                                <td>✅ Dynamisch</td>
+                            </tr>
+                            <tr>
+                                <td>Zugriff per Index</td>
+                                <td>✅ O(1)</td>
+                                <td>❌ Nicht möglich</td>
+                                <td>❌ O(n)</td>
+                            </tr>
+                            <tr>
+                                <td>Einfügen am Ende</td>
+                                <td>⚠️ O(1) wenn Platz</td>
+                                <td>✅ O(1)</td>
+                                <td>✅ O(n) oder O(1)*</td>
+                            </tr>
+                            <tr>
+                                <td>Einfügen am Anfang</td>
+                                <td>❌ O(n)</td>
+                                <td>❌ Nicht vorgesehen</td>
+                                <td>✅ O(1)</td>
+                            </tr>
+                            <tr>
+                                <td>Löschen</td>
+                                <td>❌ O(n)</td>
+                                <td>✅ O(1) am Anfang</td>
+                                <td>✅ O(n)</td>
+                            </tr>
+                            <tr>
+                                <td>Speicher</td>
+                                <td>❌ Viel</td>
+                                <td>✅ Nur belegt</td>
+                                <td>✅ Nur belegt</td>
+                            </tr>
+                            <tr>
+                                <td>Anwendung</td>
+                                <td>Feste Sammlungen</td>
+                                <td>Warteschlangen</td>
+                                <td>Flexible Sammlungen</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="mt-2"><small>* Mit Kompositum Pattern und Ende-Referenz</small></p>
+                </div>
+
+                <div class="info-box">
+                    <h3>🚀 Ausblick: Was kommt als Nächstes?</h3>
+                    <p>Du hast jetzt die Grundlagen für fortgeschrittene Datenstrukturen:</p>
+                    <ul>
+                        <li><strong>Doppelt verkettete Listen:</strong> Jeder Knoten kennt Vorgänger und Nachfolger</li>
+                        <li><strong>Stacks:</strong> LIFO-Prinzip (Last In, First Out)</li>
+                        <li><strong>Bäume:</strong> Hierarchische Strukturen mit mehreren Nachfolgern</li>
+                        <li><strong>Graphen:</strong> Netzwerke mit beliebigen Verbindungen</li>
+                        <li><strong>Hash-Tabellen:</strong> Schneller Zugriff über Schlüssel</li>
+                    </ul>
+                </div>
+
+                <div class="challenge-box">
+                    <h4>🏆 Abschlussprojekt-Ideen</h4>
+                    <p>Wende dein Wissen an:</p>
+                    <ul>
+                        <li>Implementiere einen Musik-Player mit Playlist (Queue)</li>
+                        <li>Erstelle ein Aufgabenverwaltungssystem (Liste mit Prioritäten)</li>
+                        <li>Baue einen Browser-Verlauf (Stack für Zurück/Vor)</li>
+                        <li>Entwickle ein Warteschlangensystem für ein Restaurant</li>
+                        <li>Implementiere eine Undo/Redo-Funktion</li>
+                    </ul>
+                </div>
+
+                <div class="terminology-box">
+                    <h3>📖 Wichtige Begriffe</h3>
+                    
+                    <div class="term">
+                        <strong>FIFO (First In, First Out)</strong>
+                        <p>Prinzip der Queue: Das erste Element, das hinzugefügt wird, wird auch als erstes entnommen.</p>
+                    </div>
+
+                    <div class="term">
+                        <strong>Rekursion</strong>
+                        <p>Eine Methode ruft sich selbst auf, um ein Problem schrittweise zu lösen.</p>
+                    </div>
+
+                    <div class="term">
+                        <strong>Kohäsion</strong>
+                        <p>Maß dafür, wie gut eine Klasse eine einzelne, wohldefinierte Aufgabe erfüllt.</p>
+                    </div>
+
+                    <div class="term">
+                        <strong>Kopplung</strong>
+                        <p>Maß für die Abhängigkeit zwischen verschiedenen Klassen. Lose Kopplung ist erstrebenswert.</p>
+                    </div>
+
+                    <div class="term">
+                        <strong>Polymorphismus</strong>
+                        <p>Verschiedene Klassen können die gleiche Schnittstelle unterschiedlich implementieren.</p>
+                    </div>
+
+                    <div class="term">
+                        <strong>Abstraktion</strong>
+                        <p>Trennung von Schnittstelle (was) und Implementierung (wie).</p>
+                    </div>
+                </div>
+
+                <div class="best-practices">
+                    <h3>💡 Tipps für die Praxis</h3>
+                    
+                    <div class="practice">
+                        <span class="icon">📚</span>
+                        <div>
+                            <strong>Nutze vorhandene Klassen</strong>
+                            <p>In der Praxis: Verwende <code>java.util.LinkedList</code>, <code>java.util.Queue</code> etc. statt eigene Implementierung.</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">🎯</span>
+                        <div>
+                            <strong>Wähle die richtige Datenstruktur</strong>
+                            <p>Überlege: Brauche ich schnellen Zugriff? Häufiges Einfügen/Löschen? Feste Reihenfolge?</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">🧪</span>
+                        <div>
+                            <strong>Teste Randfälle</strong>
+                            <p>Immer testen: leere Struktur, ein Element, viele Elemente.</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <span class="icon">📝</span>
+                        <div>
+                            <strong>Dokumentiere deinen Code</strong>
+                            <p>Besonders bei Rekursion und komplexen Strukturen sind Kommentare Gold wert!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero">
+                    <h2>🎓 Du bist jetzt ein Experte für rekursive Datenstrukturen!</h2>
+                    <p>Viel Erfolg bei deinen weiteren Projekten!</p>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('kompositum')">← Zurück</button>
+                    <button class="btn btn-success" onclick="navigateToSection('intro')">🏠 Zum Anfang</button>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <script>
+        // Navigation System
+        const sections = document.querySelectorAll('.content-section');
+        const navLinks = document.querySelectorAll('.sidebar-menu a');
+        const progressBar = document.getElementById('mainProgressBar');
+        
+        let completedSections = new Set();
+        const totalSections = sections.length;
+
+        function navigateToSection(sectionId) {
+            // Hide all sections
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show target section
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                
+                // Mark as completed
+                completedSections.add(sectionId);
+                updateProgress();
+
+                // Update navigation
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.dataset.section === sectionId) {
+                        link.classList.add('active');
+                    }
+                });
+
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function updateProgress() {
+            const progress = (completedSections.size / totalSections) * 100;
+            progressBar.style.width = progress + '%';
+        }
+
+        // Navigation click handlers
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const sectionId = link.dataset.section;
+                navigateToSection(sectionId);
+            });
+        });
+
+        // Mobile menu toggle
+        const sidebar = document.getElementById('sidebar');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+        }
+
+        mobileMenuBtn.addEventListener('click', toggleSidebar);
+        sidebarToggle.addEventListener('click', toggleSidebar);
+
+        // Hint toggle function
+        function toggleHint(hintId) {
+            const hint = document.getElementById(hintId);
+            if (hint) {
+                hint.classList.toggle('visible');
+            }
+        }
+
+        // Array Demo
+        let arrayData = [null, null, null, null];
+        const arrayCapacity = 4;
+
+        function renderArray() {
+            const container = document.getElementById('arrayDemo');
+            container.innerHTML = '';
+            
+            arrayData.forEach((value, index) => {
+                const cell = document.createElement('div');
+                cell.className = 'array-cell ' + (value ? 'filled' : 'empty');
+                
+                const indexDiv = document.createElement('div');
+                indexDiv.className = 'array-index';
+                indexDiv.textContent = `[${index}]`;
+                
+                const valueDiv = document.createElement('div');
+                valueDiv.className = 'array-value';
+                valueDiv.textContent = value || 'null';
+                
+                cell.appendChild(indexDiv);
+                cell.appendChild(valueDiv);
+                container.appendChild(cell);
+            });
+
+            document.getElementById('arrayCount').textContent = 
+                arrayData.filter(v => v !== null).length;
+            document.getElementById('arrayCapacity').textContent = arrayCapacity;
+        }
+
+        function addToArray() {
+            const input = document.getElementById('arrayInput');
+            const value = input.value.trim();
+            
+            if (!value) {
+                alert('Bitte einen Wert eingeben!');
+                return;
+            }
+
+            const emptyIndex = arrayData.indexOf(null);
+            if (emptyIndex === -1) {
+                alert('Array ist voll! Das ist das Problem mit fester Größe.');
+                return;
+            }
+
+            arrayData[emptyIndex] = value;
+            input.value = '';
+            renderArray();
+        }
+
+        function removeFromArray() {
+            const firstFilledIndex = arrayData.findIndex(v => v !== null);
+            if (firstFilledIndex === -1) {
+                alert('Array ist leer!');
+                return;
+            }
+
+            arrayData[firstFilledIndex] = null;
+            renderArray();
+        }
+
+        function resetArray() {
+            arrayData = [null, null, null, null];
+            renderArray();
+        }
+
+        // Queue Demo
+        let queueData = [];
+
+        function renderQueue() {
+            const container = document.getElementById('queueDemo');
+            container.innerHTML = '';
+
+            if (queueData.length === 0) {
+                container.innerHTML = '<p style="color: var(--gray);">Queue ist leer</p>';
+            } else {
+                queueData.forEach((value, index) => {
+                    const node = document.createElement('div');
+                    node.className = 'queue-node';
+                    node.textContent = value;
+
+                    if (index === 0) {
+                        const label = document.createElement('div');
+                        label.className = 'queue-label';
+                        label.textContent = 'anfang';
+                        node.appendChild(label);
+                    }
+
+                    if (index === queueData.length - 1) {
+                        const label = document.createElement('div');
+                        label.className = 'queue-label';
+                        label.style.top = 'auto';
+                        label.style.bottom = '-30px';
+                        label.textContent = 'ende';
+                        node.appendChild(label);
+                    }
+
+                    container.appendChild(node);
+
+                    if (index < queueData.length - 1) {
+                        const arrow = document.createElement('div');
+                        arrow.className = 'queue-arrow';
+                        arrow.textContent = '→';
+                        container.appendChild(arrow);
+                    }
+                });
+            }
+
+            document.getElementById('queueCount').textContent = queueData.length;
+        }
+
+        function enqueue() {
+            const input = document.getElementById('queueInput');
+            const value = input.value.trim();
+
+            if (!value) {
+                alert('Bitte einen Wert eingeben!');
+                return;
+            }
+
+            queueData.push(value);
+            input.value = '';
+            renderQueue();
+        }
+
+        function dequeue() {
+            if (queueData.length === 0) {
+                alert('Queue ist leer!');
+                return;
+            }
+
+            const removed = queueData.shift();
+            alert(`Entfernt: ${removed}`);
+            renderQueue();
+        }
+
+        function resetQueue() {
+            queueData = [];
+            renderQueue();
+        }
+
+        // Recursion Visualization
+        function visualizeRecursion() {
+            const func = document.getElementById('recursionFunction').value;
+            const n = parseInt(document.getElementById('recursionInput').value);
+            const container = document.getElementById('recursionVisualization');
+
+            if (isNaN(n) || n < 1) {
+                container.innerHTML = '<p style="color: var(--danger-color);">Bitte eine Zahl >= 1 eingeben!</p>';
+                return;
+            }
+
+            let html = '<div style="font-family: monospace; line-height: 1.8;">';
+
+            if (func === 'fakultaet') {
+                html += '<h4>Fakultät(' + n + ') Berechnung:</h4>';
+                for (let i = n; i >= 1; i--) {
+                    html += '&nbsp;'.repeat((n - i) * 4) + 'fakultaet(' + i + ')';
+                    if (i > 1) {
+                        html += ' = ' + i + ' × fakultaet(' + (i - 1) + ')<br>';
+                    } else {
+                        html += ' = 1 ← <strong>Abbruch!</strong><br>';
+                    }
+                }
+                html += '<br><strong>Rückwärts auflösen:</strong><br>';
+                let result = 1;
+                for (let i = 1; i <= n; i++) {
+                    result *= i;
+                    html += '&nbsp;'.repeat((n - i) * 4) + i + '! = ' + result + '<br>';
+                }
+            } else if (func === 'fibonacci') {
+                html += '<h4>Fibonacci(' + n + ') Berechnung:</h4>';
+                html += '<p>fib(0) = 0, fib(1) = 1</p>';
+                let a = 0, b = 1;
+                for (let i = 2; i <= n; i++) {
+                    let c = a + b;
+                    html += 'fib(' + i + ') = fib(' + (i-1) + ') + fib(' + (i-2) + ') = ' + b + ' + ' + a + ' = ' + c + '<br>';
+                    a = b;
+                    b = c;
+                }
+            } else if (func === 'summe') {
+                html += '<h4>Summe(1..' + n + ') Berechnung:</h4>';
+                let sum = 0;
+                for (let i = 1; i <= n; i++) {
+                    sum += i;
+                    html += 'summe(' + i + ') = ' + i + ' + summe(' + (i-1) + ') = ' + sum + '<br>';
+                }
+            }
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderArray();
+            renderQueue();
+            updateProgress();
+        });
+
+        // Make functions globally available
+        window.navigateToSection = navigateToSection;
+        window.toggleHint = toggleHint;
+        window.addToArray = addToArray;
+        window.removeFromArray = removeFromArray;
+        window.resetArray = resetArray;
+        window.enqueue = enqueue;
+        window.dequeue = dequeue;
+        window.resetQueue = resetQueue;
+        window.visualizeRecursion = visualizeRecursion;
+    </script>
+</body>
+</html>
