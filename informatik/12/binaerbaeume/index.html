@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lernpfad Q12: Geordnete Binärbäume</title>
+    <style>
+        :root {
+            --bg-body: #f0f2f5;
+            --bg-card: #ffffff;
+            --primary: #2563eb;
+            --accent: #f59e0b;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            
+            /* Code Theme */
+            --code-bg: #1e1e1e;
+            --code-fg: #d4d4d4;
+            --kw-color: #569cd6; 
+            --type-color: #4ec9b0; 
+            --str-color: #ce9178; 
+            --method-color: #dcdcaa; 
+            --comment-color: #6a9955;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 { margin-bottom: 10px; color: var(--primary); }
+        .subtitle { font-size: 1.2rem; color: var(--text-muted); }
+
+        /* Grid Navigation */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 6px solid var(--primary);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border-left-color: var(--accent);
+        }
+
+        .card h3 { margin-top: 0; color: #0f172a; font-size: 1.3rem; }
+
+        /* Module Styles */
+        .module {
+            display: none;
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Gestaffelte Hilfen */
+        .hint-container {
+            margin-top: 20px;
+            border-left: 4px solid #cbd5e1;
+            padding-left: 15px;
+        }
+
+        details {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        summary {
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--primary);
+            list-style: none; /* Default Dreieck weg */
+        }
+        
+        summary::-webkit-details-marker { display: none; }
+
+        summary::before {
+            content: "💡 ";
+        }
+        
+        details[open] summary { margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+
+        /* Code Block */
+        pre {
+            background-color: var(--code-bg);
+            color: var(--code-fg);
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.95rem;
+        }
+
+        .kw { color: var(--kw-color); font-weight: bold; }
+        .type { color: var(--type-color); }
+        .str { color: var(--str-color); }
+        .mtd { color: var(--method-color); }
+        .cmt { color: var(--comment-color); font-style: italic; }
+
+        /* Navigation Buttons */
+        .btn-nav {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 30px;
+        }
+        
+        .btn-nav:hover { background-color: #1d4ed8; }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--text-muted);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* UML Visualisierung Box */
+        .uml-box {
+            border: 2px dashed #94a3b8;
+            padding: 20px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        /* Download Bereich */
+        .download-area {
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .download-button {
+            display: inline-block;
+            padding: 0.8rem 1.4rem;
+            background: #2c7be5;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .download-button:hover {
+            background: #1a5fb4;
+        }
+    </style>
+</head>
+<body>
+
+<header id="main-header">
+    <h1>Informatik Q12: Lernbereich 2</h1>
+    <div class="subtitle">Geordnete Binärbäume & Entwurfsmuster Kompositum</div>
+</header>
+
+<div class="download-area" id="download-area">
+    <a href="Binärbaum.json"
+       download="12-2 Binärbaum.json"
+       class="download-button">
+        ⬇ Binärbaum.json (Online-IDE ) herunterladen
+    </a>
+</div>
+
+<div id="menu" class="grid">
+    <div class="card" onclick="openModule(1)">
+        <h3>1. Vergleich: Liste vs. Baum</h3>
+        <p>Warum wir eine neue Struktur brauchen: Ein Gedankenexperiment zur Effizienz.</p>
+    </div>
+    <div class="card" onclick="openModule(2)">
+        <h3>2. Die Architektur (Kompositum)</h3>
+        <p>Aufgaben zur Modellierung: Wer darf was? Trennung von Struktur und Daten.</p>
+    </div>
+    <div class="card" onclick="openModule(3)">
+        <h3>3. PRIMM: Einfügen</h3>
+        <p>Wir bauen den Baum auf. Analyse des Algorithmus und Implementierung.</p>
+    </div>
+    <div class="card" onclick="openModule(4)">
+        <h3>4. PRIMM: Suchen</h3>
+        <p>Den Vorteil nutzen: Wie finden wir Daten effizient wieder?</p>
+    </div>
+    <div class="card" onclick="openModule(5)">
+        <h3>5. Traversierung</h3>
+        <p>Alle Daten besuchen: Strategien für die Ausgabe (Sortierung).</p>
+    </div>
+    <div class="card" onclick="openModule(6)">
+        <h3>6. Projekt & Check</h3>
+        <p>Vertiefung und Strukturanalyse.</p>
+    </div>
+</div>
+
+<div id="module-1" class="module">
+    <span class="back-link" onclick="showMenu()">← Zurück zur Übersicht</span>
+    <h2>1. Konzept: Grenzen der Liste</h2>
+    
+    <p>In Lernbereich 2 haben wir Listen implementiert. Sie sind dynamisch, haben aber eine Schwäche.</p>
+    
+    <h3>Gedankenexperiment</h3>
+    <p>Stell dir vor, eine Datenbank speichert 1.000.000 Einträge in einer Liste.</p>
+    <ul>
+        <li><strong>Szenario A (Liste):</strong> Du suchst einen Eintrag, der ganz am Ende steht. Wie viele Vergleiche macht der Computer? <br>
+        <em>Antwort: 1.000.000 Vergleiche.</em></li>
+        <li><strong>Szenario B (Baum):</strong> Wir nutzen eine Baumstruktur, die sich bei jedem Schritt verzweigt (links kleiner, rechts größer). Bei jedem Vergleich schließen wir die Hälfte der verbleibenden Daten aus.</li>
+    </ul>
+
+    <p><strong>Die Auswirkung:</strong><br>
+    Um unter 1.000.000 Einträgen zu suchen, braucht der Baum (im Idealfall) nur ca. <strong>20 Vergleiche</strong>. Das ist der Unterschied zwischen "sofort da" und "Wartezeit".</p>
+
+    <div style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 5px solid #fbbf24; margin-top:20px;">
+        <strong>Merke:</strong> Während bei der Liste jeder neue Eintrag die Suche linear verlängert, steigt der Aufwand beim Baum nur extrem langsam an (logarithmisch).
+    </div>
+
+    <button class="btn-nav" onclick="openModule(2)">Weiter zu Modul 2</button>
+</div>
+
+<div id="module-2" class="module">
+    <span class="back-link" onclick="showMenu()">← Zurück zur Übersicht</span>
+    <h2>2. Die Architektur (Kompositum)</h2>
+    
+    <p>Wir verwenden das Entwurfsmuster <strong>Kompositum</strong>. Es hilft uns, die Rekursion sauber zu programmieren, indem wir "leere" Enden als eigene Objekte behandeln.</p>
+    
+
+    <h3>Aufgabe 1: Wer ist zuständig?</h3>
+    <p>Ordne die folgenden Aufgaben den Klassen <code>Knoten</code> oder <code>Abschluss</code> zu.</p>
+    
+    <div class="uml-box">
+        <strong>Aussagen:</strong>
+        <ol>
+            <li>"Ich speichere das eigentliche Datenobjekt (z.B. ein Wort)."</li>
+            <li>"Ich repräsentiere das 'Nichts' am Ende eines Astes."</li>
+            <li>"Ich habe zwei Zeiger auf weitere Baumelemente."</li>
+            <li>"Wenn man bei mir etwas sucht, ist die Antwort immer 'Falsch/Nicht gefunden'."</li>
+        </ol>
+    </div>
+
+    <div class="hint-container">
+        <details>
+            <summary>Lösung prüfen</summary>
+            <ul>
+                <li>1. <strong>Knoten</strong> (enthält <code>Datenelement</code>)</li>
+                <li>2. <strong>Abschluss</strong> (ist das Ende)</li>
+                <li>3. <strong>Knoten</strong> (<code>leNext</code> und <code>riNext</code>)</li>
+                <li>4. <strong>Abschluss</strong> (Abbruchbedingung der Rekursion)</li>
+            </ul>
+        </details>
+    </div>
+
+    <h3>Aufgabe 2: Polymorphie verstehen</h3>
+    <p>Warum leiten wir beide Klassen von der abstrakten Klasse <code>Baumelement</code> ab?</p>
+    
+    <div class="hint-container">
+        <details>
+            <summary>Tipp 1</summary>
+            <p>Überlege, welchen Datentyp die Zeiger <code>leNext</code> und <code>riNext</code> im Knoten haben müssen.</p>
+        </details>
+        <details>
+            <summary>Lösung</summary>
+            <p>Ein Knoten weiß nicht, ob sein Nachfolger wieder ein Knoten oder ein Abschluss ist. Er kennt nur den Oberbegriff <code>Baumelement</code>. Dank der Vererbung kann er auf beiden Objekten dieselben Methoden aufrufen (z.B. <code>suchen()</code>), ohne mit <code>if(nachfolger == null)</code> prüfen zu müssen.</p>
+        </details>
+    </div>
+
+    <button class="btn-nav" onclick="openModule(3)">Weiter zu Modul 3</button>
+</div>
+
+<div id="module-3" class="module">
+    <span class="back-link" onclick="showMenu()">← Zurück zur Übersicht</span>
+    <h2>3. PRIMM: Einfügen (Aufbau)</h2>
+    <p>Bevor wir suchen können, müssen wir Daten einfügen. Hier verändert sich die Struktur des Baums.</p>
+
+    <h3><span style="color:#2563eb">P</span>redict (Vorhersage)</h3>
+    <p>Wir haben einen leeren Baum (nur ein Abschluss). Wir fügen "Maus" ein. Danach fügen wir "Elefant" ein.</p>
+    <p>Beschreibe, wie sich die Objekte verändern.</p>
+
+    <div class="hint-container">
+        <details>
+            <summary>Auflösung</summary>
+            <ol>
+                <li>Start: <code>wurzel</code> ist ein <strong>Abschluss</strong>.</li>
+                <li>"Maus": Der Abschluss ersetzt sich selbst durch einen <strong>Knoten("Maus")</strong>. Dieser hat zwei neue Abschlüsse.</li>
+                <li>"Elefant": Die Wurzel ("Maus") vergleicht. Elefant < Maus. Der Befehl geht an den <strong>linken</strong> Abschluss. Dieser ersetzt sich durch einen <strong>Knoten("Elefant")</strong>.</li>
+            </ol>
+        </details>
+    </div>
+
+    <h3><span style="color:#d946ef">M</span>odify & Make (Implementierung)</h3>
+    <p>Implementiere die Methode <code>einfuegen</code> in der Klasse <code>Knoten</code>. <br>
+    <strong>Achtung:</strong> Da wir die Struktur ändern, geben Methoden im Kompositum oft das (neue) Objekt zurück!</p>
+
+    <pre>
+<span class="kw">public</span> <span class="type">BaumElement</span> <span class="mtd">einfuegen</span>(<span class="type">DatenElement</span> d) {
+    <span class="kw">if</span> (<span class="kw">this</span>.inhalt.<span class="mtd">istGleich</span>(d)) {
+        <span class="cmt">// Element schon da -> keine Änderung</span>
+        <span class="kw">return this</span>; 
+    } 
+    <span class="kw">else if</span> (<span class="kw">this</span>.inhalt.<span class="mtd">istGroesserAls</span>(d)) {
+        <span class="cmt">// Nach links absteigen und Ergebnis speichern</span>
+        <span class="kw">this</span>.leNext = <span class="kw">this</span>.leNext.<span class="mtd">einfuegen</span>(d);
+    } 
+    <span class="kw">else</span> {
+        <span class="cmt">// AUFGABE: Was passiert rechts?</span>
+        <span class="cmt">// ???</span>
+    }
+    <span class="kw">return this</span>;
+}
+    </pre>
+
+    <div class="hint-container">
+        <details>
+            <summary>Hilfe Stufe 1 (Logik)</summary>
+            <p>Wenn das neue Element größer ist als der Inhalt, muss es in den rechten Teilbaum. Das Prinzip ist spiegelsymmetrisch zur linken Seite.</p>
+        </details>
+        <details>
+            <summary>Hilfe Stufe 2 (Syntax)</summary>
+            <p>Du musst den rechten Nachfolger (<code>riNext</code>) aufrufen und dessen Rückgabewert wieder in <code>riNext</code> speichern.</p>
+        </details>
+        <details>
+            <summary>Hilfe Stufe 3 (Code-Lösung)</summary>
+            <pre><span class="kw">this</span>.riNext = <span class="kw">this</span>.riNext.<span class="mtd">einfuegen</span>(d);</pre>
+        </details>
+    </div>
+
+    <h3>Die Abschluss-Klasse</h3>
+    <p>Was macht der Abschluss, wenn <code>einfuegen</code> aufgerufen wird?</p>
+    <div class="hint-container">
+        <details>
+            <summary>Lösung</summary>
+            <pre>
+<span class="kw">public</span> <span class="type">BaumElement</span> <span class="mtd">einfuegen</span>(<span class="type">DatenElement</span> d) {
+    <span class="cmt">// Aus Abschluss wird Knoten!</span>
+    <span class="kw">return new</span> <span class="type">Knoten</span>(d);
+}
+            </pre>
+        </details>
+    </div>
+
+    <button class="btn-nav" onclick="openModule(4)">Weiter zu Modul 4</button>
+</div>
+
+<div id="module-4" class="module">
+    <span class="back-link" onclick="showMenu()">← Zurück zur Übersicht</span>
+    <h2>4. PRIMM: Suchen</h2>
+    <p>Der Baum ist aufgebaut. Jetzt wollen wir prüfen, ob ein Wort enthalten ist.</p>
+
+    <h3><span style="color:#2563eb">P</span>redict (Analyse)</h3>
+    <p>Analysiere folgenden Code der Klasse <code>Knoten</code>. Was passiert Schritt für Schritt bei der Suche nach "Zebra", wenn die Wurzel "Maus" ist?</p>
+
+    <pre>
+<span class="kw">public boolean</span> <span class="mtd">suchen</span>(<span class="type">DatenElement</span> d) {
+    <span class="kw">if</span> (<span class="kw">this</span>.inhalt.<span class="mtd">istGleich</span>(d)) {
+        <span class="kw">return true</span>;
+    } 
+    <span class="kw">else if</span> (<span class="kw">this</span>.inhalt.<span class="mtd">istGroesserAls</span>(d)) {
+        <span class="kw">return</span> leNext.<span class="mtd">suchen</span>(d);
+    } 
+    <span class="kw">else</span> {
+        <span class="kw">return</span> riNext.<span class="mtd">suchen</span>(d);
+    }
+}
+    </pre>
+    
+    <div class="hint-container">
+        <details>
+            <summary>Lösung Predict</summary>
+            <ul>
+                <li>1. Vergleich: "Maus" ist ungleich "Zebra".</li>
+                <li>2. Richtung: "Maus" ist <strong>nicht</strong> größer als "Zebra" (Z kommt nach M).</li>
+                <li>3. Aktion: Der <code>else</code>-Zweig wird gewählt. Abstieg nach rechts (<code>riNext</code>).</li>
+            </ul>
+        </details>
+    </div>
+
+    <h3><span style="color:#b45309">I</span>nvestigate (Untersuchen)</h3>
+    <p>Wir haben in Modul 1 über Effizienz gesprochen. Wo genau im Code passiert die "Magie", die den Baum so schnell macht?</p>
+
+    <div class="hint-container">
+        <details>
+            <summary>Hilfe Stufe 1</summary>
+            <p>Schau dir die <code>if / else if / else</code> Struktur an. Wie viele Wege gehen wir?</p>
+        </details>
+        <details>
+            <summary>Lösung</summary>
+            <p>Indem wir uns für <strong>einen</strong> Weg (links ODER rechts) entscheiden, ignorieren wir den kompletten anderen Teilbaum. Wir müssen ihn gar nicht betrachten. Das spart die Rechenzeit.</p>
+        </details>
+    </div>
+
+    <button class="btn-nav" onclick="openModule(5)">Weiter zu Modul 5</button>
+</div>
+
+<div id="module-5" class="module">
+    <span class="back-link" onclick="showMenu()">← Zurück zur Übersicht</span>
+    <h2>5. Traversierung</h2>
+    <p>Manchmal wollen wir nicht suchen, sondern <strong>alles</strong> ausgeben (z.B. Wörterbuch drucken).</p>
+
+    <h3>Strategien</h3>
+    <p>Ein Baum ist nicht linear. Wir müssen eine Reihenfolge festlegen.
+    Gegeben ist ein Baum: Wurzel(B), Links(A), Rechts(C).</p>
+    
+    <p><strong>Aufgabe:</strong> Implementiere <code>ausgeben()</code> so, dass die Buchstaben alphabetisch (A, B, C) erscheinen.</p>
+
+    <pre>
+<span class="kw">public void</span> <span class="mtd">ausgeben</span>() {
+    <span class="cmt">// 1. ???</span>
+    <span class="type">System</span>.out.println(<span class="kw">this</span>.inhalt);
+    <span class="cmt">// 2. ???</span>
+}
+    </pre>
+
+    <div class="hint-container">
+        <details>
+            <summary>Hilfe Stufe 1</summary>
+            <p>Um A (links) vor B (Wurzel) zu drucken, müssen wir zuerst absteigen.</p>
+        </details>
+        <details>
+            <summary>Hilfe Stufe 2</summary>
+            <p>Reihenfolge: Erst Links, dann Ich, dann Rechts.</p>
+        </details>
+        <details>
+            <summary>Lösung (Inorder)</summary>
+            <pre>
+leNext.<span class="mtd">ausgeben</span>();
+<span class="type">System</span>.out.println(<span class="kw">this</span>.inhalt);
+riNext.<span class="mtd">ausgeben</span>();
+            </pre>
+            <p>Dies nennt man <strong>Inorder-Traversierung</strong>.</p>
+        </details>
+    </div>
+
+    <button class="btn-nav" onclick="openModule(6)">Weiter zu Modul 6</button>
+</div>
+
+<div id="module-6" class="module">
+    <span class="back-link" onclick="showMenu()">← Zurück zur Übersicht</span>
+    <h2>6. Projekt & Abschluss</h2>
+    
+    <p>Zum Abschluss eine Aufgabe für Profis. Wir wollen wissen, wie tief der Baum ist (wie lang der längste Ast ist).</p>
+
+    <h3>Aufgabe: Die Methode tiefe()</h3>
+    <p>Die <b>Tiefe</b> eines <b>Knotens</b> ist die länge des Pfades eines Knotens bis zur Wurzel. Passend dazu ist die <b>Höhe</b> eines <b>Baums</b> ist die Tiefe eines Knotens der am weitesten von der Wurzel entfernt ist (also die maximale Tiefe). 
+    Die Wurzel hat die <b>Tiefe 0</b>, ein leerer Baum hat die <b>Tiefe -1</b>.</p>
+
+    <p>Versuche, die Methode für die Klasse <code>Knoten</code> zu schreiben.</p>
+
+    <div class="hint-container">
+        <details>
+            <summary>Hilfe Stufe 1</summary>
+            <p>Du brauchst zwei Variablen für die Tiefe links und rechts.</p>
+        </details>
+        <details>
+            <summary>Hilfe Stufe 2</summary>
+            <p>Nutze <code>Math.max(a, b)</code> um den größeren Wert zu finden.</p>
+        </details>
+        <details>
+            <summary>Lösung</summary>
+            <pre>
+<span class="kw">public int</span> <span class="mtd">tiefe</span>() {
+    <span class="kw">int</span> tL = leNext.<span class="mtd">tiefe</span>();
+    <span class="kw">int</span> tR = riNext.<span class="mtd">tiefe</span>();
+    <span class="kw">return</span> 1 + <span class="type">Math</span>.<span class="mtd">max</span>(tL, tR);
+}
+            </pre>
+        </details>
+    </div>
+
+    <div style="margin-top:40px; border-top: 1px solid #ccc; padding-top:20px;">
+        <button class="btn-nav" onclick="showMenu()">Zurück zum Hauptmenü</button>
+    </div>
+</div>
+
+<script>
+    function openModule(id) {
+        // Menü ausblenden
+        document.getElementById('menu').style.display = 'none';
+        document.getElementById('main-header').style.display = 'none';
+        document.getElementById('download-area').style.display = 'none';
+        
+        // Alle Module ausblenden
+        document.querySelectorAll('.module').forEach(el => {
+            el.style.display = 'none';
+        });
+        
+        // Gewünschtes Modul anzeigen
+        const mod = document.getElementById('module-' + id);
+        if(mod) {
+            mod.style.display = 'block';
+            // Scroll Fix: Kurzer Timeout stellt sicher, dass das Rendering fertig ist
+            setTimeout(() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 10);
+        }
+    }
+
+    function showMenu() {
+        document.querySelectorAll('.module').forEach(el => el.style.display = 'none');
+        document.getElementById('menu').style.display = 'grid';
+        document.getElementById('main-header').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
