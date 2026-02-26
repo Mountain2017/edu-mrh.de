@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informatik Q12: Binärbaum - Lernbereich 2</title>
+    <link rel="stylesheet" href="https://embed.edu-mrh.de/style.css">
+    <link rel="stylesheet" href="https://embed.edu-mrh.de/include/online-ide-embedded.css">
+    <script type="module" src="https://embed.edu-mrh.de/include/online-ide-embedded.js"></script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="icon">🌳</span>
+                <span>Binärbaum</span>
+            </div>
+            <div class="nav-progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Kapitel</h3>
+            <button class="sidebar-toggle" id="sidebarToggle">✕</button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#home" class="menu-link active" data-section="home">🏠 Übersicht</a></li>
+            <li><a href="#kapitel1" class="menu-link" data-section="kapitel1">📊 Liste vs. Baum</a></li>
+            <li><a href="#kapitel2" class="menu-link" data-section="kapitel2">🏗️ Architektur</a></li>
+            <li><a href="#kapitel3" class="menu-link" data-section="kapitel3">➕ Einfügen</a></li>
+            <li><a href="#kapitel4" class="menu-link" data-section="kapitel4">🔍 Suchen</a></li>
+            <li><a href="#kapitel5" class="menu-link" data-section="kapitel5">🔄 Traversierung</a></li>
+            <li><a href="#kapitel6" class="menu-link" data-section="kapitel6">🎯 Projekt</a></li>
+        </ul>
+    </aside>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            
+            <!-- Home Section -->
+            <section id="home" class="content-section active">
+                <div class="hero">
+                    <h1 class="hero-title">Binärbaum</h1>
+                    <p class="hero-subtitle">Informatik Q12: Lernbereich 2</p>
+                    <p class="hero-description">Eine effiziente Datenstruktur für schnelles Suchen und Sortieren</p>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-icon">📊</div>
+                        <h3>1. Liste vs. Baum</h3>
+                        <p>Warum wir eine neue Struktur brauchen: Ein Gedankenexperiment zur Effizienz.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">🏗️</div>
+                        <h3>2. Die Architektur</h3>
+                        <p>Aufgaben zur Modellierung: Wer darf was? Trennung von Struktur und Daten.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">➕</div>
+                        <h3>3. PRIMM: Einfügen</h3>
+                        <p>Wir bauen den Baum auf. Analyse des Algorithmus und Implementierung.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">🔍</div>
+                        <h3>4. PRIMM: Suchen</h3>
+                        <p>Den Vorteil nutzen: Wie finden wir Daten effizient wieder?</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">🔄</div>
+                        <h3>5. Traversierung</h3>
+                        <p>Alle Daten besuchen: Strategien für die Ausgabe (Sortierung).</p>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">🎯</div>
+                        <h3>6. Projekt & Check</h3>
+                        <p>Vertiefung und Strukturanalyse.</p>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-primary" onclick="navigateToSection('kapitel1')">Los geht's! →</button>
+                </div>
+            </section>
+
+            <!-- Kapitel 1: Liste vs. Baum -->
+            <section id="kapitel1" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Kapitel 1</span>
+                    <h2>Konzept: Grenzen der Liste</h2>
+                </div>
+
+                <div class="concept-box">
+                    <h3>📚 Ausgangssituation</h3>
+                    <p>In Lernbereich 2 haben wir Listen implementiert. Sie sind dynamisch, haben aber eine Schwäche.</p>
+                </div>
+
+                <div class="example-box">
+                    <h3>💡 Gedankenexperiment</h3>
+                    <div class="example-content">
+                        <p><strong>Stell dir vor:</strong> Eine Datenbank speichert 1.000.000 Einträge in einer Liste.</p>
+                        
+                        <div class="key-points">
+                            <div class="key-point">
+                                <div class="number">1</div>
+                                <div>
+                                    <strong>Liste (linear):</strong>
+                                    <p>Um ein Element zu finden, muss ich im schlimmsten Fall alle 1.000.000 Einträge durchgehen.</p>
+                                </div>
+                            </div>
+
+                            <div class="key-point">
+                                <div class="number">2</div>
+                                <div>
+                                    <strong>Binärbaum (hierarchisch):</strong>
+                                    <p>Bei jedem Schritt halbiere ich die Möglichkeiten. Nach 20 Schritten bin ich durch (2²⁰ ≈ 1.000.000).</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="highlight mt-2">
+                            <strong>Die Auswirkung:</strong><br>
+                            Um unter 1.000.000 Einträgen zu suchen, braucht der Baum (im Idealfall) nur ca. 20 Vergleiche. Das ist der Unterschied zwischen "sofort da" und "Wartezeit".
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comparison-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Datenstruktur</th>
+                                <th>Anzahl Vergleiche (1 Mio. Einträge)</th>
+                                <th>Komplexität</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Liste</strong></td>
+                                <td>bis zu 1.000.000</td>
+                                <td>O(n)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Binärbaum</strong></td>
+                                <td>ca. 20</td>
+                                <td>O(log n)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('home')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('kapitel2')">Weiter →</button>
+                </div>
+            </section>
+
+            <!-- Kapitel 2: Architektur -->
+            <section id="kapitel2" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Kapitel 2</span>
+                    <h2>Die Architektur (Kompositum)</h2>
+                </div>
+
+                <div class="info-box">
+                    <h3>🏗️ Das Entwurfsmuster Kompositum</h3>
+                    <p>Wir verwenden das Entwurfsmuster <strong>Kompositum</strong>. Es hilft uns, die Rekursion sauber zu programmieren, indem wir "leere" Enden als eigene Objekte behandeln.</p>
+                </div>
+
+                <div class="definition-grid">
+                    <div class="definition-card">
+                        <div class="def-icon">📦</div>
+                        <h4>Knoten</h4>
+                        <p>Enthält Daten und Verweise auf zwei Nachfolger (links und rechts)</p>
+                        <ul>
+                            <li>Speichert ein DatenElement</li>
+                            <li>Hat zwei Zeiger: leNext, riNext</li>
+                            <li>Implementiert Logik für Einfügen/Suchen</li>
+                        </ul>
+                    </div>
+
+                    <div class="definition-card">
+                        <div class="def-icon">🔚</div>
+                        <h4>Abschluss</h4>
+                        <p>Repräsentiert das Ende eines Astes (statt null)</p>
+                        <ul>
+                            <li>Enthält keine Daten</li>
+                            <li>Markiert leere Stellen</li>
+                            <li>Vereinfacht Rekursion</li>
+                        </ul>
+                    </div>
+
+                    <div class="definition-card">
+                        <div class="def-icon">🌲</div>
+                        <h4>BaumElement</h4>
+                        <p>Abstrakte Oberklasse für Knoten und Abschluss</p>
+                        <ul>
+                            <li>Definiert gemeinsame Schnittstelle</li>
+                            <li>Ermöglicht Polymorphie</li>
+                            <li>Basis für alle Operationen</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>📝 Aufgabe 1: Wer ist zuständig?</h4>
+                    <p>Ordne die folgenden Aufgaben den Klassen <strong>Knoten</strong> oder <strong>Abschluss</strong> zu:</p>
+                    <ol>
+                        <li>Ein neues Element einfügen</li>
+                        <li>Prüfen, ob ein Element vorhanden ist</li>
+                        <li>Das Ende eines Astes markieren</li>
+                        <li>Daten speichern</li>
+                        <li>Einen neuen Knoten erstellen, wenn eingefügt wird</li>
+                    </ol>
+                </div>
+
+                <div class="solution-box hidden" id="solution1">
+                    <h4>✅ Lösung Aufgabe 1</h4>
+                    <ul>
+                        <li><strong>Knoten:</strong> 1 (Einfügen), 2 (Suchen), 4 (Daten speichern)</li>
+                        <li><strong>Abschluss:</strong> 3 (Ende markieren), 5 (Neuen Knoten erstellen)</li>
+                    </ul>
+                    <div class="highlight">
+                        <strong>Wichtig:</strong> Der Abschluss erstellt beim Einfügen einen neuen Knoten und gibt diesen zurück. Der Knoten entscheidet, ob er nach links oder rechts weiterleitet.
+                    </div>
+                </div>
+
+                <button class="btn btn-secondary mb-3" onclick="toggleSolution('solution1')">💡 Lösung anzeigen</button>
+
+                <div class="task-box">
+                    <h4>📝 Aufgabe 2: Polymorphie verstehen</h4>
+                    <p>Warum leiten wir beide Klassen von der abstrakten Klasse <code>BaumElement</code> ab?</p>
+                    <p>Überlege, welchen Datentyp die Zeiger <code>leNext</code> und <code>riNext</code> im Knoten haben müssen.</p>
+                </div>
+
+                <div class="solution-box hidden" id="solution2">
+                    <h4>✅ Lösung Aufgabe 2</h4>
+                    <p>Ein Knoten weiß nicht, ob sein Nachfolger wieder ein Knoten oder ein Abschluss ist. Er kennt nur den Oberbegriff <strong>BaumElement</strong>.</p>
+                    <p>Dank der Vererbung kann er auf beiden Objekten dieselben Methoden aufrufen (z.B. <code>suchen()</code>), ohne mit <code>if(nachfolger == null)</code> prüfen zu müssen.</p>
+                    <div class="highlight">
+                        <strong>Vorteil:</strong> Sauberer Code ohne Null-Checks. Die Polymorphie sorgt dafür, dass automatisch die richtige Methode aufgerufen wird.
+                    </div>
+                </div>
+
+                <button class="btn btn-secondary mb-3" onclick="toggleSolution('solution2')">💡 Lösung anzeigen</button>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('kapitel1')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('kapitel3')">Weiter →</button>
+                </div>
+            </section>
+
+            <!-- Kapitel 3: Einfügen -->
+            <section id="kapitel3" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Kapitel 3</span>
+                    <h2>PRIMM: Einfügen (Aufbau)</h2>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🎯 Lernziel</h3>
+                    <p>Bevor wir suchen können, müssen wir Daten einfügen. Hier verändert sich die Struktur des Baums.</p>
+                </div>
+
+                <div class="example-box">
+                    <h3>🔮 Predict (Vorhersage)</h3>
+                    <div class="example-content">
+                        <p><strong>Szenario:</strong> Wir haben einen leeren Baum (nur ein Abschluss). Wir fügen "Maus" ein. Danach fügen wir "Elefant" ein.</p>
+                        
+                        <div class="task-box">
+                            <h4>📝 Aufgabe: Beschreibe, wie sich die Objekte verändern</h4>
+                            <ol>
+                                <li>Was passiert beim ersten Einfügen von "Maus"?</li>
+                                <li>Wo wird "Elefant" eingefügt (links oder rechts von "Maus")?</li>
+                                <li>Welche Objekte werden neu erstellt?</li>
+                            </ol>
+                        </div>
+
+                        <div class="solution-box hidden" id="solution3">
+                            <h4>✅ Lösung</h4>
+                            <ol>
+                                <li><strong>"Maus" einfügen:</strong> Der Abschluss erstellt einen neuen Knoten mit "Maus". Dieser Knoten hat links und rechts je einen Abschluss.</li>
+                                <li><strong>"Elefant" einfügen:</strong> "Elefant" < "Maus" (alphabetisch), also wird "Elefant" links eingefügt.</li>
+                                <li><strong>Neue Objekte:</strong> Ein Knoten für "Maus", ein Knoten für "Elefant", drei Abschluss-Objekte.</li>
+                            </ol>
+                        </div>
+
+                        <button class="btn btn-secondary mt-2" onclick="toggleSolution('solution3')">💡 Lösung anzeigen</button>
+                    </div>
+                </div>
+
+                <div class="ide-container">
+                    <h3 class="ide-title">💻 Modify & Make (Implementierung)</h3>
+                    <p class="mb-2">Implementiere die Methode <code>einfuegen</code> in der Klasse <strong>Knoten</strong>.</p>
+                    
+                    <div class="warning-box mb-3">
+                        <h4>⚠️ Wichtig</h4>
+                        <p>Da wir die Struktur ändern, geben Methoden im Kompositum oft das (neue) Objekt zurück!</p>
+                    </div>
+
+                    <div class="java-online" 
+                         style="width: 100%; height: 600px;" 
+                         data-java-online="{ 'id': 'binbaum-workspace', 'speed': 1000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true }">
+                        
+                        <script type="text/plain" title="DatenElement.java">
+public interface DatenElement {
+   public boolean istGroesserAls(DatenElement d);
+   public boolean istGleich(DatenElement d);
+   public String gibSchluesselwert();
+}
+                        </script>
+
+                        <script type="text/plain" title="Woerterbucheintrag.java">
+public class Woerterbucheintrag implements DatenElement {
+   
+   private String wort;
+   private String uebersetzung;
+
+   public Woerterbucheintrag(String wort, String uebersetzung) {
+      this.wort = wort;
+      this.uebersetzung = uebersetzung;
+   }
+   
+   public boolean istGroesserAls(DatenElement d) {
+      return wort.compareTo(d.gibSchluesselwert()) > 0;
+   }
+
+   public boolean istGleich(DatenElement d) {
+      return wort.equals(d.gibSchluesselwert());
+   }
+
+   public String gibSchluesselwert() {
+      return wort;
+   }
+   
+   public String gibUebersetzung() {
+      return uebersetzung;
+   }
+}
+                        </script>
+
+                        <script type="text/plain" title="BaumElement.java">
+public abstract class BaumElement {
+   public abstract BaumElement einfuegen(DatenElement d);
+   public abstract boolean suchen(DatenElement d);
+   public abstract void ausgeben();
+}
+                        </script>
+
+                        <script type="text/plain" title="Abschluss.java">
+public class Abschluss extends BaumElement {
+   
+   public Abschluss(){
+   }
+   
+   public BaumElement einfuegen(DatenElement d) {
+      // TODO: Erstelle einen neuen Knoten mit dem DatenElement
+      // und gib ihn zurück
+      return new Knoten(d);
+   }
+   
+   public boolean suchen(DatenElement d) {
+      return false; // Ende erreicht, nicht gefunden
+   }
+   
+   public void ausgeben() {
+      // Nichts ausgeben
+   }
+}
+                        </script>
+
+                        <script type="text/plain" title="Knoten.java">
+public class Knoten extends BaumElement {
+   private BaumElement leNext;
+   private BaumElement riNext;
+   private DatenElement inhalt;
+
+   public Knoten(DatenElement inhalt){
+      this.leNext = new Abschluss();
+      this.riNext = new Abschluss();
+      this.inhalt = inhalt;
+   }
+   
+   public BaumElement einfuegen(DatenElement d) {
+      // TODO: Implementiere die Einfüge-Logik
+      // Wenn d kleiner als inhalt: links einfügen
+      if (d.istGroesserAls(inhalt)) {
+         // Größer: rechts einfügen
+         riNext = riNext.einfuegen(d);
+      } else {
+         // Kleiner oder gleich: links einfügen
+         leNext = leNext.einfuegen(d);
+      }
+      return this;
+   }
+   
+   public boolean suchen(DatenElement d) {
+      if (inhalt.istGleich(d)) {
+         return true;
+      } else if (d.istGroesserAls(inhalt)) {
+         return riNext.suchen(d);
+      } else {
+         return leNext.suchen(d);
+      }
+   }
+   
+   public void ausgeben() {
+      leNext.ausgeben();
+      System.out.println(inhalt.gibSchluesselwert());
+      riNext.ausgeben();
+   }
+}
+                        </script>
+
+                        <script type="text/plain" title="Binbaum.java">
+public class Binbaum {
+   
+   private BaumElement wurzel;
+
+   public Binbaum(){
+      wurzel = new Abschluss();
+   }
+   
+   public void einfuegen(DatenElement d) {
+      wurzel = wurzel.einfuegen(d);
+   }
+   
+   public boolean suchen(DatenElement d) {
+      return wurzel.suchen(d);
+   }
+   
+   public void ausgeben() {
+      wurzel.ausgeben();
+   }
+}
+                        </script>
+
+                        <script type="text/plain" title="Main.java">
+public class Main {
+   public static void main(String[] args) {
+      // Test des Binärbaums
+      Binbaum baum = new Binbaum();
+      
+      // Wörter einfügen
+      baum.einfuegen(new Woerterbucheintrag("Maus", "mouse"));
+      baum.einfuegen(new Woerterbucheintrag("Elefant", "elephant"));
+      baum.einfuegen(new Woerterbucheintrag("Zebra", "zebra"));
+      baum.einfuegen(new Woerterbucheintrag("Affe", "monkey"));
+      
+      // Ausgeben (sollte alphabetisch sortiert sein)
+      System.out.println("Alle Einträge:");
+      baum.ausgeben();
+      
+      // Suchen testen
+      System.out.println("\nSuche nach 'Maus': " + 
+         baum.suchen(new Woerterbucheintrag("Maus", "")));
+      System.out.println("Suche nach 'Hund': " + 
+         baum.suchen(new Woerterbucheintrag("Hund", "")));
+   }
+}
+                        </script>
+                    </div>
+                </div>
+
+                <div class="info-box mt-3">
+                    <h3>💡 Hinweis zur rechten Seite</h3>
+                    <p>Wenn das neue Element größer ist als der Inhalt, muss es in den rechten Teilbaum. Das Prinzip ist spiegelsymmetrisch zur linken Seite.</p>
+                    <p>Du musst den rechten Nachfolger (<code>riNext</code>) aufrufen und dessen Rückgabewert wieder in <code>riNext</code> speichern.</p>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('kapitel2')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('kapitel4')">Weiter →</button>
+                </div>
+            </section>
+
+            <!-- Kapitel 4: Suchen -->
+            <section id="kapitel4" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Kapitel 4</span>
+                    <h2>PRIMM: Suchen</h2>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🎯 Lernziel</h3>
+                    <p>Der Baum ist aufgebaut. Jetzt wollen wir prüfen, ob ein Wort enthalten ist.</p>
+                </div>
+
+                <div class="example-box">
+                    <h3>🔮 Predict (Analyse)</h3>
+                    <div class="example-content">
+                        <p>Analysiere folgenden Code der Klasse <strong>Knoten</strong>. Was passiert Schritt für Schritt bei der Suche nach "Zebra", wenn die Wurzel "Maus" ist?</p>
+                        
+                        <pre><code>public boolean suchen(DatenElement d) {
+   if (inhalt.istGleich(d)) {
+      return true;
+   } else if (d.istGroesserAls(inhalt)) {
+      return riNext.suchen(d);
+   } else {
+      return leNext.suchen(d);
+   }
+}</code></pre>
+
+                        <div class="task-box mt-2">
+                            <h4>📝 Aufgabe: Verfolge den Suchpfad</h4>
+                            <p>Gegeben ist ein Baum mit: Wurzel(Maus), Links(Elefant), Rechts(Zebra)</p>
+                            <ol>
+                                <li>Welche Vergleiche werden durchgeführt?</li>
+                                <li>In welche Richtung geht die Suche?</li>
+                                <li>Wie viele Schritte sind nötig?</li>
+                            </ol>
+                        </div>
+
+                        <div class="solution-box hidden" id="solution4">
+                            <h4>✅ Lösung</h4>
+                            <ol>
+                                <li><strong>Schritt 1:</strong> Vergleich mit "Maus" → "Zebra" > "Maus" → gehe nach rechts</li>
+                                <li><strong>Schritt 2:</strong> Vergleich mit "Zebra" → Treffer! → return true</li>
+                                <li><strong>Anzahl Schritte:</strong> 2 Vergleiche</li>
+                            </ol>
+                            <div class="highlight">
+                                Bei 3 Elementen brauchen wir maximal 2 Vergleiche. Bei 1.000.000 Elementen maximal ca. 20!
+                            </div>
+                        </div>
+
+                        <button class="btn btn-secondary mt-2" onclick="toggleSolution('solution4')">💡 Lösung anzeigen</button>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h3>🔬 Investigate (Untersuchen)</h3>
+                    <div class="example-content">
+                        <p>Wir haben in Modul 1 über Effizienz gesprochen. Wo genau im Code passiert die "Magie", die den Baum so schnell macht?</p>
+                        
+                        <p>Schau dir die <code>if / else if / else</code> Struktur an. Wie viele Wege gehen wir?</p>
+
+                        <div class="highlight mt-2">
+                            <strong>Die Antwort:</strong><br>
+                            Indem wir uns für einen Weg (links ODER rechts) entscheiden, ignorieren wir den kompletten anderen Teilbaum. Wir müssen ihn gar nicht betrachten. Das spart die Rechenzeit.
+                        </div>
+
+                        <div class="key-points mt-3">
+                            <div class="key-point">
+                                <div class="number">1</div>
+                                <div>
+                                    <strong>Vergleich</strong>
+                                    <p>Ist das gesuchte Element gleich dem aktuellen?</p>
+                                </div>
+                            </div>
+
+                            <div class="key-point">
+                                <div class="number">2</div>
+                                <div>
+                                    <strong>Entscheidung</strong>
+                                    <p>Größer → rechts, kleiner → links</p>
+                                </div>
+                            </div>
+
+                            <div class="key-point">
+                                <div class="number">3</div>
+                                <div>
+                                    <strong>Halbierung</strong>
+                                    <p>Die Hälfte der Möglichkeiten wird eliminiert</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="best-practices">
+                    <h3>✅ Effizienz-Vergleich</h3>
+                    <div class="practice">
+                        <div class="icon">📊</div>
+                        <div>
+                            <strong>Liste (lineare Suche)</strong>
+                            <p>Jedes Element wird nacheinander geprüft. Bei n Elementen: n Vergleiche im schlimmsten Fall.</p>
+                        </div>
+                    </div>
+
+                    <div class="practice">
+                        <div class="icon">🌳</div>
+                        <div>
+                            <strong>Binärbaum (binäre Suche)</strong>
+                            <p>Bei jedem Schritt wird die Hälfte eliminiert. Bei n Elementen: log₂(n) Vergleiche im schlimmsten Fall.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('kapitel3')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('kapitel5')">Weiter →</button>
+                </div>
+            </section>
+
+            <!-- Kapitel 5: Traversierung -->
+            <section id="kapitel5" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">Kapitel 5</span>
+                    <h2>Traversierung</h2>
+                </div>
+
+                <div class="concept-box">
+                    <h3>🎯 Lernziel</h3>
+                    <p>Manchmal wollen wir nicht suchen, sondern alles ausgeben (z.B. Wörterbuch drucken).</p>
+                </div>
+
+                <div class="strategy-grid">
+                    <h3>🔄 Strategien</h3>
+                    <p>Ein Baum ist nicht linear. Wir müssen eine Reihenfolge festlegen.</p>
+
+                    <div class="strategy-card">
+                        <h4>1. Preorder (Vorher)</h4>
+                        <p><strong>Reihenfolge:</strong> Ich → Links → Rechts</p>
+                        <ul>
+                            <li>Zuerst wird die Wurzel besucht</li>
+                            <li>Dann der linke Teilbaum</li>
+                            <li>Zuletzt der rechte Teilbaum</li>
+                        </ul>
+                        <div class="highlight">
+                            <strong>Beispiel:</strong> Baum(B, A, C) → Ausgabe: B, A, C
+                        </div>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h4>2. Inorder (Zwischen)</h4>
+                        <p><strong>Reihenfolge:</strong> Links → Ich → Rechts</p>
+                        <ul>
+                            <li>Zuerst wird der linke Teilbaum besucht</li>
+                            <li>Dann die Wurzel</li>
+                            <li>Zuletzt der rechte Teilbaum</li>
+                        </ul>
+                        <div class="highlight">
+                            <strong>Beispiel:</strong> Baum(B, A, C) → Ausgabe: A, B, C (sortiert!)
+                        </div>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h4>3. Postorder (Nachher)</h4>
+                        <p><strong>Reihenfolge:</strong> Links → Rechts → Ich</p>
+                        <ul>
+                            <li>Zuerst wird der linke Teilbaum besucht</li>
+                            <li>Dann der rechte Teilbaum</li>
+                            <li>Zuletzt die Wurzel</li>
+                        </ul>
+                        <div class="highlight">
+                            <strong>Beispiel:</strong> Baum(B, A, C) → Ausgabe: A, C, B
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-box">
+                    <h4>📝 Aufgabe: Implementiere ausgeben()</h4>
+                    <p>Gegeben ist ein Baum: Wurzel(B), Links(A), Rechts(C).</p>
+                    <p><strong>Ziel:</strong> Die Buchstaben sollen alphabetisch (A, B, C) erscheinen.</p>
+                    
+                    <ol>
+                        <li>Welche Traversierungsstrategie brauchst du?</li>
+                        <li>In welcher Reihenfolge rufst du die Methoden auf?</li>
+                        <li>Implementiere die Methode <code>ausgeben()</code> in der Klasse Knoten</li>
+                    </ol>
+                </div>
+
+                <div class="solution-box hidden" id="solution5">
+                    <h4>✅ Lösung</h4>
+                    <p><strong>Strategie:</strong> Inorder-Traversierung (Links → Ich → Rechts)</p>
+                    
+                    <pre><code>public void ausgeben() {
+   leNext.ausgeben();              // 1. Links
+   System.out.println(inhalt.gibSchluesselwert()); // 2. Ich
+   riNext.ausgeben();              // 3. Rechts
+}</code></pre>
+
+                    <div class="highlight">
+                        <strong>Warum funktioniert das?</strong><br>
+                        Um A (links) vor B (Wurzel) zu drucken, müssen wir zuerst absteigen. Die Rekursion sorgt dafür, dass wir erst ganz unten links anfangen und uns dann hocharbeiten.
+                    </div>
+                </div>
+
+                <button class="btn btn-secondary mb-3" onclick="toggleSolution('solution5')">💡 Lösung anzeigen</button>
+
+                <div class="info-box">
+                    <h3>💡 Wichtiger Hinweis</h3>
+                    <p>Die Inorder-Traversierung eines Binärbaums liefert automatisch eine sortierte Ausgabe! Das ist einer der großen Vorteile dieser Datenstruktur.</p>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button class="btn btn-outline" onclick="navigateToSection('kapitel4')">← Zurück</button>
+                    <button class="btn btn-primary" onclick="navigateToSection('kapitel6')">Weiter →</button>
+                </div>
+            </section>
+
+            <!-- Kapitel 6: Projekt -->
+<section id="kapitel6" class="content-section">
+    <div class="chapter-header">
+        <span class="chapter-number">Kapitel 6</span>
+        <h2>Projekt & Abschluss</h2>
+    </div>
+
+    <div class="concept-box">
+        <h3>🎯 Herausforderung für Profis</h3>
+        <p>Zum Abschluss eine Aufgabe für Profis. Wir wollen wissen, wie tief der Baum ist (wie lang der längste Ast ist).</p>
+    </div>
+
+    <div class="terminology-box">
+        <h3>📚 Definitionen</h3>
+        
+        <div class="term">
+            <strong>Tiefe eines Knotens</strong>
+            <p>Die Länge des Pfades von diesem Knoten bis zur Wurzel. Die Wurzel hat die Tiefe 0.</p>
+        </div>
+
+        <div class="term">
+            <strong>Höhe eines Baums</strong>
+            <p>Die Tiefe des Knotens, der am weitesten von der Wurzel entfernt ist (also die maximale Tiefe). Ein leerer Baum hat die Höhe -1.</p>
+        </div>
+    </div>
+
+    <div class="task-box">
+        <h4>📝 Aufgabe: Die Methode tiefe()</h4>
+        <p>Implementiere eine Methode <code>public int tiefe()</code> für die Klasse <strong>Knoten</strong>.</p>
+        
+        <p><strong>Anforderungen:</strong></p>
+        <ul>
+            <li>Die Wurzel hat die Tiefe 0</li>
+            <li>Ein leerer Baum (Abschluss) hat die Tiefe -1</li>
+            <li>Die Tiefe eines Knotens ist 1 + die maximale Tiefe seiner Kinder</li>
+        </ul>
+
+        <p class="mt-2"><strong>Hinweise:</strong></p>
+        <ol>
+            <li>Du brauchst zwei Variablen für die Tiefe links und rechts</li>
+            <li>Nutze <code>Math.max(a, b)</code> um den größeren Wert zu finden</li>
+            <li>Vergiss nicht, die Methode auch in der Klasse Abschluss zu implementieren</li>
+        </ol>
+    </div>
+
+    <div class="ide-container">
+        <h3 class="ide-title">💻 Implementiere die Tiefe-Methode</h3>
+        <p class="mb-2">Erweitere die Klassen <strong>BaumElement</strong>, <strong>Knoten</strong> und <strong>Abschluss</strong> um die Methode <code>tiefe()</code>.</p>
+        
+        <div class="java-online" 
+             style="width: 100%; height: 600px;" 
+             data-java-online="{ 'id': 'binbaum-tiefe', 'speed': 1000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true }">
+            
+            <script type="text/plain" title="DatenElement.java">
+public interface DatenElement {
+   public boolean istGroesserAls(DatenElement d);
+   public boolean istGleich(DatenElement d);
+   public String gibSchluesselwert();
+}
+            </script>
+
+            <script type="text/plain" title="Woerterbucheintrag.java">
+public class Woerterbucheintrag implements DatenElement {
+   
+   private String wort;
+   private String uebersetzung;
+
+   public Woerterbucheintrag(String wort, String uebersetzung) {
+      this.wort = wort;
+      this.uebersetzung = uebersetzung;
+   }
+   
+   public boolean istGroesserAls(DatenElement d) {
+      return wort.compareTo(d.gibSchluesselwert()) > 0;
+   }
+
+   public boolean istGleich(DatenElement d) {
+      return wort.equals(d.gibSchluesselwert());
+   }
+
+   public String gibSchluesselwert() {
+      return wort;
+   }
+   
+   public String gibUebersetzung() {
+      return uebersetzung;
+   }
+}
+            </script>
+
+            <script type="text/plain" title="BaumElement.java">
+public abstract class BaumElement {
+   public abstract BaumElement einfuegen(DatenElement d);
+   public abstract boolean suchen(DatenElement d);
+   public abstract void ausgeben();
+   
+   // TODO: Füge hier die abstrakte Methode tiefe() hinzu
+   
+}
+            </script>
+
+            <script type="text/plain" title="Abschluss.java">
+public class Abschluss extends BaumElement {
+   
+   public Abschluss(){
+   }
+   
+   public BaumElement einfuegen(DatenElement d) {
+      return new Knoten(d);
+   }
+   
+   public boolean suchen(DatenElement d) {
+      return false;
+   }
+   
+   public void ausgeben() {
+      // Nichts ausgeben
+   }
+   
+   // TODO: Implementiere tiefe() für den Abschluss
+   // Ein leerer Baum hat die Tiefe -1
+   
+}
+            </script>
+
+            <script type="text/plain" title="Knoten.java">
+public class Knoten extends BaumElement {
+   private BaumElement leNext;
+   private BaumElement riNext;
+   private DatenElement inhalt;
+
+   public Knoten(DatenElement inhalt){
+      this.leNext = new Abschluss();
+      this.riNext = new Abschluss();
+      this.inhalt = inhalt;
+   }
+   
+   public BaumElement einfuegen(DatenElement d) {
+      if (d.istGroesserAls(inhalt)) {
+         riNext = riNext.einfuegen(d);
+      } else {
+         leNext = leNext.einfuegen(d);
+      }
+      return this;
+   }
+   
+   public boolean suchen(DatenElement d) {
+      if (inhalt.istGleich(d)) {
+         return true;
+      } else if (d.istGroesserAls(inhalt)) {
+         return riNext.suchen(d);
+      } else {
+         return leNext.suchen(d);
+      }
+   }
+   
+   public void ausgeben() {
+      leNext.ausgeben();
+      System.out.println(inhalt.gibSchluesselwert());
+      riNext.ausgeben();
+   }
+   
+   // TODO: Implementiere tiefe() für den Knoten
+   // Hinweis: 
+   // 1. Hole die Tiefe des linken Teilbaums
+   // 2. Hole die Tiefe des rechten Teilbaums
+   // 3. Gib 1 + das Maximum der beiden Tiefen zurück
+   
+}
+            </script>
+
+            <script type="text/plain" title="Binbaum.java">
+public class Binbaum {
+   
+   private BaumElement wurzel;
+
+   public Binbaum(){
+      wurzel = new Abschluss();
+   }
+   
+   public void einfuegen(DatenElement d) {
+      wurzel = wurzel.einfuegen(d);
+   }
+   
+   public boolean suchen(DatenElement d) {
+      return wurzel.suchen(d);
+   }
+   
+   public void ausgeben() {
+      wurzel.ausgeben();
+   }
+   
+   public int tiefe() {
+      return wurzel.tiefe();
+   }
+}
+            </script>
+
+            <script type="text/plain" title="Main.java">
+public class Main {
+   public static void main(String[] args) {
+      // Test des Binärbaums mit Tiefe
+      Binbaum baum = new Binbaum();
+      
+      System.out.println("Leerer Baum - Tiefe: " + baum.tiefe());
+      
+      // Wörter einfügen
+      baum.einfuegen(new Woerterbucheintrag("Maus", "mouse"));
+      System.out.println("Nach 'Maus' - Tiefe: " + baum.tiefe());
+      
+      baum.einfuegen(new Woerterbucheintrag("Elefant", "elephant"));
+      System.out.println("Nach 'Elefant' - Tiefe: " + baum.tiefe());
+      
+      baum.einfuegen(new Woerterbucheintrag("Zebra", "zebra"));
+      System.out.println("Nach 'Zebra' - Tiefe: " + baum.tiefe());
+      
+      baum.einfuegen(new Woerterbucheintrag("Affe", "monkey"));
+      System.out.println("Nach 'Affe' - Tiefe: " + baum.tiefe());
+      
+      baum.einfuegen(new Woerterbucheintrag("Bär", "bear"));
+      System.out.println("Nach 'Bär' - Tiefe: " + baum.tiefe());
+      
+      // Alle Einträge ausgeben
+      System.out.println("\nAlle Einträge (sortiert):");
+      baum.ausgeben();
+      
+      System.out.println("\nFinale Tiefe des Baums: " + baum.tiefe());
+   }
+}
+            </script>
+        </div>
+    </div>
+
+    <div class="solution-box hidden" id="solution6">
+        <h4>✅ Lösung</h4>
+        
+        <p><strong>In der Klasse BaumElement (abstrakt):</strong></p>
+        <pre><code>public abstract int tiefe();</code></pre>
+
+        <p class="mt-2"><strong>In der Klasse Abschluss:</strong></p>
+        <pre><code>public int tiefe() {
+   return -1; // Leerer Baum
+}</code></pre>
+
+        <p class="mt-2"><strong>In der Klasse Knoten:</strong></p>
+        <pre><code>public int tiefe() {
+   int tiefeLinks = leNext.tiefe();
+   int tiefeRechts = riNext.tiefe();
+   return 1 + Math.max(tiefeLinks, tiefeRechts);
+}</code></pre>
+
+        <div class="highlight mt-2">
+            <strong>Erklärung:</strong><br>
+            Die Tiefe eines Knotens ist 1 (für sich selbst) plus die maximale Tiefe seiner Kinder. Die Rekursion endet beim Abschluss, der -1 zurückgibt. So ergibt sich für einen Knoten ohne Kinder: 1 + max(-1, -1) = 0.
+        </div>
+    </div>
+
+    <button class="btn btn-secondary mb-3" onclick="toggleSolution('solution6')">💡 Lösung anzeigen</button>
+
+    <div class="exercise-grid">
+        <div class="exercise-card">
+            <h4>🚀 Zusatzaufgabe 1</h4>
+            <p>Implementiere eine Methode <code>anzahlKnoten()</code>, die zählt, wie viele Knoten im Baum sind.</p>
+            <ul>
+                <li>Abschluss gibt 0 zurück</li>
+                <li>Knoten gibt 1 + Anzahl links + Anzahl rechts zurück</li>
+            </ul>
+        </div>
+
+        <div class="exercise-card">
+            <h4>🚀 Zusatzaufgabe 2</h4>
+            <p>Implementiere eine Methode <code>istBalanciert()</code>, die prüft, ob der Baum ausgeglichen ist (Höhenunterschied der Teilbäume ≤ 1).</p>
+            <ul>
+                <li>Nutze die tiefe()-Methode</li>
+                <li>Vergleiche linke und rechte Tiefe</li>
+            </ul>
+        </div>
+
+        <div class="exercise-card">
+            <h4>🚀 Zusatzaufgabe 3</h4>
+            <p>Erweitere den Baum um eine Methode <code>loeschen(DatenElement d)</code>, die ein Element aus dem Baum entfernt.</p>
+            <ul>
+                <li>Drei Fälle: Keine Kinder, ein Kind, zwei Kinder</li>
+                <li>Bei zwei Kindern: Ersetze durch kleinsten Wert aus rechtem Teilbaum</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="best-practices">
+        <h3>✅ Zusammenfassung: Was haben wir gelernt?</h3>
+        
+        <div class="practice">
+            <div class="icon">📊</div>
+            <div>
+                <strong>Effizienz</strong>
+                <p>Binärbäume ermöglichen logarithmische Suchzeit (O(log n)) statt linearer Zeit (O(n)).</p>
+            </div>
+        </div>
+
+        <div class="practice">
+            <div class="icon">🏗️</div>
+            <div>
+                <strong>Kompositum-Muster</strong>
+                <p>Durch die Trennung von Knoten und Abschluss wird der Code sauberer und vermeidet Null-Checks.</p>
+            </div>
+        </div>
+
+        <div class="practice">
+            <div class="icon">🔄</div>
+            <div>
+                <strong>Rekursion</strong>
+                <p>Alle Operationen (Einfügen, Suchen, Traversieren, Tiefe) nutzen rekursive Algorithmen.</p>
+            </div>
+        </div>
+
+        <div class="practice">
+            <div class="icon">📚</div>
+            <div>
+                <strong>Sortierung</strong>
+                <p>Inorder-Traversierung liefert automatisch eine sortierte Ausgabe.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation-buttons">
+        <button class="btn btn-outline" onclick="navigateToSection('kapitel5')">← Zurück</button>
+        <button class="btn btn-success" onclick="showCompletionModal()">🎉 Abschließen</button>
+    </div>
+</section>
+
+        </div>
+    </main>
+
+    <!-- Completion Modal -->
+    <div class="modal hidden" id="completionModal">
+        <div class="modal-content">
+            <h2>🎉 Herzlichen Glückwunsch!</h2>
+            <p>Du hast die Unterrichtseinheit zum Binärbaum erfolgreich abgeschlossen!</p>
+            
+            <h3>Was du gelernt hast:</h3>
+            <ul>
+                <li>Die Vorteile von Binärbäumen gegenüber Listen</li>
+                <li>Das Kompositum-Entwurfsmuster</li>
+                <li>Rekursive Algorithmen für Einfügen und Suchen</li>
+                <li>Verschiedene Traversierungsstrategien</li>
+                <li>Analyse von Algorithmen-Komplexität</li>
+            </ul>
+
+            <div class="modal-buttons">
+                <button class="btn btn-primary" onclick="closeModal()">Schließen</button>
+                <button class="btn btn-secondary" onclick="navigateToSection('home')">Zur Übersicht</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Informatik Q12 - Binärbaum Lerneinheit</p>
+            <p>Entwickelt für den Informatikunterricht</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Navigation zwischen Sektionen
+        function navigateToSection(sectionId) {
+            // Alle Sektionen ausblenden
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Gewählte Sektion anzeigen
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Menu-Links aktualisieren
+            document.querySelectorAll('.menu-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.section === sectionId) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // Zum Anfang scrollen
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Progress Bar aktualisieren
+            updateProgressBar(sectionId);
+            
+            // Sidebar auf Mobile schließen
+            if (window.innerWidth <= 1024) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
+        }
+
+        // Progress Bar
+        function updateProgressBar(sectionId) {
+            const sections = ['home', 'kapitel1', 'kapitel2', 'kapitel3', 'kapitel4', 'kapitel5', 'kapitel6'];
+            const currentIndex = sections.indexOf(sectionId);
+            const progress = (currentIndex / (sections.length - 1)) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        // Lösungen anzeigen/verstecken
+        function toggleSolution(solutionId) {
+            const solution = document.getElementById(solutionId);
+            solution.classList.toggle('hidden');
+        }
+
+        // Modal anzeigen
+        function showCompletionModal() {
+            document.getElementById('completionModal').classList.remove('hidden');
+        }
+
+        // Modal schließen
+        function closeModal() {
+            document.getElementById('completionModal').classList.add('hidden');
+        }
+
+        // Sidebar Toggle
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.remove('active');
+        });
+
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        // Menu-Links Event Listener
+        document.querySelectorAll('.menu-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const sectionId = this.dataset.section;
+                navigateToSection(sectionId);
+            });
+        });
+
+        // Modal außerhalb klicken zum Schließen
+        document.getElementById('completionModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Initial Progress Bar
+        updateProgressBar('home');
+    </script>
+</body>
+</html>
