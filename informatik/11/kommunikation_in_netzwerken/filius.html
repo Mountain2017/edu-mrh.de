@@ -265,6 +265,25 @@
             font-weight: 600;
             margin: 0.25rem;
         }
+
+        .example-item {
+            background: #e0f2fe;
+            border: 2px solid var(--primary-light);
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin: 1rem 0;
+        }
+
+        .example-item ol {
+            color: black;
+            margin-left: 1.5rem;
+        }
+
+        li {
+            margin-left: 1rem;
+        }
+
+       
         
         @media (max-width: 768px) {
             .step-indicator {
@@ -848,7 +867,7 @@ Gateway:       (leer lassen)</pre>
                 <div class="task-box">
                     <h4>🧪 Schritt 4: Netzwerk testen</h4>
                     <ol>
-                        <li>Wechsle in den <strong>Simulationsmodus</strong> (grüner Pfeil oben links)</li>
+                        <li>Wechsle in den <strong>Simulationsmodus</strong> (grüner Play-Button oben links)</li>
                         <li>Doppelklick auf <strong>Computer 1</strong></li>
                         <li>Klicke auf <strong>"Software installieren"</strong></li>
                         <li>Wähle <strong>"Befehlszeile"</strong> (Command Line)</li>
@@ -938,70 +957,65 @@ Antwort von 192.168.0.2: Zeit=1ms</pre>
             <section id="level2" class="content-section">
                 <div class="chapter-header">
                     <span class="chapter-number">Level 2</span>
-                    <h2>🌐 Erweitertes Heimnetzwerk</h2>
+                    <h2>🌐 Erweitertes Netzwerk mit Datenaustausch</h2>
                 </div>
 
                 <div class="question-box">
                     <h4>🤔 Neue Herausforderung</h4>
                     <p>
-                        Dein Heimnetzwerk wächst! Du hast jetzt:
+                        Dein Netzwerk wächst! Du möchtest jetzt:
                     </p>
                     <ul>
-                        <li>5 Computer</li>
-                        <li>1 Laptop</li>
-                        <li>1 Drucker</li>
+                        <li>Zwei separate Bereiche mit je einem Switch verbinden</li>
+                        <li>Daten zwischen den Bereichen austauschen</li>
+                        <li>Verstehen, wie Nachrichten durch mehrere Switches fließen</li>
                     </ul>
-                    <p><strong>Problem:</strong> Wie organisierst du so viele Geräte? Braucht jedes eine eigene IP-Adresse?</p>
+                    <p><strong>Ziel:</strong> Baue ein Netzwerk mit 2 Switches und lasse zwei Computer miteinander kommunizieren!</p>
                     
                     <button class="btn btn-warning" onclick="document.getElementById('answer3').classList.toggle('show')">
-                        💡 Antwort zeigen
+                        💡 Lösung zeigen
                     </button>
                     
                     <div id="answer3" class="answer-reveal">
-                        <p><strong>Ja!</strong> Jedes Gerät braucht eine <strong>eindeutige IP-Adresse</strong> im Netzwerk.</p>
+                        <p><strong>Die Lösung:</strong> Wir verbinden zwei Switches miteinander und nutzen einen <strong>Echo Server</strong> und einen <strong>Client</strong>, um Nachrichten hin und her zu senden.</p>
                         <p>
-                            Aber keine Sorge: Mit der Subnetzmaske 255.255.255.0 hast du Platz für bis zu 254 Geräte!
+                            Das ist ähnlich wie in einem Heimnetzwerk, wo ein Computer Daten an einen Drucker sendet – nur dass hier zwei Computer direkt miteinander "sprechen"!
                         </p>
                     </div>
                 </div>
 
                 <div class="task-box">
-                    <h4>🎯 Aufgabe: Großes Heimnetzwerk aufbauen</h4>
+                    <h4>🎯 Aufgabe: Netzwerk mit 2 Switches aufbauen</h4>
                     
                     <div class="network-diagram">
                         <div style="text-align: center;">
-                            <div class="device-box">
-                                <div class="device-icon">📡</div>
-                                <div>Switch</div>
-                            </div>
-                            <div style="margin-top: 1rem;">
-                                <div class="device-box">
-                                    <div class="device-icon">💻</div>
-                                    <div>PC 1</div>
+                            <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 2rem;">
+                                <div>
+                                    <div class="device-box">
+                                        <div class="device-icon">💻</div>
+                                        <div>PC 1 (Client)</div>
+                                        <div style="font-size: 0.8rem; color: #666;">192.168.1.10</div>
+                                    </div>
+                                    <div style="margin: 1rem 0;">↓</div>
+                                    <div class="device-box">
+                                        <div class="device-icon">📡</div>
+                                        <div>Switch 1</div>
+                                    </div>
                                 </div>
-                                <div class="device-box">
-                                    <div class="device-icon">💻</div>
-                                    <div>PC 2</div>
-                                </div>
-                                <div class="device-box">
-                                    <div class="device-icon">💻</div>
-                                    <div>PC 3</div>
-                                </div>
-                                <div class="device-box">
-                                    <div class="device-icon">💻</div>
-                                    <div>PC 4</div>
-                                </div>
-                                <div class="device-box">
-                                    <div class="device-icon">💻</div>
-                                    <div>PC 5</div>
-                                </div>
-                                <div class="device-box">
-                                    <div class="device-icon">💻</div>
-                                    <div>Laptop</div>
-                                </div>
-                                <div class="device-box">
-                                    <div class="device-icon">🖨️</div>
-                                    <div>Drucker</div>
+                                
+                                <div style="font-size: 2rem;">⟷</div>
+                                
+                                <div>
+                                    <div class="device-box">
+                                        <div class="device-icon">📡</div>
+                                        <div>Switch 2</div>
+                                    </div>
+                                    <div style="margin: 1rem 0;">↓</div>
+                                    <div class="device-box">
+                                        <div class="device-icon">💻</div>
+                                        <div>PC 2 (Server)</div>
+                                        <div style="font-size: 0.8rem; color: #666;">192.168.1.20</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1013,107 +1027,234 @@ Antwort von 192.168.0.2: Zeit=1ms</pre>
                     
                     <div class="example-item">
                         <h4>Schritt 1: Netzwerk planen</h4>
-                        <p>Plane zuerst die IP-Adressen:</p>
+                        <p>Plane zuerst die IP-Adressen und die Netzwerkstruktur:</p>
                         <div class="config-box">
                             <div class="config-label">IP-Adressplan</div>
                             <pre>
-Netzwerk:       192.168.1.0/24
-Subnetzmaske:   255.255.255.0
+            Netzwerk:       192.168.1.0/24
+            Subnetzmaske:   255.255.255.0
 
-PC 1:           192.168.1.10
-PC 2:           192.168.1.11
-PC 3:           192.168.1.12
-PC 4:           192.168.1.13
-PC 5:           192.168.1.14
-Laptop:         192.168.1.20
-Drucker:        192.168.1.100
-</pre>
+            PC 1 (Client):  192.168.1.10
+            PC 2 (Server):  192.168.1.20
+
+            Switch 1:       Verbindet PC 1
+            Switch 2:       Verbindet PC 2
+            Verbindung:     Switch 1 ⟷ Switch 2
+            </pre>
                         </div>
                         <div class="important-note">
-                            💡 <strong>Tipp:</strong> Nutze logische Bereiche! PCs: 10-19, Laptops: 20-29, Drucker: 100+
+                            💡 <strong>Wichtig:</strong> Beide Computer müssen im gleichen Netzwerk sein (192.168.1.x), damit sie kommunizieren können!
                         </div>
                     </div>
 
                     <div class="example-item">
-                        <h4>Schritt 2: Komponenten platzieren</h4>
+                        <h4>Schritt 2: Komponenten platzieren und verbinden</h4>
                         <ol>
-                            <li>Platziere einen <strong>Switch</strong> in der Mitte</li>
-                            <li>Füge <strong>5 Computer</strong> hinzu (benenne sie PC1 bis PC5)</li>
-                            <li>Füge einen <strong>Laptop</strong> hinzu (Notebook-Symbol)</li>
-                            <li>Füge einen <strong>Drucker</strong> hinzu (falls verfügbar, sonst weiterer Computer)</li>
-                            <li>Verbinde alle Geräte mit dem Switch</li>
+                            <li>Platziere <strong>Switch 1</strong> auf der linken Seite</li>
+                            <li>Platziere <strong>Switch 2</strong> auf der rechten Seite</li>
+                            <li>Füge <strong>PC 1</strong> hinzu und verbinde ihn mit Switch 1</li>
+                            <li>Füge <strong>PC 2</strong> hinzu und verbinde ihn mit Switch 2</li>
+                            <li><strong>Wichtig:</strong> Verbinde die beiden Switches miteinander (Switch 1 ⟷ Switch 2)</li>
                         </ol>
+                        <div class="important-note">
+                            ⚠️ <strong>Achtung:</strong> Die Verbindung zwischen den Switches ist entscheidend! Ohne sie können die PCs nicht kommunizieren.
+                        </div>
                     </div>
 
                     <div class="example-item">
                         <h4>Schritt 3: Geräte benennen</h4>
-                        <p>Damit du den Überblick behältst:</p>
+                        <p>Gib den Geräten aussagekräftige Namen:</p>
                         <ol>
-                            <li>Rechtsklick auf ein Gerät → <strong>"Umbenennen"</strong></li>
-                            <li>Gib aussagekräftige Namen ein: "PC1", "PC2", "Laptop-Max", "Drucker-HP"</li>
-                            <li>So erkennst du später sofort, welches Gerät welches ist!</li>
+                            <li>Rechtsklick auf PC 1 → <strong>"Umbenennen"</strong> → "PC1-Client"</li>
+                            <li>Rechtsklick auf PC 2 → <strong>"Umbenennen"</strong> → "PC2-Server"</li>
+                            <li>Optional: Benenne auch die Switches ("Switch-Links", "Switch-Rechts")</li>
                         </ol>
                     </div>
 
                     <div class="example-item">
-                        <h4>Schritt 4: IP-Adressen vergeben</h4>
-                        <p>Konfiguriere jedes Gerät einzeln nach dem Plan oben.</p>
-                        <p><strong>Beispiel für PC1:</strong></p>
+                        <h4>Schritt 4: IP-Adressen konfigurieren</h4>
+                        <p><strong>Konfiguration für PC 1 (Client):</strong></p>
                         <ol>
-                            <li>Doppelklick auf PC1</li>
+                            <li>Doppelklick auf PC 1</li>
                             <li>Tab "Netzwerkkonfiguration"</li>
                             <li>IP-Adresse: <code>192.168.1.10</code></li>
                             <li>Subnetzmaske: <code>255.255.255.0</code></li>
-                            <li>Gateway: (noch leer lassen)</li>
+                            <li>Gateway: (leer lassen)</li>
                             <li>Übernehmen</li>
                         </ol>
-                        <p>Wiederhole das für alle anderen Geräte!</p>
+                        
+                        <p><strong>Konfiguration für PC 2 (Server):</strong></p>
+                        <ol>
+                            <li>Doppelklick auf PC 2</li>
+                            <li>Tab "Netzwerkkonfiguration"</li>
+                            <li>IP-Adresse: <code>192.168.1.20</code></li>
+                            <li>Subnetzmaske: <code>255.255.255.0</code></li>
+                            <li>Gateway: (leer lassen)</li>
+                            <li>Übernehmen</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="concept-box info">
+                    <h3>🎮 Der Simulationsmodus</h3>
+                    <p>
+                        Um zu sehen, wie Datenpakete durch dein Netzwerk fließen, nutzen wir den <strong>Simulationsmodus</strong>:
+                    </p>
+                    <ol>
+                        <li>Klicke oben links auf den <strong>grünen Play-Button</strong></li>
+                        <li>Jetzt kannst du deine Rechner nutzen und ihre Datenpakete verfolgen!</li>
+                        <li>Passe bei Bedarf die Geschwindigkeit so an, dass du die Pakete gut verfolgen kannst</li>
+                        </li>
+                    </ol>
+                    <div class="important-note">
+                        💡 <strong>Tipp:</strong> Im Simulationsmodus siehst du genau, wie Pakete von Switch zu Switch wandern!
                     </div>
                 </div>
 
                 <div class="task-box">
-                    <h4>🧪 Schritt 5: Umfassende Tests</h4>
-                    <p>Teste verschiedene Verbindungen:</p>
-                    <ol>
-                        <li>Wechsle in den <strong>Simulationsmodus</strong></li>
-                        <li>Installiere auf PC1 die <strong>Befehlszeile</strong></li>
-                        <li>Teste:
-                            <div class="config-box">
-                                <pre>ping 192.168.1.11    (PC2)
-ping 192.168.1.20    (Laptop)
-ping 192.168.1.100   (Drucker)</pre>
-                            </div>
-                        </li>
-                        <li>Teste auch von anderen Computern aus!</li>
-                    </ol>
+                    <h4>🧪 Schritt 5: Software installieren und testen</h4>
+                    
+                    <div class="example-item">
+                        <h4>5.1 Echo Server auf PC 2 installieren</h4>
+                        <p>Der Echo Server empfängt Nachrichten und sendet sie zurück:</p>
+                        <ol>
+                            <li>Doppelklick auf <strong>PC 2 (Server)</strong></li>
+                            <li>Wechsle zum Tab <strong>"Software"</strong> oder "Programme"</li>
+                            <li>Suche nach <strong>"Echo Server"</strong> oder "Server"</li>
+                            <li>Klicke auf <strong>"Installieren"</strong></li>
+                            <li>Starte den Echo Server (er läuft meist automatisch)</li>
+                        </ol>
+                        <div class="important-note">
+                            💡 <strong>Was macht der Echo Server?</strong> Er wartet auf eingehende Nachrichten und schickt sie automatisch zurück – wie ein Echo!
+                        </div>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>5.2 Client auf PC 1 installieren</h4>
+                        <p>Der Client sendet Nachrichten an den Server:</p>
+                        <ol>
+                            <li>Doppelklick auf <strong>PC 1 (Client)</strong></li>
+                            <li>Wechsle zum Tab <strong>"Software"</strong> oder "Programme"</li>
+                            <li>Suche nach <strong>"Einfacher Client"</strong>, "Client" oder "Befehlszeile"</li>
+                            <li>Klicke auf <strong>"Installieren"</strong></li>
+                        </ol>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>5.3 Nachricht senden</h4>
+                        <p>Jetzt senden wir eine Nachricht vom Client zum Server:</p>
+                        <ol>
+                            <li>Wechsle in den <strong>Simulationsmodus</strong> (Stoppuhr-Symbol unten rechts)</li>
+                            <li>Öffne auf PC 1 den <strong>Client</strong> oder die <strong>Befehlszeile</strong></li>
+                            <li>Gib die Ziel-IP ein: <code>192.168.1.20</code></li>
+                            <li>Schreibe eine Nachricht, z.B.: <code>Hallo Server!</code></li>
+                            <li>Klicke auf <strong>"Senden"</strong></li>
+                            <li>Beobachte im Simulationsmodus, wie das Paket wandert:
+                                <ul>
+                                    <li>Von PC 1 zu Switch 1</li>
+                                    <li>Von Switch 1 zu Switch 2</li>
+                                    <li>Von Switch 2 zu PC 2</li>
+                                    <li>Und die Antwort zurück!</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>5.4 Alternative: Ping-Test</h4>
+                        <p>Falls Echo Server nicht verfügbar ist, nutze den Ping-Befehl:</p>
+                        <ol>
+                            <li>Installiere auf PC 1 die <strong>Befehlszeile</strong> (Command Line)</li>
+                            <li>Wechsle in den <strong>Simulationsmodus</strong></li>
+                            <li>Öffne die Befehlszeile auf PC 1</li>
+                            <li>Gib ein: <code>ping 192.168.1.20</code></li>
+                            <li>Drücke Enter und beobachte die Pakete!</li>
+                        </ol>
+                    </div>
                 </div>
 
                 <div class="question-box">
-                    <h4>🤔 Denkaufgabe: Fehlersuche</h4>
+                    <h4>🤔 Denkaufgabe: Was passiert im Netzwerk?</h4>
                     <p>
-                        Stell dir vor, PC3 kann plötzlich nicht mehr mit dem Laptop kommunizieren. 
-                        Was könnten die Ursachen sein?
+                        Wenn PC 1 eine Nachricht an PC 2 sendet, durchläuft das Datenpaket mehrere Stationen. 
+                        In welcher Reihenfolge?
                     </p>
                     
                     <button class="btn btn-warning" onclick="document.getElementById('answer4').classList.toggle('show')">
-                        💡 Mögliche Ursachen zeigen
+                        💡 Ablauf zeigen
                     </button>
                     
                     <div id="answer4" class="answer-reveal">
-                        <p><strong>Mögliche Fehlerquellen:</strong></p>
+                        <p><strong>Der Weg eines Datenpakets:</strong></p>
                         <ol>
-                            <li><strong>Kabelverbindung unterbrochen</strong> → Prüfe die Kabel</li>
-                            <li><strong>Falsche IP-Adresse</strong> → Beide müssen im gleichen Netzwerk sein (192.168.1.x)</li>
-                            <li><strong>Falsche Subnetzmaske</strong> → Beide müssen 255.255.255.0 haben</li>
-                            <li><strong>Doppelte IP-Adresse</strong> → Jedes Gerät braucht eine eindeutige IP</li>
-                            <li><strong>Switch defekt</strong> → Teste andere Verbindungen über den Switch</li>
+                            <li><strong>PC 1 (Client)</strong> erstellt ein Datenpaket mit:
+                                <ul>
+                                    <li>Absender: 192.168.1.10</li>
+                                    <li>Empfänger: 192.168.1.20</li>
+                                    <li>Nachricht: "Hallo Server!"</li>
+                                </ul>
+                            </li>
+                            <li><strong>Switch 1</strong> empfängt das Paket und leitet es weiter zu Switch 2</li>
+                            <li><strong>Switch 2</strong> empfängt das Paket und leitet es weiter zu PC 2</li>
+                            <li><strong>PC 2 (Server)</strong> empfängt die Nachricht und sendet eine Antwort zurück</li>
+                            <li>Die Antwort nimmt den <strong>gleichen Weg zurück</strong>:
+                                <ul>
+                                    <li>PC 2 → Switch 2 → Switch 1 → PC 1</li>
+                                </ul>
+                            </li>
                         </ol>
-                        <p><strong>Systematische Fehlersuche:</strong></p>
-                        <ul>
-                            <li>Prüfe die Konfiguration beider Geräte</li>
-                            <li>Teste, ob andere Geräte erreichbar sind</li>
-                            <li>Nutze den Ping-Befehl zur Diagnose</li>
-                        </ul>
+                        <div class="important-note">
+                            🎯 <strong>Wichtig:</strong> Switches merken sich, an welchem Port welches Gerät hängt. So wissen sie, wohin sie Pakete weiterleiten müssen!
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-box">
+                    <h4>🔧 Fehlersuche: Verbindung funktioniert nicht?</h4>
+                    <p>
+                        Wenn die Kommunikation nicht klappt, prüfe systematisch:
+                    </p>
+                    
+                    <button class="btn btn-warning" onclick="document.getElementById('answer5').classList.toggle('show')">
+                        💡 Checkliste zeigen
+                    </button>
+                    
+                    <div id="answer5" class="answer-reveal">
+                                    <p><strong>Systematische Fehlersuche:</strong></p>
+                        <ol>
+                            <li><strong>Kabelverbindungen prüfen:</strong>
+                                <ul>
+                                    <li>Ist PC 1 mit Switch 1 verbunden?</li>
+                                    <li>Ist PC 2 mit Switch 2 verbunden?</li>
+                                    <li>Sind die beiden Switches miteinander verbunden?</li>
+                                    <li>Alle Kabel sollten grün leuchten!</li>
+                                </ul>
+                            </li>
+                            <li><strong>IP-Konfiguration prüfen:</strong>
+                                <ul>
+                                    <li>PC 1: IP = 192.168.1.10, Maske = 255.255.255.0</li>
+                                    <li>PC 2: IP = 192.168.1.20, Maske = 255.255.255.0</li>
+                                    <li>Beide müssen im gleichen Netzwerk sein (192.168.1.x)</li>
+                                </ul>
+                            </li>
+                            <li><strong>Software prüfen:</strong>
+                                <ul>
+                                    <li>Ist der Echo Server auf PC 2 installiert und gestartet?</li>
+                                    <li>Ist der Client auf PC 1 installiert?</li>
+                                    <li>Hast du die richtige Ziel-IP eingegeben (192.168.1.20)?</li>
+                                </ul>
+                            </li>
+                            <li><strong>Simulationsmodus nutzen:</strong>
+                                <ul>
+                                    <li>Wechsle in den Simulationsmodus</li>
+                                    <li>Sende ein Paket und beobachte, wo es "stecken bleibt"</li>
+                                    <li>Klicke auf das Paket, um Details zu sehen</li>
+                                </ul>
+                            </li>
+                        </ol>
+                        <div class="important-note">
+                            🔍 <strong>Profi-Tipp:</strong> Teste zuerst mit einem einfachen Ping-Befehl, bevor du komplexere Programme nutzt!
+                        </div>
                     </div>
                 </div>
 
@@ -1123,39 +1264,93 @@ ping 192.168.1.100   (Drucker)</pre>
                         <div class="key-point">
                             <div class="number">1</div>
                             <div>
-                                <strong>Netzwerkplanung</strong>
-                                <p>Vor dem Aufbau solltest du IP-Adressen planen und dokumentieren</p>
+                                <strong>Switches verbinden</strong>
+                                <p>Mehrere Switches können miteinander verbunden werden, um größere Netzwerke aufzubauen</p>
                             </div>
                         </div>
                         <div class="key-point">
                             <div class="number">2</div>
                             <div>
-                                <strong>Logische Struktur</strong>
-                                <p>Nutze Bereiche für verschiedene Gerätetypen (z.B. 10-19 für PCs)</p>
+                                <strong>Client-Server-Kommunikation</strong>
+                                <p>Ein Client sendet Anfragen, ein Server antwortet – wie beim Datenaustausch mit einem Drucker</p>
                             </div>
                         </div>
                         <div class="key-point">
                             <div class="number">3</div>
                             <div>
-                                <strong>Skalierbarkeit</strong>
-                                <p>Ein Switch kann viele Geräte verbinden (typisch 8, 16 oder 24 Ports)</p>
+                                <strong>Simulationsmodus</strong>
+                                <p>Mit dem Simulationsmodus kannst du Datenpakete Schritt für Schritt durch das Netzwerk verfolgen</p>
                             </div>
                         </div>
                         <div class="key-point">
                             <div class="number">4</div>
                             <div>
-                                <strong>Systematisches Testen</strong>
-                                <p>Teste Verbindungen systematisch, um Fehler schnell zu finden</p>
+                                <strong>Software-Installation</strong>
+                                <p>Auf Netzwerkgeräten können Programme installiert werden (Server, Client, Tools)</p>
+                            </div>
+                        </div>
+                        <div class="key-point">
+                            <div class="number">5</div>
+                            <div>
+                                <strong>Datenpakete verstehen</strong>
+                                <p>Jedes Datenpaket hat einen Absender, einen Empfänger und wandert über mehrere Stationen</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <div class="concept-box">
+                    <h3>🚀 Erweiterungsideen</h3>
+                    <p>Wenn du das Grundprinzip verstanden hast, probiere folgende Erweiterungen:</p>
+                    
+                    <div class="example-item">
+                        <h4>💡 Idee 1: Mehr Geräte hinzufügen</h4>
+                        <p>Füge weitere Computer hinzu:</p>
+                        <ul>
+                            <li>PC 3 an Switch 1 (IP: 192.168.1.11)</li>
+                            <li>PC 4 an Switch 2 (IP: 192.168.1.21)</li>
+                            <li>Teste, ob alle miteinander kommunizieren können!</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>💡 Idee 2: Dritten Switch hinzufügen</h4>
+                        <p>Baue eine Kette aus drei Switches:</p>
+                        <ul>
+                            <li>Switch 1 ⟷ Switch 2 ⟷ Switch 3</li>
+                            <li>PC 1 an Switch 1, PC 2 an Switch 3</li>
+                            <li>Beobachte, wie Pakete durch alle drei Switches wandern!</li>
+                        </ul>
+                    </div>
+
+                    <div class="example-item">
+                        <h4>💡 Idee 3: Verschiedene Dienste testen</h4>
+                        <p>Installiere verschiedene Server-Programme:</p>
+                        <ul>
+                            <li>Web-Server auf PC 2</li>
+                            <li>FTP-Server auf PC 3</li>
+                            <li>Teste den Zugriff von verschiedenen Clients</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="concept-box warning">
+                    <h3>⚠️ Häufige Fehler vermeiden</h3>
+                    <ul>
+                        <li><strong>Vergessene Switch-Verbindung:</strong> Die Switches müssen miteinander verbunden sein!</li>
+                        <li><strong>Falsche IP-Bereiche:</strong> Alle Geräte müssen im gleichen Netzwerk sein (192.168.1.x)</li>
+                        <li><strong>Server nicht gestartet:</strong> Der Echo Server muss laufen, bevor der Client Nachrichten sendet</li>
+                        <li><strong>Falsche Ziel-IP:</strong> Prüfe, ob du die richtige IP-Adresse des Servers eingegeben hast</li>
+                        <li><strong>Simulationsmodus vergessen:</strong> Ohne Simulationsmodus siehst du die Pakete nicht!</li>
+                    </ul>
+                </div>
+
                 <div class="navigation-buttons">
-                    <a href="#level1" class="btn btn-outline js-nav-link">← Zurück</a>
-                    <a href="#level3" class="btn btn-primary js-nav-link">Subnetting lernen →</a>
+                    <a href="#level1" class="btn btn-outline js-nav-link">← Zurück zu Level 1</a>
+                    <a href="#level3" class="btn btn-primary js-nav-link">Weiter zu Level 3: Subnetting →</a>
                 </div>
             </section>
+
 
             <!-- Level 3: Subnetting -->
             <section id="level3" class="content-section">
