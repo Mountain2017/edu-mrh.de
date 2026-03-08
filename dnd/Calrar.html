@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calrar Rogur - Quick Cheatsheet</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #eee;
+    margin: 0;
+    padding-bottom: 40px;
+}
+
+header {
+    text-align: center;
+    padding: 20px 15px;
+    background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    border-bottom: 3px solid #e94560;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+}
+
+header h1 {
+    font-size: 24px;
+    color: #8ad6ff;
+    text-shadow: 0 0 10px rgba(138, 214, 255, 0.5);
+    margin-bottom: 5px;
+}
+
+.header-stats {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.quick-stat {
+    background: #1a1a2e;
+    padding: 5px 12px;
+    border-radius: 5px;
+    font-size: 13px;
+    border: 1px solid #444;
+}
+
+.quick-stat strong {
+    color: #8ad6ff;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    background: #222;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    flex-wrap: wrap;
+    position: sticky;
+    top: 85px;
+    z-index: 100;
+}
+
+nav button {
+    background: none;
+    border: none;
+    color: white;
+    padding: 12px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+}
+
+nav button:hover {
+    background: #444;
+    border-bottom-color: #8ad6ff;
+}
+
+nav button.active {
+    background: #333;
+    border-bottom-color: #e94560;
+    color: #8ad6ff;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+section {
+    display: none;
+    animation: fadeIn 0.4s ease;
+}
+
+section.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Quick Reference Cards */
+.quick-ref-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.quick-card {
+    background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+    padding: 15px;
+    border-radius: 10px;
+    border-left: 4px solid #8ad6ff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+}
+
+.quick-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(138, 214, 255, 0.3);
+}
+
+.quick-card h3 {
+    color: #8ad6ff;
+    font-size: 18px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.quick-card.combat { border-left-color: #e94560; }
+.quick-card.combat h3 { color: #e94560; }
+
+.quick-card.social { border-left-color: #9b59b6; }
+.quick-card.social h3 { color: #9b59b6; }
+
+.quick-card.stealth { border-left-color: #34495e; }
+.quick-card.stealth h3 { color: #95e1d3; }
+
+.quick-card.utility { border-left-color: #f39c12; }
+.quick-card.utility h3 { color: #f39c12; }
+
+.action-list {
+    list-style: none;
+    padding: 0;
+}
+
+.action-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+}
+
+.action-list li:last-child {
+    border-bottom: none;
+}
+
+.action-name {
+    flex: 1;
+}
+
+.action-bonus {
+    background: #444;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+.action-bonus.high {
+    background: #10b981;
+    color: white;
+}
+
+.action-bonus.medium {
+    background: #f59e0b;
+    color: white;
+}
+
+/* Situation Cards */
+.situation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.situation-card {
+    background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid #8ad6ff;
+    box-shadow: 0 0 20px rgba(138, 214, 255, 0.2);
+}
+
+.situation-card h3 {
+    color: #8ad6ff;
+    margin-bottom: 15px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.tactic {
+    background: #1a1a2e;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border-left: 3px solid #4ecdc4;
+}
+
+.tactic-title {
+    color: #ffd166;
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.tactic-steps {
+    font-size: 13px;
+    color: #ccc;
+    line-height: 1.6;
+}
+
+.tactic-steps ol {
+    margin-left: 20px;
+    margin-top: 5px;
+}
+
+.tactic-steps li {
+    margin: 3px 0;
+}
+
+/* Stats Overview */
+.stats-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: #1a1a2e;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    border: 2px solid #444;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    border-color: #8ad6ff;
+    transform: translateY(-2px);
+}
+
+.stat-label {
+    font-size: 11px;
+    color: #aaa;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    font-size: 28px;
+    font-weight: bold;
+    color: #8ad6ff;
+}
+
+.stat-subtext {
+    font-size: 11px;
+    color: #666;
+    margin-top: 3px;
+}
+
+/* Ability Scores Compact */
+.abilities-compact {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.ability-compact {
+    background: #1a1a2e;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    border: 2px solid #444;
+}
+
+.ability-compact.save-prof {
+    border-color: #10b981;
+}
+
+.ability-compact-name {
+    font-size: 11px;
+    color: #aaa;
+    font-weight: bold;
+}
+
+.ability-compact-score {
+    font-size: 20px;
+    color: #8ad6ff;
+    font-weight: bold;
+}
+
+.ability-compact-mod {
+    font-size: 16px;
+    color: #ffd166;
+}
+
+.ability-compact-save {
+    font-size: 11px;
+    color: #10b981;
+    margin-top: 3px;
+}
+
+/* Skills Compact */
+.skills-compact {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+}
+
+.skill-compact {
+    background: #1a1a2e;
+    padding: 8px 12px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    border-left: 3px solid transparent;
+}
+
+.skill-compact.prof {
+    border-left-color: #4ecdc4;
+}
+
+.skill-compact.expert {
+    border-left-color: #ffd166;
+    background: linear-gradient(90deg, #2a2520 0%, #1a1a2e 100%);
+}
+
+.skill-compact-name {
+    flex: 1;
+}
+
+.skill-compact-bonus {
+    background: #444;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.skill-compact.expert .skill-compact-bonus {
+    background: #f59e0b;
+    color: white;
+}
+
+.skill-compact.prof .skill-compact-bonus {
+    background: #4ecdc4;
+    color: #1a1a2e;
+}
+
+/* Spell Quick List */
+.spell-quick-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 10px;
+}
+
+.spell-quick {
+    background: #1a1a2e;
+    padding: 10px;
+    border-radius: 6px;
+    border-left: 3px solid #9b59b6;
+    font-size: 13px;
+}
+
+.spell-quick.psionic {
+    border-left-color: #8e44ad;
+    background: linear-gradient(90deg, #2a2a3e 0%, #1a1a2e 100%);
+}
+
+.spell-quick-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.spell-quick-name {
+    font-weight: bold;
+    color: #8ad6ff;
+}
+
+.spell-quick-level {
+    background: #8e44ad;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+}
+
+.spell-quick-info {
+    color: #aaa;
+    font-size: 11px;
+}
+
+/* Tags */
+.tag {
+    display: inline-block;
+    background: #444;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tag.action { background: #e94560; color: white; }
+.tag.bonus { background: #ff6b6b; color: white; }
+.tag.reaction { background: #4ecdc4; color: white; }
+.tag.concentration { background: #e67e22; color: white; }
+.tag.psionic { background: #8e44ad; color: white; }
+.tag.rogue { background: #34495e; color: white; }
+.tag.sorcerer { background: #9b59b6; color: white; }
+
+/* Combat Assistant */
+.combat-assistant {
+    background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border: 2px solid #e94560;
+    box-shadow: 0 0 20px rgba(233, 69, 96, 0.2);
+}
+
+.combat-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.combat-btn {
+    background: linear-gradient(135deg, #e94560 0%, #c23854 100%);
+    color: white;
+    border: none;
+    padding: 12px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(233, 69, 96, 0.3);
+}
+
+.combat-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(233, 69, 96, 0.5);
+}
+
+.combat-btn.spell {
+    background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+    box-shadow: 0 4px 10px rgba(155, 89, 182, 0.3);
+}
+
+.combat-feedback {
+    background: #1a1a2e;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #4ecdc4;
+    display: none;
+}
+
+.combat-feedback.show {
+    display: block;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 1000px;
+    }
+}
+
+.feedback-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #333;
+}
+
+.feedback-item:last-child {
+    border-bottom: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .abilities-compact {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .quick-ref-grid,
+    .situation-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    header {
+        top: 0;
+    }
+    
+    nav {
+        top: 110px;
+    }
+}
+
+.highlight { color: #ffd166; font-weight: bold; }
+.success { color: #4ecdc4; font-weight: bold; }
+.warning { color: #e94560; font-weight: bold; }
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>⚡ Calrar Bogur - Quick Cheatsheet</h1>
+    <div class="header-stats">
+        <div class="quick-stat"><strong>AC:</strong> 17</div>
+        <div class="quick-stat"><strong>HP:</strong> 72/72</div>
+        <div class="quick-stat"><strong>Init:</strong> +4</div>
+        <div class="quick-stat"><strong>Speed:</strong> 30ft</div>
+        <div class="quick-stat"><strong>Prof:</strong> +4</div>
+        <div class="quick-stat"><strong>Level:</strong> 11 (Rog3/Sor8)</div>
+    </div>
+</header>
+
+<nav>
+    <button onclick="showTab('overview')" class="active" id="nav-overview">📋 Overview</button>
+    <button onclick="showTab('combat')" id="nav-combat">⚔️ Combat</button>
+    <button onclick="showTab('situations')" id="nav-situations">🎯 Situations</button>
+    <button onclick="showTab('spells')" id="nav-spells">🔮 Spells</button>
+    <button onclick="showTab('stats')" id="nav-stats">📊 Stats</button>
+</nav>
+
+<div class="container">
+
+<!-- OVERVIEW SECTION -->
+<section id="overview" class="active">
+
+    <h2 style="color: #8ad6ff; text-align: center; margin-bottom: 20px;">📋 Quick Reference</h2>
+
+    <!-- Core Stats -->
+    <div class="stats-overview">
+        <div class="stat-card">
+            <div class="stat-label">Armor Class</div>
+            <div class="stat-value">17</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Initiative</div>
+            <div class="stat-value">+4</div>
+            <div class="stat-subtext">DEX</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Speed</div>
+            <div class="stat-value">30</div>
+            <div class="stat-subtext">feet</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Hit Points</div>
+            <div class="stat-value">72</div>
+            <div class="stat-subtext">max</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Sneak Attack</div>
+            <div class="stat-value">2d6</div>
+            <div class="stat-subtext">1x/round</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Sorcery Points</div>
+            <div class="stat-value">8</div>
+            <div class="stat-subtext">max</div>
+        </div>
+    </div>
+
+    <!-- Ability Scores -->
+    <div style="background: #2a2a2a; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+        <h3 style="color: #8ad6ff; margin-bottom: 10px; text-align: center;">Ability Scores</h3>
+        <div class="abilities-compact">
+            <div class="ability-compact">
+                <div class="ability-compact-name">STR</div>
+                <div class="ability-compact-score">10</div>
+                <div class="ability-compact-mod">+0</div>
+            </div>
+            <div class="ability-compact save-prof">
+                <div class="ability-compact-name">DEX</div>
+                <div class="ability-compact-score">18</div>
+                <div class="ability-compact-mod">+4</div>
+                <div class="ability-compact-save">Save +8</div>
+            </div>
+            <div class="ability-compact save-prof">
+                <div class="ability-compact-name">CON</div>
+                <div class="ability-compact-score">16</div>
+                <div class="ability-compact-mod">+3</div>
+                <div class="ability-compact-save">Save +7</div>
+            </div>
+            <div class="ability-compact">
+                <div class="ability-compact-name">INT</div>
+                <div class="ability-compact-score">13</div>
+                <div class="ability-compact-mod">+1</div>
+            </div>
+            <div class="ability-compact">
+                <div class="ability-compact-name">WIS</div>
+                <div class="ability-compact-score">15</div>
+                <div class="ability-compact-mod">+2</div>
+            </div>
+            <div class="ability-compact save-prof">
+                <div class="ability-compact-name">CHA</div>
+                <div class="ability-compact-score">20</div>
+                <div class="ability-compact-mod">+5</div>
+                <div class="ability-compact-save">Save +9</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions by Category -->
+    <div class="quick-ref-grid">
+        
+        <!-- Combat Actions -->
+        <div class="quick-card combat">
+            <h3>⚔️ Combat Actions</h3>
+            <ul class="action-list">
+                <li>
+                    <span class="action-name">Sneak Attack</span>
+                    <span class="action-bonus high">+2d6</span>
+                </li>
+                <li>
+                    <span class="action-name">Steady Aim (Bonus)</span>
+                    <span class="action-bonus">Advantage</span>
+                </li>
+                <li>
+                    <span class="action-name">Uncanny Dodge (Reaction)</span>
+                    <span class="action-bonus">½ Damage</span>
+                </li>
+                <li>
+                    <span class="action-name">Celestial Revelation (Bonus)</span>
+                    <span class="action-bonus">1/LR</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Social Actions -->
+        <div class="quick-card social">
+            <h3>💬 Social Actions</h3>
+            <ul class="action-list">
+                <li>
+                    <span class="action-name">Persuasion (Expertise)</span>
+                    <span class="action-bonus high">+13</span>
+                </li>
+                <li>
+                    <span class="action-name">Deception</span>
+                    <span class="action-bonus medium">+9</span>
+                </li>
+                <li>
+                    <span class="action-name">Intimidation</span>
+                    <span class="action-bonus medium">+9</span>
+                </li>
+                <li>
+                    <span class="action-name">Telepathic Speech (Bonus)</span>
+                    <span class="action-bonus">30ft</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Stealth Actions -->
+        <div class="quick-card stealth">
+            <h3>🥷 Stealth Actions</h3>
+            <ul class="action-list">
+                <li>
+                    <span class="action-name">Stealth (Expertise)</span>
+                    <span class="action-bonus high">+12</span>
+                </li>
+                <li>
+                    <span class="action-name">Sleight of Hand (Expertise)</span>
+                    <span class="action-bonus high">+8</span>
+                </li>
+                <li>
+                    <span class="action-name">Cunning Action: Hide (Bonus)</span>
+                    <span class="action-bonus">Free</span>
+                </li>
+                <li>
+                    <span class="action-name">Psionic Sorcery (Silent Cast)</span>
+                    <span class="action-bonus">No V/S</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Utility Actions -->
+        <div class="quick-card utility">
+            <h3>🛠️ Utility Actions</h3>
+            <ul class="action-list">
+                <li>
+                    <span class="action-name">Insight</span>
+                    <span class="action-bonus medium">+6</span>
+                </li>
+                <li>
+                    <span class="action-name">Thieves' Tools</span>
+                    <span class="action-bonus medium">+8</span>
+                </li>
+                <li>
+                    <span class="action-name">Fast Hands (Bonus)</span>
+                    <span class="action-bonus">Object</span>
+                </li>
+                <li>
+                    <span class="action-name">Darkvision</span>
+                    <span class="action-bonus">60ft</span>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- Passive Scores -->
+    <div style="background: #2a2a2a; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+        <h3 style="color: #8ad6ff; margin-bottom: 10px; text-align: center;">👁️ Passive Scores</h3>
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-label">Perception</div>
+                <div class="stat-value">12</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Investigation</div>
+                <div class="stat-value">11</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Insight</div>
+                <div class="stat-value">16</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Spells Quick Access -->
+    <div style="background: #2a2a2a; padding: 15px; border-radius: 10px;">
+        <h3 style="color: #8ad6ff; margin-bottom: 10px; text-align: center;">⚡ Top Combat Spells</h3>
+        <div class="spell-quick-list">
+            <div class="spell-quick psionic">
+                <div class="spell-quick-header">
+                    <span class="spell-quick-name">Mind Sliver</span>
+                    <span class="spell-quick-level">Cantrip</span>
+                </div>
+                <div class="spell-quick-info">1d6 Psychic + -1d4 Save</div>
+            </div>
+            <div class="spell-quick psionic">
+                <div class="spell-quick-header">
+                    <span class="spell-quick-name">Dissonant Whispers</span>
+                    <span class="spell-quick-level">Lv1</span>
+                </div>
+                <div class="spell-quick-info">3d6 Psychic + Flee</div>
+            </div>
+            <div class="spell-quick">
+                <div class="spell-quick-header">
+                    <span class="spell-quick-name">Shield</span>
+                    <span class="spell-quick-level">Lv1</span>
+                </div>
+                <div class="spell-quick-info">Reaction: +5 AC</div>
+            </div>
+            <div class="spell-quick">
+                <div class="spell-quick-header">
+                    <span class="spell-quick-name">Misty Step</span>
+                    <span class="spell-quick-level">Lv2</span>
+                </div>
+                <div class="spell-quick-info">Bonus: Teleport 30ft</div>
+            </div>
+            <div class="spell-quick psionic">
+                <div class="spell-quick-header">
+                    <span class="spell-quick-name">Hunger of Hadar</span>
+                    <span class="spell-quick-level">Lv3</span>
+                </div>
+                <div class="spell-quick-info">20ft AoE: 2d6 Cold + 2d6 Acid</div>
+            </div>
+            <div class="spell-quick">
+                <div class="spell-quick-header">
+                    <span class="spell-quick-name">Counterspell</span>
+                    <span class="spell-quick-level">Lv3</span>
+                </div>
+                <div class="spell-quick-info">Reaction: Cancel Spell</div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- COMBAT SECTION -->
+<section id="combat">
+
+    <h2 style="color: #e94560; text-align: center; margin-bottom: 20px;">⚔️ Combat Guide</h2>
+
+    <!-- Combat Assistant -->
+    <div class="combat-assistant">
+        <h3 style="color: #e94560; margin-bottom: 15px; text-align: center;">🎯 Combat Assistant</h3>
+        <div class="combat-buttons">
+            <button class="combat-btn" onclick="planAttack()">⚔️ Angriff geplant</button>
+            <button class="combat-btn spell" onclick="planSpell()">🔮 Spell geplant</button>
+            <button class="combat-btn" onclick="planStealth()">🥷 Stealth Angriff</button>
+            <button class="combat-btn" onclick="resetCombat()">🔄 Reset</button>
+        </div>
+        
+        <div id="combat-feedback" class="combat-feedback">
+            <!-- Feedback wird hier dynamisch eingefügt -->
+        </div>
+    </div>
+
+    <!-- Combat Combos -->
+    <div style="background: #2a2a2a; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+        <h3 style="color: #8ad6ff; margin-bottom: 15px;">💥 Best Combat Combos</h3>
+        
+        <div class="tactic">
+            <div class="tactic-title">🎯 Sniper Setup (Maximaler Schaden)</div>
+            <div class="tactic-steps">
+                <ol>
+                    <li><strong>Bonus Action:</strong> Steady Aim (Advantage)</li>
+                    <li><strong>Action:</strong> Ranged Attack mit Sneak Attack (+2d6)</li>
+                    <li><strong>Wenn getroffen:</strong> Uncanny Dodge (Reaction, ½ Schaden)</li>
+                </ol>
+                <p style="margin-top: 8px; color: #4ecdc4;">✓ Garantierte Sneak Attack ohne Bewegung</p>
+            </div>
+        </div>
+
+        <div class="tactic">
+            <div class="tactic-title">⚡ Spell + Attack Combo</div>
+            <div class="tactic-steps">
+                <ol>
+                    <li><strong>Bonus Action:</strong> Quickened Spell (2 SP) - z.B. Mind Sliver</li>
+                    <li><strong>Action:</strong> Cantrip (Fire Bolt) ODER Attack mit Sneak Attack</li>
+                    <li><strong>Wichtig:</strong> Wenn Quickened Spell → nur Cantrip als Action!</li>
+                </ol>
+                <p style="margin-top: 8px; color: #ffd166;">⚠️ Cantrip-Regel beachten!</p>
+            </div>
+        </div>
+
+        <div class="tactic">
+            <div class="tactic-title">🌟 Nova Round (Burst Damage)</div>
+            <div class="tactic-steps">
+                <ol>
+                    <li><strong>Bonus Action:</strong> Celestial Revelation (1/LR)</li>
+                    <li><strong>Action:</strong> Attack mit Sneak Attack (+2d6) + Radiant Damage (+4)</li>
+                    <li><strong>Optional:</strong> Quickened Spell für extra Damage</li>
+                </ol>
+                <p style="margin-top: 8px; color: #4ecdc4;">✓ Maximaler Burst für Boss-Fights</p>
+            </div>
+        </div>
+
+        <div class="tactic">
+            <div class="tactic-title">🛡️ Defensive Positioning</div>
+            <div class="tactic-steps">
+                <ol>
+                    <li><strong>Action:</strong> Attack mit Sneak Attack</li>
+                    <li><strong>Bonus Action:</strong> Cunning Action: Disengage</li>
+                    <li><strong>Movement:</strong> Rückzug hinter Cover</li>
+                    <li><strong>Reaction bereit:</strong> Uncanny Dodge oder Shield</li>
+                </ol>
+                <p style="margin-top: 8px; color: #4ecdc4;">✓ Hit & Run Taktik</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Key Combat Features -->
+    <div class="quick-ref-grid">
+        <div class="quick-card combat">
+            <h3>🗡️ Sneak Attack</h3>
+            <p><strong>Schaden:</strong> <span class="highlight">+2d6</span></p>
+            <p><strong>Bedingungen:</strong></p>
+            <ul style="margin-left: 20px; margin-top: 5px; font-size: 13px;">
+                <li>Advantage ODER Verbündeter nahe Ziel</li>
+                <li>Finesse/Ranged Waffe</li>
+                <li>Kein Disadvantage</li>
+            </ul>
+            <p style="margin-top: 8px;"><span class="warning">⚠️ Nur 1x pro Runde!</span></p>
+        </div>
+
+        <div class="quick-card combat">
+            <h3>🎯 Steady Aim</h3>
+            <p><span class="tag bonus">Bonus Action</span></p>
+            <p><strong>Effekt:</strong> Advantage auf nächsten Angriff</p>
+            <p style="margin-top: 8px;"><span class="warning">⚠️ Keine Bewegung diese Runde!</span></p>
+            <p style="margin-top: 5px;"><span class="success">✓ Garantiert Sneak Attack</span></p>
+        </div>
+
+        <div class="quick-card combat">
+            <h3>🛡️ Uncanny Dodge</h3>
+            <p><span class="tag reaction">Reaction</span></p>
+            <p><strong>Effekt:</strong> Halbiere Schaden von einem Angriff</p>
+            <p style="margin-top: 8px;"><span class="success">✓ Musst Angreifer sehen</span></p>
+        </div>
+
+        <div class="quick-card combat">
+            <h3>✨ Celestial Revelation</h3>
+            <p><span class="tag bonus">Bonus Action</span> <span class="tag">1/LR</span></p>
+            <p><strong>Dauer:</strong> 1 Minute</p>
+            <p><strong>Bonus:</strong> +4 Radiant/Necrotic Schaden (1x/Runde)</p>
+            <p><strong>Optionen:</strong> Flug, AoE, oder Frighten</p>
+        </div>
+    </div>
+
+</section>
+
+<!-- SITUATIONS SECTION -->
+<section id="situations">
+
+    <h2 style="color: #8ad6ff; text-align: center; margin-bottom: 20px;">🎯 Situational Tactics</h2>
+
+    <div class="situation-grid">
+
+        <!-- Infiltration -->
+        <div class="situation-card">
+            <h3>🥷 Infiltration / Stealth Mission</h3>
+            
+            <div class="tactic">
+                <div class="tactic-title">Vorbereitung</div>
+                <div class="tactic-steps">
+                    <ul>
+                        <li><strong>Invisibility</strong> casten (2nd Level, Concentration)</li>
+                        <li><strong>Psionic Sorcery</strong> nutzen für stilles Casten</li>
+                        <li><strong>Darkvision</strong> 60ft aktiv</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tactic">
+                <div class="tactic-title">Während Infiltration</div>
+                <div class="tactic-steps">
+                    <ul>
+                        <li><strong>Stealth:</strong> +12 (Expertise)</li>
+                        <li><strong>Thieves' Tools:</strong> +8 für Schlösser</li>
+                        <li><strong>Telepathic Speech:</strong> Stille Kommunikation (30ft)</li>
+                        <li><strong>Detect Thoughts:</strong> Gedanken lesen (Psionic)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tactic">
+                <div class="tactic-title">Bei Entdeckung</div>
+                <div class="tactic-steps">
+                    <ol>
+                        <li><strong>Misty Step</strong> (Bonus) → 30ft Teleport</li>
+                        <li><strong>Cunning Action: Hide</strong> (Bonus)</li>
+                        <li><strong>Calm Emotions</strong> (Psionic) → Feinde beruhigen</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Social Encounter -->
+        <div class="situation-card">
+            <h3>💬 Social Encounter / Negotiation</h3>
+            
+            <div class="tactic">
+                <div class="tactic-title">Deine Stärken</div>
+                <div class="tactic-steps">
+                    <ul>
+                        <li><strong>Persuasion:</strong> +13 (Expertise) - Hauptwaffe!</li>
+                        <li><strong>Deception:</strong> +9</li>
+                        <li><strong>Intimidation:</strong> +9</li>
+                        <li><strong>Insight:</strong> +6 (Passive 16)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tactic">
+                <div class="tactic-title">Magische Unterstützung</div>
+                <div class="tactic-steps">
+                    <ul>
+                        <li><strong>Detect Thoughts:</strong> Gedanken lesen (WIS Save)</li>
+                        <li><strong>Suggestion:</strong> Befehle geben (8h Dauer!)</li>
+                        <li><strong>Calm Emotions:</strong> Deeskalation</li>
+                        <li><strong>Telepathic Speech:</strong> Geheime Absprachen</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tactic">
+                <div class="tactic-title">Subtle Spell Trick</div>
+                <div class="tactic-steps">
+                    <p><strong>Subtle Spell (1 SP):</strong> Caste Suggestion/Detect Thoughts ohne dass jemand es merkt!</p>
+                    <p style="margin-top: 5px; color: #4ecdc4;">✓ Keine verbalen/somatischen Komponenten</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Boss Fight -->
+        <div class="situation-card">
+            <h3>👹 Boss Fight / Schwerer Kampf</h3>
+            
+            <div class="tactic">
+                <div class="tactic-title">Runde 1: Setup</div>
+                <div class="tactic-steps">
+                    <ol>
+                        <li><strong>Bonus:</strong> Celestial Revelation (Radiant Soul für Flug)</li>
+                        <li><strong>Action:</strong> Hunger of Hadar (3rd, Concentration)</li>
+                        <li><strong>Positioning:</strong> In die Luft, außer Reichweite</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="tactic">
+                <div class="tactic-title">Runde 2+: Damage</div>
+                <div class="tactic-steps">
+                    <ol>
+                        <li><strong>Bonus:</strong> Quickened Spell - Mind Sliver (2 SP)</li>
+                        <li><strong>Action:</strong> Attack mit Sneak Attack + Radiant (+4)</li>
+                        <li><strong>Reaction:</strong> Shield (+5 AC) oder Counterspell</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="tactic">
+                <div class="tactic-title">Defensive Optionen</div>
+                <div class="tactic-steps">
+                    <ul>
+                        <li><strong>Shield:</strong> +5 AC (Reaction)</li>
+                        <li><strong>Uncanny Dodge:</strong> ½ Schaden (Reaction)</li>
+                        <li><strong>Misty Step:</strong> Escape (Bonus)</li>
+                        <li><strong>Invisibility:</strong> Greater Invisibility (4th)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crowd Control -->
+        <div class="situation-card">
+            <h3>👥 Viele Gegner / AoE Situation</h3>
+            
+            <div class="tactic">
+                <div class="tactic-title">AoE Spells</div>
+                <div class="tactic-steps">
+                    <ul>
+                        <li><strong>Hunger of Hadar (3rd):</strong> 20ft Radius, 2d6 Cold + 2d6 Acid</li>
+                        <li><strong>Arms of Hadar (1st, Psionic):</strong> 10ft Radius, 2d6 Necrotic</li>
+                        <li><strong>Fireball (3rd):</strong> 20ft Radius, 8d6 Fire</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tactic">
+                <div class="tactic-title">Crowd Control</div>
+                <div class="tactic-steps">
+                    <ul>
+                        <li><strong>Calm Emotions (2nd, Psionic):</strong> 20ft Radius beruhigen</li>
+                        <li><strong>Hold Person (2nd):</strong> Paralysieren</li>
+                        <li><strong>Evard's Black Tentacles (4th, Psionic):</strong> 20ft Restrained</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tactic">
+                <div class="tactic-title">Mobility</div>
+                <div class="tactic-steps">
+                    <ol>
+                        <li><strong>Cunning Action: Dash</strong> → Doppelte Bewegung</li>
+                        <li><strong>Misty Step</strong> → 30ft Teleport</li>
+                        <li><strong>Celestial Revelation</strong> → Fluggeschwindigkeit</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- SPELLS SECTION -->
+<section id="spells">
+
+    <h2 style="color: #9b59b6; text-align: center; margin-bottom: 20px;">🔮 Spell Reference</h2>
+
+    <!-- Spell Slots -->
+    <div style="background: #2a2a2a; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+        <h3 style="color: #8ad6ff; margin-bottom: 10px; text-align: center;">📊 Resources</h3>
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-label">Sorcery Points</div>
+                <div class="stat-value">8</div>
+                <div class="stat-subtext">max (Sor Level)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">1st Level Slots</div>
+                <div class="stat-value">4</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">2nd Level Slots</div>
+                <div class="stat-value">3</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">3rd Level Slots</div>
+                <div class="stat-value">3</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">4th Level Slots</div>
+                <div class="stat-value">2</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Metamagic Quick Ref -->
+    <div style="background: #2a2a2a; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+        <h3 style="color: #8ad6ff; margin-bottom: 10px; text-align: center;">✨ Metamagic</h3>
+        <div class="quick-ref-grid">
+            <div class="quick-card">
+                <h3>⚡ Quickened Spell</h3>
+                <p><strong>Cost:</strong> 2 SP</p>
+                <p>Spell als Bonus Action</p>
+                <p style="margin-top: 5px; font-size: 12px; color: #aaa;">⚠️ Dann nur Cantrip als Action!</p>
+            </div>
+            <div class="quick-card">
+                <h3>🤫 Subtle Spell</h3>
+                <p><strong>Cost:</strong> 1 SP</p>
+                <p>Keine V/S Komponenten</p>
+                <p style="margin-top: 5px; font-size: 12px; color: #4ecdc4;">✓ Perfekt für Social!</p>
+            </div>
+            <div class="quick-card">
+                <h3>👥 Twinned Spell</h3>
+                <p><strong>Cost:</strong> Spell Level SP</p>
+                <p>Zweites Ziel (Single-Target)</p>
+            </div>
+            <div class="quick-card">
+                <h3>💪 Heightened Spell</h3>
+                <p><strong>Cost:</strong> 3 SP</p>
+                <p>Ziel hat Disadvantage auf Save</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spells by Level -->
+    <h3 style="color: #8ad6ff; margin: 20px 0 10px 0;">Cantrips</h3>
+    <div class="spell-quick-list">
+        <div class="spell-quick psionic">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Mind Sliver</span>
+                <span class="spell-quick-level">Cantrip</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag action">Action</span>
+                <span class="tag psionic">Psionic</span><br>
+                60ft | 1d6 Psychic + -1d4 Save
+            </div>
+        </div>
+        <div class="spell-quick">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Fire Bolt</span>
+                <span class="spell-quick-level">Cantrip</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag action">Action</span><br>
+                120ft | 1d10 Fire
+            </div>
+        </div>
+        <div class="spell-quick">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Mage Hand</span>
+                <span class="spell-quick-level">Cantrip</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag action">Action</span><br>
+                30ft | Spektrale Hand
+            </div>
+        </div>
+        <div class="spell-quick">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Light</span>
+                <span class="spell-quick-level">Cantrip</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag action">Action</span><br>
+                Touch | 20ft Licht, 1h
+            </div>
+        </div>
+    </div>
+
+    <h3 style="color: #8ad6ff; margin: 20px 0 10px 0;">Level 1</h3>
+    <div class="spell-quick-list">
+        <div class="spell-quick psionic">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Arms of Hadar</span>
+                <span class="spell-quick-level">1st</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag action">Action</span>
+                <span class="tag psionic">Psionic</span><br>
+                Self 10ft | 2d6 Necrotic + No Reactions
+            </div>
+        </div>
+        <div class="spell-quick psionic">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Dissonant Whispers</span>
+                <span class="spell-quick-level">1st</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag action">Action</span>
+                <span class="tag psionic">Psionic</span><br>
+                60ft | 3d6 Psychic + Flee
+            </div>
+        </div>
+        <div class="spell-quick">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Shield</span>
+                <span class="spell-quick-level">1st</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag reaction">Reaction</span><br>
+                Self | +5 AC bis nächster Zug
+            </div>
+        </div>
+        <div class="spell-quick">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Mage Armor</span>
+                <span class="spell-quick-level">1st</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag action">Action</span><br>
+                Touch | AC 13+DEX, 8h
+            </div>
+        </div>
+    </div>
+
+    <h3 style="color: #8ad6ff; margin: 20px 0 10px 0;">Level 2</h3>
+    <div class="spell-quick-list">
+        <div class="spell-quick psionic">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Calm Emotions</span>
+                <span class="spell-quick-level">2nd</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag action">Action</span>
+                <span class="tag concentration">Conc</span>
+                <span class="tag psionic">Psionic</span><br>
+                60ft 20ft-radius | Suppress Charm/Fear
+            </div>
+        </div>
+        <div class="spell-quick psionic">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Detect Thoughts</span>
+                <span class="spell-quick-level">2nd</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag action">Action</span>
+                <span class="tag concentration">Conc</span>
+                <span class="tag psionic">Psionic</span><br>
+                Self 30ft | Gedanken lesen, 1min
+            </div>
+        </div>
+        <div class="spell-quick">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Misty Step</span>
+                <span class="spell-quick-level">2nd</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag bonus">Bonus</span><br>
+                Self | Teleport 30ft
+            </div>
+        </div>
+        <div class="spell-quick">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Invisibility</span>
+                <span class="spell-quick-level">2nd</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag action">Action</span>
+                <span class="tag concentration">Conc</span><br>
+                Touch | Unsichtbar 1h
+            </div>
+        </div>
+        <div class="spell-quick">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Hold Person</span>
+                <span class="spell-quick-level">2nd</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag action">Action</span>
+                <span class="tag concentration">Conc</span><br>
+                60ft | Paralyzed
+            </div>
+        </div>
+        <div class="spell-quick">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Suggestion</span>
+                <span class="spell-quick-level">2nd</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag action">Action</span>
+                <span class="tag concentration">Conc</span><br>
+                30ft | Befehl, 8h
+            </div>
+        </div>
+    </div>
+
+    <h3 style="color: #8ad6ff; margin: 20px 0 10px 0;">Level 3</h3>
+    <div class="spell-quick-list">
+        <div class="spell-quick psionic">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Hunger of Hadar</span>
+                <span class="spell-quick-level">3rd</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag action">Action</span>
+                <span class="tag concentration">Conc</span>
+                <span class="tag psionic">Psionic</span><br>
+                150ft 20ft-radius | 2d6 Cold + 2d6 Acid
+            </div>
+        </div>
+        <div class="spell-quick psionic">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Sending</span>
+                <span class="spell-quick-level">3rd</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag action">Action</span>
+                <span class="tag psionic">Psionic</span><br>
+                Unlimited | 25-Wort Nachricht
+            </div>
+        </div>
+        <div class="spell-quick">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Counterspell</span>
+                <span class="spell-quick-level">3rd</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag reaction">Reaction</span><br>
+                60ft | Cancel Spell
+            </div>
+        </div>
+        <div class="spell-quick">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Fireball</span>
+                <span class="spell-quick-level">3rd</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag action">Action</span><br>
+                150ft 20ft-radius | 8d6 Fire
+            </div>
+        </div>
+        <div class="spell-quick">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Haste</span>
+                <span class="spell-quick-level">3rd</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag action">Action</span>
+                <span class="tag concentration">Conc</span><br>
+                30ft | +Speed, +AC, +Action, 1min
+            </div>
+        </div>
+    </div>
+
+    <h3 style="color: #8ad6ff; margin: 20px 0 10px 0;">Level 4</h3>
+    <div class="spell-quick-list">
+        <div class="spell-quick psionic">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Evard's Black Tentacles</span>
+                <span class="spell-quick-level">4th</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag action">Action</span>
+                <span class="tag concentration">Conc</span>
+                <span class="tag psionic">Psionic</span><br>
+                90ft 20ft-radius | 3d6 + Restrained
+            </div>
+        </div>
+        <div class="spell-quick psionic">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Summon Aberration</span>
+                <span class="spell-quick-level">4th</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag action">Action</span>
+                <span class="tag concentration">Conc</span>
+                <span class="tag psionic">Psionic</span><br>
+                90ft | Summon Creature, 1h
+            </div>
+        </div>
+        <div class="spell-quick">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Dimension Door</span>
+                <span class="spell-quick-level">4th</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag action">Action</span><br>
+                500ft | Teleport + 1 Creature
+            </div>
+        </div>
+        <div class="spell-quick">
+            <div class="spell-quick-header">
+                <span class="spell-quick-name">Greater Invisibility</span>
+                <span class="spell-quick-level">4th</span>
+            </div>
+            <div class="spell-quick-info">
+                <span class="tag action">Action</span>
+                <span class="tag concentration">Conc</span><br>
+                Touch | Unsichtbar auch beim Angriff, 1min
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- STATS SECTION -->
+<section id="stats">
+
+    <h2 style="color: #8ad6ff; text-align: center; margin-bottom: 20px;">📊 Full Stats</h2>
+
+    <!-- Skills Compact -->
+    <div style="background: #2a2a2a; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+        <h3 style="color: #8ad6ff; margin-bottom: 10px;">🎯 Skills</h3>
+        <div class="skills-compact">
+            <div class="skill-compact">
+                <span class="skill-compact-name">Acrobatics (DEX)</span>
+                <span class="skill-compact-bonus">+4</span>
+            </div>
+            <div class="skill-compact">
+                <span class="skill-compact-name">Animal Handling (WIS)</span>
+                <span class="skill-compact-bonus">+2</span>
+            </div>
+            <div class="skill-compact">
+                <span class="skill-compact-name">Arcana (INT)</span>
+                <span class="skill-compact-bonus">+1</span>
+            </div>
+            <div class="skill-compact">
+                <span class="skill-compact-name">Athletics (STR)</span>
+                <span class="skill-compact-bonus">+0</span>
+            </div>
+            <div class="skill-compact prof">
+                <span class="skill-compact-name">Deception (CHA)</span>
+                <span class="skill-compact-bonus">+9</span>
+            </div>
+            <div class="skill-compact">
+                <span class="skill-compact-name">History (INT)</span>
+                <span class="skill-compact-bonus">+1</span>
+            </div>
+            <div class="skill-compact prof">
+                <span class="skill-compact-name">Insight (WIS)</span>
+                <span class="skill-compact-bonus">+6</span>
+            </div>
+            <div class="skill-compact prof">
+                <span class="skill-compact-name">Intimidation (CHA)</span>
+                <span class="skill-compact-bonus">+9</span>
+            </div>
+            <div class="skill-compact">
+                <span class="skill-compact-name">Investigation (INT)</span>
+                <span class="skill-compact-bonus">+1</span>
+            </div>
+            <div class="skill-compact">
+                <span class="skill-compact-name">Medicine (WIS)</span>
+                <span class="skill-compact-bonus">+2</span>
+            </div>
+            <div class="skill-compact">
+                <span class="skill-compact-name">Nature (INT)</span>
+                <span class="skill-compact-bonus">+1</span>
+            </div>
+            <div class="skill-compact">
+                <span class="skill-compact-name">Perception (WIS)</span>
+                <span class="skill-compact-bonus">+2</span>
+            </div>
+            <div class="skill-compact prof">
+                <span class="skill-compact-name">Performance (CHA)</span>
+                <span class="skill-compact-bonus">+5</span>
+            </div>
+            <div class="skill-compact expert">
+                <span class="skill-compact-name">Persuasion (CHA) ◆</span>
+                <span class="skill-compact-bonus">+13</span>
+            </div>
+            <div class="skill-compact">
+                <span class="skill-compact-name">Religion (INT)</span>
+                <span class="skill-compact-bonus">+1</span>
+            </div>
+            <div class="skill-compact expert">
+                <span class="skill-compact-name">Sleight of Hand (DEX) ◆</span>
+                <span class="skill-compact-bonus">+8</span>
+            </div>
+            <div class="skill-compact expert">
+                <span class="skill-compact-name">Stealth (DEX) ◆</span>
+                <span class="skill-compact-bonus">+12</span>
+            </div>
+            <div class="skill-compact">
+                <span class="skill-compact-name">Survival (WIS)</span>
+                <span class="skill-compact-bonus">+2</span>
+            </div>
+        </div>
+        <p style="text-align: center; margin-top: 15px; color: #aaa; font-size: 12px;">
+            Türkis = Proficient | Orange = Expertise (◆)
+        </p>
+    </div>
+
+    <!-- Proficiencies -->
+    <div style="background: #2a2a2a; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+        <h3 style="color: #8ad6ff; margin-bottom: 10px;">🛠️ Proficiencies & Languages</h3>
+        
+        <h4 style="color: #ffd166; margin-top: 10px; font-size: 14px;">Saving Throws</h4>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+            <span class="tag">DEX +8</span>
+            <span class="tag">CON +7</span>
+            <span class="tag">CHA +9</span>
+        </div>
+        
+        <h4 style="color: #ffd166; margin-top: 10px; font-size: 14px;">Weapons</h4>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+            <span class="tag">Simple Weapons</span>
+            <span class="tag">Martial Weapons</span>
+        </div>
+        
+        <h4 style="color: #ffd166; margin-top: 10px; font-size: 14px;">Armor</h4>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+            <span class="tag">Light Armor</span>
+        </div>
+        
+        <h4 style="color: #ffd166; margin-top: 10px; font-size: 14px;">Tools</h4>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+            <span class="tag">Thieves' Tools</span>
+        </div>
+        
+        <h4 style="color: #ffd166; margin-top: 10px; font-size: 14px;">Languages</h4>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <span class="tag">Common</span>
+            <span class="tag">Celestial</span>
+        </div>
+    </div>
+
+    <!-- Senses -->
+    <div style="background: #2a2a2a; padding: 15px; border-radius: 10px;">
+        <h3 style="color: #8ad6ff; margin-bottom: 10px;">👁️ Senses</h3>
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-label">Passive Perception</div>
+                <div class="stat-value">12</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Passive Investigation</div>
+                <div class="stat-value">11</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Passive Insight</div>
+                <div class="stat-value">16</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Darkvision</div>
+                <div class="stat-value">60 ft</div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+</div>
+
+<script>
+
+// Navigation
+function showTab(tabName) {
+    const sections = document.querySelectorAll('section');
+    sections.forEach(section => {
+        section.classList.remove('active');
+    });
+    
+    const navButtons = document.querySelectorAll('nav button');
+    navButtons.forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    document.getElementById(tabName).classList.add('active');
+    document.getElementById('nav-' + tabName).classList.add('active');
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Combat Assistant
+let combatState = {
+    bonusActionUsed: false,
+    actionUsed: false,
+    moved: false,
+    sneakAttackUsed: false
+};
+
+function planAttack() {
+    const feedback = document.getElementById('combat-feedback');
+    feedback.classList.add('show');
+    
+    let html = '<h3 style="color: #e94560; margin-bottom: 15px;">⚔️ Angriff Analyse</h3>';
+    
+    html += '<div class="feedback-item">';
+    html += '<strong style="color: #8ad6ff;">🗡️ Sneak Attack:</strong> ';
+    if (!combatState.sneakAttackUsed) {
+        html += '<span style="color: #4ecdc4;">✓ Verfügbar (+2d6)</span><br>';
+        html += '<small style="color: #aaa;">Bedingung: Advantage ODER Verbündeter nahe Ziel</small>';
+    } else {
+        html += '<span style="color: #e94560;">✗ Bereits verwendet</span>';
+    }
+    html += '</div>';
+    
+    html += '<div class="feedback-item">';
+    html += '<strong style="color: #8ad6ff;">⚡ Bonus Action:</strong> ';
+    if (!combatState.bonusActionUsed) {
+        html += '<span style="color: #4ecdc4;">✓ Frei</span><br>';
+        html += '<small style="color: #aaa;">Optionen: Steady Aim, Cunning Action, Quickened Spell</small>';
+    } else {
+        html += '<span style="color: #e94560;">✗ Verwendet</span>';
+    }
+    html += '</div>';
+    
+    html += '<div class="feedback-item">';
+    html += '<strong style="color: #8ad6ff;">🎯 Steady Aim:</strong> ';
+    if (!combatState.moved && !combatState.bonusActionUsed) {
+        html += '<span style="color: #4ecdc4;">✓ Möglich!</span><br>';
+        html += '<small style="color: #aaa;">Gibt Advantage → garantiert Sneak Attack</small>';
+    } else {
+        html += '<span style="color: #e94560;">✗ Nicht möglich</span>';
+    }
+    html += '</div>';
+    
+    html += '<div style="background: #1a1a2e; padding: 10px; border-radius: 5px; margin-top: 10px;">';
+    html += '<strong style="color: #ffd166;">💡 Empfehlung:</strong><br>';
+    if (!combatState.moved && !combatState.bonusActionUsed) {
+        html += 'Nutze <strong>Steady Aim</strong> (Bonus) für garantierte Sneak Attack!';
+    } else {
+        html += 'Positioniere dich für Sneak Attack oder nutze Cunning Action';
+    }
+    html += '</div>';
+    
+    feedback.innerHTML = html;
+}
+
+function planSpell() {
+    const feedback = document.getElementById('combat-feedback');
+    feedback.classList.add('show');
+    
+    let html = '<h3 style="color: #9b59b6; margin-bottom: 15px;">🔮 Spell Analyse</h3>';
+    
+    html += '<div class="feedback-item">';
+    html += '<strong style="color: #8ad6ff;">⚡ Quickened Spell:</strong> ';
+    if (!combatState.bonusActionUsed) {
+        html += '<span style="color: #4ecdc4;">✓ Möglich (2 SP)</span><br>';
+        html += '<small style="color: #aaa;">Spell als Bonus → dann nur Cantrip als Action!</small>';
+    } else {
+        html += '<span style="color: #e94560;">✗ Bonus Action verwendet</span>';
+    }
+    html += '</div>';
+    
+    html += '<div class="feedback-item">';
+    html += '<strong style="color: #8ad6ff;">🧠 Psionic Sorcery:</strong> ';
+    html += '<span style="color: #4ecdc4;">✓ Verfügbar</span><br>';
+    html += '<small style="color: #aaa;">Psionic Spells: Keine V/S, kostet SP statt Slot</small>';
+    html += '</div>';
+    
+    html += '<div class="feedback-item">';
+    html += '<strong style="color: #8ad6ff;">✨ Metamagic Optionen:</strong><br>';
+    html += '<ul style="margin: 5px 0 0 20px; font-size: 13px;">';
+    html += '<li><strong>Quickened (2 SP):</strong> Spell + Angriff</li>';
+    html += '<li><strong>Subtle (1 SP):</strong> Stealth-Casting</li>';
+    html += '<li><strong>Twinned (Level SP):</strong> Zweites Ziel</li>';
+    html += '<li><strong>Heightened (3 SP):</strong> Disadvantage Save</li>';
+    html += '</ul>';
+    html += '</div>';
+    
+    html += '<div style="background: #1a1a2e; padding: 10px; border-radius: 5px; margin-top: 10px;">';
+    html += '<strong style="color: #ffd166;">💡 Empfehlung:</strong><br>';
+    html += 'Nutze <strong>Psionic Sorcery</strong> für stilles Casten oder <strong>Quickened</strong> für Combo';
+    html += '</div>';
+    
+    feedback.innerHTML = html;
+}
+
+function planStealth() {
+    const feedback = document.getElementById('combat-feedback');
+    feedback.classList.add('show');
+    
+    let html = '<h3 style="color: #95e1d3; margin-bottom: 15px;">🥷 Stealth Angriff</h3>';
+    
+    html += '<div class="feedback-item">';
+    html += '<strong style="color: #8ad6ff;">Setup:</strong><br>';
+    html += '<ol style="margin: 5px 0 0 20px; font-size: 13px;">';
+    html += '<li><strong>Invisibility</strong> casten (2nd Level)</li>';
+    html += '<li><strong>Cunning Action: Hide</strong> (Bonus, Stealth +12)</li>';
+    html += '<li>Positionierung für Sneak Attack</li>';
+    html += '</ol>';
+    html += '</div>';
+    
+    html += '<div class="feedback-item">';
+    html += '<strong style="color: #8ad6ff;">Angriff:</strong><br>';
+    html += '<ul style="margin: 5px 0 0 20px; font-size: 13px;">';
+    html += '<li>Advantage durch Unsichtbar/Versteckt</li>';
+    html += '<li><strong>Sneak Attack +2d6</strong> garantiert</li>';
+    html += '<li>Nach Angriff: Misty Step (Bonus) zum Escape</li>';
+    html += '</ul>';
+    html += '</div>';
+    
+    html += '<div style="background: #1a1a2e; padding: 10px; border-radius: 5px; margin-top: 10px;">';
+    html += '<strong style="color: #ffd166;">💡 Pro-Tipp:</strong><br>';
+    html += 'Nutze <strong>Psionic Sorcery</strong> für Invisibility → kein V/S → komplett lautlos!';
+    html += '</div>';
+    
+    feedback.innerHTML = html;
+}
+
+function resetCombat() {
+    combatState = {
+        bonusActionUsed: false,
+        actionUsed: false,
+        moved: false,
+        sneakAttackUsed: false
+    };
+    
+    const feedback = document.getElementById('combat-feedback');
+    feedback.classList.remove('show');
+    feedback.innerHTML = '';
+}
+
+console.log('✨ Calrar Bogur Cheatsheet loaded!');
+
+</script>
+
+</body>
+</html>
