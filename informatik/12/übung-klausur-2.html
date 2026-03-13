@@ -1,0 +1,1820 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Übungsaufgaben Informatik Klasse 12 - Binärbäume, Nebenläufigkeit & Sicherheit - edu-mrh.de</title>
+    <meta name="description" content="Interaktive Übungsaufgaben zu Binärbäumen, nebenläufigen Prozessen und Informationssicherheit für die 12. Klasse mit Lösungsüberprüfung.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    
+    <!-- CSS Framework -->
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    
+    <!-- JavaScript Framework -->
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    
+    <!-- KaTeX für mathematische Formeln -->
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/katex/katex.min.css">
+    <script defer src="https://edu-mrh.de/embed/katex/katex.min.js"></script>
+    <script defer src="https://edu-mrh.de/embed/katex/contrib/auto-render.min.js" onload="renderMath()"></script>
+    
+    <style>
+        .answer-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--gray-light);
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 1rem;
+            margin: 0.5rem 0;
+            transition: var(--transition-fast);
+        }
+        
+        .answer-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .answer-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .check-btn {
+            margin-top: 1rem;
+        }
+        
+        .feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: var(--radius);
+            display: none;
+        }
+        
+        .feedback.correct {
+            background: #d1fae5;
+            border: 2px solid var(--success-color);
+            color: var(--success-dark);
+            display: block;
+        }
+        
+        .feedback.incorrect {
+            background: #fee2e2;
+            border: 2px solid var(--danger-color);
+            color: var(--danger-dark);
+            display: block;
+        }
+        
+        .feedback.partial {
+            background: #fef3c7;
+            border: 2px solid var(--warning-color);
+            color: var(--warning-dark);
+            display: block;
+        }
+        
+        .tree-canvas {
+            border: 2px solid var(--gray-light);
+            border-radius: var(--radius);
+            background: white;
+            margin: 1rem 0;
+            max-width: 100%;
+        }
+        
+        .diagram-box {
+            background: var(--gray-lighter);
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin: 1rem 0;
+            text-align: center;
+        }
+        
+        .code-input {
+            font-family: var(--font-family-mono);
+            background: var(--dark);
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: var(--radius);
+            border: 2px solid var(--gray-light);
+        }
+        
+        .hint-box {
+            background: #dbeafe;
+            border-left: 4px solid var(--info-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: var(--radius);
+        }
+        
+        .progress-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .progress-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .progress-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gray-lighter);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            font-weight: bold;
+            transition: var(--transition);
+        }
+        
+        .progress-circle.completed {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .table-input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--gray-light);
+            border-radius: var(--radius-sm);
+        }
+        
+        .canvas-container {
+            text-align: center;
+            margin: 1rem 0;
+        }
+        
+        select.answer-input {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<!--
+Fachbereich: Informatik
+Jahrgangsstufe: 12
+Thema: Binärbäume, Nebenläufigkeit & Informationssicherheit
+Erstellt: 2026-03-13
+Version: 1.0
+-->
+
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-brand">
+            <span class="icon">🖥️</span>
+            <a href="https://edu-mrh.de/">edu-mrh.de</a>
+        </div>
+        <div class="nav-links">
+            <a href="https://edu-mrh.de/informatik/informatik.html#jahrgang-12" class="btn btn-outline">Übersicht</a>
+            <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <h3>📚 Inhalte</h3>
+        <button class="sidebar-toggle" id="sidebarToggle">✕</button>
+    </div>
+    <nav class="sidebar-menu">
+        <a href="#intro" data-section="intro" class="active">
+            <span class="icon">🏠</span>
+            Einführung
+        </a>
+        <a href="#binaerbaeume" data-section="binaerbaeume">
+            <span class="icon">🌳</span>
+            Teil 1: Binärbäume
+        </a>
+        <a href="#nebenlaeufigkeit" data-section="nebenlaeufigkeit">
+            <span class="icon">⚡</span>
+            Teil 2: Nebenläufigkeit
+        </a>
+        <a href="#sicherheit" data-section="sicherheit">
+            <span class="icon">🔒</span>
+            Teil 3: Informationssicherheit
+        </a>
+        <a href="#zusammenfassung" data-section="zusammenfassung">
+            <span class="icon">✅</span>
+            Zusammenfassung
+        </a>
+    </nav>
+</aside>
+
+<!-- Mobile Menu Button -->
+<button class="mobile-menu-btn" id="mobileMenuBtn">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="container">
+        
+        <!-- Intro Section -->
+        <section id="intro" class="content-section active">
+            <div class="hero">
+                <h1 class="hero-title">Übungsaufgaben Informatik</h1>
+                <p class="hero-subtitle">Klasse 12 - Binärbäume, Nebenläufigkeit & Informationssicherheit</p>
+                <p class="hero-description">
+                    Willkommen zu dieser interaktiven Übungseinheit! Hier kannst du dein Wissen zu drei zentralen Themen der Informatik vertiefen und direkt überprüfen.
+                </p>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">🌳</div>
+                    <h3>Binärbäume</h3>
+                    <p>Verstehe die Struktur und Traversierung von Binärbäumen am Beispiel einer Highscore-Liste.</p>
+                    <ul>
+                        <li>Terminologie & Grundlagen</li>
+                        <li>Traversierungsarten</li>
+                        <li>Kompositum-Muster</li>
+                        <li>Operationen (Einfügen, Löschen)</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">⚡</div>
+                    <h3>Nebenläufigkeit</h3>
+                    <p>Lerne die Herausforderungen paralleler Prozesse am Beispiel eines Mensa-Bezahlsystems kennen.</p>
+                    <ul>
+                        <li>Prozesse vs. Threads</li>
+                        <li>Race Conditions</li>
+                        <li>Synchronisation in Java</li>
+                        <li>Deadlocks vermeiden</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">🔒</div>
+                    <h3>Informationssicherheit</h3>
+                    <p>Analysiere Sicherheitsrisiken und Schutzmaßnahmen am Beispiel eines digitalen Bürger-Portals.</p>
+                    <ul>
+                        <li>Schutzziele (CIA+A)</li>
+                        <li>Gefahrenklassen</li>
+                        <li>T-O-P Modell</li>
+                        <li>Praktische Maßnahmen</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="progress-indicator">
+                <div class="progress-item">
+                    <div class="progress-circle" id="progress-binaerbaeume">0/8</div>
+                    <p>Binärbäume</p>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-circle" id="progress-nebenlaeufigkeit">0/9</div>
+                    <p>Nebenläufigkeit</p>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-circle" id="progress-sicherheit">0/3</div>
+                    <p>Sicherheit</p>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-primary btn-lg" onclick="siteManager.navigateToSection('binaerbaeume')">
+                    Los geht's! 🚀
+                </button>
+            </div>
+        </section>
+
+        <!-- Binärbäume Section -->
+        <section id="binaerbaeume" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Teil 1</span>
+                <h1>Binärbäume: "Binary Quest - Die Highscore-Liste"</h1>
+            </div>
+
+            <div class="info-box">
+                <h3>💡 Szenario</h3>
+                <p>In dem neuen Indie-Game "Binary Quest" werden die Punktzahlen der Spieler in einem binären Suchbaum gespeichert, um schnelle Abfragen und Sortierungen zu ermöglichen. Jeder Knoten im Baum speichert einen ganzzahligen Punktwert.</p>
+            </div>
+
+            <!-- Teil A: Grundlagen -->
+            <div class="example-box">
+                <h3>📖 Teil A: Grundlagen & Struktur</h3>
+                
+                <div class="task-box">
+                    <h4>✏️ Aufgabe 1: Terminologie</h4>
+                    <p>Gegeben ist ein Binärbaum mit der Wurzel (Wert: 50). Die Wurzel hat ein linkes Kind (30) und ein rechtes Kind (70). Das Blatt mit dem kleinsten Wert ist die 10.</p>
+                    
+                    <p><strong>a) Definieren Sie die Begriffe "Blatt" und "Elternknoten" anhand dieses Beispiels:</strong></p>
+                    
+                    <label><strong>Blatt:</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-1a-blatt" placeholder="Ihre Definition eines Blattes..."></textarea>
+                    
+                    <label><strong>Elternknoten:</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-1a-eltern" placeholder="Ihre Definition eines Elternknotens..."></textarea>
+                    
+                    <p><strong>b) Bestimmen Sie die maximale Anzahl an Knoten in einem binären Suchbaum der Höhe h:</strong></p>
+                    <p>Nutzen Sie die Formel: $\text{max\_knoten} = 2^{h+1} - 1$</p>
+                    <p>(Hinweis: Die Wurzel liegt auf Höhe 0)</p>
+                    
+                    <label><strong>Für h = 3:</strong></label>
+                    <input type="number" class="answer-input" id="answer-1b" placeholder="Anzahl der Knoten">
+                    
+                    <button class="btn btn-primary check-btn" onclick="checkAnswer1()">Antwort überprüfen</button>
+                    <div class="feedback" id="feedback-1"></div>
+                </div>
+
+                <div class="task-box">
+                    <h4>✏️ Aufgabe 2: Balancierung</h4>
+                    <p>Erklären Sie den Unterschied zwischen einem balancierten und einem entarteten Binärbaum. Welche Auswirkung hat ein entarteter Baum auf die Performance beim Suchen eines Wertes?</p>
+                    
+                    <label><strong>Balancierter Baum:</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-2-balanciert" placeholder="Beschreibung eines balancierten Baums..."></textarea>
+                    
+                    <label><strong>Entarteter Baum:</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-2-entartet" placeholder="Beschreibung eines entarteten Baums..."></textarea>
+                    
+                    <label><strong>Performance-Auswirkung:</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-2-performance" placeholder="Auswirkung auf die Suchperformance..."></textarea>
+                    
+                    <button class="btn btn-primary check-btn" onclick="checkAnswer2()">Antwort überprüfen</button>
+                    <div class="feedback" id="feedback-2"></div>
+                </div>
+            </div>
+
+            <!-- Teil B: Traversierungen -->
+            <div class="example-box">
+                <h3>📖 Teil B: Traversierungen</h3>
+                
+                <div class="task-box">
+                    <h4>✏️ Aufgabe 3: Traversierungsarten</h4>
+                    <p>Gegeben ist folgender Baum (Inorder-Notation der Werte: 10, 30, 40, 50, 70).</p>
+                    
+                    <div class="canvas-container">
+                        <canvas id="treeCanvas" class="tree-canvas" width="600" height="300"></canvas>
+                    </div>
+                    
+                    <p><strong>a) Geben Sie die Reihenfolge der Knotenbesuche für die Preorder-Traversierung an:</strong></p>
+                    <input type="text" class="answer-input" id="answer-3a" placeholder="z.B. 50, 30, 10, 40, 70">
+                    
+                    <p><strong>b) Geben Sie die Reihenfolge der Knotenbesuche für die Postorder-Traversierung an:</strong></p>
+                    <input type="text" class="answer-input" id="answer-3b" placeholder="z.B. 10, 40, 30, 70, 50">
+                    
+                    <p><strong>c) Begründen Sie, warum die Inorder-Traversierung bei einem binären Suchbaum besonders nützlich für die Highscore-Liste ist:</strong></p>
+                    <textarea class="answer-input answer-textarea" id="answer-3c" placeholder="Ihre Begründung..."></textarea>
+                    
+                    <button class="btn btn-primary check-btn" onclick="checkAnswer3()">Antwort überprüfen</button>
+                    <div class="feedback" id="feedback-3"></div>
+                </div>
+
+                <div class="task-box">
+                    <h4>✏️ Aufgabe 4: Rekursion</h4>
+                    <p>Warum bietet sich für die Traversierung von Bäumen ein rekursiver Ansatz eher an als ein iterativer? Nennen Sie das zugrundeliegende Prinzip.</p>
+                    
+                    <textarea class="answer-input answer-textarea" id="answer-4" placeholder="Ihre Antwort zum rekursiven Ansatz..."></textarea>
+                    
+                    <button class="btn btn-primary check-btn" onclick="checkAnswer4()">Antwort überprüfen</button>
+                    <div class="feedback" id="feedback-4"></div>
+                </div>
+            </div>
+
+            <!-- Teil C: Programmierung -->
+            <div class="example-box">
+                <h3>📖 Teil C: Programmierung (Kompositum-Muster)</h3>
+                
+                <div class="task-box">
+                    <h4>✏️ Aufgabe 5: Klassendiagramm & Rollen</h4>
+                    <p>Zeichnen Sie das Klassendiagramm für die Baumstruktur. Es genügen grundlegende Methoden und Attribute.</p>
+                    
+                    <div class="hint-box">
+                        <strong>💡 Hinweis:</strong> Das Kompositum-Muster besteht typischerweise aus:
+                        <ul>
+                            <li>Einer abstrakten Basisklasse (Baumelement)</li>
+                            <li>Einer Blatt-Klasse (Abschluss)</li>
+                            <li>Einer Kompositum-Klasse (Knoten)</li>
+                        </ul>
+                    </div>
+                    
+                    <label><strong>Beschreiben Sie die Rolle der Klasse "Baumelement":</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-5a" placeholder="Rolle von Baumelement..."></textarea>
+                    
+                    <label><strong>Beschreiben Sie die Rolle der Klasse "Knoten":</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-5b" placeholder="Rolle von Knoten..."></textarea>
+                    
+                    <label><strong>Beschreiben Sie die Rolle der Klasse "Abschluss":</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-5c" placeholder="Rolle von Abschluss..."></textarea>
+                    
+                    <button class="btn btn-primary check-btn" onclick="checkAnswer5()">Antwort überprüfen</button>
+                    <div class="feedback" id="feedback-5"></div>
+                </div>
+
+                <div class="task-box">
+                    <h4>✏️ Aufgabe 6: Methoden-Implementierung</h4>
+                    <p>Gegeben ist die abstrakte Methode <code>int anzahlGeben()</code> in der Klasse Baumelement. Implementieren Sie diese Methode in Java für die Klassen Knoten und Abschluss.</p>
+                    
+                    <label><strong>Implementierung für die Klasse "Abschluss":</strong></label>
+                    <textarea class="answer-input answer-textarea code-input" id="answer-6a" placeholder="public int anzahlGeben() {&#10;    // Ihr Code hier&#10;}"></textarea>
+                    
+                    <label><strong>Implementierung für die Klasse "Knoten":</strong></label>
+                    <textarea class="answer-input answer-textarea code-input" id="answer-6b" placeholder="public int anzahlGeben() {&#10;    // Ihr Code hier&#10;}"></textarea>
+                    
+                    <button class="btn btn-primary check-btn" onclick="checkAnswer6()">Antwort überprüfen</button>
+                    <div class="feedback" id="feedback-6"></div>
+                </div>
+            </div>
+
+            <!-- Teil D: Operationen -->
+            <div class="example-box">
+                <h3>📖 Teil D: Operationen & Sonderfälle</h3>
+                
+                <div class="task-box">
+                    <h4>✏️ Aufgabe 7: Einfügen</h4>
+                    <p>Beschreiben Sie den Algorithmus zum Einfügen eines neuen Wertes (z.B. 45) in einen bestehenden binären Suchbaum.</p>
+                    
+                    <textarea class="answer-input answer-textarea" id="answer-7" placeholder="Beschreiben Sie den Einfüge-Algorithmus Schritt für Schritt..."></textarea>
+                    
+                    <button class="btn btn-primary check-btn" onclick="checkAnswer7()">Antwort überprüfen</button>
+                    <div class="feedback" id="feedback-7"></div>
+                </div>
+
+                <div class="task-box">
+                    <h4>✏️ Aufgabe 8: Löschen</h4>
+                    <p>Das Löschen eines Knotens ist komplexer. Erläutern Sie kurz, welche Sonderfälle zu beachten sind.</p>
+                    
+                    <textarea class="answer-input answer-textarea" id="answer-8" placeholder="Beschreiben Sie die Sonderfälle beim Löschen..."></textarea>
+                    
+                    <button class="btn btn-primary check-btn" onclick="checkAnswer8()">Antwort überprüfen</button>
+                    <div class="feedback" id="feedback-8"></div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('intro')">← Zurück zur Übersicht</button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('nebenlaeufigkeit')">Weiter zu Nebenläufigkeit →</button>
+            </div>
+        </section>
+
+        <!-- Nebenläufigkeit Section -->
+        <section id="nebenlaeufigkeit" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Teil 2</span>
+                <h1>Nebenläufigkeit: "Smart-Canteen 2.0"</h1>
+            </div>
+
+            <div class="info-box">
+                <h3>💡 Szenario</h3>
+                <p>In der Mensa des Gymnasiums Neustadt wurde ein neues Bezahlsystem eingeführt. Mehrere Terminals (Threads) greifen gleichzeitig auf das zentrale Guthaben-Konto eines Schülers zu. Gleichzeitig bereiten automatisierte Kaffeemaschinen Getränke zu, wobei sie sich Ressourcen wie die "Milchdüse" teilen müssen.</p>
+            </div>
+
+            <!-- Teil A: Grundlagen -->
+            <div class="example-box">
+                <h3>📖 Teil A: Grundlagen & Multitasking</h3>
+                
+                <div class="task-box">
+                    <h4>✏️ Aufgabe 1: Prozess vs. Thread</h4>
+                    <p>Das Betriebssystem der Mensa-Steuerung führt gleichzeitig die "Bezahl-App" und die "Lagerverwaltung" aus. Erläutern Sie den Unterschied zwischen einem Prozess und einem Thread anhand dieses Beispiels.</p>
+                    
+                    <label><strong>Prozess:</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-n1-prozess" placeholder="Definition und Eigenschaften eines Prozesses..."></textarea>
+                    
+                    <label><strong>Thread:</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-n1-thread" placeholder="Definition und Eigenschaften eines Threads..."></textarea>
+                    
+                    <label><strong>Hauptunterschied:</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-n1-unterschied" placeholder="Der wesentliche Unterschied zwischen Prozess und Thread..."></textarea>
+                    
+                    <button class="btn btn-primary check-btn" onclick="checkAnswerN1()">Antwort überprüfen</button>
+                    <div class="feedback" id="feedback-n1"></div>
+                </div>
+
+                <div class="task-box">
+                    <h4>✏️ Aufgabe 2: Context Switching</h4>
+                    <p>Da die CPU nur einen Kern hat, kann sie nicht echt gleichzeitig arbeiten. Erklären Sie kurz, was bei einem Context Switch passieren muss, wenn die CPU vom Thread "Terminal 1" zum Thread "Terminal 2" wechselt.</p>
+                    
+                    <textarea class="answer-input answer-textarea" id="answer-n2" placeholder="Beschreiben Sie den Context Switch..."></textarea>
+                    
+                    <button class="btn btn-primary check-btn" onclick="checkAnswerN2()">Antwort überprüfen</button>
+                    <div class="feedback" id="feedback-n2"></div>
+                </div>
+
+                <div class="task-box">
+                    <h4>✏️ Aufgabe 3: Ablaufarten</h4>
+                    <p>Unterscheiden Sie zwischen einer sequentiellen, einer nebenläufigen und einer echt parallelen Ausführung von drei Bezahlvorgängen.</p>
+                    
+                    <label><strong>Sequentielle Ausführung:</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-n3-seq" placeholder="Beschreibung der sequentiellen Ausführung..."></textarea>
+                    
+                    <label><strong>Nebenläufige Ausführung:</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-n3-neben" placeholder="Beschreibung der nebenläufigen Ausführung..."></textarea>
+                    
+                    <label><strong>Echt parallele Ausführung:</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-n3-parallel" placeholder="Beschreibung der echt parallelen Ausführung..."></textarea>
+                    
+                    <button class="btn btn-primary check-btn" onclick="checkAnswerN3()">Antwort überprüfen</button>
+                    <div class="feedback" id="feedback-n3"></div>
+                </div>
+            </div>
+
+            <!-- Teil B: Lost Update -->
+            <div class="example-box">
+                <h3>📖 Teil B: Das "Lost Update"-Problem</h3>
+                
+                <div class="info-box">
+                    <p><strong>Szenario:</strong> Zwei Terminals buchen gleichzeitig vom selben Konto (Guthaben: 50€) ab. Terminal A bucht 5€ ab, Terminal B bucht 10€ ab.</p>
+                </div>
+                
+                <div class="task-box">
+                    <h4>✏️ Aufgabe 4: Race Condition</h4>
+                    <p>Skizzieren Sie mithilfe eines Sequenzdiagramms oder einer Beschreibung, wie es zu einem Lost Update kommen kann, sodass am Ende ein falscher Kontostand von 40€ (statt 35€) gespeichert wird.</p>
+                    
+                    <textarea class="answer-input answer-textarea" id="answer-n4" placeholder="Beschreiben Sie die Abfolge der Operationen, die zum Lost Update führt..."></textarea>
+                    
+                    <button class="btn btn-primary check-btn" onclick="checkAnswerN4()">Antwort überprüfen</button>
+                    <div class="feedback" id="feedback-n4"></div>
+                </div>
+
+                <div class="task-box">
+                    <h4>✏️ Aufgabe 5: Kritischer Bereich</h4>
+                    <p>Definieren Sie den Begriff "Critical Section" (kritischer Bereich) für dieses Beispiel und geben Sie an, bei welchen Kontointeraktionen dies nötig ist.</p>
+                    
+                    <label><strong>Definition Critical Section:</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-n5-def" placeholder="Was ist eine Critical Section?"></textarea>
+                    
+                    <label><strong>Anwendung im Beispiel:</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-n5-anw" placeholder="Welche Operationen müssen geschützt werden?"></textarea>
+                    
+                    <button class="btn btn-primary check-btn" onclick="checkAnswerN5()">Antwort überprüfen</button>
+                    <div class="feedback" id="feedback-n5"></div>
+                </div>
+            </div>
+
+            <!-- Teil C: Synchronisation -->
+            <div class="example-box">
+                <h3>📖 Teil C: Synchronisation in Java</h3>
+                
+                <div class="task-box">
+                    <h4>✏️ Aufgabe 6: Code-Analyse</h4>
+                    <p>Gegeben ist folgender Code-Ausschnitt:</p>
+                    
+                    <pre><code>public class Konto {
+    private int guthaben = 50000000;
+    
+    public void abbuchen(int betrag) { // Hier fehlt etwas!
+        int neu = this.guthaben - betrag;
+        this.guthaben = neu;
+    }
+}</code></pre>
+                    
+                    <p><strong>a) Ergänzen Sie das Schlüsselwort, das Mutual Exclusion (gegenseitigen Ausschluss) nach dem Monitor-Konzept garantiert:</strong></p>
+                    
+                    <input type="text" class="answer-input" id="answer-n6a" placeholder="Das fehlende Schlüsselwort...">
+                    
+                    <p><strong>b) Erstellen Sie eine Klasse Aktienworker, die parallele Ausführung ermöglicht und extern auf die Datenklasse Konto zugreift. Für alle 5000000 Aktienwerte wird überprüft, ob diese mehr als 50% im Plus liegen, wenn ja wird verkauft und der Gesamtwert auf das Konto ausgezahlt.</strong></p>
+                    
+                    <textarea class="answer-input answer-textarea code-input" id="answer-n6b" placeholder="public class Aktienworker ... {&#10;    // Ihr Code hier&#10;}"></textarea>
+                    
+                    <p><strong>c) Erklären Sie den Unterschied, wenn ein Thread die Methode start() aufruft im Vergleich zu einem direkten Aufruf von run():</strong></p>
+                    
+                    <textarea class="answer-input answer-textarea" id="answer-n6c" placeholder="Unterschied zwischen start() und run()..."></textarea>
+                    
+                    <button class="btn btn-primary check-btn" onclick="checkAnswerN6()">Antwort überprüfen</button>
+                    <div class="feedback" id="feedback-n6"></div>
+                </div>
+
+                <div class="task-box">
+                    <h4>✏️ Aufgabe 7: Producer-Consumer</h4>
+                    <p>Der Sandwich-Automat füllt das Fach auf, der Schüler entnimmt ein Sandwich. Beschreiben Sie, warum hier die Methoden wait() und notify() essenziell sind, um inkonsistente Zustände zu vermeiden.</p>
+                    
+                    <textarea class="answer-input answer-textarea" id="answer-n7" placeholder="Erklären Sie die Notwendigkeit von wait() und notify()..."></textarea>
+                    
+                    <button class="btn btn-primary check-btn" onclick="checkAnswerN7()">Antwort überprüfen</button>
+                    <div class="feedback" id="feedback-n7"></div>
+                </div>
+            </div>
+
+            <!-- Teil D: Deadlocks -->
+            <div class="example-box">
+                <h3>📖 Teil D: Deadlocks</h3>
+                
+                <div class="info-box">
+                    <p><strong>Szenario:</strong> Zwei Kaffeemaschinen benötigen für einen Latte Macchiato zwei Ressourcen: die Bohnenmühle und den Milchaufschäumer.</p>
+                    <ul>
+                        <li>Maschine 1 belegt die Mühle und wartet auf den Schäumer.</li>
+                        <li>Maschine 2 belegt den Schäumer und wartet auf die Mühle.</li>
+                    </ul>
+                </div>
+                
+                <div class="task-box">
+                    <h4>✏️ Aufgabe 8: Betriebsmittelzuteilungsgraph</h4>
+                    <p>Zeichnen Sie einen Graphen für diese Situation (Knoten: Prozesse/Ressourcen; Kanten: Belegt/Wartet auf) oder beschreiben Sie ihn textuell.</p>
+                    
+                    <textarea class="answer-input answer-textarea" id="answer-n8" placeholder="Beschreiben Sie den Betriebsmittelzuteilungsgraphen..."></textarea>
+                    
+                    <button class="btn btn-primary check-btn" onclick="checkAnswerN8()">Antwort überprüfen</button>
+                    <div class="feedback" id="feedback-n8"></div>
+                </div>
+
+                <div class="task-box">
+                    <h4>✏️ Aufgabe 9: Coffman-Bedingungen</h4>
+                    <p>Überprüfen Sie anhand der vier Bedingungen (Mutual Exclusion, Hold and Wait, No Preemption, Circular Wait), warum hier ein Deadlock vorliegt.</p>
+                    
+                    <label><strong>1. Mutual Exclusion (gegenseitiger Ausschluss):</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-n9-me" placeholder="Ist diese Bedingung erfüllt?"></textarea>
+                    
+                    <label><strong>2. Hold and Wait (Halten und Warten):</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-n9-hw" placeholder="Ist diese Bedingung erfüllt?"></textarea>
+                    
+                    <label><strong>3. No Preemption (keine Verdrängung):</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-n9-np" placeholder="Ist diese Bedingung erfüllt?"></textarea>
+                    
+                    <label><strong>4. Circular Wait (zirkuläres Warten):</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-n9-cw" placeholder="Ist diese Bedingung erfüllt?"></textarea>
+                    
+                    <button class="btn btn-primary check-btn" onclick="checkAnswerN9()">Antwort überprüfen</button>
+                    <div class="feedback" id="feedback-n9"></div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('binaerbaeume')">← Zurück zu Binärbäume</button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('sicherheit')">Weiter zu Informationssicherheit →</button>
+            </div>
+        </section>
+
+        <!-- Informationssicherheit Section -->
+        <section id="sicherheit" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Teil 3</span>
+                <h1>Informationssicherheit: Das digitale "Bürger-Portal Neustadt"</h1>
+            </div>
+
+            <div class="info-box">
+                <h3>💡 Szenario</h3>
+                <p>Die Stadt Neustadt an der Aisch hat ihr Rathaus digitalisiert. Über das "Bürger-Portal" können Einwohner Personalausweise beantragen, Wohnsitze ummelden und sensible Dokumente (z. B. Geburtsurkunden) hochladen. Die Daten werden in einer zentralen Datenbank gespeichert.</p>
+                
+                <p><strong>Vorfälle:</strong></p>
+                <ol>
+                    <li>Ein Bagger hat bei Bauarbeiten das Glasfaserkabel zum Rathaus durchtrennt.</li>
+                    <li>Ein Mitarbeiter hat versehentlich die Datenbank-Tabelle mit den Terminen gelöscht.</li>
+                    <li>Ein Unbefugter hat sich als IT-Administrator ausgegeben, um Passwörter von Angestellten zu erschleichen.</li>
+                </ol>
+            </div>
+
+            <!-- Aufgabe 1: Schutzziele -->
+            <div class="example-box">
+                <h3>📖 Aufgabe 1: Analyse der Schutzziele</h3>
+                
+                <div class="task-box">
+                    <h4>✏️ Schutzziele im Kontext des Bürger-Portals</h4>
+                    <p>Erläutern Sie die vier Schutzziele (CIA+A) im Kontext des Bürger-Portals. Beschreiben Sie jeweils eine konkrete Situation, in der das Schutzziel verletzt wird.</p>
+                    
+                    <label><strong>Confidentiality (Vertraulichkeit):</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-s1-conf" placeholder="Definition und Beispiel für Verletzung der Vertraulichkeit..."></textarea>
+                    
+                    <label><strong>Integrity (Integrität):</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-s1-int" placeholder="Definition und Beispiel für Verletzung der Integrität..."></textarea>
+                    
+                    <label><strong>Availability (Verfügbarkeit):</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-s1-avail" placeholder="Definition und Beispiel für Verletzung der Verfügbarkeit..."></textarea>
+                    
+                    <label><strong>Authenticity (Authentizität):</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-s1-auth" placeholder="Definition und Beispiel für Verletzung der Authentizität..."></textarea>
+                    
+                    <button class="btn btn-primary check-btn" onclick="checkAnswerS1()">Antwort überprüfen</button>
+                    <div class="feedback" id="feedback-s1"></div>
+                </div>
+            </div>
+
+            <!-- Aufgabe 2: Gefahrenklassen -->
+            <div class="example-box">
+                <h3>📖 Aufgabe 2: Klassifizierung von Gefahren</h3>
+                
+                <div class="task-box">
+                    <h4>✏️ Teil a) Zuordnung zu Gefahrenklassen</h4>
+                    <p>Ordnen Sie die drei Ereignisse aus Neustadt der jeweils passenden Gefahrenklasse zu:</p>
+                    
+                    <div class="hint-box">
+                        <strong>💡 Die fünf Gefahrenklassen:</strong>
+                        <ul>
+                            <li>Höhere Gewalt</li>
+                            <li>Organisatorische Mängel</li>
+                            <li>Menschliches Fehlverhalten</li>
+                            <li>Technisches Versagen</li>
+                            <li>Vorsätzliche Handlungen</li>
+                        </ul>
+                    </div>
+                    
+                    <label><strong>1. Durchtrenntes Glasfaserkabel durch Bagger:</strong></label>
+                    <select class="answer-input" id="answer-s2a-1">
+                        <option value="">-- Bitte wählen --</option>
+                        <option value="hoehere-gewalt">Höhere Gewalt</option>
+                        <option value="org-maengel">Organisatorische Mängel</option>
+                        <option value="menschlich">Menschliches Fehlverhalten</option>
+                        <option value="technisch">Technisches Versagen</option>
+                        <option value="vorsaetzlich">Vorsätzliche Handlungen</option>
+                    </select>
+                    <textarea class="answer-input answer-textarea" id="answer-s2a-1-beg" placeholder="Begründung..."></textarea>
+                    
+                    <label><strong>2. Mitarbeiter löscht versehentlich Termine:</strong></label>
+                    <select class="answer-input" id="answer-s2a-2">
+                        <option value="">-- Bitte wählen --</option>
+                        <option value="hoehere-gewalt">Höhere Gewalt</option>
+                        <option value="org-maengel">Organisatorische Mängel</option>
+                        <option value="menschlich">Menschliches Fehlverhalten</option>
+                        <option value="technisch">Technisches Versagen</option>
+                        <option value="vorsaetzlich">Vorsätzliche Handlungen</option>
+                    </select>
+                    <textarea class="answer-input answer-textarea" id="answer-s2a-2-beg" placeholder="Begründung..."></textarea>
+                    
+                    <label><strong>3. Social Engineering (Vortäuschen der Admin-Identität):</strong></label>
+                    <select class="answer-input" id="answer-s2a-3">
+                        <option value="">-- Bitte wählen --</option>
+                        <option value="hoehere-gewalt">Höhere Gewalt</option>
+                        <option value="org-maengel">Organisatorische Mängel</option>
+                        <option value="menschlich">Menschliches Fehlverhalten</option>
+                        <option value="technisch">Technisches Versagen</option>
+                        <option value="vorsaetzlich">Vorsätzliche Handlungen</option>
+                    </select>
+                    <textarea class="answer-input answer-textarea" id="answer-s2a-3-beg" placeholder="Begründung..."></textarea>
+                    
+                    <button class="btn btn-primary check-btn" onclick="checkAnswerS2a()">Antwort überprüfen</button>
+                    <div class="feedback" id="feedback-s2a"></div>
+                </div>
+
+                <div class="task-box">
+                    <h4>✏️ Teil b) Weitere Beispiele</h4>
+                    <p>Nennen Sie für die beiden noch nicht genannten Gefahrenklassen jeweils ein eigenes Beispiel, das im Rathaus auftreten könnte.</p>
+                    
+                    <label><strong>Beispiel für die erste noch nicht genannte Gefahrenklasse:</strong></label>
+                    <input type="text" class="answer-input" id="answer-s2b-klasse1" placeholder="Name der Gefahrenklasse">
+                    <textarea class="answer-input answer-textarea" id="answer-s2b-beispiel1" placeholder="Ihr Beispiel..."></textarea>
+                    
+                    <label><strong>Beispiel für die zweite noch nicht genannte Gefahrenklasse:</strong></label>
+                    <input type="text" class="answer-input" id="answer-s2b-klasse2" placeholder="Name der Gefahrenklasse">
+                    <textarea class="answer-input answer-textarea" id="answer-s2b-beispiel2" placeholder="Ihr Beispiel..."></textarea>
+                    
+                    <button class="btn btn-primary check-btn" onclick="checkAnswerS2b()">Antwort überprüfen</button>
+                    <div class="feedback" id="feedback-s2b"></div>
+                </div>
+            </div>
+
+            <!-- Aufgabe 3: T-O-P Modell -->
+            <div class="example-box">
+                <h3>📖 Aufgabe 3: Erarbeitung von Gegenmaßnahmen (T-O-P Modell)</h3>
+                
+                <div class="task-box">
+                    <h4>✏️ Gegenmaßnahmen nach T-O-P</h4>
+                    <p>Wählen Sie eines der Schutzziele aus und schlagen Sie dafür jeweils eine Maßnahme aus den Bereichen Technik, Organisation und Personen vor.</p>
+                    
+                    <label><strong>Gewähltes Schutzziel:</strong></label>
+                    <select class="answer-input" id="answer-s3-ziel">
+                        <option value="">-- Bitte wählen --</option>
+                        <option value="vertraulichkeit">Vertraulichkeit</option>
+                        <option value="integritaet">Integrität</option>
+                        <option value="verfuegbarkeit">Verfügbarkeit</option>
+                        <option value="authentizitaet">Authentizität</option>
+                    </select>
+                    
+                    <label><strong>Technische Maßnahme:</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-s3-tech" placeholder="Beschreiben Sie eine technische Maßnahme..."></textarea>
+                    
+                    <label><strong>Organisatorische Maßnahme:</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-s3-org" placeholder="Beschreiben Sie eine organisatorische Maßnahme..."></textarea>
+                    
+                    <label><strong>Personelle Maßnahme:</strong></label>
+                    <textarea class="answer-input answer-textarea" id="answer-s3-pers" placeholder="Beschreiben Sie eine personelle Maßnahme..."></textarea>
+                    
+                    <button class="btn btn-primary check-btn" onclick="checkAnswerS3()">Antwort überprüfen</button>
+                    <div class="feedback" id="feedback-s3"></div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('nebenlaeufigkeit')">← Zurück zu Nebenläufigkeit</button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('zusammenfassung')">Zur Zusammenfassung →</button>
+            </div>
+        </section>
+
+        <!-- Zusammenfassung Section -->
+        <section id="zusammenfassung" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Abschluss</span>
+                <h1>Zusammenfassung & Ausblick</h1>
+            </div>
+
+            <div class="hero">
+                <h2>🎉 Herzlichen Glückwunsch!</h2>
+                <p>Du hast alle drei Themenbereiche bearbeitet. Hier ist eine Übersicht deiner Fortschritte:</p>
+            </div>
+
+            <div class="progress-indicator">
+                <div class="progress-item">
+                    <div class="progress-circle" id="final-progress-binaerbaeume">0/8</div>
+                    <p><strong>Binärbäume</strong></p>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-circle" id="final-progress-nebenlaeufigkeit">0/9</div>
+                    <p><strong>Nebenläufigkeit</strong></p>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-circle" id="final-progress-sicherheit">0/3</div>
+                    <p><strong>Sicherheit</strong></p>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">🌳</div>
+                    <h3>Binärbäume - Kernpunkte</h3>
+                    <ul>
+                        <li><strong>Struktur:</strong> Wurzel, Knoten, Blätter, Elternknoten</li>
+                        <li><strong>Traversierung:</strong> Inorder, Preorder, Postorder</li>
+                        <li><strong>Kompositum-Muster:</strong> Baumelement, Knoten, Abschluss</li>
+                        <li><strong>Operationen:</strong> Einfügen, Löschen, Suchen</li>
+                        <li><strong>Performance:</strong> Balancierung ist entscheidend</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">⚡</div>
+                    <h3>Nebenläufigkeit - Kernpunkte</h3>
+                    <ul>
+                        <li><strong>Grundlagen:</strong> Prozesse vs. Threads, Context Switching</li>
+                        <li><strong>Probleme:</strong> Race Conditions, Lost Updates</li>
+                        <li><strong>Synchronisation:</strong> synchronized, wait(), notify()</li>
+                        <li><strong>Deadlocks:</strong> Coffman-Bedingungen verstehen</li>
+                        <li><strong>Best Practices:</strong> Critical Sections schützen</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">🔒</div>
+                    <h3>Informationssicherheit - Kernpunkte</h3>
+                    <ul>
+                        <li><strong>Schutzziele:</strong> Vertraulichkeit, Integrität, Verfügbarkeit, Authentizität</li>
+                        <li><strong>Gefahrenklassen:</strong> 5 Kategorien von Bedrohungen</li>
+                        <li><strong>T-O-P Modell:</strong> Technische, organisatorische, personelle Maßnahmen</li>
+                        <li><strong>Ganzheitlicher Ansatz:</strong> Mehrschichtige Sicherheit</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="best-practices">
+                <h3>💡 Tipps für die Klausur</h3>
+                
+                <div class="practice">
+                    <span class="icon">✅</span>
+                    <div>
+                        <strong>Binärbäume:</strong>
+                        <p>Übe das Zeichnen von Bäumen und die verschiedenen Traversierungsarten. Verstehe den Unterschied zwischen balancierten und entarteten Bäumen.</p>
+                    </div>
+                </div>
+
+                <div class="practice">
+                    <span class="icon">✅</span>
+                    <div>
+                        <strong>Nebenläufigkeit:</strong>
+                        <p>Lerne die Coffman-Bedingungen auswendig. Verstehe, wann synchronized nötig ist und wie wait()/notify() funktionieren.</p>
+                    </div>
+                </div>
+
+                <div class="practice">
+                    <span class="icon">✅</span>
+                    <div>
+                        <strong>Informationssicherheit:</strong>
+                        <p>Merke dir die vier Schutzziele (CIA+A) und die fünf Gefahrenklassen. Übe, konkrete Maßnahmen nach dem T-O-P Modell zu formulieren.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example-box">
+                <h3>📚 Weiterführende Ressourcen</h3>
+                <ul>
+                    <li><strong>Binärbäume:</strong> Visualisierung auf <a href="https://visualgo.net/en/bst" target="_blank">VisuAlgo</a></li>
+                    <li><strong>Nebenläufigkeit:</strong> Java Concurrency Tutorial (Oracle Docs)</li>
+                    <li><strong>Informationssicherheit:</strong> BSI Grundschutz-Kompendium</li>
+                </ul>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('intro')">← Zurück zur Übersicht</button>
+                <button class="btn btn-success btn-lg" onclick="window.print()">📄 Seite drucken</button>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2026 edu-mrh.de - Interaktive Lernmaterialien für den Informatikunterricht</p>
+        <p>
+            <a href="https://edu-mrh.de/contribute.html#impressum">Impressum</a> | 
+            <a href="https://edu-mrh.de/contribute.html#datenschutz">Datenschutz</a>
+        </p>
+    </div>
+</footer>
+
+<script>
+// ==========================================
+// PROGRESS TRACKING
+// ==========================================
+const progressData = {
+    binaerbaeume: 0,
+    nebenlaeufigkeit: 0,
+    sicherheit: 0
+};
+
+const maxScores = {
+    binaerbaeume: 8,
+    nebenlaeufigkeit: 9,
+    sicherheit: 3
+};
+
+function updateProgress(category, increment = 1) {
+    progressData[category] = Math.min(progressData[category] + increment, maxScores[category]);
+    
+    // Update progress circles
+    const progressCircle = document.getElementById(`progress-${category}`);
+    const finalProgressCircle = document.getElementById(`final-progress-${category}`);
+    
+    if (progressCircle) {
+        progressCircle.textContent = `${progressData[category]}/${maxScores[category]}`;
+        if (progressData[category] === maxScores[category]) {
+            progressCircle.classList.add('completed');
+        }
+    }
+    
+    if (finalProgressCircle) {
+        finalProgressCircle.textContent = `${progressData[category]}/${maxScores[category]}`;
+        if (progressData[category] === maxScores[category]) {
+            finalProgressCircle.classList.add('completed');
+        }
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('progressData', JSON.stringify(progressData));
+}
+
+function loadProgress() {
+    const saved = localStorage.getItem('progressData');
+    if (saved) {
+        const data = JSON.parse(saved);
+        Object.assign(progressData, data);
+        
+        // Update all progress indicators
+        Object.keys(progressData).forEach(category => {
+            updateProgress(category, 0);
+        });
+    }
+}
+
+// ==========================================
+// TREE DRAWING
+// ==========================================
+function drawTree() {
+    const canvas = document.getElementById('treeCanvas');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+    
+    // Clear canvas
+    ctx.clearRect(0, 0, width, height);
+    
+    // Tree structure: 50 (root), left: 30, right: 70, 30's children: 10, 40
+    const nodes = [
+        { value: 50, x: width/2, y: 50 },
+        { value: 30, x: width/4, y: 130 },
+        { value: 70, x: 3*width/4, y: 130 },
+        { value: 10, x: width/8, y: 210 },
+        { value: 40, x: 3*width/8, y: 210 }
+    ];
+    
+    const edges = [
+        [0, 1], [0, 2], [1, 3], [1, 4]
+    ];
+    
+    // Draw edges
+    ctx.strokeStyle = '#3b82f6';
+    ctx.lineWidth = 2;
+    edges.forEach(([from, to]) => {
+        ctx.beginPath();
+        ctx.moveTo(nodes[from].x, nodes[from].y);
+        ctx.lineTo(nodes[to].x, nodes[to].y);
+        ctx.stroke();
+    });
+    
+    // Draw nodes
+    nodes.forEach(node => {
+        // Circle
+        ctx.fillStyle = '#3b82f6';
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, 25, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Text
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 16px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(node.value, node.x, node.y);
+    });
+}
+
+// ==========================================
+// ANSWER CHECKING FUNCTIONS - BINÄRBÄUME
+// ==========================================
+
+function checkAnswer1() {
+    const blatt = document.getElementById('answer-1a-blatt').value.toLowerCase();
+    const eltern = document.getElementById('answer-1a-eltern').value.toLowerCase();
+    const anzahl = parseInt(document.getElementById('answer-1b').value);
+    const feedback = document.getElementById('feedback-1');
+    
+    let correct = 0;
+    let messages = [];
+    
+    // Check Blatt
+    if (blatt.includes('keine kinder') || blatt.includes('keine nachfolger') || blatt.includes('endknoten')) {
+        correct++;
+        messages.push('✅ Blatt korrekt definiert');
+    } else {
+        messages.push('❌ Blatt: Ein Blatt ist ein Knoten ohne Kinder/Nachfolger');
+    }
+    
+    // Check Elternknoten
+    if (eltern.includes('kinder') || eltern.includes('nachfolger')) {
+        correct++;
+        messages.push('✅ Elternknoten korrekt definiert');
+    } else {
+        messages.push('❌ Elternknoten: Ein Knoten, der Kinder/Nachfolger hat');
+    }
+    
+    // Check Anzahl (2^4 - 1 = 15)
+    if (anzahl === 15) {
+        correct++;
+        messages.push('✅ Knotenanzahl korrekt: 2^(3+1) - 1 = 15');
+    } else {
+        messages.push(`❌ Knotenanzahl: Für h=3 gilt: 2^(3+1) - 1 = 15 (Sie haben ${anzahl} eingegeben)`);
+    }
+    
+    feedback.className = 'feedback';
+    if (correct === 3) {
+        feedback.classList.add('correct');
+        updateProgress('binaerbaeume', 1);
+    } else if (correct > 0) {
+        feedback.classList.add('partial');
+    } else {
+        feedback.classList.add('incorrect');
+    }
+    
+    feedback.innerHTML = '<strong>Feedback:</strong><br>' + messages.join('<br>');
+}
+
+function checkAnswer2() {
+    const balanciert = document.getElementById('answer-2-balanciert').value.toLowerCase();
+    const entartet = document.getElementById('answer-2-entartet').value.toLowerCase();
+    const performance = document.getElementById('answer-2-performance').value.toLowerCase();
+    const feedback = document.getElementById('feedback-2');
+    
+    let correct = 0;
+    let messages = [];
+    
+    if (balanciert.includes('höhe') && (balanciert.includes('minimal') || balanciert.includes('ausgeglichen'))) {
+        correct++;
+        messages.push('✅ Balancierter Baum korrekt beschrieben');
+    } else {
+        messages.push('❌ Balancierter Baum: Höhenunterschied zwischen Teilbäumen minimal/ausgeglichen');
+    }
+    
+    if (entartet.includes('liste') || entartet.includes('kette') || (entartet.includes('ein') && entartet.includes('kind'))) {
+        correct++;
+        messages.push('✅ Entarteter Baum korrekt beschrieben');
+    } else {
+        messages.push('❌ Entarteter Baum: Degeneriert zu einer Liste/Kette (jeder Knoten hat nur ein Kind)');
+    }
+    
+    if (performance.includes('o(n)') || (performance.includes('linear') && performance.includes('zeit'))) {
+        correct++;
+        messages.push('✅ Performance-Auswirkung korrekt erkannt');
+    } else {
+        messages.push('❌ Performance: Entarteter Baum führt zu O(n) Suchzeit statt O(log n)');
+    }
+    
+    feedback.className = 'feedback';
+    if (correct === 3) {
+        feedback.classList.add('correct');
+        updateProgress('binaerbaeume', 1);
+    } else if (correct > 0) {
+        feedback.classList.add('partial');
+    } else {
+        feedback.classList.add('incorrect');
+    }
+    
+    feedback.innerHTML = '<strong>Feedback:</strong><br>' + messages.join('<br>');
+}
+
+function checkAnswer3() {
+    const preorder = document.getElementById('answer-3a').value.replace(/\s/g, '').toLowerCase();
+    const postorder = document.getElementById('answer-3b').value.replace(/\s/g, '').toLowerCase();
+    const inorderReason = document.getElementById('answer-3c').value.toLowerCase();
+    const feedback = document.getElementById('feedback-3');
+    
+    let correct = 0;
+    let messages = [];
+    
+    // Preorder: 50, 30, 10, 40, 70
+    if (preorder.includes('50') && preorder.indexOf('50') < preorder.indexOf('30') && 
+        preorder.indexOf('30') < preorder.indexOf('10')) {
+        correct++;
+        messages.push('✅ Preorder korrekt: 50, 30, 10, 40, 70');
+    } else {
+        messages.push('❌ Preorder: Wurzel zuerst, dann links, dann rechts → 50, 30, 10, 40, 70');
+    }
+    
+    // Postorder: 10, 40, 30, 70, 50
+    if (postorder.includes('50') && postorder.indexOf('10') < postorder.indexOf('30') && 
+        postorder.indexOf('30') < postorder.indexOf('50')) {
+        correct++;
+        messages.push('✅ Postorder korrekt: 10, 40, 30, 70, 50');
+    } else {
+        messages.push('❌ Postorder: Links, rechts, dann Wurzel → 10, 40, 30, 70, 50');
+    }
+    
+    // Inorder reason
+    if (inorderReason.includes('sortiert') || inorderReason.includes('aufsteigend') || inorderReason.includes('geordnet')) {
+        correct++;
+        messages.push('✅ Inorder-Begründung korrekt');
+    } else {
+        messages.push('❌ Inorder: Liefert die Werte in sortierter/aufsteigender Reihenfolge');
+    }
+    
+    feedback.className = 'feedback';
+    if (correct === 3) {
+        feedback.classList.add('correct');
+        updateProgress('binaerbaeume', 1);
+    } else if (correct > 0) {
+        feedback.classList.add('partial');
+    } else {
+        feedback.classList.add('incorrect');
+    }
+    
+    feedback.innerHTML = '<strong>Feedback:</strong><br>' + messages.join('<br>');
+}
+
+function checkAnswer4() {
+    const answer = document.getElementById('answer-4').value.toLowerCase();
+    const feedback = document.getElementById('feedback-4');
+    
+    let correct = false;
+    let message = '';
+    
+    if ((answer.includes('rekursiv') && answer.includes('struktur')) || 
+        answer.includes('teile') || answer.includes('divide') ||
+        (answer.includes('selbst') && answer.includes('aufruf'))) {
+        correct = true;
+        message = '✅ Korrekt! Bäume haben eine rekursive Struktur (jeder Teilbaum ist wieder ein Baum). Das Prinzip heißt "Teile und Herrsche" (Divide and Conquer). Rekursion bildet diese Struktur natürlich ab.';
+        updateProgress('binaerbaeume', 1);
+    } else {
+        message = '❌ Bäume haben eine rekursive Struktur. Jeder Teilbaum ist selbst wieder ein Baum. Das zugrundeliegende Prinzip ist "Teile und Herrsche" (Divide and Conquer).';
+    }
+    
+    feedback.className = 'feedback ' + (correct ? 'correct' : 'incorrect');
+    feedback.innerHTML = message;
+}
+
+function checkAnswer5() {
+    const baumelement = document.getElementById('answer-5a').value.toLowerCase();
+    const knoten = document.getElementById('answer-5b').value.toLowerCase();
+    const abschluss = document.getElementById('answer-5c').value.toLowerCase();
+    const feedback = document.getElementById('feedback-5');
+    
+    let correct = 0;
+    let messages = [];
+    
+    if (baumelement.includes('abstrakt') || baumelement.includes('schnittstelle') || baumelement.includes('basis')) {
+        correct++;
+        messages.push('✅ Baumelement: Abstrakte Basisklasse/Schnittstelle');
+    } else {
+        messages.push('❌ Baumelement: Abstrakte Basisklasse, definiert gemeinsame Schnittstelle');
+    }
+    
+    if (knoten.includes('kinder') || knoten.includes('links') || knoten.includes('rechts')) {
+        correct++;
+        messages.push('✅ Knoten: Kompositum mit Kindern');
+    } else {
+        messages.push('❌ Knoten: Kompositum-Klasse, hat linkes und rechtes Kind (Referenzen auf Baumelemente)');
+    }
+    
+    if (abschluss.includes('blatt') || abschluss.includes('leer') || abschluss.includes('null')) {
+        correct++;
+        messages.push('✅ Abschluss: Blatt/leerer Knoten');
+    } else {
+        messages.push('❌ Abschluss: Blatt-Klasse, repräsentiert leere/Null-Knoten');
+    }
+    
+    feedback.className = 'feedback';
+    if (correct === 3) {
+        feedback.classList.add('correct');
+        updateProgress('binaerbaeume', 1);
+    } else if (correct > 0) {
+        feedback.classList.add('partial');
+    } else {
+        feedback.classList.add('incorrect');
+    }
+    
+    feedback.innerHTML = '<strong>Feedback:</strong><br>' + messages.join('<br>');
+}
+
+function checkAnswer6() {
+    const abschluss = document.getElementById('answer-6a').value.toLowerCase();
+    const knoten = document.getElementById('answer-6b').value.toLowerCase();
+    const feedback = document.getElementById('feedback-6');
+    
+    let correct = 0;
+    let messages = [];
+    
+    // Abschluss should return 0
+    if (abschluss.includes('return') && abschluss.includes('0')) {
+        correct++;
+        messages.push('✅ Abschluss korrekt: return 0;');
+    } else {
+        messages.push('❌ Abschluss: Ein leerer Knoten hat 0 Elemente → return 0;');
+    }
+    
+    // Knoten should return 1 + left + right
+    if (knoten.includes('1') && knoten.includes('links') && knoten.includes('rechts')) {
+        correct++;
+        messages.push('✅ Knoten korrekt: 1 + links.anzahlGeben() + rechts.anzahlGeben()');
+    } else {
+        messages.push('❌ Knoten: return 1 + links.anzahlGeben() + rechts.anzahlGeben();');
+    }
+    
+    feedback.className = 'feedback';
+    if (correct === 2) {
+        feedback.classList.add('correct');
+        updateProgress('binaerbaeume', 1);
+    } else if (correct > 0) {
+        feedback.classList.add('partial');
+    } else {
+        feedback.classList.add('incorrect');
+    }
+    
+    feedback.innerHTML = '<strong>Feedback:</strong><br>' + messages.join('<br>');
+}
+
+function checkAnswer7() {
+    const answer = document.getElementById('answer-7').value.toLowerCase();
+    const feedback = document.getElementById('feedback-7');
+    
+    let score = 0;
+    let messages = [];
+    
+    if (answer.includes('wurzel') || answer.includes('start')) score++;
+    if (answer.includes('vergleich') || answer.includes('kleiner') || answer.includes('größer')) score++;
+    if (answer.includes('links') && answer.includes('rechts')) score++;
+    if (answer.includes('rekursiv') || answer.includes('wiederhol')) score++;
+    
+    if (score >= 3) {
+        messages.push('✅ Sehr gut! Der Algorithmus: Start bei Wurzel, vergleiche Wert, gehe rekursiv nach links (wenn kleiner) oder rechts (wenn größer), bis Abschluss erreicht, dann einfügen.');
+        feedback.className = 'feedback correct';
+        updateProgress('binaerbaeume', 1);
+    } else if (score >= 2) {
+        messages.push('⚠️ Teilweise richtig. Vollständiger Algorithmus: Start bei Wurzel → Vergleich → rekursiv links/rechts → bei Abschluss einfügen.');
+        feedback.className = 'feedback partial';
+    } else {
+        messages.push('❌ Einfüge-Algorithmus: Start bei Wurzel, vergleiche neuen Wert mit aktuellem Knoten, gehe rekursiv nach links (kleiner) oder rechts (größer), füge bei Abschluss ein.');
+        feedback.className = 'feedback incorrect';
+    }
+    
+    feedback.innerHTML = messages.join('<br>');
+}
+
+function checkAnswer8() {
+    const answer = document.getElementById('answer-8').value.toLowerCase();
+    const feedback = document.getElementById('feedback-8');
+    
+    let score = 0;
+    let messages = [];
+    
+    if (answer.includes('blatt') || answer.includes('keine kinder')) score++;
+    if (answer.includes('ein kind') || answer.includes('eins')) score++;
+    if (answer.includes('zwei kinder') || answer.includes('beide')) score++;
+    
+    if (score >= 2) {
+        messages.push('✅ Korrekt! Die drei Fälle: 1) Blatt (keine Kinder) → einfach löschen, 2) Ein Kind → Kind rückt nach, 3) Zwei Kinder → Ersetze durch Inorder-Nachfolger oder -Vorgänger.');
+        feedback.className = 'feedback correct';
+        updateProgress('binaerbaeume', 1);
+    } else if (score >= 1) {
+        messages.push('⚠️ Teilweise richtig. Drei Fälle: Blatt, ein Kind, zwei Kinder. Bei zwei Kindern: Ersetze durch Inorder-Nachfolger.');
+        feedback.className = 'feedback partial';
+    } else {
+        messages.push('❌ Drei Sonderfälle: 1) Knoten ist Blatt, 2) Knoten hat ein Kind, 3) Knoten hat zwei Kinder (komplexester Fall: Ersetze durch Inorder-Nachfolger).');
+        feedback.className = 'feedback incorrect';
+    }
+    
+    feedback.innerHTML = messages.join('<br>');
+}
+
+// ==========================================
+// ANSWER CHECKING FUNCTIONS - NEBENLÄUFIGKEIT
+// ==========================================
+
+function checkAnswerN1() {
+    const prozess = document.getElementById('answer-n1-prozess').value.toLowerCase();
+    const thread = document.getElementById('answer-n1-thread').value.toLowerCase();
+    const unterschied = document.getElementById('answer-n1-unterschied').value.toLowerCase();
+    const feedback = document.getElementById('feedback-n1');
+    
+    let correct = 0;
+    let messages = [];
+    
+    if (prozess.includes('eigenem speicher') || prozess.includes('isoliert') || prozess.includes('ressourcen')) {
+        correct++;
+        messages.push('✅ Prozess korrekt beschrieben');
+    } else {
+        messages.push('❌ Prozess: Eigenständiges Programm mit eigenem Speicherbereich und Ressourcen');
+    }
+    
+    if (thread.includes('leichtgewichtig') || (thread.includes('teilen') && thread.includes('speicher'))) {
+        correct++;
+        messages.push('✅ Thread korrekt beschrieben');
+    } else {
+        messages.push('❌ Thread: Leichtgewichtiger Ausführungsstrang innerhalb eines Prozesses, teilt Speicher');
+    }
+    
+    if (unterschied.includes('speicher') || unterschied.includes('ressourcen')) {
+        correct++;
+        messages.push('✅ Unterschied korrekt erkannt');
+    } else {
+        messages.push('❌ Hauptunterschied: Prozesse haben getrennten Speicher, Threads teilen Speicher');
+    }
+    
+    feedback.className = 'feedback';
+    if (correct === 3) {
+        feedback.classList.add('correct');
+        updateProgress('nebenlaeufigkeit', 1);
+    } else if (correct > 0) {
+        feedback.classList.add('partial');
+    } else {
+        feedback.classList.add('incorrect');
+    }
+    
+    feedback.innerHTML = '<strong>Feedback:</strong><br>' + messages.join('<br>');
+}
+
+function checkAnswerN2() {
+    const answer = document.getElementById('answer-n2').value.toLowerCase();
+    const feedback = document.getElementById('feedback-n2');
+    
+    let score = 0;
+    if (answer.includes('zustand') || answer.includes('register')) score++;
+    if (answer.includes('speicher') || answer.includes('sichern')) score++;
+    if (answer.includes('wiederherstell') || answer.includes('laden')) score++;
+    
+    let message = '';
+    if (score >= 2) {
+        message = '✅ Korrekt! Context Switch: CPU speichert Zustand von Thread 1 (Register, Programmzähler), lädt Zustand von Thread 2, führt Thread 2 aus.';
+        feedback.className = 'feedback correct';
+        updateProgress('nebenlaeufigkeit', 1);
+    } else {
+        message = '❌ Context Switch: CPU muss Zustand (Register, Programmzähler) von Thread 1 sichern, Zustand von Thread 2 laden und ausführen.';
+        feedback.className = 'feedback incorrect';
+    }
+    
+    feedback.innerHTML = message;
+}
+
+function checkAnswerN3() {
+    const seq = document.getElementById('answer-n3-seq').value.toLowerCase();
+    const neben = document.getElementById('answer-n3-neben').value.toLowerCase();
+    const parallel = document.getElementById('answer-n3-parallel').value.toLowerCase();
+    const feedback = document.getElementById('feedback-n3');
+    
+    let correct = 0;
+    let messages = [];
+    
+    if (seq.includes('nacheinander') || seq.includes('hintereinander')) {
+        correct++;
+        messages.push('✅ Sequentiell korrekt');
+    } else {
+        messages.push('❌ Sequentiell: Vorgänge laufen nacheinander ab');
+    }
+    
+    if (neben.includes('wechsel') || neben.includes('zeitscheiben') || neben.includes('quasi')) {
+        correct++;
+        messages.push('✅ Nebenläufig korrekt');
+    } else {
+        messages.push('❌ Nebenläufig: Schneller Wechsel zwischen Vorgängen (Zeitscheiben), quasi-parallel');
+    }
+    
+    if (parallel.includes('gleichzeitig') || parallel.includes('mehrere') || parallel.includes('kerne')) {
+        correct++;
+        messages.push('✅ Echt parallel korrekt');
+    } else {
+        messages.push('❌ Echt parallel: Tatsächlich gleichzeitige Ausführung auf mehreren Kernen');
+    }
+    
+    feedback.className = 'feedback';
+    if (correct === 3) {
+        feedback.classList.add('correct');
+        updateProgress('nebenlaeufigkeit', 1);
+    } else if (correct > 0) {
+        feedback.classList.add('partial');
+    } else {
+        feedback.classList.add('incorrect');
+    }
+    
+    feedback.innerHTML = '<strong>Feedback:</strong><br>' + messages.join('<br>');
+}
+
+function checkAnswerN4() {
+    const answer = document.getElementById('answer-n4').value.toLowerCase();
+    const feedback = document.getElementById('feedback-n4');
+    
+    let score = 0;
+    if (answer.includes('50') && answer.includes('lesen')) score++;
+    if (answer.includes('45') || answer.includes('40')) score++;
+    if (answer.includes('überschreib')) score++;
+    
+    let message = '';
+    if (score >= 2) {
+        message = '✅ Korrekt! Beide lesen 50, A berechnet 45, B berechnet 40. Wenn A zuerst schreibt (45), dann B (40), geht A\'s Update verloren → 40€ statt 35€.';
+        feedback.className = 'feedback correct';
+        updateProgress('nebenlaeufigkeit', 1);
+    } else {
+        message = '❌ Lost Update: Thread A liest 50, berechnet 45. Thread B liest 50, berechnet 40. B schreibt 40 → A\'s Update (45) geht verloren. Ergebnis: 40€ statt 35€.';
+        feedback.className = 'feedback incorrect';
+    }
+    
+    feedback.innerHTML = message;
+}
+
+function checkAnswerN5() {
+    const def = document.getElementById('answer-n5-def').value.toLowerCase();
+    const anw = document.getElementById('answer-n5-anw').value.toLowerCase();
+    const feedback = document.getElementById('feedback-n5');
+    
+    let correct = 0;
+    let messages = [];
+    
+    if (def.includes('code') && (def.includes('exklusiv') || def.includes('geschützt'))) {
+        correct++;
+        messages.push('✅ Critical Section korrekt definiert');
+    } else {
+        messages.push('❌ Critical Section: Codeabschnitt, der exklusiv von nur einem Thread ausgeführt werden darf');
+    }
+    
+    if (anw.includes('lesen') && anw.includes('schreiben')) {
+        correct++;
+        messages.push('✅ Anwendung korrekt');
+    } else {
+        messages.push('❌ Anwendung: Lesen und Schreiben des Guthabens muss atomar erfolgen');
+    }
+    
+    feedback.className = 'feedback';
+    if (correct === 2) {
+        feedback.classList.add('correct');
+        updateProgress('nebenlaeufigkeit', 1);
+    } else if (correct > 0) {
+        feedback.classList.add('partial');
+    } else {
+        feedback.classList.add('incorrect');
+    }
+    
+    feedback.innerHTML = '<strong>Feedback:</strong><br>' + messages.join('<br>');
+}
+
+function checkAnswerN6() {
+    const keyword = document.getElementById('answer-n6a').value.toLowerCase().trim();
+    const code = document.getElementById('answer-n6b').value.toLowerCase();
+    const startRun = document.getElementById('answer-n6c').value.toLowerCase();
+    const feedback = document.getElementById('feedback-n6');
+    
+    let correct = 0;
+    let messages = [];
+    
+    if (keyword === 'synchronized') {
+        correct++;
+        messages.push('✅ Schlüsselwort korrekt: synchronized');
+    } else {
+        messages.push('❌ Schlüsselwort: synchronized (vor der Methode oder als Block)');
+    }
+    
+    if (code.includes('thread') && code.includes('run') && code.includes('konto')) {
+        correct++;
+        messages.push('✅ Aktienworker-Klasse enthält wichtige Elemente');
+    } else {
+        messages.push('⚠️ Aktienworker sollte Thread erweitern/Runnable implementieren und auf Konto zugreifen');
+    }
+    
+    if (startRun.includes('neuer thread') || (startRun.includes('start') && startRun.includes('parallel'))) {
+        correct++;
+        messages.push('✅ start() vs run() korrekt erklärt');
+    } else {
+        messages.push('❌ start() erstellt neuen Thread (parallel), run() führt Code im aktuellen Thread aus (sequentiell)');
+    }
+    
+    feedback.className = 'feedback';
+    if (correct === 3) {
+        feedback.classList.add('correct');
+        updateProgress('nebenlaeufigkeit', 1);
+    } else if (correct > 0) {
+        feedback.classList.add('partial');
+    } else {
+        feedback.classList.add('incorrect');
+    }
+    
+    feedback.innerHTML = '<strong>Feedback:</strong><br>' + messages.join('<br>');
+}
+
+function checkAnswerN7() {
+    const answer = document.getElementById('answer-n7').value.toLowerCase();
+    const feedback = document.getElementById('feedback-n7');
+    
+    let score = 0;
+    if (answer.includes('warten') || answer.includes('wait')) score++;
+    if (answer.includes('benachrichtig') || answer.includes('notify')) score++;
+    if (answer.includes('leer') || answer.includes('voll')) score++;
+    
+    let message = '';
+    if (score >= 2) {
+        message = '✅ Korrekt! wait() lässt Consumer warten wenn leer, notify() weckt ihn wenn Producer gefüllt hat. Verhindert Zugriff auf leeres/volles Fach.';
+        feedback.className = 'feedback correct';
+        updateProgress('nebenlaeufigkeit', 1);
+    } else {
+        message = '❌ wait() lässt Thread warten (z.B. Consumer bei leerem Fach), notify() weckt wartenden Thread (Producer signalisiert: Fach voll).';
+        feedback.className = 'feedback incorrect';
+    }
+    
+    feedback.innerHTML = message;
+}
+
+function checkAnswerN8() {
+    const answer = document.getElementById('answer-n8').value.toLowerCase();
+    const feedback = document.getElementById('feedback-n8');
+    
+    let score = 0;
+    if (answer.includes('maschine') || answer.includes('prozess')) score++;
+    if (answer.includes('mühle') || answer.includes('schäumer')) score++;
+    if (answer.includes('kreis') || answer.includes('zyklus')) score++;
+    
+    let message = '';
+    if (score >= 2) {
+        message = '✅ Korrekt! Graph: Maschine1 → Mühle → Maschine2 → Schäumer → Maschine1 (Kreis = Deadlock)';
+        feedback.className = 'feedback correct';
+        updateProgress('nebenlaeufigkeit', 1);
+    } else {
+        message = '❌ Graph: Rechtecke für Prozesse (M1, M2), Kreise für Ressourcen (Mühle, Schäumer). Pfeile: M1→Mühle (belegt), M1→Schäumer (wartet), M2→Schäumer (belegt), M2→Mühle (wartet) → Kreis!';
+        feedback.className = 'feedback incorrect';
+    }
+    
+    feedback.innerHTML = message;
+}
+
+function checkAnswerN9() {
+    const me = document.getElementById('answer-n9-me').value.toLowerCase();
+    const hw = document.getElementById('answer-n9-hw').value.toLowerCase();
+    const np = document.getElementById('answer-n9-np').value.toLowerCase();
+    const cw = document.getElementById('answer-n9-cw').value.toLowerCase();
+    const feedback = document.getElementById('feedback-n9');
+    
+    let correct = 0;
+    let messages = [];
+    
+    if (me.includes('ja') || me.includes('erfüllt')) {
+        correct++;
+        messages.push('✅ Mutual Exclusion: Ja, Ressourcen exklusiv');
+    } else {
+        messages.push('❌ Mutual Exclusion: Ja, jede Ressource kann nur von einer Maschine genutzt werden');
+    }
+    
+    if (hw.includes('ja') || hw.includes('erfüllt')) {
+        correct++;
+        messages.push('✅ Hold and Wait: Ja, halten und warten');
+    } else {
+        messages.push('❌ Hold and Wait: Ja, Maschinen halten eine Ressource und warten auf die andere');
+    }
+    
+    if (np.includes('ja') || np.includes('erfüllt')) {
+        correct++;
+        messages.push('✅ No Preemption: Ja, keine Verdrängung');
+    } else {
+        messages.push('❌ No Preemption: Ja, Ressourcen können nicht entzogen werden');
+    }
+    
+    if (cw.includes('ja') || cw.includes('erfüllt') || cw.includes('kreis')) {
+        correct++;
+        messages.push('✅ Circular Wait: Ja, zirkuläres Warten');
+    } else {
+        messages.push('❌ Circular Wait: Ja, M1 wartet auf M2, M2 wartet auf M1 (Kreis)');
+    }
+    
+    feedback.className = 'feedback';
+    if (correct === 4) {
+        feedback.classList.add('correct');
+        messages.push('<br><strong>Alle vier Coffman-Bedingungen erfüllt → Deadlock liegt vor!</strong>');
+        updateProgress('nebenlaeufigkeit', 1);
+    } else if (correct > 0) {
+        feedback.classList.add('partial');
+    } else {
+        feedback.classList.add('incorrect');
+    }
+    
+    feedback.innerHTML = '<strong>Feedback:</strong><br>' + messages.join('<br>');
+}
+
+// ==========================================
+// ANSWER CHECKING FUNCTIONS - SICHERHEIT
+// ==========================================
+
+function checkAnswerS1() {
+    const conf = document.getElementById('answer-s1-conf').value.toLowerCase();
+    const int = document.getElementById('answer-s1-int').value.toLowerCase();
+    const avail = document.getElementById('answer-s1-avail').value.toLowerCase();
+    const auth = document.getElementById('answer-s1-auth').value.toLowerCase();
+    const feedback = document.getElementById('feedback-s1');
+    
+    let correct = 0;
+    let messages = [];
+    
+    if (conf.includes('unbefugt') || conf.includes('geheim')) {
+        correct++;
+        messages.push('✅ Vertraulichkeit korrekt');
+    } else {
+        messages.push('❌ Vertraulichkeit: Schutz vor unbefugtem Zugriff (z.B. Geburtsurkunden einsehbar)');
+    }
+    
+    if (int.includes('unverändert') || int.includes('korrekt') || int.includes('manipulation')) {
+        correct++;
+        messages.push('✅ Integrität korrekt');
+    } else {
+        messages.push('❌ Integrität: Daten bleiben unverändert/korrekt (z.B. gelöschte Termine)');
+    }
+    
+    if (avail.includes('verfügbar') || avail.includes('erreichbar')) {
+        correct++;
+        messages.push('✅ Verfügbarkeit korrekt');
+    } else {
+        messages.push('❌ Verfügbarkeit: System ist erreichbar (z.B. Kabelbruch → Portal offline)');
+    }
+    
+    if (auth.includes('echtheit') || auth.includes('identität')) {
+        correct++;
+        messages.push('✅ Authentizität korrekt');
+    } else {
+        messages.push('❌ Authentizität: Echtheit der Identität (z.B. falscher Admin)');
+    }
+    
+    feedback.className = 'feedback';
+    if (correct === 4) {
+        feedback.classList.add('correct');
+        updateProgress('sicherheit', 1);
+    } else if (correct > 0) {
+        feedback.classList.add('partial');
+    } else {
+        feedback.classList.add('incorrect');
+    }
+    
+    feedback.innerHTML = '<strong>Feedback:</strong><br>' + messages.join('<br>');
+}
+
+function checkAnswerS2a() {
+    const e1 = document.getElementById('answer-s2a-1').value;
+    const e2 = document.getElementById('answer-s2a-2').value;
+    const e3 = document.getElementById('answer-s2a-3').value;
+    const feedback = document.getElementById('feedback-s2a');
+    
+    let correct = 0;
+    let messages = [];
+    
+    // Event 1: Höhere Gewalt (oder org. Mängel akzeptabel)
+    if (e1 === 'hoehere-gewalt' || e1 === 'org-maengel') {
+        correct++;
+        messages.push('✅ Ereignis 1: Höhere Gewalt (oder org. Mängel bei fehlender Planung)');
+    } else {
+        messages.push('❌ Ereignis 1: Höhere Gewalt (Naturereignis/Unfall) oder org. Mängel');
+    }
+    
+    // Event 2: Menschliches Fehlverhalten
+    if (e2 === 'menschlich') {
+        correct++;
+        messages.push('✅ Ereignis 2: Menschliches Fehlverhalten (versehentlich)');
+    } else {
+        messages.push('❌ Ereignis 2: Menschliches Fehlverhalten (unabsichtlicher Fehler)');
+    }
+    
+    // Event 3: Vorsätzliche Handlungen
+    if (e3 === 'vorsaetzlich') {
+        correct++;
+        messages.push('✅ Ereignis 3: Vorsätzliche Handlungen (Social Engineering)');
+    } else {
+        messages.push('❌ Ereignis 3: Vorsätzliche Handlungen (bewusster Angriff)');
+    }
+    
+    feedback.className = 'feedback';
+    if (correct === 3) {
+        feedback.classList.add('correct');
+        updateProgress('sicherheit', 1);
+    } else if (correct > 0) {
+        feedback.classList.add('partial');
+    } else {
+        feedback.classList.add('incorrect');
+    }
+    
+    feedback.innerHTML = '<strong>Feedback:</strong><br>' + messages.join('<br>');
+}
+
+function checkAnswerS2b() {
+    const klasse1 = document.getElementById('answer-s2b-klasse1').value.toLowerCase();
+    const klasse2 = document.getElementById('answer-s2b-klasse2').value.toLowerCase();
+    const beispiel1 = document.getElementById('answer-s2b-beispiel1').value;
+    const beispiel2 = document.getElementById('answer-s2b-beispiel2').value;
+    const feedback = document.getElementById('feedback-s2b');
+    
+    let messages = [];
+    
+    if (beispiel1.length > 10 && beispiel2.length > 10) {
+        messages.push('✅ Beispiele eingegeben. Fehlende Klassen: "Organisatorische Mängel" (z.B. fehlende Backup-Strategie) und "Technisches Versagen" (z.B. Festplattenausfall)');
+        feedback.className = 'feedback correct';
+    } else {
+        messages.push('⚠️ Bitte geben Sie konkrete Beispiele ein. Fehlende Klassen: Organisatorische Mängel, Technisches Versagen');
+        feedback.className = 'feedback partial';
+    }
+    
+    feedback.innerHTML = '<strong>Feedback:</strong><br>' + messages.join('<br>');
+}
+
+function checkAnswerS3() {
+    const ziel = document.getElementById('answer-s3-ziel').value;
+    const tech = document.getElementById('answer-s3-tech').value;
+    const org = document.getElementById('answer-s3-org').value;
+    const pers = document.getElementById('answer-s3-pers').value;
+    const feedback = document.getElementById('feedback-s3');
+    
+    let score = 0;
+    let messages = [];
+    
+    if (ziel) {
+        score++;
+        messages.push('✅ Schutzziel gewählt');
+    }
+    
+    if (tech.length > 20) {
+        score++;
+        messages.push('✅ Technische Maßnahme beschrieben');
+    } else {
+        messages.push('⚠️ Technisch: z.B. Firewall, Verschlüsselung, Backup-System, Redundanz');
+    }
+    
+    if (org.length > 20) {
+        score++;
+        messages.push('✅ Organisatorische Maßnahme beschrieben');
+    } else {
+        messages.push('⚠️ Organisatorisch: z.B. Zugriffskontrolle, Backup-Strategie, Notfallplan');
+    }
+    
+    if (pers.length > 20) {
+        score++;
+        messages.push('✅ Personelle Maßnahme beschrieben');
+    } else {
+        messages.push('⚠️ Personell: z.B. Schulungen, Sensibilisierung, Sicherheitsbeauftragter');
+    }
+    
+    feedback.className = 'feedback';
+    if (score === 4) {
+        feedback.classList.add('correct');
+        updateProgress('sicherheit', 1);
+    } else if (score >= 2) {
+        feedback.classList.add('partial');
+    } else {
+        feedback.classList.add('incorrect');
+    }
+    
+    feedback.innerHTML = '<strong>Feedback:</strong><br>' + messages.join('<br>');
+}
+
+// ==========================================
+// INITIALIZATION
+// ==========================================
+window.addEventListener('load', () => {
+    drawTree();
+    loadProgress();
+});
+
+window.addEventListener('resize', () => {
+    drawTree();
+});
+</script>
+
+</body>
+</html>
