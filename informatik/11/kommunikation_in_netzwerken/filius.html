@@ -246,6 +246,13 @@
             margin: 1rem 0;
             font-weight: 600;
         }
+
+        .frame {
+            border: 4px solid red;
+            padding: 2px 6px;
+            border-radius: 4px; /* Optional: abgerundete Ecken */
+            display: inline-block; /* Sorgt dafür, dass Abstände (Padding) sauber berechnet werden */
+        }
         
         .subnet-calculator {
             background: white;
@@ -294,6 +301,84 @@
             transform-origin: top left; 
             width: 133.33%; 
             height: 133.33%;
+        }
+
+        .checklist {
+            background: var(--white);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .checklist h4 {
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-md);
+            font-size: 1.3rem;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            margin: var(--spacing-sm) 0;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            background: var(--gray-lighter);
+        }
+
+        .checklist-item:hover {
+            background: var(--gray-light);
+        }
+
+        .checklist-item.completed {
+            background: #d1fae5;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checklist-item span {
+            flex: 1;
+            color: var(--dark);
+        }
+
+        .status-success {
+            background: #d1fae5;
+            border: 2px solid var(--success-color);
+            color: var(--success-dark);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius);
+            font-weight: 600;
+            text-align: center;
+            animation: slideIn 0.5s ease;
+        }
+
+        .status-info {
+            background: #dbeafe;
+            border: 2px solid var(--info-color);
+            color: var(--info-color);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius);
+            font-weight: 600;
+            text-align: center;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         @media (max-width: 768px) {
@@ -394,10 +479,9 @@
                         <span class="info-icon">⏱️</span>
                         <h3>Zeitaufwand</h3>
                         <ul>
-                            <li>Grundlagen: 45 Minuten</li>
-                            <li>Level 1-3: 90 Minuten</li>
-                            <li>Level 4-6: 120 Minuten</li>
-                            <li>Gesamt: ca. 4-5 Stunden</li>
+                            <li>Grundlagen: 15 Minuten</li>
+                            <li>Level 1-3: 30 Minuten</li>
+                            <li>Level 4-6: 45 Minuten</li>
                         </ul>
                     </div>
                     <div class="info-card">
@@ -423,7 +507,7 @@
                         <ul>
                             <li>✅ Kostenlos und Open Source</li>
                             <li>✅ Einfache Bedienung per Drag & Drop</li>
-                            <li>✅ Realistische Simulation von Netzwerkprotokollen</li>
+                            <li>✅ Vereinfachte Simulation von Netzwerkkommunikation</li>
                             <li>✅ Keine Gefahr, echte Netzwerke zu beschädigen</li>
                             <li>✅ Ideal zum Experimentieren und Lernen</li>
                         </ul>
@@ -476,29 +560,47 @@
 
                 <div class="download-highlight">
                     <h3>⚠️ WICHTIG: Download und Installation</h3>
+
+                    <div class="important-note">
+                                🔴 <strong style= "color:red">EINSCHRÄNKUNG:</strong> Filius funktioniert nur auf Desktop Betriebssystemen, wie Windows oder Linux oder MacOS.<br>
+                                Mobile Endgeräte wie Android oder iOS/iPadOS sind NICHT kompatibel!
+                    </div>
+
                     <p>Folge diesen Schritten genau, um Filius korrekt zu installieren:</p>
                     
                     <div class="download-steps">
                         <ol>
+                            
+
                             <li>
                                 <strong>Besuche die offizielle Filius-Website:</strong><br>
                                 <a href="https://www.lernsoftware-filius.de/Herunterladen" target="_blank" style="color: white; text-decoration: underline;">
                                     🔗 www.lernsoftware-filius.de/Herunterladen
                                 </a>
                             </li>
+
                             <li>
-                                <strong> Für die Alte JAVA 8 Version lade die ZIP-Datei der alten Version 1.14.2 hier herunter: <a style="color:var(--primary-light); text-decoration: underline;" href="filius-1.14.2.zip" target="_blank">Download Version 1.14.2</a> </strong> <br>
+                                <strong>Wähle die passende Version:</strong><br>
+                                Falls du bereits Java installiert hast, lade die ZIP Datei und nutze die .jar Datei. <br> 
+                                Andernfalls nutze den Windows oder Ubuntu installer, falls du über Admin Rechte verfügst. Dieser hat Java bereits mit dabei.  
                             </li>
-                            <li class="important-note">
-                                🔴 <strong>WICHTIG:</strong> Entpacke die ZIP-Datei vollständig!<br>
-                                Rechtsklick → "Alle extrahieren" oder "Entpacken nach..."
+
+                            <li style="display: flex; align-items: center; gap: var(--spacing-md); flex-wrap: wrap;">
+                                Für die <strong style="color: var(--warning-color)">alte JAVA 8 Version</strong> lade die ZIP-Datei der alten Version 1.14.2 hier herunter:
+                                <a href="filius-1.14.2.zip" target="_blank" class="btn btn-primary btn-sm" download style="margin-left: 0;">
+                                    📥 Download Version 1.14.2
+                                </a>
+                            </li>
+
+                            <li>
+                                <span class="frame">‼️‼️<strong> <u>Extrahiere</u></strong> die ZIP-Datei vollständig!‼️‼️</span><br>
+                                Rechtsklick → "Alle extrahieren" oder "Extrahieren nach..."
                             </li>
                             <li>
-                                <strong>Öffne den entpackten Ordner</strong>
+                                <span> Öffne den <strong><u>extrahierten Ordner</u></strong> </span>
                             </li>
                             <li>
-                                <strong>Doppelklick auf die Datei "filius.jar"</strong><br>
-                                (Falls das nicht funktioniert, siehe Problemlösung unten)
+                                Doppelklick auf die <strong>JAR-Datei <u>filius.jar</u></strong><br>
                             </li>
                         </ol>
                     </div>
@@ -508,7 +610,7 @@
                     <h3>🖥️ Systemanforderungen</h3>
                     <p>Stelle sicher, dass dein Computer diese Anforderungen erfüllt:</p>
                     <ul>
-                        <li><strong>Java Runtime Environment (JRE)</strong> Version 8 oder höher</li>
+                        <li><strong>Java Runtime Environment (JRE)</strong> Version 17 oder höher</li>
                         <li><strong>Betriebssystem:</strong> Windows, macOS oder Linux</li>
                         <li><strong>Arbeitsspeicher:</strong> Mindestens 2 GB RAM</li>
                         <li><strong>Festplattenspeicher:</strong> Ca. 100 MB frei</li>
@@ -516,31 +618,27 @@
                 </div>
 
                 <div class="troubleshooting">
-                    <h4>🔧 Problemlösung: Filius startet nicht?</h4>
-                    
-                    <div class="term">
-                        <strong>Problem 1: "Java ist nicht installiert"</strong>
-                        <p>
-                            <strong>Lösung:</strong> Lade Java von der offiziellen Website herunter:<br>
-                            <a href="https://www.java.com/de/download/" target="_blank">www.java.com/de/download/</a>
-                        </p>
-                    </div>
+                    <h4>🔧 Problemlösung: Filius lässt sich nicht öffnen</h4>
 
-                    <div class="term">
-                        <strong>Problem 2: "Die .jar-Datei öffnet sich nicht"</strong>
-                        <p>
-                            <strong>Lösung:</strong> Öffne die Eingabeaufforderung (Windows) oder Terminal (Mac/Linux) im Filius-Ordner und gib ein:<br>
-                            <code>java -jar filius.jar</code>
-                        </p>
-                    </div>
-
-                    <div class="term">
-                        <strong>Problem 3: "Ich habe die ZIP-Datei nicht entpackt"</strong>
+                     <div class="term">
+                        <strong>Problem 1: "Ich habe die ZIP-Datei nicht entpackt"</strong>
                         <p>
                             <strong>Lösung:</strong> Du MUSST die ZIP-Datei entpacken! Filius funktioniert nicht direkt aus der ZIP-Datei. 
                             Rechtsklick auf die ZIP → "Alle extrahieren" → Zielordner wählen → OK
                         </p>
                     </div>
+                    
+                    <div class="term">
+                        <strong>Problem 2: "Java ist nicht installiert"</strong>
+                        <p>
+                            <strong>Lösung:</strong> Nutze den Windows oder Ubuntu Download auf der Filius Homepage:<br>
+                            <a href="https://www.lernsoftware-filius.de/Herunterladen" target="_blank" style="text-decoration: underline;">
+                                    🔗 www.lernsoftware-filius.de/Herunterladen
+                            </a> <br>
+                            ... oder den Package-Manager deiner Wahl auf anderen Linux Distributionen.
+                        </p>
+                    </div>
+                  
                 </div>
 
                 <div class="checklist">
@@ -548,8 +646,13 @@
                     <p>Hake ab, wenn du den Schritt erledigt hast:</p>
                     
                     <label class="checklist-item">
-                        <input type="checkbox" id="check1">
-                        <span>Java ist auf meinem Computer installiert</span>
+                        <input type="checkbox" id="check1-0">
+                        <span>Java ist auf meinem Computer installiert → ZIP Datei nutzen</span>
+                    </label>
+
+                    <label class="checklist-item">
+                        <input type="checkbox" id="check1-1">
+                        <span>Java ist NICHT auf meinem Computer installiert → Installer nutzen</span>
                     </label>
                     
                     <label class="checklist-item">
@@ -558,19 +661,27 @@
                     </label>
                     
                     <label class="checklist-item">
-                        <input type="checkbox" id="check3">
+                        <input type="checkbox" id="check3-0">
                         <span>Die ZIP-Datei wurde heruntergeladen</span>
                     </label>
                     
                     <label class="checklist-item">
-                        <input type="checkbox" id="check4">
-                        <span>Die ZIP-Datei wurde VOLLSTÄNDIG entpackt</span>
+                        <input type="checkbox" id="check4-0">
+                        <span>Die ZIP-Datei wurde VOLLSTÄNDIG extrahiert</span>
+                    </label>
+
+                    <label class="checklist-item">
+                        <input type="checkbox" id="check3-1">
+                        <span>Ich habe Filius mit dem passenden Installer installiert</span>
                     </label>
                     
                     <label class="checklist-item">
                         <input type="checkbox" id="check5">
-                        <span>Filius startet erfolgreich (filius.jar)</span>
+                        <span>Filius startet erfolgreich</span>
                     </label>
+
+                    <!-- Statusmeldungen -->
+                    <div id="status-message" style="margin-top: var(--spacing-lg);"></div>
                 </div>
 
                 <div class="example-box success">
@@ -580,8 +691,8 @@
                             Wenn Filius jetzt läuft, siehst du ein Fenster mit zwei Bereichen:
                         </p>
                         <ul>
-                            <li><strong>Entwurfsmodus (Hammer Symbol):</strong> Hier baust du dein Netzwerk auf</li>
-                            <li><strong>Simulationsmodus (Grüner Play Button):</strong> Hier testest du dein Netzwerk</li>
+                            <li><strong>Entwurfsmodus 🔨 (Hammer Symbol):</strong> Hier baust du dein Netzwerk auf</li>
+                            <li><strong>Aktionsmodus ▶︎ (Grüner Play Button):</strong> Hier testest du dein Netzwerk</li>
                         </ul>
                         <p class="highlight">
                             💡 <strong>Tipp:</strong> Schau dich erst einmal in Ruhe um. Klicke auf die verschiedenen Symbole 
@@ -612,7 +723,7 @@
                     <div class="definition-card">
                         <div class="def-icon">💻</div>
                         <h4>Computer / Rechner</h4>
-                        <p>Ein Endgerät, das Daten senden und empfangen kann.</p>
+                        <p>Ein Endgerät im Netzwerk, das Daten senden und empfangen sowie Programme ausführen kann.</p>
                         <ul>
                             <li>Hat eine IP-Adresse</li>
                             <li>Kann Programme ausführen</li>
@@ -625,7 +736,7 @@
                         <h4>Switch / Verteiler</h4>
                         <p>Verbindet mehrere Geräte in einem Netzwerk.</p>
                         <ul>
-                            <li>Leitet Datenpakete weiter</li>
+                            <li>Leitet Datenrahmen anhand der MAC-Adresse an den richtigen Anschluss weiter.</li>
                             <li>Arbeitet auf Layer 2 (Data Link)</li>
                             <li>Kennt MAC-Adressen</li>
                         </ul>
@@ -636,7 +747,7 @@
                         <h4>Router / Gateway</h4>
                         <p>Verbindet verschiedene Netzwerke miteinander.</p>
                         <ul>
-                            <li>Routet zwischen Netzwerken</li>
+                            <li>Bestimmt den Weg von Datenpaketen zwischen verschiedenen Netzwerken und leitet diese entsprechend weiter.</li>
                             <li>Arbeitet auf Layer 3 (Network)</li>
                             <li>Kennt IP-Adressen und Routen</li>
                         </ul>
@@ -682,7 +793,7 @@
                     </div>
 
                     <div class="important-note">
-                        ⚠️ <strong>Wichtig:</strong> Alle Geräte im gleichen Netzwerk müssen den gleichen Netzwerk-Teil haben!
+                        ⚠️ <strong>Wichtig:</strong> Alle Geräte im gleichen Netzwerk müssen – gemäß der Subnetzmaske – den gleichen Netzwerkanteil besitzen.
                     </div>
                 </div>
 
@@ -759,7 +870,7 @@
                             <div class="number">2</div>
                             <div>
                                 <strong>IP-Adressen</strong>
-                                <p>Jedes Gerät braucht eine eindeutige IP-Adresse im Netzwerk</p>
+                                <p>Jedes Gerät benötigt eine im Netzwerk eindeutige IP-Adresse.</p>
                             </div>
                         </div>
                         <div class="key-point">
@@ -843,8 +954,8 @@
                         <h4>Schritt 3: IP-Adressen konfigurieren</h4>
                         <p><strong>Computer 1 konfigurieren:</strong></p>
                         <ol>
-                            <li><strong>Rechtsklick</strong> auf <strong>Computer 1</strong> → <strong>"Konfigurieren"</strong></li>
-                            <li>Im Konfigurationsfenster siehst du die Netzwerkkarte</li>
+                            <li>Klicke auf <strong>Computer 1</strong></li>
+                            <li>Im Konfigurationsfenster (unten) siehst du die Netzwerkkarte</li>
                             <li>Trage ein:
                                 <div class="config-box">
                                     <div class="config-label">Computer 1</div>
@@ -858,8 +969,8 @@ Gateway:       (leer lassen)</pre>
 
                         <p style="margin-top: 1.5rem;"><strong>Computer 2 konfigurieren:</strong></p>
                         <ol>
-                            <li><strong>Rechtsklick</strong> auf <strong>Computer 2</strong> → <strong>"Konfigurieren"</strong></li>
-                            <li>Im Konfigurationsfenster siehst du die Netzwerkkarte</li>
+                            <li>Klicke auf <strong>Computer 2</strong></li>
+                            <li>Im Konfigurationsfenster (unten) siehst du die Netzwerkkarte</li>
                             <li>Trage ein:
                                 <div class="config-box">
                                     <div class="config-label">Computer 2</div>
@@ -1003,42 +1114,33 @@ Antwort von 192.168.0.2: Zeit=231ms</pre>
                     <h4>🎯 Aufgabe: Netzwerk mit 2 Switches aufbauen</h4>
                     
                     <div class="network-diagram">
-                        <div style="text-align: center;">
-                            <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 2rem;">
-                                <div>
-                                    <div class="device-box">
-                                        <div class="device-icon">💻</div>
-                                        <div>PC 1 (Client)</div>
-                                        <div style="font-size: 0.8rem; color: #666;">192.168.1.10</div>
-                                    </div>
-                                    <div style="margin: 1rem 0;">↓</div>
-                                    <div class="device-box">
-                                        <div class="device-icon">📡</div>
-                                        <div>Switch 1</div>
-                                    </div>
-                                </div>
-                                
-                                <div style="font-size: 2rem;">⟷</div>
-                                
-                                <div>
-                                    <div class="device-box">
-                                        <div class="device-icon">📡</div>
-                                        <div>Switch 2</div>
-                                    </div>
-                                    <div style="margin: 1rem 0;">↓</div>
-                                    <div class="device-box">
-                                        <div class="device-icon">💻</div>
-                                        <div>PC 2 (Server)</div>
-                                        <div style="font-size: 0.8rem; color: #666;">192.168.1.20</div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="device-box">
+                            <div class="device-icon">💻</div>
+                            <div>PC 1 (Client)</div>
+                            <div style="font-size: 0.8rem; color: #666;">192.168.1.10</div>
+                        </div>
+                        <span class="connection-line"></span>
+                        <div class="device-box">
+                            <div class="device-icon">📡</div>
+                            <div>Switch 1</div>
+                        </div>
+                        <span class="connection-line"></span>
+                        <div class="device-box">
+                            <div class="device-icon">📡</div>
+                            <div>Switch 2</div>
+                        </div>
+                        <span class="connection-line"></span>
+                        <div class="device-box">
+                            <div class="device-icon">💻</div>
+                            <div>PC 2 (Server)</div>
+                            <div style="font-size: 0.8rem; color: #666;">192.168.1.20</div>
                         </div>
                     </div>
                 </div>
 
+
                 <div class="concept-box">
-                    <h3>📝 Aufbau-Anleitung - Wechsle wieder in den Entwurfsmodus </h3>
+                    <h3>📝 Aufbau-Anleitung - Wechsle wieder in den Entwurfsmodus 🔨 </h3>
                     
                     <div class="example-item">
                         <h4>Schritt 1: Netzwerk planen</h4>
@@ -1116,13 +1218,13 @@ Verbindung:     Switch 1 ⟷ Switch 2
                         Um zu sehen, wie Datenpakete durch dein Netzwerk fließen, nutzen wir den <strong>Aktionsmodus</strong>:
                     </p>
                     <ol>
-                        <li>Klicke oben links auf den <strong>grünen Play-Button</strong> (Aktionsmodus starten)</li>
+                        <li>Klicke oben links auf den <strong>grünen Play-Button</strong> (Aktionsmodus ▶︎ starten)</li>
                         <li>Jetzt kannst du deine Rechner nutzen und ihre Datenpakete verfolgen!</li>
                         <li>In der oberen Leiste neben  kannst du die <strong>Simulationsgeschwindigkeit</strong> mit dem Schieberegler anpassen</li>
                         <li>Passe die Geschwindigkeit so an, dass du die Pakete gut verfolgen kannst</li>
                     </ol>
                     <div class="important-note">
-                        💡 <strong>Tipp:</strong> Im Aktionsmodus siehst du genau, wie Pakete von Switch zu Switch wandern! Nutze die Geschwindigkeits-Funktion (Schieberegler oben), um die Simulation zu verlangsamen.
+                        💡 <strong>Tipp:</strong> Im Aktionsmodus ▶︎ siehst du genau, wie Daten durch das Netzwerk von Gerät zu Gerät weitergeleitet werden! Nutze die Geschwindigkeits-Funktion (Schieberegler oben), um die Simulation zu verlangsamen.
                     </div>
                 </div>
 
@@ -1186,7 +1288,7 @@ Verbindung:     Switch 1 ⟷ Switch 2
                         <p>Falls Echo Server nicht verfügbar ist, nutze den Ping-Befehl:</p>
                         <ol>
                             <li>Installiere auf PC 1 die <strong>Befehlszeile</strong> (Command Line)</li>
-                            <li>Wechsle in den <strong>Simulationsmodus</strong></li>
+                            <li>Wechsle in den <strong>Aktionsmodus</strong></li>
                             <li>Öffne die Befehlszeile auf PC 1</li>
                             <li>Gib ein: <code>ping 192.168.1.20</code></li>
                             <li>Drücke Enter und beobachte die Pakete!</li>
@@ -1208,7 +1310,7 @@ Verbindung:     Switch 1 ⟷ Switch 2
                     <div id="answer4" class="answer-reveal">
                         <p><strong>Der Weg eines Datenpakets:</strong></p>
                         <ol>
-                            <li><strong>PC 1 (Client)</strong> erstellt ein Datenpaket mit:
+                            <li><strong>PC 1 (Client)</strong> sendet ein Datenpaket mit folgenden Informationen:
                                 <ul>
                                     <li>Absender: 192.168.1.10</li>
                                     <li>Empfänger: 192.168.1.20</li>
@@ -1225,7 +1327,7 @@ Verbindung:     Switch 1 ⟷ Switch 2
                             </li>
                         </ol>
                         <div class="important-note">
-                            🎯 <strong>Wichtig:</strong> Switches merken sich, an welchem Port welches Gerät hängt. So wissen sie, wohin sie Pakete weiterleiten müssen!
+                            🎯 <strong>Wichtig:</strong> Switches merken sich, an welchem Port welche MAC-Adresse (also die eindeutige Hardwareadresse für jedes Gerät) erreichbar ist. So wissen sie, wohin sie Pakete weiterleiten müssen!
                         </div>
                     </div>
                 </div>
@@ -1265,9 +1367,9 @@ Verbindung:     Switch 1 ⟷ Switch 2
                                     <li>Hast du die richtige Ziel-IP eingegeben (192.168.1.20)?</li>
                                 </ul>
                             </li>
-                            <li><strong>Simulationsmodus nutzen:</strong>
+                            <li><strong>Aktionsmodus ▶︎ nutzen:</strong>
                                 <ul>
-                                    <li>Wechsle in den Simulationsmodus</li>
+                                    <li>Wechsle in den Aktionsmodus</li>
                                     <li>Sende ein Paket und beobachte, wo es "stecken bleibt"</li>
                                     <li>Klicke auf das Paket, um Details zu sehen</li>
                                 </ul>
@@ -1293,21 +1395,21 @@ Verbindung:     Switch 1 ⟷ Switch 2
                             <div class="number">2</div>
                             <div>
                                 <strong>Client-Server-Kommunikation</strong>
-                                <p>Ein Client sendet Anfragen, ein Server antwortet – wie beim Datenaustausch mit einem Drucker</p>
+                                <p>Ein Client sendet eine Anfrage an einen Server, der diese verarbeitet und eine Antwort zurücksendet – wie beim Datenaustausch mit einem Drucker</p>
                             </div>
                         </div>
                         <div class="key-point">
                             <div class="number">3</div>
                             <div>
-                                <strong>Simulationsmodus</strong>
-                                <p>Mit dem Simulationsmodus kannst du Datenpakete Schritt für Schritt durch das Netzwerk verfolgen</p>
+                                <strong>Aktionsmodus</strong>
+                                <p>Mit dem Aktionsmodus ▶︎ kannst du Datenpakete Schritt für Schritt durch das Netzwerk verfolgen</p>
                             </div>
                         </div>
                         <div class="key-point">
                             <div class="number">4</div>
                             <div>
                                 <strong>Software-Installation</strong>
-                                <p>Auf Netzwerkgeräten können Programme installiert werden (Server, Client, Tools)</p>
+                                <p>Auf Computern im Netzwerk können Programme installiert werden (z. B. Server oder Client Software).</p>
                             </div>
                         </div>
                         <div class="key-point">
@@ -1362,7 +1464,7 @@ Verbindung:     Switch 1 ⟷ Switch 2
                         <li><strong>Falsche IP-Bereiche:</strong> Alle Geräte müssen im gleichen Netzwerk sein (192.168.1.x)</li>
                         <li><strong>Server nicht gestartet:</strong> Der Echo Server muss laufen, bevor der Client Nachrichten sendet</li>
                         <li><strong>Falsche Ziel-IP:</strong> Prüfe, ob du die richtige IP-Adresse des Servers eingegeben hast</li>
-                        <li><strong>Simulationsmodus vergessen:</strong> Ohne Simulationsmodus siehst du die Pakete nicht!</li>
+                        <li><strong>Aktionsmodus ▶︎ vergessen:</strong> Ohne Aktionsmodus ▶︎ siehst du die Pakete nicht!</li>
                     </ul>
                 </div>
 
@@ -1477,7 +1579,7 @@ Abteilung B (Buchhaltung):
                     <div class="example-item">
                         <h4>Schritt 2: Innerhalb der Abteilungen testen</h4>
                         <ol>
-                            <li>Wechsle in den Simulationsmodus</li>
+                            <li>Wechsle in den Aktionsmodus</li>
                             <li>Teste in Abteilung A:
                                 <div class="config-box">
                                     <pre>Von 192.168.10.1 → ping 192.168.10.2  ✅ Funktioniert!</pre>
@@ -1727,7 +1829,6 @@ Netzmaske:     255.255.255.0</pre>
 Netzmaske:     255.255.255.0</pre>
                                 </div>
                             </li>
-                            <li>Schließe das Konfigurationsfenster</li>
                         </ol>
                         <div class="important-note">
                             💡 <strong>Warum .254?</strong> Das ist Konvention - die letzte nutzbare IP wird oft für den Router/Vermittlungsrechner verwendet.
@@ -1767,7 +1868,7 @@ Gateway:       192.168.10.254  ← NEU!</pre>
                 <div class="task-box">
                     <h4>🧪 Schritt 5: Verbindung testen</h4>
                     <ol>
-                        <li>Wechsle in den <strong>Simulationsmodus</strong></li>
+                        <li>Wechsle in den <strong>Aktionsmodus</strong></li>
                         <li>Öffne die Befehlszeile auf einem Computer in Netzwerk A (z.B. 192.168.10.1)</li>
                         <li>Teste die Verbindung zu Netzwerk B:
                             <div class="config-box">
@@ -3004,10 +3105,10 @@ dns.techcorp.local       → 192.168.10.6</pre>
                                     <li>Keine doppelten IP-Adressen</li>
                                 </ul>
                             </li>
-                            <li><strong>Nicht im Simulationsmodus</strong>
+                            <li><strong>Nicht im Aktionsmodus</strong>
                                 <ul>
-                                    <li>Wechsle in den Simulationsmodus (grüner Pfeil)</li>
-                                    <li>Im Entwurfsmodus funktioniert keine Kommunikation</li>
+                                    <li>Wechsle in den Aktionsmodus ▶︎ (grüner Pfeil)</li>
+                                    <li>Im Entwurfsmodus 🔨 funktioniert keine Kommunikation</li>
                                 </ul>
                             </li>
                             <li><strong>Gateway fehlt</strong>
@@ -3449,6 +3550,84 @@ dns.techcorp.local       → 192.168.10.6</pre>
         if (window.location.hash === '#abschluss') {
             setTimeout(celebrateSuccess, 500);
         }
+
+
+
+        // Funktion zur Überprüfung des Installationsstatus
+        function checkInstallationStatus() {
+            // Alle Checkboxen
+            const check1_0 = document.getElementById('check1-0');
+            const check1_1 = document.getElementById('check1-1');
+            const check2 = document.getElementById('check2');
+            const check3_0 = document.getElementById('check3-0');
+            const check4_0 = document.getElementById('check4-0');
+            const check3_1 = document.getElementById('check3-1');
+            const check5 = document.getElementById('check5');
+            
+            const statusMessage = document.getElementById('status-message');
+            
+            // Prüfe ZIP-Pfad (alle -0 IDs)
+            const zipPathComplete = check1_0.checked && check2.checked && check3_0.checked && check4_0.checked && check5.checked;
+            
+            // Prüfe Installer-Pfad (alle -1 IDs)
+            const installerPathComplete = check1_1.checked && check2.checked && check3_1.checked && check5.checked;
+            
+            // Update Checkbox-Styling
+            document.querySelectorAll('.checklist-item').forEach(item => {
+                const checkbox = item.querySelector('input[type="checkbox"]');
+                if (checkbox.checked) {
+                    item.classList.add('completed');
+                } else {
+                    item.classList.remove('completed');
+                }
+            });
+            
+            // Statusmeldungen
+            if (zipPathComplete) {
+                statusMessage.innerHTML = `
+                    <div class="status-success">
+                        🎉 Perfekt! Du hast Filius erfolgreich über die ZIP-Datei installiert!<br>
+                        <small>Du kannst jetzt mit Filius arbeiten.</small>
+                    </div>
+                `;
+            } else if (installerPathComplete) {
+                statusMessage.innerHTML = `
+                    <div class="status-success">
+                        🎉 Großartig! Du hast Filius erfolgreich mit dem Installer installiert!<br>
+                        <small>Du kannst jetzt mit Filius arbeiten.</small>
+                    </div>
+                `;
+            } else if (check1_0.checked || check1_1.checked) {
+                // Zeige Fortschritt an
+                const totalSteps = check1_0.checked ? 5 : 4;
+                const completedSteps = [check2, check5, 
+                    ...(check1_0.checked ? [check3_0, check4_0] : [check3_1])
+                ].filter(cb => cb.checked).length + 1;
+                
+                statusMessage.innerHTML = `
+                    <div class="status-info">
+                        ⏳ Installation läuft... (${completedSteps}/${totalSteps} Schritte abgeschlossen)
+                    </div>
+                `;
+            } else {
+                statusMessage.innerHTML = `
+                    <div class="status-info">
+                        💡 Wähle zuerst aus, ob du Java bereits installiert hast oder nicht.
+                    </div>
+                `;
+            }
+        }
+
+        // Event Listener für alle Checkboxen
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('.checklist-item input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', checkInstallationStatus);
+            });
+            
+            // Initiale Prüfung
+            checkInstallationStatus();
+        });
     </script>
 
 </body>
