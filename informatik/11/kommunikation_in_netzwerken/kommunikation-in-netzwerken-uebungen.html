@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kommunikation in Netzwerken - Informatik - edu-mrh.de</title>
+    <meta name="description" content="Übungsaufgaben zu Netzwerken, TCP/IP-Modell, Subnetzen und Netzwerkgeräten für die 11. Klasse Informatik">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    
+    <!-- CSS Framework -->
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    
+    <!-- JavaScript Framework -->
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+</head>
+<body>
+<!--
+Fachbereich: Informatik
+Jahrgangsstufe: 11
+Thema: Kommunikation in Netzwerken
+Erstellt: 2026-03-13
+Version: 1.0
+-->
+
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-brand">
+            <span class="icon">🖥️</span>
+            <a href="https://edu-mrh.de/">edu-mrh.de</a>
+        </div>
+        <div class="nav-links">
+            <a href="https://edu-mrh.de/informatik/informatik.html#jahrgang-11" class="btn btn-outline">Übersicht</a>
+            <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Mobile Menu Button -->
+<button class="mobile-menu-btn" id="mobileMenuBtn">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <h3>📚 Inhalt</h3>
+        <button class="sidebar-toggle" id="sidebarToggle">✕</button>
+    </div>
+    <nav class="sidebar-menu">
+        <ul>
+            <li><a href="#intro" data-section="intro" class="active">
+                <span class="icon">🏠</span> Einführung
+            </a></li>
+            <li><a href="#aufgabe1" data-section="aufgabe1">
+                <span class="icon">🔌</span> Aufgabe 1: Netzwerkgeräte
+            </a></li>
+            <li><a href="#aufgabe2" data-section="aufgabe2">
+                <span class="icon">🌐</span> Aufgabe 2: Subnetze
+            </a></li>
+            <li><a href="#aufgabe3" data-section="aufgabe3">
+                <span class="icon">🏫</span> Aufgabe 3: Netzwerkplanung
+            </a></li>
+            <li><a href="#aufgabe4" data-section="aufgabe4">
+                <span class="icon">📊</span> Aufgabe 4: Schichtenmodell
+            </a></li>
+            <li><a href="#aufgabe5" data-section="aufgabe5">
+                <span class="icon">📡</span> Aufgabe 5: Kommunikationsablauf
+            </a></li>
+            <li><a href="#aufgabe6" data-section="aufgabe6">
+                <span class="icon">📦</span> Aufgabe 6: Datenübertragung
+            </a></li>
+            <li><a href="#denkaufgabe" data-section="denkaufgabe">
+                <span class="icon">💡</span> Denkaufgabe
+            </a></li>
+            <li><a href="#zusammenfassung" data-section="zusammenfassung">
+                <span class="icon">✅</span> Zusammenfassung
+            </a></li>
+        </ul>
+    </nav>
+</aside>
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="container">
+        
+        <!-- Intro Section -->
+        <section id="intro" class="content-section active">
+            <div class="chapter-header">
+                <span class="chapter-number">Übungsstunde</span>
+                <h1>Kommunikation in Netzwerken</h1>
+            </div>
+
+            <div class="hero">
+                <h2 class="hero-title">🌐 Netzwerke verstehen</h2>
+                <p class="hero-subtitle">Übungsaufgaben für die 11. Klasse</p>
+                <p class="hero-description">
+                    In dieser Übungsstunde vertiefst du dein Wissen über Netzwerke, Subnetze, 
+                    das TCP/IP-Modell und die Kommunikation zwischen Geräten. Arbeite die Aufgaben 
+                    durch und nutze die Lösungen zur Selbstkontrolle.
+                </p>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">🎯</div>
+                    <h3>Lernziele</h3>
+                    <ul>
+                        <li>Netzwerkgeräte und ihre Funktionen verstehen</li>
+                        <li>Subnetze erkennen und berechnen</li>
+                        <li>TCP/IP-Schichtenmodell anwenden</li>
+                        <li>Kommunikationsabläufe nachvollziehen</li>
+                        <li>Netzwerkprobleme analysieren</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">⏱️</div>
+                    <h3>Zeitrahmen</h3>
+                    <ul>
+                        <li>Bearbeitungszeit: ca. 45-60 Minuten</li>
+                        <li>7 Aufgaben + 1 Denkaufgabe</li>
+                        <li>Schwierigkeitsgrad: Mittel</li>
+                        <li>Einzelarbeit oder Partnerarbeit</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">📝</div>
+                    <h3>Hinweise</h3>
+                    <ul>
+                        <li>Bearbeite die Aufgaben der Reihe nach</li>
+                        <li>Nutze die Lösungen erst nach eigenem Versuch</li>
+                        <li>Mache dir Notizen zu wichtigen Konzepten</li>
+                        <li>Bei Fragen: Lehrkraft ansprechen</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-primary btn-lg" onclick="siteManager.navigateToSection('aufgabe1')">
+                    Los geht's! →
+                </button>
+            </div>
+        </section>
+
+        <!-- Aufgabe 1 -->
+        <section id="aufgabe1" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Aufgabe 1</span>
+                <h2>Geräte im Netzwerk erkennen</h2>
+            </div>
+
+            <div class="task-box">
+                <h3>📋 Aufgabenstellung</h3>
+                <p>In einem kleinen Büro befinden sich folgende Geräte:</p>
+                <ul>
+                    <li>3 Desktop-PCs</li>
+                    <li>1 Drucker</li>
+                    <li>1 WLAN-Router</li>
+                    <li>1 NAS-Dateiserver</li>
+                </ul>
+                <p><strong>Alle Geräte sind mit einem Switch verbunden. Der Router stellt die Verbindung zum Internet her.</strong></p>
+            </div>
+
+            <div class="example-box">
+                <h3>🔍 Fragen</h3>
+                <div class="example-content">
+                    <p><strong>a) Welche Aufgabe hat der Switch in diesem Netzwerk?</strong></p>
+                    <textarea id="aufgabe1a" rows="3" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; margin-bottom: 10px;" placeholder="Deine Antwort hier..."></textarea>
+                    <button class="btn btn-primary btn-sm" onclick="toggleSolution('loesung1a')">💡 Lösung anzeigen</button>
+                    
+                    <div id="loesung1a" class="solution-box hidden" style="margin-top: 15px;">
+                        <h4>✅ Musterlösung</h4>
+                        <p>Der Switch verbindet alle Geräte im lokalen Netzwerk miteinander. Er leitet Datenpakete zwischen den angeschlossenen Geräten weiter, indem er die MAC-Adressen der Geräte kennt und die Pakete gezielt an den richtigen Empfänger sendet.</p>
+                        <div class="highlight">
+                            <strong>Wichtig:</strong> Ein Switch arbeitet auf der Sicherungsschicht (Layer 2) und ermöglicht die direkte Kommunikation zwischen Geräten im gleichen Netzwerk.
+                        </div>
+                    </div>
+
+                    <hr style="margin: 25px 0; border: none; border-top: 2px solid #e2e8f0;">
+
+                    <p><strong>b) Warum können sich die PCs gegenseitig Dateien senden, ohne dass der Router beteiligt ist?</strong></p>
+                    <textarea id="aufgabe1b" rows="3" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; margin-bottom: 10px;" placeholder="Deine Antwort hier..."></textarea>
+                    <button class="btn btn-primary btn-sm" onclick="toggleSolution('loesung1b')">💡 Lösung anzeigen</button>
+                    
+                    <div id="loesung1b" class="solution-box hidden" style="margin-top: 15px;">
+                        <h4>✅ Musterlösung</h4>
+                        <p>Die PCs befinden sich im gleichen lokalen Netzwerk (LAN) und sind über den Switch direkt miteinander verbunden. Der Switch kann die Datenpakete direkt zwischen den PCs weiterleiten.</p>
+                        <div class="highlight">
+                            <strong>Merke:</strong> Der Router wird nur benötigt, wenn Daten in ein anderes Netzwerk (z.B. ins Internet) gesendet werden sollen. Für die Kommunikation innerhalb des gleichen Netzwerks reicht der Switch.
+                        </div>
+                    </div>
+
+                    <hr style="margin: 25px 0; border: none; border-top: 2px solid #e2e8f0;">
+
+                    <p><strong>c) Welches Gerät ist für die Verbindung zum Internet verantwortlich?</strong></p>
+                    <textarea id="aufgabe1c" rows="2" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; margin-bottom: 10px;" placeholder="Deine Antwort hier..."></textarea>
+                    <button class="btn btn-primary btn-sm" onclick="toggleSolution('loesung1c')">💡 Lösung anzeigen</button>
+                    
+                    <div id="loesung1c" class="solution-box hidden" style="margin-top: 15px;">
+                        <h4>✅ Musterlösung</h4>
+                        <p>Der <strong>WLAN-Router</strong> ist für die Verbindung zum Internet verantwortlich.</p>
+                        <div class="highlight">
+                            <strong>Funktion:</strong> Der Router verbindet das lokale Netzwerk (LAN) mit dem Internet (WAN) und leitet Datenpakete zwischen verschiedenen Netzwerken weiter.
+                        </div>
+                    </div>
+
+                    <hr style="margin: 25px 0; border: none; border-top: 2px solid #e2e8f0;">
+
+                    <p><strong>d) Nennen Sie ein Beispiel für eine Serverfunktion, die das NAS übernehmen könnte.</strong></p>
+                    <textarea id="aufgabe1d" rows="3" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; margin-bottom: 10px;" placeholder="Deine Antwort hier..."></textarea>
+                    <button class="btn btn-primary btn-sm" onclick="toggleSolution('loesung1d')">💡 Lösung anzeigen</button>
+                    
+                    <div id="loesung1d" class="solution-box hidden" style="margin-top: 15px;">
+                        <h4>✅ Musterlösung</h4>
+                        <p>Mögliche Serverfunktionen eines NAS (Network Attached Storage):</p>
+                        <ul>
+                            <li><strong>Dateiserver:</strong> Zentrale Speicherung und Bereitstellung von Dateien für alle Netzwerkgeräte</li>
+                            <li><strong>Backup-Server:</strong> Automatische Sicherung der Daten von allen PCs</li>
+                            <li><strong>Medienserver:</strong> Streaming von Videos, Musik und Fotos</li>
+                            <li><strong>Cloud-Server:</strong> Privater Cloud-Speicher für Zugriff von außerhalb</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('intro')">← Zurück</button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('aufgabe2')">Weiter →</button>
+            </div>
+        </section>
+
+        <!-- Aufgabe 2 -->
+        <section id="aufgabe2" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Aufgabe 2</span>
+                <h2>Subnetze verstehen</h2>
+            </div>
+
+            <div class="task-box">
+                <h3>📋 Aufgabenstellung</h3>
+                <p>Ein Unternehmen verwendet folgendes Netzwerk: <strong>192.168.50.0/24</strong></p>
+                <p>Folgende Geräte sind angeschlossen:</p>
+                
+                <table style="color:var(--primary-dark); width: 100%; margin: 20px 0; background: white; border-radius: 8px; overflow: hidden;">
+                    <thead>
+                        <tr>
+                            <th style="padding: 12px; text-align: left; background: #3b82f6; color: white;">Gerät</th>
+                            <th style="padding: 12px; text-align: left; background: #3b82f6; color: white;">IP-Adresse</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">PC A</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">192.168.50.23</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">PC B</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">192.168.50.89</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">PC C</td>
+                            <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">192.168.51.10</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px;">Drucker</td>
+                            <td style="padding: 12px;">192.168.50.200</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="example-box">
+                <h3>🔍 Fragen</h3>
+                <div class="example-content">
+                    <p><strong>a) Welche Geräte befinden sich im gleichen Netzwerk?</strong></p>
+                    <textarea id="aufgabe2a" rows="3" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; margin-bottom: 10px;" placeholder="Deine Antwort hier..."></textarea>
+                    <button class="btn btn-primary btn-sm" onclick="toggleSolution('loesung2a')">💡 Lösung anzeigen</button>
+                    
+                    <div id="loesung2a" class="solution-box hidden" style="margin-top: 15px;">
+                        <h4>✅ Musterlösung</h4>
+                        <p><strong>Im gleichen Netzwerk (192.168.50.0/24) befinden sich:</strong></p>
+                        <ul>
+                            <li>PC A (192.168.50.23)</li>
+                            <li>PC B (192.168.50.89)</li>
+                            <li>Drucker (192.168.50.200)</li>
+                        </ul>
+                        <div class="highlight">
+                            <strong>Erklärung:</strong> Die Subnetzmaske /24 bedeutet, dass die ersten 24 Bit (die ersten drei Oktette) die Netzwerkadresse bilden. Alle Geräte mit 192.168.50.x gehören zum gleichen Netzwerk.
+                        </div>
+                    </div>
+
+                    <hr style="margin: 25px 0; border: none; border-top: 2px solid #e2e8f0;">
+
+                    <p><strong>b) Welches Gerät benötigt einen Router, um die anderen zu erreichen? Erklären Sie kurz, warum.</strong></p>
+                    <textarea id="aufgabe2b" rows="4" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; margin-bottom: 10px;" placeholder="Deine Antwort hier..."></textarea>
+                    <button class="btn btn-primary btn-sm" onclick="toggleSolution('loesung2b')">💡 Lösung anzeigen</button>
+                    
+                    <div id="loesung2b" class="solution-box hidden" style="margin-top: 15px;">
+                        <h4>✅ Musterlösung</h4>
+                        <p><strong>PC C (192.168.51.10)</strong> benötigt einen Router, um die anderen Geräte zu erreichen.</p>
+                        <div class="highlight">
+                            <strong>Begründung:</strong> PC C befindet sich in einem anderen Netzwerk (192.168.51.0/24). Um mit Geräten im Netzwerk 192.168.50.0/24 zu kommunizieren, muss ein Router die Datenpakete zwischen den beiden Netzwerken weiterleiten (Routing).
+                        </div>
+                    </div>
+
+                    <hr style="margin: 25px 0; border: none; border-top: 2px solid #e2e8f0;">
+
+                    <p><strong>c) Die Schreibweise /24 beschreibt die Subnetzmaske. Geben Sie die entsprechende Subnetzmaske in Punktnotation an.</strong></p>
+                    <p>/24 = <input type="text" id="aufgabe2c" style="width: 300px; padding: 8px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: monospace;" placeholder="z.B. 255.255.255.0"></p>
+                    <button class="btn btn-primary btn-sm" onclick="toggleSolution('loesung2c')">💡 Lösung anzeigen</button>
+                    
+                    <div id="loesung2c" class="solution-box hidden" style="margin-top: 15px;">
+                        <h4>✅ Musterlösung</h4>
+                        <p>/24 = <strong>255.255.255.0</strong></p>
+                        <div class="highlight">
+                            <strong>Erklärung:</strong> /24 bedeutet, dass die ersten 24 Bit auf 1 gesetzt sind:
+                            <ul>
+                                <li>Erstes Oktett: 11111111 = 255</li>
+                                <li>Zweites Oktett: 11111111 = 255</li>
+                                <li>Drittes Oktett: 11111111 = 255</li>
+                                <li>Viertes Oktett: 00000000 = 0</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <hr style="margin: 25px 0; border: none; border-top: 2px solid #e2e8f0;">
+
+                    <p><strong>d) Geben Sie für folgende Subnetzmasken die CIDR-Schreibweise an:</strong></p>
+                    
+                    <table style="width: 100%; margin: 20px 0; background: white; border-radius: 8px; overflow: hidden;">
+                        <thead>
+                            <tr>
+                                <th style="padding: 12px; text-align: left; background: #8b5cf6; color: white;">Subnetzmaske</th>
+                                <th style="padding: 12px; text-align: left; background: #8b5cf6; color: white;">CIDR</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">255.255.255.0</td>
+                                <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                                    <input type="text" id="cidr1" style="width: 100px; padding: 6px; border: 2px solid #e2e8f0; border-radius: 4px;" placeholder="/...">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">255.255.0.0</td>
+                                <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                                    <input type="text" id="cidr2" style="width: 100px; padding: 6px; border: 2px solid #e2e8f0; border-radius: 4px;" placeholder="/...">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px;">255.255.255.128</td>
+                                <td style="padding: 12px;">
+                                    <input type="text" id="cidr3" style="width: 100px; padding: 6px; border: 2px solid #e2e8f0; border-radius: 4px;" placeholder="/...">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <button class="btn btn-primary btn-sm" onclick="toggleSolution('loesung2d')">💡 Lösung anzeigen</button>
+                    
+                    <div id="loesung2d" class="solution-box hidden" style="margin-top: 15px;">
+                        <h4>✅ Musterlösung</h4>
+                        <table style="width: 100%; margin: 15px 0;">
+                            <thead>
+                                <tr>
+                                    <th style="padding: 10px; text-align: left; background: #10b981; color: white;">Subnetzmaske</th>
+                                    <th style="padding: 10px; text-align: left; background: #10b981; color: white;">CIDR</th>
+                                    <th style="padding: 10px; text-align: left; background: #10b981; color: white;">Erklärung</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">255.255.255.0</td>
+                                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;"><strong>/24</strong></td>
+                                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">24 Bit auf 1 (3 × 8 Bit)</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">255.255.0.0</td>
+                                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;"><strong>/16</strong></td>
+                                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">16 Bit auf 1 (2 × 8 Bit)</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 10px;">255.255.255.128</td>
+                                    <td style="padding: 10px;"><strong>/25</strong></td>
+                                    <td style="padding: 10px;">25 Bit auf 1 (24 + 1 Bit, da 128 = 10000000)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('aufgabe1')">← Zurück</button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('aufgabe3')">Weiter →</button>
+            </div>
+        </section>
+
+        <!-- Aufgabe 3 -->
+        <section id="aufgabe3" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Aufgabe 3</span>
+                <h2>Netzwerkplanung</h2>
+            </div>
+
+            <div class="task-box">
+                <h3>📋 Aufgabenstellung</h3>
+                <p>Eine Schule möchte drei getrennte Netzwerke betreiben:</p>
+                <ul>
+                    <li>🏫 Lehrerzimmer</li>
+                    <li>💻 Computerraum</li>
+                    <li>📋 Schulverwaltung</li>
+                </ul>
+                <p><strong>Warum könnte es sinnvoll sein, diese Netzwerke in verschiedene Subnetze aufzuteilen?</strong></p>
+                <p>Nennen Sie zwei Gründe.</p>
+            </div>
+
+            <div class="example-box">
+                <h3>🔍 Ihre Antwort</h3>
+                <div class="example-content">
+                    <p><strong>Grund 1:</strong></p>
+                    <textarea id="aufgabe3a" rows="3" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; margin-bottom: 15px;" placeholder="Erster Grund..."></textarea>
+                    
+                    <p><strong>Grund 2:</strong></p>
+                    <textarea id="aufgabe3b" rows="3" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; margin-bottom: 15px;" placeholder="Zweiter Grund..."></textarea>
+                    
+                    <button class="btn btn-primary btn-sm" onclick="toggleSolution('loesung3')">💡 Lösungen anzeigen</button>
+                    
+                    <div id="loesung3" class="solution-box hidden" style="margin-top: 15px;">
+                        <h4>✅ Mögliche Gründe</h4>
+                        
+                        <div style="background: #ecfdf5; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #10b981;">
+                            <strong>1. Sicherheit und Datenschutz</strong>
+                            <p>Die Schulverwaltung verarbeitet sensible Daten (Schülerdaten, Noten, Personalakten). Durch ein separates Subnetz kann der Zugriff auf diese Daten eingeschränkt werden. Schüler im Computerraum können nicht auf Verwaltungsdaten zugreifen.</p>
+                        </div>
+
+                        <div style="background: #ecfdf5; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #10b981;">
+                            <strong>2. Netzwerkperformance und Verkehrsmanagement</strong>
+                            <p>Durch die Aufteilung in Subnetze wird der Netzwerkverkehr reduziert. Broadcast-Nachrichten bleiben innerhalb des jeweiligen Subnetzes und belasten nicht das gesamte Netzwerk. Dies verbessert die Geschwindigkeit und Effizienz.</p>
+                        </div>
+
+                        <div style="background: #ecfdf5; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #10b981;">
+                            <strong>3. Verwaltung und Organisation</strong>
+                            <p>Verschiedene Subnetze ermöglichen eine bessere Verwaltung. Für jedes Subnetz können unterschiedliche Regeln, Zugriffsrechte und Sicherheitsrichtlinien festgelegt werden. Probleme in einem Netzwerk (z.B. Virus im Computerraum) bleiben isoliert.</p>
+                        </div>
+
+                        <div style="background: #ecfdf5; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #10b981;">
+                            <strong>4. Ressourcenzugriff steuern</strong>
+                            <p>Bestimmte Ressourcen (z.B. Drucker, Server) können gezielt nur für bestimmte Subnetze freigegeben werden. Lehrer haben Zugriff auf andere Dienste als Schüler.</p>
+                        </div>
+
+                        <div class="highlight" style="margin-top: 20px;">
+                            <strong>Fazit:</strong> Die Aufteilung in Subnetze erhöht Sicherheit, Performance und Verwaltbarkeit des Schulnetzwerks erheblich.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('aufgabe2')">← Zurück</button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('aufgabe4')">Weiter →</button>
+            </div>
+        </section>
+
+        <!-- Aufgabe 4 -->
+        <section id="aufgabe4" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Aufgabe 4</span>
+                <h2>Schichtenmodell verstehen</h2>
+            </div>
+
+            <div class="task-box">
+                <h3>📋 Aufgabenstellung</h3>
+                <p>Ein Schüler lädt ein Bild von einer Webseite herunter.</p>
+                <p><strong>Beschreiben Sie kurz die Aufgaben der vier Schichten des TCP/IP-Modells bei diesem Vorgang.</strong></p>
+            </div>
+
+            <div class="info-box">
+                <h3>📚 Erinnerung: TCP/IP-Schichtenmodell</h3>
+                <p>Das TCP/IP-Modell besteht aus vier Schichten, die jeweils spezifische Aufgaben bei der Datenübertragung übernehmen:</p>
+                <ul>
+                    <li><strong>Anwendungsschicht</strong> (Application Layer)</li>
+                    <li><strong>Transportschicht</strong> (Transport Layer)</li>
+                    <li><strong>Internetschicht</strong> (Internet Layer)</li>
+                    <li><strong>Netzzugangsschicht</strong> (Network Access Layer)</li>
+                </ul>
+            </div>
+
+            <div class="example-box">
+                <h3>🔍 Ihre Antworten</h3>
+                <div class="example-content">
+                    
+                    <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #3b82f6;">
+                        <p><strong>Anwendungsschicht (Application Layer)</strong></p>
+                        <textarea id="aufgabe4a" rows="3" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit;" placeholder="Aufgabe der Anwendungsschicht..."></textarea>
+                    </div>
+
+                    <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #8b5cf6;">
+                        <p><strong>Transportschicht (Transport Layer)</strong></p>
+                        <textarea id="aufgabe4b" rows="3" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit;" placeholder="Aufgabe der Transportschicht..."></textarea>
+                    </div>
+
+                    <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #10b981;">
+                        <p><strong>Internetschicht (Internet Layer)</strong></p>
+                        <textarea id="aufgabe4c" rows="3" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit;" placeholder="Aufgabe der Internetschicht..."></textarea>
+                    </div>
+
+                    <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #f59e0b;">
+                        <p><strong>Netzzugangsschicht (Network Access Layer)</strong></p>
+                        <textarea id="aufgabe4d" rows="3" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit;" placeholder="Aufgabe der Netzzugangsschicht..."></textarea>
+                    </div>
+                    
+                    <button class="btn btn-primary btn-sm" onclick="toggleSolution('loesung4')">💡 Lösungen anzeigen</button>
+                    
+                    <div id="loesung4" class="solution-box hidden" style="margin-top: 15px;">
+                        <h4>✅ Musterlösungen</h4>
+                        
+                        <table style="width: 100%; margin: 15px 0; background: white; border-radius: 8px; overflow: hidden;">
+                            <thead>
+                                <tr>
+                                    <th style="padding: 12px; text-align: left; background: #3b82f6; color: white; width: 30%;">Schicht</th>
+                                    <th style="padding: 12px; text-align: left; background: #3b82f6; color: white;">Aufgabe beim Bilddownload</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: 600;">Anwendungsschicht</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                                        Der Webbrowser (HTTP/HTTPS-Protokoll) stellt die Anfrage an den Webserver und empfängt die Bilddatei. Diese Schicht stellt die Schnittstelle zur Anwendung (Browser) bereit und interpretiert die Daten.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: 600;">Transportschicht</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                                        TCP teilt die Bilddatei in kleinere Segmente auf, nummeriert diese und sorgt für eine zuverlässige Übertragung. Verlorene Pakete werden erneut angefordert. Die Daten werden in der richtigen Reihenfolge wieder zusammengesetzt.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: 600;">Internetschicht</td>
+                                    <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">
+                                        IP (Internet Protocol) fügt die IP-Adressen von Sender und Empfänger hinzu und bestimmt den Weg (Routing) der Datenpakete durch das Internet zum Zielrechner.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px; font-weight: 600;">Netzzugangsschicht</td>
+                                    <td style="padding: 12px;">
+                                        Diese Schicht übernimmt die physische Übertragung der Datenpakete über das Netzwerk (z.B. Ethernet, WLAN). Sie fügt MAC-Adressen hinzu und wandelt die Daten in elektrische Signale oder Funkwellen um.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="highlight" style="margin-top: 20px;">
+                            <strong>Merke:</strong> Jede Schicht hat eine klar definierte Aufgabe. Die Daten durchlaufen beim Senden alle Schichten von oben nach unten und beim Empfangen von unten nach oben.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('aufgabe3')">← Zurück</button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('aufgabe5')">Weiter →</button>
+            </div>
+        </section>
+
+        <!-- Aufgabe 5 -->
+        <section id="aufgabe5" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Aufgabe 5</span>
+                <h2>Kommunikationsablauf darstellen</h2>
+            </div>
+
+            <div class="task-box">
+                <h3>📋 Aufgabenstellung</h3>
+                <p>Ein Laptop ruft die Webseite <strong>www.schule.de</strong> auf.</p>
+                <p>Der Laptop kennt zunächst nur den Domainnamen.</p>
+                <p><strong>Erstellen Sie ein einfaches Sequenzdiagramm für folgende Geräte:</strong></p>
+                <ul>
+                    <li>Laptop</li>
+                    <li>DNS-Server</li>
+                    <li>Webserver</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h3>💡 Hinweis zum Sequenzdiagramm</h3>
+                <p>Ein Sequenzdiagramm zeigt die zeitliche Abfolge von Nachrichten zwischen verschiedenen Akteuren. Pfeile zeigen die Richtung der Kommunikation an.</p>
+                <p><strong>Beispiel:</strong> Laptop → DNS-Server: "Was ist die IP von www.schule.de?"</p>
+            </div>
+
+            <div class="example-box">
+                <h3>✏️ Zeichnen Sie das Sequenzdiagramm</h3>
+                <div class="example-content">
+                    <p>Nutzen Sie Papier oder ein digitales Tool, um das Diagramm zu erstellen. Überlegen Sie sich:</p>
+                    <ul>
+                        <li>Welche Schritte sind notwendig?</li>
+                        <li>Wer kommuniziert mit wem?</li>
+                        <li>In welcher Reihenfolge passiert was?</li>
+                    </ul>
+                    
+                    <textarea id="aufgabe5" rows="8" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: monospace; margin: 15px 0;" placeholder="Beschreiben Sie hier die Schritte des Kommunikationsablaufs...
+
+Beispiel:
+1. Laptop → DNS-Server: ...
+2. DNS-Server → Laptop: ...
+3. ..."></textarea>
+                    
+                    <button class="btn btn-primary btn-sm" onclick="toggleSolution('loesung5')">💡 Lösung anzeigen</button>
+                    
+                    <div id="loesung5" class="solution-box hidden" style="margin-top: 15px;">
+                        <h4>✅ Musterlösung: Sequenzdiagramm</h4>
+                        
+                        <div style="background: white; padding: 25px; border-radius: 8px; margin: 20px 0; border: 2px solid #3b82f6;">
+                            <pre style="background: #1e293b; color: #e2e8f0; padding: 20px; border-radius: 8px; overflow-x: auto; line-height: 1.8;">
+    Laptop          DNS-Server       Webserver
+      |                  |                |
+      |                  |                |
+      | 1. DNS-Anfrage   |                |
+      |  "IP von         |                |
+      |   www.schule.de?"|                |
+      |----------------->|                |
+      |                  |                |
+      | 2. DNS-Antwort   |                |
+      |  "IP: 93.184.   |                |
+      |   216.34"        |                |
+      |<-----------------|                |
+      |                  |                |
+      | 3. HTTP-Request  |                |
+      |  "GET /index.html"                |
+      |---------------------------------->|
+      |                  |                |
+      |                  | 4. HTTP-Response
+      |                  |  "HTML-Daten"  |
+      |<----------------------------------|
+      |                  |                |
+      v                  v                v
+                            </pre>
+                        </div>
+
+                        <div style="background: #ecfdf5; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                            <h4 style="color: #10b981; margin-top: 0;">Erklärung der Schritte:</h4>
+                            <ol style="line-height: 1.8;">
+                                <li><strong>DNS-Anfrage:</strong> Der Laptop sendet eine Anfrage an den DNS-Server, um die IP-Adresse von www.schule.de zu erfahren.</li>
+                                <li><strong>DNS-Antwort:</strong> Der DNS-Server antwortet mit der IP-Adresse des Webservers (z.B. 93.184.216.34).</li>
+                                <li><strong>HTTP-Request:</strong> Der Laptop sendet eine HTTP-Anfrage direkt an die IP-Adresse des Webservers und fordert die Webseite an.</li>
+                                <li><strong>HTTP-Response:</strong> Der Webserver sendet die angeforderten HTML-Daten zurück an den Laptop.</li>
+                            </ol>
+                        </div>
+
+                        <div class="highlight">
+                            <strong>Wichtig:</strong> Ohne DNS müsste man sich die IP-Adressen aller Webseiten merken. DNS übersetzt lesbare Domainnamen in IP-Adressen.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('aufgabe4')">← Zurück</button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('aufgabe6')">Weiter →</button>
+            </div>
+        </section>
+
+        <!-- Aufgabe 6 -->
+        <section id="aufgabe6" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Aufgabe 6</span>
+                <h2>Datenübertragung im Netzwerk</h2>
+            </div>
+
+            <div class="task-box">
+                <h3>📋 Aufgabenstellung</h3>
+                <p>Ein Computer sendet eine große Datei über das Internet.</p>
+            </div>
+
+            <div class="example-box">
+                <h3>🔍 Fragen</h3>
+                <div class="example-content">
+                    <p><strong>a) Warum wird eine große Datei in mehrere Pakete aufgeteilt?</strong></p>
+                    <textarea id="aufgabe6a" rows="4" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; margin-bottom: 10px;" placeholder="Deine Antwort hier..."></textarea>
+                    <button class="btn btn-primary btn-sm" onclick="toggleSolution('loesung6a')">💡 Lösung anzeigen</button>
+                    
+                    <div id="loesung6a" class="solution-box hidden" style="margin-top: 15px;">
+                        <h4>✅ Musterlösung</h4>
+                        <p>Eine große Datei wird in mehrere Pakete aufgeteilt aus folgenden Gründen:</p>
+                        <ul>
+                            <li><strong>Effizienz:</strong> Kleine Pakete können über verschiedene Wege (Routen) zum Ziel gelangen und nutzen die Netzwerkkapazität besser aus.</li>
+                            <li><strong>Fehlerbehandlung:</strong> Wenn ein Paket verloren geht oder beschädigt wird, muss nur dieses eine Paket erneut gesendet werden, nicht die gesamte Datei.</li>
+                            <li><strong>Fairness:</strong> Andere Nutzer im Netzwerk können ebenfalls Daten senden. Große Dateien würden sonst die Leitung blockieren.</li>
+                            <li><strong>Flexibilität:</strong> Pakete können unterschiedliche Wege durch das Netzwerk nehmen und Engpässe umgehen.</li>
+                        </ul>
+                    </div>
+
+                    <hr style="margin: 25px 0; border: none; border-top: 2px solid #e2e8f0;">
+
+                    <p><strong>b) Nennen Sie einen Vorteil dieser Methode.</strong></p>
+                    <textarea id="aufgabe6b" rows="3" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; margin-bottom: 10px;" placeholder="Deine Antwort hier..."></textarea>
+                    <button class="btn btn-primary btn-sm" onclick="toggleSolution('loesung6b')">💡 Lösung anzeigen</button>
+                    
+                    <div id="loesung6b" class="solution-box hidden" style="margin-top: 15px;">
+                        <h4>✅ Musterlösung</h4>
+                        <p><strong>Hauptvorteil: Zuverlässigkeit und Fehlertoleranz</strong></p>
+                        <div class="highlight">
+                            Wenn ein Paket auf dem Weg verloren geht oder beschädigt wird, muss nur dieses einzelne Paket erneut übertragen werden. Die gesamte Datei muss nicht neu gesendet werden, was Zeit und Bandbreite spart.
+                        </div>
+                        <p style="margin-top: 15px;"><strong>Weitere Vorteile:</strong></p>
+                        <ul>
+                            <li>Bessere Auslastung der Netzwerkressourcen</li>
+                            <li>Parallele Übertragung über mehrere Wege möglich</li>
+                            <li>Geringere Wartezeiten für andere Nutzer</li>
+                        </ul>
+                    </div>
+
+                    <hr style="margin: 25px 0; border: none; border-top: 2px solid #e2e8f0;">
+
+                    <p><strong>c) Was passiert, wenn ein Paket verloren geht?</strong></p>
+                    <textarea id="aufgabe6c" rows="4" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; margin-bottom: 10px;" placeholder="Deine Antwort hier..."></textarea>
+                    <button class="btn btn-primary btn-sm" onclick="toggleSolution('loesung6c')">💡 Lösung anzeigen</button>
+                    
+                    <div id="loesung6c" class="solution-box hidden" style="margin-top: 15px;">
+                        <h4>✅ Musterlösung</h4>
+                        <p><strong>Ablauf bei Paketverlust (TCP-Protokoll):</strong></p>
+                        <ol style="line-height: 1.8;">
+                            <li><strong>Erkennung:</strong> Der Empfänger bemerkt, dass ein Paket fehlt (durch Sequenznummern) oder ein Timeout tritt ein.</li>
+                            <li><strong>Benachrichtigung:</strong> Der Empfänger sendet keine Bestätigung (ACK) für das fehlende Paket oder sendet eine negative Bestätigung (NACK).</li>
+                            <li><strong>Neuübertragung:</strong> Der Sender erkennt das Problem und sendet das fehlende Paket erneut.</li>
+                            <li><strong>Zusammensetzung:</strong> Sobald alle Pakete angekommen sind, werden sie in der richtigen Reihenfolge zusammengesetzt.</li>
+                        </ol>
+                        <div class="highlight" style="margin-top: 15px;">
+                            <strong>Wichtig:</strong> TCP (Transmission Control Protocol) garantiert eine zuverlässige Übertragung durch Bestätigungen und automatische Neuübertragung verlorener Pakete.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('aufgabe5')">← Zurück</button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('denkaufgabe')">Weiter →</button>
+            </div>
+        </section>
+
+        <!-- Denkaufgabe -->
+        <section id="denkaufgabe" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Bonus</span>
+                <h2>Denkaufgabe</h2>
+            </div>
+
+            <div class="task-box" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                <h3>🧠 Herausforderung</h3>
+                <p>Ein Computer versucht eine Webseite aufzurufen.</p>
+                <ul>
+                    <li>✅ Die IP-Adresse des Servers ist korrekt.</li>
+                    <li>❌ Trotzdem kommt keine Verbindung zustande.</li>
+                </ul>
+                <p><strong>Nennen Sie zwei mögliche Ursachen im Netzwerk, die dieses Problem erklären könnten.</strong></p>
+            </div>
+
+            <div class="example-box">
+                <h3>🔍 Ihre Antworten</h3>
+                <div class="example-content">
+                    <p><strong>Mögliche Ursache 1:</strong></p>
+                    <textarea id="denkaufgabe1" rows="3" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; margin-bottom: 15px;" placeholder="Erste mögliche Ursache..."></textarea>
+                    
+                    <p><strong>Mögliche Ursache 2:</strong></p>
+                    <textarea id="denkaufgabe2" rows="3" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; margin-bottom: 15px;" placeholder="Zweite mögliche Ursache..."></textarea>
+                    
+                    <button class="btn btn-primary btn-sm" onclick="toggleSolution('loesungDenk')">💡 Lösungen anzeigen</button>
+                    
+                    <div id="loesungDenk" class="solution-box hidden" style="margin-top: 15px;">
+                        <h4>✅ Mögliche Ursachen</h4>
+                        
+                        <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #f59e0b;">
+                            <strong>1. Firewall blockiert die Verbindung</strong>
+                            <p>Eine Firewall (auf dem Computer, Router oder beim Server) könnte den Datenverkehr blockieren. Auch wenn die IP-Adresse korrekt ist, verhindert die Firewall die Kommunikation auf bestimmten Ports (z.B. Port 80 für HTTP oder 443 für HTTPS).</p>
+                        </div>
+
+                        <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #f59e0b;">
+                            <strong>2. Webserver ist offline oder überlastet</strong>
+                            <p>Der Webserver könnte ausgeschaltet, abgestürzt oder überlastet sein. Die IP-Adresse ist zwar erreichbar, aber der Webserver-Dienst (HTTP/HTTPS) läuft nicht oder kann keine neuen Verbindungen annehmen.</p>
+                        </div>
+
+                        <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #f59e0b;">
+                            <strong>3. Falsche Subnetzmaske oder Gateway</strong>
+                            <p>Der Computer hat möglicherweise eine falsche Subnetzmaske oder ein falsches Standard-Gateway konfiguriert. Dadurch können Pakete nicht korrekt geroutet werden, auch wenn die Ziel-IP bekannt ist.</p>
+                        </div>
+
+                        <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #f59e0b;">
+                            <strong>4. Routing-Problem im Netzwerk</strong>
+                            <p>Ein Router auf dem Weg zum Zielserver könnte ausgefallen sein oder falsch konfiguriert sein. Die Pakete erreichen den Server nicht, obwohl die IP-Adresse korrekt ist.</p>
+                        </div>
+
+                        <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #f59e0b;">
+                            <strong>5. Port ist geschlossen</strong>
+                            <p>Der benötigte Port (z.B. Port 80 für HTTP) ist auf dem Server geschlossen oder wird nicht vom Webserver-Dienst überwacht. Die IP-Adresse ist erreichbar, aber der spezifische Dienst antwortet nicht.</p>
+                        </div>
+
+                        <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #f59e0b;">
+                            <strong>6. Netzwerkkabel defekt oder WLAN-Verbindung unterbrochen</strong>
+                            <p>Ein physisches Problem wie ein defektes Netzwerkkabel, ein ausgefallener Switch oder eine unterbrochene WLAN-Verbindung verhindert die Datenübertragung.</p>
+                        </div>
+
+                        <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #f59e0b;">
+                            <strong>7. Proxy-Server-Problem</strong>
+                            <p>Wenn ein Proxy-Server verwendet wird, könnte dieser falsch konfiguriert sein oder nicht funktionieren, was die Verbindung zum Webserver verhindert.</p>
+                        </div>
+
+                        <div class="highlight" style="margin-top: 20px;">
+                            <strong>Tipp zur Fehlersuche:</strong> Nutze Tools wie <code>ping</code> (testet Erreichbarkeit), <code>traceroute</code> (zeigt den Weg der Pakete) oder <code>telnet</code> (testet Port-Verbindungen), um die Ursache einzugrenzen.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('aufgabe6')">← Zurück</button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('zusammenfassung')">Weiter →</button>
+            </div>
+        </section>
+
+        <!-- Zusammenfassung -->
+        <section id="zusammenfassung" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Abschluss</span>
+                <h2>Zusammenfassung & Reflexion</h2>
+            </div>
+
+            <div class="hero">
+                <h2 class="hero-title">🎉 Glückwunsch!</h2>
+                <p class="hero-subtitle">Du hast alle Aufgaben bearbeitet</p>
+                <p class="hero-description">
+                    Du hast dein Wissen über Netzwerke, Subnetze, das TCP/IP-Modell und 
+                    Kommunikationsabläufe vertieft. Nutze diese Zusammenfassung zur Wiederholung.
+                </p>
+            </div>
+
+            <div class="concept-box">
+                <h3>📚 Wichtige Konzepte</h3>
+                
+                <div class="definition">
+                    <strong>🔌 Netzwerkgeräte</strong>
+                    <ul style="margin-top: 10px;">
+                        <li><strong>Switch:</strong> Verbindet Geräte im lokalen Netzwerk, arbeitet mit MAC-Adressen</li>
+                        <li><strong>Router:</strong> Verbindet verschiedene Netzwerke, leitet Pakete zwischen Netzwerken weiter</li>
+                        <li><strong>Server:</strong> Stellt Dienste bereit (z.B. Dateiserver, Webserver, DNS-Server)</li>
+                    </ul>
+                </div>
+
+                <div class="definition">
+                    <strong>🌐 Subnetze & IP-Adressen</strong>
+                    <ul style="margin-top: 10px;">
+                        <li><strong>Subnetzmaske:</strong> Bestimmt, welche Geräte im gleichen Netzwerk sind</li>
+                        <li><strong>CIDR-Notation:</strong> /24 = 255.255.255.0 (erste 24 Bit sind Netzwerkadresse)</li>
+                        <li><strong>Vorteile von Subnetzen:</strong> Sicherheit, Performance, bessere Verwaltung</li>
+                    </ul>
+                </div>
+
+                <div class="definition">
+                    <strong>📊 TCP/IP-Schichtenmodell</strong>
+                    <ul style="margin-top: 10px;">
+                        <li><strong>Anwendungsschicht:</strong> Schnittstelle zu Anwendungen (HTTP, FTP, DNS)</li>
+                        <li><strong>Transportschicht:</strong> Zuverlässige Übertragung, Segmentierung (TCP, UDP)</li>
+                        <li><strong>Internetschicht:</strong> Routing, IP-Adressen (IP)</li>
+                        <li><strong>Netzzugangsschicht:</strong> Physische Übertragung (Ethernet, WLAN)</li>
+                    </ul>
+                </div>
+
+                <div class="definition">
+                    <strong>📦 Datenübertragung</strong>
+                    <ul style="margin-top: 10px;">
+                        <li><strong>Paketierung:</strong> Große Dateien werden in kleine Pakete aufgeteilt</li>
+                        <li><strong>Vorteile:</strong> Fehlertoleranz, Effizienz, Fairness</li>
+                        <li><strong>TCP:</strong> Garantiert zuverlässige Übertragung durch Bestätigungen</li>
+                        <li><strong>DNS:</strong> Übersetzt Domainnamen in IP-Adressen</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="best-practices">
+                <h3>💡 Tipps für die Prüfung</h3>
+                
+                <div class="practice">
+                    <span class="icon">✅</span>
+                    <div>
+                        <strong>Verstehe die Grundlagen</strong>
+                        <p>Lerne die Unterschiede zwischen Switch und Router, die Aufgaben der TCP/IP-Schichten und die Berechnung von Subnetzen.</p>
+                    </div>
+                </div>
+
+                <div class="practice">
+                    <span class="icon">✅</span>
+                    <div>
+                        <strong>Übe Subnetzberechnungen</strong>
+                        <p>Trainiere die Umrechnung zwischen CIDR-Notation und Punktnotation. Verstehe, wie Subnetzmasken funktionieren.</p>
+                    </div>
+                </div>
+
+                <div class="practice">
+                    <span class="icon">✅</span>
+                    <div>
+                        <strong>Zeichne Diagramme</strong>
+                        <p>Übe das Erstellen von Netzwerkdiagrammen und Sequenzdiagrammen. Visualisierung hilft beim Verständnis.</p>
+                    </div>
+                </div>
+
+                <div class="practice">
+                    <span class="icon">✅</span>
+                    <div>
+                        <strong>Denke in Schichten</strong>
+                        <p>Bei Netzwerkproblemen: Überlege, auf welcher Schicht des TCP/IP-Modells das Problem liegen könnte.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3>🔗 Weiterführende Ressourcen</h3>
+                <ul>
+                    <li><strong>Subnetz-Rechner:</strong> Online-Tools zum Üben von Subnetzberechnungen</li>
+                    <li><strong>Wireshark:</strong> Tool zur Analyse von Netzwerkverkehr (für Fortgeschrittene)</li>
+                    <li><strong>Cisco Packet Tracer:</strong> Netzwerksimulator zum praktischen Üben</li>
+                    <li><strong>RFC-Dokumente:</strong> Offizielle Spezifikationen der Internet-Protokolle</li>
+                </ul>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('denkaufgabe')">← Zurück</button>
+                <button class="btn btn-success btn-lg" onclick="siteManager.navigateToSection('intro')">🏠 Zum Anfang</button>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2026 edu-mrh.de | Erstellt für den Informatikunterricht</p>
+        <p>
+            <a href="https://edu-mrh.de/contribute.html#impressum">Impressum</a> | 
+            <a href="https://edu-mrh.de/">Zur Startseite</a>
+        </p>
+    </div>
+</footer>
+
+</body>
+</html>
