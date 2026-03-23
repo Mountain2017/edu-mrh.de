@@ -3,22 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RSA Labor & Zertifizierungsstelle</title>
-    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <title>RSA Krypto-Labor - Informatik - edu-mrh.de</title>
+    <meta name="description" content="Interaktives RSA-Labor mit Zertifizierungsstelle für den Informatikunterricht - Verschlüsselung und digitale Signaturen verstehen">
+    
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    
+    <!-- CSS Framework -->
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    
+    <!-- JavaScript Framework -->
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    
+    <!-- KaTeX für Mathematik -->
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/katex/katex.min.css">
+    <script defer src="https://edu-mrh.de/embed/katex/katex.min.js"></script>
+    <script defer src="https://edu-mrh.de/embed/katex/contrib/auto-render.min.js" onload="renderMath()"></script>
+
     <style>
-        /* Zusätzliche spezifische Styles für die RSA-Anwendung */
+        /* Zusätzliche Styles für das RSA-Labor */
         .rsa-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
         }
 
         .rsa-card {
             background: var(--white);
-            padding: 2rem;
-            border-radius: var(--border-radius);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-md);
             box-shadow: var(--shadow);
             transition: var(--transition);
         }
@@ -28,1387 +42,1337 @@
             box-shadow: var(--shadow-lg);
         }
 
-        .rsa-card h4 {
+        .rsa-card h3 {
             color: var(--primary-color);
-            margin-bottom: 1rem;
+            margin-bottom: var(--spacing-md);
             font-size: 1.3rem;
         }
 
-        .form-group {
-            margin-bottom: 1.5rem;
+        .rsa-card-ca {
+            border: 3px solid #7c3aed;
+            background: linear-gradient(135deg, #fdfaff 0%, #f5f3ff 100%);
         }
 
-        .form-group label {
+        .rsa-card-ca h3 {
+            color: #7c3aed;
+        }
+
+        .rsa-input-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .rsa-input-group label {
             display: block;
-            margin-bottom: 0.5rem;
-            color: var(--dark);
             font-weight: 600;
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid var(--gray-light);
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: var(--transition);
-            font-family: inherit;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 100px;
-            font-family: 'Courier New', monospace;
-        }
-
-        .result-box {
-            background: var(--gray-lighter);
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-            border-left: 4px solid var(--success-color);
-        }
-
-        .result-box h5 {
-            color: var(--success-color);
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-
-        .result-box p {
+            margin-bottom: var(--spacing-sm);
             color: var(--dark);
-            font-family: 'Courier New', monospace;
-            word-break: break-all;
         }
 
-        .error-box {
-            background: #fee2e2;
-            border: 2px solid var(--danger-color);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-            color: var(--danger-color);
-        }
-
-        .success-box {
-            background: #d1fae5;
-            border: 2px solid var(--success-color);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-            color: var(--success-color);
-        }
-
-        .contact-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .contact-item {
-            background: var(--gray-lighter);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .contact-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .contact-info {
-            flex: 1;
-        }
-
-        .contact-info strong {
+        .rsa-input-group small {
             display: block;
-            color: var(--dark);
-            margin-bottom: 0.25rem;
-        }
-
-        .contact-info small {
             color: var(--gray);
-            font-family: 'Courier New', monospace;
+            margin-top: var(--spacing-xs);
             font-size: 0.85rem;
         }
 
-        .btn-small {
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
+        .rsa-textarea {
+            width: 100%;
+            padding: var(--spacing-md);
+            border: 2px solid var(--gray-light);
+            border-radius: var(--radius);
+            font-family: var(--font-family-mono);
+            font-size: 0.75rem;
+            resize: vertical;
+            min-height: 80px;
+            background: var(--bg-secondary);
         }
 
-        .math-display {
+        .rsa-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .rsa-input {
+            width: 100%;
+            padding: var(--spacing-md);
+            border: 2px solid var(--gray-light);
+            border-radius: var(--radius);
+            font-family: var(--font-family-base);
+            font-size: 1rem;
+        }
+
+        .rsa-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .rsa-input.correct {
+            border-color: var(--success-color);
+            background: #f0fdf4;
+        }
+
+        .rsa-input.wrong {
+            border-color: var(--danger-color);
+            background: #fef2f2;
+        }
+
+        .rsa-select {
+            width: 100%;
+            padding: var(--spacing-md);
+            border: 2px solid var(--gray-light);
+            border-radius: var(--radius);
+            font-family: var(--font-family-base);
+            font-size: 1rem;
             background: var(--white);
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 1rem 0;
+        }
+
+        .btn-ca {
+            background: #7c3aed;
+        }
+
+        .btn-ca:hover {
+            background: #6d28d9;
+        }
+
+        .btn-copy-small {
+            background: var(--gray);
+            color: var(--white);
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: 0.85rem;
+            margin-top: var(--spacing-sm);
+        }
+
+        .btn-copy-small:hover {
+            background: var(--dark);
+        }
+
+        .status-message {
+            padding: var(--spacing-md);
+            border-radius: var(--radius);
+            margin-top: var(--spacing-md);
+            font-weight: 600;
             text-align: center;
-            border: 2px solid var(--primary-light);
+        }
+
+        .status-success {
+            background: #dcfce7;
+            color: var(--success-dark);
+            border: 2px solid var(--success-color);
+        }
+
+        .status-error {
+            background: #fee2e2;
+            color: var(--danger-dark);
+            border: 2px solid var(--danger-color);
+        }
+
+        .contact-list {
+            margin-top: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+        }
+
+        .contact-item {
+            padding: var(--spacing-sm);
+            margin: var(--spacing-sm) 0;
+            background: var(--white);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .badge-verified {
+            background: var(--success-color);
+            color: var(--white);
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .validation-feedback {
+            margin-top: var(--spacing-sm);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .validation-feedback.success {
+            color: var(--success-color);
+        }
+
+        .validation-feedback.error {
+            color: var(--danger-color);
         }
 
         .step-indicator {
             display: inline-block;
             background: var(--primary-color);
             color: var(--white);
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: 700;
+            margin-right: var(--spacing-sm);
         }
 
-        .info-text {
-            color: var(--gray);
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 1rem;
+        .process-flow {
+            background: var(--bg-secondary);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-xl);
         }
 
-        .highlight-box {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: var(--white);
-            padding: 1.5rem;
-            border-radius: var(--border-radius);
-            margin-bottom: 1.5rem;
-        }
-
-        .highlight-box h5 {
-            margin-bottom: 0.5rem;
-            font-size: 1.2rem;
-        }
-
-        .highlight-box p {
-            margin: 0;
-            opacity: 0.95;
-        }
-
-        .button-group {
+        .process-step {
             display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-lg);
+            padding: var(--spacing-md);
+            background: var(--white);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--primary-color);
         }
 
-        .button-group .btn {
-            flex: 1;
-            min-width: 150px;
+        .process-step:last-child {
+            margin-bottom: 0;
+        }
+
+        .output-box {
+            background: var(--bg-secondary);
+            padding: var(--spacing-md);
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-light);
+            word-break: break-all;
+            font-family: var(--font-family-mono);
+            font-size: 0.85rem;
+            min-height: 40px;
+            margin-top: var(--spacing-sm);
+        }
+
+        .math-exercise {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius);
+            margin-bottom: var(--spacing-md);
         }
 
         @media (max-width: 768px) {
             .rsa-grid {
                 grid-template-columns: 1fr;
             }
-
-            .button-group {
-                flex-direction: column;
-            }
-
-            .button-group .btn {
-                width: 100%;
-            }
-
-            .contact-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-brand">
-                <span class="icon"><a href="https://edu-mrh.de/">🔐</a></span>
-                <span>RSA Labor</span>
+<!--
+Fachbereich: Informatik
+Jahrgangsstufe: 11-13
+Thema: RSA-Verschlüsselung und Zertifizierungsstelle
+Erstellt: 2026-03-23
+Version: 1.0
+-->
+
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-brand">
+            <span class="icon">🖥️</span>
+            <a href="https://edu-mrh.de/">edu-mrh.de</a>
+        </div>
+        <div class="nav-links">
+            <a href="https://edu-mrh.de/informatik/informatik.html#jahrgang-11" class="btn btn-outline">Übersicht</a>
+            <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Hauptinhalt -->
+<div class="main-content">
+    <div class="container">
+        
+        <!-- Übersicht -->
+        <div id="overview" class="content-section active">
+            <div class="chapter-header">
+                <span class="chapter-number">0</span>
+                <h1>RSA Krypto-Labor & Zertifizierungsstelle</h1>
             </div>
-            <div class="nav-progress">
-                <div class="progress-bar" id="progressBar"></div>
+
+            <div class="hero">
+                <h2 class="hero-subtitle">Trust & Math: Sichere Kommunikation verstehen</h2>
+                <p class="hero-description">
+                    In diesem interaktiven Labor lernst du, wie RSA-Verschlüsselung und digitale Zertifikate funktionieren. 
+                    Du wirst echte Schlüsselpaare erzeugen, Nachrichten verschlüsseln und das Vertrauensmodell einer 
+                    Zertifizierungsstelle (CA) nachvollziehen.
+                </p>
             </div>
-            <div class="nav-links">
-               <div class="nav-links">
-                <a href="https://edu-mrh.de/informatik/informatik.html#jahrgang-12" class="btn btn-outline">Übersicht</a>
-                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+
+            <div class="info-box">
+                <h3>💡 Was erwartet dich?</h3>
+                <p>Dieses Labor ist in mehrere Schritte unterteilt, die aufeinander aufbauen:</p>
+                <ul>
+                    <li><strong>Schritt 1:</strong> Die mathematischen Grundlagen von RSA mit kleinen Zahlen verstehen</li>
+                    <li><strong>Schritt 2:</strong> Eigene Schlüsselpaare mit echten, großen Zahlen erzeugen</li>
+                    <li><strong>Schritt 3:</strong> Eine Zertifizierungsstelle (CA) einrichten und Zertifikate ausstellen</li>
+                    <li><strong>Schritt 4:</strong> Nachrichten verschlüsseln und signieren</li>
+                    <li><strong>Schritt 5:</strong> Verschlüsselte Nachrichten empfangen und Signaturen prüfen</li>
+                </ul>
             </div>
+
+            <div class="process-flow">
+                <h3 style="margin-bottom: var(--spacing-lg); color: var(--primary-color);">🔄 Ablauf für die Gruppenarbeit</h3>
+                
+                <div class="process-step">
+                    <span class="step-indicator">1</span>
+                    <div>
+                        <strong>Rollen verteilen</strong>
+                        <p>Eine Person übernimmt die Rolle der <strong>Zertifizierungsstelle (CA)</strong>, 
+                        mindestens zwei weitere Personen sind <strong>Kommunikationspartner</strong> (z.B. Alice und Bob).</p>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <span class="step-indicator">2</span>
+                    <div>
+                        <strong>CA initialisieren</strong>
+                        <p>Die CA-Person geht zu <strong>Schritt 3</strong> und klickt auf "CA-System initialisieren". 
+                        Der erzeugte <strong>CA Public Key</strong> wird kopiert und an alle Teilnehmer verteilt 
+                        (z.B. per Chat oder gemeinsames Dokument).</p>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <span class="step-indicator">3</span>
+                    <div>
+                        <strong>CA-Key importieren</strong>
+                        <p>Alle Teilnehmer fügen den CA Public Key in <strong>Schritt 3</strong> im Feld 
+                        "Aktueller CA-Key in meinem System" ein. Dies ist die Vertrauensbasis!</p>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <span class="step-indicator">4</span>
+                    <div>
+                        <strong>Eigene Schlüssel erzeugen</strong>
+                        <p>Jeder Kommunikationspartner geht zu <strong>Schritt 2</strong> und klickt auf 
+                        "Eigene Schlüssel erzeugen". Der <strong>Public Key</strong> wird kopiert und zusammen 
+                        mit dem eigenen Namen an die CA geschickt.</p>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <span class="step-indicator">5</span>
+                    <div>
+                        <strong>Zertifikate ausstellen</strong>
+                        <p>Die CA geht zu <strong>Schritt 3</strong>, gibt den Namen ein, fügt den Public Key ein 
+                        und klickt auf "Zertifikat signieren". Das erzeugte <strong>Zertifikat</strong> wird an 
+                        den jeweiligen Teilnehmer zurückgeschickt.</p>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <span class="step-indicator">6</span>
+                    <div>
+                        <strong>Zertifikate importieren</strong>
+                        <p>Alle Teilnehmer tauschen ihre Zertifikate untereinander aus. In <strong>Schritt 2</strong> 
+                        wird jedes Zertifikat im Feld "Kontakt verifizieren" eingefügt und auf 
+                        "Zertifikat prüfen & Importieren" geklickt. Bei Erfolg erscheint der Kontakt im Adressbuch.</p>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <span class="step-indicator">7</span>
+                    <div>
+                        <strong>Kommunikation starten</strong>
+                        <p>Jetzt kann kommuniziert werden! In <strong>Schritt 4</strong> wird eine Nachricht verfasst, 
+                        der Empfänger ausgewählt (verschlüsseln mit dessen Public Key) und mit dem eigenen Private Key 
+                        signiert. Der erzeugte Ciphertext und die Signatur werden an den Empfänger geschickt.</p>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <span class="step-indicator">8</span>
+                    <div>
+                        <strong>Nachricht empfangen</strong>
+                        <p>Der Empfänger geht zu <strong>Schritt 5</strong>, fügt den Ciphertext ein und entschlüsselt 
+                        mit seinem Private Key. Die Signatur wird mit dem Public Key des Absenders geprüft. 
+                        ✅ = Nachricht ist authentisch!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h3>⚠️ Wichtige Hinweise</h3>
+                <ul>
+                    <li>Die Schlüssel werden mit <strong>echten kryptographischen Werten</strong> erzeugt (1024-2048 Bit)</li>
+                    <li>Der <strong>Private Key</strong> darf niemals weitergegeben werden!</li>
+                    <li>Ohne den CA Public Key können Zertifikate nicht verifiziert werden</li>
+                    <li>Die Reihenfolge der Schritte ist wichtig für das Verständnis</li>
+                </ul>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-primary" onclick="navigateToSection('math')">
+                    Los geht's: Schritt 1 starten →
+                </button>
             </div>
         </div>
-    </nav>
 
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h3>Navigation</h3>
-            <button class="sidebar-toggle" id="sidebarToggle">✕</button>
+        <!-- Schritt 1: RSA Mathematik -->
+        <div id="math" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">1</span>
+                <h1>Das mathematische Fundament</h1>
+            </div>
+
+            <div class="info-box">
+                <h3>🔢 Lernziel</h3>
+                <p>Verstehe die mathematischen Grundlagen von RSA anhand kleiner Primzahlen. 
+                Diese Berechnungen kannst du mit einem Taschenrechner nachvollziehen!</p>
+            </div>
+
+            <div class="rsa-card">
+                <h3>Grundparameter berechnen</h3>
+                <p>Gegeben: Primzahlen $p = 5$ und $q = 17$</p>
+                
+                <div class="math-exercise">
+                    <div class="rsa-grid">
+                        <div class="rsa-input-group">
+                            <label>Berechne $N = p \cdot q$</label>
+                            <input type="number" class="rsa-input" oninput="check(this, 85)" placeholder="Deine Antwort">
+                            <small>$N$ ist der Modulus für die Verschlüsselung</small>
+                        </div>
+                        <div class="rsa-input-group">
+                            <label>Berechne $\Phi(N) = (p-1) \cdot (q-1)$</label>
+                            <input type="number" class="rsa-input" oninput="check(this, 64)" placeholder="Deine Antwort">
+                            <small>$\Phi(N)$ ist die Eulersche Phi-Funktion</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rsa-card">
+                <h3>Öffentlicher Exponent $e$ wählen</h3>
+                <p>Wähle ein $e$, das zu $\Phi(N) = 64$ teilerfremd ist (d.h. $\text{ggT}(e, 64) = 1$)</p>
+                
+                <div class="rsa-input-group">
+                    <label>Öffentlicher Exponent $e$:</label>
+                    <input type="number" id="rsa-e-val" class="rsa-input" placeholder="z.B. 5, 7, 11, 13..." oninput="validateE()">
+                    <div id="e-status" class="validation-feedback"></div>
+                </div>
+                <button class="btn btn-primary" onclick="checkE()">Validieren</button>
+            </div>
+
+            <div class="rsa-card">
+                <h3>Geheimer Exponent $d$ berechnen</h3>
+                <p>Berechne $d$ so, dass gilt: $(e \cdot d) \mod \Phi(N) = 1$</p>
+                <p><small>$d$ ist das multiplikative Inverse von $e$ modulo $\Phi(N)$</small></p>
+                
+                <div class="rsa-input-group">
+                    <label>Geheimer Exponent $d$:</label>
+                    <input type="number" id="rsa-d-val" class="rsa-input" placeholder="Multiplikatives Inverses" oninput="validateD()">
+                    <div id="d-status" class="validation-feedback"></div>
+                </div>
+                <button class="btn btn-primary" onclick="checkD()">Validieren</button>
+            </div>
+
+            <div class="rsa-card">
+                <h3>Verschlüsselung testen</h3>
+                <p>Teste die Verschlüsselung mit einem einzelnen Buchstaben:</p>
+                
+                <div class="rsa-grid">
+                    <div class="rsa-input-group">
+                        <label>Buchstabe wählen:</label>
+                        <input type="text" id="ascii-char" class="rsa-input" maxlength="1" value="H" oninput="updateASCIITest()">
+                        <p style="margin-top: var(--spacing-sm);">ASCII-Wert: $m = $ <strong id="m-val">72</strong></p>
+                    </div>
+                    <div class="rsa-input-group">
+                        <label>Verschlüsseln: $c = m^e \mod 85$</label>
+                        <input type="number" id="c-test" class="rsa-input" placeholder="Ergebnis c" oninput="validateEncrypt()">
+                        <button class="btn btn-primary" onclick="checkEncrypt()">Rechnung prüfen</button>
+                    </div>
+                </div>
+
+                <div class="math-exercise" style="margin-top: var(--spacing-lg);">
+                    <h4>Entschlüsselung</h4>
+                    <p>Berechne: $m = c^d \mod 85$</p>
+                    <div class="rsa-input-group">
+                        <input type="number" id="m-decrypted" class="rsa-input" placeholder="Sollte wieder der ASCII-Wert sein" oninput="validateDecrypt()">
+                        <button class="btn btn-primary" onclick="checkDecrypt()">Entschlüsselung prüfen</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="navigateToSection('overview')">← Zurück zur Übersicht</button>
+                <button class="btn btn-primary" onclick="navigateToSection('keys')">Weiter zu Schritt 2 →</button>
+            </div>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="#" class="nav-link active" data-section="home">🏠 Startseite</a></li>
-            <li><a href="#" class="nav-link" data-section="step1">📐 Schritt 1: Mathematik</a></li>
-            <li><a href="#" class="nav-link" data-section="step2">👤 Schritt 2: Identität</a></li>
-            <li><a href="#" class="nav-link" data-section="step3">🏛️ Schritt 3: CA-Amt</a></li>
-            <li><a href="#" class="nav-link" data-section="step4">📤 Schritt 4: Senden</a></li>
-            <li><a href="#" class="nav-link" data-section="step5">📥 Schritt 5: Empfangen</a></li>
-        </ul>
-    </aside>
 
-    <!-- Mobile Menu Button -->
-    <button class="mobile-menu-btn" id="mobileMenuBtn">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
+        <!-- Schritt 2: Schlüssel & Adressbuch -->
+        <div id="keys" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">2</span>
+                <h1>Identität & Kontakte</h1>
+            </div>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="container">
-            <!-- Home Section -->
-            <section id="home" class="content-section active">
-                <div class="hero">
-                    <h1 class="hero-title">RSA Labor & Zertifizierungsstelle</h1>
-                    <p class="hero-subtitle">Verstehe Public-Key-Kryptographie durch praktische Anwendung</p>
-                    <p class="hero-description">Lerne die Grundlagen von RSA-Verschlüsselung, digitalen Signaturen und Zertifikaten</p>
-                </div>
+            <div class="info-box">
+                <h3>🔑 Lernziel</h3>
+                <p>Erzeuge dein eigenes RSA-Schlüsselpaar mit echten kryptographischen Werten und baue ein 
+                Adressbuch mit verifizierten Kontakten auf.</p>
+            </div>
 
-                <div class="info-grid">
-                    <div class="info-card">
-                        <div class="info-icon">📐</div>
-                        <h3>Schritt 1: Mathematik</h3>
-                        <p class="info-text">Berechne RSA-Parameter mit kleinen Primzahlen und verstehe die mathematischen Grundlagen.</p>
-                        <ul>
-                            <li>Berechnung von N und Φ(N)</li>
-                            <li>Wahl des öffentlichen Exponenten e</li>
-                            <li>Berechnung des geheimen Exponenten d</li>
-                            <li>Ver- und Entschlüsselung testen</li>
-                        </ul>
+            <div class="rsa-grid">
+                <div class="rsa-card">
+                    <h3>Meine Schlüssel</h3>
+                    <p>Erzeuge dein persönliches RSA-Schlüsselpaar (1024 Bit):</p>
+                    
+                    <button class="btn btn-primary" onclick="generateRealKeys()">🔑 Eigene Schlüssel erzeugen</button>
+                    
+                    <div class="rsa-input-group" style="margin-top: var(--spacing-lg);">
+                        <label>Mein Public Key ($N, e$):</label>
+                        <textarea id="my-pub-display" class="rsa-textarea" readonly placeholder="Hier erscheint dein Public Key..."></textarea>
+                        <button class="btn btn-copy-small" onclick="copy('my-pub-display')">📋 Kopieren</button>
+                        <small>Diesen Key kannst du weitergeben - er wird für Zertifikate benötigt!</small>
                     </div>
-
-                    <div class="info-card">
-                        <div class="info-icon">👤</div>
-                        <h3>Schritt 2: Identität</h3>
-                        <p class="info-text">Erstelle deine eigene digitale Identität mit RSA-Schlüsselpaar.</p>
-                        <ul>
-                            <li>Generiere sichere Schlüssel</li>
-                            <li>Verwalte Kontakte</li>
-                            <li>Verifiziere Zertifikate</li>
-                        </ul>
-                    </div>
-
-                    <div class="info-card">
-                        <div class="info-icon">🏛️</div>
-                        <h3>Schritt 3: CA-Amt</h3>
-                        <p class="info-text">Agiere als Zertifizierungsstelle und stelle vertrauenswürdige Zertifikate aus.</p>
-                        <ul>
-                            <li>CA-Schlüssel generieren</li>
-                            <li>Identitäten prüfen</li>
-                            <li>Zertifikate signieren</li>
-                        </ul>
-                    </div>
-
-                    <div class="info-card">
-                        <div class="info-icon">📤</div>
-                        <h3>Schritt 4: Senden</h3>
-                        <p class="info-text">Verschlüssele und signiere Nachrichten sicher.</p>
-                        <ul>
-                            <li>Nachricht verschlüsseln</li>
-                            <li>Digital signieren</li>
-                            <li>Sicher übermitteln</li>
-                        </ul>
-                    </div>
-
-                    <div class="info-card">
-                        <div class="info-icon">📥</div>
-                        <h3>Schritt 5: Empfangen</h3>
-                        <p class="info-text">Entschlüssele Nachrichten und verifiziere Signaturen.</p>
-                        <ul>
-                            <li>Nachricht entschlüsseln</li>
-                            <li>Signatur prüfen</li>
-                            <li>Absender verifizieren</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="navigation-buttons">
-                    <button class="btn btn-primary" onclick="navigateToSection('step1')">
-                        Los geht's! →
-                    </button>
-                </div>
-            </section>
-
-            <!-- Step 1: Mathematik -->
-            <section id="step1" class="content-section">
-                <div class="chapter-header">
-                    <span class="chapter-number">Schritt 1</span>
-                    <h2>Das mathematische Fundament</h2>
-                </div>
-
-                <div class="example-box">
-                    <h3>📐 RSA-Parameter berechnen</h3>
-                    <div class="example-content">
-                        <p class="info-text">Berechne die RSA-Parameter für kleine Primzahlen (p=5, q=17):</p>
-                        
-                        <div class="highlight-box">
-                            <h5>Gegeben:</h5>
-                            <p>p = 5, q = 17</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="rsa-grid">
-                    <div class="rsa-card">
-                        <h4>1️⃣ N und Φ(N) berechnen</h4>
-                        <div class="form-group">
-                            <label>N = p × q</label>
-                            <input type="number" id="calcN" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label>Φ(N) = (p-1) × (q-1)</label>
-                            <input type="number" id="calcPhi" readonly>
-                        </div>
-                        <button class="btn btn-primary" onclick="calculateNAndPhi()">Berechnen</button>
-                    </div>
-
-                    <div class="rsa-card">
-                        <h4>2️⃣ Öffentlicher Exponent e</h4>
-                        <p class="info-text">Wähle ein e, das zu Φ(N) und N teilerfremd ist:</p>
-                        <div class="form-group">
-                            <label>Mögliche Werte für e:</label>
-                            <select id="selectE" onchange="updateE()">
-                                <option value="">-- Wählen --</option>
-                            </select>
-                        </div>
-                        <div id="eResult"></div>
-                    </div>
-
-                    <div class="rsa-card">
-                        <h4>3️⃣ Geheimer Exponent d</h4>
-                        <p class="info-text">Berechne d so dass: (e · d) mod Φ(N) = 1</p>
-                        <div class="form-group">
-                            <label>d =</label>
-                            <input type="number" id="calcD" readonly>
-                        </div>
-                        <button class="btn btn-primary" onclick="calculateD()">Berechnen</button>
-                        <div id="dResult"></div>
-                    </div>
-                </div>
-
-                <div class="example-box">
-                    <h3>🧪 ASCII-Test (Mathematisch)</h3>
-                    <div class="example-content">
-                        <div class="rsa-grid">
-                            <div class="rsa-card">
-                                <h4>Verschlüsseln</h4>
-                                <div class="form-group">
-                                    <label>ASCII-Wert m =</label>
-                                    <input type="number" id="asciiM" value="72">
-                                </div>
-                                <p class="info-text">Berechne: c = m<sup>e</sup> mod N</p>
-                                <button class="btn btn-success" onclick="encryptASCII()">Verschlüsseln</button>
-                                <div id="encryptResult"></div>
-                            </div>
-
-                            <div class="rsa-card">
-                                <h4>Entschlüsseln</h4>
-                                <div class="form-group">
-                                    <label>Chiffrat c =</label>
-                                    <input type="number" id="asciiC" readonly>
-                                </div>
-                                <p class="info-text">Berechne: m = c<sup>d</sup> mod N</p>
-                                <button class="btn btn-success" onclick="decryptASCII()">Entschlüsseln</button>
-                                <div id="decryptResult"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="navigation-buttons">
-                    <button class="btn btn-outline" onclick="navigateToSection('home')">← Zurück</button>
-                    <button class="btn btn-primary" onclick="navigateToSection('step2')">Weiter →</button>
-                </div>
-            </section>
-
-            <!-- Step 2: Identität -->
-            <section id="step2" class="content-section">
-                <div class="chapter-header">
-                    <span class="chapter-number">Schritt 2</span>
-                    <h2>Identität & Kontakte</h2>
-                </div>
-
-                <div class="rsa-grid">
-                    <div class="rsa-card">
-                        <h4>👤 Meine Schlüssel</h4>
-                        <div class="form-group">
-                            <label>Dein Name:</label>
-                            <input type="text" id="userName" placeholder="z.B. Alice">
-                        </div>
-                        <button class="btn btn-primary" onclick="generateKeys()">Schlüssel generieren</button>
-                        <div id="keyResult"></div>
-                    </div>
-
-                    <div class="rsa-card">
-                        <h4>📋 Kontakt verifizieren (Zertifikat)</h4>
-                        <p class="info-text">Füge hier ein Zertifikat ein, um einen Kontakt sicher zu speichern.</p>
-                        <div class="form-group">
-                            <label>Zertifikat (JSON):</label>
-                            <textarea id="certInput" placeholder='{"name":"Bob","publicKey":"...","signature":"..."}'></textarea>
-                        </div>
-                        <button class="btn btn-success" onclick="verifyCertificate()">Verifizieren & Speichern</button>
-                        <div id="certResult"></div>
-                    </div>
-                </div>
-
-                <div class="example-box">
-                    <h3>📇 Gespeicherte Kontakte</h3>
-                    <div class="example-content">
-                        <ul class="contact-list" id="contactList">
-                            <li class="contact-item">
-                                <div class="contact-info">
-                                    <small>Noch keine Kontakte gespeichert</small>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="navigation-buttons">
-                    <button class="btn btn-outline" onclick="navigateToSection('step1')">← Zurück</button>
-                    <button class="btn btn-primary" onclick="navigateToSection('step3')">Weiter →</button>
-                </div>
-            </section>
-
-            <!-- Step 3: CA -->
-            <section id="step3" class="content-section">
-                <div class="chapter-header">
-                    <span class="chapter-number">Schritt 3</span>
-                    <h2>Zertifizierungsstelle (CA-Amt)</h2>
-                </div>
-
-                <div class="example-box warning">
-                    <h3>🏛️ Vertrauens-Check</h3>
-                    <div class="example-content">
-                        <p class="info-text">
-                            Eine Zertifizierungsstelle (CA) ist eine vertrauenswürdige dritte Partei, 
-                            die die Identität von Personen bestätigt und digitale Zertifikate ausstellt.
-                        </p>
-                        <div class="highlight-box">
-                            <h5>Wichtig:</h5>
-                            <p>Alle Teilnehmer müssen dem öffentlichen Schlüssel der CA vertrauen!</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="rsa-grid">
-                    <div class="rsa-card">
-                        <h4>🔑 CA Master-Setup</h4>
-                        <p class="info-text">Als Zentrale: Erzeuge den CA-Key, dem alle vertrauen müssen.</p>
-                        <button class="btn btn-primary" onclick="generateCAKeys()">CA-Schlüssel generieren</button>
-                        <div id="caKeyResult"></div>
-                        <div class="highlight mt-2">
-                            <p><strong>Hinweis:</strong> Diesen Key müssen alle Korrespondenten kennen, um Zertifikate zu prüfen.</p>
-                        </div>
-                    </div>
-
-                    <div class="rsa-card">
-                        <h4>📜 Zertifikat ausstellen</h4>
-                        <div class="form-group">
-                            <label>Name der Person:</label>
-                            <input type="text" id="certName" placeholder="z.B. Bob">
-                        </div>
-                        <div class="form-group">
-                            <label>Public Key der Person:</label>
-                            <textarea id="certPublicKey" placeholder="Public Key einfügen"></textarea>
-                        </div>
-                        <button class="btn btn-success" onclick="issueCertificate()">Zertifikat ausstellen</button>
-                        <div id="issuedCertResult"></div>
-                    </div>
-                </div>
-
-                <div class="navigation-buttons">
-                    <button class="btn btn-outline" onclick="navigateToSection('step2')">← Zurück</button>
-                    <button class="btn btn-primary" onclick="navigateToSection('step4')">Weiter →</button>
-                </div>
-            </section>
-
-            <!-- Step 4: Senden -->
-            <section id="step4" class="content-section">
-                <div class="chapter-header">
-                    <span class="chapter-number">Schritt 4</span>
-                    <h2>Nachricht senden</h2>
-                </div>
-
-                <div class="example-box">
-                    <h3>📤 Sichere Nachricht erstellen</h3>
-                    <div class="example-content">
-                        <p class="info-text">
-                            Verschlüssele deine Nachricht mit dem öffentlichen Schlüssel des Empfängers 
-                            und signiere sie mit deinem privaten Schlüssel.
-                        </p>
+                    
+                    <div class="rsa-input-group">
+                        <label>Mein Private Key ($N, d$):</label>
+                        <textarea id="my-priv-display" class="rsa-textarea" readonly placeholder="Hier erscheint dein Private Key..."></textarea>
+                        <small style="color: var(--danger-color); font-weight: 600;">⚠️ Niemals weitergeben!</small>
                     </div>
                 </div>
 
                 <div class="rsa-card">
-                    <div class="form-group">
-                        <label>Empfänger auswählen:</label>
-                        <select id="recipientSelect">
-                            <option value="">-- Wähle einen Kontakt --</option>
-                        </select>
+                    <h3>Kontakt verifizieren</h3>
+                    <p>Importiere ein Zertifikat, um einen Kontakt sicher zu speichern:</p>
+                    
+                    <div class="rsa-input-group">
+                        <label>Zertifikat einfügen:</label>
+                        <textarea id="cert-import" class="rsa-textarea" placeholder='{"owner":"Alice","pubKey":{...},"caSig":"..."}'></textarea>
+                        <small>Füge hier das von der CA signierte Zertifikat ein</small>
                     </div>
+                    
+                    <button class="btn btn-success" onclick="verifyAndImportCert()">✓ Zertifikat prüfen & Importieren</button>
+                    
+                    <div class="contact-list">
+                        <strong>📖 Adressbuch:</strong>
+                        <div id="contact-items" style="margin-top: var(--spacing-sm);">
+                            <em style="color: var(--gray);">Keine Kontakte vorhanden.</em>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                    <div class="form-group">
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="navigateToSection('math')">← Zurück zu Schritt 1</button>
+                <button class="btn btn-primary" onclick="navigateToSection('ca')">Weiter zu Schritt 3 →</button>
+            </div>
+        </div>
+
+        <!-- Schritt 3: Zertifizierungsstelle -->
+        <div id="ca" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">3</span>
+                <h1>Zertifizierungsstelle (CA)</h1>
+            </div>
+
+            <div class="info-box">
+                <h3>🏛️ Lernziel</h3>
+                <p>Verstehe, wie eine Zertifizierungsstelle (Certificate Authority) funktioniert und wie 
+                Vertrauen in digitale Identitäten aufgebaut wird.</p>
+            </div>
+
+            <div class="rsa-card-ca" style="margin-bottom: var(--spacing-xl);">
+                <h3>Vertrauens-Check</h3>
+                <p>Bevor du Zertifikate prüfen kannst, musst du den CA Public Key kennen:</p>
+                
+                <div class="rsa-input-group">
+                    <label>Aktueller CA-Key in meinem System:</label>
+                    <textarea id="my-local-ca-key" class="rsa-textarea" placeholder='{"n":"...","e":"AQAB"}'></textarea>
+                    <small>Füge hier den CA Public Key ein, den du von der Zentrale erhalten hast</small>
+                </div>
+            </div>
+
+            <div style="height: 2px; background: var(--gray-lighter); margin: var(--spacing-2xl) 0;"></div>
+
+            <div class="rsa-grid">
+                <div class="rsa-card-ca">
+                    <h3>CA Master-Setup</h3>
+                    <p><strong>Nur für die CA-Person:</strong> Initialisiere das CA-System und erzeuge den Root-Key.</p>
+                    
+                    <div class="warning-box" style="margin-bottom: var(--spacing-md);">
+                        <p><small>Dieser Key muss an alle Teilnehmer verteilt werden - er ist die Vertrauensbasis!</small></p>
+                    </div>
+                    
+                    <button class="btn btn-ca" onclick="genCAKeys()">🏛️ CA-System initialisieren</button>
+                    
+                    <div class="rsa-input-group" style="margin-top: var(--spacing-lg);">
+                        <label>CA Public Key (Root):</label>
+                        <textarea id="ca-pub-display" class="rsa-textarea" readonly placeholder="Hier erscheint der CA Public Key..."></textarea>
+                        <button class="btn btn-copy-small" onclick="copy('ca-pub-display')">📋 Kopieren & verteilen</button>
+                    </div>
+                    
+                    <div class="info-box" style="margin-top: var(--spacing-md);">
+                        <p><small>💡 In der Realität hätten Geräte diesen Key bereits bei Auslieferung vorinstalliert.</small></p>
+                    </div>
+                </div>
+
+                <div class="rsa-card">
+                    <h3>Zertifikat ausstellen</h3>
+                    <p><strong>Nur für die CA-Person:</strong> Signiere Public Keys und stelle Zertifikate aus.</p>
+                    
+                    <div class="rsa-input-group">
+                        <label>Name des Inhabers:</label>
+                        <input type="text" id="ca-name" class="rsa-input" placeholder="z.B. Alice">
+                    </div>
+                    
+                    <div class="rsa-input-group">
+                        <label>Public Key des Inhabers:</label>
+                        <textarea id="ca-pub-input" class="rsa-textarea" placeholder='{"n":"...","e":"AQAB"}'></textarea>
+                        <small>Füge hier den Public Key ein, den du vom Antragsteller erhalten hast</small>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="issueCertificate()">✍️ Zertifikat signieren</button>
+                    
+                    <div class="rsa-input-group" style="margin-top: var(--spacing-lg);">
+                        <label>Ausgestelltes Zertifikat:</label>
+                        <textarea id="ca-cert-res" class="rsa-textarea" readonly placeholder="Hier erscheint das signierte Zertifikat..."></textarea>
+                        <button class="btn btn-copy-small" onclick="copy('ca-cert-res')">📋 Kopieren & versenden</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="navigateToSection('keys')">← Zurück zu Schritt 2</button>
+                <button class="btn btn-primary" onclick="navigateToSection('alice')">Weiter zu Schritt 4 →</button>
+            </div>
+        </div>
+
+        <!-- Schritt 4: Nachricht senden -->
+        <div id="alice" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">4</span>
+                <h1>Nachricht senden</h1>
+            </div>
+
+            <div class="info-box">
+                <h3>📤 Lernziel</h3>
+                <p>Verschlüssele eine Nachricht mit dem Public Key des Empfängers und signiere sie mit deinem Private Key.</p>
+            </div>
+
+            <div class="rsa-grid">
+                <div class="rsa-card">
+                    <h3>Nachricht vorbereiten</h3>
+                    
+                    <div class="rsa-input-group">
                         <label>Deine Nachricht:</label>
-                        <textarea id="messageToSend" placeholder="Schreibe deine Nachricht hier..."></textarea>
+                        <input type="text" id="a-msg" class="rsa-input" value="GEHEIM" maxlength="50">
+                        <small>Maximal 50 Zeichen</small>
                     </div>
-
-                    <div class="button-group">
-                        <button class="btn btn-primary" onclick="encryptMessage()">🔒 Verschlüsseln</button>
-                        <button class="btn btn-secondary" onclick="signMessage()">✍️ Signieren</button>
-                        <button class="btn btn-success" onclick="encryptAndSign()">🔐 Verschlüsseln & Signieren</button>
+                    
+                    <div class="rsa-input-group">
+                        <label>Verschlüsseln für:</label>
+                        <select id="a-enc-key-select" class="rsa-select key-drop">
+                            <option value="">-- Empfänger wählen --</option>
+                        </select>
+                        <small>Wähle den Public Key des Empfängers</small>
                     </div>
-
-                    <div id="sendResult"></div>
+                    
+                    <div class="rsa-input-group">
+                        <label>Signieren mit:</label>
+                        <select id="a-sig-key-select" class="rsa-select key-drop">
+                            <option value="">-- Dein Private Key --</option>
+                        </select>
+                        <small>Signiere mit deinem Private Key zur Authentifizierung</small>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="aliceExecute()">📦 Paket schnüren</button>
                 </div>
 
-                <div class="navigation-buttons">
-                    <button class="btn btn-outline" onclick="navigateToSection('step3')">← Zurück</button>
-                    <button class="btn btn-primary" onclick="navigateToSection('step5')">Weiter →</button>
+                <div class="rsa-card">
+                    <h3>Verschlüsselte Nachricht</h3>
+                    
+                    <div class="rsa-input-group">
+                        <label>Ciphertext:</label>
+                        <textarea id="a-out-cipher" class="rsa-textarea" readonly placeholder="Hier erscheint der verschlüsselte Text..."></textarea>
+                        <button class="btn btn-copy-small" onclick="copy('a-out-cipher')">📋 Kopieren</button>
+                        <small>Sende diesen Ciphertext an den Empfänger</small>
+                    </div>
+                    
+                    <div class="rsa-input-group">
+                        <label>Digitale Signatur:</label>
+                        <textarea id="a-out-sig" class="rsa-textarea" readonly placeholder="Hier erscheint die Signatur..."></textarea>
+                        <button class="btn btn-copy-small" onclick="copy('a-out-sig')">📋 Kopieren</button>
+                        <small>Sende auch die Signatur zur Verifikation</small>
+                    </div>
                 </div>
-            </section>
+            </div>
 
-            <!-- Step 5: Empfangen -->
-            <section id="step5" class="content-section">
-                <div class="chapter-header">
-                    <span class="chapter-number">Schritt 5</span>
-                    <h2>Empfangen</h2>
-                </div>
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="navigateToSection('ca')">← Zurück zu Schritt 3</button>
+                <button class="btn btn-primary" onclick="navigateToSection('bob')">Weiter zu Schritt 5 →</button>
+            </div>
+        </div>
 
-                <div class="example-box">
-                    <h3>📥 Nachricht empfangen und prüfen</h3>
-                    <div class="example-content">
-                        <p class="info-text">
-                            Entschlüssele die Nachricht mit deinem privaten Schlüssel und 
-                            verifiziere die Signatur mit dem öffentlichen Schlüssel des Absenders.
-                        </p>
+        <!-- Schritt 5: Nachricht empfangen -->
+        <div id="bob" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">5</span>
+                <h1>Nachricht empfangen</h1>
+            </div>
+
+            <div class="info-box">
+                <h3>📥 Lernziel</h3>
+                <p>Entschlüssele eine empfangene Nachricht mit deinem Private Key und prüfe die Signatur 
+                mit dem Public Key des Absenders.</p>
+            </div>
+
+            <div class="rsa-grid">
+                <div class="rsa-card">
+                    <h3>Nachricht entschlüsseln</h3>
+                    
+                    <div class="rsa-input-group">
+                        <label>Empfangener Ciphertext:</label>
+                        <textarea id="b-in-cipher" class="rsa-textarea" placeholder="Füge hier den Ciphertext ein..."></textarea>
+                    </div>
+                    
+                    <div class="rsa-input-group">
+                        <label>Entschlüsseln mit:</label>
+                        <select id="b-dec-key-select" class="rsa-select key-drop">
+                            <option value="">-- Dein Private Key --</option>
+                        </select>
+                        <small>Verwende deinen Private Key zum Entschlüsseln</small>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="bobDecrypt()">🔓 Entschlüsseln</button>
+                    
+                    <div id="b-dec-output" class="output-box" style="display:none; margin-top: var(--spacing-md);">
+                        <strong>Klartext:</strong> <span id="b-plain-text"></span>
                     </div>
                 </div>
 
                 <div class="rsa-card">
-                    <div class="form-group">
-                        <label>Empfangene Nachricht (JSON):</label>
-                        <textarea id="receivedMessage" placeholder='{"encrypted":"...","signature":"...","sender":"..."}'></textarea>
+                    <h3>Signatur prüfen</h3>
+                    
+                    <div class="rsa-input-group">
+                        <label>Empfangene Signatur:</label>
+                        <textarea id="b-in-sig" class="rsa-textarea" placeholder="Füge hier die Signatur ein..."></textarea>
                     </div>
-
-                    <div class="button-group">
-                        <button class="btn btn-primary" onclick="decryptMessage()">🔓 Entschlüsseln</button>
-                        <button class="btn btn-success" onclick="verifySignature()">✅ Signatur prüfen</button>
-                        <button class="btn btn-secondary" onclick="decryptAndVerify()">🔍 Entschlüsseln & Verifizieren</button>
+                    
+                    <div class="rsa-input-group">
+                        <label>Prüfen mit:</label>
+                        <select id="b-ver-key-select" class="rsa-select key-drop">
+                            <option value="">-- Public Key des Absenders --</option>
+                        </select>
+                        <small>Wähle den Public Key des Absenders aus deinem Adressbuch</small>
                     </div>
-
-                    <div id="receiveResult"></div>
+                    
+                    <button class="btn btn-primary" onclick="bobVerify()">✓ Signatur prüfen</button>
+                    
+                    <div id="b-sig-status" style="display:none; margin-top: var(--spacing-md);"></div>
                 </div>
+            </div>
 
-                <div class="navigation-buttons">
-                    <button class="btn btn-outline" onclick="navigateToSection('step4')">← Zurück</button>
-                    <button class="btn btn-success" onclick="navigateToSection('home')">🏠 Zum Start</button>
-                </div>
-            </section>
+            <div class="task-box" style="margin-top: var(--spacing-xl);">
+                <h4>✏️ Reflexionsaufgabe</h4>
+                <p>Beantworte folgende Fragen:</p>
+                <ol>
+                    <li>Warum kann nur der Empfänger die Nachricht entschlüsseln?</li>
+                    <li>Wie stellt die Signatur sicher, dass die Nachricht wirklich vom Absender stammt?</li>
+                    <li>Welche Rolle spielt die CA im gesamten Prozess?</li>
+                    <li>Was würde passieren, wenn jemand die CA-Signatur fälschen könnte?</li>
+                </ol>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="navigateToSection('alice')">← Zurück zu Schritt 4</button>
+                <button class="btn btn-success" onclick="navigateToSection('overview')">✓ Zurück zur Übersicht</button>
+            </div>
         </div>
-    </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2026 RSA Labor. Bildungsprojekt für Kryptographie.</p>
-            <p>Entwickelt für das Verständnis von Public-Key-Infrastruktur</p>
-        </div>
-    </footer>
+    </div>
+</div>
 
-    <script>
-        // ==================== Global Variables ====================
-        let myKeys = null;
-        let caKeys = null;
-        let contacts = [];
-        let rsaParams = {
-            p: 5,
-            q: 17,
-            N: null,
-            phi: null,
-            e: null,
-            d: null
-        };
+<script>
+    let myIdentity = null; 
+    let contacts = {}; 
+    let caSubtlePair = null;
 
-        // ==================== Navigation ====================
-        function navigateToSection(sectionId) {
-            // Hide all sections
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.remove('active');
-            });
+    // --- KATEX INITIALISIERUNG ---
+    function renderMath() {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "$", right: "$", display: false}
+            ],
+            throwOnError : false
+        });
+    }
 
-            // Show target section
-            document.getElementById(sectionId).classList.add('active');
-
-            // Update sidebar active state
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-                if (link.dataset.section === sectionId) {
-                    link.classList.add('active');
-                }
-            });
-
-            // Update progress bar
-            const sections = ['home', 'step1', 'step2', 'step3', 'step4', 'step5'];
-            const currentIndex = sections.indexOf(sectionId);
-            const progress = (currentIndex / (sections.length - 1)) * 100;
-            document.getElementById('progressBar').style.width = progress + '%';
-
-            // Scroll to top
+    // --- NAVIGATION ---
+    function navigateToSection(sectionId) {
+        // Alle Sections ausblenden
+        document.querySelectorAll('.content-section').forEach(section => {
+            section.classList.remove('active');
+        });
+        
+        // Gewünschte Section anzeigen
+        const targetSection = document.getElementById(sectionId);
+        if (targetSection) {
+            targetSection.classList.add('active');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-
-            // Close mobile menu
-            document.getElementById('sidebar').classList.remove('active');
         }
+    }
 
-        // Sidebar navigation
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const section = link.dataset.section;
-                navigateToSection(section);
-            });
-        });
-
-        // Mobile menu toggle
-        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.toggle('active');
-        });
-
-        document.getElementById('sidebarToggle').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.remove('active');
-        });
-
-        // ==================== Helper Functions ====================
-        function gcd(a, b) {
-            while (b !== 0) {
-                let temp = b;
-                b = a % b;
-                a = temp;
-            }
-            return a;
+    // --- RSA CORE (BIGINT) ---
+    function textToBigInt(text) {
+        let hex = "";
+        for (let i = 0; i < text.length; i++) hex += text.charCodeAt(i).toString(16).padStart(2, '0');
+        return BigInt("0x" + hex);
+    }
+    
+    function bigIntToText(bigint) {
+        let hex = bigint.toString(16);
+        if (hex.length % 2 !== 0) hex = "0" + hex;
+        let str = "";
+        for (let i = 0; i < hex.length; i += 2) str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+        return str;
+    }
+    
+    function powerMod(base, exp, mod) {
+        let res = 1n; base = base % mod;
+        while (exp > 0n) {
+            if (exp % 2n === 1n) res = (res * base) % mod;
+            base = (base * base) % mod;
+            exp = exp / 2n;
         }
+        return res;
+    }
 
-        function modInverse(e, phi) {
-            let m0 = phi, t, q;
-            let x0 = 0, x1 = 1;
+    // --- RSA HELPER FUNCTIONS ---
+    function gcd(a, b) {
+        while (b !== 0) { let t = b; b = a % b; a = t; }
+        return a;
+    }
 
-            if (phi === 1) return 0;
-
-            while (e > 1) {
-                q = Math.floor(e / phi);
-                t = phi;
-                phi = e % phi;
-                e = t;
-                t = x0;
-                x0 = x1 - q * x0;
-                x1 = t;
-            }
-
-            if (x1 < 0) x1 += m0;
-
-            return x1;
+    function updateASCIITest() {
+        const char = document.getElementById('ascii-char').value;
+        if (char.length > 0) {
+            document.getElementById('m-val').innerText = char.charCodeAt(0);
         }
+    }
 
-        function modPow(base, exp, mod) {
-            let result = 1;
-            base = base % mod;
-            while (exp > 0) {
-                if (exp % 2 === 1) {
-                    result = (result * base) % mod;
-                }
-                exp = Math.floor(exp / 2);
-                base = (base * base) % mod;
-            }
-            return result;
-        }
+    // --- KEY GEN ---
+    async function generateRealKeys() {
+        try {
+            const pair = await crypto.subtle.generateKey(
+                { name: "RSASSA-PKCS1-v1_5", modulusLength: 1024, publicExponent: new Uint8Array([1, 0, 1]), hash: "SHA-256" },
+                true, ["sign", "verify"]
+            );
+            const jwk = await crypto.subtle.exportKey("jwk", pair.publicKey);
+            const jwkPriv = await crypto.subtle.exportKey("jwk", pair.privateKey);
 
-        function isPrime(num) {
-            if (num <= 1) return false;
-            if (num <= 3) return true;
-            if (num % 2 === 0 || num % 3 === 0) return false;
-            for (let i = 5; i * i <= num; i += 6) {
-                if (num % i === 0 || num % (i + 2) === 0) return false;
-            }
-            return true;
-        }
-
-        function generatePrime(min, max) {
-            let prime;
-            do {
-                prime = Math.floor(Math.random() * (max - min + 1)) + min;
-            } while (!isPrime(prime));
-            return prime;
-        }
-
-        function stringToNumbers(str) {
-            return Array.from(str).map(char => char.charCodeAt(0));
-        }
-
-        function numbersToString(nums) {
-            return nums.map(num => String.fromCharCode(num)).join('');
-        }
-
-        function sha256Simple(str) {
-            // Simple hash for demonstration (not cryptographically secure)
-            let hash = 0;
-            for (let i = 0; i < str.length; i++) {
-                const char = str.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash = hash & hash;
-            }
-            return Math.abs(hash);
-        }
-
-        // ==================== Step 1: Mathematics ====================
-        function calculateNAndPhi() {
-            rsaParams.N = rsaParams.p * rsaParams.q;
-            rsaParams.phi = (rsaParams.p - 1) * (rsaParams.q - 1);
-
-            document.getElementById('calcN').value = rsaParams.N;
-            document.getElementById('calcPhi').value = rsaParams.phi;
-
-            // Populate e options
-            const selectE = document.getElementById('selectE');
-            selectE.innerHTML = '<option value="">-- Wählen --</option>';
-
-            for (let e = 2; e < rsaParams.phi; e++) {
-                if (gcd(e, rsaParams.phi) === 1 && gcd(e, rsaParams.N) === 1) {
-                    const option = document.createElement('option');
-                    option.value = e;
-                    option.textContent = e;
-                    selectE.appendChild(option);
-                }
-            }
-        }
-
-        function updateE() {
-            const e = parseInt(document.getElementById('selectE').value);
-            if (e) {
-                rsaParams.e = e;
-                const resultDiv = document.getElementById('eResult');
-                resultDiv.innerHTML = `
-                    <div class="result-box">
-                        <h5>✅ Gewählt:</h5>
-                        <p>e = ${e}</p>
-                        <p>gcd(e, Φ(N)) = ${gcd(e, rsaParams.phi)}</p>
-                    </div>
-                `;
-            }
-        }
-
-        function calculateD() {
-            if (!rsaParams.e || !rsaParams.phi) {
-                alert('Bitte zuerst e wählen!');
-                return;
-            }
-
-            rsaParams.d = modInverse(rsaParams.e, rsaParams.phi);
-            document.getElementById('calcD').value = rsaParams.d;
-
-            const resultDiv = document.getElementById('dResult');
-            resultDiv.innerHTML = `
-                <div class="result-box">
-                    <h5>✅ Berechnet:</h5>
-                    <p>d = ${rsaParams.d}</p>
-                    <p>Verifikation: (e × d) mod Φ(N) = ${(rsaParams.e * rsaParams.d) % rsaParams.phi}</p>
-                </div>
-            `;
-        }
-
-        function encryptASCII() {
-            if (!rsaParams.e || !rsaParams.N) {
-                alert('Bitte zuerst alle Parameter berechnen!');
-                return;
-            }
-
-            const m = parseInt(document.getElementById('asciiM').value);
-            const c = modPow(m, rsaParams.e, rsaParams.N);
-
-            document.getElementById('asciiC').value = c;
-
-            const resultDiv = document.getElementById('encryptResult');
-            resultDiv.innerHTML = `
-                <div class="result-box">
-                    <h5>🔒 Verschlüsselt:</h5>
-                    <p>m = ${m} (ASCII: '${String.fromCharCode(m)}')</p>
-                    <p>c = ${m}<sup>${rsaParams.e}</sup> mod ${rsaParams.N} = ${c}</p>
-                </div>
-            `;
-        }
-
-        function decryptASCII() {
-            if (!rsaParams.d || !rsaParams.N) {
-                alert('Bitte zuerst d berechnen!');
-                return;
-            }
-
-            const c = parseInt(document.getElementById('asciiC').value);
-            if (!c) {
-                alert('Bitte zuerst verschlüsseln!');
-                return;
-            }
-
-            const m = modPow(c, rsaParams.d, rsaParams.N);
-
-            const resultDiv = document.getElementById('decryptResult');
-            resultDiv.innerHTML = `
-                <div class="result-box">
-                    <h5>🔓 Entschlüsselt:</h5>
-                    <p>c = ${c}</p>
-                    <p>m = ${c}<sup>${rsaParams.d}</sup> mod ${rsaParams.N} = ${m}</p>
-                    <p>ASCII-Zeichen: '${String.fromCharCode(m)}'</p>
-                </div>
-            `;
-        }
-
-        // ==================== Step 2: Identity ====================
-        function generateKeys() {
-            const name = document.getElementById('userName').value.trim();
-            if (!name) {
-                alert('Bitte gib deinen Namen ein!');
-                return;
-            }
-
-            // Generate RSA keys (using larger primes for security)
-            const p = generatePrime(100, 500);
-            const q = generatePrime(100, 500);
-            const n = p * q;
-            const phi = (p - 1) * (q - 1);
-
-            // Choose e
-            let e = 65537;
-            if (e >= phi || gcd(e, phi) !== 1) {
-                e = 3;
-                while (gcd(e, phi) !== 1) {
-                    e += 2;
-                }
-            }
-
-            // Calculate d
-            const d = modInverse(e, phi);
-
-            myKeys = {
-                name: name,
-                publicKey: { e: e, n: n },
-                privateKey: { d: d, n: n }
+            myIdentity = {
+                n: jwk.n, e: jwk.e, d: jwkPriv.d,
+                nBi: b64ToBigInt(jwk.n), eBi: b64ToBigInt(jwk.e), dBi: b64ToBigInt(jwkPriv.d),
+                subtlePub: pair.publicKey, subtlePriv: pair.privateKey
             };
+            
+            document.getElementById('my-pub-display').value = JSON.stringify({n: jwk.n, e: jwk.e});
+            document.getElementById('my-priv-display').value = JSON.stringify({n: jwk.n, d: jwkPriv.d});
+            updateKeyUI();
+            
+            showNotification('Schlüsselpaar erfolgreich erzeugt!', 'success');
+        } catch(e) {
+            showNotification('Fehler beim Erzeugen der Schlüssel: ' + e.message, 'error');
+        }
+    }
 
-            const resultDiv = document.getElementById('keyResult');
-            resultDiv.innerHTML = `
-                <div class="result-box">
-                    <h5>✅ Schlüssel generiert für: ${name}</h5>
-                    <p><strong>Public Key:</strong></p>
-                    <p>e = ${e}, n = ${n}</p>
-                    <p><strong>Private Key:</strong></p>
-                    <p>d = ${d}, n = ${n}</p>
-                </div>
-                <div class="highlight mt-2">
-                    <p><strong>Wichtig:</strong> Teile nur deinen Public Key mit anderen!</p>
-                </div>
-            `;
+    function b64ToBigInt(b64) {
+        const bin = atob(b64.replace(/-/g, '+').replace(/_/g, '/'));
+        let res = 0n;
+        for (let i = 0; i < bin.length; i++) res = (res << 8n) + BigInt(bin.charCodeAt(i));
+        return res;
+    }
 
-            updateRecipientSelect();
+    // --- CA LOGIC ---
+    async function genCAKeys() {
+        try {
+            caSubtlePair = await crypto.subtle.generateKey(
+                { name: "RSASSA-PKCS1-v1_5", modulusLength: 2048, publicExponent: new Uint8Array([1, 0, 1]), hash: "SHA-256" },
+                true, ["sign", "verify"]
+            );
+            const pub = await crypto.subtle.exportKey("jwk", caSubtlePair.publicKey);
+            document.getElementById('ca-pub-display').value = JSON.stringify({n: pub.n, e: pub.e});
+            showNotification('CA Master-Keys erfolgreich erzeugt!', 'success');
+        } catch(e) {
+            showNotification('Fehler beim Erzeugen der CA-Keys: ' + e.message, 'error');
+        }
+    }
+
+    async function issueCertificate() {
+        if(!caSubtlePair) {
+            showNotification('CA nicht initialisiert! Bitte zuerst CA-System initialisieren.', 'error');
+            return;
+        }
+        
+        const name = document.getElementById('ca-name').value;
+        const pubRaw = document.getElementById('ca-pub-input').value;
+        
+        if(!name || !pubRaw) {
+            showNotification('Bitte Name und Public Key eingeben!', 'error');
+            return;
         }
 
-        function verifyCertificate() {
-            const certInput = document.getElementById('certInput').value.trim();
-            if (!certInput) {
-                alert('Bitte Zertifikat einfügen!');
-                return;
-            }
-
-            try {
-                const cert = JSON.parse(certInput);
-
-                if (!cert.name || !cert.publicKey || !cert.signature) {
-                    throw new Error('Ungültiges Zertifikat-Format');
-                }
-
-                if (!caKeys) {
-                    alert('Kein CA Public Key verfügbar! Bitte zuerst CA-Schlüssel generieren.');
-                    return;
-                }
-
-                // Verify signature
-                const data = JSON.stringify({ name: cert.name, publicKey: cert.publicKey });
-                const hash = sha256Simple(data);
-                const decryptedHash = modPow(cert.signature, caKeys.publicKey.e, caKeys.publicKey.n);
-
-                if (hash === decryptedHash) {
-                    // Add to contacts
-                    contacts.push({
-                        name: cert.name,
-                        publicKey: cert.publicKey
-                    });
-
-                    updateContactList();
-                    updateRecipientSelect();
-
-                    document.getElementById('certResult').innerHTML = `
-                        <div class="success-box">
-                            <strong>✅ Zertifikat verifiziert!</strong>
-                            <p>${cert.name} wurde zu deinen Kontakten hinzugefügt.</p>
-                        </div>
-                    `;
-                    document.getElementById('certInput').value = '';
-                } else {
-                    throw new Error('Signatur ungültig!');
-                }
-            } catch (error) {
-                document.getElementById('certResult').innerHTML = `
-                    <div class="error-box">
-                        <strong>❌ Fehler:</strong>
-                        <p>${error.message}</p>
-                    </div>
-                `;
-            }
-        }
-
-        function updateContactList() {
-            const listElement = document.getElementById('contactList');
-
-            if (contacts.length === 0) {
-                listElement.innerHTML = `
-                    <li class="contact-item">
-                        <div class="contact-info">
-                            <small>Noch keine Kontakte gespeichert</small>
-                        </div>
-                    </li>
-                `;
-                return;
-            }
-
-            listElement.innerHTML = contacts.map((contact, index) => `
-                <li class="contact-item">
-                    <div class="contact-info">
-                        <strong>${contact.name}</strong>
-                        <small>e: ${contact.publicKey.e}, n: ${contact.publicKey.n}</small>
-                    </div>
-                    <button class="btn btn-small btn-outline" onclick="removeContact(${index})">Entfernen</button>
-                </li>
-            `).join('');
-        }
-
-        function removeContact(index) {
-            contacts.splice(index, 1);
-            updateContactList();
-            updateRecipientSelect();
-        }
-
-        function updateRecipientSelect() {
-            const select = document.getElementById('recipientSelect');
-            select.innerHTML = '<option value="">-- Wähle einen Kontakt --</option>';
-
-            contacts.forEach((contact, index) => {
-                const option = document.createElement('option');
-                option.value = index;
-                option.textContent = contact.name;
-                select.appendChild(option);
-            });
-        }
-
-        // ==================== Step 3: CA ====================
-        function generateCAKeys() {
-            const p = generatePrime(100, 500);
-            const q = generatePrime(100, 500);
-            const n = p * q;
-            const phi = (p - 1) * (q - 1);
-
-            let e = 65537;
-            if (e >= phi || gcd(e, phi) !== 1) {
-                e = 3;
-                while (gcd(e, phi) !== 1) {
-                    e += 2;
-                }
-            }
-
-            const d = modInverse(e, phi);
-
-            caKeys = {
-                publicKey: { e: e, n: n },
-                privateKey: { d: d, n: n }
+        try {
+            const dataToSign = name + "|" + pubRaw;
+            const sig = await crypto.subtle.sign("RSASSA-PKCS1-v1_5", caSubtlePair.privateKey, new TextEncoder().encode(dataToSign));
+            
+            const cert = {
+                owner: name,
+                pubKey: JSON.parse(pubRaw),
+                caSig: btoa(String.fromCharCode(...new Uint8Array(sig)))
             };
+            
+            document.getElementById('ca-cert-res').value = JSON.stringify(cert);
+            showNotification('Zertifikat für ' + name + ' erfolgreich ausgestellt!', 'success');
+        } catch(e) {
+            showNotification('Fehler beim Ausstellen des Zertifikats: ' + e.message, 'error');
+        }
+    }
 
-            document.getElementById('caKeyResult').innerHTML = `
-                <div class="result-box">
-                    <h5>✅ CA-Schlüssel generiert</h5>
-                    <p><strong>CA Public Key:</strong></p>
-                    <p>e = ${e}, n = ${n}</p>
-                    <p><strong>CA Private Key:</strong></p>
-                    <p>d = ${d}, n = ${n}</p>
-                </div>
-                <div class="highlight-box mt-2">
-                    <h5>⚠️ Wichtig:</h5>
-                    <p>Den CA Public Key müssen alle Korrespondenten kennen, um Zertifikate zu prüfen.</p>
-                    <p>Den CA Private Key geheim halten!</p>
-                </div>
-            `;
+    async function verifyAndImportCert() {
+        const certRaw = document.getElementById('cert-import').value;
+        const caPubRaw = document.getElementById('my-local-ca-key').value;
+        
+        if(!certRaw || !caPubRaw) {
+            showNotification('Bitte Zertifikat und CA-Key eingeben!', 'error');
+            return;
         }
 
-        function issueCertificate() {
-            const name = document.getElementById('certName').value.trim();
-            const publicKeyStr = document.getElementById('certPublicKey').value.trim();
+        try {
+            const cert = JSON.parse(certRaw);
+            const caPubJwk = JSON.parse(caPubRaw);
+            
+            // CA Key importieren für Prüfung
+            const caKey = await crypto.subtle.importKey("jwk", 
+                { kty: "RSA", n: caPubJwk.n, e: caPubJwk.e, alg: "RS256", ext: true },
+                { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["verify"]
+            );
 
-            if (!name || !publicKeyStr) {
-                alert('Bitte alle Felder ausfüllen!');
-                return;
-            }
+            const dataToVerify = cert.owner + "|" + JSON.stringify(cert.pubKey);
+            const sigBuf = new Uint8Array(atob(cert.caSig).split("").map(c => c.charCodeAt(0)));
+            
+            const isValid = await crypto.subtle.verify("RSASSA-PKCS1-v1_5", caKey, sigBuf, new TextEncoder().encode(dataToVerify));
 
-            if (!caKeys) {
-                alert('Bitte zuerst CA-Schlüssel generieren!');
-                return;
-            }
-
-            try {
-                const publicKey = JSON.parse(publicKeyStr);
-
-                if (!publicKey.e || !publicKey.n) {
-                    throw new Error('Ungültiger Public Key');
-                }
-
-                // Create certificate
-                const data = JSON.stringify({ name: name, publicKey: publicKey });
-                const hash = sha256Simple(data);
-                const signature = modPow(hash, caKeys.privateKey.d, caKeys.privateKey.n);
-
-                const certificate = {
-                    name: name,
-                    publicKey: publicKey,
-                    signature: signature
+            if(isValid) {
+                contacts[cert.owner] = { 
+                    nBi: b64ToBigInt(cert.pubKey.n), 
+                    eBi: b64ToBigInt(cert.pubKey.e),
+                    jwk: cert.pubKey,
+                    verified: true 
                 };
+                showNotification('✅ Zertifikat von ' + cert.owner + ' erfolgreich verifiziert und importiert!', 'success');
+                updateKeyUI();
+            } else {
+                showNotification('❌ WARNUNG: Zertifikat ist ungültig! Mögliche Fälschung!', 'error');
+            }
+        } catch(e) { 
+            showNotification('Fehler beim Verifizieren: ' + e.message, 'error');
+        }
+    }
 
-                document.getElementById('issuedCertResult').innerHTML = `
-                    <div class="result-box">
-                        <h5>✅ Zertifikat ausgestellt</h5>
-                        <p><strong>Für:</strong> ${name}</p>
-                        <p><strong>Zertifikat (zum Kopieren):</strong></p>
-                        <textarea readonly style="width: 100%; min-height: 100px; font-family: monospace; font-size: 0.85rem;">${JSON.stringify(certificate, null, 2)}</textarea>
-                    </div>
-                    <div class="highlight mt-2">
-                        <p><strong>Hinweis:</strong> Dieses Zertifikat kann nun an ${name} weitergegeben werden.</p>
-                    </div>
+    // --- RSA MATH VALIDATION ---
+    function validateE() {
+        const eVal = parseInt(document.getElementById('rsa-e-val').value);
+        const phi = 64;
+        const statusEl = document.getElementById('e-status');
+        
+        if (!eVal || eVal < 2) {
+            statusEl.innerText = "";
+            statusEl.className = "validation-feedback";
+            return;
+        }
+        
+        const g = gcd(eVal, phi);
+        if (g === 1) {
+            statusEl.innerHTML = "✅ Teilerfremd zu 64 - gültig!";
+            statusEl.className = "validation-feedback success";
+        } else {
+            statusEl.innerHTML = "❌ ggT(" + eVal + ", 64) = " + g + " ≠ 1";
+            statusEl.className = "validation-feedback error";
+        }
+    }
+
+    function checkE() {
+        const eVal = parseInt(document.getElementById('rsa-e-val').value);
+        const phi = 64;
+        if (!eVal) {
+            showNotification('Bitte einen Wert für e eingeben!', 'error');
+            return;
+        }
+        const g = gcd(eVal, phi);
+        const el = document.getElementById('rsa-e-val');
+        el.className = (g === 1) ? "rsa-input correct" : "rsa-input wrong";
+        
+        if (g === 1) {
+            showNotification('✅ Korrekt! e = ' + eVal + ' ist teilerfremd zu 64', 'success');
+        } else {
+            showNotification('❌ Falsch! ggT(' + eVal + ', 64) = ' + g + ' ≠ 1', 'error');
+        }
+    }
+
+    function validateD() {
+        const dVal = parseInt(document.getElementById('rsa-d-val').value);
+        const eVal = parseInt(document.getElementById('rsa-e-val').value);
+        const phi = 64;
+        const statusEl = document.getElementById('d-status');
+        
+        if (!dVal || !eVal) {
+            statusEl.innerText = "";
+            statusEl.className = "validation-feedback";
+            return;
+        }
+        
+        const check = (eVal * dVal) % phi;
+        if (check === 1) {
+            statusEl.innerHTML = "✅ Korrekt: (" + eVal + " · " + dVal + ") mod 64 = 1";
+            statusEl.className = "validation-feedback success";
+        } else {
+            statusEl.innerHTML = "❌ (" + eVal + " · " + dVal + ") mod 64 = " + check + " ≠ 1";
+            statusEl.className = "validation-feedback error";
+        }
+    }
+
+    function checkD() {
+        const dVal = parseInt(document.getElementById('rsa-d-val').value);
+        const eVal = parseInt(document.getElementById('rsa-e-val').value);
+        const phi = 64;
+        
+        if (!dVal || !eVal) {
+            showNotification('Bitte e und d eingeben!', 'error');
+            return;
+        }
+        
+        const check = (eVal * dVal) % phi;
+        const el = document.getElementById('rsa-d-val');
+        el.className = (check === 1) ? "rsa-input correct" : "rsa-input wrong";
+        
+        if (check === 1) {
+            showNotification('✅ Korrekt! d = ' + dVal + ' ist das multiplikative Inverse von e', 'success');
+        } else {
+            showNotification('❌ Falsch! (' + eVal + ' · ' + dVal + ') mod 64 = ' + check + ' ≠ 1', 'error');
+        }
+    }
+
+    function validateEncrypt() {
+        const m = BigInt(document.getElementById('m-val').innerText);
+        const eVal = BigInt(document.getElementById('rsa-e-val').value);
+        const cVal = BigInt(document.getElementById('c-test').value);
+        const n = 85n;
+        
+        if (!eVal || !cVal) {
+            document.getElementById('c-test').className = "rsa-input";
+            return;
+        }
+        
+        const expected = powerMod(m, eVal, n);
+        document.getElementById('c-test').className = (cVal === expected) ? "rsa-input correct" : "rsa-input wrong";
+    }
+
+    function checkEncrypt() {
+        const m = BigInt(document.getElementById('m-val').innerText);
+        const e = BigInt(document.getElementById('rsa-e-val').value);
+        const c = BigInt(document.getElementById('c-test').value);
+        const n = 85n;
+        
+        if (!e || !c) {
+            showNotification('Bitte e und c eingeben!', 'error');
+            return;
+        }
+        
+        const expected = powerMod(m, e, n);
+        const el = document.getElementById('c-test');
+        
+        if (c === expected) {
+            el.className = "rsa-input correct";
+            showNotification('✅ Verschlüsselung korrekt!', 'success');
+        } else {
+            el.className = "rsa-input wrong";
+            showNotification('❌ Falsch! Richtig wäre: ' + m + '^' + e + ' mod 85 = ' + expected, 'error');
+        }
+    }
+
+    function validateDecrypt() {
+        const cVal = BigInt(document.getElementById('c-test').value);
+        const dVal = BigInt(document.getElementById('rsa-d-val').value);
+        const mVal = BigInt(document.getElementById('m-decrypted').value);
+        const n = 85n;
+        
+        if (!dVal || !cVal || !mVal) {
+            document.getElementById('m-decrypted').className = "rsa-input";
+            return;
+        }
+        
+        const expected = powerMod(cVal, dVal, n);
+        document.getElementById('m-decrypted').className = (mVal === expected) ? "rsa-input correct" : "rsa-input wrong";
+    }
+
+    function checkDecrypt() {
+        const c = BigInt(document.getElementById('c-test').value);
+        const d = BigInt(document.getElementById('rsa-d-val').value);
+        const m = BigInt(document.getElementById('m-decrypted').value);
+        const n = 85n;
+        
+        if (!d || !c || !m) {
+            showNotification('Bitte alle Werte eingeben!', 'error');
+            return;
+        }
+        
+        const expected = powerMod(c, d, n);
+        const el = document.getElementById('m-decrypted');
+        
+        if (m === expected) {
+            el.className = "rsa-input correct";
+            showNotification('✅ Entschlüsselung korrekt!', 'success');
+        } else {
+            el.className = "rsa-input wrong";
+            showNotification('❌ Falsch! Richtig wäre: ' + c + '^' + d + ' mod 85 = ' + expected, 'error');
+        }
+    }
+
+    // --- UI & CORE ACTIONS ---
+    function updateKeyUI() {
+        const drops = document.querySelectorAll('.key-drop');
+        let html = `<option value="">-- wählen --</option>`;
+        
+        if(myIdentity) {
+            html += `<option value="my_pub">Ich (Public Key)</option>`;
+            html += `<option value="my_priv">Ich (Private Key)</option>`;
+        }
+        
+        for(let name in contacts) {
+            html += `<option value="c_${name}">${name} (Public Key)</option>`;
+        }
+        
+        drops.forEach(d => d.innerHTML = html);
+
+        const list = document.getElementById('contact-items');
+        if (Object.keys(contacts).length === 0) {
+            list.innerHTML = '<em style="color: var(--gray);">Keine Kontakte vorhanden.</em>';
+        } else {
+            list.innerHTML = "";
+            for(let name in contacts) {
+                const contactDiv = document.createElement('div');
+                contactDiv.className = 'contact-item';
+                contactDiv.innerHTML = `
+                    <span>👤 ${name}</span>
+                    ${contacts[name].verified ? '<span class="badge-verified">VERIFIZIERT</span>' : ''}
                 `;
-            } catch (error) {
-                document.getElementById('issuedCertResult').innerHTML = `
-                    <div class="error-box">
-                        <strong>❌ Fehler:</strong>
-                        <p>${error.message}</p>
-                    </div>
-                `;
+                list.appendChild(contactDiv);
             }
         }
+    }
 
-        // ==================== Step 4: Send ====================
-        function encryptMessage() {
-            const recipientIndex = document.getElementById('recipientSelect').value;
-            const message = document.getElementById('messageToSend').value.trim();
+    async function aliceExecute() {
+        const msg = document.getElementById('a-msg').value;
+        const encVal = document.getElementById('a-enc-key-select').value;
+        const sigVal = document.getElementById('a-sig-key-select').value;
 
-            if (!recipientIndex) {
-                alert('Bitte Empfänger wählen!');
-                return;
-            }
-
-            if (!message) {
-                alert('Bitte Nachricht eingeben!');
-                return;
-            }
-
-            const recipient = contacts[recipientIndex];
-            const messageNumbers = stringToNumbers(message);
-
-            // Encrypt each character
-            const encrypted = messageNumbers.map(m => 
-                modPow(m, recipient.publicKey.e, recipient.publicKey.n)
-            );
-
-            document.getElementById('sendResult').innerHTML = `
-                <div class="result-box">
-                    <h5>🔒 Nachricht verschlüsselt</h5>
-                    <p><strong>Empfänger:</strong> ${recipient.name}</p>
-                    <p><strong>Verschlüsselte Nachricht:</strong></p>
-                    <textarea readonly style="width: 100%; min-height: 100px; font-family: monospace; font-size: 0.85rem;">${JSON.stringify({ encrypted: encrypted, recipient: recipient.name }, null, 2)}</textarea>
-                </div>
-            `;
+        if (!msg || !encVal || !sigVal) {
+            showNotification('Bitte alle Felder ausfüllen!', 'error');
+            return;
         }
 
-        function signMessage() {
-            const message = document.getElementById('messageToSend').value.trim();
+        try {
+            // 1. Verschlüsseln
+            let n, e;
+            if(encVal === 'my_pub') { 
+                n = myIdentity.nBi; 
+                e = myIdentity.eBi; 
+            } else if(encVal === 'my_priv') { 
+                n = myIdentity.nBi; 
+                e = myIdentity.dBi; 
+            } else { 
+                const c = contacts[encVal.replace('c_','')]; 
+                n = c.nBi; 
+                e = c.eBi; 
+            }
+            
+            const cipher = powerMod(textToBigInt(msg), e, n);
+            document.getElementById('a-out-cipher').value = cipher.toString(16);
 
-            if (!message) {
-                alert('Bitte Nachricht eingeben!');
+            // 2. Signieren
+            if(sigVal !== 'my_priv') {
+                showNotification('Du kannst nur mit deinem Private Key signieren!', 'error');
                 return;
             }
+            
+            const sig = await crypto.subtle.sign("RSASSA-PKCS1-v1_5", myIdentity.subtlePriv, new TextEncoder().encode(msg));
+            document.getElementById('a-out-sig').value = btoa(String.fromCharCode(...new Uint8Array(sig)));
+            
+            showNotification('✅ Nachricht erfolgreich verschlüsselt und signiert!', 'success');
+        } catch(e) {
+            showNotification('Fehler: ' + e.message, 'error');
+        }
+    }
 
-            if (!myKeys) {
-                alert('Bitte zuerst eigene Schlüssel generieren!');
-                return;
-            }
-
-            const hash = sha256Simple(message);
-            const signature = modPow(hash, myKeys.privateKey.d, myKeys.privateKey.n);
-
-            document.getElementById('sendResult').innerHTML = `
-                <div class="result-box">
-                    <h5>✍️ Nachricht signiert</h5>
-                    <p><strong>Absender:</strong> ${myKeys.name}</p>
-                    <p><strong>Signierte Nachricht:</strong></p>
-                    <textarea readonly style="width: 100%; min-height: 100px; font-family: monospace; font-size: 0.85rem;">${JSON.stringify({ message: message, signature: signature, sender: myKeys.name }, null, 2)}</textarea>
-                </div>
-            `;
+    function bobDecrypt() {
+        const hex = document.getElementById('b-in-cipher').value;
+        const keyVal = document.getElementById('b-dec-key-select').value;
+        
+        if (!hex || !keyVal) {
+            showNotification('Bitte Ciphertext und Schlüssel auswählen!', 'error');
+            return;
         }
 
-        function encryptAndSign() {
-            const recipientIndex = document.getElementById('recipientSelect').value;
-            const message = document.getElementById('messageToSend').value.trim();
-
-            if (!recipientIndex) {
-                alert('Bitte Empfänger wählen!');
-                return;
+        try {
+            let n, d;
+            if(keyVal === 'my_priv') { 
+                n = myIdentity.nBi; 
+                d = myIdentity.dBi; 
+            } else if(keyVal === 'my_pub') { 
+                n = myIdentity.nBi; 
+                d = myIdentity.eBi; 
+            } else { 
+                const c = contacts[keyVal.replace('c_','')]; 
+                n = c.nBi; 
+                d = c.eBi; 
             }
 
-            if (!message) {
-                alert('Bitte Nachricht eingeben!');
-                return;
-            }
+            const plain = bigIntToText(powerMod(BigInt("0x" + hex), d, n));
+            document.getElementById('b-plain-text').innerText = plain;
+            document.getElementById('b-dec-output').style.display = "block";
+            
+            showNotification('✅ Nachricht erfolgreich entschlüsselt!', 'success');
+        } catch(e) {
+            showNotification('Fehler beim Entschlüsseln: ' + e.message, 'error');
+        }
+    }
 
-            if (!myKeys) {
-                alert('Bitte zuerst eigene Schlüssel generieren!');
-                return;
-            }
+    async function bobVerify() {
+        const msg = document.getElementById('b-plain-text').innerText;
+        const sigStr = document.getElementById('b-in-sig').value;
+        const keyVal = document.getElementById('b-ver-key-select').value;
+        const status = document.getElementById('b-sig-status');
 
-            const recipient = contacts[recipientIndex];
-            const messageNumbers = stringToNumbers(message);
-
-            // Encrypt
-            const encrypted = messageNumbers.map(m => 
-                modPow(m, recipient.publicKey.e, recipient.publicKey.n)
-            );
-
-            // Sign
-            const hash = sha256Simple(message);
-            const signature = modPow(hash, myKeys.privateKey.d, myKeys.privateKey.n);
-
-            const secureMessage = {
-                encrypted: encrypted,
-                signature: signature,
-                sender: myKeys.name,
-                recipient: recipient.name
-            };
-
-            document.getElementById('sendResult').innerHTML = `
-                <div class="result-box">
-                    <h5>🔐 Nachricht verschlüsselt & signiert</h5>
-                    <p><strong>Von:</strong> ${myKeys.name}</p>
-                    <p><strong>An:</strong> ${recipient.name}</p>
-                    <p><strong>Sichere Nachricht:</strong></p>
-                    <textarea readonly style="width: 100%; min-height: 150px; font-family: monospace; font-size: 0.85rem;">${JSON.stringify(secureMessage, null, 2)}</textarea>
-                </div>
-                <div class="highlight-box mt-2">
-                    <h5>✅ Sicherheit:</h5>
-                    <p>• Vertraulichkeit: Nur ${recipient.name} kann die Nachricht lesen</p>
-                    <p>• Authentizität: ${recipient.name} kann verifizieren, dass die Nachricht von dir stammt</p>
-                </div>
-            `;
+        if (!msg) {
+            showNotification('Bitte zuerst die Nachricht entschlüsseln!', 'error');
+            return;
         }
 
-        // ==================== Step 5: Receive ====================
-        function decryptMessage() {
-            const receivedStr = document.getElementById('receivedMessage').value.trim();
+        if (!sigStr || !keyVal) {
+            showNotification('Bitte Signatur und Schlüssel auswählen!', 'error');
+            return;
+        }
 
-            if (!receivedStr) {
-                alert('Bitte empfangene Nachricht einfügen!');
-                return;
-            }
-
-            if (!myKeys) {
-                alert('Bitte zuerst eigene Schlüssel generieren!');
-                return;
-            }
-
-            try {
-                const received = JSON.parse(receivedStr);
-
-                if (!received.encrypted) {
-                    throw new Error('Keine verschlüsselte Nachricht gefunden');
-                }
-
-                // Decrypt
-                const decrypted = received.encrypted.map(c => 
-                    modPow(c, myKeys.privateKey.d, myKeys.privateKey.n)
+        try {
+            let pubSubtle;
+            if(keyVal === 'my_pub') {
+                pubSubtle = myIdentity.subtlePub;
+            } else {
+                const c = contacts[keyVal.replace('c_','')];
+                pubSubtle = await crypto.subtle.importKey("jwk", 
+                    { kty: "RSA", n: c.jwk.n, e: c.jwk.e, alg: "RS256", ext: true },
+                    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["verify"]
                 );
-
-                const message = numbersToString(decrypted);
-
-                document.getElementById('receiveResult').innerHTML = `
-                    <div class="result-box">
-                        <h5>🔓 Nachricht entschlüsselt</h5>
-                        <p><strong>Entschlüsselte Nachricht:</strong></p>
-                        <p style="background: white; padding: 1rem; border-radius: 8px; margin-top: 0.5rem;">${message}</p>
-                    </div>
-                `;
-            } catch (error) {
-                document.getElementById('receiveResult').innerHTML = `
-                    <div class="error-box">
-                        <strong>❌ Fehler:</strong>
-                        <p>${error.message}</p>
-                    </div>
-                `;
             }
+
+            const sigBuf = new Uint8Array(atob(sigStr).split("").map(c => c.charCodeAt(0)));
+            const ok = await crypto.subtle.verify("RSASSA-PKCS1-v1_5", pubSubtle, sigBuf, new TextEncoder().encode(msg));
+            
+            status.style.display = "block";
+            if (ok) {
+                status.className = "status-message status-success";
+                status.innerText = "✅ Signatur GÜLTIG - Nachricht ist authentisch!";
+            } else {
+                status.className = "status-message status-error";
+                status.innerText = "❌ Signatur UNGÜLTIG - Nachricht wurde manipuliert oder stammt nicht vom angegebenen Absender!";
+            }
+        } catch(e) {
+            showNotification('Fehler beim Verifizieren: ' + e.message, 'error');
         }
+    }
 
-        function verifySignature() {
-            const receivedStr = document.getElementById('receivedMessage').value.trim();
+    function check(el, val) { 
+        el.className = (el.value == val) ? "rsa-input correct" : "rsa-input wrong"; 
+    }
 
-            if (!receivedStr) {
-                alert('Bitte empfangene Nachricht einfügen!');
-                return;
-            }
+    function copy(id) { 
+        const el = document.getElementById(id);
+        el.select(); 
+        navigator.clipboard.writeText(el.value);
+        showNotification('📋 In Zwischenablage kopiert!', 'success');
+    }
 
-            try {
-                const received = JSON.parse(receivedStr);
-
-                if (!received.signature || !received.sender) {
-                    throw new Error('Keine Signatur oder Absender gefunden');
-                }
-
-                // Find sender in contacts
-                const sender = contacts.find(c => c.name === received.sender);
-                if (!sender) {
-                    throw new Error('Absender nicht in Kontakten gefunden');
-                }
-
-                // Get original message
-                let message;
-                if (received.message) {
-                    message = received.message;
-                } else if (received.encrypted && myKeys) {
-                    const decrypted = received.encrypted.map(c => 
-                        modPow(c, myKeys.privateKey.d, myKeys.privateKey.n)
-                    );
-                    message = numbersToString(decrypted);
-                } else {
-                    throw new Error('Nachricht kann nicht verifiziert werden');
-                }
-
-                // Verify signature
-                const hash = sha256Simple(message);
-                const decryptedHash = modPow(received.signature, sender.publicKey.e, sender.publicKey.n);
-
-                if (hash === decryptedHash) {
-                    document.getElementById('receiveResult').innerHTML = `
-                        <div class="success-box">
-                            <strong>✅ Signatur gültig!</strong>
-                            <p>Die Nachricht stammt tatsächlich von ${received.sender}.</p>
-                            <p>Die Nachricht wurde nicht verändert.</p>
-                        </div>
-                    `;
-                } else {
-                    throw new Error('Signatur ungültig!');
-                }
-            } catch (error) {
-                document.getElementById('receiveResult').innerHTML = `
-                    <div class="error-box">
-                        <strong>❌ Fehler:</strong>
-                        <p>${error.message}</p>
-                    </div>
-                `;
-            }
+    // Notification Helper
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+            max-width: 400px;
+            font-weight: 500;
+        `;
+        
+        if (type === 'success') {
+            notification.style.background = '#dcfce7';
+            notification.style.color = '#166534';
+            notification.style.border = '2px solid #22c55e';
+        } else {
+            notification.style.background = '#fee2e2';
+            notification.style.color = '#991b1b';
+            notification.style.border = '2px solid #ef4444';
         }
+        
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
 
-        function decryptAndVerify() {
-            const receivedStr = document.getElementById('receivedMessage').value.trim();
+    // Initialize on load
+    window.addEventListener('load', () => {
+        updateKeyUI();
+        console.log('🔐 RSA Krypto-Labor geladen');
+    });
+</script>
 
-            if (!receivedStr) {
-                alert('Bitte empfangene Nachricht einfügen!');
-                return;
-            }
+<style>
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
 
-            if (!myKeys) {
-                alert('Bitte zuerst eigene Schlüssel generieren!');
-                return;
-            }
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}
+</style>
 
-            try {
-                const received = JSON.parse(receivedStr);
-
-                if (!received.encrypted || !received.signature || !received.sender) {
-                    throw new Error('Unvollständige Nachricht');
-                }
-
-                // Find sender
-                const sender = contacts.find(c => c.name === received.sender);
-                if (!sender) {
-                    throw new Error('Absender nicht in Kontakten gefunden');
-                }
-
-                // Decrypt
-                const decrypted = received.encrypted.map(c => 
-                    modPow(c, myKeys.privateKey.d, myKeys.privateKey.n)
-                );
-                const message = numbersToString(decrypted);
-
-                // Verify signature
-                const hash = sha256Simple(message);
-                const decryptedHash = modPow(received.signature, sender.publicKey.e, sender.publicKey.n);
-
-                if (hash === decryptedHash) {
-                    document.getElementById('receiveResult').innerHTML = `
-                        <div class="result-box">
-                            <h5>🔓 Nachricht entschlüsselt</h5>
-                            <p><strong>Von:</strong> ${received.sender}</p>
-                            <p><strong>Nachricht:</strong></p>
-                            <p style="background: white; padding: 1rem; border-radius: 8px; margin-top: 0.5rem;">${message}</p>
-                        </div>
-                        <div class="success-box mt-2">
-                            <strong>✅ Signatur gültig!</strong>
-                            <p>Die Nachricht stammt tatsächlich von ${received.sender} und wurde nicht verändert.</p>
-                        </div>
-                    `;
-                } else {
-                    document.getElementById('receiveResult').innerHTML = `
-                        <div class="result-box">
-                            <h5>🔓 Nachricht entschlüsselt</h5>
-                            <p><strong>Nachricht:</strong></p>
-                            <p style="background: white; padding: 1rem; border-radius: 8px; margin-top: 0.5rem;">${message}</p>
-                        </div>
-                        <div class="error-box mt-2">
-                            <strong>⚠️ Warnung: Signatur ungültig!</strong>
-                            <p>Die Nachricht könnte gefälscht oder verändert worden sein.</p>
-                        </div>
-                    `;
-                }
-            } catch (error) {
-                document.getElementById('receiveResult').innerHTML = `
-                    <div class="error-box">
-                        <strong>❌ Fehler:</strong>
-                        <p>${error.message}</p>
-                    </div>
-                `;
-            }
-        }
-
-        // ==================== Initialize ====================
-        window.addEventListener('load', () => {
-            // Initialize progress bar
-            document.getElementById('progressBar').style.width = '0%';
-        });
-    </script>
 </body>
 </html>
