@@ -96,7 +96,7 @@ class SiteManager {
         this.setupMobileMenu();
         this.setupProgressBar();
         this.setupModals();
-        this.setupKeyboardNavigation();
+        //this.setupKeyboardNavigation();
         this.setupScrollEffects();
         this.setupResizeHandler();
         
