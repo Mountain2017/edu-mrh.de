@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Joins - Verknüpfung von Tabellen - Informatik - edu-mrh.de</title>
+    <meta name="description" content="Lerne SQL Joins: Verknüpfung von Tabellen mit praktischen Übungen am Beispiel eines Bücherverleihs. Für Informatik-Unterricht Klasse 10.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <style>
+        /* Zusätzliche Styles für SQL-Editor und Interaktive Elemente */
+        .sql-editor {
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .sql-input {
+            width: 100%;
+            min-height: 120px;
+            background: #0f172a;
+            color: #e2e8f0;
+            border: 2px solid #334155;
+            border-radius: 6px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+        
+        .sql-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+        
+        .sql-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .sql-output {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            min-height: 100px;
+        }
+        
+        .sql-output.error {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+        
+        .sql-output.success {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+        
+        .sql-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .sql-table th {
+            background: #3b82f6;
+            color: white;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .sql-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .sql-table tr:hover {
+            background: #f8fafc;
+        }
+        
+        .drag-drop-container {
+            display: flex;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .drag-drop-column {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .drag-drop-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: #f1f5f9;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .drag-drop-zone {
+            min-height: 300px;
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .drag-drop-zone.drag-over {
+            background: #dbeafe;
+            border-color: #3b82f6;
+        }
+        
+        .draggable-item {
+            background: white;
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: 6px;
+            border: 2px solid #e2e8f0;
+            cursor: move;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        
+        .draggable-item:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+        }
+        
+        .draggable-item.dragging {
+            opacity: 0.5;
+        }
+        
+        .feedback-section {
+            background: #f0fdf4;
+            border-left: 4px solid #10b981;
+            padding: 1rem 1.5rem;
+            margin-top: 1rem;
+            border-radius: 6px;
+            display: none;
+        }
+        
+        .feedback-section.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .toggle-feedback {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+            margin-top: 0.5rem;
+        }
+        
+        .toggle-feedback:hover {
+            background: #2563eb;
+        }
+        
+        .quiz-option {
+            background: white;
+            border: 2px solid #e2e8f0;
+            padding: 1rem;
+            margin: 0.75rem 0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .quiz-option:hover {
+            border-color: #3b82f6;
+            background: #f8fafc;
+        }
+        
+        .quiz-option.correct {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+        
+        .quiz-option.incorrect {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+        
+        .static-table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .warning-box h3 {
+            color: #f59e0b;
+            margin-bottom: var(--spacing-md);
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+<!--
+Fachbereich: Informatik
+Jahrgangsstufe: 10
+Thema: SQL Joins - Verknüpfung von Tabellen
+Erstellt: 2026-04-16
+Version: 1.0
+-->
+
+<!-- Navigation Bar -->
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-brand">
+            <span class="icon">🖥️</span>
+            <a href="https://edu-mrh.de/">edu-mrh.de</a>
+        </div>
+        <button class="btn btn-primary" id="mobileMenuBtn" style="display: none;">☰ Menü</button>
+        <div class="nav-links">
+            <a href="https://edu-mrh.de/informatik/informatik.html#jahrgang-10" class="btn btn-outline">Übersicht</a>
+            <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <h3>📚 Inhalte</h3>
+    </div>
+    <nav class="sidebar-menu">
+        <ul>
+            <li><a href="#intro" data-section="intro"><span class="icon">🏠</span> Einleitung</a></li>
+            <li><a href="#objektmodell" data-section="objektmodell"><span class="icon">📊</span> Objektmodell</a></li>
+            <li><a href="#datenbasis" data-section="datenbasis"><span class="icon">💾</span> Datenbasis</a></li>
+            <li><a href="#kartesisch" data-section="kartesisch"><span class="icon">✖️</span> Kartesisches Produkt</a></li>
+            <li><a href="#where" data-section="where"><span class="icon">🔗</span> WHERE-Verknüpfung</a></li>
+            <li><a href="#join" data-section="join"><span class="icon">🔀</span> JOIN-Syntax</a></li>
+            <li><a href="#erweitert" data-section="erweitert"><span class="icon">⚡</span> Erweiterte Abfragen</a></li>
+            <li><a href="#herausforderungen" data-section="herausforderungen"><span class="icon">🎯</span> Herausforderungen</a></li>
+            <li><a href="#quiz" data-section="quiz"><span class="icon">📝</span> Wissenstest</a></li>
+            <li><a href="#zusammenfassung" data-section="zusammenfassung"><span class="icon">✅</span> Zusammenfassung</a></li>
+        </ul>
+    </nav>
+</aside>
+
+<!-- Mobile Menu Button -->
+<button class="mobile-menu-btn" id="mobileMenuBtn">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="container">
+        
+        <!-- Intro Section -->
+        <section id="intro" class="content-section active">
+            <div class="chapter-header">
+                <span class="chapter-number">10</span>
+                <h1>Verknüpfung von Tabellen (SQL Joins)</h1>
+            </div>
+
+            <div class="info-box">
+                <h3>💡 Willkommen!</h3>
+                <p>In dieser Lektion lernen wir, wie man in einer Datenbank Informationen verknüpft, die auf mehrere Tabellen aufgeteilt sind. Wir nutzen dazu das realistische Szenario eines <strong>Bücherverleihs</strong>.</p>
+                <p><strong>Lernziele:</strong></p>
+                <ul>
+                    <li>Verstehen, warum Daten auf mehrere Tabellen verteilt werden</li>
+                    <li>Primär- und Fremdschlüssel erkennen und nutzen</li>
+                    <li>SQL-Joins mit WHERE und JOIN-Syntax anwenden</li>
+                    <li>Kartesisches Produkt verstehen und vermeiden</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Objektmodell Section -->
+        <section id="objektmodell" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">1</span>
+                <h1>Vom Objektmodell zum Relationalen Modell</h1>
+            </div>
+            
+            <p>Bei der Datenbank-Modellierung stellen wir uns zunächst <strong>Analysefragen</strong>: Welche Objekte sind wichtig? Zu welchen Klassen gehören sie? Welche Attribute haben sie?</p>
+            
+            <div class="info-box">
+                <h3>🔍 Beispiel: Bücherverleih</h3>
+                <p>Im Bücherverleih haben wir z.B. die Klassen <code>BUCH</code> und <code>VERLAG</code>. Warum ist Verlag eine eigene Klasse bzw. Tabelle?</p>
+                <ul>
+                    <li>Ein Verlag gibt <strong>viele Bücher</strong> heraus (1:n-Beziehung)</li>
+                    <li>Ein Verlag hat eigene Attribute wie <strong>Ort</strong> oder <strong>Telefonnummer</strong></li>
+                    <li>Würden wir diese Infos zu jedem Buch speichern, hätten wir viele <strong>Duplikate (Redundanz)</strong></li>
+                </ul>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Mini-Übung: Attribute zuordnen</h4>
+                <p>Ziehe die Eigenschaften in die richtige Tabelle (BUCH oder VERLAG). Eines der Attribute ist der Schlüssel, der beide verbindet – dieser muss in beiden Tabellen existieren!</p>
+            </div>
+            
+            <div class="drag-drop-container">
+                <div class="drag-drop-column">
+                    <div class="drag-drop-title">Verfügbare Attribute</div>
+                    <div class="drag-drop-zone" id="attributes-source">
+                        <div class="draggable-item" draggable="true" data-category="buch">Titel</div>
+                        <div class="draggable-item" draggable="true" data-category="buch">Autor</div>
+                        <div class="draggable-item" draggable="true" data-category="buch">ISBN</div>
+                        <div class="draggable-item" draggable="true" data-category="both">VerlagNr</div>
+                        <div class="draggable-item" draggable="true" data-category="verlag">Verlagsname</div>
+                        <div class="draggable-item" draggable="true" data-category="verlag">Ort</div>
+                        <div class="draggable-item" draggable="true" data-category="verlag">Telefon</div>
+                        <div class="draggable-item" draggable="true" data-category="buch">Erscheinungsjahr</div>
+                    </div>
+                </div>
+                
+                <div class="drag-drop-column">
+                    <div class="drag-drop-title">Tabelle BUCH</div>
+                    <div class="drag-drop-zone" id="buch-zone" data-accepts="buch,both"></div>
+                </div>
+                
+                <div class="drag-drop-column">
+                    <div class="drag-drop-title">Tabelle VERLAG</div>
+                    <div class="drag-drop-zone" id="verlag-zone" data-accepts="verlag,both"></div>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="checkDragDrop()">Überprüfen</button>
+            <button class="toggle-feedback" onclick="toggleFeedback('feedback-dragdrop')">💡 Hilfe anzeigen</button>
+            
+            <div class="feedback-section" id="feedback-dragdrop">
+                <h4>💡 Hilfestellung</h4>
+                <p><strong>Tipp:</strong> Überlege, welche Informationen direkt zum Buch gehören und welche zum Verlag.</p>
+                <ul>
+                    <li><strong>BUCH:</strong> Alles, was ein einzelnes Buch beschreibt (Titel, Autor, ISBN, Erscheinungsjahr)</li>
+                    <li><strong>VERLAG:</strong> Alles, was den Verlag als Firma beschreibt (Name, Ort, Telefon)</li>
+                    <li><strong>Verbindung:</strong> Die VerlagNr ist der Schlüssel! Sie ist Primärschlüssel in VERLAG und Fremdschlüssel in BUCH.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Datenbasis Section -->
+        <section id="datenbasis" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">2</span>
+                <h1>Unsere Datenbasis</h1>
+            </div>
+            
+            <p>Hier siehst du unsere zwei Tabellen. Die Verknüpfung erfolgt über die <code>VerlagNr</code>. In der Tabelle VERLAG ist sie der <strong>Primärschlüssel</strong>, in der Tabelle BUCH der <strong>Fremdschlüssel</strong>.</p>
+            
+            <h3>Tabelle: BUCH</h3>
+            <div class="static-table-container">
+                <table class="sql-table">
+                    <thead>
+                        <tr>
+                            <th>ISBN</th>
+                            <th>Titel</th>
+                            <th>Autor</th>
+                            <th>VerlagNr</th>
+                            <th>Erscheinungsjahr</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>978-3-12-345678-9</td>
+                            <td>Datenbanken verstehen</td>
+                            <td>Anna Müller</td>
+                            <td>1</td>
+                            <td>2020</td>
+                        </tr>
+                        <tr>
+                            <td>978-3-98-765432-1</td>
+                            <td>SQL für Einsteiger</td>
+                            <td>Tom Schmidt</td>
+                            <td>2</td>
+                            <td>2019</td>
+                        </tr>
+                        <tr>
+                            <td>978-3-45-678901-2</td>
+                            <td>Webentwicklung kompakt</td>
+                            <td>Lisa Weber</td>
+                            <td>1</td>
+                            <td>2021</td>
+                        </tr>
+                        <tr>
+                            <td>978-3-11-223344-5</td>
+                            <td>Python Praxis</td>
+                            <td>Max Bauer</td>
+                            <td>3</td>
+                            <td>2022</td>
+                        </tr>
+                        <tr>
+                            <td>978-3-55-667788-9</td>
+                            <td>Algorithmen und Datenstrukturen</td>
+                            <td>Sarah Klein</td>
+                            <td>2</td>
+                            <td>2018</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Tabelle: VERLAG</h3>
+            <div class="static-table-container">
+                <table class="sql-table">
+                    <thead>
+                        <tr>
+                            <th>VerlagNr</th>
+                            <th>Name</th>
+                            <th>Ort</th>
+                            <th>Telefon</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>TechBooks Verlag</td>
+                            <td>München</td>
+                            <td>089-12345678</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>CodePress</td>
+                            <td>Berlin</td>
+                            <td>030-98765432</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>DataScience Publishing</td>
+                            <td>Hamburg</td>
+                            <td>040-55667788</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="warning-box">
+                <h3>⚠️ Wichtig: Primär- und Fremdschlüssel</h3>
+                <p><strong>Primärschlüssel (Primary Key):</strong> Eindeutige Kennung einer Zeile in einer Tabelle. Hier: <code>VerlagNr</code> in VERLAG.</p>
+                <p><strong>Fremdschlüssel (Foreign Key):</strong> Verweis auf den Primärschlüssel einer anderen Tabelle. Hier: <code>VerlagNr</code> in BUCH.</p>
+            </div>
+        </section>
+
+        <!-- Kartesisches Produkt Section -->
+        <section id="kartesisch" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">3</span>
+                <h1>Das Kartesische Produkt</h1>
+            </div>
+            
+            <p>Was passiert, wenn wir einfach <code>SELECT * FROM BUCH, VERLAG;</code> ausführen?</p>
+            
+            <div class="info-box">
+                <h3>🔢 Kartesisches Produkt</h3>
+                <p>Ohne Bedingung werden <strong>alle Kombinationen</strong> gebildet:</p>
+                <ul>
+                    <li>5 Bücher × 3 Verlage = <strong>15 Zeilen</strong></li>
+                    <li>Jedes Buch wird mit jedem Verlag kombiniert – auch wenn es keinen Zusammenhang gibt!</li>
+                </ul>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 1: Kartesisches Produkt verstehen</h4>
+                <p>Führe die folgende Abfrage aus und beobachte das Ergebnis:</p>
+            </div>
+
+            <div class="sql-editor">
+                <textarea class="sql-input" id="sql-input-1">SELECT * FROM BUCH, VERLAG;</textarea>
+                <div class="sql-buttons">
+                    <button class="btn btn-primary" onclick="executeSQL(1)">▶ Ausführen</button>
+                    <button class="btn btn-secondary" onclick="clearSQL(1)">🗑️ Löschen</button>
+                </div>
+                <div class="sql-output" id="sql-output-1"></div>
+            </div>
+
+            <button class="toggle-feedback" onclick="toggleFeedback('feedback-1')">💡 Feedback anzeigen</button>
+            
+            <div class="feedback-section" id="feedback-1">
+                <h4>✅ Erwartetes Ergebnis</h4>
+                <p>Du solltest <strong>15 Zeilen</strong> sehen – jedes Buch wird mit jedem Verlag kombiniert, auch wenn die VerlagNr nicht übereinstimmt!</p>
+                <p><strong>Problem:</strong> Das Buch "Datenbanken verstehen" (VerlagNr=1) erscheint auch mit CodePress (VerlagNr=2) und DataScience Publishing (VerlagNr=3) – das ist falsch!</p>
+                <p><strong>Lösung:</strong> Wir brauchen eine Bedingung, die nur passende Zeilen verknüpft.</p>
+            </div>
+        </section>
+
+        <!-- WHERE Section -->
+        <section id="where" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">4</span>
+                <h1>Verknüpfung mit WHERE-Bedingung</h1>
+            </div>
+            
+            <p>Um nur die <strong>sinnvollen Kombinationen</strong> zu erhalten, fügen wir eine WHERE-Bedingung hinzu:</p>
+            
+            <div class="info-box">
+                <h3>💡 WHERE-Syntax für Joins</h3>
+                <pre style="background: #f1f5f9; padding: 1rem; border-radius: 6px; overflow-x: auto; color: black;"><code>SELECT spalten
+FROM tabelle1, tabelle2
+WHERE tabelle1.fremdschluessel = tabelle2.primaerschluessel;</code></pre>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 2: Join mit WHERE</h4>
+                <p>Schreibe eine Abfrage, die alle Bücher mit ihren Verlagsinformationen anzeigt. Verknüpfe die Tabellen über die VerlagNr.</p>
+            </div>
+
+            <div class="sql-editor">
+                <textarea class="sql-input" id="sql-input-2">-- Deine Abfrage hier
+SELECT *
+FROM BUCH, VERLAG
+WHERE </textarea>
+                <div class="sql-buttons">
+                    <button class="btn btn-primary" onclick="executeSQL(2)">▶ Ausführen</button>
+                    <button class="btn btn-secondary" onclick="clearSQL(2)">🗑️ Löschen</button>
+                    <button class="btn btn-outline" onclick="showSolution(2)">💡 Lösung</button>
+                </div>
+                <div class="sql-output" id="sql-output-2"></div>
+            </div>
+
+            <button class="toggle-feedback" onclick="toggleFeedback('feedback-2')">💡 Feedback anzeigen</button>
+            
+            <div class="feedback-section" id="feedback-2">
+                <h4>✅ Musterlösung</h4>
+                <pre style="background: #f1f5f9; color: black; padding: 1rem; border-radius: 6px; overflow-x: auto;"><code>SELECT *
+FROM BUCH, VERLAG
+WHERE BUCH.VerlagNr = VERLAG.VerlagNr;</code></pre>
+                <p><strong>Erklärung:</strong></p>
+                <ul>
+                    <li>Die WHERE-Bedingung vergleicht die VerlagNr aus beiden Tabellen</li>
+                    <li>Nur Zeilen mit übereinstimmender VerlagNr werden kombiniert</li>
+                    <li>Ergebnis: 5 Zeilen (jedes Buch mit seinem korrekten Verlag)</li>
+                </ul>
+                <p><strong>Tipp:</strong> Die Schreibweise <code>Tabelle.Spalte</code> ist wichtig, wenn eine Spalte in beiden Tabellen vorkommt!</p>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 3: Spezifische Spalten auswählen</h4>
+                <p>Zeige nur folgende Spalten an: Titel, Autor, Verlagsname, Ort</p>
+            </div>
+
+            <div class="sql-editor">
+                <textarea class="sql-input" id="sql-input-3">-- Wähle nur die gewünschten Spalten aus
+SELECT 
+FROM BUCH, VERLAG
+WHERE BUCH.VerlagNr = VERLAG.VerlagNr;</textarea>
+                <div class="sql-buttons">
+                    <button class="btn btn-primary" onclick="executeSQL(3)">▶ Ausführen</button>
+                    <button class="btn btn-secondary" onclick="clearSQL(3)">🗑️ Löschen</button>
+                    <button class="btn btn-outline" onclick="showSolution(3)">💡 Lösung</button>
+                </div>
+                <div class="sql-output" id="sql-output-3"></div>
+            </div>
+
+            <button class="toggle-feedback" onclick="toggleFeedback('feedback-3')">💡 Feedback anzeigen</button>
+            
+            <div class="feedback-section" id="feedback-3">
+                <h4>✅ Musterlösung</h4>
+                <pre style="background: #f1f5f9; color: black; padding: 1rem; border-radius: 6px; overflow-x: auto;"><code>SELECT BUCH.Titel, BUCH.Autor, VERLAG.Name, VERLAG.Ort
+FROM BUCH, VERLAG
+WHERE BUCH.VerlagNr = VERLAG.VerlagNr;</code></pre>
+                <p><strong>Hinweis:</strong> Bei eindeutigen Spaltennamen (wie Titel, Autor) kannst du auch <code>Titel</code> statt <code>BUCH.Titel</code> schreiben. Bei mehrdeutigen Namen (wie Name) ist die Tabellenangabe Pflicht!</p>
+            </div>
+        </section>
+
+        <!-- JOIN Section -->
+        <section id="join" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">5</span>
+                <h1>Die JOIN-Syntax (moderne Schreibweise)</h1>
+            </div>
+            
+            <p>Die WHERE-Methode funktioniert, aber es gibt eine <strong>modernere und klarere Syntax</strong>: die JOIN-Klausel.</p>
+            
+            <div class="info-box">
+                <h3>💡 JOIN-Syntax</h3>
+                <pre style="background: #f1f5f9; padding: 1rem; border-radius: 6px; overflow-x: auto;"><code>SELECT spalten
+FROM tabelle1
+JOIN tabelle2 ON tabelle1.fremdschluessel = tabelle2.primaerschluessel;</code></pre>
+                <p><strong>Vorteile:</strong></p>
+                <ul>
+                    <li>Verknüpfungsbedingung ist klar vom Rest der WHERE-Klausel getrennt</li>
+                    <li>Besser lesbar bei mehreren Tabellen</li>
+                    <li>Standard in modernem SQL (SQLite und PostgreSQL)</li>
+                </ul>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 4: JOIN-Syntax anwenden</h4>
+                <p>Schreibe die Abfrage aus Aufgabe 3 mit der JOIN-Syntax um.</p>
+            </div>
+
+            <div class="sql-editor">
+                <textarea class="sql-input" id="sql-input-4">-- Nutze die JOIN-Syntax
+SELECT BUCH.Titel, BUCH.Autor, VERLAG.Name, VERLAG.Ort
+FROM BUCH
+JOIN </textarea>
+                <div class="sql-buttons">
+                    <button class="btn btn-primary" onclick="executeSQL(4)">▶ Ausführen</button>
+                    <button class="btn btn-secondary" onclick="clearSQL(4)">🗑️ Löschen</button>
+                    <button class="btn btn-outline" onclick="showSolution(4)">💡 Lösung</button>
+                </div>
+                <div class="sql-output" id="sql-output-4"></div>
+            </div>
+
+            <button class="toggle-feedback" onclick="toggleFeedback('feedback-4')">💡 Feedback anzeigen</button>
+            
+            <div class="feedback-section" id="feedback-4">
+                <h4>✅ Musterlösung</h4>
+                <pre style="background: #f1f5f9; color: black; padding: 1rem; border-radius: 6px; overflow-x: auto;"><code>SELECT BUCH.Titel, BUCH.Autor, VERLAG.Name, VERLAG.Ort
+FROM BUCH
+JOIN VERLAG ON BUCH.VerlagNr = VERLAG.VerlagNr;</code></pre>
+                <p><strong>Erklärung:</strong></p>
+                <ul>
+                    <li><code>FROM BUCH</code> – Starttabelle</li>
+                    <li><code>JOIN VERLAG</code> – Tabelle, die hinzugefügt wird</li>
+                    <li><code>ON BUCH.VerlagNr = VERLAG.VerlagNr</code> – Verknüpfungsbedingung</li>
+                </ul>
+                <p><strong>Tipp:</strong> Beide Schreibweisen (WHERE und JOIN) liefern das gleiche Ergebnis!</p>
+            </div>
+        </section>
+
+        <!-- Erweiterte Abfragen Section -->
+        <section id="erweitert" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">6</span>
+                <h1>Erweiterte Abfragen mit Bedingungen</h1>
+            </div>
+            
+            <p>Jetzt kombinieren wir Joins mit weiteren WHERE-Bedingungen, um spezifische Daten zu filtern.</p>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 5: Bücher aus München</h4>
+                <p>Zeige alle Bücher an, die von einem Verlag aus München herausgegeben wurden. Zeige: Titel, Autor, Verlagsname.</p>
+            </div>
+
+            <div class="sql-editor">
+                <textarea class="sql-input" id="sql-input-5">-- Filtere nach Ort = 'München'
+SELECT 
+FROM BUCH
+JOIN VERLAG ON BUCH.VerlagNr = VERLAG.VerlagNr
+WHERE </textarea>
+                <div class="sql-buttons">
+                    <button class="btn btn-primary" onclick="executeSQL(5)">▶ Ausführen</button>
+                    <button class="btn btn-secondary" onclick="clearSQL(5)">🗑️ Löschen</button>
+                    <button class="btn btn-outline" onclick="showSolution(5)">💡 Lösung</button>
+                </div>
+                <div class="sql-output" id="sql-output-5"></div>
+            </div>
+
+            <button class="toggle-feedback" onclick="toggleFeedback('feedback-5')">💡 Feedback anzeigen</button>
+            
+            <div class="feedback-section" id="feedback-5">
+                <h4>✅ Musterlösung</h4>
+                <pre style="background: #f1f5f9; color: black; padding: 1rem; border-radius: 6px; overflow-x: auto;"><code>SELECT BUCH.Titel, BUCH.Autor, VERLAG.Name
+FROM BUCH
+JOIN VERLAG ON BUCH.VerlagNr = VERLAG.VerlagNr
+WHERE VERLAG.Ort = 'München';</code></pre>
+                <p><strong>Ergebnis:</strong> 2 Bücher (Datenbanken verstehen, Webentwicklung kompakt) vom TechBooks Verlag</p>
+                <p><strong>Wichtig:</strong> Die WHERE-Klausel kommt <em>nach</em> dem JOIN und filtert die bereits verknüpften Daten!</p>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 6: Neuere Bücher sortiert</h4>
+                <p>Zeige alle Bücher ab dem Jahr 2020 an, sortiert nach Erscheinungsjahr (neueste zuerst). Zeige: Titel, Erscheinungsjahr, Verlagsname, Ort.</p>
+            </div>
+
+            <div class="sql-editor">
+                <textarea class="sql-input" id="sql-input-6">-- Filtere nach Erscheinungsjahr >= 2020 und sortiere
+SELECT 
+FROM BUCH
+JOIN VERLAG ON BUCH.VerlagNr = VERLAG.VerlagNr
+WHERE 
+ORDER BY </textarea>
+                <div class="sql-buttons">
+                    <button class="btn btn-primary" onclick="executeSQL(6)">▶ Ausführen</button>
+                    <button class="btn btn-secondary" onclick="clearSQL(6)">🗑️ Löschen</button>
+                    <button class="btn btn-outline" onclick="showSolution(6)">💡 Lösung</button>
+                </div>
+                <div class="sql-output" id="sql-output-6"></div>
+            </div>
+
+            <button class="toggle-feedback" onclick="toggleFeedback('feedback-6')">💡 Feedback anzeigen</button>
+            
+            <div class="feedback-section" id="feedback-6">
+                <h4>✅ Musterlösung</h4>
+                <pre style="background: #f1f5f9; color: black; padding: 1rem; border-radius: 6px; overflow-x: auto;"><code>SELECT BUCH.Titel, BUCH.Erscheinungsjahr, VERLAG.Name, VERLAG.Ort
+FROM BUCH
+JOIN VERLAG ON BUCH.VerlagNr = VERLAG.VerlagNr
+WHERE BUCH.Erscheinungsjahr >= 2020
+ORDER BY BUCH.Erscheinungsjahr DESC;</code></pre>
+                <p><strong>Ergebnis:</strong> 3 Bücher (Python Praxis 2022, Webentwicklung kompakt 2021, Datenbanken verstehen 2020)</p>
+                <p><strong>Tipp:</strong> <code>DESC</code> = absteigend (neueste zuerst), <code>ASC</code> = aufsteigend (älteste zuerst)</p>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 7: Bücher eines bestimmten Verlags</h4>
+                <p>Zeige alle Bücher vom Verlag "CodePress" an. Zeige: Titel, Autor, Erscheinungsjahr.</p>
+            </div>
+
+            <div class="sql-editor">
+                <textarea class="sql-input" id="sql-input-7">-- Filtere nach Verlagsname
+SELECT 
+FROM 
+JOIN 
+WHERE </textarea>
+                <div class="sql-buttons">
+                    <button class="btn btn-primary" onclick="executeSQL(7)">▶ Ausführen</button>
+                    <button class="btn btn-secondary" onclick="clearSQL(7)">🗑️ Löschen</button>
+                    <button class="btn btn-outline" onclick="showSolution(7)">💡 Lösung</button>
+                </div>
+                <div class="sql-output" id="sql-output-7"></div>
+            </div>
+
+            <button class="toggle-feedback" onclick="toggleFeedback('feedback-7')">💡 Feedback anzeigen</button>
+            
+            <div class="feedback-section" id="feedback-7">
+                <h4>✅ Musterlösung</h4>
+                <pre style="background: #f1f5f9; color: black; padding: 1rem; border-radius: 6px; overflow-x: auto;"><code>SELECT BUCH.Titel, BUCH.Autor, BUCH.Erscheinungsjahr
+FROM BUCH
+JOIN VERLAG ON BUCH.VerlagNr = VERLAG.VerlagNr
+WHERE VERLAG.Name = 'CodePress';</code></pre>
+                <p><strong>Ergebnis:</strong> 2 Bücher (SQL für Einsteiger, Algorithmen und Datenstrukturen)</p>
+                <p><strong>Beachte:</strong> Bei Textwerten müssen die einfachen Anführungszeichen verwendet werden!</p>
+            </div>
+        </section>
+
+        <!-- Herausforderungen Section -->
+        <section id="herausforderungen" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">7</span>
+                <h1>Zusätzliche Herausforderungen</h1>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 8: Anzahl Bücher pro Verlag</h4>
+                <p>Zeige für jeden Verlag an, wie viele Bücher er herausgegeben hat. Zeige: Verlagsname, Anzahl der Bücher (als "AnzahlBuecher").</p>
+                <p><strong>Hinweis:</strong> Nutze <code>COUNT(*)</code> und <code>GROUP BY</code>.</p>
+            </div>
+
+            <div class="sql-editor">
+                <textarea class="sql-input" id="sql-input-8">-- Gruppiere nach Verlag und zähle
+SELECT 
+FROM BUCH
+JOIN VERLAG ON BUCH.VerlagNr = VERLAG.VerlagNr
+GROUP BY </textarea>
+                <div class="sql-buttons">
+                    <button class="btn btn-primary" onclick="executeSQL(8)">▶ Ausführen</button>
+                    <button class="btn btn-secondary" onclick="clearSQL(8)">🗑️ Löschen</button>
+                    <button class="btn btn-outline" onclick="showSolution(8)">💡 Lösung</button>
+                </div>
+                <div class="sql-output" id="sql-output-8"></div>
+            </div>
+
+            <button class="toggle-feedback" onclick="toggleFeedback('feedback-8')">💡 Feedback anzeigen</button>
+            
+            <div class="feedback-section" id="feedback-8">
+                <h4>✅ Musterlösung</h4>
+                <pre style="background: #f1f5f9; color: black; padding: 1rem; border-radius: 6px; overflow-x: auto;"><code>SELECT VERLAG.Name, COUNT(*) AS AnzahlBuecher
+FROM BUCH
+JOIN VERLAG ON BUCH.VerlagNr = VERLAG.VerlagNr
+GROUP BY VERLAG.Name;</code></pre>
+                <p><strong>Ergebnis:</strong></p>
+                <ul>
+                    <li>TechBooks Verlag: 2 Bücher</li>
+                    <li>CodePress: 2 Bücher</li>
+                    <li>DataScience Publishing: 1 Buch</li>
+                </ul>
+                <p><strong>Erklärung:</strong> <code>GROUP BY</code> fasst alle Zeilen mit gleichem Verlagsnamen zusammen, <code>COUNT(*)</code> zählt die Zeilen pro Gruppe.</p>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 9: Bücher mit Verlagstelefon</h4>
+                <p>Ein Kunde möchte ein Buch bestellen und braucht die Telefonnummer des Verlags. Zeige für das Buch "Python Praxis": Titel, Autor, Verlagsname, Telefon.</p>
+            </div>
+
+            <div class="sql-editor">
+                <textarea class="sql-input" id="sql-input-9">-- Filtere nach Titel
+SELECT 
+FROM 
+JOIN 
+WHERE </textarea>
+                <div class="sql-buttons">
+                    <button class="btn btn-primary" onclick="executeSQL(9)">▶ Ausführen</button>
+                    <button class="btn btn-secondary" onclick="clearSQL(9)">🗑️ Löschen</button>
+                    <button class="btn btn-outline" onclick="showSolution(9)">💡 Lösung</button>
+                </div>
+                <div class="sql-output" id="sql-output-9"></div>
+            </div>
+
+            <button class="toggle-feedback" onclick="toggleFeedback('feedback-9')">💡 Feedback anzeigen</button>
+            
+            <div class="feedback-section" id="feedback-9">
+                <h4>✅ Musterlösung</h4>
+                <pre style="background: #f1f5f9; color: black; padding: 1rem; border-radius: 6px; overflow-x: auto;"><code>SELECT BUCH.Titel, BUCH.Autor, VERLAG.Name, VERLAG.Telefon
+FROM BUCH
+JOIN VERLAG ON BUCH.VerlagNr = VERLAG.VerlagNr
+WHERE BUCH.Titel = 'Python Praxis';</code></pre>
+                <p><strong>Ergebnis:</strong> Python Praxis, Max Bauer, DataScience Publishing, 040-55667788</p>
+                <p><strong>Praxisbezug:</strong> Solche Abfragen sind typisch in echten Anwendungen – Informationen aus verschiedenen Tabellen werden kombiniert!</p>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 10: Freie Abfrage</h4>
+                <p>Erstelle eine eigene Abfrage! Ideen:</p>
+                <ul>
+                    <li>Alle Bücher von Autoren, deren Name mit "L" beginnt</li>
+                    <li>Verlage aus Berlin oder Hamburg</li>
+                    <li>Bücher vor 2020 mit Verlagsort</li>
+                </ul>
+            </div>
+
+            <div class="sql-editor">
+                <textarea class="sql-input" id="sql-input-10">-- Deine kreative Abfrage
+SELECT 
+FROM 
+JOIN 
+WHERE </textarea>
+                <div class="sql-buttons">
+                    <button class="btn btn-primary" onclick="executeSQL(10)">▶ Ausführen</button>
+                    <button class="btn btn-secondary" onclick="clearSQL(10)">🗑️ Löschen</button>
+                </div>
+                <div class="sql-output" id="sql-output-10"></div>
+            </div>
+
+            <button class="toggle-feedback" onclick="toggleFeedback('feedback-10')">💡 Feedback anzeigen</button>
+            
+            <div class="feedback-section" id="feedback-10">
+                <h4>💡 Beispiele für kreative Abfragen</h4>
+                <p><strong>Beispiel 1:</strong> Autoren mit "L" am Anfang</p>
+                <pre style="background: #f1f5f9; padding: 1rem; border-radius: 6px; overflow-x: auto;"><code>SELECT BUCH.Titel, BUCH.Autor, VERLAG.Name
+FROM BUCH
+JOIN VERLAG ON BUCH.VerlagNr = VERLAG.VerlagNr
+WHERE BUCH.Autor LIKE 'L%';</code></pre>
+                
+                <p><strong>Beispiel 2:</strong> Verlage aus Berlin oder Hamburg</p>
+                <pre style="background: #f1f5f9; padding: 1rem; border-radius: 6px; overflow-x: auto;"><code>SELECT BUCH.Titel, VERLAG.Name, VERLAG.Ort
+FROM BUCH
+JOIN VERLAG ON BUCH.VerlagNr = VERLAG.VerlagNr
+WHERE VERLAG.Ort IN ('Berlin', 'Hamburg');</code></pre>
+                
+                <p><strong>Beispiel 3:</strong> Bücher vor 2020</p>
+                <pre style="background: #f1f5f9; padding: 1rem; border-radius: 6px; overflow-x: auto;"><code>SELECT BUCH.Titel, BUCH.Erscheinungsjahr, VERLAG.Ort
+FROM BUCH
+JOIN VERLAG ON BUCH.VerlagNr = VERLAG.VerlagNr
+WHERE BUCH.Erscheinungsjahr < 2020;</code></pre>
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section id="quiz" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">8</span>
+                <h1>Wissenstest</h1>
+            </div>
+
+            <div class="task-box">
+                <h4>📝 Quiz: Teste dein Wissen!</h4>
+                
+                <p><strong>Frage 1:</strong> Was ist ein Fremdschlüssel?</p>
+                <div class="quiz-option" onclick="checkQuiz(1, 'a', false)">
+                    A) Ein Schlüssel, der eine Zeile eindeutig identifiziert
+                </div>
+                <div class="quiz-option" onclick="checkQuiz(1, 'b', true)">
+                    B) Ein Verweis auf den Primärschlüssel einer anderen Tabelle
+                </div>
+                <div class="quiz-option" onclick="checkQuiz(1, 'c', false)">
+                    C) Ein verschlüsselter Wert in der Datenbank
+                </div>
+                <div id="quiz-feedback-1"></div>
+
+                <p style="margin-top: 2rem;"><strong>Frage 2:</strong> Wie viele Zeilen entstehen beim kartesischen Produkt von 10 Büchern und 4 Verlagen?</p>
+                <div class="quiz-option" onclick="checkQuiz(2, 'a', false)">
+                    A) 14 Zeilen
+                </div>
+                <div class="quiz-option" onclick="checkQuiz(2, 'b', false)">
+                    B) 10 Zeilen
+                </div>
+                <div class="quiz-option" onclick="checkQuiz(2, 'c', true)">
+                    C) 40 Zeilen
+                </div>
+                <div id="quiz-feedback-2"></div>
+
+                <p style="margin-top: 2rem;"><strong>Frage 3:</strong> Was ist der Unterschied zwischen WHERE und JOIN ON?</p>
+                <div class="quiz-option" onclick="checkQuiz(3, 'a', false)">
+                    A) Es gibt keinen Unterschied, beides ist identisch
+                </div>
+                <div class="quiz-option" onclick="checkQuiz(3, 'b', true)">
+                    B) JOIN ON ist die moderne Syntax und trennt Verknüpfung von Filterung
+                </div>
+                <div class="quiz-option" onclick="checkQuiz(3, 'c', false)">
+                    C) WHERE ist schneller als JOIN ON
+                </div>
+                <div id="quiz-feedback-3"></div>
+
+                <p style="margin-top: 2rem;"><strong>Frage 4:</strong> Warum speichern wir Verlagsdaten in einer separaten Tabelle?</p>
+                <div class="quiz-option" onclick="checkQuiz(4, 'a', true)">
+                    A) Um Redundanz zu vermeiden und Daten nur einmal zu speichern
+                </div>
+                <div class="quiz-option" onclick="checkQuiz(4, 'b', false)">
+                    B) Weil SQL das so vorschreibt
+                </div>
+                <div class="quiz-option" onclick="checkQuiz(4, 'c', false)">
+                    C) Um die Datenbank komplizierter zu machen
+                </div>
+                <div id="quiz-feedback-4"></div>
+            </div>
+
+            <button class="toggle-feedback" onclick="toggleFeedback('feedback-quiz')">💡 Erklärungen anzeigen</button>
+            
+            <div class="feedback-section" id="feedback-quiz">
+                <h4>📚 Erklärungen zu den Quiz-Fragen</h4>
+                
+                <p><strong>Frage 1:</strong> Ein Fremdschlüssel (Foreign Key) ist ein Attribut in einer Tabelle, das auf den Primärschlüssel einer anderen Tabelle verweist. Er stellt die Beziehung zwischen Tabellen her.</p>
+                
+                <p><strong>Frage 2:</strong> Beim kartesischen Produkt wird jede Zeile der ersten Tabelle mit jeder Zeile der zweiten Tabelle kombiniert: 10 × 4 = 40 Zeilen.</p>
+                
+                <p><strong>Frage 3:</strong> Beide Methoden liefern das gleiche Ergebnis, aber JOIN ON ist moderner und übersichtlicher, weil die Verknüpfungsbedingung klar von anderen Filterbedingungen getrennt ist.</p>
+                
+                <p><strong>Frage 4:</strong> Normalisierung vermeidet Redundanz. Würden wir Verlagsdaten bei jedem Buch speichern, hätten wir dieselben Informationen (Name, Ort, Telefon) mehrfach – das verschwendet Speicher und kann zu Inkonsistenzen führen.</p>
+            </div>
+        </section>
+
+        <!-- Zusammenfassung Section -->
+        <section id="zusammenfassung" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">9</span>
+                <h1>Zusammenfassung</h1>
+            </div>
+
+            <div class="info-box">
+                <h3>🎯 Das hast du gelernt</h3>
+                <ul>
+                    <li><strong>Normalisierung:</strong> Daten werden auf mehrere Tabellen verteilt, um Redundanz zu vermeiden</li>
+                    <li><strong>Primärschlüssel:</strong> Eindeutige Kennung einer Zeile (z.B. VerlagNr in VERLAG)</li>
+                    <li><strong>Fremdschlüssel:</strong> Verweis auf Primärschlüssel einer anderen Tabelle (z.B. VerlagNr in BUCH)</li>
+                    <li><strong>Kartesisches Produkt:</strong> Alle Kombinationen ohne Bedingung (meist unerwünscht)</li>
+                    <li><strong>WHERE-Syntax:</strong> <code>FROM tab1, tab2 WHERE tab1.fk = tab2.pk</code></li>
+                    <li><strong>JOIN-Syntax:</strong> <code>FROM tab1 JOIN tab2 ON tab1.fk = tab2.pk</code> (modern)</li>
+                    <li><strong>Kombination:</strong> Joins können mit weiteren WHERE-Bedingungen, ORDER BY und GROUP BY kombiniert werden</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <h3>⚠️ Häufige Fehler vermeiden</h3>
+                <ul>
+                    <li><strong>Vergessene JOIN-Bedingung:</strong> Führt zum kartesischen Produkt mit zu vielen Zeilen</li>
+                    <li><strong>Falsche Schlüssel:</strong> Achte darauf, dass Fremd- und Primärschlüssel übereinstimmen</li>
+                    <li><strong>Mehrdeutige Spaltennamen:</strong> Bei gleichen Spaltennamen in beiden Tabellen immer <code>Tabelle.Spalte</code> schreiben</li>
+                    <li><strong>Groß-/Kleinschreibung:</strong> Bei Textwerten genau auf Schreibweise achten ('München' ≠ 'münchen')</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h3>🚀 Nächste Schritte</h3>
+                <p>Du hast die Grundlagen von SQL Joins gemeistert! Hier sind weitere Themen, die du erkunden kannst:</p>
+                <ul>
+                    <li><strong>LEFT JOIN / RIGHT JOIN:</strong> Was passiert, wenn nicht alle Datensätze eine Entsprechung haben?</li>
+                    <li><strong>Mehrfache Joins:</strong> Verknüpfung von 3 oder mehr Tabellen</li>
+                    <li><strong>Self-Joins:</strong> Eine Tabelle mit sich selbst verknüpfen</li>
+                    <li><strong>Subqueries:</strong> Verschachtelte SELECT-Abfragen</li>
+                    <li><strong>Aggregatfunktionen:</strong> SUM, AVG, MIN, MAX mit Joins kombinieren</li>
+                </ul>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<!-- Footer -->
+<footer style="margin-top: 4rem; padding: 2rem 0; border-top: 2px solid #e2e8f0; text-align: center; color: #64748b; margin-left: var(--sidebar-width);">
+    <div class="container">
+        <p>© 2026 edu-mrh.de | Unterrichtsmaterial für den Informatikunterricht</p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+            <a href="https://edu-mrh.de/contribute.html#impressum" style="color: #3b82f6; text-decoration: none;">Impressum</a> | 
+            <a href="https://edu-mrh.de/" style="color: #3b82f6; text-decoration: none;">Startseite</a>
+        </p>
+    </div>
+</footer>
+
+<script>
+    // Datenbank-Simulation
+    const database = {
+        BUCH: [
+            { ISBN: '978-3-12-345678-9', Titel: 'Datenbanken verstehen', Autor: 'Anna Müller', VerlagNr: 1, Erscheinungsjahr: 2020 },
+            { ISBN: '978-3-98-765432-1', Titel: 'SQL für Einsteiger', Autor: 'Tom Schmidt', VerlagNr: 2, Erscheinungsjahr: 2019 },
+            { ISBN: '978-3-45-678901-2', Titel: 'Webentwicklung kompakt', Autor: 'Lisa Weber', VerlagNr: 1, Erscheinungsjahr: 2021 },
+            { ISBN: '978-3-11-223344-5', Titel: 'Python Praxis', Autor: 'Max Bauer', VerlagNr: 3, Erscheinungsjahr: 2022 },
+            { ISBN: '978-3-55-667788-9', Titel: 'Algorithmen und Datenstrukturen', Autor: 'Sarah Klein', VerlagNr: 2, Erscheinungsjahr: 2018 }
+        ],
+        VERLAG: [
+            { VerlagNr: 1, Name: 'TechBooks Verlag', Ort: 'München', Telefon: '089-12345678' },
+            { VerlagNr: 2, Name: 'CodePress', Ort: 'Berlin', Telefon: '030-98765432' },
+            { VerlagNr: 3, Name: 'DataScience Publishing', Ort: 'Hamburg', Telefon: '040-55667788' }
+        ]
+    };
+
+    // SQL-Parser und Executor
+    function executeSQL(editorId) {
+        const input = document.getElementById(`sql-input-${editorId}`).value.trim();
+        const output = document.getElementById(`sql-output-${editorId}`);
+        
+        try {
+            const result = parseAndExecuteSQL(input);
+            displayResult(output, result);
+        } catch (error) {
+            output.className = 'sql-output error';
+            output.innerHTML = `<strong>❌ Fehler:</strong> ${error.message}`;
+        }
+    }
+
+    function parseAndExecuteSQL(sql) {
+        // Entferne Kommentare und normalisiere
+        sql = sql.replace(/--[^\n]*/g, '').trim().toUpperCase();
+        
+        // Einfacher SQL-Parser
+        const selectMatch = sql.match(/SELECT\s+(.*?)\s+FROM\s+(.*?)(?:\s+WHERE\s+(.*?))?(?:\s+GROUP\s+BY\s+(.*?))?(?:\s+ORDER\s+BY\s+(.*?))?(?:\s*;)?$/is);
+        
+        if (!selectMatch) {
+            throw new Error('Ungültige SQL-Syntax. Erwartet: SELECT ... FROM ... [WHERE ...] [ORDER BY ...]');
+        }
+        
+        const [, selectClause, fromClause, whereClause, groupByClause, orderByClause] = selectMatch;
+        
+        // Parse FROM clause
+        let tables = fromClause.split(/\s+JOIN\s+|\s*,\s*/i).map(t => t.trim());
+        let joinCondition = null;
+        
+        // Check for JOIN ON syntax
+        if (sql.includes(' ON ')) {
+            const onMatch = sql.match(/ON\s+(.*?)(?:\s+WHERE|\s+GROUP|\s+ORDER|\s*;|$)/is);
+            if (onMatch) {
+                joinCondition = onMatch[1].trim();
+            }
+        }
+        
+        // Get base tables
+        tables = tables.map(t => {
+            const parts = t.split(/\s+ON\s+/i);
+            return parts[0].trim();
+        });
+        
+        // Start with first table
+        let result = [...database[tables[0]]];
+        
+        // Perform joins
+        for (let i = 1; i < tables.length; i++) {
+            const table2 = database[tables[i]];
+            const newResult = [];
+            
+            for (const row1 of result) {
+                for (const row2 of table2) {
+                    const combinedRow = { ...row1, ...row2 };
+                    
+                    // Apply join condition if exists
+                    if (joinCondition || whereClause) {
+                        const condition = joinCondition || whereClause;
+                        if (evaluateCondition(combinedRow, condition, tables)) {
+                            newResult.push(combinedRow);
+                        }
+                    } else {
+                        newResult.push(combinedRow);
+                    }
+                }
+            }
+            result = newResult;
+        }
+        
+        // Apply WHERE clause (if not already used for join)
+        if (whereClause && !joinCondition) {
+            result = result.filter(row => evaluateCondition(row, whereClause, tables));
+        } else if (whereClause && joinCondition) {
+            // Additional WHERE conditions after JOIN
+            result = result.filter(row => evaluateCondition(row, whereClause, tables));
+        }
+        
+        // Apply GROUP BY
+        if (groupByClause) {
+            result = applyGroupBy(result, groupByClause, selectClause);
+        }
+        
+        // Apply SELECT clause
+        if (selectClause.trim() !== '*') {
+            result = applySelect(result, selectClause);
+        }
+        
+        // Apply ORDER BY
+        if (orderByClause) {
+            result = applyOrderBy(result, orderByClause);
+        }
+        
+        return result;
+    }
+
+    function evaluateCondition(row, condition, tables) {
+        // Normalize condition
+        condition = condition.toUpperCase().trim();
+        
+        // Handle multiple conditions with AND/OR
+        const andParts = condition.split(/\s+AND\s+/i);
+        
+        for (const andPart of andParts) {
+            const orParts = andPart.split(/\s+OR\s+/i);
+            let orResult = false;
+            
+            for (const part of orParts) {
+                if (evaluateSingleCondition(row, part.trim())) {
+                    orResult = true;
+                    break;
+                }
+            }
+            
+            if (!orResult) return false;
+        }
+        
+        return true;
+    }
+
+    function evaluateSingleCondition(row, condition) {
+        // Handle different operators
+        const operators = ['>=', '<=', '!=', '<>', '=', '>', '<', ' LIKE ', ' IN '];
+        
+        for (const op of operators) {
+            if (condition.includes(op)) {
+                const [left, right] = condition.split(op).map(s => s.trim());
+                const leftValue = getColumnValue(row, left);
+                const rightValue = right.replace(/'/g, '');
+                
+                switch (op.trim()) {
+                    case '=':
+                        return String(leftValue) === rightValue;
+                    case '!=':
+                    case '<>':
+                        return String(leftValue) !== rightValue;
+                    case '>':
+                        return Number(leftValue) > Number(rightValue);
+                    case '<':
+                        return Number(leftValue) < Number(rightValue);
+                    case '>=':
+                        return Number(leftValue) >= Number(rightValue);
+                    case '<=':
+                        return Number(leftValue) <= Number(rightValue);
+                    case 'LIKE':
+                        const pattern = rightValue.replace(/%/g, '.*');
+                        return new RegExp('^' + pattern + '$', 'i').test(String(leftValue));
+                    case 'IN':
+                        const values = rightValue.replace(/[()]/g, '').split(',').map(v => v.trim().replace(/'/g, ''));
+                        return values.includes(String(leftValue));
+                }
+            }
+        }
+        
+        return false;
+    }
+
+    function getColumnValue(row, columnName) {
+        // Remove table prefix if exists
+        const parts = columnName.split('.');
+        const colName = parts.length > 1 ? parts[1] : parts[0];
+        
+        // Try to find column (case-insensitive)
+        for (const key in row) {
+            if (key.toUpperCase() === colName.toUpperCase()) {
+                return row[key];
+            }
+        }
+        
+        return null;
+    }
+
+    function applySelect(result, selectClause) {
+        const columns = selectClause.split(',').map(c => c.trim());
+        
+        return result.map(row => {
+            const newRow = {};
+            
+            for (const col of columns) {
+                // Handle AS alias
+                const asMatch = col.match(/^(.*?)\s+AS\s+(.*)$/i);
+                if (asMatch) {
+                    const [, expr, alias] = asMatch;
+                    
+                    // Handle COUNT(*)
+                    if (expr.includes('COUNT')) {
+                        newRow[alias] = row[alias] || row['COUNT(*)'];
+                    } else {
+                        const value = getColumnValue(row, expr);
+                        newRow[alias] = value;
+                    }
+                } else {
+                    const value = getColumnValue(row, col);
+                    const colName = col.split('.').pop();
+                    newRow[colName] = value;
+                }
+            }
+            
+            return newRow;
+        });
+    }
+
+    function applyGroupBy(result, groupByClause, selectClause) {
+        const groupColumns = groupByClause.split(',').map(c => c.trim());
+        const groups = {};
+        
+        // Group rows
+        for (const row of result) {
+            const key = groupColumns.map(col => getColumnValue(row, col)).join('|');
+            
+            if (!groups[key]) {
+                groups[key] = [];
+            }
+            groups[key].push(row);
+        }
+        
+        // Aggregate
+        const aggregated = [];
+        for (const key in groups) {
+            const group = groups[key];
+            const firstRow = group[0];
+            const newRow = {};
+            
+            // Copy group by columns
+            for (const col of groupColumns) {
+                const colName = col.split('.').pop();
+                newRow[colName] = getColumnValue(firstRow, col);
+            }
+            
+            // Handle aggregates in SELECT
+            const countMatch = selectClause.match(/COUNT\s*$\s*\*\s*$\s*(?:AS\s+(\w+))?/i);
+            if (countMatch) {
+                const alias = countMatch[1] || 'COUNT(*)';
+                newRow[alias] = group.length;
+            }
+            
+            aggregated.push(newRow);
+        }
+        
+        return aggregated;
+    }
+
+    function applyOrderBy(result, orderByClause) {
+        const parts = orderByClause.trim().split(/\s+/);
+        const column = parts[0];
+        const direction = parts[1] && parts[1].toUpperCase() === 'DESC' ? -1 : 1;
+        
+        return result.sort((a, b) => {
+            const aVal = getColumnValue(a, column);
+            const bVal = getColumnValue(b, column);
+            
+            if (aVal < bVal) return -1 * direction;
+            if (aVal > bVal) return 1 * direction;
+            return 0;
+        });
+    }
+
+    function displayResult(output, result) {
+        if (result.length === 0) {
+            output.className = 'sql-output';
+            output.innerHTML = '<strong>ℹ️ Keine Ergebnisse gefunden.</strong>';
+            return;
+        }
+        
+        output.className = 'sql-output success';
+        
+        const columns = Object.keys(result[0]);
+        let html = `<strong>✅ Abfrage erfolgreich! ${result.length} Zeile(n) gefunden.</strong>`;
+        html += '<table class="sql-table"><thead><tr>';
+        
+        for (const col of columns) {
+            html += `<th>${col}</th>`;
+        }
+        html += '</tr></thead><tbody>';
+        
+        for (const row of result) {
+            html += '<tr>';
+            for (const col of columns) {
+                html += `<td>${row[col] !== null && row[col] !== undefined ? row[col] : 'NULL'}</td>`;
+            }
+            html += '</tr>';
+        }
+        
+        html += '</tbody></table>';
+        output.innerHTML = html;
+    }
+
+    function clearSQL(editorId) {
+        document.getElementById(`sql-input-${editorId}`).value = '';
+        document.getElementById(`sql-output-${editorId}`).innerHTML = '';
+        document.getElementById(`sql-output-${editorId}`).className = 'sql-output';
+    }
+
+    function showSolution(editorId) {
+        const solutions = {
+            2: `SELECT *
+FROM BUCH, VERLAG
+WHERE BUCH.VerlagNr = VERLAG.VerlagNr;`,
+            3: `SELECT BUCH.Titel, BUCH.Autor, VERLAG.Name, VERLAG.Ort
+FROM BUCH, VERLAG
+WHERE BUCH.VerlagNr = VERLAG.VerlagNr;`,
+            4: `SELECT BUCH.Titel, BUCH.Autor, VERLAG.Name, VERLAG.Ort
+FROM BUCH
+JOIN VERLAG ON BUCH.VerlagNr = VERLAG.VerlagNr;`,
+            5: `SELECT BUCH.Titel, BUCH.Autor, VERLAG.Name
+FROM BUCH
+JOIN VERLAG ON BUCH.VerlagNr = VERLAG.VerlagNr
+WHERE VERLAG.Ort = 'München';`,
+            6: `SELECT BUCH.Titel, BUCH.Erscheinungsjahr, VERLAG.Name, VERLAG.Ort
+FROM BUCH
+JOIN VERLAG ON BUCH.VerlagNr = VERLAG.VerlagNr
+WHERE BUCH.Erscheinungsjahr >= 2020
+ORDER BY BUCH.Erscheinungsjahr DESC;`,
+            7: `SELECT BUCH.Titel, BUCH.Autor, BUCH.Erscheinungsjahr
+FROM BUCH
+JOIN VERLAG ON BUCH.VerlagNr = VERLAG.VerlagNr
+WHERE VERLAG.Name = 'CodePress';`,
+            8: `SELECT VERLAG.Name, COUNT(*) AS AnzahlBuecher
+FROM BUCH
+JOIN VERLAG ON BUCH.VerlagNr = VERLAG.VerlagNr
+GROUP BY VERLAG.Name;`,
+            9: `SELECT BUCH.Titel, BUCH.Autor, VERLAG.Name, VERLAG.Telefon
+FROM BUCH
+JOIN VERLAG ON BUCH.VerlagNr = VERLAG.VerlagNr
+WHERE BUCH.Titel = 'Python Praxis';`
+        };
+        
+        if (solutions[editorId]) {
+            document.getElementById(`sql-input-${editorId}`).value = solutions[editorId];
+        }
+    }
+
+    // Drag and Drop Funktionalität
+    let draggedElement = null;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const draggables = document.querySelectorAll('.draggable-item');
+        const dropZones = document.querySelectorAll('.drag-drop-zone');
+        
+        draggables.forEach(item => {
+            item.addEventListener('dragstart', handleDragStart);
+            item.addEventListener('dragend', handleDragEnd);
+        });
+        
+        dropZones.forEach(zone => {
+            zone.addEventListener('dragover', handleDragOver);
+            zone.addEventListener('drop', handleDrop);
+            zone.addEventListener('dragleave', handleDragLeave);
+        });
+    });
+
+    function handleDragStart(e) {
+        draggedElement = this;
+        this.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+    }
+
+    function handleDragEnd(e) {
+        this.classList.remove('dragging');
+    }
+
+    function handleDragOver(e) {
+        if (e.preventDefault) {
+            e.preventDefault();
+        }
+        
+        this.classList.add('drag-over');
+        e.dataTransfer.dropEffect = 'move';
+        return false;
+    }
+
+    function handleDragLeave(e) {
+        this.classList.remove('drag-over');
+    }
+
+    function handleDrop(e) {
+        if (e.stopPropagation) {
+            e.stopPropagation();
+        }
+        
+        this.classList.remove('drag-over');
+        
+        if (draggedElement && this.id !== 'attributes-source') {
+            this.appendChild(draggedElement);
+        }
+        
+        return false;
+    }
+
+    function checkDragDrop() {
+        const buchZone = document.getElementById('buch-zone');
+        const verlagZone = document.getElementById('verlag-zone');
+        
+        const buchItems = Array.from(buchZone.children).map(el => el.textContent);
+        const verlagItems = Array.from(verlagZone.children).map(el => el.textContent);
+        
+        const correctBuch = ['Titel', 'Autor', 'ISBN', 'VerlagNr', 'Erscheinungsjahr'];
+        const correctVerlag = ['VerlagNr', 'Verlagsname', 'Ort', 'Telefon'];
+        
+        let buchCorrect = correctBuch.every(item => buchItems.includes(item));
+        let verlagCorrect = correctVerlag.every(item => verlagItems.includes(item));
+        
+        // Check if VerlagNr is in both
+        const verlagNrInBoth = buchItems.includes('VerlagNr') && verlagItems.includes('VerlagNr');
+        
+        if (buchCorrect && verlagCorrect && verlagNrInBoth) {
+            alert('✅ Perfekt! Du hast alle Attribute richtig zugeordnet. VerlagNr ist der Schlüssel, der beide Tabellen verbindet!');
+        } else {
+            alert('❌ Noch nicht ganz richtig. Tipp: VerlagNr muss in BEIDEN Tabellen vorkommen!');
+        }
+    }
+
+    // Feedback Toggle
+    function toggleFeedback(id) {
+        const feedback = document.getElementById(id);
+        feedback.classList.toggle('show');
+    }
+
+    // Quiz Funktionalität
+    function checkQuiz(questionId, option, isCorrect) {
+        const feedback = document.getElementById(`quiz-feedback-${questionId}`);
+        
+        // Mark selected option
+        event.target.classList.add(isCorrect ? 'correct' : 'incorrect');
+        
+        // Show feedback
+        if (isCorrect) {
+            feedback.innerHTML = '<div style="color: #10b981; margin-top: 0.5rem; font-weight: 600;">✅ Richtig!</div>';
+        } else {
+            feedback.innerHTML = '<div style="color: #ef4444; margin-top: 0.5rem; font-weight: 600;">❌ Leider falsch. Versuche es nochmal!</div>';
+        }
+    }
+</script>
+
+</body>
+</html>
