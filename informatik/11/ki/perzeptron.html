@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Künstliche Neuronen & Das Perzeptron - Informatik - edu-mrh.de</title>
+  <meta name="description" content="Interaktiver Lernpfad zum Perzeptron und zur Delta-Lernregel für die Jahrgangsstufe 11 im Fach Informatik.">
+  <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+  <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+  <link rel="stylesheet" href="https://edu-mrh.de/embed/katex/katex.min.css">
+  <link rel="stylesheet" href="https://edu-mrh.de/embed/include/online-ide-embedded.css">
+  <script defer src="https://edu-mrh.de/embed/script.js"></script>
+  <script defer src="https://edu-mrh.de/embed/katex/katex.min.js"></script>
+  <script defer src="https://edu-mrh.de/embed/katex/contrib/auto-render.min.js" onload="renderMath()"></script>
+  <script type="module" src="https://edu-mrh.de/embed/include/online-ide-embedded.js"></script>
+
+  <!--
+  Fachbereich: Informatik
+  Jahrgangsstufe: 11
+  Thema: Künstliche Neuronen & Das Perzeptron – Delta-Lernregel
+  Erstellt: 2025-04-20
+  Version: 1.0
+  -->
+
+  <style>
+    /* ===== DESIGN SYSTEM ===== */
+    :root {
+      --bg:        #0d1117;
+      --surface:   #161b22;
+      --surface2:  #1c2330;
+      --border:    #30363d;
+      --accent:    #58a6ff;
+      --accent2:   #3fb950;
+      --warn:      #f0883e;
+      --danger:    #f85149;
+      --text:      #e6edf3;
+      --text-muted:#8b949e;
+      --radius:    12px;
+      --font-head: 'Georgia', serif;
+      --font-body: 'Segoe UI', system-ui, sans-serif;
+      --font-mono: 'Fira Code', 'Consolas', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0.75rem 0;
+    }
+    .navbar .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 1.1rem; }
+    .nav-brand a { color: var(--text); text-decoration: none; }
+    .nav-brand .icon { font-size: 1.4rem; }
+    .nav-links { display: flex; gap: 0.75rem; }
+    .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.9rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; text-decoration: none; cursor: pointer; border: none; transition: all 0.2s; }
+    .btn-outline { border: 1px solid var(--border); color: var(--text-muted); background: transparent; }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-primary { background: var(--accent); color: #0d1117; }
+    .btn-primary:hover { opacity: 0.85; }
+
+    /* ===== LAYOUT ===== */
+    .container { max-width: 980px; margin: 0 auto; padding: 0 1.5rem; }
+
+    /* ===== CHAPTER HEADER ===== */
+    .chapter-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      margin: 3rem 0 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .chapter-number {
+      background: var(--accent);
+      color: #0d1117;
+      font-weight: 900;
+      font-size: 1rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: 6px;
+      white-space: nowrap;
+      margin-top: 0.35rem;
+    }
+    .chapter-header h1 {
+      font-family: var(--font-head);
+      font-size: 1.9rem;
+      line-height: 1.25;
+      color: var(--text);
+    }
+    .chapter-header p { color: var(--text-muted); margin-top: 0.4rem; font-size: 0.95rem; }
+
+    /* ===== SECTION HEADING ===== */
+    h2 {
+      font-family: var(--font-head);
+      font-size: 1.4rem;
+      color: var(--accent);
+      margin: 2.5rem 0 1rem;
+      padding-left: 0.75rem;
+      border-left: 3px solid var(--accent);
+    }
+    h3 { font-size: 1.05rem; margin-bottom: 0.5rem; }
+    p + p { margin-top: 0.75rem; }
+
+    /* ===== BOXES ===== */
+    .info-box, .task-box, .warning-box, .solution-box, .hint-box {
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin: 1.25rem 0;
+      border-left: 4px solid transparent;
+    }
+    .info-box    { background: #1a2332; border-color: var(--accent); }
+    .task-box    { background: #1a2620; border-color: var(--accent2); }
+    .warning-box { background: #2a1f14; border-color: var(--warn); }
+    .solution-box{ background: #1f1f2e; border-color: #8b5cf6; }
+    .hint-box    { background: #1a2026; border-color: var(--text-muted); }
+
+    .info-box h3    { color: var(--accent); }
+    .task-box h3    { color: var(--accent2); }
+    .warning-box h3 { color: var(--warn); }
+    .solution-box h3{ color: #a78bfa; }
+    .hint-box h3    { color: var(--text-muted); }
+
+    /* ===== COLLAPSIBLE HINT ===== */
+    details.hint {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin: 0.75rem 0;
+      overflow: hidden;
+    }
+    details.hint summary {
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      user-select: none;
+    }
+    details.hint summary::-webkit-details-marker { display: none; }
+    details.hint summary::before { content: '▶'; font-size: 0.7rem; transition: transform 0.2s; }
+    details.hint[open] summary::before { transform: rotate(90deg); }
+    details.hint summary:hover { color: var(--text); }
+    .hint-content { padding: 0 1rem 1rem; }
+
+    /* ===== CODE ===== */
+    code {
+      font-family: var(--font-mono);
+      background: #1c2330;
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+      font-size: 0.88em;
+      color: #79c0ff;
+    }
+    pre {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      color: #e6edf3;
+      margin: 0.75rem 0;
+      line-height: 1.6;
+    }
+    pre .kw  { color: #ff7b72; }
+    pre .cm  { color: #8b949e; font-style: italic; }
+    pre .str { color: #a5d6ff; }
+    pre .num { color: #79c0ff; }
+    pre .fn  { color: #d2a8ff; }
+
+    /* ===== TABLE ===== */
+    .table-wrap { overflow-x: auto; margin: 1rem 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    th { background: var(--surface2); color: var(--accent); padding: 0.6rem 0.9rem; text-align: left; border-bottom: 2px solid var(--accent); }
+    td { padding: 0.55rem 0.9rem; border-bottom: 1px solid var(--border); }
+    tr:hover td { background: var(--surface2); }
+    td.correct   { color: var(--accent2); font-weight: 700; }
+    td.wrong     { color: var(--danger); font-weight: 700; }
+    td.empty-input { background: #1a2026; color: var(--text-muted); font-style: italic; }
+
+    /* ===== CANVAS SECTION ===== */
+    .canvas-wrapper {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin: 1.25rem 0;
+    }
+    .canvas-wrapper h3 { color: var(--accent); margin-bottom: 1rem; }
+    .canvas-row { display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: flex-start; }
+    canvas {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #0a0e14;
+      display: block;
+    }
+    .controls { display: flex; flex-direction: column; gap: 0.85rem; min-width: 220px; flex: 1; }
+    .slider-group { display: flex; flex-direction: column; gap: 0.25rem; }
+    .slider-group label { font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: space-between; }
+    .slider-group label span { color: var(--accent); font-family: var(--font-mono); font-weight: 700; }
+    input[type=range] {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem; }
+    .stat-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.6rem 0.8rem;
+      text-align: center;
+    }
+    .stat-card .val { font-size: 1.3rem; font-family: var(--font-mono); font-weight: 700; color: var(--accent); }
+    .stat-card .lbl { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.1rem; }
+
+    /* ===== TRAINING ANIMATION ===== */
+    #training-log {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      max-height: 200px;
+      overflow-y: auto;
+      color: var(--text-muted);
+      margin-top: 0.75rem;
+    }
+    #training-log .epoch-line { color: var(--accent2); font-weight: 700; }
+    #training-log .error-line { color: var(--warn); }
+    #training-log .ok-line    { color: var(--text-muted); }
+
+    /* ===== NEURON DIAGRAM ===== */
+    #neuron-svg { width: 100%; max-width: 480px; }
+
+    /* ===== STEP BADGE ===== */
+    .step { display: flex; gap: 1rem; align-items: flex-start; margin: 1rem 0; }
+    .step-num {
+      background: var(--surface2);
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      border-radius: 50%;
+      width: 2rem; height: 2rem;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.9rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+    .step-body { flex: 1; }
+
+    /* ===== ANSWER INPUT ===== */
+    .answer-row { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin: 0.5rem 0; }
+    .answer-row input[type=number] {
+      width: 100px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.4rem 0.6rem;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+    }
+    .answer-row input:focus { outline: none; border-color: var(--accent); }
+    .feedback { font-size: 0.88rem; font-weight: 700; margin-left: 0.5rem; }
+    .feedback.ok   { color: var(--accent2); }
+    .feedback.fail { color: var(--danger); }
+
+    /* ===== ONLINE IDE WRAPPER ===== */
+    .ide-wrapper { margin: 1.25rem 0; }
+
+    /* ===== PROGRESS BAR ===== */
+    .progress-bar { background: var(--surface2); border-radius: 99px; height: 6px; margin: 0.5rem 0 1.5rem; overflow: hidden; }
+    .progress-bar-fill { background: linear-gradient(90deg, var(--accent), var(--accent2)); height: 100%; border-radius: 99px; transition: width 0.4s ease; }
+
+    /* ===== LEARNING OBJECTIVES ===== */
+    .objectives { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; margin: 1rem 0; }
+    .obj-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.88rem;
+      display: flex; gap: 0.5rem;
+    }
+    .obj-card .icon { font-size: 1.1rem; flex-shrink: 0; }
+
+    /* ===== TAG ===== */
+    .tag {
+      display: inline-block;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      font-size: 0.75rem;
+      padding: 0.15rem 0.6rem;
+      color: var(--text-muted);
+      margin: 0 0.2rem;
+    }
+
+    /* ===== DECISION BOUNDARY VIZ ===== */
+    #boundary-canvas { background: #0a0e14; }
+    .legend { display: flex; gap: 1.5rem; margin-top: 0.75rem; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.83rem; color: var(--text-muted); }
+    .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ===== EPOCH TRACKER ===== */
+    .epoch-tracker { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+    .epoch-tracker h4 { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+    .epoch-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .epoch-chip { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 0.2rem 0.5rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); transition: all 0.2s; }
+    .epoch-chip.done { border-color: var(--accent2); color: var(--accent2); }
+    .epoch-chip.active { border-color: var(--accent); color: var(--accent); background: #1a2332; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 640px) {
+      .canvas-row { flex-direction: column; }
+      canvas { width: 100% !important; height: auto !important; }
+      .chapter-header h1 { font-size: 1.4rem; }
+    }
+
+    /* ===== DIVIDER ===== */
+    hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+
+    /* ===== ANIMATION ===== */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .section { animation: fadeIn 0.5s ease both; }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="navbar">
+  <div class="container">
+    <div class="nav-brand">
+      <span class="icon">🖥️</span>
+      <a href="https://edu-mrh.de/">edu-mrh.de</a>
+    </div>
+    <div class="nav-links">
+      <a href="https://edu-mrh.de/informatik/informatik.html#jahrgang-11" class="btn btn-outline">Übersicht</a>
+      <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="container">
+
+  <!-- CHAPTER HEADER -->
+  <div class="chapter-header">
+    <span class="chapter-number">7-4 / 7-5</span>
+    <div>
+      <h1>Künstliche Neuronen &amp; Das Perzeptron</h1>
+      <p>Lernpfad für Informatik Jgst. 11 · Künstliche Intelligenz · Themenbereich 7</p>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-bar"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+
+  <!-- LERNZIELE -->
+  <div class="section">
+    <div class="info-box">
+      <h3>🎯 Lernziele</h3>
+      <div class="objectives">
+        <div class="obj-card"><span class="icon">🧠</span><span>Aufbau und Funktionsweise eines künstlichen Neurons verstehen</span></div>
+        <div class="obj-card"><span class="icon">📐</span><span>Nettoeingabe $z$ und Schwellwertfunktion berechnen</span></div>
+        <div class="obj-card"><span class="icon">🔀</span><span>Entscheidungsgrenze interaktiv erkunden</span></div>
+        <div class="obj-card"><span class="icon">⚙️</span><span>Delta-Lernregel verstehen und implementieren</span></div>
+        <div class="obj-card"><span class="icon">🌸</span><span>Iris-Datensatz mit dem Perzeptron klassifizieren</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- TEIL 1: DAS BIOLOGISCHE VORBILD            -->
+  <!-- ========================================== -->
+  <h2>Teil 1 – Vom Gehirn zum Modell</h2>
+  <div class="section">
+    <p>
+      Nervenzellen im Gehirn leiten Impulse nur weiter, wenn ein <strong>Schwellwert</strong> überschritten wird.
+      Viele schwache Signale können zusammen stark genug sein – das Gehirn <em>summiert</em> also Eingangsreize und entscheidet dann.
+    </p>
+    <p>
+      Genau dieses Prinzip steckt hinter dem <strong>künstlichen Neuron</strong> (Perzeptron):
+      mehrere Eingangsgrößen werden <em>gewichtet addiert</em>, das Ergebnis (Nettoeingabe $z$) mit einem Schwellwert verglichen
+      und daraus eine binäre <em>Ausgabe</em> erzeugt.
+    </p>
+
+    <div class="info-box">
+      <h3>💡 Modell des künstlichen Neurons</h3>
+      <p>Ein Neuron besitzt drei Eingaben:</p>
+      <ul style="margin: 0.5rem 0 0.5rem 1.5rem;">
+        <li><strong>Konstante Verschiebung:</strong> Eingabe $= 1$, Gewicht $w_0$ (Bias)</li>
+        <li><strong>Merkmal $x_1$:</strong> z. B. Länge Kelchblatt, Gewicht $w_1$</li>
+        <li><strong>Merkmal $x_2$:</strong> z. B. Länge Kronblatt, Gewicht $w_2$</li>
+      </ul>
+      <p>Die <strong>Nettoeingabe</strong> berechnet sich als:</p>
+      <p style="text-align:center; font-size: 1.1rem; margin: 0.75rem 0;">$$z = w_0 \cdot 1 + w_1 \cdot x_1 + w_2 \cdot x_2$$</p>
+      <p>Die <strong>Ausgabe</strong> (Heaviside-Funktion) ist:</p>
+      <p style="text-align:center; margin: 0.5rem 0;">
+        $\text{Ausgabe} = \begin{cases} 1 & \text{falls } z \geq 0 \\ 0 & \text{falls } z < 0 \end{cases}$
+      </p>
+    </div>
+
+    <!-- SVG NEURON DIAGRAM -->
+    <div class="canvas-wrapper">
+      <h3>🖼️ Struktur des Perzeptrons</h3>
+      <svg id="neuron-svg" viewBox="0 0 480 220" xmlns="http://www.w3.org/2000/svg" aria-label="Struktur des Perzeptrons">
+        <!-- Input nodes -->
+        <circle cx="60" cy="55"  r="28" fill="#1c2330" stroke="#58a6ff" stroke-width="2"/>
+        <text x="60" y="51"  text-anchor="middle" fill="#e6edf3" font-size="11" font-family="Georgia,serif">Eingabe</text>
+        <text x="60" y="66"  text-anchor="middle" fill="#58a6ff" font-size="14" font-weight="bold">1</text>
+        <circle cx="60" cy="110" r="28" fill="#1c2330" stroke="#58a6ff" stroke-width="2"/>
+        <text x="60" y="106" text-anchor="middle" fill="#e6edf3" font-size="11" font-family="Georgia,serif">Länge</text>
+        <text x="60" y="121" text-anchor="middle" fill="#58a6ff" font-size="13" font-weight="bold">x₁</text>
+        <circle cx="60" cy="165" r="28" fill="#1c2330" stroke="#58a6ff" stroke-width="2"/>
+        <text x="60" y="161" text-anchor="middle" fill="#e6edf3" font-size="11" font-family="Georgia,serif">Länge</text>
+        <text x="60" y="176" text-anchor="middle" fill="#58a6ff" font-size="13" font-weight="bold">x₂</text>
+        <!-- Wires -->
+        <line x1="88" y1="55"  x2="182" y2="105" stroke="#58a6ff" stroke-width="1.5" opacity="0.5"/>
+        <line x1="88" y1="110" x2="182" y2="108" stroke="#58a6ff" stroke-width="1.5" opacity="0.5"/>
+        <line x1="88" y1="165" x2="182" y2="115" stroke="#58a6ff" stroke-width="1.5" opacity="0.5"/>
+        <!-- Weight labels -->
+        <text x="125" y="73"  fill="#f0883e" font-size="13" font-family="Georgia,serif" font-style="italic">w₀</text>
+        <text x="130" y="110" fill="#f0883e" font-size="13" font-family="Georgia,serif" font-style="italic">w₁</text>
+        <text x="120" y="148" fill="#f0883e" font-size="13" font-family="Georgia,serif" font-style="italic">w₂</text>
+        <!-- Sum node -->
+        <rect x="182" y="80" width="90" height="52" rx="8" fill="#1c2330" stroke="#58a6ff" stroke-width="2"/>
+        <text x="227" y="100" text-anchor="middle" fill="#8b949e" font-size="10" font-family="Georgia,serif">z =</text>
+        <text x="227" y="116" text-anchor="middle" fill="#e6edf3" font-size="10" font-family="monospace">w₀+w₁x₁+w₂x₂</text>
+        <!-- Arrow to threshold -->
+        <line x1="272" y1="106" x2="310" y2="106" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arr)"/>
+        <!-- Threshold node -->
+        <rect x="310" y="80" width="90" height="52" rx="8" fill="#1c2330" stroke="#3fb950" stroke-width="2"/>
+        <text x="355" y="100" text-anchor="middle" fill="#8b949e" font-size="10">z ≥ 0 ?</text>
+        <text x="355" y="115" text-anchor="middle" fill="#3fb950" font-size="10" font-weight="bold">1: Versicolor</text>
+        <text x="355" y="127" text-anchor="middle" fill="#f85149" font-size="10" font-weight="bold">0: Setosa</text>
+        <!-- Output arrow -->
+        <line x1="400" y1="106" x2="445" y2="106" stroke="#3fb950" stroke-width="2" marker-end="url(#arr2)"/>
+        <text x="450" y="110" fill="#3fb950" font-size="12" font-weight="bold">Ausgabe</text>
+        <!-- Arrow markers -->
+        <defs>
+          <marker id="arr"  markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#8b949e"/>
+          </marker>
+          <marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L0,6 L8,3 z" fill="#3fb950"/>
+          </marker>
+        </defs>
+      </svg>
+      <p style="color: var(--text-muted); font-size: 0.82rem; margin-top: 0.5rem;">
+        Der Bias-Eingang (konstant 1) verschiebt die Entscheidungsgrenze – ähnlich dem y-Achsenabschnitt einer Geraden.
+      </p>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- TEIL 2: INTERAKTIVER IRIS-KLASSIFIKATOR   -->
+  <!-- ========================================== -->
+  <h2>Teil 2 – Iris-Datensatz &amp; interaktive Entscheidungsgrenze</h2>
+  <div class="section">
+    <p>
+      Die Iris-Daten enthalten Messungen zweier Irisblüten-Sorten:
+      <strong>Iris setosa</strong> (Klasse 0) und <strong>Iris versicolor</strong> (Klasse 1).
+      Als Merkmale verwenden wir die Länge des Kelchblatts ($x_1$) und die Länge des Kronblatts ($x_2$).
+    </p>
+
+    <div class="task-box">
+      <h3>✏️ Aufgabe 1 – Entscheidungsgrenze erkunden</h3>
+      <div class="step"><div class="step-num">a</div><div class="step-body">
+        Stelle die Gewichte $w_0 = 0{,}1$, $w_1 = -0{,}6$, $w_2 = 0{,}9$ ein.
+        Beobachte: Wie viele Datenpunkte werden falsch klassifiziert?
+      </div></div>
+      <div class="step"><div class="step-num">b</div><div class="step-body">
+        Ändere zu $w_0 = 0{,}2$, $w_1 = -0{,}5$, $w_2 = 1{,}0$.
+        Verbessert sich die Klassifikation?
+      </div></div>
+      <div class="step"><div class="step-num">c</div><div class="step-body">
+        Versuche durch Probieren mindestens <strong>3 Gewichtskombinationen</strong> zu finden,
+        bei denen <em>alle</em> 12 Datenpunkte korrekt klassifiziert werden.
+        Notiere deine besten Gewichte.
+      </div></div>
+    </div>
+
+    <!-- INTERACTIVE PERCEPTRON VISUALIZER -->
+    <div class="canvas-wrapper">
+      <h3>🎛️ Interaktiver Iris-Klassifikator</h3>
+      <div class="canvas-row">
+        <canvas id="boundary-canvas" width="400" height="360"></canvas>
+        <div class="controls">
+          <div class="slider-group">
+            <label>Bias $w_0$ <span id="lbl-w0">0.10</span></label>
+            <input type="range" id="sl-w0" min="-5" max="5" step="0.05" value="0.10">
+          </div>
+          <div class="slider-group">
+            <label>Gewicht $w_1$ <span id="lbl-w1">-0.60</span></label>
+            <input type="range" id="sl-w1" min="-3" max="3" step="0.05" value="-0.60">
+          </div>
+          <div class="slider-group">
+            <label>Gewicht $w_2$ <span id="lbl-w2">0.90</span></label>
+            <input type="range" id="sl-w2" min="-3" max="3" step="0.05" value="0.90">
+          </div>
+          <button class="btn btn-primary" id="btn-reset-w" style="margin-top:0.25rem;">↺ Aufgabe 1a Werte</button>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="val" id="stat-correct">–</div>
+              <div class="lbl">Richtig klassifiziert</div>
+            </div>
+            <div class="stat-card">
+              <div class="val" id="stat-wrong">–</div>
+              <div class="lbl">Falsch klassifiziert</div>
+            </div>
+            <div class="stat-card" style="grid-column: span 2;">
+              <div class="val" id="stat-accuracy" style="font-size:1rem;">–</div>
+              <div class="lbl">Genauigkeit</div>
+            </div>
+          </div>
+          <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.5rem;">
+            Entscheidungsgrenze: <code id="boundary-eq">–</code>
+          </div>
+        </div>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#3b82f6;"></div> Setosa (Klasse 0) – korrekt</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f97316;"></div> Versicolor (Klasse 1) – korrekt</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f85149; border: 2px solid #fff3;"></div> Falsch klassifiziert</div>
+        <div class="legend-item" style="margin-left:auto;">
+          <div style="width: 30px; height: 2px; background: #58a6ff; border-top: 2px dashed #58a6ff;"></div>&nbsp;Entscheidungsgrenze ($z=0$)
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <h3>💡 Was ist die Entscheidungsgrenze?</h3>
+      <p>
+        Die Entscheidungsgrenze ist die Menge aller Punkte $(x_1, x_2)$, für die gilt $z = 0$,
+        also: $$w_0 + w_1 \cdot x_1 + w_2 \cdot x_2 = 0$$
+        Aufgelöst nach $x_2$ ergibt sich eine <strong>lineare Funktion</strong> (Gerade) im Merkmalsraum:
+        $$x_2 = -\frac{w_1}{w_2} \cdot x_1 - \frac{w_0}{w_2}$$
+      </p>
+      <p>Durch Verändern der Gewichte dreht und verschiebt man diese Gerade.</p>
+    </div>
+
+    <details class="hint">
+      <summary>💬 Tipp für Aufgabe 1c – Hinweis einblenden</summary>
+      <div class="hint-content">
+        <p>Die Daten sind linear trennbar! Beobachte: Die setosa-Punkte haben deutlich kürzere Kronblätter.
+        Versuche $w_2$ positiv und groß zu halten, und $w_0$ leicht negativ einzustellen, um die Grenze
+        zwischen den Punktgruppen zu platzieren. Zum Beispiel: $w_0 \approx -10$, $w_1 \approx 0$, $w_2 \approx 1$.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- TEIL 3: MANUELLE BERECHNUNG               -->
+  <!-- ========================================== -->
+  <h2>Teil 3 – Nettoeingabe manuell berechnen</h2>
+  <div class="section">
+    <p>Bevor wir das Lernen automatisieren, berechnen wir die Nettoeingabe $z$ für einige Datensätze von Hand.
+    Das stärkt das Verständnis der Formel.</p>
+
+    <div class="task-box">
+      <h3>✏️ Aufgabe 2 – Tabelle vervollständigen</h3>
+      <p>Gewichte: $w_0 = 0{,}1$, $w_1 = -0{,}6$, $w_2 = 0{,}9$</p>
+      <p>Berechne für jeden Datensatz: $z = 0{,}1 + (-0{,}6) \cdot x_1 + 0{,}9 \cdot x_2$ und die Ausgabe.</p>
+    </div>
+
+    <div class="table-wrap">
+      <table id="calc-table">
+        <thead>
+          <tr>
+            <th>Datensatz</th>
+            <th>$x_1$</th>
+            <th>$x_2$</th>
+            <th>Klasse $y$</th>
+            <th>Nettoeingabe $z$</th>
+            <th>Deine Ausgabe</th>
+            <th>Ergebnis</th>
+          </tr>
+        </thead>
+        <tbody id="calc-tbody">
+          <!-- Rendered by JS -->
+        </tbody>
+      </table>
+    </div>
+    <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem;">
+      * Klicke in das Eingabefeld der Ausgabe und gib 0 oder 1 ein. Das System prüft sofort.
+    </p>
+
+    <details class="hint">
+      <summary>💬 Hinweis zur Berechnung</summary>
+      <div class="hint-content">
+        <p>Beispiel für Datensatz $d_0$: $x_1 = 4{,}9$, $x_2 = 1{,}4$</p>
+        <p>$z = 0{,}1 + (-0{,}6) \cdot 4{,}9 + 0{,}9 \cdot 1{,}4 = 0{,}1 - 2{,}94 + 1{,}26 = -1{,}58$</p>
+        <p>Da $z < 0$: Ausgabe = <strong>0</strong> (Setosa). Tatsächliche Klasse = 0 ✔</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- TEIL 4: DELTA-LERNREGEL THEORIE           -->
+  <!-- ========================================== -->
+  <h2>Teil 4 – Die Delta-Lernregel</h2>
+  <div class="section">
+    <p>Bislang haben wir die Gewichte manuell eingestellt. Das Ziel ist nun, das Perzeptron <em>automatisch</em> zu trainieren.
+    Dazu brauchen wir eine Regel, die die Gewichte schrittweise verbessert.</p>
+
+    <div class="info-box">
+      <h3>💡 Idee der Delta-Lernregel</h3>
+      <p>Nach jedem Datensatz wird der Fehler $(y_i - \text{Ausgabe})$ betrachtet:</p>
+      <ul style="margin: 0.5rem 0 0 1.5rem;">
+        <li>Vorhersage <strong>korrekt</strong>: Fehler $= 0$ → <em>keine</em> Gewichtsänderung</li>
+        <li>Vorhersage <strong>zu klein</strong> (0 statt 1): Fehler $= +1$ → Gewichte <em>erhöhen</em></li>
+        <li>Vorhersage <strong>zu groß</strong> (1 statt 0): Fehler $= -1$ → Gewichte <em>verringern</em></li>
+      </ul>
+      <p style="margin-top: 0.75rem;">Formal: Lernrate $\eta$ (eta) steuert die Schrittgröße:</p>
+      $$\Delta w_0 = \eta \cdot (y_i - \text{Ausgabe})$$
+      $$\Delta w_1 = \eta \cdot (y_i - \text{Ausgabe}) \cdot x_1^{(i)}$$
+      $$\Delta w_2 = \eta \cdot (y_i - \text{Ausgabe}) \cdot x_2^{(i)}$$
+    </div>
+
+    <div class="info-box">
+      <h3>📋 Pseudocode der Delta-Lernregel</h3>
+      <pre><span class="kw">Wiederhole</span> anzahlEpochen <span class="kw">mal:</span>
+  <span class="kw">Für</span> i <span class="kw">von</span> 0 <span class="kw">bis</span> &lt; Anzahl Trainingsdatensätze:
+    <span class="cm">// Nettoeingabe berechnen</span>
+    z = w0 + w1 * x1[i] + w2 * x2[i]
+    <span class="cm">// Schwellwertfunktion</span>
+    <span class="kw">falls</span> z &gt;= 0: ausgabe = 1
+    <span class="kw">sonst</span>:         ausgabe = 0
+    <span class="cm">// Gewichte anpassen (nur wenn Fehler ≠ 0)</span>
+    w0 = w0 + η * (y[i] - ausgabe)
+    w1 = w1 + η * (y[i] - ausgabe) * x1[i]
+    w2 = w2 + η * (y[i] - ausgabe) * x2[i]</pre>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem;">
+        Ein vollständiger Durchlauf aller Datensätze heißt <strong>Epoche</strong>.
+        Nach endlich vielen Epochen konvergiert das Verfahren (wenn die Daten linear trennbar sind).
+      </p>
+    </div>
+
+    <div class="warning-box">
+      <h3>⚠️ Wahl der Lernrate η</h3>
+      <p>
+        <strong>η zu groß:</strong> Die Gewichte schwingen über das Ziel hinaus (Oszillation) und konvergieren möglicherweise nicht.<br>
+        <strong>η zu klein:</strong> Das Lernen dauert sehr viele Epochen – aber es ist stabiler.<br>
+        Typisch: $\eta \in [0{,}01,\ 1{,}0]$. Standard in diesem Beispiel: $\eta = 0{,}1$.
+      </p>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- TEIL 5: INTERAKTIVE TRAINING SIMULATION   -->
+  <!-- ========================================== -->
+  <h2>Teil 5 – Trainingsanimation: Schritt für Schritt</h2>
+  <div class="section">
+    <p>Beobachte, wie sich die Entscheidungsgrenze während des Trainings verändert.
+    Du kannst den Lernprozess schrittweise oder automatisch ablaufen lassen.</p>
+
+    <div class="task-box">
+      <h3>✏️ Aufgabe 3 – Trainingsbeobachtung</h3>
+      <div class="step"><div class="step-num">a</div><div class="step-body">
+        Trainiere mit den Standardwerten. Nach wie vielen Epochen verändert sich nichts mehr?
+      </div></div>
+      <div class="step"><div class="step-num">b</div><div class="step-body">
+        Setze $\eta = 1{,}0$ und starte neu. Was beobachtest du?
+      </div></div>
+      <div class="step"><div class="step-num">c</div><div class="step-body">
+        Finde Startwerte für $w_0, w_1, w_2$, bei denen das Training nach <strong>exakt 2 oder 3 Epochen</strong> abgeschlossen ist.
+      </div></div>
+    </div>
+
+    <div class="canvas-wrapper">
+      <h3>🎬 Trainingsanimation</h3>
+      <div class="canvas-row">
+        <canvas id="train-canvas" width="400" height="360"></canvas>
+        <div class="controls">
+          <div class="slider-group">
+            <label>Lernrate η <span id="lbl-eta">0.10</span></label>
+            <input type="range" id="sl-eta" min="0.01" max="2" step="0.01" value="0.1">
+          </div>
+          <div class="slider-group">
+            <label>Start $w_0$ <span id="lbl-tw0">0.00</span></label>
+            <input type="range" id="sl-tw0" min="-5" max="5" step="0.5" value="0">
+          </div>
+          <div class="slider-group">
+            <label>Start $w_1$ <span id="lbl-tw1">1.00</span></label>
+            <input type="range" id="sl-tw1" min="-3" max="3" step="0.5" value="1">
+          </div>
+          <div class="slider-group">
+            <label>Start $w_2$ <span id="lbl-tw2">1.00</span></label>
+            <input type="range" id="sl-tw2" min="-3" max="3" step="0.5" value="1">
+          </div>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.25rem;">
+            <button class="btn btn-primary" id="btn-train-init">↺ Neu initialisieren</button>
+            <button class="btn btn-outline"  id="btn-train-step">▶ 1 Epoche</button>
+            <button class="btn btn-outline"  id="btn-train-auto">⏩ Auto</button>
+            <button class="btn btn-outline"  id="btn-train-stop" disabled>⏹ Stop</button>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card"><div class="val" id="t-epoch">0</div><div class="lbl">Epoche</div></div>
+            <div class="stat-card"><div class="val" id="t-errors">–</div><div class="lbl">Fehler</div></div>
+            <div class="stat-card"><div class="val" id="t-w0" style="font-size:0.95rem;">–</div><div class="lbl">w₀</div></div>
+            <div class="stat-card"><div class="val" id="t-w1" style="font-size:0.95rem;">–</div><div class="lbl">w₁</div></div>
+            <div class="stat-card" style="grid-column: span 2;"><div class="val" id="t-w2" style="font-size:0.95rem;">–</div><div class="lbl">w₂</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="epoch-tracker" id="epoch-tracker">
+        <h4>Epochen-Verlauf (Fehleranzahl)</h4>
+        <div class="epoch-chips" id="epoch-chips"></div>
+      </div>
+      <div id="training-log"><span style="color:var(--text-muted)">Das Training wird hier protokolliert…</span></div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- TEIL 6: JAVA-IMPLEMENTIERUNG              -->
+  <!-- ========================================== -->
+  <h2>Teil 6 – Java-Implementierung</h2>
+  <div class="section">
+    <p>
+      Jetzt implementierst du das Gelernte in Java. Das Grundgerüst ist bereits vorhanden –
+      du ergänzt die Delta-Lernregel an der gekennzeichneten Stelle.
+    </p>
+
+    <div class="task-box">
+      <h3>✏️ Aufgabe 4 – Delta-Lernregel implementieren</h3>
+      <div class="step"><div class="step-num">a</div><div class="step-body">
+        Starte das Programm und lies die Ausgabe von <code>datenAusDateiEinlesen()</code> und
+        <code>klassenBerechnen()</code>. Erkläre, was das Hauptprogramm macht.
+      </div></div>
+      <div class="step"><div class="step-num">b</div><div class="step-body">
+        Ergänze die Methode <code>deltaLernregel()</code> gemäß dem Pseudocode (siehe Teil 4).
+        Nutze: η = 0.1, Epochen = 5, Startgewichte: w₀=0, w₁=1, w₂=1.
+      </div></div>
+      <div class="step"><div class="step-num">c</div><div class="step-body">
+        Rufe am Ende des Hauptprogramms erneut <code>klassenBerechnen()</code> auf.
+        Hat das Training funktioniert?
+      </div></div>
+      <div class="step"><div class="step-num">d</div><div class="step-body">
+        <strong>Erweiterung:</strong> Ergänze den Code so, dass ausgegeben wird, nach wie vielen
+        Epochen sich die Gewichte nicht mehr verändern (Konvergenzerkennung).
+      </div></div>
+    </div>
+
+    <details class="hint">
+      <summary>💬 Hinweis zu Aufgabe 4b – Schleifenstruktur</summary>
+      <div class="hint-content">
+        <p>Du brauchst zwei verschachtelte <code>for</code>-Schleifen:</p>
+        <pre><span class="cm">// Äußere Schleife: Epochen</span>
+<span class="kw">for</span> (<span class="kw">int</span> epoche = 0; epoche &lt; anzahlEpochen; epoche++) {
+    <span class="cm">// Innere Schleife: Datensätze</span>
+    <span class="kw">for</span> (<span class="kw">int</span> i = 0; i &lt; x_1.length; i++) {
+        <span class="cm">// z berechnen, Ausgabe bestimmen, Gewichte anpassen</span>
+    }
+}</pre>
+      </div>
+    </details>
+
+    <details class="hint">
+      <summary>💬 Hinweis zu Aufgabe 4d – Konvergenzerkennung</summary>
+      <div class="hint-content">
+        <p>Speichere die Gewichte vor der Epoche und vergleiche sie danach:</p>
+        <pre><span class="kw">double</span> w0_alt = w_0, w1_alt = w_1, w2_alt = w_2;
+<span class="cm">// ... Epoche durchlaufen ...</span>
+<span class="kw">if</span> (w_0 == w0_alt &amp;&amp; w_1 == w1_alt &amp;&amp; w_2 == w2_alt) {
+    println(<span class="str">"Konvergenz nach Epoche "</span> + (epoche+1));
+    <span class="kw">break</span>;
+}</pre>
+      </div>
+    </details>
+
+    <!-- ONLINE-IDE -->
+    <div class="ide-wrapper">
+      <div class="java-online" style="width: 100%; height: 580px;"
+        data-java-online='{ "id": "perzeptron-neuron-01", "speed": 500000, "withBottomPanel": true, "withFileList": true, "withConsole": true }'>
+
+        <script type="text/plain" title="Neuron.java">
+/**
+ * Klasse Neuron – Perzeptron mit Delta-Lernregel
+ * Jahrgangsstufe 11 – Künstliche Intelligenz
+ */
+public class Neuron {
+    private double eta;           // Lernrate
+    private int anzahlEpochen;    // Anzahl Trainingsepochen
+    private double[] x_1;         // Merkmal 1 (Länge Kelchblatt)
+    private double[] x_2;         // Merkmal 2 (Länge Kronblatt)
+    private int[] y;              // Tatsächliche Klassen (0 oder 1)
+    private double w_0;           // Bias-Gewicht
+    private double w_1;           // Gewicht für x_1
+    private double w_2;           // Gewicht für x_2
+
+    /** Konstruktor */
+    public Neuron() {
+        println("Instanz der Klasse Neuron erstellt.");
+    }
+
+    /**
+     * Methode deltaLernregel() – trainiert das Perzeptron.
+     * TODO: Ergänze hier die Delta-Lernregel!
+     */
+    public void deltaLernregel(double _eta, int _anzahlEpochen,
+                               double erstesGewicht, double zweitesGewicht, double drittesGewicht) {
+        eta = _eta;
+        anzahlEpochen = _anzahlEpochen;
+        w_0 = erstesGewicht;
+        w_1 = zweitesGewicht;
+        w_2 = drittesGewicht;
+        println("Startgewichte: w_0=" + w_0 + ", w_1=" + w_1 + ", w_2=" + w_2);
+
+        // =====================================================
+        // TODO: Implementiere hier die Delta-Lernregel!
+        // Nutze den Pseudocode aus dem Lernpfad als Vorlage.
+        //
+        // Struktur:
+        // for (int epoche = 0; epoche < anzahlEpochen; epoche++) {
+        //     for (int i = 0; i < x_1.length; i++) {
+        //         // 1. Nettoeingabe z berechnen
+        //         // 2. Ausgabe bestimmen (Schwellwert 0)
+        //         // 3. Fehler berechnen: y[i] - ausgabe
+        //         // 4. Gewichte anpassen (Delta-Lernregel)
+        //     }
+        // }
+        // =====================================================
+
+    }
+
+    /**
+     * Methode klassenBerechnen() – berechnet und zeigt die aktuellen Klassifikationen.
+     */
+    public void klassenBerechnen() {
+        int ausgabe;
+        println();
+        println("=== Methode klassenBerechnen() ===");
+        println("Aktuelle Gewichte: w_0=" + w_0 + ", w_1=" + w_1 + ", w_2=" + w_2);
+        println();
+        println("x_1\tx_2\ty\tAusgabe\tKorrekt?");
+        int richtig = 0;
+        for (int i = 0; i < x_1.length; i++) {
+            double z = w_0 + w_1 * x_1[i] + w_2 * x_2[i];
+            ausgabe = (z >= 0) ? 1 : 0;
+            boolean korrekt = (ausgabe == y[i]);
+            if (korrekt) richtig++;
+            println(x_1[i] + "\t" + x_2[i] + "\t" + y[i] + "\t" + ausgabe + "\t" + (korrekt ? "✓" : "✗"));
+        }
+        println();
+        println("Richtig: " + richtig + " von " + x_1.length);
+    }
+
+    /**
+     * Methode datenLaden() – lädt den Iris-Small-Datensatz direkt.
+     */
+    public void datenLaden() {
+        // Iris-Small Datensatz (sepallength, petallength, variety)
+        // Klasse 0 = Setosa, Klasse 1 = Versicolor
+        x_1 = new double[]{ 48, 43, 58, 57, 54, 51, 64, 69, 65, 57, 63, 49 };
+        x_2 = new double[]{ 14, 11, 12, 15, 13, 14, 45, 49, 46, 45, 47, 33 };
+        y   = new int[]   {  0,  0,  0,  0,  0,  0,  1,  1,  1,  1,  1,  1 };
+        println("Datensatz geladen: " + x_1.length + " Datenpunkte.");
+        println("Merkmale: Kelchblattlänge (x_1), Kronblattlänge (x_2)");
+        println("Klassen: 0=Setosa, 1=Versicolor");
+    }
+}
+        </script>
+
+        <script type="text/plain" title="Hauptprogramm.java">
+// ============================================================
+// Hauptprogramm – Perzeptron Training
+// ============================================================
+
+Neuron meinNeuron = new Neuron();
+
+// Schritt 1: Datensatz laden
+meinNeuron.datenLaden();
+
+// Schritt 2: Klassen mit Startgewichten berechnen (vor Training)
+println("=== VOR DEM TRAINING ===");
+meinNeuron.klassenBerechnen();
+
+// ============================================================
+// Schritt 3: Aufgabe 4b) – deltaLernregel() aufrufen
+// Entferne die Kommentarzeichen (//) in den nächsten Zeilen:
+
+// double eta = 0.1;
+// int epochen = 5;
+// double w0 = 0.0;
+// double w1 = 1.0;
+// double w2 = 1.0;
+// meinNeuron.deltaLernregel(eta, epochen, w0, w1, w2);
+
+// ============================================================
+// Schritt 4: Aufgabe 4c) – Klassen nach Training berechnen
+// Entferne die Kommentarzeichen:
+
+// println("=== NACH DEM TRAINING ===");
+// meinNeuron.klassenBerechnen();
+        </script>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- TEIL 7: VERTIEFUNG                        -->
+  <!-- ========================================== -->
+  <h2>Teil 7 – Vertiefung &amp; Reflexion</h2>
+  <div class="section">
+
+    <div class="task-box">
+      <h3>✏️ Aufgabe 5 – Experimentieren mit Lernrate und Startgewichten</h3>
+      <div class="step"><div class="step-num">a</div><div class="step-body">
+        Nutze die Trainingsanimation (Teil 5) oder deine Java-Implementierung.
+        Welche Lernrate führt am schnellsten zur Konvergenz?
+      </div></div>
+      <div class="step"><div class="step-num">b</div><div class="step-body">
+        Erkläre in eigenen Worten: Warum ist die Delta-Lernregel korrekt, wenn sie
+        bei richtiger Ausgabe die Gewichte <em>nicht</em> ändert?
+      </div></div>
+      <div class="step"><div class="step-num">c</div><div class="step-body">
+        <span class="tag">★ Herausforderung</span>
+        Ergänze deine Java-Implementierung, so dass das Perzeptron nach jeder Epoche die
+        aktuelle Genauigkeit ausgibt. Wann übersteigt sie 80%? 100%?
+      </div></div>
+    </div>
+
+    <div class="info-box">
+      <h3>💡 Grenzen des Perzeptrons</h3>
+      <p>
+        Das Perzeptron kann nur linear trennbare Probleme lösen – es erzeugt immer eine <em>gerade</em> Entscheidungsgrenze.
+        Daten, die z. B. kreisförmig verteilt sind oder das XOR-Problem darstellen, kann ein einzelnes Perzeptron
+        <em>nicht</em> korrekt klassifizieren.
+      </p>
+      <p>
+        Abhilfe schaffen <strong>mehrschichtige neuronale Netze</strong> (Multilayer Perceptrons),
+        die beliebig komplexe Entscheidungsgrenzen erzeugen können – das Thema der nächsten Einheit.
+      </p>
+    </div>
+
+    <div class="solution-box">
+      <h3>🔑 Musterlösung – Delta-Lernregel in Java</h3>
+      <details class="hint">
+        <summary>📂 Musterlösung einblenden (erst nach eigenem Versuch!)</summary>
+        <div class="hint-content">
+          <pre><span class="kw">for</span> (<span class="kw">int</span> epoche = 0; epoche &lt; anzahlEpochen; epoche++) {
+    <span class="kw">double</span> w0_alt = w_0, w1_alt = w_1, w2_alt = w_2;
+    <span class="kw">for</span> (<span class="kw">int</span> i = 0; i &lt; x_1.length; i++) {
+        <span class="cm">// Nettoeingabe</span>
+        <span class="kw">double</span> z = w_0 + w_1 * x_1[i] + w_2 * x_2[i];
+        <span class="cm">// Ausgabe (Schwellwert)</span>
+        <span class="kw">int</span> ausgabe = (z &gt;= 0) ? 1 : 0;
+        <span class="cm">// Fehler</span>
+        <span class="kw">int</span> fehler = y[i] - ausgabe;
+        <span class="cm">// Gewichtsanpassung</span>
+        w_0 = w_0 + eta * fehler;
+        w_1 = w_1 + eta * fehler * x_1[i];
+        w_2 = w_2 + eta * fehler * x_2[i];
+    }
+    println(<span class="str">"Epoche "</span> + (epoche+1) + <span class="str">": w0="</span> + w_0 + <span class="str">", w1="</span> + w_1 + <span class="str">", w2="</span> + w_2);
+    <span class="cm">// Konvergenzerkennung</span>
+    <span class="kw">if</span> (w_0 == w0_alt &amp;&amp; w_1 == w1_alt &amp;&amp; w_2 == w2_alt) {
+        println(<span class="str">"Konvergenz nach Epoche "</span> + (epoche+1) + <span class="str">" – keine weiteren Änderungen."</span>);
+        <span class="kw">break</span>;
+    }
+}</pre>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- ZUSAMMENFASSUNG -->
+  <h2>Zusammenfassung</h2>
+  <div class="section">
+    <div class="info-box">
+      <h3>✅ Das haben wir gelernt</h3>
+      <div class="step"><div class="step-num">1</div><div class="step-body">
+        Das <strong>Perzeptron</strong> modelliert ein biologisches Neuron: gewichtete Summe der Eingaben,
+        dann Schwellwertentscheidung.
+      </div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body">
+        Die <strong>Nettoeingabe</strong> $z = w_0 + w_1 x_1 + w_2 x_2$ erzeugt eine lineare Entscheidungsgrenze.
+      </div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body">
+        Die <strong>Delta-Lernregel</strong> passt die Gewichte automatisch an den Fehler an –
+        datensatzweise, in mehreren Epochen.
+      </div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body">
+        Die <strong>Lernrate η</strong> steuert die Schrittgröße und beeinflusst Geschwindigkeit und Stabilität.
+      </div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-body">
+        Ein Perzeptron löst nur <strong>linear trennbare</strong> Probleme – für komplexere braucht man mehrere Schichten.
+      </div></div>
+    </div>
+  </div>
+
+  <hr>
+  <p style="text-align:center; color:var(--text-muted); font-size:0.82rem; padding-bottom: 2rem;">
+    edu-mrh.de · Informatik Jgst. 11 · Themenbereich 7: Künstliche Intelligenz · Version 1.0
+  </p>
+
+</div><!-- /container -->
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+// ============================================================
+// IRIS SMALL DATA
+// ============================================================
+const irisData = [
+  { x1: 48, x2: 14, y: 0 },
+  { x1: 43, x2: 11, y: 0 },
+  { x1: 58, x2: 12, y: 0 },
+  { x1: 57, x2: 15, y: 0 },
+  { x1: 54, x2: 13, y: 0 },
+  { x1: 51, x2: 14, y: 0 },
+  { x1: 64, x2: 45, y: 1 },
+  { x1: 69, x2: 49, y: 1 },
+  { x1: 65, x2: 46, y: 1 },
+  { x1: 57, x2: 45, y: 1 },
+  { x1: 63, x2: 47, y: 1 },
+  { x1: 49, x2: 33, y: 1 },
+];
+
+// Axis ranges (with padding)
+const X1_MIN = 38, X1_MAX = 75;
+const X2_MIN = 5,  X2_MAX = 56;
+
+// ============================================================
+// UTILITY
+// ============================================================
+function toCanvasX(x1, W) {
+  return 50 + (x1 - X1_MIN) / (X1_MAX - X1_MIN) * (W - 70);
+}
+function toCanvasY(x2, H) {
+  return (H - 40) - (x2 - X2_MIN) / (X2_MAX - X2_MIN) * (H - 60);
+}
+function predict(w0, w1, w2, x1, x2) {
+  return (w0 + w1 * x1 + w2 * x2) >= 0 ? 1 : 0;
+}
+function fmt(n) { return n.toFixed(3); }
+
+// ============================================================
+// CANVAS 1 – INTERACTIVE BOUNDARY
+// ============================================================
+const bCanvas = document.getElementById('boundary-canvas');
+const bCtx    = bCanvas.getContext('2d');
+const W = bCanvas.width, H = bCanvas.height;
+
+function drawBoundary(w0, w1, w2) {
+  bCtx.clearRect(0, 0, W, H);
+
+  // Background zones
+  bCtx.fillStyle = '#0f1a2a'; bCtx.fillRect(0, 0, W, H);
+
+  // Axes
+  bCtx.strokeStyle = '#30363d'; bCtx.lineWidth = 1;
+  // Grid
+  for (let gx = X1_MIN; gx <= X1_MAX; gx += 5) {
+    const cx = toCanvasX(gx, W);
+    bCtx.beginPath(); bCtx.moveTo(cx, 10); bCtx.lineTo(cx, H-35); bCtx.stroke();
+    bCtx.fillStyle = '#8b949e'; bCtx.font = '10px monospace'; bCtx.textAlign = 'center';
+    bCtx.fillText(gx, cx, H - 20);
+  }
+  for (let gy = X2_MIN; gy <= X2_MAX; gy += 5) {
+    const cy = toCanvasY(gy, H);
+    bCtx.beginPath(); bCtx.moveTo(48, cy); bCtx.lineTo(W-10, cy); bCtx.stroke();
+    bCtx.fillStyle = '#8b949e'; bCtx.font = '10px monospace'; bCtx.textAlign = 'right';
+    bCtx.fillText(gy, 44, cy + 4);
+  }
+
+  // Axis labels
+  bCtx.fillStyle = '#8b949e'; bCtx.font = '11px Georgia'; bCtx.textAlign = 'center';
+  bCtx.fillText('x₁ Kelchblattlänge', W/2, H - 5);
+  bCtx.save(); bCtx.translate(12, H/2); bCtx.rotate(-Math.PI/2);
+  bCtx.fillText('x₂ Kronblattlänge', 0, 0); bCtx.restore();
+
+  // Decision boundary line (w0 + w1*x1 + w2*x2 = 0 => x2 = -(w0+w1*x1)/w2)
+  if (Math.abs(w2) > 0.001) {
+    bCtx.strokeStyle = '#58a6ff'; bCtx.lineWidth = 2.5; bCtx.setLineDash([6, 4]);
+    bCtx.beginPath();
+    const x2_at_min = -(w0 + w1 * X1_MIN) / w2;
+    const x2_at_max = -(w0 + w1 * X1_MAX) / w2;
+    bCtx.moveTo(toCanvasX(X1_MIN, W), toCanvasY(x2_at_min, H));
+    bCtx.lineTo(toCanvasX(X1_MAX, W), toCanvasY(x2_at_max, H));
+    bCtx.stroke();
+    bCtx.setLineDash([]);
+  }
+
+  // Data points
+  let correct = 0, wrong = 0;
+  irisData.forEach(d => {
+    const pred = predict(w0, w1, w2, d.x1, d.x2);
+    const isCorrect = pred === d.y;
+    if (isCorrect) correct++; else wrong++;
+    const cx = toCanvasX(d.x1, W);
+    const cy = toCanvasY(d.x2, H);
+    bCtx.beginPath();
+    if (d.y === 0) {
+      // Setosa – circle
+      bCtx.arc(cx, cy, 7, 0, Math.PI * 2);
+      bCtx.fillStyle = isCorrect ? '#3b82f6' : '#f85149';
+      bCtx.fill();
+      bCtx.strokeStyle = isCorrect ? '#93c5fd' : '#fca5a5';
+    } else {
+      // Versicolor – diamond
+      bCtx.moveTo(cx, cy - 8);
+      bCtx.lineTo(cx + 7, cy);
+      bCtx.lineTo(cx, cy + 8);
+      bCtx.lineTo(cx - 7, cy);
+      bCtx.closePath();
+      bCtx.fillStyle = isCorrect ? '#f97316' : '#f85149';
+      bCtx.fill();
+      bCtx.strokeStyle = isCorrect ? '#fed7aa' : '#fca5a5';
+    }
+    bCtx.lineWidth = 1.5; bCtx.stroke();
+  });
+
+  // Stats
+  document.getElementById('stat-correct').textContent = correct;
+  document.getElementById('stat-wrong').textContent   = wrong;
+  document.getElementById('stat-accuracy').textContent = (correct / irisData.length * 100).toFixed(1) + '%';
+
+  // Boundary equation
+  const slope = (-w1/w2).toFixed(3);
+  const intercept = (-w0/w2).toFixed(3);
+  const eq = Math.abs(w2) > 0.001
+    ? `x₂ = ${slope}·x₁ + ${intercept}`
+    : `w₂ ≈ 0 (keine gültige Grenze)`;
+  document.getElementById('boundary-eq').textContent = eq;
+}
+
+// Slider bindings
+['w0','w1','w2'].forEach(key => {
+  const sl  = document.getElementById('sl-' + key);
+  const lbl = document.getElementById('lbl-' + key);
+  sl.addEventListener('input', () => {
+    lbl.textContent = parseFloat(sl.value).toFixed(2);
+    redrawBoundary();
+  });
+});
+
+function redrawBoundary() {
+  const w0 = parseFloat(document.getElementById('sl-w0').value);
+  const w1 = parseFloat(document.getElementById('sl-w1').value);
+  const w2 = parseFloat(document.getElementById('sl-w2').value);
+  drawBoundary(w0, w1, w2);
+}
+
+document.getElementById('btn-reset-w').addEventListener('click', () => {
+  document.getElementById('sl-w0').value = 0.10;
+  document.getElementById('sl-w1').value = -0.60;
+  document.getElementById('sl-w2').value = 0.90;
+  ['w0','w1','w2'].forEach(k => {
+    document.getElementById('lbl-'+k).textContent = parseFloat(document.getElementById('sl-'+k).value).toFixed(2);
+  });
+  redrawBoundary();
+});
+
+redrawBoundary();
+
+// ============================================================
+// CALCULATION TABLE (Aufgabe 2)
+// ============================================================
+const W0_A2 = 0.1, W1_A2 = -0.6, W2_A2 = 0.9;
+const tbody = document.getElementById('calc-tbody');
+const tableData = [
+  { x1: 4.9, x2: 1.4, y: 0 },
+  { x1: 4.6, x2: 1.5, y: 0 },
+  { x1: 5.4, x2: 1.7, y: 0 },
+  { x1: 4.8, x2: 1.9, y: 0 },
+  { x1: 5.1, x2: 3.0, y: 1 },
+  { x1: 5.6, x2: 3.6, y: 1 },
+  { x1: 5.8, x2: 3.9, y: 1 },
+  { x1: 6.4, x2: 4.3, y: 1 },
+  { x1: 6.0, x2: 5.1, y: 1 },
+];
+
+tableData.forEach((d, idx) => {
+  const z = W0_A2 + W1_A2 * d.x1 + W2_A2 * d.x2;
+  const correctOut = z >= 0 ? 1 : 0;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>d<sub>${idx}</sub></td>
+    <td>${d.x1}</td>
+    <td>${d.x2}</td>
+    <td>${d.y}</td>
+    <td style="font-family:monospace;">${z.toFixed(2)}</td>
+    <td><input type="number" min="0" max="1" step="1" placeholder="0/1"
+               style="width:60px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;
+                      padding:0.3rem 0.4rem;color:var(--text);font-family:monospace;font-size:0.9rem;"
+               data-correct="${correctOut}" oninput="checkTableInput(this)"></td>
+    <td class="feedback-cell">–</td>
+  `;
+  tbody.appendChild(tr);
+});
+
+function checkTableInput(inp) {
+  const v = parseInt(inp.value);
+  const correct = parseInt(inp.dataset.correct);
+  const cell = inp.closest('tr').querySelector('.feedback-cell');
+  if (isNaN(v)) { cell.textContent = '–'; cell.className = 'feedback-cell'; return; }
+  if (v === correct) { cell.textContent = '✓ Richtig'; cell.className = 'feedback-cell correct'; }
+  else               { cell.textContent = '✗ Falsch'; cell.className = 'feedback-cell wrong'; }
+}
+
+// ============================================================
+// CANVAS 2 – TRAINING ANIMATION
+// ============================================================
+const tCanvas = document.getElementById('train-canvas');
+const tCtx    = tCanvas.getContext('2d');
+
+let trainState = { w0: 0, w1: 1, w2: 1, epoch: 0, running: false, timer: null, converged: false };
+let epochLog   = [];
+
+function drawTrainCanvas(w0, w1, w2) {
+  tCtx.clearRect(0, 0, W, H);
+  tCtx.fillStyle = '#0f1a2a'; tCtx.fillRect(0, 0, W, H);
+
+  // Grid
+  tCtx.strokeStyle = '#30363d'; tCtx.lineWidth = 1;
+  for (let gx = X1_MIN; gx <= X1_MAX; gx += 5) {
+    const cx = toCanvasX(gx, W);
+    tCtx.beginPath(); tCtx.moveTo(cx, 10); tCtx.lineTo(cx, H-35); tCtx.stroke();
+    tCtx.fillStyle = '#8b949e'; tCtx.font = '10px monospace'; tCtx.textAlign = 'center';
+    tCtx.fillText(gx, cx, H-20);
+  }
+  for (let gy = X2_MIN; gy <= X2_MAX; gy += 5) {
+    const cy = toCanvasY(gy, H);
+    tCtx.beginPath(); tCtx.moveTo(48, cy); tCtx.lineTo(W-10, cy); tCtx.stroke();
+    tCtx.fillStyle = '#8b949e'; tCtx.font = '10px monospace'; tCtx.textAlign = 'right';
+    tCtx.fillText(gy, 44, cy + 4);
+  }
+
+  // Decision boundary
+  if (Math.abs(w2) > 0.001) {
+    tCtx.strokeStyle = '#58a6ff'; tCtx.lineWidth = 2.5; tCtx.setLineDash([6,4]);
+    tCtx.beginPath();
+    tCtx.moveTo(toCanvasX(X1_MIN, W), toCanvasY(-(w0+w1*X1_MIN)/w2, H));
+    tCtx.lineTo(toCanvasX(X1_MAX, W), toCanvasY(-(w0+w1*X1_MAX)/w2, H));
+    tCtx.stroke(); tCtx.setLineDash([]);
+  }
+
+  // Points
+  let errors = 0;
+  irisData.forEach(d => {
+    const pred = predict(w0, w1, w2, d.x1, d.x2);
+    const isCorrect = pred === d.y;
+    if (!isCorrect) errors++;
+    const cx = toCanvasX(d.x1, W), cy = toCanvasY(d.x2, H);
+    tCtx.beginPath();
+    if (d.y === 0) {
+      tCtx.arc(cx, cy, 7, 0, Math.PI*2);
+      tCtx.fillStyle = isCorrect ? '#3b82f6' : '#f85149';
+      tCtx.fill();
+      tCtx.strokeStyle = isCorrect ? '#93c5fd' : '#fca5a5';
+    } else {
+      tCtx.moveTo(cx, cy-8); tCtx.lineTo(cx+7, cy);
+      tCtx.lineTo(cx, cy+8); tCtx.lineTo(cx-7, cy); tCtx.closePath();
+      tCtx.fillStyle = isCorrect ? '#f97316' : '#f85149';
+      tCtx.fill();
+      tCtx.strokeStyle = isCorrect ? '#fed7aa' : '#fca5a5';
+    }
+    tCtx.lineWidth = 1.5; tCtx.stroke();
+  });
+  return errors;
+}
+
+function initTraining() {
+  stopAuto();
+  trainState.w0  = parseFloat(document.getElementById('sl-tw0').value);
+  trainState.w1  = parseFloat(document.getElementById('sl-tw1').value);
+  trainState.w2  = parseFloat(document.getElementById('sl-tw2').value);
+  trainState.epoch = 0;
+  trainState.converged = false;
+  epochLog = [];
+
+  const errs = drawTrainCanvas(trainState.w0, trainState.w1, trainState.w2);
+  updateTrainStats(errs);
+  document.getElementById('training-log').innerHTML = '<span style="color:var(--accent2)">▶ Initialisiert. Bereit zum Training.</span>';
+  document.getElementById('epoch-chips').innerHTML = '';
+  updateProgress(0);
+}
+
+function runEpoch() {
+  if (trainState.converged) return;
+  const eta = parseFloat(document.getElementById('sl-eta').value);
+  const old = { w0: trainState.w0, w1: trainState.w1, w2: trainState.w2 };
+
+  let log = '';
+  let epochErrors = 0;
+  irisData.forEach((d, i) => {
+    const z    = trainState.w0 + trainState.w1 * d.x1 + trainState.w2 * d.x2;
+    const pred = z >= 0 ? 1 : 0;
+    const err  = d.y - pred;
+    if (err !== 0) {
+      epochErrors++;
+      log += `<div class="error-line">  d${i}: y=${d.y} Ausgabe=${pred} → Fehler=${err}</div>`;
+      trainState.w0 += eta * err;
+      trainState.w1 += eta * err * d.x1;
+      trainState.w2 += eta * err * d.x2;
+    } else {
+      log += `<div class="ok-line">  d${i}: ✓ korrekt</div>`;
+    }
+  });
+
+  trainState.epoch++;
+  epochLog.push(epochErrors);
+
+  const errs = drawTrainCanvas(trainState.w0, trainState.w1, trainState.w2);
+  updateTrainStats(errs);
+
+  const unchanged = (trainState.w0 === old.w0 && trainState.w1 === old.w1 && trainState.w2 === old.w2);
+  if (unchanged) {
+    trainState.converged = true;
+    appendLog(`<div class="epoch-line">Epoche ${trainState.epoch}: ${epochErrors} Fehler [KONVERGIERT ✓]</div>` + log);
+    stopAuto();
+  } else {
+    appendLog(`<div class="epoch-line">Epoche ${trainState.epoch}: ${epochErrors} Fehler</div>` + log);
+  }
+
+  updateEpochChips();
+  updateProgress(Math.min(trainState.epoch * 10, 100));
+}
+
+function appendLog(html) {
+  const lg = document.getElementById('training-log');
+  lg.innerHTML += html;
+  lg.scrollTop = lg.scrollHeight;
+}
+
+function updateTrainStats(errors) {
+  document.getElementById('t-epoch').textContent  = trainState.epoch;
+  document.getElementById('t-errors').textContent = errors;
+  document.getElementById('t-w0').textContent     = fmt(trainState.w0);
+  document.getElementById('t-w1').textContent     = fmt(trainState.w1);
+  document.getElementById('t-w2').textContent     = fmt(trainState.w2);
+}
+
+function updateEpochChips() {
+  const el = document.getElementById('epoch-chips');
+  el.innerHTML = epochLog.map((e, i) => {
+    const cls = e === 0 ? 'done' : (i === epochLog.length-1 ? 'active' : '');
+    return `<div class="epoch-chip ${cls}">E${i+1}: ${e} Fehler</div>`;
+  }).join('');
+}
+
+function startAuto() {
+  if (trainState.converged) return;
+  trainState.running = true;
+  document.getElementById('btn-train-auto').disabled = true;
+  document.getElementById('btn-train-stop').disabled = false;
+  trainState.timer = setInterval(() => {
+    if (trainState.converged || trainState.epoch >= 50) { stopAuto(); return; }
+    runEpoch();
+  }, 600);
+}
+
+function stopAuto() {
+  clearInterval(trainState.timer);
+  trainState.running = false;
+  document.getElementById('btn-train-auto').disabled = false;
+  document.getElementById('btn-train-stop').disabled = true;
+}
+
+function updateProgress(pct) {
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+// Slider bindings for training canvas
+['eta','tw0','tw1','tw2'].forEach(key => {
+  const sl  = document.getElementById('sl-' + key);
+  const lbl = document.getElementById('lbl-' + key);
+  sl.addEventListener('input', () => {
+    lbl.textContent = parseFloat(sl.value).toFixed(2);
+  });
+});
+
+document.getElementById('btn-train-init').addEventListener('click', initTraining);
+document.getElementById('btn-train-step').addEventListener('click', runEpoch);
+document.getElementById('btn-train-auto').addEventListener('click', startAuto);
+document.getElementById('btn-train-stop').addEventListener('click', stopAuto);
+
+// Init on load
+initTraining();
+</script>
+
+</body>
+</html>
