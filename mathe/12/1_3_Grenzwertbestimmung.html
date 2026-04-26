@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grenzwerte der Exponentialfunktion</title>
+
+<!-- Einbindung des externen Stylesheets -->
+<link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+
+<!-- MathJax für mathematische Formeln -->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+/* --- STILE AUS DER VORLAGE (ÜBERSCHRIFTEN-HÖHEN) --- */
+.hero { padding: 15px 0; }
+.hero-title { font-size: 3rem; margin-bottom: 5px; }
+.hero-subtitle { margin-top: 0; font-size: 0.9rem; }
+
+.chapter-header { padding: 10px 15px; }
+.chapter-number { font-size: 0.8rem; margin-bottom: 2px; }
+.chapter-header h3 { margin: 2px 0; }
+
+/* --- BESTEHENDE FUNKTIONALE STILE --- */
+.card-task { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin: 20px 0; border: 1px solid #eee; }
+.task-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
+
+.task-column { flex: 1; min-width: 200px; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 3px solid #a0c4ff; }
+.option-item { margin: 10px 0; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+
+.check-btn { background-color: #0056b3; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; width: auto; }
+.check-btn:hover { background-color: #004494; }
+
+.feedback { margin-top: 15px; padding: 10px; display: none; text-align: left; min-height: 20px; }
+.feedback-wrong { color: #dc3545; font-weight: bold; }
+.feedback-correct { color: #28a745; font-weight: bold; }
+.feedback-orange { color: #fd7e14; font-weight: bold; } 
+
+.wrong-mark { color: #dc3545; font-weight: bold; margin-left: 5px; }
+.correct-mark { color: #28a745; font-weight: bold; margin-left: 5px; }
+
+.svg-stack { position: relative; width: 400px; height: 260px; margin: 5px auto; }
+.svg-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; padding: 10px; border-radius: 8px; text-align: center; }
+
+#hidden-svg-task1 { display: none; z-index: 10; }
+#task2-section, #info-box-final, #nav-footer-final { display: none; } 
+
+.interactive-container { background: none; padding: 0; margin: 10px 0; text-align: center; }
+canvas { background: white; border: 1px solid #ccc; max-width: 100%; height: auto; border-radius: 4px; }
+.controls { margin-bottom: 10px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.slider-group { display: flex; align-items: center; gap: 10px; }
+.btn-view { padding: 5px 12px; border: 1px solid #0056b3; border-radius: 4px; cursor: pointer; background: white; color: #0056b3; font-size: 0.85rem; }
+.btn-view.active { background: #0056b3; color: white; }
+
+.checkbox-group { text-align: left; margin: 15px 0; padding: 0; background: none; border: none; }
+.checkbox-group b { display: block; margin-bottom: 10px; }
+.checkbox-container-2col { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 15px; }
+.checkbox-col { flex: 1; min-width: 280px; }
+.checkbox-group label { display: block; margin-bottom: 10px; cursor: pointer; font-size: 0.95rem; } 
+
+.info-box { padding: 10px 20px !important; margin-top: 20px; }
+
+.nav-footer { display: flex; justify-content: flex-end; margin-top: 30px; padding-bottom: 40px; }
+.btn-next { background-color: #28a745; color: white !important; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<section class="hero mb-4">
+    <h3 class="hero-title">e-Funktion und ln-Funktion</h3>
+    <p class="hero-subtitle">Mathematik 12. Klasse – Gymnasium Bayern</p>
+</section>
+
+<header class="chapter-header">
+    <span class="chapter-number">Kapitel 1</span>
+    <h3>Die natürliche Exponentialfunktion</h3>
+</header>
+
+<!-- Aufgabe 1 -->
+<div class="card-task" id="task1-section">
+    <h4>Aufgabe 1: Untersuchung der Grenzwerte</h4>
+    <p>Nutzen Sie den Graphen der natürlichen Exponentialfunktion \( f(x) = e^x \), um das Verhalten an den Rändern des Definitionsbereichs \( D_f = \mathbb{R} \) zu bestimmen:</p>
+
+    <div class="svg-stack">
+        <div id="initial-svg-task1" class="svg-container">
+            <svg width="400" height="250" viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
+                <line x1="20" y1="200" x2="380" y2="200" stroke="black" stroke-width="2" />
+                <line x1="200" y1="230" x2="200" y2="20" stroke="black" stroke-width="2" />
+                <path d="M380 200 l-10 -5 v10 z" fill="black" />
+                <path d="M200 20 l-5 10 h10 z" fill="black" />
+                <text x="385" y="215" font-family="serif" font-style="italic">x</text>
+                <text x="180" y="25" font-family="serif" font-style="italic">y</text>
+                <path d="M 20 199.5 C 100 199.5, 170 198, 200 160 C 225 110, 245 60, 260 10" fill="none" stroke="#0056b3" stroke-width="3" />
+            </svg>
+        </div>
+
+        <div id="hidden-svg-task1" class="svg-container">
+            <svg width="400" height="250" viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
+                <line x1="20" y1="200" x2="380" y2="200" stroke="black" stroke-width="2" />
+                <line x1="200" y1="230" x2="200" y2="20" stroke="black" stroke-width="2" />
+                <path d="M380 200 l-10 -5 v10 z" fill="black" />
+                <path d="M200 20 l-5 10 h10 z" fill="black" />
+                <text x="385" y="215" font-family="serif" font-style="italic">x</text>
+                <text x="180" y="25" font-family="serif" font-style="italic">y</text>
+                <line x1="25" y1="200" x2="200" y2="200" stroke="red" stroke-width="5" stroke-dasharray="6" />
+                <text x="30" y="225" font-family="sans-serif" font-size="12" fill="red" font-weight="bold">Waagrechte Asymptote (y=0)</text>
+                <path d="M 20 199.5 C 100 199.5, 170 198, 200 160 C 225 110, 245 60, 260 10" fill="none" stroke="#0056b3" stroke-width="3" />
+            </svg>
+        </div>
+    </div>
+
+    <div class="task-row">
+        <div class="task-column">
+            <strong>\( \lim_{x \to -\infty} e^x = \)</strong>
+            <label class="option-item"><input type="radio" name="lim_neg" value="0"> <span>\( 0 \)</span></label>
+            <label class="option-item"><input type="radio" name="lim_neg" value="inf"> <span>\( +\infty \)</span></label>
+            <label class="option-item"><input type="radio" name="lim_neg" value="ninf"> <span>\( -\infty \)</span></label>
+        </div>
+        <div class="task-column">
+            <strong>\( \lim_{x \to +\infty} e^x = \)</strong>
+            <label class="option-item"><input type="radio" name="lim_pos" value="0"> <span>\( 0 \)</span></label>
+            <label class="option-item"><input type="radio" name="lim_pos" value="inf"> <span>\( +\infty \)</span></label>
+            <label class="option-item"><input type="radio" name="lim_pos" value="ninf"> <span>\( -\infty \)</span></label>
+        </div>
+    </div>
+
+    <button class="check-btn" onclick="checkTask1()">Ergebnis prüfen</button>
+    <div id="feedback1" class="feedback"></div>
+</div>
+
+<!-- Aufgabe 2 -->
+<div id="task2-section">
+    <div class="card-task">
+        <h4> Aufgabe 2: Wachstumsgeschwindigkeit im Vergleich </h4>
+        <p> Vergleichen Sie \( f(x) = e^x \) mit einer Potenzfunktion \( g(x) = x^r \). Die \(e\)-Funktion wächst langfristig stärker als jede Potenzfunktion \( x^r \):</p>
+        
+        <div class="interactive-container">
+            <div class="controls">
+                <div class="slider-group">
+                    <label for="exponentSlider">Exponent \( r \): </label>
+                    <input type="range" id="exponentSlider" min="1" max="6" step="0.5" value="3">
+                    <span id="exponentValue">3.0</span>
+                </div>
+                <div>
+                    <button id="btnNear" class="btn-view active" onclick="setView('near')">Nahansicht</button>
+                    <button id="btnFar" class="btn-view" onclick="setView('far')">Fernansicht</button>
+                </div>
+            </div>
+            <canvas id="growthCanvas" width="500" height="300"></canvas>
+            <p><small><span style="color: blue; font-weight: bold;">—</span> \( e^x \) &nbsp;&nbsp; <span style="color: red; font-weight: bold;">—</span> \( x^r \)</small></p>
+            
+            <div class="checkbox-group">
+                <b>Beobachtungen am Graphen bewerten:</b>
+                <div class="checkbox-container-2col">
+                    <div class="checkbox-col">
+                        <label><input type="checkbox" name="obs" value="e_fast"> Die e-Funktion steigt langfristig schneller als die Potenzfunktion.</label>
+                        <label><input type="checkbox" name="obs" value="poly_above"> Jede Potenzfunktion \( x^r \) verläuft im Unendlichen oberhalb von \( e^x \).</label>
+                        <label><input type="checkbox" name="obs" value="e_overtakes"> Es gibt immer einen Punkt, ab dem \( e^x \) die Potenzfunktion endgültig überholt.</label>
+                        <label><input type="checkbox" name="obs" value="no_intersect"> Die beiden Graphen haben unabhängig von \( r \) niemals einen Schnittpunkt.</label>
+                    </div>
+                    <div class="checkbox-col">
+                        <label><input type="checkbox" name="obs" value="e_above"> Für sehr große \( x \)-Werte liegt der Graph von \( e^x \) oberhalb von \( x^r \).</label>
+                        <label><input type="checkbox" name="obs" value="fixed_intersect"> Die beiden Graphen haben für alle \( r > 0 \) genau einen Schnittpunkt.</label>
+                        <label><input type="checkbox" name="obs" value="e_wins"> Die e-Funktion „gewinnt“ langfristig immer gegen Potenzfunktionen.</label>
+                        <label><input type="checkbox" name="obs" value="poly_fast"> Ab einem sehr großen Exponenten \( r \) steigt \( x^r \) dauerhaft schneller als \( e^x \).</label>
+                    </div>
+                </div>
+                <button class="check-btn" onclick="checkObservations()">Beobachtungen prüfen</button>
+                <div id="obs-feedback" class="feedback"></div>
+            </div>
+        </div>
+
+        <p>Mit diesem Wissen können wir nun die folgenden drei Grenzwerte ermitteln:</p>
+
+        <div class="task-row">
+            <div class="task-column">
+                <strong>\( \lim_{x \to +\infty} \frac{x^r}{e^x} = \)</strong>
+                <label class="option-item"><input type="radio" name="growth_frac" value="0"> <span>\( 0 \)</span></label>
+                <label class="option-item"><input type="radio" name="growth_frac" value="inf"> <span>\( +\infty \)</span></label>
+                <label class="option-item"><input type="radio" name="growth_frac" value="ninf"> <span>\( -\infty \)</span></label>
+            </div>
+            <div class="task-column">
+                <strong>\( \lim_{x \to +\infty} (e^x - x^r) = \)</strong>
+                <label class="option-item"><input type="radio" name="growth_diff" value="0"> <span>\( 0 \)</span></label>
+                <label class="option-item"><input type="radio" name="growth_diff" value="inf"> <span>\( +\infty \)</span></label>
+                <label class="option-item"><input type="radio" name="growth_diff" value="ninf"> <span>\( -\infty \)</span></label>
+            </div>
+            <div class="task-column">
+                <strong>\( \lim_{x \to -\infty} (x^r \cdot e^x) = \)</strong>
+                <label class="option-item"><input type="radio" name="growth_prod" value="0"> <span>\( 0 \)</span></label>
+                <label class="option-item"><input type="radio" name="growth_prod" value="inf"> <span>\( +\infty \)</span></label>
+                <label class="option-item"><input type="radio" name="growth_prod" value="ninf"> <span>\( -\infty \)</span></label>
+            </div>
+        </div>
+
+        <button class="check-btn" onclick="checkLimits()">Grenzwerte prüfen</button>
+        <div id="feedback2" class="feedback"></div>
+    </div>
+
+    <!-- Grundlagenkasten -->
+    <div id="info-box-final" class="info-box">
+        <h4>Wichtige Grundlagen</h4>
+        <p>\( \lim_{x \to +\infty} e^x = \infty \) <span style="display: inline-block; width: 60px;"></span> \( \lim_{x \to -\infty} e^x = 0 \)</p>
+        <p style="margin-top: 5px;">Die negative x-Achse ist waagrechte Asymptote.</p>
+        <p><strong>Dominanz:</strong> Die \( e \)-Funktion wächst stärker als jede Potenzfunktion \( x^r \).</p>
+        <p><span style="display: inline-block; width: 83px;"></span><strong>Die e-Funktion gewinnt immer!</strong></p>
+    </div>
+</div>
+
+<div id="nav-footer-final" class="nav-footer">
+    <a href="2_UmkehrfunktionGraphisch.html" class="btn-next">Weiter zu Umkehrfunktion graphisch &rarr;</a>
+</div>
+
+</div>
+
+<script>
+let task2ObsCorrect = false;
+let task2LimitsCorrect = false;
+
+function checkTask2Completion() {
+    if (task2ObsCorrect && task2LimitsCorrect) {
+        document.getElementById('info-box-final').style.display = "block";
+        document.getElementById('nav-footer-final').style.display = "flex";
+    }
+}
+
+function checkTask1() {
+    const neg = document.querySelector('input[name="lim_neg"]:checked');
+    const pos = document.querySelector('input[name="lim_pos"]:checked');
+    const feedback = document.getElementById('feedback1');
+    const task2 = document.getElementById('task2-section');
+    const initialSvg = document.getElementById('initial-svg-task1');
+    const hiddenSvg = document.getElementById('hidden-svg-task1');
+
+    if (!neg || !pos) { 
+        feedback.innerHTML = "<strong>Bitte wählen Sie Antworten aus.</strong>"; 
+        feedback.className="feedback feedback-wrong"; 
+    } else if (neg.value === "0" && pos.value === "inf") { 
+        feedback.innerHTML = "<strong>Richtig! Die negative x-Achse ist die waagrechte Asymptote (y=0).</strong>"; 
+        feedback.className="feedback feedback-correct";
+        initialSvg.style.display = "none";
+        hiddenSvg.style.display = "block";
+        task2.style.display = "block"; 
+        draw();
+    } else { 
+        feedback.innerHTML = "<strong>Falsch, betrachten Sie den Verlauf des Graphen genau.</strong>"; 
+        feedback.className="feedback feedback-wrong"; 
+    }
+    feedback.style.display = "block";
+}
+
+const canvas = document.getElementById('growthCanvas');
+const ctx = canvas.getContext('2d');
+const slider = document.getElementById('exponentSlider');
+const valLabel = document.getElementById('exponentValue');
+let currentView = 'near';
+
+function setView(view) {
+    currentView = view;
+    document.getElementById('btnNear').classList.toggle('active', view === 'near');
+    document.getElementById('btnFar').classList.toggle('active', view === 'far');
+    draw();
+}
+
+function drawArrow(x1, y1, x2, y2) {
+    const headlen = 10;
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.lineTo(x2 - headlen * Math.cos(angle - Math.PI / 6), y2 - headlen * Math.sin(angle - Math.PI / 6));
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - headlen * Math.cos(angle + Math.PI / 6), y2 - headlen * Math.sin(angle + Math.PI / 6));
+    ctx.stroke();
+}
+
+function draw() {
+    if (document.getElementById('task2-section').style.display === "none") return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const r = parseFloat(slider.value);
+    valLabel.innerText = r.toFixed(1);
+    const padding = 45;
+    const width = canvas.width - 2 * padding;
+    const height = canvas.height - 2 * padding;
+
+    ctx.strokeStyle = '#000'; ctx.lineWidth = 1.5;
+    drawArrow(padding, canvas.height - padding, canvas.width - 15, canvas.height - padding);
+    drawArrow(padding, canvas.height - padding, padding, 15);
+
+    ctx.font = "italic 16px serif"; ctx.fillStyle = "black";
+    ctx.fillText("x", canvas.width - 25, canvas.height - padding + 20);
+    ctx.fillText("y", padding - 25, 25);
+
+    let maxX = (currentView === 'near') ? 8 : 45;
+    let maxY = (currentView === 'near') ? 80 : 35000000; 
+
+    // Skalierungstiefe
+    ctx.font = "10px sans-serif";
+    ctx.textAlign = "center";
+    const xStep = (currentView === 'near') ? 2 : 10;
+    for(let val = xStep; val < maxX; val += xStep) {
+        let sx = padding + (val/maxX) * width;
+        ctx.beginPath(); ctx.moveTo(sx, canvas.height-padding-3); ctx.lineTo(sx, canvas.height-padding+3); ctx.stroke();
+        ctx.fillText(val, sx, canvas.height-padding+15);
+    }
+    
+    ctx.textAlign = "right";
+    const yStep = (currentView === 'near') ? 20 : 10000000;
+    for(let val = yStep; val < maxY; val += yStep) {
+        let sy = canvas.height - padding - (val/maxY) * height;
+        ctx.beginPath(); ctx.moveTo(padding-3, sy); ctx.lineTo(padding+3, sy); ctx.stroke();
+        let label = (currentView === 'near') ? val : (val/1000000) + "M";
+        ctx.fillText(label, padding-8, sy+4);
+    }
+
+    function toScreenY(y) { return canvas.height - padding - (y / maxY) * height; }
+
+    ctx.beginPath(); ctx.strokeStyle = 'red'; ctx.lineWidth = 2;
+    for (let i = 0; i <= width; i++) {
+        let x = (i / width) * maxX;
+        let y = Math.pow(x, r);
+        let sy = toScreenY(y);
+        if (sy >= 15) { if (i === 0) ctx.moveTo(padding + i, sy); else ctx.lineTo(padding + i, sy); }
+    }
+    ctx.stroke();
+
+    ctx.beginPath(); ctx.strokeStyle = 'blue'; ctx.lineWidth = 2;
+    for (let i = 0; i <= width; i++) {
+        let x = (i / width) * maxX;
+        let y = Math.exp(x);
+        let sy = toScreenY(y);
+        if (sy >= 15) { if (i === 0) ctx.moveTo(padding + i, sy); else ctx.lineTo(padding + i, sy); }
+    }
+    ctx.stroke();
+}
+slider.addEventListener('input', draw);
+
+function checkObservations() {
+    const feedback = document.getElementById('obs-feedback');
+    const checkboxes = document.querySelectorAll('input[name="obs"]');
+    const correctOnes = ["e_fast", "e_overtakes", "e_above", "e_wins"];
+    let anySelectedIncorrect = false;
+    let anyChecked = false;
+    let countCorrectSelected = 0;
+
+    checkboxes.forEach(cb => {
+        const label = cb.parentElement;
+        const isCorrectChoice = correctOnes.includes(cb.value);
+        const isChecked = cb.checked;
+        const existingMark = label.querySelector('.wrong-mark, .correct-mark');
+        if (existingMark) existingMark.remove();
+        if (isChecked) {
+            anyChecked = true;
+            const span = document.createElement('span');
+            if (isCorrectChoice) { span.className = 'correct-mark'; span.innerText = ' (Richtig)'; countCorrectSelected++; }
+            else { anySelectedIncorrect = true; span.className = 'wrong-mark'; span.innerText = ' (Falsch)'; }
+            label.appendChild(span);
+        }
+    });
+
+    if (!anyChecked) { 
+        feedback.innerHTML = "<strong>Wählen Sie etwas aus.</strong>"; 
+        feedback.className = "feedback feedback-wrong"; 
+        task2ObsCorrect = false;
+    } else if (anySelectedIncorrect) { 
+        feedback.innerHTML = "<strong>Einige Aussagen sind nicht korrekt.</strong>"; 
+        feedback.className = "feedback feedback-wrong"; 
+        task2ObsCorrect = false;
+    } else if (countCorrectSelected < correctOnes.length) {
+        feedback.innerHTML = "<strong>Die gewählten Aussagen sind richtig, aber es fehlen noch weitere richtige Beobachtungen.</strong>";
+        feedback.className = "feedback feedback-orange";
+        task2ObsCorrect = false;
+    } else { 
+        feedback.innerHTML = "<strong>Richtig! Die e-Funktion dominiert jede Potenzfunktion.</strong>"; 
+        feedback.className = "feedback feedback-correct"; 
+        task2ObsCorrect = true;
+        checkTask2Completion();
+    }
+    feedback.style.display = "block";
+}
+
+function checkLimits() {
+    const frac = document.querySelector('input[name="growth_frac"]:checked');
+    const diff = document.querySelector('input[name="growth_diff"]:checked');
+    const prod = document.querySelector('input[name="growth_prod"]:checked');
+    const feedback = document.getElementById('feedback2');
+    
+    if (!frac || !diff || !prod) { 
+        feedback.innerHTML = "<strong>Wählen Sie Antworten aus.</strong>"; 
+        feedback.className="feedback feedback-wrong"; 
+        task2LimitsCorrect = false;
+    } else if (frac.value === "0" && diff.value === "inf" && prod.value === "0") { 
+        feedback.innerHTML = "<strong>Richtig! Die e-Funktion gewinnt immer.</strong>"; 
+        feedback.className="feedback feedback-correct";
+        task2LimitsCorrect = true;
+        checkTask2Completion();
+    } else { 
+        feedback.innerHTML = "<strong>Falsch, denken Sie an die Dominanz.</strong>"; 
+        feedback.className="feedback feedback-wrong"; 
+        task2LimitsCorrect = false;
+    }
+    feedback.style.display = "block";
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Umkehrfunktion graphisch</title>
+
+<link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+
+<style>
+/* Aufgabenkarten */
+.card-task { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin: 20px 0; border: 1px solid #eee; position: relative; }
+
+.math-formula {
+    font-family: 'Times New Roman', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+}
+
+.info-box { padding: 10px 20px !important; margin-top: 20px; }
+.info-box h4 { margin-top: 0; margin-bottom: 5px; }
+
+/* Styling */
+.options-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+.option-item { display: flex; align-items: center; gap: 10px; padding: 12px; border: 2px solid #f0f0f0; border-radius: 8px; cursor: pointer; }
+
+.btn-check { background-color: #005b9a; color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; }
+.btn-check:hover { background-color: #004b7c; }
+
+/* Tabellen & Graphen */
+table { width: 100%; border-collapse: collapse; margin: 15px 0; background: #fff; }
+th, td { border: 1px solid #eee; padding: 12px; text-align: center; }
+th { background-color: #f8f9fa; font-weight: bold; }
+input[type="number"].table-input { width: 70px; padding: 5px; border: 1px solid #ccc; border-radius: 4px; text-align: center; }
+
+.graph-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 20px auto;
+    background: #fdfdfd;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.text-input-area { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; margin: 15px 0; font-family: inherit; resize: vertical; }
+
+/* Navigations-Button mit fixierter weißer Schriftfarbe */
+.nav-footer { display: flex; justify-content: flex-end; margin-top: 20px; padding-bottom: 20px; }
+.btn-next { background-color: #28a745; color: white !important; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+.btn-next:hover { background-color: #218838; color: white !important; }
+
+/* Container-Steuerung */
+#probieren-container, #table-card, #inverse-step, #merke-box { display: none; }
+.input-group { margin: 15px 0; display: flex; gap: 10px; align-items: center; }
+input[type="number"] { padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 60px; }
+
+#feedback1, #feedback2, #feedback3, #feedback4 { margin-top: 15px; font-weight: bold; min-height: 1.5em; line-height: 1.4; }
+
+/* Hero & Header */
+.hero { padding: 15px 0; }
+.hero-title { font-size: 3rem; margin-bottom: 5px; }
+.hero-subtitle { margin-top: 0; font-size: 0.9rem; }
+.chapter-header { padding: 10px 15px; }
+.chapter-number { font-size: 0.8rem; margin-bottom: 2px; }
+.chapter-header h3 { margin: 2px 0; }
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<section class="hero mb-4">
+<h3 class="hero-title">e-Funktion und ln-Funktion</h3>
+<p class="hero-subtitle">Mathematik 12. Klasse – Gymnasium Bayern</p>
+</section>
+
+<header class="chapter-header">
+<span class="chapter-number">Kapitel 2</span>
+<h3>Die Umkehrfunktion graphisch</h3>
+</header>
+
+<div class="card-task">
+<h4>Marktanalyse: Der Sneaker-Hype</h4>
+<p>Die Verkaufszahlen eines Sneakers (in 1000 Stück) folgen der Funktion: <strong class="math-formula">f(x) = e<sup>x</sup></strong> (x in Wochen).</p>
+</div>
+
+<!-- BLOCK 1 -->
+<div class="card-task" id="step1">
+<h4>Wann werden 20 000 Verkäufe erreicht?</h4>
+<h6>Schritt 1: Ansatz wählen</h6>
+<p>Wähle die <strong>richtige Gleichung</strong> aus, die man für die Untersuchung dieser Fragestellung verwendet.</p>
+
+<div class="options-container">
+    <label class="option-item"><input type="radio" name="eq" value="wrong1"> <span class="math-formula">e<sup>x</sup> = 20.000</span></label>
+    <label class="option-item"><input type="radio" name="eq" value="wrong2"> <span class="math-formula">x<sup>e</sup> = 20</span></label>
+    <label class="option-item"><input type="radio" name="eq" value="correct"> <span class="math-formula">e<sup>x</sup> = 20</span></label>
+    <label class="option-item"><input type="radio" name="eq" value="wrong3"> <span class="math-formula">e &middot; x = 20</span></label>
+    <label class="option-item"><input type="radio" name="eq" value="wrong4"> <span class="math-formula">e<sup>20</sup> = x</span></label>
+    <label class="option-item"><input type="radio" name="eq" value="wrong5"> <span class="math-formula">f(20) = e</span></label>
+</div>
+
+<button class="btn-check" onclick="checkStep1()">Gleichung prüfen</button>
+<p id="feedback1"></p>
+
+<div id="probieren-container">
+    <hr style="margin: 20px 0; border: 0; border-top: 2px dashed #eee;">
+    <h6>Schritt 2: Die Gleichung lösen</h6>
+    <p>Löse die Gleichung durch <strong>systematisches Probieren</strong>. Welcher ganzzahlige Wert für <span class="math-formula">x</span> kommt dem Zielwert am nächsten?</p>
+    <div class="input-group">
+        <span class="math-formula">x &approx;</span>
+        <input type="number" id="guess-input" placeholder="?">
+        <button class="btn-check" onclick="checkStep2()">Lösung prüfen</button>
+    </div>
+    <p id="feedback2"></p>
+</div>
+</div>
+
+<!-- BLOCK 2 -->
+<div class="card-task" id="table-card">
+    <h4>Wann werden 1000, 3000, 8000 oder ... Verkäufe erreicht?</h4>
+    <h6>Schritt 1: Berechnung einzelner Werte</h6>
+    <p>Bestimme die Zeitpunkte (in Wochen), an denen die folgenden Verkaufszahlen erreicht werden.</p>
+    
+    <table>
+        <tr><th>Verkäufe (in 1000)</th><td>1</td><td>3</td><td>8</td></tr>
+        <tr><th>Wochen (<span class="math-formula">x</span>)</th>
+            <td><input type="number" class="table-input" id="xval0" step="0.1"></td>
+            <td><input type="number" class="table-input" id="xval1" step="0.1"></td>
+            <td><input type="number" class="table-input" id="xval2" step="0.1"></td>
+        </tr>
+    </table>
+    
+    <button class="btn-check" onclick="checkTable()">Wochen prüfen</button>
+    <p id="feedback3"></p>
+
+    <div id="inverse-step">
+        <hr style="margin: 20px 0; border: 0; border-top: 2px dashed #eee;">
+        <h6>Schritt 2: Arbeiten mit der umgekehrten Zuordnung</h6>
+        <p>Bisher haben wir: Woche <span class="math-formula">(x) &#8614;</span> Verkäufe <span class="math-formula">(y)</span>. Der <b>blaue Graph</b> stellt diese Zuordnung dar.</p>
+        <p>Wir suchen: Verkäufe <span class="math-formula">&#8614;</span> Woche. In der Mathematik vertauschen wir hierfür die Rollen von <span class="math-formula">x</span> und <span class="math-formula">y</span>.</p>
+        
+        <div class="graph-container">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                      <path d="M 0 0 L 10 5 L 0 10 z" fill="black" />
+                    </marker>
+                </defs>
+                <line x1="20" y1="180" x2="195" y2="180" stroke="black" stroke-width="1" marker-end="url(#arrow)" />
+                <line x1="20" y1="180" x2="20" y2="5" stroke="black" stroke-width="1" marker-end="url(#arrow)" />
+                <text x="185" y="195" font-size="12" font-style="italic">x</text>
+                <text x="5" y="15" font-size="12" font-style="italic">y</text>
+
+                <line x1="20" y1="180" x2="180" y2="20" stroke="#ccc" stroke-dasharray="4" />
+                
+                <path d="M 20 170 Q 100 165 140 20" fill="none" stroke="#005b9a" stroke-width="2" />
+                <text x="145" y="30" fill="#005b9a" font-size="10" font-style="italic">Gf</text>
+                <path d="M 30 180 Q 35 100 180 60" fill="none" stroke="#e67e22" stroke-width="2" />
+                <text x="140" y="85" fill="#e67e22" font-size="10" font-style="italic">Gf-neu</text>
+            </svg>
+        </div>
+
+        <p>Betrachte die Graphen im Koordinatensystem. Wie gelangt man geometrisch vom ursprünglichen Graphen (blau) zum Graphen der <b>umgekehrten Zuordnung</b> (orange)?</p>
+        
+        <textarea id="geo-answer" class="text-input-area" placeholder="Beschreibe den geometrischen Vorgang..."></textarea>
+        
+        <button class="btn-check" onclick="checkInverseFreeText()">Antwort prüfen</button>
+        <p id="feedback4"></p>
+    </div>
+</div>
+
+<!-- ABSCHLIESSENDE INFO-BOX -->
+<div class="info-box" id="merke-box">
+    <h4>Wichtige Grundlagen</h4>
+    <p>Man erhält den Graphen einer Umkehrfunktion <strong>graphisch</strong>, indem man den Graphen der ursprünglichen Funktion an der Winkelhalbierenden <span class="math-formula">y = x</span> spiegelt.</p>
+</div>
+
+<div id="footer-nav" class="nav-footer">
+    <a href="3_1_lnFunktion.html" class="btn-next">Weiter zur ln-Funktion &rarr;</a>
+</div>
+
+</div>
+
+<script>
+function checkStep1() {
+    const selected = document.querySelector('input[name="eq"]:checked');
+    const feedback = document.getElementById('feedback1');
+    const probierenBox = document.getElementById('probieren-container');
+    if (selected && selected.value === "correct") {
+        feedback.innerHTML = "Richtig! Da f(x) in 1000 Stück angegeben ist, entspricht 20 000 dem Wert 20.";
+        feedback.style.color = "green";
+        probierenBox.style.display = "block";
+    } else {
+        feedback.innerHTML = "Das ist leider falsch. Achte auf die Einheiten.";
+        feedback.style.color = "red";
+        probierenBox.style.display = "none";
+    }
+}
+
+function checkStep2() {
+    const guess = document.getElementById('guess-input').value;
+    const feedback = document.getElementById('feedback2');
+    if (guess === "3") {
+        feedback.innerHTML = "Sehr gut! e³ &approx; 20,08. Damit werden nach ca. 3 Wochen 20 000 Verkäufe erreicht.<br>Da die Funktion f(x) = e<sup>x</sup> die Verkaufszahlen beschreibt, erhält man also durch Einsetzen verschiedener Werte für x die Verkaufszahl zur jeweiligen Woche (in 1000).";
+        feedback.style.color = "green";
+        document.getElementById('table-card').style.display = "block";
+    } else {
+        feedback.innerHTML = "Probiere es noch einmal (Tipp: e² &approx; 7,4).";
+        feedback.style.color = "red";
+    }
+}
+
+function checkTable() {
+    const x0 = parseFloat(document.getElementById('xval0').value);
+    const x1 = parseFloat(document.getElementById('xval1').value);
+    const x2 = parseFloat(document.getElementById('xval2').value);
+    const feedback = document.getElementById('feedback3');
+    const isCorrect0 = (x0 === 0);
+    const isCorrect1 = (Math.abs(x1 - 1.1) < 0.05);
+    const isCorrect2 = (Math.abs(x2 - 2.1) < 0.05);
+
+    if (isCorrect0 && isCorrect1 && isCorrect2) {
+        feedback.innerHTML = "Hervorragend! Du hast die Zeitpunkte korrekt eingegrenzt.";
+        feedback.style.color = "green";
+        document.getElementById('inverse-step').style.display = "block";
+    } else {
+        let msg = "Einige Zeitpunkte stimmen noch nicht ganz:";
+        if (!isCorrect0 && !isNaN(x0)) msg += "<br>• <b>Tipp für 1000 Verkäufe:</b> Für welches x gilt: e<sup>x</sup> = 1?";
+        if (!isCorrect1 && !isNaN(x1)) msg += "<br>• <b>Tipp für 3000 Verkäufe:</b> Für welches x gilt: e<sup>x</sup> = 3?";
+        if (!isCorrect2 && !isNaN(x2)) msg += "<br>• <b>Tipp für 8000 Verkäufe:</b> Für welches x gilt: e<sup>x</sup> = 8?";
+        feedback.innerHTML = msg;
+        feedback.style.color = "red";
+    }
+}
+
+function checkInverseFreeText() {
+    const answer = document.getElementById('geo-answer').value.toLowerCase();
+    const feedback = document.getElementById('feedback4');
+    const noteBox = document.getElementById('merke-box');
+    
+    const isReflection = answer.includes("spiegel") || answer.includes("gespiegelt");
+    const isDiagonal = answer.includes("winkelhalbierende") || answer.includes("y=x") || answer.includes("y = x");
+
+    if (isReflection && isDiagonal) {
+        feedback.innerHTML = "Hervorragend erkannt! Das ist die exakte mathematische Beschreibung.";
+        feedback.style.color = "green";
+        noteBox.style.display = "block";
+    } else if (isReflection || isDiagonal) {
+        feedback.innerHTML = "Guter Ansatz! Versuche deine Beschreibung noch durch die genaue Angabe der Achse bzw. des Vorgangs zu präzisieren.";
+        feedback.style.color = "orange";
+        noteBox.style.display = "none";
+    } else {
+        feedback.innerHTML = "Schau dir an, wie die Punkte über die Diagonale 'geklappt' wurden. Welcher Fachbegriff passt hier?";
+        feedback.style.color = "red";
+        noteBox.style.display = "none";
+    }
+}
+</script>
+
+</body>
+</html>
