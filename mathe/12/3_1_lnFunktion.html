@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>natürliche Logarithmusfunktion</title>
+
+<link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+
+<!-- MathJax für die korrekte Formeldarstellung -->
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<style>
+/* Aufgabenkarten */
+.card-task { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin: 20px 0; border: 1px solid #eee; position: relative; }
+
+/* Info-Box (Initial versteckt) */
+.info-box { 
+    padding: 10px 20px !important; 
+    margin-top: 5px;
+    display: none; 
+}
+.info-box h4 { margin-top: 0; margin-bottom: 5px; }
+.info-box p { margin: 5px 0; }
+
+/* Navigations-Button */
+.nav-footer { display: none; justify-content: flex-end; margin-top: 10px; padding-bottom: 20px; }
+.btn-next { background-color: #28a745; color: white !important; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+.btn-next:hover { background-color: #218838; color: white !important; }
+
+/* Hero-Bereich */
+.hero { padding: 5px 0; }
+.hero-title { font-size: 2.5rem; margin-bottom: 5px; }
+.hero-subtitle { margin-top: 0; font-size: 0.9rem; }
+
+/* Kapitel-Header */
+.chapter-header { padding: 10px 15px; }
+.chapter-number { font-size: 0.8rem; margin-bottom: 2px; }
+.chapter-header h3 { margin: 2px 0; }
+
+/* Graphen-Container ohne Rahmen */
+.graph-container {
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+}
+
+.btn-toggle {
+    margin: 5px 0;
+    padding: 8px 16px;
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+svg { 
+    max-width: 100%; 
+    height: auto; 
+    display: block; 
+    margin: 0 auto; 
+}
+
+/* Abstände für Textstellen */
+.spacing-before { margin-top: 30px; margin-bottom: 5px; }
+
+/* Sichtbarkeit für Interaktion */
+#inverse-elements, #inverse-text {
+    display: none;
+}
+</style>
+
+<script>
+function showInverse() {
+    document.getElementById('inverse-elements').style.display = 'block';
+    document.getElementById('inverse-text').style.display = 'block';
+    document.getElementById('final-info-box').style.display = 'block';
+    document.getElementById('footer-nav').style.display = 'flex';
+    document.querySelector('.btn-toggle').style.display = 'none';
+}
+</script>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<section class="hero mb-1">
+<h3 class="hero-title">e-Funktion und ln-Funktion</h3>
+<p class="hero-subtitle">Mathematik 12. Klasse – Gymnasium Bayern</p>
+</section>
+
+<header class="chapter-header">
+<span class="chapter-number">Kapitel 3</span>
+<h3>Die natürliche Logarithmusfunktion</h3>
+</header>
+
+<div class="card-task">
+    <h4> Der Sneaker-Hype </h4>
+    
+    <p>
+        Wir haben uns zuletzt die Verkaufszahlen eines Sneakers angesehen, die sich durch die <strong>natürliche Exponentialfunktion $f(x) = e^x$</strong> darstellen lassen.
+    </p>
+
+    <!-- Grafik 1: e-Funktion mit Achsenpfeilen -->
+    <div class="graph-container">
+        <svg width="300" height="200" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="black" />
+                </marker>
+            </defs>
+            <!-- Achsen (Ursprung 80,180) -->
+            <line x1="10" y1="180" x2="280" y2="180" stroke="black" stroke-width="1.2" marker-end="url(#arrowhead)" /> 
+            <line x1="80" y1="195" x2="80" y2="20" stroke="black" stroke-width="1.2" marker-end="url(#arrowhead)" />
+            <text x="285" y="185" font-size="14" font-style="italic">x</text>
+            <text x="85" y="15" font-size="14" font-style="italic">y</text>
+
+            <!-- f(x) = e^x: Schnittpunkt (0|1) -> (80, 140) -->
+            <path d="M 0,175 C 40,175 65,165 80,140 C 95,100 110,80 135,10" fill="transparent" stroke="blue" stroke-width="2.5" />
+            <circle cx="80" cy="140" r="4" fill="blue" /> 
+            <text x="35" y="135" font-size="12" fill="blue">$S_y(0|1)$</text>
+            <text x="140" y="30" font-size="14" fill="blue">$f(x) = e^x$</text>
+        </svg>
+    </div>
+
+    <p class="spacing-before">
+        Dabei haben wir festgestellt, dass wir die Zeitpunkte zu gegebenen Verkaufszahlen mithilfe der <strong>Umkehrfunktion</strong> herausfinden konnten. Diese kann durch eine Spiegelung an der Winkelhalbierenden erzeugt werden.
+    </p>
+
+    <!-- Grafik 2: Interaktive Umkehrfunktion mit Achsenbeschriftung -->
+    <div class="graph-container">
+        <svg width="300" height="250" viewBox="0 0 300 250" xmlns="http://www.w3.org/2000/svg">
+            <line x1="10" y1="180" x2="280" y2="180" stroke="black" stroke-width="1.2" marker-end="url(#arrowhead)" />
+            <line x1="80" y1="240" x2="80" y2="20" stroke="black" stroke-width="1.2" marker-end="url(#arrowhead)" />
+            
+            <!-- Achsenbeschriftung -->
+            <text x="285" y="185" font-size="14" font-style="italic">x</text>
+            <text x="85" y="15" font-size="14" font-style="italic">y</text>
+            
+            <!-- f(x) = e^x blass -->
+            <path d="M 0,175 C 40,175 65,165 80,140 C 95,100 110,80 135,10" fill="transparent" stroke="blue" stroke-width="2.5" opacity="0.2" />
+            <circle cx="80" cy="140" r="3" fill="blue" opacity="0.2" /> 
+
+            <g id="inverse-elements">
+                <!-- Winkelhalbierende y=x -->
+                <line x1="40" y1="220" x2="230" y2="30" stroke="#aaa" stroke-dasharray="4,4" />
+                <!-- ln(x): Schnittpunkt (1|0) -> (120, 180) -->
+                <path d="M 85,250 C 85,210 100,185 120,180 C 160,175 210,160 290,145" fill="transparent" stroke="red" stroke-width="2.5" />
+                <circle cx="120" cy="180" r="4" fill="red" /> 
+                <text x="115" y="200" font-size="12" fill="red">$S_x(1|0)$</text>
+                <text x="200" y="135" font-size="14" fill="red">Umkehrfunktion</text>
+            </g>
+        </svg>
+        <button class="btn-toggle" onclick="showInverse()">Umkehrfunktion einblenden</button>
+        <p id="inverse-text" style="color: #333; margin: 5px 0;">
+            Diese Umkehrfunktion ist die sogenannte <strong>natürliche Logarithmusfunktion</strong>.
+        </p>
+    </div>
+</div>
+
+<div id="final-info-box" class="info-box">
+    <h4>Wichtige Grundlagen</h4>
+    <p>
+        Die Umkehrfunktion zur Exponentialfunktion zur Basis $e$ heißt <strong>natürliche Logarithmusfunktion</strong>. Sie wird als <strong>$f(x) = \ln(x)$</strong> geschrieben.
+    </p>
+</div>
+
+<!-- Navigations-Footer -->
+<div id="footer-nav" class="nav-footer">
+    <a href="3_2_Eigenschaften.html" class="btn-next">Weiter zu Eigenschaften der ln-Funktion &rarr;</a>
+</div>
+
+</div>
+</body>
+</html>

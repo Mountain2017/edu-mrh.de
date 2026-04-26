@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grenzwerte der Ln-Funktion</title>
+
+<link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+
+<!-- MathJax für die ordentliche Anzeige von Formeln -->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+/* Layout- und Kartenstil */
+.card-task { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin: 20px 0; border: 1px solid #eee; }
+.task-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
+
+/* Ränder der Limesbetrachtungen */
+.task-column { flex: 1; min-width: 200px; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 3px solid #a0c4ff; }
+.option-item { margin: 10px 0; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+
+/* Button-Styling */
+.check-btn { background-color: #0056b3; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; width: auto; }
+.check-btn:hover { background-color: #004494; }
+
+/* Feedback-Bereich (Fettgedruckt) */
+.feedback { margin-top: 15px; padding: 10px; display: none; text-align: left; min-height: 20px; border-radius: 4px; font-weight: bold; }
+.feedback-wrong { color: #dc3545; }
+.feedback-correct { color: #28a745; }
+
+/* Markierungen für Checkboxen */
+.res-richtig { color: #28a745; font-weight: bold; margin-left: 5px; }
+.res-falsch { color: #dc3545; font-weight: bold; margin-left: 5px; }
+
+/* Graph-Container Aufgabe 1 */
+.graph-container { text-align: center; margin-bottom: 20px; background: #fff; padding: 10px; border-radius: 8px; }
+.ln-graph-svg { max-width: 100%; height: auto; border: 1px solid #eee; border-radius: 4px; }
+
+/* Interaktiver Graph Aufgabe 2 */
+.interactive-container { background: none; padding: 0; margin: 10px 0; text-align: center; }
+canvas { background: white; border: 1px solid #ccc; max-width: 100%; height: auto; border-radius: 4px; }
+.controls { margin-bottom: 10px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.slider-group { display: flex; align-items: center; gap: 10px; }
+.btn-view { padding: 5px 12px; border: 1px solid #0056b3; border-radius: 4px; cursor: pointer; background: white; color: #0056b3; font-size: 0.85rem; }
+.btn-view.active { background: #0056b3; color: white; }
+
+/* Checkboxen */
+.checkbox-group { text-align: left; margin: 15px 0; padding: 0; background: none; border: none; }
+.checkbox-group b { display: block; margin-bottom: 10px; }
+.checkbox-container-2col { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 15px; }
+.checkbox-col { flex: 1; min-width: 280px; }
+.checkbox-group label { display: block; margin-bottom: 10px; cursor: pointer; font-size: 0.95rem; } 
+
+/* Navigations-Button */
+.nav-footer { display: flex; justify-content: flex-end; margin-top: 30px; padding-bottom: 40px; }
+.btn-next { background-color: #28a745; color: white !important; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; }
+
+/* Grundlagenkasten-Anpassungen */
+.info-box { padding: 10px 20px !important; margin-top: 20px; }
+.dominanz-wrapper { display: flex; align-items: flex-start; gap: 10px; margin-top: 10px; }
+.dominanz-label { font-weight: bold; white-space: nowrap; }
+.dominanz-text { display: flex; flex-direction: column; }
+
+/* Sichtbarkeits-Steuerung */
+#task2-section, #info-footer-section { display: none; }
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<section class="hero mb-4">
+<h3 class="hero-title">e-Funktion und ln-Funktion</h3>
+<p class="hero-subtitle">Mathematik 12. Klasse – Gymnasium Bayern</p>
+</section>
+
+<header class="chapter-header">
+<span class="chapter-number">Kapitel 3</span>
+<h3>Die natürliche Logarithmusfunktion</h3>
+</header>
+
+<!-- BLOCK 1: Untersuchung der Grenzwerte -->
+<div class="card-task">
+    <h4>Aufgabe 1: Untersuchung der Grenzwerte</h4>
+    <p>
+        Nutzen Sie den Graphen der natürlichen Logarithmusfunktion \( f(x) = \ln(x) \), um das Verhalten an den Rändern des Definitionsbereichs \( D_f = \mathbb{R}^+ \) zu bestimmen:
+    </p>
+
+    <div class="graph-container">
+        <svg class="ln-graph-svg" width="400" height="250" viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <marker id="arrowhead-x" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orientation="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
+                </marker>
+            </defs>
+            <line x1="20" y1="125" x2="385" y2="125" stroke="#333" stroke-width="2" marker-end="url(#arrowhead-x)" /> 
+            <line x1="50" y1="240" x2="50" y2="15" stroke="#333" stroke-width="2" />
+            <polygon points="46.5 22, 50 12, 53.5 22" fill="#333" />
+            <text x="385" y="145" font-family="Arial" font-size="14">x</text>
+            <text x="35" y="25" font-family="Arial" font-size="14">y</text>
+            <line x1="150" y1="120" x2="150" y2="130" stroke="#333" stroke-width="1" /> 
+            <text x="145" y="145" font-family="Arial" font-size="12">1</text>
+            <path d="M 55 240 Q 60 150 150 125 T 380 80" fill="transparent" stroke="#0056b3" stroke-width="3" />
+            <text x="300" y="70" font-family="serif" font-style="italic" font-size="16" fill="#0056b3">f(x) = ln(x)</text>
+            <g id="asymptote-group" style="display:none;">
+                <line id="asymptote-1" x1="50" y1="15" x2="50" y2="240" stroke="red" stroke-width="4" stroke-dasharray="5,5" />
+                <text x="55" y="40" font-family="Arial" font-size="11" fill="red" font-weight="bold">Senkrechte Asymptote (x=0)</text>
+            </g>
+        </svg>
+    </div>
+
+    <div class="task-row">
+        <div class="task-column">
+            <span>\( \lim_{x \to 0^+} \ln(x) = \)</span>
+            <div class="option-item">
+                <input type="radio" name="limit0" id="l0-0" value="0">
+                <label for="l0-0">\( 0 \)</label>
+            </div>
+            <div class="option-item">
+                <input type="radio" name="limit0" id="l0-inf" value="inf">
+                <label for="l0-inf">\( +\infty \)</label>
+            </div>
+            <div class="option-item">
+                <input type="radio" name="limit0" id="l0-minf" value="minf">
+                <label for="l0-minf">\( -\infty \)</label>
+            </div>
+        </div>
+
+        <div class="task-column">
+            <span>\( \lim_{x \to \infty} \ln(x) = \)</span>
+            <div class="option-item">
+                <input type="radio" name="limitInf" id="linf-0" value="0">
+                <label for="linf-0">\( 0 \)</label>
+            </div>
+            <div class="option-item">
+                <input type="radio" name="limitInf" id="linf-inf" value="inf">
+                <label for="linf-inf">\( +\infty \)</label>
+            </div>
+            <div class="option-item">
+                <input type="radio" name="limitInf" id="linf-minf" value="minf">
+                <label for="linf-minf">\( -\infty \)</label>
+            </div>
+        </div>
+    </div>
+
+    <button class="check-btn" onclick="checkGrenzwerte()">Ergebnis prüfen</button>
+    <div id="feedback-grenzwerte" class="feedback"></div>
+</div>
+
+<!-- BLOCK 2: Vergleich Wachstumsgeschwindigkeit -->
+<div id="task2-section">
+    <div class="card-task">
+        <h4>Aufgabe 2: Wachstumsgeschwindigkeit im Vergleich</h4>
+        <p>
+            Vergleichen Sie \( f(x) = \ln(x) \) mit einer Potenzfunktion \( g(x) = x^r \). Beachten Sie das Dominanzverhalten für sehr große \( x \)-Werte.
+        </p>
+
+        <div class="interactive-container">
+            <div class="controls">
+                <div class="slider-group">
+                    <span>Exponent <b>r</b>:</span>
+                    <input type="range" id="exponent-slider" min="0.2" max="0.5" step="0.05" value="0.2" oninput="updateChart()">
+                    <span id="exponent-val">0.20</span>
+                </div>
+                <div class="view-toggle">
+                    <button id="btn-nah" class="btn-view active" onclick="setView('nah')">Nahansicht</button>
+                    <button id="btn-fern" class="btn-view" onclick="setView('fern')">Fernansicht (Dominanz)</button>
+                </div>
+            </div>
+            <canvas id="growthChart" width="500" height="300"></canvas>
+            <div style="font-size: 0.9rem; margin-top: 10px;">
+                <span style="color: blue;">— \( f(x) = \ln(x) \)</span> &nbsp;&nbsp;
+                <span style="color: red;">— \( g(x) = x^r \)</span>
+            </div>
+        </div>
+
+        <div class="checkbox-group">
+            <b>Beobachtungen am Graphen bewerten:</b>
+            <div class="checkbox-container-2col">
+                <div class="checkbox-col">
+                    <label id="label-1"><input type="checkbox" class="growth-check" value="1"> Die Potenzfunktion \( x^r \) steigt langfristig schneller als die ln-Funktion.</label>
+                    <label id="label-2"><input type="checkbox" class="growth-check" value="2"> Jede Potenzfunktion \( x^r \) verläuft im Unendlichen oberhalb von \( \ln(x) \).</label>
+                    <label id="label-3"><input type="checkbox" class="growth-check" value="3"> Es gibt immer einen Punkt, ab dem \( x^r \) die ln-Funktion endgültig überholt.</label>
+                    <label id="label-4"><input type="checkbox" class="growth-check" value="4"> Die beiden Graphen haben unabhängig von \( r \) niemals einen Schnittpunkt.</label>
+                </div>
+                <div class="checkbox-col">
+                    <label id="label-5"><input type="checkbox" class="growth-check" value="5"> Für sehr große \( x \)-Werte liegt der Graph von \( x^r \) oberhalb von \( \ln(x) \).</label>
+                    <label id="label-6"><input type="checkbox" class="growth-check" value="6"> Die beiden Graphen haben für alle \( r > 0 \) genau einen Schnittpunkt.</label>
+                    <label id="label-7"><input type="checkbox" class="growth-check" value="7"> Die ln-Funktion "gewinnt" langfristig immer gegen Potenzfunktionen.</label>
+                    <label id="label-8"><input type="checkbox" class="growth-check" value="8"> Ab einem sehr kleinen Exponenten \( r \) steigt \( \ln(x) \) dauerhaft schneller als \( x^r \).</label>
+                </div>
+            </div>
+        </div>
+        
+        <button class="check-btn" onclick="checkWachstum()">Beobachtungen prüfen</button>
+        <div id="feedback-wachstum" class="feedback"></div>
+
+        <p style="margin-top: 30px;">Mit diesem Wissen können wir nun die folgenden Grenzwerte ermitteln:</p>
+
+        <div class="task-row">
+            <div class="task-column">
+                <span>\( \lim_{x \to \infty} \frac{\ln(x)}{x^r} = \)</span>
+                <div class="option-item">
+                    <input type="radio" name="limitFrac" id="lf-0" value="0">
+                    <label for="lf-0">\( 0 \)</label>
+                </div>
+                <div class="option-item">
+                    <input type="radio" name="limitFrac" id="lf-inf" value="inf">
+                    <label for="lf-inf">\( +\infty \)</label>
+                </div>
+                <div class="option-item">
+                    <input type="radio" name="limitFrac" id="lf-minf" value="minf">
+                    <label for="lf-minf">\( -\infty \)</label>
+                </div>
+            </div>
+
+            <div class="task-column">
+                <span>\( \lim_{x \to 0^+} x^r \cdot \ln(x) = \)</span>
+                <div class="option-item">
+                    <input type="radio" name="limitProd" id="lp-0" value="0">
+                    <label for="lp-0">\( 0 \)</label>
+                </div>
+                <div class="option-item">
+                    <input type="radio" name="limitProd" id="lp-inf" value="inf">
+                    <label for="lp-inf">\( +\infty \)</label>
+                </div>
+                <div class="option-item">
+                    <input type="radio" name="limitProd" id="lp-minf" value="minf">
+                    <label for="lp-minf">\( -\infty \)</label>
+                </div>
+            </div>
+        </div>
+
+        <button class="check-btn" onclick="checkSpecialLimits()">Grenzwerte prüfen</button>
+        <div id="feedback-special-limits" class="feedback"></div>
+    </div>
+</div>
+
+<!-- BLOCK 3: Grundlagen und Navigation -->
+<div id="info-footer-section">
+    <div class="info-box">
+        <h4>Wichtige Grundlagen</h4>
+        <p>
+            \( \lim_{x \to \infty} \ln(x) = \infty \quad \quad \lim_{x \to 0^+} \ln(x) = -\infty \)
+        </p>
+        <p>
+            Die y-Achse ist eine senkrechte Asymptote.
+        </p>
+        <div class="dominanz-wrapper">
+            <div class="dominanz-label">Dominanz:</div>
+            <div class="dominanz-text">
+                <span>Jede Potenzfunktion \( x^r \) (mit \( r > 0 \)) wächst stärker als die ln-Funktion.</span>
+                <b>Die Potenzfunktion gewinnt immer!</b>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-footer">
+        <a href="4_1_UmkehrfunktionRechnerisch.html" class="btn-next">Weiter zu Umkehrfunktion rechnerisch &rarr;</a>
+    </div>
+</div>
+
+</div>
+
+<script>
+// Statusvariablen für Aufgabe 2
+let isWachstumCorrect = false;
+let isLimitsCorrect = false;
+
+// Logik Aufgabe 1
+function checkGrenzwerte() {
+    const feedback = document.getElementById('feedback-grenzwerte');
+    const asymptoteGroup = document.getElementById('asymptote-group');
+    const task2Section = document.getElementById('task2-section');
+    const r0 = document.querySelector('input[name="limit0"]:checked');
+    const rInf = document.querySelector('input[name="limitInf"]:checked');
+    
+    feedback.style.display = 'block';
+    
+    if (!r0 || !rInf) {
+        feedback.className = 'feedback feedback-wrong';
+        feedback.innerHTML = 'Bitte wählen Sie für beide Grenzwerte eine Option aus.';
+        return;
+    }
+    
+    if (r0.value === 'minf' && rInf.value === 'inf') {
+        feedback.className = 'feedback feedback-correct';
+        feedback.innerHTML = 'Richtig! Die y-Achse ist eine senkrechte Asymptote.';
+        asymptoteGroup.style.display = 'block';
+        task2Section.style.display = 'block';
+        updateChart(); 
+    } else {
+        feedback.className = 'feedback feedback-wrong';
+        feedback.innerHTML = 'Falsch, betrachten Sie den Verlauf des Graphen genau.';
+        asymptoteGroup.style.display = 'none';
+        task2Section.style.display = 'none';
+        document.getElementById('info-footer-section').style.display = 'none';
+    }
+    if (window.MathJax) window.MathJax.typesetPromise([feedback]);
+}
+
+// Logik Aufgabe 2
+const canvas = document.getElementById('growthChart');
+const ctx = canvas.getContext('2d');
+let currentView = 'nah';
+
+const baseTexts = {
+    "1": "Die Potenzfunktion \\( x^r \\) steigt langfristig schneller als die ln-Funktion.",
+    "2": "Jede Potenzfunktion \\( x^r \\) verläuft im Unendlichen oberhalb von \\( \\ln(x) \\).",
+    "3": "Es gibt immer einen Punkt, ab dem \\( x^r \\) die ln-Funktion endgültig überholt.",
+    "4": "Die beiden Graphen haben unabhängig von \\( r \\) niemals einen Schnittpunkt.",
+    "5": "Für sehr große \\( x \\)-Werte liegt der Graph von \\( x^r \\) oberhalb von \\( \\ln(x) \\).",
+    "6": "Die beiden Graphen haben für alle \\( r > 0 \\) genau einen Schnittpunkt.",
+    "7": "Die ln-Funktion \"gewinnt\" langfristig immer gegen Potenzfunktionen.",
+    "8": "Ab einem sehr kleinen Exponenten \\( r \\) steigt \\( \\ln(x) \\) dauerhaft schneller als \\( x^r \\)."
+};
+
+function setView(view) {
+    currentView = view;
+    document.getElementById('btn-nah').classList.toggle('active', view === 'nah');
+    document.getElementById('btn-fern').classList.toggle('active', view === 'fern');
+    updateChart();
+}
+
+function drawArrow(x1, y1, x2, y2) {
+    const headlen = 10;
+    const realAngle = Math.atan2(y2-y1, x2-x1);
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - headlen * Math.cos(realAngle - Math.PI / 6), y2 - headlen * Math.sin(realAngle - Math.PI / 6));
+    ctx.lineTo(x2 - headlen * Math.cos(realAngle + Math.PI / 6), y2 - headlen * Math.sin(realAngle + Math.PI / 6));
+    ctx.closePath(); ctx.fill();
+}
+
+function updateChart() {
+    const slider = document.getElementById('exponent-slider');
+    if (!slider) return;
+    const rVal = parseFloat(slider.value);
+    document.getElementById('exponent-val').innerText = rVal.toFixed(2);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // maxX auf 500.000 reduziert gemäß Wunsch
+    const maxX = (currentView === 'nah') ? 12 : 500000; 
+    const maxY = (currentView === 'nah') ? 5 : 20;
+    
+    const scaleX = 420 / maxX;
+    const scaleY = 240 / maxY;
+    const offsetX = 40;
+    const offsetY = 260;
+
+    ctx.strokeStyle = '#333'; ctx.fillStyle = '#333'; ctx.lineWidth = 2;
+    drawArrow(offsetX, offsetY, offsetX + 440, offsetY); 
+    drawArrow(offsetX, offsetY + 20, offsetX, 20);      
+
+    ctx.font = 'bold 14px Arial';
+    ctx.fillText('x', offsetX + 455, offsetY + 5); 
+    ctx.fillText('y', offsetX - 15, 25);
+
+    ctx.font = '10px Arial'; ctx.textAlign = 'center';
+    if (currentView === 'nah') {
+        for (let i = 2; i <= maxX; i += 2) {
+            let x = offsetX + i * scaleX;
+            ctx.beginPath(); ctx.moveTo(x, offsetY - 5); ctx.lineTo(x, offsetY + 5); ctx.stroke();
+            ctx.fillText(i, x, offsetY + 15);
+        }
+    } else {
+        const milestones = [1e5, 2e5, 3e5, 4e5, 5e5];
+        milestones.forEach(val => {
+            let x = offsetX + val * scaleX;
+            ctx.beginPath(); ctx.moveTo(x, offsetY - 5); ctx.lineTo(x, offsetY + 5); ctx.stroke();
+            ctx.fillText((val/1000) + "k", x, offsetY + 15);
+        });
+    }
+
+    const stepY = (currentView === 'nah') ? 1 : 5;
+    ctx.textAlign = 'right';
+    for (let i = stepY; i <= maxY; i += stepY) {
+        if (i < maxY) { 
+            let y = offsetY - i * scaleY;
+            ctx.beginPath(); ctx.moveTo(offsetX - 5, y); ctx.lineTo(offsetX + 5, y); ctx.stroke();
+            ctx.fillText(i, offsetX - 10, y + 3);
+        }
+    }
+
+    function plot(func, color) {
+        ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath();
+        let first = true;
+        let stepS = (currentView === 'nah') ? 1 : 5;
+        for (let px = 0; px <= 420; px += stepS) {
+            let x = px / scaleX; if (x <= 0) continue;
+            let y = func(x); let py = offsetY - (y * scaleY);
+            if (py < 10 || py > 295) {
+                if (!first) { ctx.stroke(); ctx.beginPath(); first = true; }
+                continue;
+            }
+            if (first) { ctx.moveTo(offsetX + px, py); first = false; }
+            else { ctx.lineTo(offsetX + px, py); }
+        }
+        ctx.stroke();
+    }
+    plot(x => Math.log(x), 'blue');
+    plot(x => Math.pow(x, rVal), 'red');
+}
+
+function checkFinalVisibility() {
+    if (isWachstumCorrect && isLimitsCorrect) {
+        document.getElementById('info-footer-section').style.display = 'block';
+    }
+}
+
+function checkWachstum() {
+    const checks = document.querySelectorAll('.growth-check');
+    const feedback = document.getElementById('feedback-wachstum');
+    const correctAnswers = ["1", "2", "3", "5"];
+    feedback.style.display = 'block';
+    let allRight = true;
+    let selectedCount = 0;
+
+    checks.forEach(c => {
+        const val = c.value;
+        const label = document.getElementById('label-' + val);
+        const isCorrectChoice = correctAnswers.includes(val);
+        label.innerHTML = `<input type="checkbox" class="growth-check" value="${val}" ${c.checked ? 'checked' : ''}> ${baseTexts[val]}`;
+        if (c.checked) {
+            selectedCount++;
+            if (isCorrectChoice) label.innerHTML += ` <span class="res-richtig">(Richtig)</span>`;
+            else { label.innerHTML += ` <span class="res-falsch">(Falsch)</span>`; allRight = false; }
+        } else if (isCorrectChoice) allRight = false;
+    });
+
+    if (allRight && selectedCount === 4) {
+        feedback.className = 'feedback feedback-correct';
+        feedback.innerHTML = 'Richtig! Die ln-Funktion steigt zwar streng monoton, verliert aber langfristig gegen jede Potenzfunktion.';
+        isWachstumCorrect = true;
+    } else {
+        feedback.className = 'feedback feedback-wrong';
+        feedback.innerHTML = 'Das stimmt noch nicht ganz. Schauen Sie sich die Graphen in der Fernansicht noch einmal genau an.';
+        isWachstumCorrect = false;
+    }
+    checkFinalVisibility();
+    if (window.MathJax) window.MathJax.typesetPromise();
+}
+
+function checkSpecialLimits() {
+    const feedback = document.getElementById('feedback-special-limits');
+    const rFrac = document.querySelector('input[name="limitFrac"]:checked');
+    const rProd = document.querySelector('input[name="limitProd"]:checked');
+    feedback.style.display = 'block';
+    if (!rFrac || !rProd) {
+        feedback.className = 'feedback feedback-wrong';
+        feedback.innerHTML = 'Bitte wählen Sie für beide Grenzwerte eine Option aus.';
+        return;
+    }
+    if (rFrac.value === '0' && rProd.value === '0') {
+        feedback.className = 'feedback feedback-correct';
+        feedback.innerHTML = 'Richtig! Beide Grenzwerte ergeben Null (Dominanzgesetz).';
+        isLimitsCorrect = true;
+    } else {
+        feedback.className = 'feedback feedback-wrong';
+        feedback.innerHTML = 'Das ist noch nicht korrekt. Denken Sie an das Dominanzgesetz.';
+        isLimitsCorrect = false;
+    }
+    checkFinalVisibility();
+    if (window.MathJax) window.MathJax.typesetPromise([feedback]);
+}
+</script>
+
+</body>
+</html>

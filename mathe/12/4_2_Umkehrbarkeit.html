@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Die Umkehrfunktion rechnerisch</title>
+
+<link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+
+<!-- MathJax für die ordentliche Anzeige von Formeln -->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+/* Aufgabenkarten */
+.card-task { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin: 20px 0; border: 1px solid #eee; position: relative; }
+.input-group { margin: 15px 0; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+input[type="text"], input[type="number"], select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+
+.info-box { 
+    padding: 10px 20px !important; 
+    margin-top: 20px;
+    background-color: #e7f3ff; 
+    border-left: 5px solid #007bff;
+}
+.info-box h4 { margin-top: 0; margin-bottom: 5px; color: #0056b3; }
+
+/* Navigations-Button */
+.nav-footer { display: flex; justify-content: flex-end; margin-top: 20px; padding-bottom: 20px; }
+.btn-next { background-color: #28a745; color: white !important; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+.btn-next:hover { background-color: #218838; color: white !important; }
+
+/* Button-Layout */
+.button-row { display: flex; gap: 10px; align-items: center; margin-top: 15px; flex-wrap: wrap; }
+.btn-solution { background-color: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; height: 40px; }
+.btn-check { background-color: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; height: 40px; }
+.btn-hint { background-color: #ffc107; color: black; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; height: 40px; }
+
+.solution-content, .hint-content { display: none; margin-top: 15px; padding: 15px; background-color: #f8f9fa; border-radius: 8px; border: 1px dashed #6c757d; }
+.feedback { margin-top: 10px; font-weight: bold; }
+
+/* Schrittweises Einblenden */
+#fazit-box, #prop-box, #basics-box, #footer-nav { display: none; }
+
+/* Hero-Bereich */
+.hero { padding: 15px 0; }
+.hero-title { font-size: 3rem; margin-bottom: 5px; }
+.hero-subtitle { margin-top: 0; font-size: 0.9rem; }
+
+/* Kapitel-Header */
+.chapter-header { padding: 10px 15px; }
+.chapter-number { font-size: 0.8rem; margin-bottom: 2px; }
+.chapter-header h3 { margin: 2px 0; }
+
+/* Skalierung der Graphen */
+.graph-container { width: 100%; max-width: 220px; margin: 0 auto 5px auto; text-align: center; }
+.options-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px; }
+.option-card { border: 1px solid #eee; padding: 5px; border-radius: 8px; text-align: center; cursor: pointer; transition: background 0.3s; }
+.option-card:hover { background: #f0f7ff; border-color: #007bff; }
+.option-card svg { max-width: 100%; height: auto; }
+.option-label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 0.8rem; }
+
+/* SVG Styling */
+svg { background-color: #fafafa; border-radius: 4px; border: 1px solid #ddd; overflow: visible; }
+.axis { stroke: #000; stroke-width: 1.5; }
+.grid { stroke: #eee; stroke-width: 0.5; }
+.func-line-exp { stroke: #ff8c00; stroke-width: 2.5; fill: none; } 
+.func-line-blue { stroke: #007bff; stroke-width: 2.5; fill: none; } 
+.mirror-axis { stroke: #ffc107; stroke-dasharray: 4; stroke-width: 1.5; }
+.point-fail { fill: red; }
+.axis-label { font-family: Arial, sans-serif; font-size: 14px; font-style: italic; }
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<section class="hero mb-4">
+<h3 class="hero-title">e-Funktion und ln-Funktion</h3>
+<p class="hero-subtitle">Mathematik 12. Klasse – Gymnasium Bayern</p>
+</section>
+
+<header class="chapter-header">
+<span class="chapter-number">Kapitel 4</span>
+<h3>Die Umkehrfunktion rechnerisch</h3>
+</header>
+
+<!-- BLOCK 1: Graph-Auswahl Umkehrfunktion -->
+<div class="card-task">
+    <h4>Aufgabe 1: Den Graphen der Umkehrfunktion finden</h4>
+    <p>Unten sehen Sie den Graphen einer Funktion \( f \). Welche der vier Auswahlmöglichkeiten (A–D) stellt den Graphen der dazugehörigen Umkehrfunktion \( f^{-1} \) dar?</p>
+    
+    <div class="graph-container">
+        <p style="margin-bottom: 2px;"><strong>Gegebener Graph \( f(x) = e^x \)</strong></p>
+        <svg viewBox="0 0 200 200" width="100%">
+            <defs>
+                <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#000" />
+                </marker>
+            </defs>
+            <line x1="0" y1="100" x2="195" y2="100" class="axis" marker-end="url(#arrow)" />
+            <line x1="100" y1="200" x2="100" y2="5" class="axis" marker-end="url(#arrow)" />
+            <text x="185" y="120" class="axis-label">x</text>
+            <text x="110" y="15" class="axis-label">y</text>
+            <path class="func-line-exp" d="M0 100 Q 100 100 160 10" />
+        </svg>
+    </div>
+
+    <div class="options-grid">
+        <div class="option-card" onclick="selectOption('A')">
+            <span class="option-label">A</span>
+            <svg viewBox="0 0 200 200" width="100%">
+                <line x1="0" y1="100" x2="195" y2="100" class="axis" marker-end="url(#arrow)" />
+                <line x1="100" y1="200" x2="100" y2="5" class="axis" marker-end="url(#arrow)" />
+                <text x="180" y="120" class="axis-label">x</text>
+                <text x="110" y="20" class="axis-label">y</text>
+                <path class="func-line-blue" d="M0 100 Q 100 100 160 190" />
+            </svg>
+        </div>
+        <div class="option-card" onclick="selectOption('B')">
+            <span class="option-label">B</span>
+            <svg viewBox="0 0 200 200" width="100%">
+                <line x1="0" y1="100" x2="195" y2="100" class="axis" marker-end="url(#arrow)" />
+                <line x1="100" y1="200" x2="100" y2="5" class="axis" marker-end="url(#arrow)" />
+                <text x="180" y="120" class="axis-label">x</text>
+                <text x="110" y="20" class="axis-label">y</text>
+                <path class="func-line-blue" d="M100 200 Q 100 100 200 40" />
+            </svg>
+        </div>
+        <div class="option-card" onclick="selectOption('C')">
+            <span class="option-label">C</span>
+            <svg viewBox="0 0 200 200" width="100%">
+                <line x1="0" y1="100" x2="195" y2="100" class="axis" marker-end="url(#arrow)" />
+                <line x1="100" y1="200" x2="100" y2="5" class="axis" marker-end="url(#arrow)" />
+                <text x="180" y="120" class="axis-label">x</text>
+                <text x="110" y="20" class="axis-label">y</text>
+                <path class="func-line-blue" d="M200 100 Q 100 100 40 10" />
+            </svg>
+        </div>
+        <div class="option-card" onclick="selectOption('D')">
+            <span class="option-label">D</span>
+            <svg viewBox="0 0 200 200" width="100%">
+                <line x1="0" y1="100" x2="195" y2="100" class="axis" marker-end="url(#arrow)" />
+                <line x1="100" y1="200" x2="100" y2="5" class="axis" marker-end="url(#arrow)" />
+                <text x="180" y="120" class="axis-label">x</text>
+                <text x="110" y="20" class="axis-label">y</text>
+                <path class="func-line-blue" d="M100 100 Q 150 100 180 10" />
+            </svg>
+        </div>
+    </div>
+    
+    <div id="task1-feedback" class="feedback"></div>
+</div>
+
+<!-- BLOCK 2: Normalparabel und Umkehrbarkeit -->
+<div class="card-task">
+    <h4>Aufgabe 2: Umkehrbarkeit der Normalparabel</h4>
+    <p>Betrachten Sie den Graphen der Normalparabel \( f(x) = x^2 \). Reflektieren Sie: Warum besitzt diese Funktion über ihrem gesamten Definitionsbereich \( \mathbb{R} \) keine Umkehrfunktion?</p>
+    
+    <div class="graph-container">
+        <svg viewBox="0 0 200 200" width="100%">
+            <line x1="0" y1="180" x2="195" y2="180" class="axis" marker-end="url(#arrow)" />
+            <line x1="100" y1="200" x2="100" y2="10" class="axis" marker-end="url(#arrow)" />
+            <text x="185" y="195" class="axis-label">x</text>
+            <text x="110" y="25" class="axis-label">y</text>
+            <path class="func-line-blue" d="M20 20 Q 100 340 180 20" />
+        </svg>
+    </div>
+
+    <textarea id="reflection-input" style="width: 100%; height: 80px; padding: 10px;" placeholder="Begründen Sie hier..."></textarea>
+    
+    <div class="button-row">
+        <button class="btn-check" onclick="checkReflection()">Eingabe prüfen</button>
+        <button class="btn-hint" onclick="toggleHintTask2()">Tipp</button>
+        <button class="btn-solution" onclick="toggleSolution()">Lösung anzeigen</button>
+    </div>
+
+    <div id="reflection-feedback" class="feedback"></div>
+
+    <div id="hint-2" class="hint-content">
+        <p>So würde der Graph aussehen:</p>
+        <div class="graph-container">
+            <svg viewBox="0 0 200 200" width="100%">
+                <line x1="0" y1="100" x2="195" y2="100" class="axis" marker-end="url(#arrow)" />
+                <line x1="100" y1="200" x2="100" y2="5" class="axis" marker-end="url(#arrow)" />
+                <line x1="10" y1="190" x2="190" y2="10" class="mirror-axis" />
+                <path class="func-line-blue" d="M180 20 Q 20 100 180 180" />
+                <line x1="150" y1="41" x2="150" y2="159" stroke="red" stroke-dasharray="3" />
+                <circle cx="150" cy="41" r="3" class="point-fail" />
+                <circle cx="150" cy="159" r="3" class="point-fail" />
+            </svg>
+        </div>
+    </div>
+
+    <div id="solution-2" class="solution-content">
+        <p>Nach dem Spiegeln an der Winkelhalbierenden wäre jedem \( x \)-Wert zwei \( y \)-Werte zugeordnet (siehe Grafik).</p>
+        <div id="solution-2-graph" class="graph-container">
+            <svg viewBox="0 0 200 200" width="100%">
+                <line x1="0" y1="100" x2="195" y2="100" class="axis" marker-end="url(#arrow)" />
+                <line x1="100" y1="200" x2="100" y2="5" class="axis" marker-end="url(#arrow)" />
+                <line x1="10" y1="190" x2="190" y2="10" class="mirror-axis" />
+                <path class="func-line-blue" d="M180 20 Q 20 100 180 180" />
+                <line x1="150" y1="41" x2="150" y2="159" stroke="red" stroke-dasharray="3" />
+                <circle cx="150" cy="41" r="3" class="point-fail" />
+                <circle cx="150" cy="159" r="3" class="point-fail" />
+            </svg>
+        </div>
+        <p>Somit ist es keine Funktion. Eine Funktion ist folglich nur umkehrbar, wenn jedem \( y \)-Wert genau ein \( x \)-Wert zugeordnet ist.</p>
+    </div>
+</div>
+
+<!-- BLOCK 3: Fazit -->
+<div id="fazit-box" class="card-task">
+    <h4>Fazit: Definitionsbereich einschränken</h4>
+    <p>Die Umkehrbarkeit kann oft durch das Einschränken des Definitionsbereichs auf ein Intervall erreicht werden.</p>
+    <p><strong>Aufgabe:</strong> Geben Sie ein maximales Intervall für \( f(x) = x^2 \) an, in dem die Funktion umkehrbar ist:</p>
+    <div class="input-group">
+        \( \mathbb{D}_{\text{eingeschränkt}} = \) 
+        <input type="text" id="interval-input" placeholder="z.B. [4;5[">
+        <small style="display:block; width:100%; color:#666;">Hinweis: Verwenden Sie <code>inf</code> für das Symbol \( \infty \)</small>
+        <button class="btn-check" style="height: auto; margin-top:5px;" onclick="checkInterval()">Prüfen</button>
+    </div>
+    <div id="interval-feedback" class="feedback"></div>
+</div>
+
+<!-- BLOCK 4: Eigenschaften -->
+<div id="prop-box" class="card-task">
+    <h4>Eigenschaften umkehrbarer Funktionen</h4>
+    <p>Betrachten Sie den Graph der Normalparabel aus Aufgabe 2. Warum ist er nicht umkehrbar? Warum gibt es hier \( y \)-Werte mit zwei \( x \)-Werten? Geben Sie an, welche Eigenschaft ein Graph haben muss, damit er dieses Problem beim Umkehren nicht erzeugt, also auf ganz \( \mathbb{D} \) umkehrbar ist.</p>
+    <div class="input-group">
+        <input type="text" id="prop-input" style="width: 300px;" placeholder="Gesuchte Eigenschaft...">
+        <button class="btn-check" style="height: auto;" onclick="checkProperty()">Prüfen</button>
+    </div>
+    <div id="prop-feedback" class="feedback"></div>
+</div>
+
+<!-- BLAUER GRUNDLAGEN KASTEN -->
+<div id="basics-box" class="info-box">
+<h4>Wichtige Grundlagen: Monotoniekriterium</h4>
+<ul>
+    <li><b>Kriterium:</b> Ist eine Funktion \( f \) in einem Intervall streng monoton zunehmend oder abnehmend, so ist sie in diesem Intervall auch umkehrbar.</li>
+    <li><b>Zusammenhang mit der Ableitung:</b> Gilt für alle \( x \) eines Intervalls \( f'(x) > 0 \) (bzw. \( f'(x) < 0 \)), so ist \( f \) dort streng monoton steigend (bzw. fallend) und somit umkehrbar.</li>
+</ul>
+</div>
+
+<div id="footer-nav" class="nav-footer">
+    <a href="4_3_Ableitungen.html" class="btn-next">Weiter zu Ableitungen &rarr;</a>
+</div>
+
+</div>
+
+<script>
+function selectOption(choice) {
+    const feedback = document.getElementById('task1-feedback');
+    if (choice === 'B') {
+        feedback.innerHTML = "<span style='color:green;'>Richtig! Die Umkehrfunktion entsteht durch Spiegelung an der Winkelhalbierenden \\( y = x \\).</span>";
+    } else {
+        feedback.innerHTML = "<span style='color:red;'>Leider falsch. Denken Sie an die Spiegelung an der Winkelhalbierenden \\( y = x \\).</span>";
+    }
+    MathJax.typeset();
+}
+
+function displaySolutionLogic() {
+    const sol = document.getElementById('solution-2');
+    const solGraph = document.getElementById('solution-2-graph');
+    const hint = document.getElementById('hint-2');
+    
+    sol.style.display = 'block';
+    // Falls Tipp bereits offen, Graph in Lösung ausblenden
+    if (hint.style.display === 'block') {
+        solGraph.style.display = 'none';
+    } else {
+        solGraph.style.display = 'block';
+    }
+}
+
+function toggleSolution() {
+    const sol = document.getElementById('solution-2');
+    if (sol.style.display === 'block') {
+        sol.style.display = 'none';
+    } else {
+        displaySolutionLogic();
+        document.getElementById('fazit-box').style.display = 'block';
+    }
+}
+
+function toggleHintTask2() {
+    const hint = document.getElementById('hint-2');
+    hint.style.display = (hint.style.display === 'block') ? 'none' : 'block';
+}
+
+function checkReflection() {
+    const input = document.getElementById('reflection-input').value.toLowerCase();
+    const feedback = document.getElementById('reflection-feedback');
+    
+    if (input.includes('keine funktion') || (input.includes('nicht') && input.includes('funktion'))) {
+        feedback.innerHTML = "<span style='color:green;'>Sehr gut! Sie haben richtig erkannt, dass nach der Spiegelung keine eindeutige Zuordnung (also keine Funktion) mehr vorliegen würde.</span>";
+        displaySolutionLogic(); // Zeige Lösung inkl. Bild automatisch an
+        document.getElementById('fazit-box').style.display = 'block';
+    } else if (input.length > 5 && (input.includes('zwei') || input.includes('eindeutig') || input.includes('y-wert') || input.includes('spiegel'))) {
+        feedback.innerHTML = "<span style='color:orange;'>Guter Ansatz! Schauen Sie sich für die genaue Begründung die Musterlösung an.</span>";
+        displaySolutionLogic(); // Zeige Lösung inkl. Bild automatisch an
+        document.getElementById('fazit-box').style.display = 'block';
+    } else {
+        feedback.innerHTML = "<span style='color:red;'>Tipp: Überlegen Sie sich, wie der Graph der Umkehrfunktion durch Spiegelung an der Winkelhalbierenden aussehen würde. Klicken Sie ggf. auf 'Tipp'.</span>";
+    }
+}
+
+function checkInterval() {
+    const val = document.getElementById('interval-input').value.replace(/\s/g, '').toLowerCase();
+    const feedback = document.getElementById('interval-feedback');
+    
+    const isPositiveHalf = (val.includes('0') && val.includes('inf') && !val.includes('-inf'));
+    const isNegativeHalf = (val.includes('-inf') && val.includes('0'));
+
+    if (isPositiveHalf || isNegativeHalf) {
+        feedback.innerHTML = "<span style='color:green;'>Richtig. Typischerweise wählt man \\( [0; \\infty[ \\) oder \\( ]-\\infty; 0] \\).</span>";
+        document.getElementById('prop-box').style.display = 'block';
+    } else {
+        feedback.innerHTML = "<span style='color:red;'>Nicht ganz. Überlegen Sie, welchen Bereich man wählen muss, damit die Funktion keine \\( x \\)-Werte mit zwei \\( y \\)-Werten hat.</span>";
+    }
+    MathJax.typeset();
+}
+
+function checkProperty() {
+    const val = document.getElementById('prop-input').value.toLowerCase();
+    const feedback = document.getElementById('prop-feedback');
+    if (val.includes('monoton')) {
+        feedback.innerHTML = "<span style='color:green;'>Richtig. Ein Graph muss im gesamten Intervall streng monoton steigend oder im gesamten Intervall streng monoton fallend sein, um umkehrbar zu sein.</span>";
+        document.getElementById('basics-box').style.display = 'block';
+        document.getElementById('footer-nav').style.display = 'flex';
+    } else {
+        feedback.innerHTML = "<span style='color:red;'>Falsch. Ein Graph muss im gesamten Intervall streng monoton steigend oder im gesamten Intervall streng monoton fallend sein, um umkehrbar zu sein. Geben Sie die richtige Lösung ein um weiter zu kommen.</span>";
+    }
+}
+</script>
+
+</body>
+</html>

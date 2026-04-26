@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>natürliche Exponentialfunktion</title>
+
+<!-- Externe Stylesheets und Bibliotheken -->
+<link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+<script src="https://www.geogebra.org/apps/deployggb.js"></script>
+
+<style>
+/* Hero-Bereich */
+.hero { padding: 15px 0; }
+.hero-title { font-size: 3rem; margin-bottom: 5px; }
+.hero-subtitle { margin-top: 0; font-size: 0.9rem; }
+
+/* Kapitel-Header */
+.chapter-header { padding: 10px 15px; }
+.chapter-number { font-size: 0.8rem; margin-bottom: 2px; }
+.chapter-header h3 { margin: 2px 0; }
+
+/* Aufgabenkarten */
+.card-task { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin: 20px 0; border: 1px solid #eee; position: relative; }
+.input-group { margin: 15px 0; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+input[type="number"], select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+.formula-display { font-size: 1.4rem; font-family: 'Times New Roman', serif; text-align: center; margin: 15px 0; color: #0056b3; font-weight: bold; }
+
+/* Visualisierungs-Layout */
+.visualisation-container { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
+.ggb-box { flex: 3; min-width: 500px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
+
+/* Eingabebox im Blauton der Seite */
+.euler-input-box { 
+    flex: 1; 
+    min-width: 220px; 
+    background: #f1f8ff; 
+    padding: 15px; 
+    border-radius: 8px; 
+    border: 2px solid #0056b3; 
+    text-align: center; 
+}
+.euler-input-box h5 { color: #0056b3; margin-top: 0; }
+
+/* Mathematische Herleitung Block */
+.derivation-box {
+    background-color: #fffdf0;
+    border-left: 5px solid #f6ad55;
+    padding: 15px 20px;
+    margin: 20px 0;
+    display: none;
+}
+.derivation-checkbox-container {
+    margin: 15px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    display: none;
+    align-items: center;
+    gap: 12px;
+    font-weight: bold;
+    color: #2d3748;
+}
+
+/* Mathematische Brüche */
+.math-frac {
+    display: inline-flex;
+    flex-direction: column;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 0.9em;
+    padding: 0 4px;
+}
+.math-num { border-bottom: 1px solid black; padding: 0 2px; }
+.math-den { padding: 0 2px; }
+
+/* Wichtige Grundlagen: Optimiertes, symmetrisches Design */
+.info-box { 
+    padding: 10px 20px !important; 
+    margin-top: 20px;
+    background: #f1f8ff;
+    border-radius: 8px;
+    border: 1px solid #0056b3;
+}
+.info-box h4 { margin-top: 0; margin-bottom: 5px; color: #0056b3; }
+.info-box p { margin: 5px 0; }
+.info-box p:last-child { margin-bottom: 0; }
+
+/* Navigations-Button */
+.nav-footer { display: flex; justify-content: flex-end; margin-top: 20px; padding-bottom: 20px; }
+.btn-next { background-color: #28a745; color: white !important; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+.btn-next:hover { background-color: #218838; color: white !important; }
+
+/* Sichtbarkeits-Steuerung */
+#block-visualisation, #checkbox-container, #block-foundations { display: none; }
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<section class="hero mb-4">
+<h3 class="hero-title">e-Funktion und ln-Funktion</h3>
+<p class="hero-subtitle">Mathematik 12. Klasse – Gymnasium Bayern</p>
+</section>
+
+<header class="chapter-header">
+<span class="chapter-number">Kapitel 1</span>
+<h3>Die natürliche Exponentialfunktion</h3>
+</header>
+
+<!-- BLOCK 1: Marktanalyse -->
+<div class="card-task">
+    <h4> Marktanalyse: Der Sneaker-Hype </h4>
+    <p>
+        Ein neues Sneaker-Modell einer angesagten Marke kommt auf den Markt. In der ersten Woche werden 500 Paar verkauft. 
+        Nach einem Social-Media-Post eines bekannten Influencers steigt die wöchentliche Verkaufszahl jede Woche um 15 %.
+    </p>
+
+    <p>Stellen Sie die Wachstumsfunktion auf (Parameter <b>b</b> und <b>a</b>):</p>
+    <div class="input-group">
+        <label>Startwert <b>b</b>:</label>
+        <input type="number" id="inputB" oninput="updateAssembled()">
+        <label>Basis <b>a</b>:</label>
+        <input type="number" id="inputA" step="0.001" oninput="updateAssembled()">
+        <button onclick="checkTask1()">Überprüfen</button>
+    </div>
+    <div id="assembledFormula" class="formula-display">f(x) = b &middot; a<sup>x</sup></div>
+    <div id="feedback-task1" class="feedback"></div>
+</div>
+
+<!-- BLOCK 2: Visualisierung -->
+<div id="block-visualisation">
+    <div class="card-task">
+        <h4>Visualisierung: Exponentialfunktion und Ableitung</h4>
+        <p>
+            Im nachfolgenden Diagramm ist eine Exponentialfunktion und die dazugehörige Ableitungsfunktion dargestellt. Mithilfe des Schiebereglers kann die Basis <i>a</i> verändert werden. Unter allen möglichen Funktionen gibt es eine Funktion, deren Graph mit dem Graph der Ableitungsfunktion übereinstimmt.
+            Ermitteln Sie mithilfe der Datei die Basis, die dafür nötig ist.
+        </p>
+        
+        <div class="visualisation-container">
+            <div id="ggb-element" class="ggb-box"></div>
+            <div class="euler-input-box">
+                <h5>Basis ermittelt?</h5>
+                <p>Tragen Sie den Wert für die <b>Basis</b> (auf 3 Dezimalstellen genau) ein:</p>
+                <input type="number" id="eulerInput" step="0.001" style="width: 80%; margin-bottom: 10px;">
+                <button onclick="checkEulerValue()" style="background-color: #0056b3; color: white;">Basis prüfen</button>
+                <div id="feedback-euler" class="feedback"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BLOCK 3: Herleitung (Optionale Checkbox) -->
+<div id="checkbox-container" class="derivation-checkbox-container">
+    <input type="checkbox" id="toggleDerivation" onclick="showDerivation()">
+    <label for="toggleDerivation">Für interessierte Schüler: Mathematische Herleitung der Euler’schen Zahl</label>
+</div>
+
+<div id="derivation-content" class="derivation-box">
+    <h5>Herleitung über die h-Methode</h5>
+    <p>Wir untersuchen, für welche Basis <i>a</i> die Funktion <i>f</i>(<i>x</i>) = <i>a</i><sup><i>x</i></sup> an der Stelle <i>x</i> = 0 die Steigung 1 besitzt.</p>
+    
+    <div style="text-align: center; margin: 15px 0; font-family: 'Times New Roman', serif; font-size: 1.1rem;">
+        <i>f'</i>(0) = lim<sub>h &rarr; 0</sub> 
+        <div class="math-frac"><span class="math-num"><i>a</i><sup>h</sup> - <i>a</i><sup>0</sup></span><span class="math-den">h</span></div>
+        = lim<sub>h &rarr; 0</sub> 
+        <div class="math-frac"><span class="math-num"><i>a</i><sup>h</sup> - 1</span><span class="math-den">h</span></div>
+        = 1
+    </div>
+
+    <p>Daraus folgt für sehr kleine <i>h</i>:</p>
+    
+    <div style="text-align: center; font-family: 'Times New Roman', serif; line-height: 2.8;">
+        <i>a</i><sup>h</sup> - 1 &approx; <i>h</i> &nbsp; | + 1 <br>
+        <i>a</i><sup>h</sup> &approx; <i>h</i> + 1 &nbsp; | <sup>h</sup>&radic; <br>
+        <b><i>a</i> &approx; <sup>h</sup>&radic;(<i>h</i> + 1) = (<i>h</i> + 1)<sup><div class="math-frac" style="font-size: 0.7em;"><span class="math-num">1</span><span class="math-den">h</span></div></sup></b>
+    </div>
+    
+    <p>Dieser Grenzwert für <i>h</i> gegen 0 definiert exakt die Eulersche Zahl <b><i>e</i> &approx; 2,718</b>.</p>
+</div>
+
+<!-- BLOCK 4: Wichtige Grundlagen -->
+<div id="block-foundations">
+    <div class="info-box">
+        <h4>Wichtige Grundlagen</h4>
+        <p>
+            Die <b>natürliche Exponentialfunktion</b> ist die Exponentialfunktion mit der Eulerschen Zahl <i>e</i> (&approx; 2,718) als Basis. Es gilt:
+            <span style="display: block; text-align: center; margin: 10px 0; font-size: 1.2rem; font-weight: bold;"><i>f</i>(<i>x</i>) = <i>e</i><sup><i>x</i></sup></span>
+        </p>
+        <p>
+            Diese Funktion ist die einzige Exponentialfunktion, bei der Funktionsterm und Ableitungsterm übereinstimmen, es gilt also <b><i>f</i>(<i>x</i>) = <i>f'</i>(<i>x</i>)</b>.
+        </p>
+    </div>
+    
+    <div class="nav-footer">
+        <a href="1_2_Eigenschaften.html" class="btn-next">Eigenschaften der e-Funktion &rarr;</a>
+    </div>
+</div>
+
+</div>
+
+<script>
+    function updateAssembled() {
+        const b = document.getElementById('inputB').value || 'b';
+        const a = document.getElementById('inputA').value || 'a';
+        document.getElementById('assembledFormula').innerHTML = `f(x) = ${b} &middot; ${a}<sup>x</sup>`;
+    }
+
+    function checkTask1() {
+        const b = parseFloat(document.getElementById('inputB').value);
+        const a = parseFloat(document.getElementById('inputA').value);
+        const fb = document.getElementById('feedback-task1');
+        if (b === 500 && a === 1.15) {
+            fb.innerHTML = "<span style='color:green;'>Richtig! Die Funktion wurde korrekt aufgestellt.</span>";
+            document.getElementById('block-visualisation').style.display = 'block';
+        } else {
+            fb.innerHTML = "<span style='color:red;'>Überprüfen Sie den Startwert b und den Wachstumsfaktor a.</span>";
+        }
+    }
+
+    function checkEulerValue() {
+        const val = parseFloat(document.getElementById('eulerInput').value);
+        const fb = document.getElementById('feedback-euler');
+        if (val === 2.718) {
+            fb.innerHTML = "<span style='color:green;'>Richtig! Dies ist die gesuchte Basis e.</span>";
+            document.getElementById('checkbox-container').style.display = 'flex';
+            document.getElementById('block-foundations').style.display = 'block';
+        } else {
+            fb.innerHTML = "<span style='color:red;'>Leider falsch. Nutzen Sie die GeoGebra-Grafik zur Hilfe.</span>";
+        }
+    }
+
+    function showDerivation() {
+        const checkBox = document.getElementById("toggleDerivation");
+        const content = document.getElementById("derivation-content");
+        content.style.display = checkBox.checked ? "block" : "none";
+    }
+
+    var params = { "appName": "graphing", "width": 800, "height": 450, "material_id": "zcqajrvf" };
+    var applet = new GGBApplet(params, true);
+    window.addEventListener("load", function() { applet.inject('ggb-element'); });
+</script>
+
+</body>
+</html>
