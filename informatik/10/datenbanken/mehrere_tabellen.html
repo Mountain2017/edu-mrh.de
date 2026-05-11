@@ -1,0 +1,1907 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datenbank-Ermittlungen: Der Bankraub-Fall - Informatik - edu-mrh.de</title>
+    <meta name="description" content="Interaktive Lerneinheit zu Datenbanken mit mehreren Tabellen, SQL-Abfragen, Joins und Modellierung - löse den Bankraub-Fall!">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    
+    <!-- CSS Framework -->
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    
+    <!-- JavaScript Framework -->
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+</head>
+<body>
+<!--
+Fachbereich: Informatik
+Jahrgangsstufe: 10
+Thema: Datenbanken mit mehreren Tabellen - SQL-Abfragen und Modellierung
+Erstellt: 2026-05-11
+Version: 1.0
+-->
+
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-brand">
+            <span class="icon">🖥️</span>
+            <a href="https://edu-mrh.de/">edu-mrh.de</a>
+        </div>
+        <div class="nav-links">
+            <a href="https://edu-mrh.de/informatik/informatik.html#jahrgang-10" class="btn btn-outline">Übersicht</a>
+            <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <h3>🔍 Ermittlungsakte</h3>
+        <button id="sidebarToggle" class="sidebar-toggle">✕</button>
+    </div>
+    
+    <nav class="sidebar-menu">
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Einführung</div>
+            <ul>
+                <li><a href="#intro" data-section="intro"><span class="icon">📋</span> Der Fall</a></li>
+                <li><a href="#lernziele" data-section="lernziele"><span class="icon">🎯</span> Lernziele</a></li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Ermittlungsphase 1</div>
+            <ul>
+                <li><a href="#kreuzprodukt" data-section="kreuzprodukt"><span class="icon">🔢</span> Kreuzprodukt</a></li>
+                <li><a href="#erste-spur" data-section="erste-spur"><span class="icon">🔎</span> Erste Spur</a></li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Ermittlungsphase 2</div>
+            <ul>
+                <li><a href="#join" data-section="join"><span class="icon">🔗</span> Join-Operationen</a></li>
+                <li><a href="#verdaechtige" data-section="verdaechtige"><span class="icon">👤</span> Verdächtige eingrenzen</a></li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Ermittlungsphase 3</div>
+            <ul>
+                <li><a href="#beziehungen" data-section="beziehungen"><span class="icon">🔀</span> Beziehungstypen</a></li>
+                <li><a href="#modellierung-1n" data-section="modellierung-1n"><span class="icon">📊</span> 1:n-Beziehungen</a></li>
+                <li><a href="#taeter-ueberführen" data-section="taeter-ueberführen"><span class="icon">🎯</span> Täter überführen</a></li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Ermittlungsphase 4</div>
+            <ul>
+                <li><a href="#modellierung-nm" data-section="modellierung-nm"><span class="icon">🕸️</span> n:m-Beziehungen</a></li>
+                <li><a href="#komplizen" data-section="komplizen"><span class="icon">👥</span> Komplizen finden</a></li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Abschluss</div>
+            <ul>
+                <li><a href="#datenbank-sichern" data-section="datenbank-sichern"><span class="icon">🛡️</span> Datenbank sichern</a></li>
+                <li><a href="#zusammenfassung" data-section="zusammenfassung"><span class="icon">✅</span> Zusammenfassung</a></li>
+            </ul>
+        </div>
+    </nav>
+</aside>
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="container">
+        
+        <!-- Intro Section -->
+        <section id="intro" class="content-section active">
+            <div class="chapter-header">
+                <span class="chapter-number">Fall #2024-DB-001</span>
+                <h1>🔍 Datenbank-Ermittlungen: Der Bankraub-Fall</h1>
+            </div>
+            
+            <div class="hero">
+                <h2 class="hero-title">Der spektakuläre Bankraub</h2>
+                <p class="hero-subtitle">Ein Fall für digitale Ermittler</p>
+                <p class="hero-description">
+                    Am 15. März 2024, 14:37 Uhr, wurde die Stadtbank überfallen. Der oder die Täter erbeuteten 2,5 Millionen Euro. 
+                    Die Polizei hat umfangreiche Daten gesammelt: Überwachungsvideos, Transaktionsprotokolle, Zeugenaussagen und mehr. 
+                    Deine Aufgabe: Analysiere die Datenbank und finde den Täter!
+                </p>
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">🏦</div>
+                    <h3>Der Tatort</h3>
+                    <ul>
+                        <li>Stadtbank, Hauptfiliale</li>
+                        <li>Zeitpunkt: 15.03.2024, 14:37 Uhr</li>
+                        <li>Beute: 2.500.000 €</li>
+                        <li>Keine Verletzten</li>
+                        <li>Professionelle Ausführung</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">📊</div>
+                    <h3>Verfügbare Daten</h3>
+                    <ul>
+                        <li>Kundendatenbank der Bank</li>
+                        <li>Transaktionsprotokolle</li>
+                        <li>Überwachungskamera-Logs</li>
+                        <li>Fahrzeugdatenbank</li>
+                        <li>Mitarbeiterverzeichnis</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">🎯</div>
+                    <h3>Deine Mission</h3>
+                    <ul>
+                        <li>Lerne SQL-Abfragen</li>
+                        <li>Verknüpfe Daten aus mehreren Tabellen</li>
+                        <li>Analysiere Beziehungen</li>
+                        <li>Finde den Täter</li>
+                        <li>Sichere die Datenbank</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="warning-box">
+                <h3>⚠️ Wichtig für Ermittler</h3>
+                <p>
+                    Dieser Fall ist in mehrere Ermittlungsphasen unterteilt. Jede Phase baut auf der vorherigen auf. 
+                    Du lernst schrittweise neue SQL-Techniken und wendest sie direkt an, um dem Täter auf die Spur zu kommen.
+                    <strong>Überspringe keine Phase!</strong> Jede enthält wichtige Hinweise.
+                </p>
+            </div>
+        </section>
+
+        <!-- Lernziele Section -->
+        <section id="lernziele" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Vorbereitung</span>
+                <h1>🎯 Lernziele der Ermittlung</h1>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Was du in dieser Einheit lernst</h2>
+                </div>
+                <div class="card-body">
+                    <div class="key-points">
+                        <div class="key-point">
+                            <div class="number">1</div>
+                            <div>
+                                <strong>Kreuzprodukt verstehen</strong>
+                                <p>Du lernst, wie man Daten aus mehreren Tabellen kombiniert und welche Probleme dabei auftreten können.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="key-point">
+                            <div class="number">2</div>
+                            <div>
+                                <strong>Join-Operationen anwenden</strong>
+                                <p>Du verstehst Fremdschlüssel und kannst Tabellen sinnvoll über WHERE-Bedingungen verknüpfen.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="key-point">
+                            <div class="number">3</div>
+                            <div>
+                                <strong>Beziehungstypen modellieren</strong>
+                                <p>Du erkennst 1:1-, 1:n- und n:m-Beziehungen und kannst sie in Datenbanken umsetzen.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="key-point">
+                            <div class="number">4</div>
+                            <div>
+                                <strong>Komplexe Abfragen erstellen</strong>
+                                <p>Du kombinierst mehrere Techniken, um aus großen Datenmengen die relevanten Informationen zu filtern.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('kreuzprodukt')">
+                    Ermittlung starten 🔍
+                </button>
+            </div>
+        </section>
+
+        <!-- Kreuzprodukt Section -->
+        <section id="kreuzprodukt" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Ermittlungsphase 1</span>
+                <h1>🔢 Das Kreuzprodukt - Alle Kombinationen</h1>
+            </div>
+            
+            <div class="concept-box info">
+                <h3>💡 Theorie: Was ist ein Kreuzprodukt?</h3>
+                <div class="definition">
+                    <p><strong>Definition:</strong> Das Kreuzprodukt (auch kartesisches Produkt genannt) kombiniert <em>jeden</em> Datensatz einer Tabelle mit <em>jedem</em> Datensatz einer anderen Tabelle.</p>
+                </div>
+                
+                <p><strong>SQL-Syntax:</strong></p>
+                <pre><code>SELECT * FROM Tabelle1, Tabelle2;</code></pre>
+                
+                <p><strong>Wichtig:</strong> Wenn Tabelle1 <em>n</em> Zeilen hat und Tabelle2 <em>m</em> Zeilen, enthält das Ergebnis <em>n × m</em> Zeilen!</p>
+            </div>
+            
+            <div class="example-box">
+                <h3>📝 Beispiel: Mensa-Menüs</h3>
+                <p>Stell dir vor, in der Mensa gibt es folgende Auswahl:</p>
+                
+                <div class="info-grid">
+                    <div>
+                        <h4>Vorspeise (3 Optionen)</h4>
+                        <ul>
+                            <li>Salat (2,00 €)</li>
+                            <li>Suppe (1,50 €)</li>
+                            <li>Bruschetta (2,50 €)</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>Hauptgang (2 Optionen)</h4>
+                        <ul>
+                            <li>Pizza (5,50 €)</li>
+                            <li>Pasta (4,50 €)</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <p><strong>Frage:</strong> Wie viele verschiedene 2-Gänge-Menüs sind möglich?</p>
+                <p><strong>Antwort:</strong> 3 × 2 = <strong>6 Kombinationen</strong></p>
+                
+                <div class="highlight">
+                    <strong>SQL-Abfrage:</strong>
+                    <pre><code>SELECT Vorspeise.Name, Hauptgang.Name, 
+       Vorspeise.Preis + Hauptgang.Preis AS Gesamtpreis
+FROM Vorspeise, Hauptgang;</code></pre>
+                </div>
+            </div>
+            
+            <div class="concept-box warning">
+                <h3>⚠️ Problem: Mehrdeutige Spaltennamen</h3>
+                <p>Wenn beide Tabellen eine Spalte mit gleichem Namen haben (z.B. "Name"), muss man die <strong>Punktschreibweise</strong> verwenden:</p>
+                <pre><code>Tabellenname.Spaltenname</code></pre>
+                <p><strong>Beispiel:</strong><code>Vorspeise.Name</code> oder <code>Hauptgang.Preis</code></p>
+            </div>
+            
+            <div class="task-box">
+                <h4>✏️ Übungsaufgabe 1: Kreuzprodukt verstehen</h4>
+                <p>Gegeben sind zwei Tabellen aus der Ermittlung:</p>
+                
+                <div class="info-grid">
+                    <div>
+                        <h4>Tabelle: Verdaechtige</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>1</td><td>Max Müller</td></tr>
+                                <tr><td>2</td><td>Anna Schmidt</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <h4>Tabelle: Fahrzeuge</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Kennzeichen</th>
+                                    <th>Marke</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>B-AB 123</td><td>BMW</td></tr>
+                                <tr><td>B-CD 456</td><td>Audi</td></tr>
+                                <tr><td>B-EF 789</td><td>VW</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <ol>
+                    <li>Wie viele Zeilen hat das Kreuzprodukt dieser beiden Tabellen?</li>
+                    <li>Schreibe die SQL-Abfrage für das Kreuzprodukt.</li>
+                    <li>Warum ist dieses Ergebnis für unsere Ermittlung problematisch?</li>
+                </ol>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-kreuz-1')">💡 Lösung anzeigen</button>
+                <div id="solution-kreuz-1" class="solution-box hidden">
+                    <h4>✅ Lösung</h4>
+                    <ol>
+                        <li><strong>Anzahl Zeilen:</strong> 2 × 3 = 6 Zeilen</li>
+                        <li><strong>SQL-Abfrage:</strong>
+                            <pre><code>SELECT * FROM Verdaechtige, Fahrzeuge;</code></pre>
+                        </li>
+                        <li><strong>Problem:</strong> Das Kreuzprodukt zeigt ALLE möglichen Kombinationen. Es ordnet jedem Verdächtigen jedes Fahrzeug zu, auch wenn keine echte Verbindung besteht. Wir brauchen eine Möglichkeit, nur die <em>tatsächlichen</em> Zuordnungen zu finden!</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- Erste Spur Section -->
+        <section id="erste-spur" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Ermittlungsphase 1</span>
+                <h1>🔎 Erste Spur: Daten kombinieren</h1>
+            </div>
+            
+            <div class="info-box">
+                <h3>🎬 Ermittlungsstand</h3>
+                <p>Die Überwachungskameras haben am Tattag mehrere Personen in der Nähe der Bank aufgezeichnet. Wir haben zwei Tabellen:</p>
+                <ul>
+                    <li><strong>Personen:</strong> Alle Personen, die an diesem Tag in der Bank waren</li>
+                    <li><strong>Konten:</strong> Alle Bankkonten mit Kontoinhabern</li>
+                </ul>
+                <p>Deine Aufgabe: Finde heraus, welche Personen welche Konten haben könnten.</p>
+            </div>
+            
+            <div class="ide-container">
+                <h3 class="ide-title">🔬 Ermittlungs-Labor: Kreuzprodukt testen</h3>
+                <p>Probiere verschiedene Kreuzprodukt-Abfragen aus. Die Datenbank enthält vereinfachte Testdaten.</p>
+                
+                <iframe srcdoc="<script>window.jo_doc = window.frameElement.textContent;</script><script src='https://embed.learn-sql.de/include/js/includeide/includeIDE.js'></script>" width="100%" height="400" frameborder="0">
+{'id': 'kreuzprodukt-test', 'databaseURL': 'https://edu-mrh.de/informatik/10/datenbanken/databases/bankraub_phase1.sqlite'}
+<script type="plain/text" title="Aufgabe1.sql">
+-- Aufgabe 1: Zeige alle Personen an
+SELECT * FROM Personen;
+
+-- Aufgabe 2: Zeige alle Konten an
+SELECT * FROM Konten;
+
+-- Aufgabe 3: Erstelle das Kreuzprodukt
+-- Tipp: SELECT * FROM Tabelle1, Tabelle2;
+
+</script>
+                </iframe>
+            </div>
+            
+            <div class="task-box">
+                <h4>✏️ Ermittlungsaufgabe 1: Kreuzprodukt analysieren</h4>
+                <ol>
+                    <li>Führe die ersten beiden Abfragen aus. Wie viele Personen und wie viele Konten gibt es?</li>
+                    <li>Erstelle das Kreuzprodukt beider Tabellen. Wie viele Zeilen erhältst du?</li>
+                    <li>Betrachte das Ergebnis: Welche Kombinationen sind offensichtlich unsinnig?</li>
+                    <li>Überlege: Was bräuchten wir, um nur die <em>richtigen</em> Zuordnungen zu finden?</li>
+                </ol>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-spur-1')">💡 Hinweis anzeigen</button>
+                <div id="solution-spur-1" class="solution-box hidden">
+                    <h4>💭 Ermittler-Hinweis</h4>
+                    <p><strong>Beobachtung:</strong> Das Kreuzprodukt zeigt uns ALLE möglichen Kombinationen. Aber wir brauchen eine Verbindung zwischen den Tabellen!</p>
+                    <p><strong>Lösung:</strong> Wir brauchen ein gemeinsames Merkmal (einen <strong>Schlüssel</strong>), über das wir die Tabellen sinnvoll verknüpfen können. In der nächsten Phase lernst du, wie das geht!</p>
+                </div>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('kreuzprodukt')">
+                    ← Zurück zur Theorie
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('join')">
+                    Weiter zu Phase 2: Join-Operationen →
+                </button>
+            </div>
+        </section>
+
+        <!-- Join Section -->
+        <section id="join" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Ermittlungsphase 2</span>
+                <h1>🔗 Join-Operationen - Sinnvolle Verknüpfungen</h1>
+            </div>
+            
+            <div class="concept-box">
+                <h3>💡 Theorie: Fremdschlüssel und Join</h3>
+                
+                <div class="definition">
+                    <p><strong>Primärschlüssel:</strong> Ein eindeutiges Merkmal, das jeden Datensatz identifiziert (z.B. PersonenID, KontoNr).</p>
+                    <p><strong>Fremdschlüssel:</strong> Ein Verweis auf den Primärschlüssel einer anderen Tabelle. Damit werden Beziehungen hergestellt.</p>
+                </div>
+                
+                <h4>Beispiel-Struktur:</h4>
+                <div class="info-grid">
+                    <div>
+                        <h4>Tabelle: Personen</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>PersonenID (PK)</th>
+                                    <th>Name</th>
+                                    <th>Alter</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>1</td><td>Max Müller</td><td>35</td></tr>
+                                <tr><td>2</td><td>Anna Schmidt</td><td>28</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <h4>Tabelle: Konten</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>KontoNr (PK)</th>
+                                    <th>PersonenID (FK)</th>
+                                    <th>Kontostand</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>1001</td><td>1</td><td>5000 €</td></tr>
+                                <tr><td>1002</td><td>2</td><td>12000 €</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <p><strong>PK</strong> = Primärschlüssel (Primary Key), <strong>FK</strong> = Fremdschlüssel (Foreign Key)</p>
+            </div>
+            
+            <div class="example-box">
+                <h3>📝 Join mit WHERE-Bedingung</h3>
+                <p>Um nur die <em>passenden</em> Kombinationen zu erhalten, verwenden wir eine WHERE-Bedingung:</p>
+                
+                <pre><code>SELECT Personen.Name, Konten.KontoNr, Konten.Kontostand
+FROM Personen, Konten
+WHERE Personen.PersonenID = Konten.PersonenID;</code></pre>
+                
+                <div class="highlight">
+                    <p><strong>So funktioniert's:</strong></p>
+                    <ol>
+                        <li>Erstelle das Kreuzprodukt (alle Kombinationen)</li>
+                        <li>Filtere mit WHERE nur die Zeilen, bei denen die IDs übereinstimmen</li>
+                        <li>Ergebnis: Nur die tatsächlichen Zuordnungen!</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="concept-box info">
+                <h3>🎯 Datenfluss verstehen</h3>
+                <p>Stell dir den Join-Prozess wie eine Ermittlung vor:</p>
+                
+                <div class="key-points">
+                    <div class="key-point">
+                        <div class="number">1</div>
+                        <div>
+                            <strong>Verdächtige sammeln</strong>
+                            <p>Das Kreuzprodukt erstellt alle möglichen Kombinationen (alle Verdächtigen mit allen Fahrzeugen).</p>
+                        </div>
+                    </div>
+                    
+                    <div class="key-point">
+                        <div class="number">2</div>
+                        <div>
+                            <strong>Alibis prüfen</strong>
+                            <p>Die WHERE-Bedingung filtert: Nur wenn die IDs übereinstimmen, ist die Zuordnung gültig.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="key-point">
+                        <div class="number">3</div>
+                        <div>
+                            <strong>Ergebnis präsentieren</strong>
+                            <p>SELECT wählt aus, welche Informationen angezeigt werden sollen.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="task-box">
+                <h4>✏️ Übungsaufgabe 2: Join verstehen</h4>
+                <p>Gegeben sind folgende Tabellen:</p>
+                
+                <div class="info-grid">
+                    <div>
+                        <h4>Mitarbeiter</h4>
+                        <table>
+                            <thead>
+                                <tr><th>MitarbeiterID</th><th>Name</th><th>AbteilungID</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>101</td><td>Lisa Weber</td><td>1</td></tr>
+                                <tr><td>102</td><td>Tom Klein</td><td>2</td></tr>
+                                <tr><td>103</td><td>Sara Braun</td><td>1</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <h4>Abteilungen</h4>
+                        <table>
+                            <thead>
+                                <tr><th>AbteilungID</th><th>Name</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>1</td><td>Kundenservice</td></tr>
+                                <tr><td>2</td><td>Sicherheit</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <ol>
+                    <li>Welche Spalte ist der Fremdschlüssel? In welcher Tabelle?</li>
+                    <li>Schreibe eine SQL-Abfrage, die für jeden Mitarbeiter den Namen und die Abteilung anzeigt.</li>
+                    <li>Wie viele Zeilen hat das Ergebnis?</li>
+                </ol>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-join-1')">💡 Lösung anzeigen</button>
+                <div id="solution-join-1" class="solution-box hidden">
+                    <h4>✅ Lösung</h4>
+                    <ol>
+                        <li><strong>Fremdschlüssel:</strong> <code>AbteilungID</code> in der Tabelle <code>Mitarbeiter</code> verweist auf <code>AbteilungID</code> in <code>Abteilungen</code>.</li>
+                        <li><strong>SQL-Abfrage:</strong>
+                            <pre><code>SELECT Mitarbeiter.Name, Abteilungen.Name AS Abteilung
+FROM Mitarbeiter, Abteilungen
+WHERE Mitarbeiter.AbteilungID = Abteilungen.AbteilungID;</code></pre>
+                        </li>
+                        <li><strong>Anzahl Zeilen:</strong> 3 (für jeden Mitarbeiter eine Zeile mit seiner Abteilung)</li>
+                    </ol>
+                    <p><strong>Hinweis:</strong> <code>AS Abteilung</code> benennt die Spalte um, damit nicht beide "Name" heißen.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Verdächtige Section -->
+        <section id="verdaechtige" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Ermittlungsphase 2</span>
+                <h1>👤 Verdächtige eingrenzen</h1>
+            </div>
+            
+            <div class="info-box">
+                <h3>🎬 Ermittlungsstand</h3>
+                <p>Neue Erkenntnisse! Die Spurensicherung hat folgende Daten zusammengetragen:</p>
+                <ul>
+                    <li><strong>Personen:</strong> Alle Personen, die am Tattag in der Bank waren</li>
+                    <li><strong>Transaktionen:</strong> Alle Kontobewegungen am Tattag</li>
+                    <li><strong>Kameras:</strong> Zeitstempel, wann welche Person wo gesehen wurde</li>
+                </ul>
+                <p><strong>Verdächtiges Verhalten:</strong> Kurz vor dem Raub wurden mehrere große Abhebungen getätigt. Finde heraus, wer diese Transaktionen durchgeführt hat!</p>
+            </div>
+            
+            <div class="concept-box warning">
+                <h3>🧠 Ermittlungsstrategie</h3>
+                <p>Um den Täter zu finden, musst du mehrere Informationen kombinieren:</p>
+                <ol>
+                    <li><strong>Wer war zur Tatzeit in der Bank?</strong> (Tabelle: Kameras)</li>
+                    <li><strong>Wer hat große Transaktionen durchgeführt?</strong> (Tabelle: Transaktionen)</li>
+                    <li><strong>Welche Person gehört zu welchem Konto?</strong> (Verknüpfung über PersonenID)</li>
+                </ol>
+                <p><strong>Vorgehen:</strong> Verknüpfe die Tabellen schrittweise mit Joins!</p>
+            </div>
+            
+            <div class="ide-container">
+                <h3 class="ide-title">🔬 Ermittlungs-Labor: Verdächtige finden</h3>
+                <p>Nutze Join-Operationen, um die Verdächtigen einzugrenzen.</p>
+                
+                <iframe srcdoc="<script>window.jo_doc = window.frameElement.textContent;</script><script src='https://embed.learn-sql.de/include/js/includeide/includeIDE.js'></script>" width="100%" height="500" frameborder="0">
+{'id': 'verdaechtige-join', 'databaseURL': 'https://edu-mrh.de/informatik/10/datenbanken/databases/bankraub_phase2.sqlite'}
+<script type="plain/text" title="Ermittlung.sql">
+-- Schritt 1: Verschaffe dir einen Überblick
+SELECT * FROM Personen;
+SELECT * FROM Transaktionen;
+SELECT * FROM Kameras;
+
+-- Schritt 2: Finde heraus, welche Personen Transaktionen durchgeführt haben
+-- Tipp: Verknüpfe Personen und Transaktionen über PersonenID
+
+
+-- Schritt 3: Filtere nach verdächtigen Transaktionen
+-- Verdächtig sind Abhebungen über 10.000 Euro
+-- Tipp: WHERE Betrag > 10000 AND Art = 'Abhebung'
+
+
+-- Schritt 4: Finde heraus, wer zur Tatzeit (14:30-14:45) in der Bank war
+-- Tipp: Verknüpfe mit der Kameras-Tabelle
+
+
+</script>
+                </iframe>
+            </div>
+            
+            <div class="task-box">
+                <h4>✏️ Ermittlungsaufgabe 2: Den Hauptverdächtigen identifizieren</h4>
+                <p><strong>Deine Aufgabe:</strong> Finde die Person, die folgende Kriterien erfüllt:</p>
+                <ol>
+                    <li>War zwischen 14:30 und 14:45 Uhr in der Bank (Tatzeit)</li>
+                    <li>Hat am Tattag eine Abhebung über 10.000 Euro getätigt</li>
+                    <li>Hat ein Konto mit auffällig hohem Kontostand</li>
+                </ol>
+                
+                <p><strong>Hinweise zur Lösung:</strong></p>
+                <ul>
+                    <li>Beginne mit einfachen Abfragen, um die Daten zu verstehen</li>
+                    <li>Verknüpfe dann schrittweise die Tabellen</li>
+                    <li>Nutze WHERE-Bedingungen, um zu filtern</li>
+                    <li>Achte auf die Zeitangaben (Format: 'HH:MM')</li>
+                </ul>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-verdacht-1')">💡 Lösungsweg anzeigen</button>
+                <div id="solution-verdacht-1" class="solution-box hidden">
+                    <h4>✅ Lösungsweg</h4>
+                    
+                    <p><strong>Schritt 1:</strong> Personen mit großen Abhebungen finden</p>
+                    <pre><code>SELECT Personen.Name, Transaktionen.Betrag, Transaktionen.Uhrzeit
+FROM Personen, Transaktionen
+WHERE Personen.PersonenID = Transaktionen.PersonenID
+  AND Transaktionen.Art = 'Abhebung'
+  AND Transaktionen.Betrag > 10000;</code></pre>
+                    
+                    <p><strong>Schritt 2:</strong> Mit Kamera-Daten abgleichen</p>
+                    <pre><code>SELECT Personen.Name, Transaktionen.Betrag, Kameras.Uhrzeit, Kameras.Ort
+FROM Personen, Transaktionen, Kameras
+WHERE Personen.PersonenID = Transaktionen.PersonenID
+  AND Personen.PersonenID = Kameras.PersonenID
+  AND Transaktionen.Art = 'Abhebung'
+  AND Transaktionen.Betrag > 10000
+  AND Kameras.Uhrzeit BETWEEN '14:30' AND '14:45';</code></pre>
+                    
+                    <p><strong>Ergebnis:</strong> Du solltest nun einen oder mehrere Hauptverdächtige identifiziert haben!</p>
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <h3>🎯 Zwischenergebnis</h3>
+                <p>Glückwunsch! Du hast gelernt, wie man mit Joins Daten aus mehreren Tabellen sinnvoll verknüpft. 
+                Aber die Ermittlung ist noch nicht abgeschlossen. In der nächsten Phase lernst du, wie man Datenbanken 
+                richtig modelliert, um komplexere Beziehungen abzubilden.</p>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('join')">
+                    ← Zurück zur Theorie
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('beziehungen')">
+                    Weiter zu Phase 3: Beziehungstypen →
+                </button>
+            </div>
+        </section>
+
+        <!-- Beziehungen Section -->
+        <section id="beziehungen" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Ermittlungsphase 3</span>
+                <h1>🔀 Beziehungstypen in Datenbanken</h1>
+            </div>
+            
+            <div class="concept-box">
+                <h3>💡 Theorie: Arten von Beziehungen</h3>
+                <p>In Datenbanken gibt es drei grundlegende Beziehungstypen zwischen Tabellen:</p>
+            </div>
+            
+            <div class="definition-grid">
+                <div class="definition-card">
+                    <div class="def-icon">1️⃣:1️⃣</div>
+                    <h4>1:1-Beziehung</h4>
+                    <p><strong>Ein</strong> Datensatz in Tabelle A gehört zu <strong>genau einem</strong> Datensatz in Tabelle B.</p>
+                    <p><strong>Beispiel:</strong> Eine Person hat genau einen Personalausweis, ein Personalausweis gehört zu genau einer Person.</p>
+                </div>
+                
+                <div class="definition-card">
+                    <div class="def-icon">1️⃣:🔢</div>
+                    <h4>1:n-Beziehung</h4>
+                    <p><strong>Ein</strong> Datensatz in Tabelle A gehört zu <strong>mehreren</strong> Datensätzen in Tabelle B.</p>
+                    <p><strong>Beispiel:</strong> Eine Person kann mehrere Konten haben, aber jedes Konto gehört zu genau einer Person.</p>
+                </div>
+                
+                <div class="definition-card">
+                    <div class="def-icon">🔢:🔢</div>
+                    <h4>n:m-Beziehung</h4>
+                    <p><strong>Mehrere</strong> Datensätze in Tabelle A gehören zu <strong>mehreren</strong> Datensätzen in Tabelle B.</p>
+                    <p><strong>Beispiel:</strong> Ein Student besucht mehrere Kurse, ein Kurs wird von mehreren Studenten besucht.</p>
+                </div>
+            </div>
+            
+            <div class="example-box">
+                <h3>📝 Beispiele aus dem echten Leben</h3>
+                
+                <div class="example-item">
+                    <h4>🏠 1:1 - Person und Hauptwohnsitz</h4>
+                    <p>Jede Person hat genau einen Hauptwohnsitz, jeder Hauptwohnsitz gehört zu genau einer Person.</p>
+                    <ul>
+                        <li><strong>Umsetzung:</strong> Fremdschlüssel in einer der beiden Tabellen</li>
+                        <li><strong>Selten verwendet:</strong> Oft werden die Daten in einer Tabelle zusammengefasst</li>
+                    </ul>
+                </div>
+                
+                <div class="example-item">
+                    <h4>👤 1:n - Kunde und Bestellungen</h4>
+                    <p>Ein Kunde kann viele Bestellungen aufgeben, aber jede Bestellung gehört zu genau einem Kunden.</p>
+                    <ul>
+                        <li><strong>Umsetzung:</strong> Fremdschlüssel in der "n"-Tabelle (Bestellungen)</li>
+                        <li><strong>Häufigster Fall</strong> in Datenbanken</li>
+                    </ul>
+                </div>
+                
+                <div class="example-item">
+                    <h4>📚 n:m - Schüler und Kurse</h4>
+                    <p>Ein Schüler besucht mehrere Kurse, ein Kurs wird von mehreren Schülern besucht.</p>
+                    <ul>
+                        <li><strong>Umsetzung:</strong> Zusätzliche Zwischentabelle (Verbindungstabelle) erforderlich</li>
+                        <li><strong>Komplex:</strong> Erfordert drei Tabellen statt zwei</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="task-box">
+                <h4>✏️ Übungsaufgabe 3: Beziehungstypen erkennen</h4>
+                <p>Bestimme für jedes Szenario den passenden Beziehungstyp (1:1, 1:n oder n:m):</p>
+                <ol>
+                    <li>Ein Autor schreibt mehrere Bücher. Ein Buch hat genau einen Autor.</li>
+                    <li>Ein Buch kann mehrere Autoren haben. Ein Autor kann mehrere Bücher schreiben.</li>
+                    <li>Ein Land hat genau eine Hauptstadt. Eine Hauptstadt gehört zu genau einem Land.</li>
+                    <li>Ein Lehrer unterrichtet mehrere Klassen. Eine Klasse wird von mehreren Lehrern unterrichtet.</li>
+                    <li>Eine Person hat genau eine Sozialversicherungsnummer. Eine Sozialversicherungsnummer gehört zu genau einer Person.</li>
+                </ol>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-beziehung-1')">💡 Lösung anzeigen</button>
+                <div id="solution-beziehung-1" class="solution-box hidden">
+                    <h4>✅ Lösung</h4>
+                    <ol>
+                        <li><strong>1:n</strong> - Ein Autor (1) zu viele Bücher (n)</li>
+                        <li><strong>n:m</strong> - Viele Bücher zu vielen Autoren (Co-Autoren möglich)</li>
+                        <li><strong>1:1</strong> - Ein Land zu genau einer Hauptstadt</li>
+                        <li><strong>n:m</strong> - Viele Lehrer zu vielen Klassen</li>
+                        <li><strong>1:1</strong> - Eine Person zu genau einer Sozialversicherungsnummer</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modellierung 1:n Section -->
+        <section id="modellierung-1n" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Ermittlungsphase 3</span>
+                <h1>📊 1:n-Beziehungen modellieren</h1>
+            </div>
+            
+            <div class="concept-box">
+                <h3>💡 Theorie: 1:n-Beziehungen umsetzen</h3>
+                <p>Eine 1:n-Beziehung wird durch einen <strong>Fremdschlüssel</strong> in der "n"-Tabelle realisiert.</p>
+                
+                <div class="definition">
+                    <p><strong>Regel:</strong> Der Fremdschlüssel kommt immer in die Tabelle auf der "n"-Seite (die "viele"-Seite).</p>
+                </div>
+            </div>
+            
+            <div class="example-box">
+                <h3>📝 Beispiel: Person und Konten</h3>
+                <p><strong>Szenario:</strong> Eine Person kann mehrere Bankkonten haben, aber jedes Konto gehört zu genau einer Person.</p>
+                
+                <h4>Falsche Modellierung ❌</h4>
+                <div class="warning-box">
+                    <p>Wenn wir den Fremdschlüssel in die "1"-Tabelle (Personen) setzen:</p>
+                    <table>
+                        <thead>
+                            <tr><th>PersonenID</th><th>Name</th><th>KontoNr</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>Max Müller</td><td>1001</td></tr>
+                            <tr><td>1</td><td>Max Müller</td><td>1002</td></tr>
+                        </tbody>
+                    </table>
+                    <p><strong>Problem:</strong> Redundanz! Der Name wird mehrfach gespeichert.</p>
+                </div>
+                
+                <h4>Richtige Modellierung ✅</h4>
+                <div class="info-box">
+                    <p>Fremdschlüssel in der "n"-Tabelle (Konten):</p>
+                    
+                    <div class="info-grid">
+                        <div>
+                            <h4>Tabelle: Personen</h4>
+                            <table>
+                                <thead>
+                                    <tr><th>PersonenID (PK)</th><th>Name</th><th>Adresse</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>1</td><td>Max Müller</td><td>Hauptstr. 1</td></tr>
+                                    <tr><td>2</td><td>Anna Schmidt</td><td>Parkweg 5</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <h4>Tabelle: Konten</h4>
+                            <table>
+                                <thead>
+                                    <tr><th>KontoNr (PK)</th><th>PersonenID (FK)</th><th>Kontostand</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>1001</td><td>1</td><td>5000 €</td></tr>
+                                    <tr><td>1002</td><td>1</td><td>12000 €</td></tr>
+                                    <tr><td>1003</td><td>2</td><td>8000 €</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <p><strong>Vorteil:</strong> Keine Redundanz, klare Struktur!</p>
+                </div>
+            </div>
+            
+            <div class="concept-box info">
+                <h3>🎯 Abfragen bei 1:n-Beziehungen</h3>
+                
+                <p><strong>Beispiel 1:</strong> Alle Konten einer Person anzeigen</p>
+                <pre><code>SELECT Personen.Name, Konten.KontoNr, Konten.Kontostand
+FROM Personen, Konten
+WHERE Personen.PersonenID = Konten.PersonenID
+  AND Personen.Name = 'Max Müller';</code></pre>
+                
+                <p><strong>Beispiel 2:</strong> Gesamtkontostand pro Person berechnen</p>
+                <pre><code>SELECT Personen.Name, SUM(Konten.Kontostand) AS Gesamtstand
+FROM Personen, Konten
+WHERE Personen.PersonenID = Konten.PersonenID
+GROUP BY Personen.PersonenID, Personen.Name;</code></pre>
+                
+                <div class="highlight">
+                    <p><strong>Hinweis:</strong> <code>SUM()</code> ist eine Aggregatfunktion, die Werte summiert. <code>GROUP BY</code> gruppiert die Ergebnisse nach Personen.</p>
+                </div>
+            </div>
+            
+            <div class="task-box">
+                <h4>✏️ Übungsaufgabe 4: 1:n-Beziehung modellieren</h4>
+                <p><strong>Szenario:</strong> Eine Firma hat mehrere Abteilungen. Jede Abteilung hat mehrere Mitarbeiter, aber jeder Mitarbeiter gehört zu genau einer Abteilung.</p>
+                
+                <ol>
+                    <li>Welcher Beziehungstyp liegt vor?</li>
+                    <li>Zeichne ein Schema mit zwei Tabellen (Abteilungen und Mitarbeiter). Markiere Primär- und Fremdschlüssel.</li>
+                    <li>In welcher Tabelle muss der Fremdschlüssel stehen?</li>
+                    <li>Schreibe eine SQL-Abfrage, die alle Mitarbeiter der Abteilung "IT" anzeigt.</li>
+                </ol>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-1n-1')">💡 Lösung anzeigen</button>
+                <div id="solution-1n-1" class="solution-box hidden">
+                    <h4>✅ Lösung</h4>
+                    <ol>
+                        <li><strong>Beziehungstyp:</strong> 1:n (Eine Abteilung hat viele Mitarbeiter)</li>
+                        <li><strong>Schema:</strong>
+                            <pre>
+Abteilungen
+-----------
+AbteilungID (PK)
+Name
+Standort
+
+Mitarbeiter
+-----------
+MitarbeiterID (PK)
+Name
+AbteilungID (FK) → verweist auf Abteilungen.AbteilungID
+Gehalt
+                            </pre>
+                        </li>
+                        <li><strong>Fremdschlüssel:</strong> In der Tabelle <code>Mitarbeiter</code> (die "n"-Seite)</li>
+                        <li><strong>SQL-Abfrage:</strong>
+                            <pre><code>SELECT Mitarbeiter.Name, Mitarbeiter.Gehalt
+FROM Mitarbeiter, Abteilungen
+WHERE Mitarbeiter.AbteilungID = Abteilungen.AbteilungID
+  AND Abteilungen.Name = 'IT';</code></pre>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- Täter überführen Section -->
+        <section id="taeter-ueberführen" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Ermittlungsphase 3</span>
+                <h1>🎯 Den Täter überführen</h1>
+            </div>
+            
+            <div class="info-box">
+                <h3>🎬 Ermittlungsstand</h3>
+                <p>Die Datenbank wurde erweitert! Neue Erkenntnisse:</p>
+                <ul>
+                    <li>Wir haben jetzt eine <strong>1:n-Beziehung</strong> zwischen Personen und Konten modelliert</li>
+                    <li>Einige Verdächtige haben <strong>mehrere Konten</strong></li>
+                    <li>Es gab <strong>verdächtige Überweisungen</strong> zwischen verschiedenen Konten</li>
+                    <li>Die Überwachungskameras haben <strong>mehrere Besuche</strong> derselben Person aufgezeichnet</li>
+                </ul>
+                <p><strong>Deine Aufgabe:</strong> Nutze dein Wissen über 1:n-Beziehungen, um den Täter zu überführen!</p>
+            </div>
+            
+            <div class="concept-box warning">
+                <h3>🧠 Ermittlungsstrategie</h3>
+                <p>Der Täter hat versucht, seine Spuren zu verwischen, indem er:</p>
+                <ol>
+                    <li>Mehrere Konten unter verschiedenen Namen angelegt hat</li>
+                    <li>Geld zwischen seinen Konten hin- und hergeschoben hat</li>
+                    <li>Die Bank mehrmals besucht hat, um nicht aufzufallen</li>
+                </ol>
+                <p><strong>Dein Vorteil:</strong> Mit 1:n-Beziehungen kannst du alle Konten einer Person zusammen analysieren!</p>
+            </div>
+            
+            <div class="ide-container">
+                <h3 class="ide-title">🔬 Ermittlungs-Labor: Täter überführen</h3>
+                <p>Analysiere die erweiterte Datenbank mit 1:n-Beziehungen.</p>
+                
+                <iframe srcdoc="<script>window.jo_doc = window.frameElement.textContent;</script><script src='https://embed.learn-sql.de/include/js/includeide/includeIDE.js'></script>" width="100%" height="600" frameborder="0">
+{'id': 'taeter-1n', 'databaseURL': 'https://edu-mrh.de/informatik/10/datenbanken/databases/bankraub_phase3.sqlite'}
+<script type="plain/text" title="Ermittlung.sql">
+-- Schritt 1: Verschaffe dir einen Überblick über die neue Struktur
+SELECT * FROM Personen;
+SELECT * FROM Konten;
+SELECT * FROM Transaktionen;
+
+-- Schritt 2: Finde heraus, wer mehrere Konten hat
+-- Tipp: Nutze COUNT() und GROUP BY
+
+
+-- Schritt 3: Berechne den Gesamtkontostand pro Person
+-- Tipp: Nutze SUM() und GROUP BY
+
+
+-- Schritt 4: Finde Personen mit verdächtig hohem Gesamtkontostand
+-- Verdächtig sind über 50.000 Euro
+-- Tipp: Nutze HAVING nach GROUP BY
+
+
+-- Schritt 5: Analysiere die Transaktionen dieser Personen
+-- Suche nach Überweisungen zwischen eigenen Konten
+
+
+-- Schritt 6: Kombiniere alle Hinweise
+-- Wer hat mehrere Konten, hohen Kontostand UND war zur Tatzeit in der Bank?
+
+
+</script>
+                </iframe>
+            </div>
+            
+            <div class="task-box">
+                <h4>✏️ Ermittlungsaufgabe 3: Den Täter identifizieren und überführen</h4>
+                <p><strong>Deine finale Aufgabe:</strong> Erstelle einen Ermittlungsbericht mit folgenden Informationen:</p>
+                <ol>
+                    <li><strong>Name des Täters</strong></li>
+                    <li><strong>Anzahl seiner Konten</strong></li>
+                    <li><strong>Gesamtkontostand aller seiner Konten</strong></li>
+                    <li><strong>Verdächtige Transaktionen</strong> (Datum, Betrag, Art)</li>
+                    <li><strong>Zeitpunkt seiner Anwesenheit</strong> in der Bank zur Tatzeit</li>
+                </ol>
+                
+                <p><strong>Hinweise:</strong></p>
+                <ul>
+                    <li>Arbeite schrittweise: Beginne mit einfachen Abfragen</li>
+                    <li>Nutze Aggregatfunktionen: <code>COUNT()</code>, <code>SUM()</code></li>
+                    <li>Gruppiere mit <code>GROUP BY</code></li>
+                    <li>Filtere gruppierte Ergebnisse mit <code>HAVING</code></li>
+                    <li>Kombiniere am Ende alle Tabellen für den finalen Beweis</li>
+                </ul>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-taeter-1')">💡 Lösungsweg anzeigen</button>
+                <div id="solution-taeter-1" class="solution-box hidden">
+                    <h4>✅ Lösungsweg</h4>
+                    
+                    <p><strong>Schritt 1:</strong> Personen mit mehreren Konten finden</p>
+                    <pre><code>SELECT Personen.PersonenID, Personen.Name, COUNT(Konten.KontoNr) AS AnzahlKonten
+FROM Personen, Konten
+WHERE Personen.PersonenID = Konten.PersonenID
+GROUP BY Personen.PersonenID, Personen.Name
+HAVING COUNT(Konten.KontoNr) > 1;</code></pre>
+                    
+                    <p><strong>Schritt 2:</strong> Gesamtkontostand berechnen</p>
+                    <pre><code>SELECT Personen.PersonenID, Personen.Name, 
+       COUNT(Konten.KontoNr) AS AnzahlKonten,
+       SUM(Konten.Kontostand) AS Gesamtstand
+FROM Personen, Konten
+WHERE Personen.PersonenID = Konten.PersonenID
+GROUP BY Personen.PersonenID, Personen.Name
+HAVING SUM(Konten.Kontostand) > 50000;</code></pre>
+                    
+                    <p><strong>Schritt 3:</strong> Mit Kamera-Daten und Transaktionen kombinieren</p>
+                    <pre><code>SELECT Personen.Name, 
+       COUNT(DISTINCT Konten.KontoNr) AS AnzahlKonten,
+       SUM(Konten.Kontostand) AS Gesamtstand,
+       Kameras.Uhrzeit AS TatzeitAnwesenheit,
+       COUNT(Transaktionen.TransaktionID) AS AnzahlTransaktionen
+FROM Personen, Konten, Kameras, Transaktionen
+WHERE Personen.PersonenID = Konten.PersonenID
+  AND Personen.PersonenID = Kameras.PersonenID
+  AND Konten.KontoNr = Transaktionen.KontoNr
+  AND Kameras.Uhrzeit BETWEEN '14:30' AND '14:45'
+  AND Transaktionen.Betrag > 10000
+GROUP BY Personen.PersonenID, Personen.Name, Kameras.Uhrzeit
+HAVING SUM(Konten.Kontostand) > 50000;</code></pre>
+                    
+                    <p><strong>Ergebnis:</strong> Du solltest nun den Täter eindeutig identifiziert haben mit allen Beweisen!</p>
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <h3>🎉 Zwischenerfolg!</h3>
+                <p>Hervorragend! Du hast den Haupttäter identifiziert. Aber die Ermittlung ist noch nicht abgeschlossen. 
+                Es gibt Hinweise auf <strong>Komplizen</strong>. In der nächsten Phase lernst du n:m-Beziehungen kennen, 
+                um das gesamte Netzwerk aufzudecken!</p>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('modellierung-1n')">
+                    ← Zurück zur Theorie
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('modellierung-nm')">
+                    Weiter zu Phase 4: n:m-Beziehungen →
+                </button>
+            </div>
+        </section>
+
+        <!-- Modellierung n:m Section -->
+        <section id="modellierung-nm" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Ermittlungsphase 4</span>
+                <h1>🕸️ n:m-Beziehungen modellieren</h1>
+            </div>
+            
+            <div class="concept-box">
+                <h3>💡 Theorie: n:m-Beziehungen verstehen</h3>
+                <p>Eine n:m-Beziehung liegt vor, wenn:</p>
+                <ul>
+                    <li>Ein Datensatz in Tabelle A zu <strong>mehreren</strong> Datensätzen in Tabelle B gehören kann</li>
+                    <li>UND ein Datensatz in Tabelle B zu <strong>mehreren</strong> Datensätzen in Tabelle A gehören kann</li>
+                </ul>
+                
+                <div class="definition">
+                    <p><strong>Problem:</strong> Eine n:m-Beziehung kann NICHT direkt mit Fremdschlüsseln umgesetzt werden!</p>
+                    <p><strong>Lösung:</strong> Man benötigt eine <strong>Zwischentabelle</strong> (auch Verbindungstabelle oder Assoziationstabelle genannt).</p>
+                </div>
+            </div>
+            
+            <div class="example-box">
+                <h3>📝 Beispiel: Studenten und Kurse</h3>
+                <p><strong>Szenario:</strong> Ein Student besucht mehrere Kurse. Ein Kurs wird von mehreren Studenten besucht.</p>
+                
+                <h4>Warum funktioniert 1:n nicht? ❌</h4>
+                <div class="warning-box">
+                    <p><strong>Versuch 1:</strong> Fremdschlüssel in Studenten-Tabelle</p>
+                    <table>
+                        <thead>
+                            <tr><th>StudentID</th><th>Name</th><th>KursID</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>Max</td><td>101</td></tr>
+                            <tr><td>1</td><td>Max</td><td>102</td></tr>
+                        </tbody>
+                    </table>
+                    <p><strong>Problem:</strong> Redundanz! Max wird mehrfach gespeichert.</p>
+                    
+                    <p><strong>Versuch 2:</strong> Fremdschlüssel in Kurse-Tabelle</p>
+                    <table>
+                        <thead>
+                            <tr><th>KursID</th><th>Name</th><th>StudentID</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>101</td><td>Mathe</td><td>1</td></tr>
+                            <tr><td>101</td><td>Mathe</td><td>2</td></tr>
+                        </tbody>
+                    </table>
+                    <p><strong>Problem:</strong> Redundanz! Der Kurs wird mehrfach gespeichert.</p>
+                </div>
+                
+                <h4>Richtige Lösung: Zwischentabelle ✅</h4>
+                <div class="info-box">
+                    <p>Wir erstellen drei Tabellen:</p>
+                    
+                    <div class="info-grid">
+                        <div>
+                            <h4>Tabelle: Studenten</h4>
+                            <table>
+                                <thead>
+                                    <tr><th>StudentID (PK)</th><th>Name</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>1</td><td>Max Müller</td></tr>
+                                    <tr><td>2</td><td>Anna Schmidt</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <h4>Tabelle: Kurse</h4>
+                            <table>
+                                <thead>
+                                    <tr><th>KursID (PK)</th><th>Name</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>101</td><td>Mathematik</td></tr>
+                                    <tr><td>102</td><td>Informatik</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <h4>Tabelle: Teilnahmen (Zwischentabelle)</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>TeilnahmeID (PK)</th>
+                                <th>StudentID (FK)</th>
+                                <th>KursID (FK)</th>
+                                <th>Note</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>1</td><td>101</td><td>1,7</td></tr>
+                            <tr><td>2</td><td>1</td><td>102</td><td>2,0</td></tr>
+                            <tr><td>3</td><td>2</td><td>101</td><td>1,3</td></tr>
+                        </tbody>
+                    </table>
+                    
+                    <p><strong>Vorteile:</strong></p>
+                    <ul>
+                        <li>Keine Redundanz</li>
+                        <li>Zusätzliche Attribute möglich (z.B. Note, Datum)</li>
+                        <li>Klare Struktur</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="concept-box info">
+                <h3>🎯 Abfragen bei n:m-Beziehungen</h3>
+                
+                <p><strong>Beispiel 1:</strong> Alle Kurse eines Studenten anzeigen</p>
+                <pre><code>SELECT Studenten.Name, Kurse.Name AS Kurs, Teilnahmen.Note
+FROM Studenten, Teilnahmen, Kurse
+WHERE Studenten.StudentID = Teilnahmen.StudentID
+  AND Teilnahmen.KursID = Kurse.KursID
+  AND Studenten.Name = 'Max Müller';</code></pre>
+                
+                <p><strong>Beispiel 2:</strong> Alle Studenten eines Kurses anzeigen</p>
+                <pre><code>SELECT Kurse.Name AS Kurs, Studenten.Name AS Student, Teilnahmen.Note
+FROM Kurse, Teilnahmen, Studenten
+WHERE Kurse.KursID = Teilnahmen.KursID
+  AND Teilnahmen.StudentID = Studenten.StudentID
+  AND Kurse.Name = 'Mathematik';</code></pre>
+                
+                <div class="highlight">
+                    <p><strong>Wichtig:</strong> Bei n:m-Beziehungen müssen immer <strong>drei Tabellen</strong> verknüpft werden: Die beiden Haupttabellen und die Zwischentabelle!</p>
+                </div>
+            </div>
+            
+            <div class="concept-box warning">
+                <h3>⚠️ Häufige Fehler bei n:m-Beziehungen</h3>
+                <ul>
+                    <li><strong>Fehler 1:</strong> Zwischentabelle vergessen → Redundanz und Inkonsistenz</li>
+                    <li><strong>Fehler 2:</strong> Nur zwei Tabellen im JOIN → Unvollständige Ergebnisse</li>
+                    <li><strong>Fehler 3:</strong> Falsche WHERE-Bedingungen → Kreuzprodukt statt Join</li>
+                </ul>
+            </div>
+            
+            <div class="task-box">
+                <h4>✏️ Übungsaufgabe 5: n:m-Beziehung modellieren</h4>
+                <p><strong>Szenario:</strong> In einer Bibliothek können Bücher von mehreren Autoren geschrieben sein (Co-Autoren). Ein Autor kann mehrere Bücher schreiben.</p>
+                
+                <ol>
+                    <li>Welcher Beziehungstyp liegt vor?</li>
+                    <li>Zeichne ein Schema mit drei Tabellen. Markiere alle Primär- und Fremdschlüssel.</li>
+                    <li>Wie heißt die Zwischentabelle sinnvollerweise?</li>
+                    <li>Welche zusätzlichen Attribute könnte die Zwischentabelle haben?</li>
+                    <li>Schreibe eine SQL-Abfrage, die alle Bücher des Autors "J.K. Rowling" anzeigt.</li>
+                </ol>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-nm-1')">💡 Lösung anzeigen</button>
+                <div id="solution-nm-1" class="solution-box hidden">
+                    <h4>✅ Lösung</h4>
+                    <ol>
+                        <li><strong>Beziehungstyp:</strong> n:m (Viele Bücher zu vielen Autoren)</li>
+                        <li><strong>Schema:</strong>
+                            <pre>
+Autoren
+-------
+AutorID (PK)
+Name
+Geburtsjahr
+
+Buecher
+-------
+BuchID (PK)
+Titel
+ISBN
+Erscheinungsjahr
+
+Autorenschaft (Zwischentabelle)
+-----------
+AutorenschaftID (PK)
+AutorID (FK) → verweist auf Autoren.AutorID
+BuchID (FK) → verweist auf Buecher.BuchID
+Reihenfolge (z.B. 1 = Hauptautor, 2 = Co-Autor)
+                            </pre>
+                        </li>
+                        <li><strong>Name der Zwischentabelle:</strong> "Autorenschaft" (beschreibt die Beziehung)</li>
+                        <li><strong>Zusätzliche Attribute:</strong> Reihenfolge (Hauptautor/Co-Autor), Beitrag (in %), Rolle (Autor/Illustrator)</li>
+                        <li><strong>SQL-Abfrage:</strong>
+                            <pre><code>SELECT Buecher.Titel, Buecher.Erscheinungsjahr
+FROM Autoren, Autorenschaft, Buecher
+WHERE Autoren.AutorID = Autorenschaft.AutorID
+  AND Autorenschaft.BuchID = Buecher.BuchID
+  AND Autoren.Name = 'J.K. Rowling';</code></pre>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- Komplizen Section -->
+        <section id="komplizen" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Ermittlungsphase 4</span>
+                <h1>👥 Das Komplizen-Netzwerk aufdecken</h1>
+            </div>
+            
+            <div class="info-box">
+                <h3>🎬 Ermittlungsstand - Neue Erkenntnisse!</h3>
+                <p>Die Ermittlungen haben ergeben, dass der Täter nicht allein gehandelt hat:</p>
+                <ul>
+                    <li>Es gibt ein <strong>Netzwerk von Komplizen</strong></li>
+                    <li>Mehrere Personen waren an verschiedenen Straftaten beteiligt</li>
+                    <li>Eine Person kann an mehreren Straftaten beteiligt sein</li>
+                    <li>Eine Straftat kann von mehreren Personen begangen worden sein</li>
+                </ul>
+                <p><strong>Das ist eine n:m-Beziehung!</strong> Wir brauchen eine Zwischentabelle, um das Netzwerk zu modellieren.</p>
+            </div>
+            
+            <div class="concept-box warning">
+                <h3>🧠 Ermittlungsstrategie</h3>
+                <p>Die Datenbank wurde erweitert mit:</p>
+                <ul>
+                    <li><strong>Tabelle: Personen</strong> - Alle Verdächtigen</li>
+                    <li><strong>Tabelle: Straftaten</strong> - Alle bekannten Verbrechen</li>
+                    <li><strong>Tabelle: Beteiligungen</strong> - Wer war an welcher Straftat beteiligt? (Zwischentabelle)</li>
+                </ul>
+                <p><strong>Deine Aufgabe:</strong> Finde heraus, wer die Komplizen sind und wie das Netzwerk strukturiert ist!</p>
+            </div>
+            
+            <div class="ide-container">
+                <h3 class="ide-title">🔬 Ermittlungs-Labor: Komplizen-Netzwerk analysieren</h3>
+                <p>Analysiere die n:m-Beziehung zwischen Personen und Straftaten.</p>
+                
+                <iframe srcdoc="<script>window.jo_doc = window.frameElement.textContent;</script><script src='https://embed.learn-sql.de/include/js/includeide/includeIDE.js'></script>" width="100%" height="650" frameborder="0">
+{'id': 'komplizen-nm', 'databaseURL': 'https://edu-mrh.de/informatik/10/datenbanken/databases/bankraub_phase4.sqlite'}
+<script type="plain/text" title="Ermittlung.sql">
+-- Schritt 1: Verschaffe dir einen Überblick
+SELECT * FROM Personen;
+SELECT * FROM Straftaten;
+SELECT * FROM Beteiligungen;
+
+-- Schritt 2: Finde alle Straftaten des Haupttäters
+-- Tipp: Verknüpfe alle drei Tabellen
+
+
+-- Schritt 3: Finde alle Personen, die am Bankraub beteiligt waren
+-- Tipp: Filtere nach Straftaten.Art = 'Bankraub'
+
+
+-- Schritt 4: Finde Personen, die an mehreren Straftaten beteiligt waren
+-- Tipp: Nutze COUNT() und GROUP BY, dann HAVING
+
+
+-- Schritt 5: Finde gemeinsame Komplizen
+-- Welche Personen waren zusammen an denselben Straftaten beteiligt?
+
+
+-- Schritt 6: Erstelle ein Netzwerk-Diagramm (als Abfrage)
+-- Zeige alle Verbindungen: Person A und Person B waren zusammen an Straftat X
+
+
+</script>
+                </iframe>
+            </div>
+            
+            <div class="task-box">
+                <h4>✏️ Ermittlungsaufgabe 4: Das Komplizen-Netzwerk aufdecken</h4>
+                <p><strong>Deine finale Ermittlungsaufgabe:</strong> Erstelle einen vollständigen Bericht über das Verbrechernetzwerk:</p>
+                
+                <ol>
+                    <li><strong>Haupttäter identifizieren:</strong> Wer war am Bankraub beteiligt?</li>
+                    <li><strong>Komplizen finden:</strong> Welche anderen Personen waren mit dem Haupttäter an anderen Straftaten beteiligt?</li>
+                    <li><strong>Netzwerk analysieren:</strong> Wer hat mit wem zusammengearbeitet?</li>
+                    <li><strong>Gefährlichkeit bewerten:</strong> Wer war an den meisten Straftaten beteiligt?</li>
+                    <li><strong>Verbindungen aufdecken:</strong> Gibt es Personen, die als "Verbindungsknoten" zwischen verschiedenen Gruppen fungieren?</li>
+                </ol>
+                
+                <p><strong>Erweiterte Hinweise:</strong></p>
+                <ul>
+                    <li>Nutze <code>COUNT()</code> um die Anzahl der Straftaten pro Person zu zählen</li>
+                    <li>Verwende <code>GROUP BY</code> um nach Personen zu gruppieren</li>
+                    <li>Nutze <code>HAVING</code> um Personen mit mehreren Straftaten zu filtern</li>
+                    <li>Für Netzwerk-Verbindungen: Verknüpfe die Beteiligungen-Tabelle mit sich selbst (Self-Join)</li>
+                </ul>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-komplizen-1')">💡 Lösungsweg anzeigen</button>
+                <div id="solution-komplizen-1" class="solution-box hidden">
+                    <h4>✅ Lösungsweg</h4>
+                    
+                    <p><strong>Schritt 1:</strong> Alle am Bankraub Beteiligten finden</p>
+                    <pre><code>SELECT Personen.Name, Straftaten.Art, Straftaten.Datum, Beteiligungen.Rolle
+FROM Personen, Beteiligungen, Straftaten
+WHERE Personen.PersonenID = Beteiligungen.PersonenID
+  AND Beteiligungen.StraftatID = Straftaten.StraftatID
+  AND Straftaten.Art = 'Bankraub';</code></pre>
+                    
+                    <p><strong>Schritt 2:</strong> Personen mit mehreren Straftaten finden</p>
+                    <pre><code>SELECT Personen.Name, COUNT(Beteiligungen.StraftatID) AS AnzahlStraftaten
+FROM Personen, Beteiligungen
+WHERE Personen.PersonenID = Beteiligungen.PersonenID
+GROUP BY Personen.PersonenID, Personen.Name
+HAVING COUNT(Beteiligungen.StraftatID) > 1
+ORDER BY AnzahlStraftaten DESC;</code></pre>
+                    
+                    <p><strong>Schritt 3:</strong> Gemeinsame Straftaten finden (Netzwerk)</p>
+                    <pre><code>SELECT P1.Name AS Person1, P2.Name AS Person2, 
+       Straftaten.Art, Straftaten.Datum
+FROM Personen P1, Personen P2, 
+     Beteiligungen B1, Beteiligungen B2, 
+     Straftaten
+WHERE P1.PersonenID = B1.PersonenID
+  AND P2.PersonenID = B2.PersonenID
+  AND B1.StraftatID = B2.StraftatID
+  AND B1.StraftatID = Straftaten.StraftatID
+  AND P1.PersonenID < P2.PersonenID
+ORDER BY Straftaten.Datum;</code></pre>
+                    
+                    <p><strong>Hinweis:</strong> <code>P1.PersonenID < P2.PersonenID</code> verhindert doppelte Einträge (A-B und B-A).</p>
+                    
+                    <p><strong>Schritt 4:</strong> Komplizen des Haupttäters finden</p>
+                    <pre><code>SELECT DISTINCT P2.Name AS Komplize, COUNT(DISTINCT B2.StraftatID) AS GemeinsameStraftaten
+FROM Personen P1, Personen P2, 
+     Beteiligungen B1, Beteiligungen B2
+WHERE P1.PersonenID = B1.PersonenID
+  AND P2.PersonenID = B2.PersonenID
+  AND B1.StraftatID = B2.StraftatID
+  AND P1.Name = 'HAUPTTÄTER_NAME'
+  AND P1.PersonenID != P2.PersonenID
+GROUP BY P2.PersonenID, P2.Name
+ORDER BY GemeinsameStraftaten DESC;</code></pre>
+                    
+                    <p><strong>Ergebnis:</strong> Du hast nun das gesamte Verbrechernetzwerk aufgedeckt!</p>
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <h3>🎉 Ermittlung fast abgeschlossen!</h3>
+                <p>Hervorragende Arbeit! Du hast:</p>
+                <ul>
+                    <li>✅ Den Haupttäter identifiziert</li>
+                    <li>✅ Alle Komplizen gefunden</li>
+                    <li>✅ Das Verbrechernetzwerk aufgedeckt</li>
+                    <li>✅ n:m-Beziehungen gemeistert</li>
+                </ul>
+                <p>Jetzt fehlt nur noch ein wichtiger Schritt: Die Datenbank muss gesichert werden, damit die Täter sie nicht manipulieren können!</p>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('modellierung-nm')">
+                    ← Zurück zur Theorie
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('datenbank-sichern')">
+                    Weiter: Datenbank sichern →
+                </button>
+            </div>
+        </section>
+
+        <!-- Datenbank sichern Section -->
+        <section id="datenbank-sichern" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Abschluss</span>
+                <h1>🛡️ Die Datenbank sichern</h1>
+            </div>
+            
+            <div class="info-box">
+                <h3>⚠️ Neue Bedrohung!</h3>
+                <p>Die Täter haben von den Ermittlungen erfahren und versuchen nun, die Datenbank zu manipulieren:</p>
+                <ul>
+                    <li>Löschen von belastenden Transaktionen</li>
+                    <li>Ändern von Zeitstempeln</li>
+                    <li>Einfügen falscher Alibis</li>
+                </ul>
+                <p><strong>Deine Aufgabe:</strong> Verbessere die Datenbankstruktur, um Manipulationen zu erschweren!</p>
+            </div>
+            
+            <div class="concept-box">
+                <h3>💡 Datenbank-Sicherheit durch bessere Modellierung</h3>
+                <p>Durch geschickte Modellierung können wir die Datenbank sicherer machen:</p>
+                
+                <div class="key-points">
+                    <div class="key-point">
+                        <div class="number">1</div>
+                        <div>
+                            <strong>Audit-Tabellen hinzufügen</strong>
+                            <p>Protokolliere alle Änderungen in separaten Tabellen (Wer hat wann was geändert?).</p>
+                        </div>
+                    </div>
+                    
+                    <div class="key-point">
+                        <div class="number">2</div>
+                        <div>
+                            <strong>Historisierung einführen</strong>
+                            <p>Lösche keine Daten, sondern markiere sie als "gelöscht" mit Zeitstempel.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="key-point">
+                        <div class="number">3</div>
+                        <div>
+                            <strong>Beziehungen erweitern</strong>
+                            <p>Füge zusätzliche Verknüpfungen hinzu, um Inkonsistenzen zu erkennen.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="key-point">
+                        <div class="number">4</div>
+                        <div>
+                            <strong>Redundante Prüfdaten</strong>
+                            <p>Speichere Prüfsummen und Zeitstempel, um Manipulationen zu erkennen.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="example-box">
+                <h3>📝 Beispiel: Audit-Tabelle für Transaktionen</h3>
+                <p>Statt Transaktionen zu löschen oder zu ändern, protokollieren wir alle Änderungen:</p>
+                
+                <h4>Neue Tabelle: TransaktionenAudit</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>AuditID (PK)</th>
+                            <th>TransaktionID (FK)</th>
+                            <th>Aktion</th>
+                            <th>AlterWert</th>
+                            <th>NeuerWert</th>
+                            <th>BenutzerID</th>
+                            <th>Zeitstempel</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>1001</td>
+                            <td>UPDATE</td>
+                            <td>Betrag: 15000</td>
+                            <td>Betrag: 5000</td>
+                            <td>42</td>
+                            <td>2024-03-16 10:23:15</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>1002</td>
+                            <td>DELETE</td>
+                            <td>Gesamter Datensatz</td>
+                            <td>NULL</td>
+                            <td>42</td>
+                            <td>2024-03-16 10:25:42</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <p><strong>Vorteil:</strong> Jede Änderung ist nachvollziehbar. Verdächtige Manipulationen fallen sofort auf!</p>
+            </div>
+            
+            <div class="task-box">
+                <h4>✏️ Abschlussaufgabe: Datenbank-Verbesserungen planen</h4>
+                <p>Entwirf Verbesserungen für die Ermittlungsdatenbank:</p>
+                
+                <ol>
+                    <li><strong>Audit-System:</strong> Welche Tabellen sollten ein Audit-Log haben? Warum?</li>
+                    <li><strong>Historisierung:</strong> Entwirf eine Tabelle "PersonenHistorie", die alle Änderungen an Personendaten speichert.</li>
+                    <li><strong>Zusätzliche Beziehungen:</strong> Welche n:m-Beziehung könnte man noch hinzufügen? (z.B. Personen und Fahrzeuge, wenn mehrere Personen ein Fahrzeug nutzen)</li>
+                    <li><strong>Prüfmechanismen:</strong> Wie könnte man sicherstellen, dass die Summe aller Transaktionen eines Kontos mit dem Kontostand übereinstimmt?</li>
+                </ol>
+                
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-sicherheit-1')">💡 Lösungsvorschläge anzeigen</button>
+                <div id="solution-sicherheit-1" class="solution-box hidden">
+                    <h4>✅ Lösungsvorschläge</h4>
+                    
+                    <p><strong>1. Audit-System:</strong></p>
+                    <ul>
+                        <li><strong>Transaktionen:</strong> Sehr wichtig! Finanzielle Daten dürfen nicht unbemerkt geändert werden.</li>
+                        <li><strong>Personen:</strong> Wichtig! Änderungen an Personalien müssen nachvollziehbar sein.</li>
+                        <li><strong>Beteiligungen:</strong> Kritisch! Wer an welcher Straftat beteiligt war, darf nicht manipuliert werden.</li>
+                    </ul>
+                    
+                    <p><strong>2. PersonenHistorie-Tabelle:</strong></p>
+                    <pre>
+PersonenHistorie
+----------------
+HistorieID (PK)
+PersonenID (FK) → verweist auf Personen.PersonenID
+Name_Alt
+Name_Neu
+Adresse_Alt
+Adresse_Neu
+GeaendertVon (BenutzerID)
+GeaendertAm (Zeitstempel)
+Aktion (INSERT, UPDATE, DELETE)
+                    </pre>
+                    
+                    <p><strong>3. Zusätzliche n:m-Beziehung: Personen und Fahrzeuge</strong></p>
+                    <pre>
+Fahrzeugnutzung (Zwischentabelle)
+-----------------
+NutzungID (PK)
+PersonenID (FK)
+FahrzeugID (FK)
+Von_Datum
+Bis_Datum
+Rolle (Eigentümer, Fahrer, Mitfahrer)
+                    </pre>
+                    
+                    <p><strong>4. Prüfmechanismus für Kontostände:</strong></p>
+                    <pre><code>-- Abfrage zur Überprüfung der Konsistenz
+SELECT Konten.KontoNr, 
+       Konten.Kontostand AS GespeicherterStand,
+       SUM(CASE WHEN Transaktionen.Art = 'Einzahlung' THEN Transaktionen.Betrag
+                WHEN Transaktionen.Art = 'Abhebung' THEN -Transaktionen.Betrag
+                ELSE 0 END) AS BerechneterStand,
+       Konten.Kontostand - SUM(CASE WHEN Transaktionen.Art = 'Einzahlung' THEN Transaktionen.Betrag
+                                     WHEN Transaktionen.Art = 'Abhebung' THEN -Transaktionen.Betrag
+                                     ELSE 0 END) AS Differenz
+FROM Konten, Transaktionen
+WHERE Konten.KontoNr = Transaktionen.KontoNr
+GROUP BY Konten.KontoNr, Konten.Kontostand
+HAVING ABS(Differenz) > 0.01;</code></pre>
+                    <p>Diese Abfrage findet alle Konten, bei denen der gespeicherte Kontostand nicht mit der Summe der Transaktionen übereinstimmt!</p>
+                </div>
+            </div>
+            
+            <div class="best-practices">
+                <h3>✅ Best Practices für sichere Datenbanken</h3>
+                
+                <div class="practice">
+                    <div class="icon">🔒</div>
+                    <div>
+                        <strong>Niemals Daten löschen</strong>
+                        <p>Markiere Datensätze als "gelöscht" statt sie zu entfernen. Nutze ein Feld wie "Geloescht" (Boolean) oder "GeloeschtAm" (Zeitstempel).</p>
+                    </div>
+                </div>
+                
+                <div class="practice">
+                    <div class="icon">📝</div>
+                    <div>
+                        <strong>Alle Änderungen protokollieren</strong>
+                        <p>Erstelle Audit-Tabellen für kritische Daten. Speichere: Wer, Wann, Was, Alter Wert, Neuer Wert.</p>
+                    </div>
+                </div>
+                
+                <div class="practice">
+                    <div class="icon">🔗</div>
+                    <div>
+                        <strong>Referentielle Integrität nutzen</strong>
+                        <p>Definiere Fremdschlüssel-Beziehungen in der Datenbank selbst (FOREIGN KEY Constraints), nicht nur in der Anwendung.</p>
+                    </div>
+                </div>
+                
+                <div class="practice">
+                    <div class="icon">✓</div>
+                    <div>
+                        <strong>Konsistenz prüfen</strong>
+                        <p>Erstelle regelmäßige Prüfabfragen, die Inkonsistenzen aufdecken (z.B. Kontostände vs. Transaktionssummen).</p>
+                    </div>
+                </div>
+                
+                <div class="practice">
+                    <div class="icon">⏰</div>
+                    <div>
+                        <strong>Zeitstempel überall</strong>
+                        <p>Füge zu jeder Tabelle die Felder "ErstelltAm" und "GeaendertAm" hinzu. So kannst du verdächtige Änderungen erkennen.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('komplizen')">
+                    ← Zurück zu Komplizen
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('zusammenfassung')">
+                    Zur Zusammenfassung →
+                </button>
+            </div>
+        </section>
+
+        <!-- Zusammenfassung Section -->
+        <section id="zusammenfassung" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Abschluss</span>
+                <h1>✅ Zusammenfassung und Ausblick</h1>
+            </div>
+            
+            <div class="hero">
+                <h2 class="hero-title">🎉 Fall gelöst!</h2>
+                <p class="hero-subtitle">Du hast den Bankraub-Fall erfolgreich aufgeklärt</p>
+                <p class="hero-description">
+                    Glückwunsch! Du hast nicht nur den Täter gefunden, sondern auch ein ganzes Verbrechernetzwerk aufgedeckt 
+                    und die Datenbank gesichert. Dabei hast du wichtige Konzepte der Datenbankmodellierung gelernt.
+                </p>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">📚 Was du gelernt hast</h2>
+                </div>
+                <div class="card-body">
+                    <div class="definition-grid">
+                        <div class="definition-card">
+                            <div class="def-icon">🔢</div>
+                            <h4>Kreuzprodukt</h4>
+                            <ul>
+                                <li>Kombiniert alle Zeilen zweier Tabellen</li>
+                                <li>Erzeugt n × m Zeilen</li>
+                                <li>Oft zu viele unsinnige Kombinationen</li>
+                                <li>Basis für Join-Operationen</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="definition-card">
+                            <div class="def-icon">🔗</div>
+                            <h4>Join mit WHERE</h4>
+                            <ul>
+                                <li>Verknüpft Tabellen über Fremdschlüssel</li>
+                                <li>WHERE-Bedingung filtert passende Zeilen</li>
+                                <li>Punktschreibweise bei gleichen Spaltennamen</li>
+                                <li>Grundlage für relationale Datenbanken</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="definition-card">
+                            <div class="def-icon">1️⃣:🔢</div>
+                            <h4>1:n-Beziehungen</h4>
+                            <ul>
+                                <li>Ein Datensatz zu vielen anderen</li>
+                                <li>Fremdschlüssel in der "n"-Tabelle</li>
+                                <li>Häufigster Beziehungstyp</li>
+                                <li>Keine Redundanz</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="definition-card">
+                            <div class="def-icon">🔢:🔢</div>
+                            <h4>n:m-Beziehungen</h4>
+                            <ul>
+                                <li>Viele zu vielen Datensätzen</li>
+                                <li>Benötigt Zwischentabelle</li>
+                                <li>Zwei Fremdschlüssel in Zwischentabelle</li>
+                                <li>Zusätzliche Attribute möglich</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="concept-box">
+                <h3>🎯 Wichtige SQL-Konzepte im Überblick</h3>
+                
+                <div class="terminology-box">
+                    <div class="term">
+                        <strong>SELECT ... FROM Tabelle1, Tabelle2</strong>
+                        <p>Erstellt das Kreuzprodukt zweier Tabellen</p>
+                    </div>
+                    
+                    <div class="term">
+                        <strong>WHERE Tabelle1.ID = Tabelle2.ID</strong>
+                        <p>Verknüpft Tabellen über Fremdschlüssel (Join-Bedingung)</p>
+                    </div>
+                    
+                    <div class="term">
+                        <strong>COUNT(), SUM(), AVG()</strong>
+                        <p>Aggregatfunktionen zum Zählen, Summieren und Durchschnitt berechnen</p>
+                    </div>
+                    
+                    <div class="term">
+                        <strong>GROUP BY Spalte</strong>
+                        <p>Gruppiert Ergebnisse für Aggregatfunktionen</p>
+                    </div>
+                    
+                    <div class="term">
+                        <strong>HAVING Bedingung</strong>
+                        <p>Filtert gruppierte Ergebnisse (wie WHERE, aber nach GROUP BY)</p>
+                    </div>
+                    
+                    <div class="term">
+                        <strong>Primärschlüssel (PK)</strong>
+                        <p>Eindeutiges Merkmal zur Identifikation eines Datensatzes</p>
+                    </div>
+                    
+                    <div class="term">
+                        <strong>Fremdschlüssel (FK)</strong>
+                        <p>Verweis auf den Primärschlüssel einer anderen Tabelle</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="example-box">
+                <h3>💡 Entscheidungshilfe: Welcher Beziehungstyp?</h3>
+                
+                <div class="strategy-grid">
+                    <div class="strategy-card">
+                        <h4>Frage dich:</h4>
+                        <ul>
+                            <li>"Kann A mehrere B haben?" → Wenn ja: mindestens 1:n</li>
+                            <li>"Kann B mehrere A haben?" → Wenn ja: n:m</li>
+                            <li>"Kann A nur ein B haben UND B nur ein A?" → 1:1</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="strategy-card">
+                        <h4>Beispiele:</h4>
+                        <ul>
+                            <li><strong>Person → Konten:</strong> Eine Person kann mehrere Konten haben → 1:n</li>
+                            <li><strong>Student ↔ Kurse:</strong> Beide können mehrere haben → n:m</li>
+                            <li><strong>Person → Personalausweis:</strong> Beide nur eins → 1:1</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="strategy-card">
+                        <h4>Umsetzung:</h4>
+                        <ul>
+                            <li><strong>1:1:</strong> Fremdschlüssel in einer Tabelle (oder zusammenfassen)</li>
+                            <li><strong>1:n:</strong> Fremdschlüssel in der "n"-Tabelle</li>
+                            <li><strong>n:m:</strong> Zwischentabelle mit zwei Fremdschlüsseln</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="task-box">
+                <h4>🏆 Abschluss-Challenge: Eigene Datenbank entwerfen</h4>
+                <p>Entwirf eine Datenbank für eines der folgenden Szenarien. Bestimme alle Beziehungstypen und erstelle ein vollständiges Schema:</p>
+                
+                <div class="exercise-grid">
+                    <div class="exercise-card">
+                        <h4>🏫 Szenario 1: Schule</h4>
+                        <p>Modelliere:</p>
+                        <ul>
+                            <li>Schüler und Klassen</li>
+                            <li>Lehrer und Fächer</li>
+                            <li>Kurse (Lehrer unterrichten Fächer in Klassen)</li>
+                            <li>Noten (Schüler in Kursen)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="exercise-card">
+                        <h4>🎬 Szenario 2: Streaming-Dienst</h4>
+                        <p>Modelliere:</p>
+                        <ul>
+                            <li>Benutzer und Profile</li>
+                            <li>Filme und Serien</li>
+                            <li>Schauspieler und Rollen</li>
+                            <li>Bewertungen und Watchlists</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="exercise-card">
+                        <h4>🏥 Szenario 3: Krankenhaus</h4>
+                        <p>Modelliere:</p>
+                        <ul>
+                            <li>Patienten und Ärzte</li>
+                            <li>Termine und Behandlungen</li>
+                            <li>Medikamente und Verschreibungen</li>
+                            <li>Stationen und Zimmer</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <p><strong>Aufgaben:</strong></p>
+                <ol>
+                    <li>Identifiziere alle Entitäten (Tabellen)</li>
+                    <li>Bestimme die Beziehungstypen zwischen den Entitäten</li>
+                    <li>Zeichne ein ER-Diagramm oder Schema</li>
+                    <li>Definiere Primär- und Fremdschlüssel</li>
+                    <li>Erstelle mindestens 3 sinnvolle SQL-Abfragen</li>
+                </ol>
+            </div>
+            
+            <div class="info-box">
+                <h3>🚀 Ausblick: Was kommt als Nächstes?</h3>
+                <p>Du hast die Grundlagen der Datenbankmodellierung gemeistert! Weitere Themen, die du lernen kannst:</p>
+                <ul>
+                    <li><strong>JOIN-Syntax:</strong> INNER JOIN, LEFT JOIN, RIGHT JOIN (alternative Schreibweise)</li>
+                    <li><strong>Subqueries:</strong> Verschachtelte SELECT-Abfragen</li>
+                    <li><strong>Views:</strong> Gespeicherte Abfragen als virtuelle Tabellen</li>
+                    <li><strong>Indizes:</strong> Beschleunigung von Abfragen</li>
+                    <li><strong>Transaktionen:</strong> ACID-Prinzipien und Datenkonsistenz</li>
+                    <li><strong>Normalisierung:</strong> 1NF, 2NF, 3NF zur Vermeidung von Redundanz</li>
+                    <li><strong>Stored Procedures:</strong> Wiederverwendbare SQL-Programme</li>
+                </ul>
+            </div>
+            
+            <div class="best-practices">
+                <h3>✅ Checkliste für gute Datenbankmodellierung</h3>
+                
+                <div class="practice">
+                    <div class="icon">✓</div>
+                    <div>
+                        <strong>Redundanz vermeiden</strong>
+                        <p>Speichere jede Information nur einmal. Nutze Beziehungen statt Duplikate.</p>
+                    </div>
+                </div>
+                
+                <div class="practice">
+                    <div class="icon">✓</div>
+                    <div>
+                        <strong>Sprechende Namen verwenden</strong>
+                        <p>Tabellen- und Spaltennamen sollten selbsterklärend sein (z.B. "PersonenID" statt "PID").</p>
+                    </div>
+                </div>
+                
+                <div class="practice">
+                    <div class="icon">✓</div>
+                    <div>
+                        <strong>Primärschlüssel immer definieren</strong>
+                        <p>Jede Tabelle braucht einen eindeutigen Primärschlüssel.</p>
+                    </div>
+                </div>
+                
+                <div class="practice">
+                    <div class="icon">✓</div>
+                    <div>
+                        <strong>Beziehungstyp richtig wählen</strong>
+                        <p>Analysiere genau: 1:1, 1:n oder n:m? Die falsche Wahl führt zu Problemen.</p>
+                    </div>
+                </div>
+                
+                <div class="practice">
+                    <div class="icon">✓</div>
+                    <div>
+                        <strong>Dokumentieren</strong>
+                        <p>Erstelle ER-Diagramme und dokumentiere Beziehungen und Constraints.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero">
+                <h2>🎓 Herzlichen Glückwunsch!</h2>
+                <p>Du hast diese Lerneinheit erfolgreich abgeschlossen und bist nun in der Lage, komplexe Datenbanken zu modellieren und abzufragen. Diese Fähigkeiten sind fundamental für die Informatik und werden dir in vielen Bereichen nützlich sein!</p>
+                
+                <div class="navigation-buttons">
+                    <button class="btn btn-success btn-lg" onclick="alert('Glückwunsch! Du hast den Fall gelöst und alle Konzepte gemeistert! 🎉')">
+                        🏆 Zertifikat anzeigen
+                    </button>
+                    <button class="btn btn-primary btn-lg" onclick="siteManager.navigateToSection('intro')">
+                        🔄 Nochmal von vorne
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<!-- Mobile Menu Button -->
+<button id="mobileMenuBtn" class="mobile-menu-btn">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2024 edu-mrh.de | Interaktive Lerneinheit: Datenbank-Ermittlungen</p>
+        <p>
+            <a href="https://edu-mrh.de/contribute.html#impressum">Impressum</a> | 
+            <a href="https://edu-mrh.de/contribute.html#datenschutz">Datenschutz</a>
+        </p>
+    </div>
+</footer>
+
+</body>
+</html>
