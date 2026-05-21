@@ -644,13 +644,18 @@ SELECT * FROM Kameras;
                 <div id="solution-verdacht-1" class="solution-box hidden">
                     <h4>✅ Lösungsweg</h4>
                     
-                    <p><strong>Schritt 1:</strong> Personen mit großen Abhebungen finden</p>
+                    <p><strong>Schritt 2:</strong> Personen mit Transaktionen finden</p>
+                    <pre><code>SELECT P.Name, T.Betrag, T.Uhrzeit
+FROM Personen P,Konten K, Transaktionen T
+WHERE P.PersonenID = K.PersonenID AND K.KontoNr = T.KontoNr;</code></pre>
+
+                    <p><strong>Schritt 3:</strong> Personen mit großen Abhebungen finden</p>
                     <pre><code>SELECT P.Name, T.Betrag, T.Uhrzeit
 FROM Personen P,Konten K, Transaktionen T
 WHERE P.PersonenID = K.PersonenID AND K.KontoNr = T.KontoNr
   AND T.Betrag > 10000;</code></pre>
                     
-                    <p><strong>Schritt 2:</strong> Mit Kamera-Daten abgleichen</p>
+                    <p><strong>Schritt 4:</strong> Mit Kamera-Daten abgleichen</p>
                     <pre><code>SELECT DISTINCT T.transaktionid, P.personenid, P.name, T. Uhrzeit, KA.Kameraid, KA.Uhrzeit, T.Art, T.betrag 
  FROM Personen P, Konten K, Transaktionen T, Kameras KA
 WHERE P.personenid = K.personenid AND K.kontoNr = T.kontoNr 
@@ -996,14 +1001,14 @@ SELECT * FROM Transaktionen;
                 <div id="solution-taeter-1" class="solution-box hidden">
                     <h4>✅ Lösungsweg</h4>
                     
-                    <p><strong>Schritt 1:</strong> Personen mit mehreren Konten finden</p>
+                    <p><strong>Schritt 2:</strong> Personen mit mehreren Konten finden</p>
                     <pre><code>SELECT Personen.PersonenID, Personen.Name, COUNT(Konten.KontoNr) AS AnzahlKonten
 FROM Personen, Konten
 WHERE Personen.PersonenID = Konten.PersonenID
 GROUP BY Personen.PersonenID, Personen.Name
 HAVING COUNT(Konten.KontoNr) > 1;</code></pre>
                     
-                    <p><strong>Schritt 2:</strong> Gesamtkontostand berechnen</p>
+                    <p><strong>Schritt 4:</strong> Gesamtkontostand berechnen</p>
                     <pre><code>SELECT Personen.PersonenID, Personen.Name, 
        COUNT(Konten.KontoNr) AS AnzahlKonten,
        SUM(Konten.Kontostand) AS Gesamtstand
@@ -1011,8 +1016,16 @@ FROM Personen, Konten
 WHERE Personen.PersonenID = Konten.PersonenID
 GROUP BY Personen.PersonenID, Personen.Name
 HAVING SUM(Konten.Kontostand) > 50000;</code></pre>
+
+                    <p><strong>Schritt 5:</strong> Verdächtige Transaktionen finden</p>
+                    <pre><code>SELECT DISTINCT Personen.PersonenID, Personen.Name, T.KontoNR, T.Betrag, T.Art, T.beschreibung, T.Uhrzeit
+FROM Personen, Konten K, Transaktionen T
+WHERE Personen.PersonenID = K.PersonenID 
+  AND T.KontoNr = K.KontoNr 
+  AND T.beschreibung LIKE '%intern%' 
+ORDER BY T.Uhrzeit</code></pre>
                     
-                    <p><strong>Schritt 3:</strong> Mit Kamera-Daten und Transaktionen kombinieren</p>
+                    <p><strong>Schritt 6:</strong> Mit Kamera-Daten und Transaktionen kombinieren</p>
                     <pre><code>SELECT Personen.Name, 
        COUNT(DISTINCT Konten.KontoNr) AS AnzahlKonten,
        SUM(Konten.Kontostand) AS Gesamtstand,
