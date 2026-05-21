@@ -607,12 +607,12 @@ SELECT * FROM Transaktionen;
 SELECT * FROM Kameras;
 
 -- Schritt 2: Finde heraus, welche Personen Transaktionen durchgeführt haben
--- Tipp: Verknüpfe Personen und Transaktionen über PersonenID
+-- Tipp: Verknüpfe zunächst Personen und Konten über PersonenID und (AND) über KontoNr, dann mit Transaktionen
 
 
 -- Schritt 3: Filtere nach verdächtigen Transaktionen
--- Verdächtig sind Abhebungen über 10.000 Euro
--- Tipp: WHERE Betrag > 10000 AND Art = 'Abhebung'
+-- Verdächtig sind Abhebungen und Einzahlungen über 10.000 Euro
+-- Tipp: WHERE Betrag > 10000 AND (Art = 'Abhebung' OR Art = 'Einzahlung')
 
 
 -- Schritt 4: Finde heraus, wer zur Tatzeit (14:30-14:45) in der Bank war
@@ -627,7 +627,7 @@ SELECT * FROM Kameras;
                 <h4>✏️ Ermittlungsaufgabe 2: Den Hauptverdächtigen identifizieren</h4>
                 <p><strong>Deine Aufgabe:</strong> Finde die Person, die folgende Kriterien erfüllt:</p>
                 <ol>
-                    <li>War zwischen 14:30 und 14:45 Uhr in der Bank (Tatzeit)</li>
+                    <li>War zwischen 14:00 und 15:00 Uhr in der Bank (Tatzeit)</li>
                     <li>Hat am Tattag eine Abhebung über 10.000 Euro getätigt</li>
                     <li>Hat ein Konto mit auffällig hohem Kontostand</li>
                 </ol>
@@ -645,20 +645,18 @@ SELECT * FROM Kameras;
                     <h4>✅ Lösungsweg</h4>
                     
                     <p><strong>Schritt 1:</strong> Personen mit großen Abhebungen finden</p>
-                    <pre><code>SELECT Personen.Name, Transaktionen.Betrag, Transaktionen.Uhrzeit
-FROM Personen, Transaktionen
-WHERE Personen.PersonenID = Transaktionen.PersonenID
-  AND Transaktionen.Art = 'Abhebung'
-  AND Transaktionen.Betrag > 10000;</code></pre>
+                    <pre><code>SELECT P.Name, T.Betrag, T.Uhrzeit
+FROM Personen P,Konten K, Transaktionen T
+WHERE P.PersonenID = K.PersonenID AND K.KontoNr = T.KontoNr
+  AND T.Betrag > 10000;</code></pre>
                     
                     <p><strong>Schritt 2:</strong> Mit Kamera-Daten abgleichen</p>
-                    <pre><code>SELECT Personen.Name, Transaktionen.Betrag, Kameras.Uhrzeit, Kameras.Ort
-FROM Personen, Transaktionen, Kameras
-WHERE Personen.PersonenID = Transaktionen.PersonenID
-  AND Personen.PersonenID = Kameras.PersonenID
-  AND Transaktionen.Art = 'Abhebung'
-  AND Transaktionen.Betrag > 10000
-  AND Kameras.Uhrzeit BETWEEN '14:30' AND '14:45';</code></pre>
+                    <pre><code>SELECT DISTINCT T.transaktionid, P.personenid, P.name, T. Uhrzeit, KA.Kameraid, KA.Uhrzeit, T.Art, T.betrag 
+ FROM Personen P, Konten K, Transaktionen T, Kameras KA
+WHERE P.personenid = K.personenid AND K.kontoNr = T.kontoNr 
+AND Betrag > 10000 
+AND KA.personenid = p.personenid AND KA.Uhrzeit LIKE '14%'
+ORDER BY T.Uhrzeit;</code></pre>
                     
                     <p><strong>Ergebnis:</strong> Du solltest nun einen oder mehrere Hauptverdächtige identifiziert haben!</p>
                 </div>
@@ -1024,7 +1022,7 @@ FROM Personen, Konten, Kameras, Transaktionen
 WHERE Personen.PersonenID = Konten.PersonenID
   AND Personen.PersonenID = Kameras.PersonenID
   AND Konten.KontoNr = Transaktionen.KontoNr
-  AND Kameras.Uhrzeit BETWEEN '14:30' AND '14:45'
+  AND Kameras.Uhrzeit >= '14:30' AND Kameras.Uhrzeit <= '14:45'
   AND Transaktionen.Betrag > 10000
 GROUP BY Personen.PersonenID, Personen.Name, Kameras.Uhrzeit
 HAVING SUM(Konten.Kontostand) > 50000;</code></pre>
@@ -1334,14 +1332,14 @@ SELECT * FROM Beteiligungen;
                 <div id="solution-komplizen-1" class="solution-box hidden">
                     <h4>✅ Lösungsweg</h4>
                     
-                    <p><strong>Schritt 1:</strong> Alle am Bankraub Beteiligten finden</p>
+                    <p><strong>Schritt 3:</strong> Alle am Bankraub Beteiligten finden</p>
                     <pre><code>SELECT Personen.Name, Straftaten.Art, Straftaten.Datum, Beteiligungen.Rolle
 FROM Personen, Beteiligungen, Straftaten
 WHERE Personen.PersonenID = Beteiligungen.PersonenID
   AND Beteiligungen.StraftatID = Straftaten.StraftatID
   AND Straftaten.Art = 'Bankraub';</code></pre>
                     
-                    <p><strong>Schritt 2:</strong> Personen mit mehreren Straftaten finden</p>
+                    <p><strong>Schritt 4:</strong> Personen mit mehreren Straftaten finden</p>
                     <pre><code>SELECT Personen.Name, COUNT(Beteiligungen.StraftatID) AS AnzahlStraftaten
 FROM Personen, Beteiligungen
 WHERE Personen.PersonenID = Beteiligungen.PersonenID
@@ -1349,9 +1347,21 @@ GROUP BY Personen.PersonenID, Personen.Name
 HAVING COUNT(Beteiligungen.StraftatID) > 1
 ORDER BY AnzahlStraftaten DESC;</code></pre>
                     
-                    <p><strong>Schritt 3:</strong> Gemeinsame Straftaten finden (Netzwerk)</p>
+                    <p><strong>Schritt 5:</strong> Komplizen des Haupttäters finden</p>
+                    <pre><code>SELECT DISTINCT P2.Name AS Komplize, COUNT(DISTINCT B2.StraftatID) AS GemeinsameStraftaten
+FROM Personen P1, Personen P2, 
+     Beteiligungen B1, Beteiligungen B2
+WHERE P1.PersonenID = B1.PersonenID
+  AND P2.PersonenID = B2.PersonenID
+  AND B1.StraftatID = B2.StraftatID
+  AND (B1.Rolle = 'Haupttäter' OR B1.Rolle = 'Organisator')
+  AND P1.PersonenID != P2.PersonenID
+GROUP BY P2.PersonenID, P2.Name
+ORDER BY GemeinsameStraftaten DESC;</code></pre>
+
+                    <p><strong>Schritt 6:</strong> Gemeinsame Straftaten finden (Netzwerk)</p>
                     <pre><code>SELECT P1.Name AS Person1, P2.Name AS Person2, 
-       Straftaten.Art, Straftaten.Datum
+       Straftaten.Art, Straftaten.Datum, B1.Rolle AS Rolle1, B2.Rolle AS Rolle2
 FROM Personen P1, Personen P2, 
      Beteiligungen B1, Beteiligungen B2, 
      Straftaten
@@ -1363,18 +1373,6 @@ WHERE P1.PersonenID = B1.PersonenID
 ORDER BY Straftaten.Datum;</code></pre>
                     
                     <p><strong>Hinweis:</strong> <code>P1.PersonenID < P2.PersonenID</code> verhindert doppelte Einträge (A-B und B-A).</p>
-                    
-                    <p><strong>Schritt 4:</strong> Komplizen des Haupttäters finden</p>
-                    <pre><code>SELECT DISTINCT P2.Name AS Komplize, COUNT(DISTINCT B2.StraftatID) AS GemeinsameStraftaten
-FROM Personen P1, Personen P2, 
-     Beteiligungen B1, Beteiligungen B2
-WHERE P1.PersonenID = B1.PersonenID
-  AND P2.PersonenID = B2.PersonenID
-  AND B1.StraftatID = B2.StraftatID
-  AND P1.Name = 'HAUPTTÄTER_NAME'
-  AND P1.PersonenID != P2.PersonenID
-GROUP BY P2.PersonenID, P2.Name
-ORDER BY GemeinsameStraftaten DESC;</code></pre>
                     
                     <p><strong>Ergebnis:</strong> Du hast nun das gesamte Verbrechernetzwerk aufgedeckt!</p>
                 </div>
