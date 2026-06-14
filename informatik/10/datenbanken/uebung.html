@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sportverein-Datenbank – SQL-Übungen – Informatik – edu-mrh.de</title>
+    <meta name="description" content="Interaktive SQL-Übungen zu mehreren Tabellen, Fremdschlüsseln, Joins und Modellierung – Sportverein-Szenario, Klasse 10.">
+
+    <!-- SQL-IDE -->
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/sql-IDE-embedded/sql-ide-embedded.css">
+    <script type="module" src="https://edu-mrh.de/embed/sql-IDE-embedded/sql-ide-embedded.js"></script>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+
+    <!-- CSS + JS Framework -->
+    <link  rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+</head>
+<body>
+<!--
+Fachbereich: Informatik
+Jahrgangsstufe: 10
+Thema: Datenbanken – Mehrere Tabellen, Fremdschlüssel & Modellierung
+Erstellt: 2026-06-14
+Version: 1.0
+-->
+
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-brand">
+            <span class="icon">🖥️</span>
+            <a href="https://edu-mrh.de/">edu-mrh.de</a>
+        </div>
+        <div class="nav-links">
+            <a href="https://edu-mrh.de/informatik/informatik.html#jahrgang-10" class="btn btn-outline">Übersicht</a>
+            <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <h3>🏟️ Sportverein-DB</h3>
+        <button id="sidebarToggle" class="sidebar-toggle">✕</button>
+    </div>
+    <nav class="sidebar-menu">
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Einführung</div>
+            <ul>
+                <li><a href="#intro"      data-section="intro"     ><span class="icon">📋</span> Das Szenario</a></li>
+                <li><a href="#lernziele"  data-section="lernziele" ><span class="icon">🎯</span> Lernziele</a></li>
+            </ul>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Phase 1 – Kreuzprodukt</div>
+            <ul>
+                <li><a href="#theorie-kreuz"  data-section="theorie-kreuz" ><span class="icon">💡</span> Theorie</a></li>
+                <li><a href="#uebung-kreuz"   data-section="uebung-kreuz"  ><span class="icon">✏️</span> Übungen</a></li>
+            </ul>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Phase 2 – Fremdschlüssel &amp; Join</div>
+            <ul>
+                <li><a href="#theorie-join"  data-section="theorie-join" ><span class="icon">💡</span> Theorie</a></li>
+                <li><a href="#uebung-join"   data-section="uebung-join"  ><span class="icon">✏️</span> Übungen</a></li>
+            </ul>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Phase 3 – Modellierung</div>
+            <ul>
+                <li><a href="#theorie-modell"   data-section="theorie-modell"  ><span class="icon">💡</span> Theorie</a></li>
+                <li><a href="#uebung-modell"    data-section="uebung-modell"   ><span class="icon">✏️</span> Übungen</a></li>
+            </ul>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Phase 4 – Komplexe Abfragen</div>
+            <ul>
+                <li><a href="#theorie-komplex"  data-section="theorie-komplex" ><span class="icon">💡</span> Theorie</a></li>
+                <li><a href="#uebung-komplex"   data-section="uebung-komplex"  ><span class="icon">✏️</span> Übungen</a></li>
+            </ul>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Abschluss</div>
+            <ul>
+                <li><a href="#zusammenfassung" data-section="zusammenfassung"><span class="icon">✅</span> Zusammenfassung</a></li>
+            </ul>
+        </div>
+
+    </nav>
+</aside>
+
+<!-- Main Content -->
+<main class="main-content">
+<div class="container">
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     INTRO
+════════════════════════════════════════════════════════════════════════════ -->
+<section id="intro" class="content-section active">
+    <div class="chapter-header">
+        <span class="chapter-number">Einführung</span>
+        <h1>🏟️ Sportverein-Datenbank</h1>
+    </div>
+
+    <div class="hero">
+        <h2 class="hero-title">Willkommen beim TSV Kirchheim</h2>
+        <p class="hero-subtitle">Datenbanken verstehen – Schritt für Schritt</p>
+        <p class="hero-description">
+            Der TSV Kirchheim verwaltet Mitglieder, Sektionen, Trainer, Ligen und Wettkämpfe in einer
+            relationalen Datenbank. Du übst hier alle wichtigen SQL-Techniken direkt mit echten Daten –
+            von einfachen Kreuzprodukten bis zu komplexen Joins und Modellierungsfragen.
+        </p>
+    </div>
+
+    <div class="info-grid">
+        <div class="info-card">
+            <div class="info-icon">🗄️</div>
+            <h3>Die Datenbank</h3>
+            <ul>
+                <li>Tabelle <strong>Mitglied</strong></li>
+                <li>Tabelle <strong>Sektion</strong></li>
+                <li>Tabelle <strong>Trainer</strong></li>
+                <li>Tabelle <strong>Liga</strong></li>
+                <li>Tabellen <strong>Wettkampf</strong> &amp; <strong>Teilnahme</strong></li>
+            </ul>
+        </div>
+        <div class="info-card">
+            <div class="info-icon">📚</div>
+            <h3>Was du übst</h3>
+            <ul>
+                <li>Kreuzprodukt &amp; Punktschreibweise</li>
+                <li>Primär- und Fremdschlüssel</li>
+                <li>Join über WHERE-Bedingung</li>
+                <li>Kardinalitäten bestimmen</li>
+                <li>Schemata lesen und ergänzen</li>
+                <li>Self-Join und n:m-Tabellen</li>
+            </ul>
+        </div>
+        <div class="info-card">
+            <div class="info-icon">🎯</div>
+            <h3>Dein Ziel</h3>
+            <ul>
+                <li>Tabellen aus mehreren Quellen verknüpfen</li>
+                <li>Nur sinnvolle Datenkombinationen ausgeben</li>
+                <li>Beziehungstypen korrekt modellieren</li>
+                <li>Abfragen schrittweise aufbauen</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="warning-box">
+        <h3>⚙️ Hinweis zur SQL-Umgebung</h3>
+        <p>Jede Phase hat ihre eigene Datenbank, die direkt im Browser läuft – du brauchst keine Installation.
+        Beginne immer mit <code>SELECT * FROM Tabellenname;</code>, um einen Überblick zu bekommen.
+        Deine Abfragen werden <strong>nicht gespeichert</strong> – notiere Lösungen ggf. in einem Textdokument.</p>
+    </div>
+
+    <div class="navigation-buttons">
+        <button class="btn btn-primary" onclick="siteManager.navigateToSection('lernziele')">
+            Los geht's 🏃
+        </button>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     LERNZIELE
+════════════════════════════════════════════════════════════════════════════ -->
+<section id="lernziele" class="content-section">
+    <div class="chapter-header">
+        <span class="chapter-number">Einführung</span>
+        <h1>🎯 Lernziele</h1>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><h2 class="card-title">Das lernst du in dieser Einheit</h2></div>
+        <div class="card-body">
+            <div class="key-points">
+                <div class="key-point">
+                    <div class="number">1</div>
+                    <div>
+                        <strong>Kreuzprodukt</strong>
+                        <p>Du weißt, was passiert, wenn mehrere Tabellen in der FROM-Klausel stehen, und kannst die Größe des Ergebnisses berechnen.</p>
+                    </div>
+                </div>
+                <div class="key-point">
+                    <div class="number">2</div>
+                    <div>
+                        <strong>Fremdschlüssel &amp; Join</strong>
+                        <p>Du erkennst Fremdschlüssel in Schemata und kannst Tabellen über eine WHERE-Bedingung sinnvoll verknüpfen (Join).</p>
+                    </div>
+                </div>
+                <div class="key-point">
+                    <div class="number">3</div>
+                    <div>
+                        <strong>Punktschreibweise</strong>
+                        <p>Du nutzt <code>Tabelle.Spalte</code> korrekt, wenn mehrere Tabellen gleichnamige Spalten haben, und verwendest AS zur Umbenennung.</p>
+                    </div>
+                </div>
+                <div class="key-point">
+                    <div class="number">4</div>
+                    <div>
+                        <strong>Modellierung</strong>
+                        <p>Du bestimmst Kardinalitäten (1:1, 1:n, n:m) und weißt, wo in einem Schema der Fremdschlüssel eingetragen wird.</p>
+                    </div>
+                </div>
+                <div class="key-point">
+                    <div class="number">5</div>
+                    <div>
+                        <strong>Komplexe Abfragen</strong>
+                        <p>Du kombinierst Joins über drei Tabellen, nutzt Alias-Namen und schreibst Self-Joins für besondere Fragestellungen.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation-buttons">
+        <button class="btn btn-primary" onclick="siteManager.navigateToSection('theorie-kreuz')">
+            Phase 1 starten 🔢
+        </button>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     PHASE 1 – THEORIE KREUZPRODUKT
+════════════════════════════════════════════════════════════════════════════ -->
+<section id="theorie-kreuz" class="content-section">
+    <div class="chapter-header">
+        <span class="chapter-number">Phase 1</span>
+        <h1>🔢 Theorie: Kreuzprodukt</h1>
+    </div>
+
+    <div class="concept-box info">
+        <h3>💡 Was ist ein Kreuzprodukt?</h3>
+        <div class="definition">
+            <p>Stehen nach <strong>FROM</strong> mehrere Tabellen, kombiniert SQL <em>jeden</em> Datensatz der ersten Tabelle mit <em>jedem</em> Datensatz der zweiten Tabelle – das ergibt das <strong>Kreuzprodukt</strong> (kartesisches Produkt).</p>
+        </div>
+        <p><strong>Syntax:</strong></p>
+        <pre><code>SELECT * FROM Tabelle1, Tabelle2;</code></pre>
+        <p>Hat Tabelle1 <em>n</em> Zeilen und Tabelle2 <em>m</em> Zeilen, enthält das Ergebnis <em>n&nbsp;×&nbsp;m</em> Zeilen.</p>
+    </div>
+
+    <div class="example-box">
+        <h3>📝 Beispiel: Sektionen &amp; Trainer</h3>
+        <div class="info-grid">
+            <div>
+                <h4>Sektion (4 Einträge)</h4>
+                <table>
+                    <thead><tr><th>SID</th><th>Name</th></tr></thead>
+                    <tbody>
+                        <tr><td>1</td><td>Schwimmen</td></tr>
+                        <tr><td>2</td><td>Turnen</td></tr>
+                        <tr><td>3</td><td>Leichtathletik</td></tr>
+                        <tr><td>4</td><td>Tennis</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <h4>Trainer (3 Einträge)</h4>
+                <table>
+                    <thead><tr><th>TID</th><th>Name</th></tr></thead>
+                    <tbody>
+                        <tr><td>10</td><td>Meier, Anna</td></tr>
+                        <tr><td>11</td><td>Wolf, Peter</td></tr>
+                        <tr><td>12</td><td>Huber, Stefan</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <p>Das Kreuzprodukt enthält <strong>4 × 3 = 12 Zeilen</strong> – also auch absurde Kombinationen wie „Turnen – Meier" auch wenn Meier gar nicht Turnen trainiert.</p>
+        <div class="highlight">
+            <strong>Warum ist das ein Problem?</strong>
+            <p>Die meisten dieser 12 Kombinationen sind falsch. Wir brauchen eine Möglichkeit, nur die <em>sachlich richtigen</em> Paarungen auszuwählen – das ist Aufgabe des <strong>Joins</strong>.</p>
+        </div>
+    </div>
+
+    <div class="concept-box warning">
+        <h3>⚠️ Mehrdeutige Spaltennamen</h3>
+        <p>Haben zwei Tabellen eine Spalte gleichen Namens (hier: beide heißen <code>Name</code>), muss die <strong>Punktschreibweise</strong> verwendet werden:</p>
+        <pre><code>SELECT Sektion.Name, Trainer.Name
+FROM Sektion, Trainer;</code></pre>
+        <p>Alternativ können Spalten mit <code>AS</code> umbenannt werden:</p>
+        <pre><code>SELECT Sektion.Name AS Sektionsname, Trainer.Name AS Trainername
+FROM Sektion, Trainer;</code></pre>
+    </div>
+
+    <div class="concept-box">
+        <h3>📐 Projektion im Kreuzprodukt</h3>
+        <p>Statt <code>SELECT *</code> kann man gezielt Spalten auswählen (<strong>Projektion</strong>). Das reduziert die Datenmenge und vermeidet Verwechslungen:</p>
+        <pre><code>SELECT Sektion.Name AS Sektionsname, Sektion.Beitrag, Trainer.Zertifikat
+FROM Sektion, Trainer;</code></pre>
+        <p>Auch das Kreuzprodukt einer Tabelle <strong>mit sich selbst</strong> ist möglich – dazu müssen beide Vorkommen unterschiedliche Alias-Namen bekommen:</p>
+        <pre><code>SELECT S1.Name AS Sektion1, S2.Name AS Sektion2
+FROM Sektion AS S1, Sektion AS S2;</code></pre>
+    </div>
+
+    <div class="navigation-buttons">
+        <button class="btn btn-outline" onclick="siteManager.navigateToSection('lernziele')">← Lernziele</button>
+        <button class="btn btn-primary"  onclick="siteManager.navigateToSection('uebung-kreuz')">Zu den Übungen ✏️</button>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     PHASE 1 – ÜBUNGEN KREUZPRODUKT
+════════════════════════════════════════════════════════════════════════════ -->
+<section id="uebung-kreuz" class="content-section">
+    <div class="chapter-header">
+        <span class="chapter-number">Phase 1</span>
+        <h1>✏️ Übungen: Kreuzprodukt</h1>
+    </div>
+
+    <div class="info-box">
+        <h3>🗄️ Datenbank dieser Phase</h3>
+        <p>Die Datenbank enthält zwei Tabellen: <strong>Sektion</strong> (SID, Name, Halle, Beitrag) und <strong>Trainer</strong> (TID, Name, Zertifikat, Telefon). Es gibt noch <em>keine</em> Verknüpfung zwischen beiden – genau das ist der Ausgangspunkt.</p>
+    </div>
+
+    <div class="ide-container">
+        <h3 class="ide-title">🔬 SQL-Labor: Kreuzprodukt erkunden</h3>
+        <p>Starte mit einem Überblick über die Daten, bevor du mit den Aufgaben beginnst.</p>
+        <iframe srcdoc="<script>window.jo_doc = window.frameElement.textContent;</script><script src='https://edu-mrh.de/embed/sql-IDE-embedded/includeIDE.js'></script>" width="100%" height="580" frameborder="0">
+{'id': 'kreuz-explorer', 'databaseURL': 'https://edu-mrh.de/informatik/10/datenbanken/databases/sportverein_phase1.sqlite', 'activeTab': 'output', 'bottomPanelHeight': '58%'}
+<script type="plain/text" title="Phase1_Erkunden.sql">
+-- Verschaffe dir zunächst einen Überblick:
+SELECT * FROM Sektion;
+
+-- Und die Trainer:
+SELECT * FROM Trainer;
+
+-- Aufgabe 1a: Wie viele Sektionen gibt es? Wie viele Trainer?
+
+-- Aufgabe 1b: Erstelle das Kreuzprodukt beider Tabellen.
+-- Wie viele Zeilen erhältst du? Stimmt das mit deiner Rechnung überein?
+
+-- Aufgabe 1c: Gib nur Sektionsname und Trainername aus (Projektion).
+-- Verwende die Punktschreibweise und AS für sprechende Spaltennamen.
+
+-- Aufgabe 1d: Erstelle das Kreuzprodukt der Tabelle Sektion mit sich selbst.
+-- Verwende Alias-Namen S1 und S2.
+-- Hinweis: FROM Sektion AS S1, Sektion AS S2
+
+</script>
+        </iframe>
+    </div>
+
+    <div class="task-box">
+        <h4>✏️ Aufgabe 1 – Kreuzprodukt berechnen und analysieren</h4>
+        <ol>
+            <li>Wie viele Zeilen hat das Kreuzprodukt von <code>Sektion</code> und <code>Trainer</code>? Berechne zuerst schriftlich, dann überprüfe in der IDE.</li>
+            <li>Schreibe eine Abfrage, die nur <em>Sektionsname</em> und <em>Trainername</em> ausgibt – mit sinnvollen Spaltenbezeichnungen.</li>
+            <li>Wie viele Zeilen hat das Kreuzprodukt von <code>Sektion</code> mit sich selbst? Welche Paare tauchen auf, die in der Realität keinen Sinn ergeben?</li>
+            <li>Erkläre mit eigenen Worten, warum ein uneingeschränktes Kreuzprodukt meist <em>nicht</em> das ist, was man in der Praxis möchte.</li>
+        </ol>
+        <button class="btn btn-secondary" onclick="toggleSolution('sol-kreuz-1')">💡 Hinweise anzeigen</button>
+        <div id="sol-kreuz-1" class="solution-box hidden">
+            <h4>💭 Hinweise</h4>
+            <ul>
+                <li><strong>Zu 1:</strong> 4 Sektionen × 3 Trainer = 12 Zeilen</li>
+                <li><strong>Zu 2:</strong> Nutze <code>Sektion.Name AS Sektionsname, Trainer.Name AS Trainername</code></li>
+                <li><strong>Zu 3:</strong> 4 × 4 = 16 Zeilen – darunter auch Paare wie (Schwimmen, Schwimmen), die keinen Sinn ergeben.</li>
+                <li><strong>Zu 4:</strong> Ohne Einschränkung entstehen viele falsche Kombinationen. Ein Join mit WHERE filtert nur die sachlich richtigen heraus.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="task-box">
+        <h4>✏️ Aufgabe 2 – Punktschreibweise &amp; Projektion</h4>
+        <p>Gegeben ist folgendes Schema (nur für diese Aufgabe gedanklich):</p>
+        <ul>
+            <li><strong>Mitglied</strong>(MID, <u>Name</u>, Jahrgang)</li>
+            <li><strong>Sektion</strong>(SID, <u>Name</u>, Halle)</li>
+        </ul>
+        <ol>
+            <li>Warum führt <code>SELECT Name FROM Mitglied, Sektion;</code> zu einem Fehler?</li>
+            <li>Wie lautet die korrigierte Abfrage, die beide <code>Name</code>-Spalten ausgibt?</li>
+            <li>Benenne die Spalten mit <code>AS</code> sinnvoll um.</li>
+        </ol>
+        <button class="btn btn-secondary" onclick="toggleSolution('sol-kreuz-2')">💡 Lösung anzeigen</button>
+        <div id="sol-kreuz-2" class="solution-box hidden">
+            <h4>✅ Lösung</h4>
+            <ol>
+                <li>Der Spaltenname <code>Name</code> ist <em>mehrdeutig</em> – SQL weiß nicht, aus welcher Tabelle er kommen soll.</li>
+                <li>
+<pre><code>SELECT Mitglied.Name, Sektion.Name
+FROM Mitglied, Sektion;</code></pre>
+                </li>
+                <li>
+<pre><code>SELECT Mitglied.Name AS Mitgliedsname,
+       Sektion.Name  AS Sektionsname
+FROM Mitglied, Sektion;</code></pre>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="navigation-buttons">
+        <button class="btn btn-outline" onclick="siteManager.navigateToSection('theorie-kreuz')">← Theorie</button>
+        <button class="btn btn-primary"  onclick="siteManager.navigateToSection('theorie-join')">Phase 2: Join →</button>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     PHASE 2 – THEORIE JOIN
+════════════════════════════════════════════════════════════════════════════ -->
+<section id="theorie-join" class="content-section">
+    <div class="chapter-header">
+        <span class="chapter-number">Phase 2</span>
+        <h1>🔗 Theorie: Fremdschlüssel &amp; Join</h1>
+    </div>
+
+    <div class="concept-box">
+        <h3>💡 Primärschlüssel und Fremdschlüssel</h3>
+        <div class="definition">
+            <p><strong>Primärschlüssel (PK):</strong> Ein Attribut (oder eine Kombination), das jeden Datensatz eindeutig identifiziert. Wird im Schema unterstrichen: <u>SID</u>.</p>
+            <p><strong>Fremdschlüssel (FK):</strong> Ein Attribut, das den Wert des Primärschlüssels einer (meist anderen) Tabelle enthält. Damit werden Beziehungen hergestellt. Wird im Schema gestrichelt unterstrichen.</p>
+        </div>
+
+        <h4>Beispiel aus dem Sportverein:</h4>
+        <div class="info-grid">
+            <div>
+                <h4>Sektion</h4>
+                <table>
+                    <thead><tr><th>SID (PK)</th><th>Name</th><th>TrainerID (FK)</th></tr></thead>
+                    <tbody>
+                        <tr><td>1</td><td>Schwimmen</td><td>10</td></tr>
+                        <tr><td>2</td><td>Turnen</td><td>11</td></tr>
+                        <tr><td>3</td><td>Leichtathletik</td><td>10</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <h4>Trainer</h4>
+                <table>
+                    <thead><tr><th>TID (PK)</th><th>Name</th><th>Zertifikat</th></tr></thead>
+                    <tbody>
+                        <tr><td>10</td><td>Meier, Anna</td><td>C-Lizenz</td></tr>
+                        <tr><td>11</td><td>Wolf, Peter</td><td>B-Lizenz</td></tr>
+                        <tr><td>12</td><td>Huber, Stefan</td><td>A-Lizenz</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <p>Die Spalte <code>TrainerID</code> in <strong>Sektion</strong> ist ein Fremdschlüssel – sie enthält Werte aus der Spalte <code>TID</code> in <strong>Trainer</strong>.</p>
+    </div>
+
+    <div class="example-box">
+        <h3>📝 Join mit WHERE</h3>
+        <p>Damit nur die <em>sachlich richtigen</em> Kombinationen erscheinen, ergänzen wir eine WHERE-Bedingung, die PK und FK gleichsetzt:</p>
+        <pre><code>SELECT Sektion.Name AS Sektionsname,
+       Trainer.Name AS Trainername,
+       Trainer.Zertifikat
+FROM Sektion, Trainer
+WHERE Sektion.TrainerID = Trainer.TID;</code></pre>
+        <div class="highlight">
+            <strong>Datenfluss:</strong>
+            <ol>
+                <li>Kreuzprodukt bilden (alle Kombinationen)</li>
+                <li>WHERE filtert: nur Zeilen, bei denen TrainerID = TID</li>
+                <li>SELECT wählt die gewünschten Spalten aus</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="concept-box info">
+        <h3>🔢 Dreitabellen-Join</h3>
+        <p>Dieselbe Technik lässt sich auf drei oder mehr Tabellen erweitern. Jede Verknüpfung braucht eine eigene WHERE-Bedingung:</p>
+        <pre><code>SELECT Mitglied.Name AS Mitglied,
+       Sektion.Name  AS Sektion,
+       Trainer.Name  AS Trainer
+FROM Mitglied, Sektion, Trainer
+WHERE Mitglied.SektionID  = Sektion.SID
+  AND Sektion.TrainerID   = Trainer.TID;</code></pre>
+        <p><strong>Regel:</strong> Bei <em>n</em> Tabellen braucht man mindestens <em>n&nbsp;–&nbsp;1</em> Verknüpfungsbedingungen. Weitere WHERE-Bedingungen können danach mit <code>AND</code> folgen.</p>
+    </div>
+
+    <div class="concept-box warning">
+        <h3>⚠️ Wo kommt der Fremdschlüssel hin?</h3>
+        <p>Die Regel bei einer <strong>1:n-Beziehung</strong>: Der Fremdschlüssel gehört in die Tabelle auf der <em>n-Seite</em> (die „Viele"-Seite).</p>
+        <ul>
+            <li>Eine Sektion hat <strong>einen</strong> Trainer → Sektion ist die n-Seite (viele Sektionen, ein Trainer) → FK (<code>TrainerID</code>) steht in <strong>Sektion</strong>.</li>
+            <li>Ein Mitglied gehört zu <strong>einer</strong> Sektion → Mitglied ist die n-Seite → FK (<code>SektionID</code>) steht in <strong>Mitglied</strong>.</li>
+        </ul>
+        <p>Würde man den FK in die „1"-Tabelle setzen, müsste dort eine Liste gespeichert werden – das ist in relationalen Datenbanken nicht vorgesehen und führt zu <strong>Redundanz</strong>.</p>
+    </div>
+
+    <div class="navigation-buttons">
+        <button class="btn btn-outline" onclick="siteManager.navigateToSection('uebung-kreuz')">← Übungen Phase 1</button>
+        <button class="btn btn-primary"  onclick="siteManager.navigateToSection('uebung-join')">Zu den Übungen ✏️</button>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     PHASE 2 – ÜBUNGEN JOIN
+════════════════════════════════════════════════════════════════════════════ -->
+<section id="uebung-join" class="content-section">
+    <div class="chapter-header">
+        <span class="chapter-number">Phase 2</span>
+        <h1>✏️ Übungen: Fremdschlüssel &amp; Join</h1>
+    </div>
+
+    <div class="info-box">
+        <h3>🗄️ Datenbank dieser Phase</h3>
+        <p>Die Datenbank enthält drei verknüpfte Tabellen:</p>
+        <ul>
+            <li><strong>Mitglied</strong>(MID, Name, Vorname, Jahrgang, <em>SektionID</em>)</li>
+            <li><strong>Sektion</strong>(SID, Name, Halle, Beitrag, <em>TrainerID</em>)</li>
+            <li><strong>Trainer</strong>(TID, Name, Zertifikat, Telefon)</li>
+        </ul>
+        <p>Die kursiven Attribute sind Fremdschlüssel.</p>
+    </div>
+
+    <div class="ide-container">
+        <h3 class="ide-title">🔬 SQL-Labor: Joins und Fremdschlüssel</h3>
+        <iframe srcdoc="<script>window.jo_doc = window.frameElement.textContent;</script><script src='https://edu-mrh.de/embed/sql-IDE-embedded/includeIDE.js'></script>" width="100%" height="600" frameborder="0">
+{'id': 'join-labor', 'databaseURL': 'https://edu-mrh.de/informatik/10/datenbanken/databases/sportverein_phase2.sqlite', 'activeTab': 'output', 'bottomPanelHeight': '58%'}
+<script type="plain/text" title="Phase2_Joins.sql">
+-- Überblick: Alle drei Tabellen ansehen
+SELECT * FROM Mitglied;
+SELECT * FROM Sektion;
+SELECT * FROM Trainer;
+
+-- Aufgabe 2a: Gib für jedes Mitglied Name, Vorname und den Namen der Sektion aus.
+-- Verknüpfe Mitglied und Sektion über den Fremdschlüssel.
+
+-- Aufgabe 2b: Gib für jede Sektion den Sektionsnamen, die Halle und
+--             den Namen des Trainers aus.
+
+-- Aufgabe 2c: Gib Name, Vorname des Mitglieds, den Sektionsnamen
+--             und den Trainernamen aus. (Dreitabellen-Join)
+
+-- Aufgabe 2d: Welche Mitglieder sind in der Sektion "Schwimmen"?
+--             Gib Name und Vorname aus, sortiert nach Name.
+
+-- Aufgabe 2e: Gib alle Mitglieder aus, deren Trainer ein B-Lizenz oder
+--             A-Lizenz hat. Welche Abfragen brauchst du?
+
+</script>
+        </iframe>
+    </div>
+
+    <div class="task-box">
+        <h4>✏️ Aufgabe 3 – Fremdschlüssel identifizieren</h4>
+        <p>Betrachte die folgenden Tabellenschemata:</p>
+        <div class="info-grid">
+            <div>
+                <p><strong>Mitglied</strong>(<u>MID</u>: Zahl; Name: Text; Vorname: Text; Jahrgang: Zahl; SektionID: Zahl)</p>
+                <p><strong>Sektion</strong>(<u>SID</u>: Zahl; Name: Text; Halle: Text; Beitrag: Zahl; TrainerID: Zahl)</p>
+                <p><strong>Trainer</strong>(<u>TID</u>: Zahl; Name: Text; Zertifikat: Text; Telefon: Text)</p>
+            </div>
+        </div>
+        <ol>
+            <li>Welche Attribute sind Fremdschlüssel? In welcher Tabelle stehen sie? Auf welchen PK verweisen sie jeweils?</li>
+            <li>Erkläre am Beispiel <code>SektionID</code>, warum der Fremdschlüssel genau hier steht und nicht in der Tabelle <code>Sektion</code>.</li>
+            <li>Was wäre das Problem, wenn man <em>keine</em> IDs verwenden würde, sondern direkt den Sektionsnamen als Fremdschlüssel in <code>Mitglied</code> speichern würde?</li>
+        </ol>
+        <button class="btn btn-secondary" onclick="toggleSolution('sol-join-1')">💡 Lösung anzeigen</button>
+        <div id="sol-join-1" class="solution-box hidden">
+            <h4>✅ Lösung</h4>
+            <ol>
+                <li>
+                    <ul>
+                        <li><code>SektionID</code> in <strong>Mitglied</strong> → verweist auf <code>SID</code> in Sektion</li>
+                        <li><code>TrainerID</code> in <strong>Sektion</strong> → verweist auf <code>TID</code> in Trainer</li>
+                    </ul>
+                </li>
+                <li>Ein Mitglied gehört zu <em>einer</em> Sektion (1-Seite), eine Sektion hat <em>viele</em> Mitglieder (n-Seite). Der FK kommt in die n-Seite = Mitglied. Würde man ihn in Sektion setzen, müsste dort eine Liste aller Mitglieds-IDs stehen – das ist nicht möglich.</li>
+                <li>Würde man den Sektionsnamen direkt speichern: Bei einer Namensänderung der Sektion müsste man alle Mitgliedsdatensätze aktualisieren → Redundanz und Inkonsistenzgefahr.</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="task-box">
+        <h4>✏️ Aufgabe 4 – Abfragen formulieren (schriftlich)</h4>
+        <p>Formuliere die folgenden Abfragen zunächst auf Papier, dann teste sie in der IDE:</p>
+        <ol>
+            <li>Alle Mitglieder, die jünger als Jahrgang 2010 sind (also später geboren), mit ihrer Sektion.</li>
+            <li>Alle Sektionen mit Beitrag über 40 €, zusammen mit dem Trainernamen.</li>
+            <li>Wie viele Mitglieder hat die Sektion „Turnen"? (Tipp: <code>COUNT(*)</code>)</li>
+        </ol>
+        <button class="btn btn-secondary" onclick="toggleSolution('sol-join-2')">💡 Musterlösungen anzeigen</button>
+        <div id="sol-join-2" class="solution-box hidden">
+            <h4>✅ Musterlösungen</h4>
+            <pre><code>-- 1)
+SELECT Mitglied.Name, Mitglied.Vorname, Sektion.Name AS Sektion
+FROM Mitglied, Sektion
+WHERE Mitglied.SektionID = Sektion.SID
+  AND Mitglied.Jahrgang > 2010;
+
+-- 2)
+SELECT Sektion.Name AS Sektion, Sektion.Beitrag, Trainer.Name AS Trainer
+FROM Sektion, Trainer
+WHERE Sektion.TrainerID = Trainer.TID
+  AND Sektion.Beitrag > 40;
+
+-- 3)
+SELECT COUNT(*) AS Anzahl
+FROM Mitglied, Sektion
+WHERE Mitglied.SektionID = Sektion.SID
+  AND Sektion.Name = 'Turnen';</code></pre>
+        </div>
+    </div>
+
+    <div class="navigation-buttons">
+        <button class="btn btn-outline" onclick="siteManager.navigateToSection('theorie-join')">← Theorie</button>
+        <button class="btn btn-primary"  onclick="siteManager.navigateToSection('theorie-modell')">Phase 3: Modellierung →</button>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     PHASE 3 – THEORIE MODELLIERUNG
+════════════════════════════════════════════════════════════════════════════ -->
+<section id="theorie-modell" class="content-section">
+    <div class="chapter-header">
+        <span class="chapter-number">Phase 3</span>
+        <h1>📐 Theorie: Beziehungstypen &amp; Modellierung</h1>
+    </div>
+
+    <div class="definition-grid">
+        <div class="definition-card">
+            <div class="def-icon">1️⃣:1️⃣</div>
+            <h4>1:1-Beziehung</h4>
+            <p>Jedem Datensatz in A entspricht <strong>genau ein</strong> Datensatz in B – und umgekehrt.</p>
+            <p class="example-text">Beispiel: Verein ↔ Vereinsregister-Eintrag</p>
+            <p><strong>Umsetzung:</strong> FK in einer der beiden Tabellen (oder Zusammenfassen).</p>
+        </div>
+        <div class="definition-card">
+            <div class="def-icon">0…1</div>
+            <h4>0..1-Beziehung</h4>
+            <p>Jedem Datensatz in A entspricht <strong>kein oder genau ein</strong> Datensatz in B.</p>
+            <p class="example-text">Beispiel: Sektion ↔ Klassensprecher (muss keinen haben)</p>
+            <p><strong>Umsetzung:</strong> FK kann NULL sein (optional).</p>
+        </div>
+        <div class="definition-card">
+            <div class="def-icon">1️⃣:🔢</div>
+            <h4>1:n-Beziehung</h4>
+            <p>Ein Datensatz in A gehört zu <strong>mehreren</strong> in B; jeder in B gehört zu <strong>genau einem</strong> in A.</p>
+            <p class="example-text">Beispiel: Trainer (1) ↔ Sektionen (n)</p>
+            <p><strong>Umsetzung:</strong> FK in der n-Tabelle.</p>
+        </div>
+        <div class="definition-card">
+            <div class="def-icon">🔢:🔢</div>
+            <h4>n:m-Beziehung</h4>
+            <p>Mehrere in A zu mehreren in B – in beide Richtungen.</p>
+            <p class="example-text">Beispiel: Mitglied (m) ↔ Wettkampf (n)</p>
+            <p><strong>Umsetzung:</strong> Zwischentabelle mit zwei FKs.</p>
+        </div>
+    </div>
+
+    <div class="example-box">
+        <h3>📝 n:m im Sportverein: Teilnahme</h3>
+        <p>Ein Mitglied nimmt an vielen Wettkämpfen teil. An einem Wettkampf nehmen viele Mitglieder teil → <strong>n:m</strong>.</p>
+        <p>Lösung: Zwischentabelle <strong>Teilnahme</strong>:</p>
+        <table>
+            <thead><tr><th>Teilnahme</th><th></th></tr>
+                <tr><th>MID (FK)</th><th>WID (FK)</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>2</td><td>1</td></tr>
+                <tr><td>3</td><td>1</td></tr>
+                <tr><td>6</td><td>1</td></tr>
+                <tr><td>2</td><td>4</td></tr>
+            </tbody>
+        </table>
+        <p>Der Primärschlüssel der Zwischentabelle ist die Kombination <strong>(MID, WID)</strong> – zusammen eindeutig.</p>
+        <p>Abfrage mit Zwischentabelle (drei Tabellen, zwei Verknüpfungen):</p>
+        <pre><code>SELECT Mitglied.Name, Wettkampf.Datum, Wettkampf.Ort
+FROM Mitglied, Teilnahme, Wettkampf
+WHERE Mitglied.MID     = Teilnahme.MID
+  AND Teilnahme.WID    = Wettkampf.WID;</code></pre>
+    </div>
+
+    <div class="concept-box info">
+        <h3>🔄 Self-Join</h3>
+        <p>Manchmal möchte man Datensätze <em>derselben</em> Tabelle miteinander verknüpfen. Das nennt man <strong>Self-Join</strong>. Die Tabelle erhält zwei verschiedene Alias-Namen:</p>
+        <pre><code>-- Alle Mitglieder-Paare aus dem selben Jahrgang:
+SELECT M1.Name AS Mitglied1, M2.Name AS Mitglied2, M1.Jahrgang
+FROM Mitglied AS M1, Mitglied AS M2
+WHERE M1.Jahrgang = M2.Jahrgang
+  AND M1.MID &lt; M2.MID;</code></pre>
+        <p>Die Bedingung <code>M1.MID &lt; M2.MID</code> verhindert Dopplungen (A-B und B-A) und Selbstpaarungen (A-A).</p>
+    </div>
+
+    <div class="concept-box">
+        <h3>📋 Schemata lesen und ergänzen</h3>
+        <p>Im Unterricht werden Schemata in folgender Schreibweise angegeben:</p>
+        <pre><code>Sektion(<u>SID</u>: Zahl; Name: Text; Halle: Text; Beitrag: Zahl; <u style="text-decoration: underline dashed">TrainerID</u>: Zahl)</code></pre>
+        <ul>
+            <li>Einfach unterstrichen = Primärschlüssel</li>
+            <li>Gestrichelt unterstrichen = Fremdschlüssel</li>
+        </ul>
+        <p>Bei der 1:n-Umsetzung:</p>
+        <ol>
+            <li>Bestimme, welche Seite die „n-Seite" ist.</li>
+            <li>Füge in der n-Tabelle eine neue Spalte für den FK ein.</li>
+            <li>Der FK übernimmt den Datentyp des referenzierten PK.</li>
+        </ol>
+    </div>
+
+    <div class="navigation-buttons">
+        <button class="btn btn-outline" onclick="siteManager.navigateToSection('uebung-join')">← Übungen Phase 2</button>
+        <button class="btn btn-primary"  onclick="siteManager.navigateToSection('uebung-modell')">Zu den Übungen ✏️</button>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     PHASE 3 – ÜBUNGEN MODELLIERUNG
+════════════════════════════════════════════════════════════════════════════ -->
+<section id="uebung-modell" class="content-section">
+    <div class="chapter-header">
+        <span class="chapter-number">Phase 3</span>
+        <h1>✏️ Übungen: Beziehungstypen &amp; Modellierung</h1>
+    </div>
+
+    <div class="task-box">
+        <h4>✏️ Aufgabe 5 – Kardinalitäten bestimmen</h4>
+        <p>Bestimme für jede Beziehung die Kardinalität (1:1, 0..1, 1:n oder n:m) und begründe deine Antwort:</p>
+        <ol>
+            <li>Ein <strong>Trainer</strong> betreut mehrere <strong>Sektionen</strong>. Eine Sektion hat genau einen Trainer.</li>
+            <li>Eine <strong>Sektion</strong> nimmt an einer <strong>Liga</strong> teil. Eine Liga hat mehrere Sektionen.</li>
+            <li>Ein <strong>Mitglied</strong> nimmt an mehreren <strong>Wettkämpfen</strong> teil. An einem Wettkampf nehmen mehrere Mitglieder teil.</li>
+            <li>Der TSV hat genau einen <strong>Vereinsvorsitzenden</strong>. Ein Vereinsvorsitzender leitet genau einen Verein.</li>
+            <li>Ein <strong>Mitglied</strong> kann Vorsitzender von höchstens einer <strong>Sektion</strong> sein. Eine Sektion hat höchstens einen Vorsitzenden (kann auch vakant sein).</li>
+        </ol>
+        <button class="btn btn-secondary" onclick="toggleSolution('sol-modell-1')">💡 Lösung anzeigen</button>
+        <div id="sol-modell-1" class="solution-box hidden">
+            <h4>✅ Lösung</h4>
+            <ol>
+                <li><strong>1:n</strong> – Ein Trainer (1) zu vielen Sektionen (n). FK <code>TrainerID</code> steht in Sektion.</li>
+                <li><strong>1:n</strong> – Eine Liga (1) zu vielen Sektionen (n). FK <code>LigaID</code> steht in Sektion.</li>
+                <li><strong>n:m</strong> – Zwischentabelle <code>Teilnahme</code> mit FK <code>MID</code> und FK <code>WID</code> nötig.</li>
+                <li><strong>1:1</strong> – FK kann in beide Tabellen, sinnvollerweise in Verein.</li>
+                <li><strong>0..1</strong> – Ein Mitglied ist Vorsitzender von keiner oder einer Sektion. FK <code>VorsitzenderID</code> steht in Sektion (darf NULL sein).</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="task-box">
+        <h4>✏️ Aufgabe 6 – Schema ergänzen</h4>
+        <p>Ergänze die Schemata für folgende neue Anforderung:</p>
+        <p><em>Der Sportverein möchte auch <strong>Hallen</strong> verwalten. Eine Sektion findet in genau einer Halle statt. Eine Halle kann von mehreren Sektionen genutzt werden. Jede Halle hat eine Kapazität (Anzahl Personen) und eine Adresse.</em></p>
+        <ol>
+            <li>Bestimme den Beziehungstyp zwischen <strong>Sektion</strong> und <strong>Halle</strong>.</li>
+            <li>Schreibe das Schema für eine neue Tabelle <strong>Halle</strong>.</li>
+            <li>Ergänze das Schema von <strong>Sektion</strong> um den nötigen Fremdschlüssel (das bisherige Attribut <code>Halle: Text</code> wird ersetzt).</li>
+        </ol>
+        <button class="btn btn-secondary" onclick="toggleSolution('sol-modell-2')">💡 Lösung anzeigen</button>
+        <div id="sol-modell-2" class="solution-box hidden">
+            <h4>✅ Lösung</h4>
+            <ol>
+                <li><strong>1:n</strong> – Eine Halle (1) zu vielen Sektionen (n).</li>
+                <li><strong>Halle</strong>(<u>HID</u>: Zahl; Name: Text; Kapazität: Zahl; Adresse: Text)</li>
+                <li><strong>Sektion</strong>(<u>SID</u>: Zahl; Name: Text; Beitrag: Zahl; <span style="text-decoration:underline dashed">TrainerID</span>: Zahl; <span style="text-decoration:underline dashed">HallenID</span>: Zahl; <span style="text-decoration:underline dashed">LigaID</span>: Zahl)</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="task-box">
+        <h4>✏️ Aufgabe 7 – Szenario modellieren</h4>
+        <p>Entwirf ein Datenbankschema für folgendes Szenario. Bestimme alle Tabellen, Attribute, PKs, FKs und Beziehungstypen:</p>
+        <div class="concept-box info">
+            <p><strong>Szenario: Bibliothek</strong><br>
+            Eine Bibliothek verleiht Bücher an Leser. Jedes Buch hat einen Titel, eine ISBN und einen Verlag. Ein Buch kann mehrere Autoren haben. Jeder Leser hat einen Namen und eine Lesernummer. Ein Leser kann mehrere Bücher gleichzeitig ausgeliehen haben. Jede Ausleihe hat ein Ausleihdatum und ein Rückgabedatum.</p>
+        </div>
+        <ol>
+            <li>Identifiziere alle Entitäten (Tabellen).</li>
+            <li>Bestimme für jede Beziehung den Typ.</li>
+            <li>Schreibe alle Tabellenschemata auf (mit PK und FK).</li>
+        </ol>
+        <button class="btn btn-secondary" onclick="toggleSolution('sol-modell-3')">💡 Mustervorschlag anzeigen</button>
+        <div id="sol-modell-3" class="solution-box hidden">
+            <h4>✅ Mustervorschlag</h4>
+            <p><strong>Tabellen:</strong></p>
+            <ul>
+                <li><strong>Buch</strong>(<u>ISBN</u>: Text; Titel: Text; Verlag: Text)</li>
+                <li><strong>Autor</strong>(<u>AutorID</u>: Zahl; Name: Text; Vorname: Text)</li>
+                <li><strong>BuchAutor</strong>(<u>ISBN</u>: Text; <u>AutorID</u>: Zahl) – Zwischentabelle für n:m Buch ↔ Autor</li>
+                <li><strong>Leser</strong>(<u>LeserNr</u>: Zahl; Name: Text; Vorname: Text)</li>
+                <li><strong>Ausleihe</strong>(<u>AusleiheID</u>: Zahl; LeserNr: Zahl; ISBN: Text; Ausleihdatum: Text; Rückgabedatum: Text)</li>
+            </ul>
+            <p><strong>Beziehungen:</strong> Buch ↔ Autor: n:m (Zwischentabelle) | Leser ↔ Ausleihe: 1:n | Buch ↔ Ausleihe: 1:n</p>
+        </div>
+    </div>
+
+    <div class="navigation-buttons">
+        <button class="btn btn-outline" onclick="siteManager.navigateToSection('theorie-modell')">← Theorie</button>
+        <button class="btn btn-primary"  onclick="siteManager.navigateToSection('theorie-komplex')">Phase 4: Komplexe Abfragen →</button>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     PHASE 4 – THEORIE KOMPLEXE ABFRAGEN
+════════════════════════════════════════════════════════════════════════════ -->
+<section id="theorie-komplex" class="content-section">
+    <div class="chapter-header">
+        <span class="chapter-number">Phase 4</span>
+        <h1>🧠 Theorie: Komplexe Abfragen</h1>
+    </div>
+
+    <div class="concept-box info">
+        <h3>💡 Alias-Namen für Tabellen</h3>
+        <p>Tabellen können in der FROM-Klausel mit <code>AS</code> abgekürzt werden. Das macht lange Abfragen übersichtlicher:</p>
+        <pre><code>SELECT M.Name, S.Name AS Sektion, T.Name AS Trainer
+FROM Mitglied AS M, Sektion AS S, Trainer AS T
+WHERE M.SektionID = S.SID
+  AND S.TrainerID = T.TID;</code></pre>
+        <p>Kurze Alias-Namen (M, S, T) sind bei drei oder mehr Tabellen besonders hilfreich.</p>
+    </div>
+
+    <div class="example-box">
+        <h3>📝 Vier Tabellen verknüpfen: Wettkampf-Ergebnisse</h3>
+        <p>Gesucht: Alle Mitglieder mit ihren Wettkampf-Ergebnissen, inkl. Sektionsname:</p>
+        <pre><code>SELECT M.Name, M.Vorname, S.Name AS Sektion,
+       W.Datum, W.Ort, TN.Platzierung
+FROM Mitglied AS M, Sektion AS S,
+     Teilnahme AS TN, Wettkampf AS W
+WHERE M.SektionID  = S.SID
+  AND M.MID        = TN.MID
+  AND TN.WID       = W.WID
+ORDER BY TN.Platzierung;</code></pre>
+        <div class="highlight">
+            <strong>Checkliste für komplexe Joins:</strong>
+            <ol>
+                <li>Alle benötigten Tabellen in FROM auflisten</li>
+                <li>Für jede Tabellenverknüpfung eine WHERE-Bedingung (FK = PK)</li>
+                <li>Ggf. weitere Filterbedingungen mit AND ergänzen</li>
+                <li>Spaltennamen mit Punktschreibweise und AS eindeutig machen</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="concept-box">
+        <h3>🔄 Self-Join: Paare aus einer Tabelle</h3>
+        <p>Der Self-Join eignet sich überall, wo man Datensätze derselben Tabelle <em>miteinander</em> vergleichen will:</p>
+        <ul>
+            <li>Mitglieder, die im gleichen Jahrgang geboren sind</li>
+            <li>Wettkämpfe, die am selben Ort stattfinden</li>
+            <li>Trainer, die dasselbe Zertifikat haben</li>
+        </ul>
+        <pre><code>-- Trainer-Paare mit gleichem Zertifikat:
+SELECT T1.Name AS Trainer1, T2.Name AS Trainer2, T1.Zertifikat
+FROM Trainer AS T1, Trainer AS T2
+WHERE T1.Zertifikat = T2.Zertifikat
+  AND T1.TID &lt; T2.TID;</code></pre>
+        <p>Die Bedingung <code>T1.TID &lt; T2.TID</code> ist entscheidend: Sie verhindert, dass (A,B) und (B,A) beide erscheinen und dass (A,A) auftaucht.</p>
+    </div>
+
+    <div class="concept-box warning">
+        <h3>⚠️ Fehlerquelle: Zu wenig WHERE-Bedingungen</h3>
+        <p>Vergisst man eine Verknüpfungsbedingung, entsteht ein ungewolltes Kreuzprodukt. Beispiel:</p>
+        <pre><code>-- FEHLER: TrainerID wird nicht verknüpft → Kreuzprodukt!
+SELECT M.Name, S.Name, T.Name
+FROM Mitglied M, Sektion S, Trainer T
+WHERE M.SektionID = S.SID;
+-- Jedes Mitglied erscheint mit JEDEM Trainer, nicht nur dem richtigen!</code></pre>
+        <p><strong>Regel:</strong> Bei n Tabellen immer n–1 Verknüpfungsbedingungen prüfen.</p>
+    </div>
+
+    <div class="navigation-buttons">
+        <button class="btn btn-outline" onclick="siteManager.navigateToSection('uebung-modell')">← Übungen Phase 3</button>
+        <button class="btn btn-primary"  onclick="siteManager.navigateToSection('uebung-komplex')">Zu den Übungen ✏️</button>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     PHASE 4 – ÜBUNGEN KOMPLEX
+════════════════════════════════════════════════════════════════════════════ -->
+<section id="uebung-komplex" class="content-section">
+    <div class="chapter-header">
+        <span class="chapter-number">Phase 4</span>
+        <h1>✏️ Übungen: Komplexe Abfragen</h1>
+    </div>
+
+    <div class="info-box">
+        <h3>🗄️ Datenbank dieser Phase</h3>
+        <p>Die vollständige Sportverein-Datenbank mit allen Tabellen:</p>
+        <ul>
+            <li><strong>Mitglied</strong>(MID, Name, Vorname, Jahrgang, <em>SektionID</em>)</li>
+            <li><strong>Sektion</strong>(SID, Name, Halle, Beitrag, <em>TrainerID</em>, <em>LigaID</em>)</li>
+            <li><strong>Trainer</strong>(TID, Name, Zertifikat, Telefon)</li>
+            <li><strong>Liga</strong>(LID, Bezeichnung, Spielklasse, Verband)</li>
+            <li><strong>Wettkampf</strong>(WID, Datum, Ort, <em>SektionID</em>)</li>
+            <li><strong>Teilnahme</strong>(<em>MID</em>, <em>WID</em>, Platzierung) – Zwischentabelle</li>
+        </ul>
+    </div>
+
+    <div class="ide-container">
+        <h3 class="ide-title">🔬 SQL-Labor: Vollständige Datenbank</h3>
+        <iframe srcdoc="<script>window.jo_doc = window.frameElement.textContent;</script><script src='https://edu-mrh.de/embed/sql-IDE-embedded/includeIDE.js'></script>" width="100%" height="640" frameborder="0">
+{'id': 'komplex-labor', 'databaseURL': 'https://edu-mrh.de/informatik/10/datenbanken/databases/sportverein_phase3.sqlite', 'activeTab': 'output', 'bottomPanelHeight': '55%'}
+<script type="plain/text" title="Phase4_Komplex.sql">
+-- Überblick: alle Tabellen ansehen
+SELECT * FROM Mitglied;
+SELECT * FROM Sektion;
+SELECT * FROM Trainer;
+SELECT * FROM Liga;
+SELECT * FROM Wettkampf;
+SELECT * FROM Teilnahme;
+
+-- Aufgabe 4a: Gib für jedes Mitglied Name, Sektion, Trainer und Liga aus.
+-- (Dreitabellen-Join: Mitglied – Sektion – Trainer, plus Liga)
+
+-- Aufgabe 4b: Welche Mitglieder haben an einem Wettkampf in München teilgenommen?
+-- Gib Name, Vorname und Datum aus.
+
+-- Aufgabe 4c: Wer hat beim Wettkampf am 2024-03-15 den 1. Platz belegt?
+-- Gib Name und Vorname aus.
+
+-- Aufgabe 4d: Gib alle Mitglieder-Paare aus, die im selben Jahrgang geboren sind.
+-- (Self-Join – verwende Alias M1 und M2, verhindere Dopplungen)
+
+-- Aufgabe 4e: Welche Sektionen werden von Trainern mit B-Lizenz oder A-Lizenz trainiert
+--             UND nehmen an der Spielklasse 'Landesliga' oder höher teil?
+
+-- Aufgabe 4f (Knifflig): Gibt es Mitglieder, die noch an keinem Wettkampf teilgenommen haben?
+-- Tipp: Überlege, welche MIDs in Mitglied vorkommen, aber NICHT in Teilnahme.
+--        Eine Möglichkeit: LEFT JOIN (oder mit NOT IN als Subquery)
+
+</script>
+        </iframe>
+    </div>
+
+    <div class="task-box">
+        <h4>✏️ Aufgabe 8 – Fehler analysieren</h4>
+        <p>Die folgende Abfrage soll alle Mitglieder mit ihren Wettkampfergebnissen ausgeben. Sie enthält jedoch einen Fehler:</p>
+        <pre><code>SELECT Mitglied.Name, Wettkampf.Datum, Teilnahme.Platzierung
+FROM Mitglied, Teilnahme, Wettkampf
+WHERE Mitglied.MID = Teilnahme.MID;</code></pre>
+        <ol>
+            <li>Welcher Fehler ist in der Abfrage? Was passiert mit dem Ergebnis?</li>
+            <li>Korrigiere die Abfrage.</li>
+            <li>Wie viele Zeilen sollte das korrekte Ergebnis haben?</li>
+        </ol>
+        <button class="btn btn-secondary" onclick="toggleSolution('sol-komplex-1')">💡 Lösung anzeigen</button>
+        <div id="sol-komplex-1" class="solution-box hidden">
+            <h4>✅ Lösung</h4>
+            <ol>
+                <li>Die Verknüpfung zwischen <code>Teilnahme</code> und <code>Wettkampf</code> fehlt (<code>Teilnahme.WID = Wettkampf.WID</code>). Jede Teilnahme-Zeile wird mit <em>jedem</em> Wettkampf kombiniert → Kreuzprodukt-Fehler.</li>
+                <li>
+<pre><code>SELECT Mitglied.Name, Wettkampf.Datum, Teilnahme.Platzierung
+FROM Mitglied, Teilnahme, Wettkampf
+WHERE Mitglied.MID  = Teilnahme.MID
+  AND Teilnahme.WID = Wettkampf.WID;</code></pre>
+                </li>
+                <li>Es gibt 15 Teilnahme-Einträge → 15 Zeilen im Ergebnis.</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="task-box">
+        <h4>✏️ Aufgabe 9 – Self-Join verstehen</h4>
+        <p>Betrachte folgende Abfrage:</p>
+        <pre><code>SELECT M1.Name AS Mitglied1, M2.Name AS Mitglied2, M1.Jahrgang
+FROM Mitglied AS M1, Mitglied AS M2
+WHERE M1.Jahrgang = M2.Jahrgang
+  AND M1.MID &lt; M2.MID;</code></pre>
+        <ol>
+            <li>Warum wird <code>Mitglied</code> zweimal in FROM aufgeführt?</li>
+            <li>Was verhindert die Bedingung <code>M1.MID &lt; M2.MID</code>? Was würde ohne sie passieren?</li>
+            <li>Wie viele Paare erwartest du? Überprüfe in der IDE.</li>
+            <li>Passe die Abfrage an: Finde alle Sektionspaare, die von demselben Trainer betreut werden.</li>
+        </ol>
+        <button class="btn btn-secondary" onclick="toggleSolution('sol-komplex-2')">💡 Lösung anzeigen</button>
+        <div id="sol-komplex-2" class="solution-box hidden">
+            <h4>✅ Lösung</h4>
+            <ol>
+                <li>Um zwei <em>verschiedene</em> Mitglieder miteinander vergleichen zu können, braucht man zwei unabhängige Alias-Namen für dieselbe Tabelle.</li>
+                <li>Ohne die Bedingung würde (Bauer, Fischer) und (Fischer, Bauer) erscheinen, außerdem (Bauer, Bauer) usw. – also doppelt und mit sich selbst. <code>M1.MID &lt; M2.MID</code> erzwingt eine eindeutige Reihenfolge und schließt Selbstpaarungen aus.</li>
+                <li>Jahrgänge mit mehreren Mitgliedern: 2009 hat Fischer, Gruber, Neumann → 3 Paare; 2010 hat Fischer, Klein, Pfeiffer → 3 Paare; 2011 hat Huber, Otto → 1 Paar; 2008 hat Lang, Sauer → 1 Paar. Gesamt: 8 Paare.</li>
+                <li>
+<pre><code>SELECT S1.Name AS Sektion1, S2.Name AS Sektion2,
+       T.Name AS Trainer
+FROM Sektion AS S1, Sektion AS S2, Trainer AS T
+WHERE S1.TrainerID = T.TID
+  AND S2.TrainerID = T.TID
+  AND S1.SID &lt; S2.SID;</code></pre>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="navigation-buttons">
+        <button class="btn btn-outline" onclick="siteManager.navigateToSection('theorie-komplex')">← Theorie</button>
+        <button class="btn btn-primary"  onclick="siteManager.navigateToSection('zusammenfassung')">Zur Zusammenfassung ✅</button>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     ZUSAMMENFASSUNG
+════════════════════════════════════════════════════════════════════════════ -->
+<section id="zusammenfassung" class="content-section">
+    <div class="chapter-header">
+        <span class="chapter-number">Abschluss</span>
+        <h1>✅ Zusammenfassung</h1>
+    </div>
+
+    <div class="best-practices">
+        <h3>🗺️ Was du gelernt hast</h3>
+
+        <div class="practice">
+            <div class="icon">✓</div>
+            <div>
+                <strong>Kreuzprodukt</strong>
+                <p>Mehrere Tabellen in FROM ergeben alle Kombinationen (n&nbsp;×&nbsp;m Zeilen). Mehrdeutige Spaltennamen erfordern die Punktschreibweise <code>Tabelle.Spalte</code>. Mit <code>AS</code> kann man Spalten umbenennen.</p>
+            </div>
+        </div>
+
+        <div class="practice">
+            <div class="icon">✓</div>
+            <div>
+                <strong>Fremdschlüssel &amp; Join</strong>
+                <p>Ein FK verweist auf den PK einer anderen Tabelle. Mit einer WHERE-Bedingung (<code>FK = PK</code>) werden nur sachlich richtige Kombinationen ausgegeben – das ist der Join. Bei n Tabellen braucht man n–1 Verknüpfungsbedingungen.</p>
+            </div>
+        </div>
+
+        <div class="practice">
+            <div class="icon">✓</div>
+            <div>
+                <strong>Kardinalitäten</strong>
+                <p>1:1 (genau ein zu genau einem), 0..1 (optional), 1:n (einer zu vielen), n:m (viele zu vielen). Der FK kommt bei 1:n immer in die n-Tabelle. n:m braucht eine Zwischentabelle.</p>
+            </div>
+        </div>
+
+        <div class="practice">
+            <div class="icon">✓</div>
+            <div>
+                <strong>Self-Join</strong>
+                <p>Eine Tabelle mit sich selbst verknüpfen – mithilfe von zwei verschiedenen Alias-Namen. Die Bedingung <code>Alias1.PK &lt; Alias2.PK</code> verhindert Dopplungen.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="concept-box info">
+        <h3>📋 Checkliste für Joins</h3>
+        <ol>
+            <li>Alle benötigten Tabellen in FROM auflisten (ggf. mit Alias)</li>
+            <li>Für jedes Tabellenpaar eine Verknüpfungsbedingung in WHERE (FK = PK)</li>
+            <li>Mehrdeutige Spaltennamen mit Punktschreibweise auflösen</li>
+            <li>Weitere Filter mit AND ergänzen</li>
+            <li>Ergebnis mit einfachen Zwischenabfragen überprüfen</li>
+        </ol>
+    </div>
+
+    <div class="task-box">
+        <h4>🏆 Abschluss-Challenge: Eigenes Szenario</h4>
+        <p>Wähle eines der folgenden Szenarien und entwirf eine vollständige Datenbank:</p>
+        <div class="exercise-grid">
+            <div class="exercise-card">
+                <h4>🎵 Musikschule</h4>
+                <ul>
+                    <li>Schüler und Lehrer</li>
+                    <li>Instrumente und Kurse</li>
+                    <li>Auftritte und Teilnahmen</li>
+                </ul>
+            </div>
+            <div class="exercise-card">
+                <h4>🍕 Restaurant</h4>
+                <ul>
+                    <li>Gerichte und Kategorien</li>
+                    <li>Bestellungen und Tische</li>
+                    <li>Zutaten und Allergene</li>
+                </ul>
+            </div>
+            <div class="exercise-card">
+                <h4>📱 App-Store</h4>
+                <ul>
+                    <li>Apps und Entwickler</li>
+                    <li>Nutzer und Bewertungen</li>
+                    <li>Kategorien und Käufe</li>
+                </ul>
+            </div>
+        </div>
+        <p><strong>Aufgaben:</strong></p>
+        <ol>
+            <li>Schreibe alle Tabellenschemata (mit PK und FK).</li>
+            <li>Bestimme alle Beziehungstypen und begründe sie.</li>
+            <li>Formuliere mindestens 3 SQL-Abfragen mit Join.</li>
+            <li>Formuliere eine Abfrage mit Self-Join oder Zwischentabelle.</li>
+        </ol>
+    </div>
+
+    <div class="hero">
+        <h2>🎓 Geschafft!</h2>
+        <p>Du hast alle vier Phasen der Sportverein-Datenbank durchgearbeitet und kennst nun die wichtigsten Konzepte für relationale Datenbanken mit mehreren Tabellen. Diese Grundlagen sind das Fundament für alle weiteren Datenbankthemen.</p>
+        <div class="navigation-buttons">
+            <button class="btn btn-primary btn-lg" onclick="siteManager.navigateToSection('intro')">
+                🔄 Von vorne starten
+            </button>
+        </div>
+    </div>
+</section>
+
+</div><!-- /.container -->
+</main>
+
+<!-- Mobile Menu Button -->
+<button id="mobileMenuBtn" class="mobile-menu-btn">
+    <span></span><span></span><span></span>
+</button>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2026 edu-mrh.de | Interaktive Lerneinheit: Sportverein-Datenbank</p>
+        <p>
+            <a href="https://edu-mrh.de/contribute.html#impressum">Impressum</a> |
+            <a href="https://edu-mrh.de/contribute.html#datenschutz">Datenschutz</a>
+        </p>
+    </div>
+</footer>
+
+</body>
+</html>
