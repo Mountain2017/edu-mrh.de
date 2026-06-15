@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Marcus Tullius Cicero – Leben & Werk</title>
+<style>
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+          
+:root {
+  --gold:    #c9a84c;
+  --gold-lt: #e8c97a;
+  --dark:    #0d0d0d;
+  --dark2:   #1a1610;
+  --dark3:   #252015;
+  --text:    #e8e0d0;
+  --muted:   #a09070;
+  --accent:  #8b1a1a;
+  --slide-w: 100vw;
+  --slide-h: 100vh;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  font-family: 'Georgia', serif;
+  background: var(--dark);
+  color: var(--text);
+}
+
+/* ── Slide Container ── */
+#presentation {
+  width: 100vw; height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 80px;
+  opacity: 0;
+  transform: translateX(60px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+  pointer-events: none;
+  overflow: hidden;
+}
+.slide.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: all;
+}
+.slide.exit-left {
+  opacity: 0;
+  transform: translateX(-60px);
+}
+
+/* ── Background Layers ── */
+.slide-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.22) saturate(0.6);
+  z-index: 0;
+}
+.slide-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(13,10,5,0.85) 0%, rgba(30,20,10,0.6) 100%);
+  z-index: 1;
+}
+
+/* ── Content ── */
+.slide-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Slide Number ── */
+.slide-num {
+  position: absolute;
+  top: 28px; right: 40px;
+  font-size: 0.78rem;
+  color: var(--muted);
+  letter-spacing: 2px;
+  z-index: 10;
+  font-family: 'Courier New', monospace;
+}
+
+/* ── Title Slide ── */
+.title-slide .slide-content {
+  align-items: center;
+  text-align: center;
+}
+.title-slide .eyebrow {
+  font-size: 0.85rem;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.title-slide h1 {
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: #fff;
+  text-shadow: 0 2px 30px rgba(0,0,0,0.8);
+}
+.title-slide h1 span { color: var(--gold); }
+.title-slide .subtitle {
+  font-size: 1.2rem;
+  color: var(--muted);
+  margin-top: 8px;
+  font-style: italic;
+}
+.title-slide .dates {
+  display: inline-block;
+  border: 1px solid var(--gold);
+  color: var(--gold-lt);
+  padding: 8px 28px;
+  border-radius: 2px;
+  font-size: 1rem;
+  letter-spacing: 3px;
+  margin-top: 12px;
+}
+.title-slide .latin-quote {
+  font-style: italic;
+  color: var(--muted);
+  font-size: 1rem;
+  margin-top: 20px;
+  border-left: 3px solid var(--gold);
+  padding-left: 16px;
+  text-align: left;
+  max-width: 520px;
+}
+
+/* ── Two-Column Layout ── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+.two-col-img {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 40px;
+  align-items: center;
+}
+
+/* ── Section Heading ── */
+.section-label {
+  font-size: 0.72rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+h2.slide-title {
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  color: #fff;
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+h2.slide-title span { color: var(--gold); }
+.divider {
+  width: 60px; height: 3px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  margin: 8px 0 18px;
+}
+
+/* ── Body Text ── */
+p.body { font-size: 1.02rem; line-height: 1.75; color: var(--text); }
+p.body strong { color: var(--gold-lt); }
+
+/* ── Bullet List ── */
+ul.facts {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+ul.facts li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 0.97rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+ul.facts li::before {
+  content: '▸';
+  color: var(--gold);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+ul.facts li strong { color: var(--gold-lt); }
+
+/* ── Image Card ── */
+.img-card {
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(201,168,76,0.25);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+}
+.img-card img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  display: block;
+  filter: sepia(0.2) contrast(1.05);
+}
+.img-caption {
+  background: rgba(0,0,0,0.6);
+  padding: 8px 12px;
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-style: italic;
+}
+.img-caption a { color: var(--gold); text-decoration: none; }
+.img-caption a:hover { text-decoration: underline; }
+
+/* ── Timeline ── */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 72px; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--gold), transparent);
+}
+.tl-item {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 16px;
+  padding: 10px 0;
+  align-items: start;
+}
+.tl-year {
+  text-align: right;
+  font-size: 0.82rem;
+  color: var(--gold);
+  font-family: 'Courier New', monospace;
+  padding-top: 2px;
+  padding-right: 12px;
+}
+.tl-dot {
+  position: absolute;
+  left: 66px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 2px solid var(--dark);
+  margin-top: 4px;
+}
+.tl-body { padding-left: 20px; }
+.tl-body strong { color: var(--gold-lt); font-size: 0.95rem; }
+.tl-body p { font-size: 0.88rem; color: var(--muted); margin-top: 2px; }
+
+/* ── Works Grid ── */
+.works-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+.work-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 4px;
+  padding: 14px 16px;
+}
+.work-card .wc-cat {
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+.work-card .wc-title {
+  font-size: 1rem;
+  color: #fff;
+  font-style: italic;
+}
+.work-card .wc-desc {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+/* ── Quote Slide ── */
+.quote-slide .slide-content {
+  align-items: center;
+  text-align: center;
+}
+.big-quote {
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  font-style: italic;
+  color: var(--gold-lt);
+  line-height: 1.5;
+  max-width: 800px;
+  position: relative;
+}
+.big-quote::before {
+  content: '\201C';
+  font-size: 6rem;
+  color: var(--gold);
+  opacity: 0.25;
+  position: absolute;
+  top: -30px; left: -20px;
+  line-height: 1;
+}
+.quote-attr {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-top: 20px;
+  letter-spacing: 2px;
+}
+
+/* ── Death Slide ── */
+.death-card {
+  background: rgba(139,26,26,0.12);
+  border: 1px solid rgba(139,26,26,0.4);
+  border-radius: 4px;
+  padding: 20px 24px;
+}
+
+/* ── Sources Slide ── */
+.sources-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.sources-list li {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.5;
+  padding-left: 20px;
+  position: relative;
+}
+.sources-list li::before {
+  content: '[' attr(data-n) ']';
+  position: absolute;
+  left: 0;
+  color: var(--gold);
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+}
+.sources-list a {
+  color: var(--gold);
+  text-decoration: none;
+  word-break: break-all;
+}
+.sources-list a:hover { text-decoration: underline; }
+
+/* ── Navigation ── */
+#nav {
+  position: fixed;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  z-index: 100;
+  background: rgba(10,8,5,0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 50px;
+  padding: 10px 24px;
+}
+.nav-btn {
+  background: none;
+  border: none;
+  color: var(--gold);
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 50%;
+  transition: background 0.2s, color 0.2s;
+  line-height: 1;
+}
+.nav-btn:hover { background: rgba(201,168,76,0.15); }
+.nav-btn:disabled { color: var(--muted); cursor: default; }
+#progress-text {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-family: 'Courier New', monospace;
+  min-width: 60px;
+  text-align: center;
+}
+#progress-bar-wrap {
+  width: 100px; height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+#progress-bar {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+/* ── Keyboard hint ── */
+#key-hint {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 2px;
+  opacity: 0.6;
+  z-index: 100;
+  pointer-events: none;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .slide { padding: 40px 24px; }
+  .two-col, .two-col-img { grid-template-columns: 1fr; }
+  .img-card img { height: 200px; }
+  .works-grid { grid-template-columns: 1fr; }
+  .timeline::before { left: 56px; }
+  .tl-item { grid-template-columns: 56px 1fr; }
+}
+
+        
+
+</style>
+</head>
+<body> <div id="presentation"> <!-- ══════════════════════════════════════════
+SLIDE 1 – TITELFOLIE
+══════════════════════════════════════════ --> <div class="slide title-slide active" id="s1">
+<div class="slide-bg" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/6/66/Forum_romanum.jpg')"></div>
+<div class="slide-overlay"></div>
+<div class="slide-content">
+<div class="eyebrow">Marcus Tullius</div>
+<h1><span>Cicero</span></h1>
+<p class="subtitle">Redner · Philosoph · Staatsmann</p>
+<div class="dates">106 v. Chr. – 43 v. Chr.</div>
+<p class="latin-quote">
+„Dum spiro, spero."<br>
+<em style="font-size:0.85rem;color:#7a6a50">„Solange ich atme, hoffe ich." — Cicero</em>
+</p>
+</div>
+<div class="slide-num">01 / 10</div>
+</div> <!-- ══════════════════════════════════════════
+SLIDE 2 – HERKUNFT & JUGEND
+══════════════════════════════════════════ --> <div class="slide" id="s2">
+<div class="slide-bg" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/8/8a/Bust_of_Cicero_%281st-cent._BC%29_-_Palazzo_Nuovo_-_Musei_Capitolini_-_Rome_2016.jpg')"></div>
+<div class="slide-overlay"></div>
+<div class="slide-content">
+<div class="two-col-img">
+<div>
+<div class="section-label">Kapitel I</div>
+<h2 class="slide-title">Herkunft &amp; <span>Jugend</span></h2>
+<div class="divider"></div>
+<ul class="facts">
+<li><strong>3. Januar 106 v. Chr.</strong> — Geburt in Arpinum (Latium), ca. 100 km südöstlich von Rom</li>
+<li><strong>Familie:</strong> Ritterstand (<em>ordo equester</em>), wohlhabend aber nicht senatorisch</li>
+<li><strong>Name:</strong> <em>Cicero</em> = lat. „Kichererbse" — wohl ein Familienspitzname</li>
+<li><strong>Bruder:</strong> Quintus Tullius Cicero, späterer Feldherr unter Caesar</li>
+<li>Früh als außergewöhnlich begabt erkannt; Mitschüler kamen extra, um ihm beim Lernen zuzusehen</li>
+<li>Übersiedlung nach Rom zur Ausbildung ca. <strong>90 v. Chr.</strong></li>
+</ul>
+</div>
+<div class="img-card">
+<img src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Bust_of_Cicero_%281st-cent._BC%29_-_Palazzo_Nuovo_-_Musei_Capitolini_-_Rome_2016.jpg"
+alt="Büste des Cicero, Musei Capitolini, Rom" />
+<div class="img-caption">
+Marmorbüste Ciceros (1. Jh. v. Chr.), Musei Capitolini, Rom.<br>
+Quelle: <a href="https://de.wikipedia.org/wiki/Marcus_Tullius_Cicero" target="_blank">Wikimedia Commons / Wikipedia DE</a>
+</div>
+</div>
+</div>
+</div>
+<div class="slide-num">02 / 10</div>
+</div> <!-- ══════════════════════════════════════════
+SLIDE 3 – AUSBILDUNG
+══════════════════════════════════════════ --> <div class="slide" id="s3">
+<div class="slide-bg" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/5/5d/Claude_Lorrain_-_Capriccio_with_ruins_of_the_Roman_Forum_-_Google_Art_Project.jpg')"></div>
+<div class="slide-overlay"></div>
+<div class="slide-content">
+<div class="two-col">
+<div>
+<div class="section-label">Kapitel II</div>
+<h2 class="slide-title">Ausbildung &amp; <span>Lehrjahre</span></h2>
+<div class="divider"></div>
+<ul class="facts">
+<li>Studium der Rhetorik bei <strong>Molon von Rhodos</strong>, dem bedeutendsten Redelehrer seiner Zeit</li>
+<li>Philosophie bei den Epikureern <strong>Phaidros</strong> und <strong>Zenon</strong> in Rom</li>
+<li>Akademische Philosophie bei <strong>Philon von Larissa</strong> (Haupt der Platonischen Akademie)</li>
+<li>Rechtsstudium bei <strong>Quintus Mucius Scaevola</strong>, dem führenden Juristen Roms</li>
+<li><strong>79–77 v. Chr.</strong> Studienreise nach Athen und Rhodos — Vertiefung in Philosophie und Rhetorik</li>
+<li>Freundschaft mit <strong>Titus Pomponius Atticus</strong>, lebenslanger Briefpartner</li>
+</ul>
+</div>
+<div>
+<div class="section-label">Einflüsse</div>
+<h2 class="slide-title" style="font-size:1.5rem">Philosophische <span>Schulen</span></h2>
+<div class="divider"></div>
+<ul class="facts">
+<li><strong>Akademische Skepsis:</strong> Wahrheit ist nur annäherungsweise erkennbar</li>
+<li><strong>Stoa:</strong> Tugend als höchstes Gut, Pflichtethik (<em>De officiis</em>)</li>
+<li><strong>Eklektizismus:</strong> Cicero kombinierte verschiedene Schulen pragmatisch</li>
+<li>Ziel: Griechische Philosophie für das römische Publikum zugänglich machen</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="slide-num">03 / 10</div>
+</div> <!-- ══════════════════════════════════════════
+SLIDE 4 – POLITISCHE KARRIERE (TIMELINE)
+══════════════════════════════════════════ --> <div class="slide" id="s4">
+<div class="slide-bg" style="background-image:url('https://images.unsplash.com/photo-1780789595470-5a9da7f47b5b?fm=jpg&q=60&w=3000&auto=format&fit=crop')"></div>
+<div class="slide-overlay"></div>
+<div class="slide-content">
+<div class="section-label">Kapitel III</div>
+<h2 class="slide-title">Politische <span>Karriere</span> — Cursus Honorum</h2>
+<div class="divider"></div>
+<div class="two-col">
+<div class="timeline">
+<div class="tl-item">
+<div class="tl-year">81 v.Chr.</div>
+<div class="tl-body">
+<strong>Erste Rede</strong>
+<p>Pro Quinctio — erster öffentlicher Auftritt als Anwalt</p>
+</div>
+</div>
+<div class="tl-item">
+<div class="tl-year">80 v.Chr.</div>
+<div class="tl-body">
+<strong>Pro Roscio Amerino</strong>
+<p>Verteidigung gegen Sulla-Günstlinge — erster großer Erfolg</p>
+</div>
+</div>
+<div class="tl-item">
+<div class="tl-year">75 v.Chr.</div>
+<div class="tl-body">
+<strong>Quästor</strong>
+<p>In Sizilien — erster Schritt auf dem Cursus Honorum</p>
+</div>
+</div>
+<div class="tl-item">
+<div class="tl-year">70 v.Chr.</div>
+<div class="tl-body">
+<strong>Verres-Prozess</strong>
+<p>Anklage des korrupten Statthalters Siziliens — Durchbruch als Redner</p>
+</div>
+</div>
+<div class="tl-item">
+<div class="tl-year">69 v.Chr.</div>
+<div class="tl-body">
+<strong>Ädil</strong>
+<p>Zuständig für öffentliche Spiele und Bauten</p>
+</div>
+</div>
+</div>
+<div class="timeline">
+<div class="tl-item">
+<div class="tl-year">66 v.Chr.</div>
+<div class="tl-body">
+<strong>Prätor</strong>
+<p>Richteramt; Rede für das Manilische Gesetz (Pompeius)</p>
+</div>
+</div>
+<div class="tl-item">
+<div class="tl-year">63 v.Chr.</div>
+<div class="tl-body">
+<strong>Konsul</strong>
+<p>Höchstes Amt der Republik — Aufdeckung der Catilinarischen Verschwörung</p>
+</div>
+</div>
+<div class="tl-item">
+<div class="tl-year">51 v.Chr.</div>
+<div class="tl-body">
+<strong>Prokonsul in Kilikien</strong>
+<p>Militärischer Einsatz; Triumph verweigert</p>
+</div>
+</div>
+<div class="tl-item">
+<div class="tl-year">44 v.Chr.</div>
+<div class="tl-body">
+<strong>Philippische Reden</strong>
+<p>14 Reden gegen Marcus Antonius — letzter politischer Kampf</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="slide-num">04 / 10</div>
+</div> <!-- ══════════════════════════════════════════
+SLIDE 5 – KONSULAT & CATILINA
+══════════════════════════════════════════ --> <div class="slide" id="s5">
+<div class="slide-bg" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/8/81/Cicero_Denounces_Catiline_in_the_Roman_Senate_by_Cesare_Maccari_-_3.jpg')"></div>
+<div class="slide-overlay"></div>
+<div class="slide-content">
+<div class="two-col-img">
+<div>
+<div class="section-label">Kapitel IV</div>
+<h2 class="slide-title">Das Konsulat &amp; <span>Catilina</span></h2>
+<div class="divider"></div>
+<p class="body">
+Im Jahr <strong>63 v. Chr.</strong> bekleidete Cicero das Konsulat — das höchste Amt der römischen Republik. Sein größter Triumph war die Aufdeckung der <strong>Catilinarischen Verschwörung</strong>: Lucius Sergius Catilina plante einen gewaltsamen Umsturz.
+</p>
+<br>
+<p class="body">
+Cicero hielt vier vernichtende Reden im Senat (<em>Catilinaria I–IV</em>). Catilina floh, seine Mitverschwörer wurden ohne Prozess hingerichtet — eine Entscheidung, die Cicero später teuer zu stehen kam.
+</p>
+<br>
+<div class="death-card" style="background:rgba(201,168,76,0.08);border-color:rgba(201,168,76,0.3)">
+<p style="font-style:italic;color:var(--gold-lt);font-size:1rem">
+„Quousque tandem abutere, Catilina, patientia nostra?"
+</p>
+<p style="font-size:0.8rem;color:var(--muted);margin-top:6px">
+„Wie lange noch, Catilina, wirst du unsere Geduld missbrauchen?" — Catilinaria I, 63 v. Chr.
+</p>
+</div>
+</div>
+<div class="img-card">
+<img src="https://upload.wikimedia.org/wikipedia/commons/8/81/Cicero_Denounces_Catiline_in_the_Roman_Senate_by_Cesare_Maccari_-_3.jpg"
+alt="Cicero klagt Catilina an, Gemälde von Cesare Maccari, 1888" />
+<div class="img-caption">
+„Cicero klagt Catilina an" — Cesare Maccari, 1888. Fresko im Palazzo Madama, Rom.<br>
+Quelle: <a href="https://de.wikipedia.org/wiki/Datei:Cicero_Denounces_Catiline_in_the_Roman_Senate_by_Cesare_Maccari_-_3.jpg" target="_blank">Wikimedia Commons</a>
+</div>
+</div>
+</div>
+</div>
+<div class="slide-num">05 / 10</div>
+</div> <!-- ══════════════════════════════════════════
+SLIDE 6 – EXIL & RÜCKKEHR
+══════════════════════════════════════════ --> <div class="slide" id="s6">
+<div class="slide-bg" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/5/5e/Giovanni_Paolo_Panini_-_An_Architectural_Capriccio_of_the_Roman_Forum_with_Philosophers_and_Soldiers_among_Ancient_Ruins%2C_in..._-_Google_Art_Project.jpg')"></div>
+<div class="slide-overlay"></div>
+<div class="slide-content">
+<div class="two-col">
+<div>
+<div class="section-label">Kapitel V</div>
+<h2 class="slide-title">Exil &amp; <span>Rückkehr</span></h2>
+<div class="divider"></div>
+<ul class="facts">
+<li><strong>58 v. Chr.:</strong> Volkstribun <strong>Publius Clodius Pulcher</strong> erwirkt ein Gesetz, das die Hinrichtung römischer Bürger ohne Prozess unter Strafe stellt — direkt gegen Cicero gerichtet</li>
+<li>Cicero geht freiwillig ins Exil nach Griechenland, sein Haus auf dem Palatin wird zerstört</li>
+<li>Tiefe persönliche Krise: Briefe an Atticus zeigen Verzweiflung und Selbstzweifel</li>
+<li><strong>57 v. Chr.:</strong> Triumphale Rückkehr nach Rom — Senat stimmt für seine Rückberufung</li>
+<li>Sein Haus wird auf Staatskosten wiederaufgebaut</li>
+</ul>
+</div>
+<div>
+<div class="section-label">Politisches Umfeld</div>
+<h2 class="slide-title" style="font-size:1.5rem">Das <span>Erste Triumvirat</span></h2>
+<div class="divider"></div>
+<ul class="facts">
+<li><strong>Caesar, Pompeius, Crassus</strong> dominieren die Republik ab 60 v. Chr.</li>
+<li>Cicero lehnt Angebote ab, dem Triumvirat beizutreten — er bleibt der Republik treu</li>
+<li>Politisch zunehmend marginalisiert, zieht er sich auf literarische Tätigkeit zurück</li>
+<li>Schreibt in dieser Zeit seine wichtigsten rhetorischen Werke: <em>De oratore</em> (55 v. Chr.)</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="slide-num">06 / 10</div>
+</div> <!-- ══════════════════════════════════════════
+SLIDE 7 – ZITAT-FOLIE
+══════════════════════════════════════════ --> <div class="slide quote-slide" id="s7">
+<div class="slide-bg" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/M._Tullius_Cicero%2C_Capitoline_Museum%2C_Rome.jpg/3840px-M._Tullius_Cicero%2C_Capitoline_Museum%2C_Rome.jpg')"></div>
+<div class="slide-overlay" style="background:linear-gradient(135deg,rgba(5,3,0,0.92),rgba(20,12,0,0.75))"></div>
+<div class="slide-content">
+<div class="section-label" style="text-align:center;letter-spacing:6px">Cicero in eigenen Worten</div>
+<div class="big-quote">
+„Historia est testis temporum, lux veritatis, vita memoriae, magistra vitae, nuntia vetustatis."
+</div>
+<p class="quote-attr">
+„Die Geschichte ist Zeugin der Zeiten, Licht der Wahrheit, Leben der Erinnerung, Lehrerin des Lebens, Botin der Vergangenheit."<br>
+<span style="color:var(--gold);margin-top:8px;display:block">— De Oratore II, 36</span>
+</p>
+</div>
+<div class="slide-num">07 / 10</div>
+</div> <!-- ══════════════════════════════════════════
+SLIDE 8 – WERKE
+══════════════════════════════════════════ --> <div class="slide" id="s8">
+<div class="slide-bg" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/6/66/Forum_romanum.jpg')"></div>
+<div class="slide-overlay"></div>
+<div class="slide-content">
+<div class="section-label">Kapitel VI</div>
+<h2 class="slide-title">Wichtigste <span>Werke</span></h2>
+<div class="divider"></div>
+<div class="works-grid">
+<div class="work-card">
+<div class="wc-cat">Reden</div>
+<div class="wc-title">In Verrem / Catilinaria I–IV</div>
+<div class="wc-desc">58 Reden sind erhalten. Die Verres-Reden (70 v. Chr.) und die vier Catilinarischen Reden (63 v. Chr.) gelten als Meisterwerke der Gerichts- und Staatsrede.</div>
+</div>
+<div class="work-card">
+<div class="wc-cat">Rhetorik</div>
+<div class="wc-title">De oratore (55 v. Chr.)</div>
+<div class="wc-desc">Dialogwerk über die Kunst der Rede. Cicero entwirft das Ideal des gebildeten Redners (<em>orator perfectus</em>), der Philosophie und Rhetorik vereint.</div>
+</div>
+<div class="work-card">
+<div class="wc-cat">Philosophie</div>
+<div class="wc-title">De re publica / De legibus</div>
+<div class="wc-desc">Staatsphilosophische Dialoge (54–51 v. Chr.) nach platonischem Vorbild. Entwurf einer idealen Verfassung auf Basis der römischen Tradition.</div>
+</div>
+<div class="work-card">
+<div class="wc-cat">Ethik</div>
+<div class="wc-title">De officiis (44 v. Chr.)</div>
+<div class="wc-desc">Pflichtenlehre in drei Büchern, gewidmet seinem Sohn Marcus. Eines der einflussreichsten ethischen Werke der Antike — bis heute gelesen.</div>
+</div>
+<div class="work-card">
+<div class="wc-cat">Erkenntnistheorie</div>
+<div class="wc-title">Academica / De finibus</div>
+<div class="wc-desc">Auseinandersetzung mit den hellenistischen Schulen (Stoa, Epikur, Akademie) über das höchste Gut und die Grenzen des Wissens.</div>
+</div>
+<div class="work-card">
+<div class="wc-cat">Briefe</div>
+<div class="wc-title">Epistulae ad Atticum / ad Familiares</div>
+<div class="wc-desc">Über 900 erhaltene Briefe — einzigartiges Zeugnis des privaten und politischen Lebens der späten Republik. Wichtigste Primärquelle der Epoche.</div>
+</div>
+</div>
+</div>
+<div class="slide-num">08 / 10</div>
+</div> <!-- ══════════════════════════════════════════
+SLIDE 9 – TOD & NACHWIRKUNG
+══════════════════════════════════════════ --> <div class="slide" id="s9">
+<div class="slide-bg" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/8/87/Thorvaldsen_Cicero.jpg')"></div>
+<div class="slide-overlay" style="background:linear-gradient(135deg,rgba(10,3,3,0.9),rgba(30,10,10,0.7))"></div>
+<div class="slide-content">
+<div class="two-col">
+<div>
+<div class="section-label">Kapitel VII</div>
+<h2 class="slide-title">Proskription &amp; <span>Tod</span></h2>
+<div class="divider"></div>
+<div class="death-card">
+<ul class="facts">
+<li>Nach Caesars Ermordung (44 v. Chr.) hält Cicero 14 <strong>Philippische Reden</strong> gegen Marcus Antonius</li>
+<li><strong>43 v. Chr.:</strong> Das Zweite Triumvirat (Antonius, Octavian, Lepidus) setzt Cicero auf die Proskriptionsliste</li>
+<li><strong>7. Dezember 43 v. Chr.:</strong> Cicero wird auf der Flucht bei Formiae ermordet</li>
+<li>Antonius lässt Kopf und Hände auf der Rednertribüne (<em>Rostra</em>) auf dem Forum Romanum ausstellen</li>
+</ul>
+</div>
+</div>
+<div>
+<div class="section-label">Nachwirkung</div>
+<h2 class="slide-title" style="font-size:1.6rem"><span>Bedeutung</span> für die Nachwelt</h2>
+<div class="divider"></div>
+<ul class="facts">
+<li><strong>Antike:</strong> Quintilian nennt ihn „den Namen der Beredsamkeit selbst" (<em>nomen eloquentiae</em>)</li>
+<li><strong>Mittelalter:</strong> Kirchenväter (Augustinus, Hieronymus) schöpfen aus seinen Werken</li>
+<li><strong>Renaissance:</strong> Petrarca entdeckt die Briefe an Atticus neu — Beginn des Humanismus</li>
+<li><strong>Aufklärung:</strong> Montesquieu, Voltaire, die amerikanischen Gründerväter berufen sich auf Cicero</li>
+<li><strong>Heute:</strong> Standardlektüre im Lateinunterricht weltweit; Vorbild für parlamentarische Rhetorik</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="slide-num">09 / 10</div>
+</div> <!-- ══════════════════════════════════════════
+SLIDE 10 – QUELLEN (IEEE)
+══════════════════════════════════════════ --> <div class="slide" id="s10">
+<div class="slide-bg" style="background-image:url('https://upload.wikimedia.org/wikipedia/commons/6/66/Forum_romanum.jpg')"></div>
+<div class="slide-overlay" style="background:rgba(5,4,2,0.92)"></div>
+<div class="slide-content">
+<div class="section-label">Literatur &amp; Quellen</div>
+<h2 class="slide-title">Quellenverzeichnis <span>(IEEE)</span></h2>
+<div class="divider"></div>
+<ul class="sources-list">
+<li data-n="1">
+Wikipedia-Autoren, „Marcus Tullius Cicero," <em>Wikipedia, Die freie Enzyklopädie</em>, Wikimedia Foundation, 2024. [Online]. Verfügbar: <a href="https://de.wikipedia.org/wiki/Marcus_Tullius_Cicero" target="_blank">https://de.wikipedia.org/wiki/Marcus_Tullius_Cicero</a>. [Zugriff: 15. Jun. 2026].
+</li>
+<li data-n="2">
+W. Stroh, <em>Cicero: Redner, Staatsmann, Philosoph</em>. München: C.H. Beck, 2008. [Online]. Verfügbar: <a href="https://www.chbeck.de/stroh-cicero/product/40156781" target="_blank">https://www.chbeck.de/stroh-cicero/product/40156781</a>.
+</li>
+<li data-n="3">
+Zeno.org, „Biographie — Marcus Tullius Cicero," <em>Zeno.org Philosophie</em>. [Online]. Verfügbar: <a href="http://www.zeno.org/Philosophie/M/Cicero,+Marcus+Tullius/Biographie" target="_blank">http://www.zeno.org/Philosophie/M/Cicero,+Marcus+Tullius/Biographie</a>. [Zugriff: 15. Jun. 2026].
+</li>
+<li data-n="4">
+Schule-BW, „Ciceros philosophische Schriften: Übersicht und Einführung," <em>Landesbildungsserver Baden-Württemberg</em>. [Online]. Verfügbar: <a href="https://www.schule-bw.de/faecher-und-schularten/sprachen-und-literatur/latein/texte-und-medien/cicero-philosophie/uebersicht-einfuehrung" target="_blank">https://www.schule-bw.de/...</a>. [Zugriff: 15. Jun. 2026].
+</li>
+<li data-n="5">
+C. Maccari, „Cicero Denounces Catiline in the Roman Senate," Fresko, Palazzo Madama, Rom, 1888. [Online]. Verfügbar: <a href="https://commons.wikimedia.org/wiki/File:Cicero_Denounces_Catiline_in_the_Roman_Senate_by_Cesare_Maccari_-_3.jpg" target="_blank">Wikimedia Commons</a>. [Zugriff: 15. Jun. 2026].
+</li>
+<li data-n="6">
+Musei Capitolini, „Büste des Cicero (1. Jh. v. Chr.)," Palazzo Nuovo, Rom. Fotografie: Wikimedia Commons. [Online]. Verfügbar: <a href="https://commons.wikimedia.org/wiki/File:Bust_of_Cicero_(1st-cent._BC)_-_Palazzo_Nuovo_-_Musei_Capitolini_-_Rome_2016.jpg" target="_blank">Wikimedia Commons</a>. [Zugriff: 15. Jun. 2026].
+</li>
+<li data-n="7">
+A. Lintott, <em>Cicero as Evidence: A Historian's Companion</em>. Oxford: Oxford University Press, 2008. [Online]. Verfügbar: <a href="https://bmcr.brynmawr.edu/2015/2015.05.42/" target="_blank">https://bmcr.brynmawr.edu/2015/2015.05.42/</a>.
+</li>
+<li data-n="8">
+StudySmarter, „Cicero: Werke, De Officiis &amp; Beeinflussungen," <em>StudySmarter DE</em>, 2023. [Online]. Verfügbar: <a href="https://www.studysmarter.de/schule/latein/roemische-antike/cicero/" target="_blank">https://www.studysmarter.de/schule/latein/roemische-antike/cicero/</a>. [Zugriff: 15. Jun. 2026].
+</li>
+</ul>
+</div>
+<div class="slide-num">10 / 10</div>
+</div> </div><!-- /presentation --> <!-- ── Navigation ── --> <div id="nav">
+<button class="nav-btn" id="btn-prev" onclick="changeSlide(-1)" disabled>&#8592;</button>
+<div id="progress-bar-wrap"><div id="progress-bar" style="width:10%"></div></div>
+<span id="progress-text">1 / 10</span>
+<button class="nav-btn" id="btn-next" onclick="changeSlide(1)">&#8594;</button>
+</div>
+<div id="key-hint">← → Pfeiltasten oder Klick zum Navigieren</div> <script>
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let current = 0;
+
+function changeSlide(dir) {
+const next = current + dir;
+if (next < 0 || next >= total) return;
+
+slides[current].classList.remove('active');
+slides[current].classList.add(dir > 0 ? 'exit-left' : '');
+
+setTimeout(() => {
+slides[current].classList.remove('exit-left');
+current = next;
+slides[current].classList.add('active');
+updateNav();
+}, dir > 0 ? 0 : 0);
+
+current = next;
+slides.forEach((s, i) => {
+s.classList.remove('active', 'exit-left');
+});
+slides[current].classList.add('active');
+updateNav();
+}
+
+function updateNav() {
+document.getElementById('progress-text').textContent = `${current + 1} / ${total}`;
+document.getElementById('progress-bar').style.width = `${((current + 1) / total) * 100}%`;
+document.getElementById('btn-prev').disabled = current === 0;
+document.getElementById('btn-next').disabled = current === total - 1;
+
+// Hide hint after first navigation
+if (current > 0) document.getElementById('key-hint').style.opacity = '0';
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+    changeSlide(1);
+  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    changeSlide(-1);
+  }
+});
+
+// Optional: Klick auf die Folie wechselt zur nächsten (praktisch für Präsentationen)
+document.getElementById('presentation').addEventListener('click', e => {
+  // Verhindert das Umblättern, wenn auf Links oder Buttons geklickt wird
+  if (e.target.tagName !== 'A' && e.target.tagName !== 'BUTTON' && !e.target.closest('#nav')) {
+    changeSlide(1);
+  }
+});
+</script>
+</body>
+</html>
