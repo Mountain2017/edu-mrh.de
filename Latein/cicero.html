@@ -444,6 +444,11 @@ ul.facts li strong { color: var(--gold-lt); }
   .tl-item { grid-template-columns: 56px 1fr; }
 }
 
+.slide.exit-right {
+  opacity: 0;
+  transform: translateX(60px);
+}
+
         
 
 </style>
@@ -818,44 +823,52 @@ StudySmarter, „Cicero: Werke, De Officiis &amp; Beeinflussungen," <em>StudySma
 <span id="progress-text">1 / 10</span>
 <button class="nav-btn" id="btn-next" onclick="changeSlide(1)">&#8594;</button>
 </div>
-<div id="key-hint">← → Pfeiltasten oder Klick zum Navigieren</div> <script>
+<div id="key-hint">← → Pfeiltasten oder Klick zum Navigieren</div> 
+<script>
 const slides = document.querySelectorAll('.slide');
 const total = slides.length;
 let current = 0;
 
 function changeSlide(dir) {
-const next = current + dir;
-if (next < 0 || next >= total) return;
+  const next = current + dir;
+  if (next < 0 || next >= total) return;
 
-slides[current].classList.remove('active');
-slides[current].classList.add(dir > 0 ? 'exit-left' : '');
+  const currentSlide = slides[current];
+  const nextSlide = slides[next];
 
-setTimeout(() => {
-slides[current].classList.remove('exit-left');
-current = next;
-slides[current].classList.add('active');
-updateNav();
-}, dir > 0 ? 0 : 0);
+  // Animationen zurücksetzen, um Glitches zu vermeiden
+  slides.forEach(s => s.classList.remove('exit-left', 'exit-right'));
 
-current = next;
-slides.forEach((s, i) => {
-s.classList.remove('active', 'exit-left');
-});
-slides[current].classList.add('active');
-updateNav();
+  if (dir > 0) {
+    // Vorwärts: Aktuelle Folie fliegt nach links raus
+    currentSlide.classList.remove('active');
+    currentSlide.classList.add('exit-left');
+  } else {
+    // Rückwärts: Aktuelle Folie fliegt nach rechts raus
+    currentSlide.classList.remove('active');
+    currentSlide.classList.add('exit-right');
+  }
+
+  // Neue Folie aktivieren
+  current = next;
+  nextSlide.classList.add('active');
+  
+  updateNav();
 }
 
 function updateNav() {
-document.getElementById('progress-text').textContent = `${current + 1} / ${total}`;
-document.getElementById('progress-bar').style.width = `${((current + 1) / total) * 100}%`;
-document.getElementById('btn-prev').disabled = current === 0;
-document.getElementById('btn-next').disabled = current === total - 1;
+  document.getElementById('progress-text').textContent = `${current + 1} / ${total}`;
+  document.getElementById('progress-bar').style.width = `${((current + 1) / total) * 100}%`;
+  document.getElementById('btn-prev').disabled = current === 0;
+  document.getElementById('btn-next').disabled = current === total - 1;
 
-// Hide hint after first navigation
-if (current > 0) document.getElementById('key-hint').style.opacity = '0';
+  if (current > 0) {
+    const hint = document.getElementById('key-hint');
+    if (hint) hint.style.opacity = '0';
+  }
 }
 
-// Keyboard navigation
+// Tastaturnavigation
 document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
     changeSlide(1);
@@ -864,9 +877,8 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// Optional: Klick auf die Folie wechselt zur nächsten (praktisch für Präsentationen)
+// Klick-Navigation auf der Folie
 document.getElementById('presentation').addEventListener('click', e => {
-  // Verhindert das Umblättern, wenn auf Links oder Buttons geklickt wird
   if (e.target.tagName !== 'A' && e.target.tagName !== 'BUTTON' && !e.target.closest('#nav')) {
     changeSlide(1);
   }
