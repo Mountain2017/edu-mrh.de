@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+<!--<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script> -->
+<!-- MathJax für die ordentliche Anzeige von Formeln -->
+<script id="MathJax-script" async src="https://edu-mrh.de/embed/MathJax/es5/tex-mml-chtml.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lineare Bewegungen: ICE München-Berlin - Physik - edu-mrh.de</title>
+    <meta name="description" content="Interaktive Analyse einer ICE-Fahrt. Berechne v0 und erstelle deine eigene Bewegungsgleichung basierend auf deinen Messwerten.">
+    <style>
+        :root { --primary: #c00; --bg: #f4f4f4; --card: #fff; --text: #333; --ok: #28a745; --fail: #dc3545; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; margin: 0; }
+        header { background: var(--primary); color: white; padding: 2rem; text-align: center; }
+        main { max-width: 850px; margin: 2rem auto; padding: 0 1rem; }
+        .card { background: var(--card); padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 2rem; }
+        .context-story { border-left: 5px solid var(--primary); padding-left: 1rem; font-style: italic; background: #fffafa; padding: 1rem; }
+        h2 { color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 0.5rem; }
+        .diagram-container { text-align: center; margin: 1.5rem 0; }
+        .diagram-container img { max-width: 100%; height: auto; border-radius: 5px; border: 1px solid #ddd; }
+        .input-box { margin: 1.2rem 0; }
+        label { display: block; font-weight: bold; margin-bottom: 0.4rem; }
+        input, textarea { width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1rem; }
+        button { background: var(--primary); color: white; border: none; padding: 0.8rem 1.4rem; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 0.6rem; }
+        .feedback { margin-top: 1rem; padding: 1rem; border-radius: 4px; display: none; font-weight: bold; }
+        .correct { background: #d4edda; color: #155724; }
+        .incorrect { background: #f8d7da; color: #721c24; }
+        footer { text-align: center; padding: 2rem; color: #777; font-size: 0.9rem; }
+#nextBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+<!--
+Thema: Beschleunigung, Kraft und Tr�gheit (S-Bahn Klassenfahrt)
+Jahrgangsstufe: 10. Klasse (laut Text 10C)
+Fachbereich: Physik
+Geprüftes Wissen
+-->
+
+<header>
+    <h1>ICE-Fahrt: München &ndash; Berlin</h1>
+    <p>Eine physikalische Analyse</p>
+</header>
+
+<main>
+    <section class="card">
+        <div class="context-story">
+            „Wie durch ein Wunder waren alle deine Mitschülerinnen und Mitschüler nicht nur pünktlich am Gleis, sondern darüber hinaus saßen sie auch rechtzeitig im 	Zug. Alle haben ihre reservierten Sitzplätze gefunden und sind froh, auf der Fahrt von München nach Berlin nicht stehen zu müssen...“
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>1. Ankunftszeit ablesen</h2>
+        <p>
+            Du hast es dir auf deinem reservierten Sitzplatz gemütlich gemacht und genießt die entspannte Fahrt,
+            ohne während der langen Reise stehen zu müssen. Doch während der Zug dahinruckelt, steigt die Vorfreude:
+            <strong>Wann genau wirst du am Berliner Hauptbahnhof ankommen?</strong>
+            Nutze das Diagramm, um die Ankunftszeit zu ermitteln.
+        </p>
+        <div class="diagram-container">
+            <img src="Aufgabe 1 Angabe.png" alt="Zeit-Weg-Diagramm der ICE-Fahrt">
+        </div>
+        <div class="input-box">
+            <label for="arrival">Lies die voraussichtliche Ankunftszeit in Berlin im Diagramm ab und gib sie hier an:</label>
+            <input type="text" id="arrival" placeholder="Format HH:MM">
+            <button onclick="checkArrival()">Prüfen</button>
+            <div id="fb1" class="feedback"></div>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>2. Geschwindigkeit & Bewegungsgleichung</h2>
+        <p>
+            Soweit zur planmäßigen Ankunft. Während die Landschaft vor dem Fenster an dir vorüberzieht, versuchst du dir die Zeit zu vertreiben, 	indem du versuchst, die durchschnittliche Geschwindigkeit deines Zuges zu berechnen...
+        </p>
+        <div class="input-box">
+            <label for="v0">Berechne die Geschwindigkeit des Zuges <i>v</i> in \(\frac{km}{h}\) :
+            <input type="text" id="v0" placeholder="v">
+            <button onclick="saveV0()">Wert überprüfen</button>
+            <div id="fb2a" class="feedback"></div>
+	</div>
+
+        <div class="input-box">
+            <label for="formula">Stelle die Bewegungsgleichung auf, die die zurückgelegte Strecke <i>s</i> in Abhängigkeit von der Zeit <i>t</i> in <i>h</i> beschreibt: </label>
+            <input type="text" id="formula" placeholder="s(t)=">
+            <button onclick="checkFormula()">Formel prüfen</button>
+            <div id="fb2b" class="feedback"></div>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>3. Zwischenstopp Erfurt</h2>
+        <p>Um dir die Zeit ein wenig zu vertreiben, versuchst du, mithilfe deiner bisherigen Überlegungen, die Ankunftszeit des Zuges in Erfurt zu 	berechnen. Du weißt, dass die Zugstrecke von München nach Erfurt 318 km lang ist.</p>
+        <div class="input-box">
+            <label for="zeitbiserfurt">Bestimme die Zeit, bis sich der Zug auf Höhe Erfurt befindet in Minuten:</label>
+            <input type="text" id="zeitbiserfurt" placeholder=" Zeit in Minuten">
+            <button onclick="checkZeitbisErfurt()">Zeit prüfen</button>
+            <div id="fb3.0" class="feedback"></div>
+        </div>
+        <div class="input-box">
+            <label for="erfurt">Bestimme die Uhrzeit, zu der sich der Zug auf Höhe Erfurt befindet:</label>
+            <input type="text" id="erfurt" placeholder=" Format HH:MM">
+            <button onclick="checkErfurt()">Zeitpunkt prüfen</button>
+            <div id="fb3.1" class="feedback"></div>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>4. Physikalisches Verständnis</h2>
+        <p>
+         Als du von deinem Halbdämmerungszustand kurz aufschaust, siehst du die Geschwindigkeitsanzeige des ICE:
+        </p>
+	<div class="diagram-container">
+            <img src="Bahnstrecke-Berlin-München-Geschwindigkeitsanzeige.png" alt="Bahnstrecke-Berlin-München-Geschwindigkeitsanzeige">
+        </div>
+        <p>
+         Du erinnerst dich, dass im Physikunterricht immer zwischen "Momentangeschwindigkeit" und "Durchschnittsgeschwindigkeit" unterschieden wurde und dass deine Beobachtung deswegen nicht im Widerspruch zu deinem unter "2." berechneten Ergebnis steht.
+        </p>
+        <div class="input-box">
+            <label for="theory">Erkläre den Unterschied zwischen Momentan- und Durchschnittsgeschwindigkeit unter Verwendung von Fachsprache:</label>
+            <textarea id="theory" rows="4" placeholder="Hier Erklärung einfügen."></textarea>
+            <button onclick="checkTheory()">Text prüfen</button>
+            <div id="fb4" class="feedback"></div>
+        </div>
+    </section>
+
+<div id="nextImage" style="text-align:center; margin: 1rem 0; display:none;">
+    <img src="loesung_abschnitt_lineare_bewegung.png"
+         alt="Bild mit Zusammenfassung aller Ergebnisse dieser Seite"
+         style="max-width:800px;">
+</div>
+<!-- Weiter-Button -->
+<div style="text-align:center; margin: 2rem 0;">
+    <button id="nextBtn" disabled onclick="nextPage()">
+        Weiter zur nächsten Seite
+    </button>
+</div>
+</main>
+
+<footer><p>&copy; 2026 edu-mrh.de</p></footer>
+
+<script>
+// Status der Aufgaben
+let task1Correct = false;
+let task2Correct = false;
+let task3Correct = false;
+let task4Correct = false;
+let savedV0 = null;
+
+// Weiter-Button aktualisieren
+function updateProgressUI() {
+    const allCorrect = task1Correct && task2Correct && task3Correct && task4Correct;
+
+    const btn = document.getElementById('nextBtn');
+    const img = document.getElementById('nextImage');
+
+    btn.disabled = !allCorrect;
+    img.style.display = allCorrect ? 'block' : 'none';
+}
+
+// Für Bild wenn alles still
+function updateNextImage() {
+    const allCorrect = task1Correct && task2Correct && task3Correct && task4Correct;
+    const btn = document.getElementById('nextBtn');
+    const img = document.getElementById('nextImage');
+    btn.disabled = !allCorrect;
+    img.style.display = allCorrect ? 'block' : 'none';
+}
+//Feedback
+    function showFeedback(id, isCorrect, text) {
+        const fb = document.getElementById(id);
+        fb.style.display = 'block';
+        fb.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+        fb.innerText = text;
+    }
+
+    function showFb(id, ok, msg) {
+        const el = document.getElementById(id);
+        el.style.display = "block";
+        el.className = "feedback " + (ok ? "correct" : "incorrect");
+        el.innerText = msg;
+    }
+
+function checkArrival() {
+    const val = document.getElementById('arrival').value;
+    const correct = val === "14:00";
+    task1Correct = correct;
+    showFb(
+        'fb1',
+        correct,
+        correct ? "Richtig!" : "Falsch abgelesen."
+    );
+updateProgressUI();
+}
+
+    function saveV0() {
+        const val = parseInt(document.getElementById('v0').value);
+        if (!isNaN(val) && val > 0) {
+            savedV0 = val;
+            showFb('fb2a', val === 150, val === 150 ? "Richtig! Wert für v gespeichert." : "Falscher Wert (" + val + ") gespeichert. Nutze ihn für die folgenden Aufgaben.");
+        }
+updateProgressUI();
+    }
+
+    function checkFormula() {
+        if (savedV0 === null) return;
+        const val = document.getElementById('formula').value.replace(/\s/g, '').toLowerCase();
+        const expected = "s(t)=" + savedV0 + "*t";
+        const expectedAlt = "s(t)=" + savedV0 + "t";
+        if (val === expected || val === expectedAlt) {
+            task2Correct = true;
+            showFb('fb2b', true, "Richtig!");
+        } else {
+            showFb('fb2b', false, "Hinweis: Denke an die allgemeine Formel s(t) = v * t und verwende den von dir berechneten Wert für v");
+        }
+updateProgressUI();
+    }
+
+
+	function checkZeitbisErfurt() {
+   	 if (savedV0 === null) {
+        showFb('fb3.0', false, "Bitte berechne zuerst v in Aufgabe 2!");
+        return;
+    	}
+   	 // Berechnung der Minuten basierend auf 318 km und dem gespeicherten v0
+   	 const totalMinutes = Math.round((318 / savedV0) * 60);
+  	  const val = parseInt(document.getElementById('zeitbiserfurt').value);
+
+   	 if (val === totalMinutes) {
+   	     task3Correct = true;
+   	     showFb('fb3.0', true, "Richtig! Das entspricht " + totalMinutes + " Minuten.");
+  	  } else {
+  	      showFb('fb3.0', false, "Falsch berechnet. Denke an die gültige Ziffernregel");
+  	  }
+updateProgressUI();
+    }
+
+
+    function checkErfurt() {
+        if (savedV0 === null)
+	{
+        showFb('fb3.1', false, "Bitte berechne zuerst v in Aufgabe 2!");
+        return;
+  	  }
+        const totalMinutes = Math.round((318 / savedV0) * 60);
+        let finalHours = (10 + Math.floor(totalMinutes / 60)) % 24;
+        let finalMins = totalMinutes % 60;
+        const expectedTime = (finalHours < 10 ? "0" : "") + finalHours + ":" + (finalMins < 10 ? "0" : "") + finalMins;
+        const val = document.getElementById('erfurt').value;
+        showFb('fb3.1', val === expectedTime, val === expectedTime ? "Richtig!" : "Falsch berechnet.");
+updateProgressUI();
+    }
+
+
+
+    function checkTheory() {
+        const val = document.getElementById('theory').value.toLowerCase();
+        // Definition notwendiger Keywords für Momentan- und Durchschnittsgeschwindigkeit [6]
+        const kwM = ['zeitpunkt', 'tacho', 'moment', 'jetzt'];
+        const kwD = ['gesamt', 'mittelwert', 'durchschnitt', 'zeitspanne'];
+
+        const hasM = kwM.some(k => val.includes(k));
+        const hasD = kwD.some(k => val.includes(k));
+
+        if (hasM && hasD) {
+            task4Correct = true;
+            showFb('fb4', true, "Sehr gut! Du hast den punktuellen Charakter der Momentangeschwindigkeit und den Mittelwert der Durchschnittsgeschwindigkeit korrekt unterschieden.");
+        } else {
+            showFb('fb4', false, "Deine Erklärung ist noch unvollständig.");
+        }
+updateProgressUI();
+    }
+
+// Weiter zur nächsten Seite
+function nextPage() { if (!(task1Correct && task2Correct && task3Correct && task4Correct)) { alert('Bitte bearbeite zuerst alle Aufgaben korrekt.'); return; }
+// Fortschritt speichern
+localStorage.setItem('seite1_abgeschlossen', 'true');
+// Zielseite anpassen
+window.location.href = 'Abschnitt3.html'; }
+</script>
+</body>
+</html>
