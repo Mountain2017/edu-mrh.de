@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+<!--<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script> -->
+<!-- MathJax für die ordentliche Anzeige von Formeln -->
+<script id="MathJax-script" async src="https://edu-mrh.de/embed/MathJax/es5/tex-mml-chtml.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lineare Bewegungen: ICE München-Berlin - Physik - edu-mrh.de</title>
+    <meta name="description" content="Interaktive Analyse einer ICE-Fahrt. Berechne v0 und erstelle deine eigene Bewegungsgleichung basierend auf deinen Messwerten.">
+    <style>
+        :root { --primary: #c00; --bg: #f4f4f4; --card: #fff; --text: #333; --ok: #28a745; --fail: #dc3545; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; margin: 0; }
+        header { background: var(--primary); color: white; padding: 2rem; text-align: center; }
+        main { max-width: 850px; margin: 2rem auto; padding: 0 1rem; }
+        .card { background: var(--card); padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 2rem; }
+        .context-story { border-left: 5px solid var(--primary); padding-left: 1rem; font-style: italic; background: #fffafa; padding: 1rem; }
+        h2 { color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 0.5rem; }
+        .diagram-container { text-align: center; margin: 1.5rem 0; }
+        .diagram-container img { max-width: 100%; height: auto; border-radius: 5px; border: 1px solid #ddd; }
+        .input-box { margin: 1.2rem 0; }
+        label { display: block; font-weight: bold; margin-bottom: 0.4rem; }
+        input, textarea { width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1rem; }
+        button { background: var(--primary); color: white; border: none; padding: 0.8rem 1.4rem; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 0.6rem; }
+        .feedback { margin-top: 1rem; padding: 1rem; border-radius: 4px; display: none; font-weight: bold; }
+        .correct { background: #d4edda; color: #155724; }
+        .incorrect { background: #f8d7da; color: #721c24; }
+        footer { text-align: center; padding: 2rem; color: #777; font-size: 0.9rem; }
+#nextBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+    </style>
+</head>
+<!--
+Thema: Mechanik (Verschiedene Situationen auf der Klassenfahrt in Berlin)
+Jahrgangsstufe: 10. Klasse (laut Text 10C)
+Fachbereich: Physik
+Geprüftes Wissen
+-->
+
+ <!-- Es fehlt noch der Button zum weiterklicken und der dazugehörige check-->
+
+<body>
+
+<header>
+    <h1>In Berlin...</h1>
+    <p>...wird man mit den verschiedensten Situationen konfrontiert</p>
+</header>
+
+<main>
+    <!-- Teil 1: Zugunglück -->
+            <h2>Aufgabe 1: Zugunglück?</h2>
+    <section class="card">
+        <div class="context-story">
+<p style="text-align: justify;"> Kurz vor Berlin kommt es zu einer Störung im Bahnverkehr. Der ICE fährt auf einem Streckenabschnitt, auf dem normalerweise nur Züge in einer Richtung verkehren.
+Aufgrund einer Verspätung wurde jedoch ein Regionalzug irrtümlich auf dasselbe Gleis geschickt. Beide Züge fahren nun aufeinander zu. Das t-s-Diagramm, welches die Bewegung der beiden Züge beschreibt, sieht aus wie folgt: </p>
+	<div class="diagram-container">
+            <img src="ICE_Regionalzug.png" alt="Ohne das Bild ist die gesamte Aufgabe nicht machbar">
+    </div>
+
+	</div>
+    </section>
+    <section class="card">
+<h1>Bearbeite mithilfe des Diagramms die folgenden Aufgaben:</h1>
+        <div class="question-group">
+            <label for="crash-time">a) Gib die Zeitdauer in Minuten an, nach der sich die beiden Züge begegnen würden.</label>
+            <input type="text" id="crash-time" placeholder="Ganze Zahl">
+            <button onclick="checkVal('crash-time', 'fb1', 7, 'min')">Prüfen</button>
+            <div id="fb1" class="feedback"></div>
+        </div>
+
+        <div class="question-group">
+            <label for="crash-loc">b) Gib an, an welchem Ort (Streckenkilometer) die Begegnung stattfinden würde.</label>
+            <input type="text" id="crash-loc" placeholder="Ganze Zahl">
+            <button onclick="checkVal('crash-loc', 'fb2', 14, 'km')">Prüfen</button>
+            <div id="fb2" class="feedback"></div>
+        </div>
+        <p>Die nächste Weiche, über die der Regionalzug auf ein anderes Gleis geleitet werden kann, befindet sich bei Streckenkilometer 20.</p>
+
+        <div class="question-group">
+            <label for="switch-time">c) Gib an, nach wie vielen Minuten der Regionalzug die Weiche erreicht.</label>
+            <input type="text" id="switch-time" placeholder="1,2">
+            <button onclick="checkVal('switch-time', 'fb3', 4.5, 'min')">Prüfen</button>
+            <div id="fb3" class="feedback"></div>
+        </div>
+
+        <div class="question-group">
+            <label for="buffer">d) Gib an, wie viel Zeit der Gleisaufsicht vom Startzeitpunkt bis zum Erreichen der Weiche bleibt, um die Umleitung einzuleiten?</label>
+            <input type="text" id="buffer" placeholder="1,2">
+            <button onclick="checkVal('buffer', 'fb4',4.5, 'min')">Prüfen</button>
+            <div id="fb4" class="feedback"></div>
+        </div>
+
+        <div class="input-box">
+            <label for="theory1">e) Begründe, ob diese Zeit auch ausreicht, wenn die Gleisaufsicht mindestens fünf Minuten Vorlaufzeit benötigt</label>
+            <textarea id="theory1" rows="4" placeholder="Hier Erklärung einfügen."></textarea>
+            <button onclick="checkTheory1()">Text prüfen</button>
+            <div id="fb9" class="feedback"></div>
+        </div>
+
+    </section>
+
+    <!-- Teil 2: Straßenüberquerung -->
+        <h2>Aufgabe 2: Straßenüberquerung</h2>
+    <section class="card">
+<div style="display: flex; align-items: center; gap: 20px;">
+    <img src="Lenny_und_Nina.jpg" alt="Bild" style="width: 200px; height: auto;">
+    <div>
+        <p style="text-align: justify;">
+Nach einer langen Zugfahrt kommt die Klasse 10C am Berliner Hauptbahnhof an. Gemeinsam mit den Lehrkräften machen sie sich auf den Weg zur Unterkunft. Die Stimmung ist gut, alle sind gespannt auf die kommenden Tage in Berlin.
+Als die Gruppe an einer großen Kreuzung in der Nähe des Hauptbahnhofs ankommt, zeigt die Fußgängerampel rot. Die Schülerinnen und Schüler bleiben stehen und warten auf Grün – mit zwei Ausnahmen: Lenny Lichtignor und Nina Nichtstopp haben keine Lust zu warten.
+„Ach komm, hier kennt uns doch keiner!“, sagt Lenny grinsend.
+„Und die Unterkunft ist gleich da vorne“, ergänzt Nina.
+Die beiden betreten die Fahrbahn, obwohl die Ampel noch rot zeigt. In diesem Moment bemerken sie ein Auto, das sie zuvor übersehen haben. Gleichzeitig erkennt der Autofahrer die beiden auf der Straße und beginnt dann zu bremsen.
+        </p>
+    </div>
+</div>
+</section>
+    <section class="card">
+    <p style="text-align: justify;">
+        Der Autofahrer fährt mit einer Geschwindigkeit von
+        \(v = 50\,\frac{\mathrm{km}}{\mathrm{h}}\).
+        Als er Lenny und Nina sieht, befindet sich sein Auto noch
+        \(s = 35\,\mathrm{m}\) von ihnen entfernt.
+        Seine Reaktionszeit beträgt
+        \(t_R = 0{,}80\,\mathrm{s}\).
+        Das Auto kann mit einer konstanten Bremsverzögerung von
+        \(a = -7{,}0\,\frac{\mathrm{m}}{\mathrm{s}^2}\)
+        abbremsen.
+    </p>
+
+    <p style="text-align: justify; font-style: italic; margin-top: 1em;">
+        Hinweis: Der gesamte Anhalteweg eines Fahrzeugs setzt sich aus zwei Teilen
+        zusammen: dem Weg, der während der Reaktionszeit zurückgelegt wird,
+        und dem Bremsweg, der während des Abbremsens bis zum Stillstand entsteht. Hier wird die Reaktionszeit nicht berücksichtigt.
+    </p>
+        <div class="question-group">
+            <label>a) Berechne den Weg, den der Autofahrer während der Reaktionszeit zurücklegt.:</label>
+            <input type="text" id="react-dist" placeholder="in m und auf gültige Ziffern gerundet">
+            <button onclick="checkVal('react-dist', 'fb5', 11, 'm')">Prüfen</button>
+            <div id="fb5" class="feedback"></div>
+        </div>
+
+        <div class="input-box">
+			<label for="t_B">
+  			  Bestimme mithilfe der Gleichung \(v(t)=v_0+a_0t\) die Zeit \(t_B\) in s, die für den Bremsvorgang von \(v = 50\,\frac{\mathrm{km}}{\mathrm{h}}\) bis zum Stillstand benötigt wird.
+			</label>
+            <input type="text" id="t_B" placeholder="Zeit in s">
+            <button onclick="savet_B()">Wert überprüfen</button>
+            <div id="fb6" class="feedback"></div>
+        </div>
+
+
+        <div class="input-box">
+            <label for="formula">c)	Berechne mithilfe von Teilaufgabe b) den Bremsweg in Metern.</label>
+            <input type="text" id="brake-dist" placeholder="Zahl (auf zwei Nachkommastellen)">
+            <button onclick="checkFormula()">Formel prüfen</button>
+            <div id="fb7" class="feedback"></div>
+        </div>
+
+        <div class="question-group">
+            <label for="final-verdict">d)	Begründe, ob der Autofahrer rechtzeitig anhalten kann, bevor er Lenny und Nina erreicht.</label>
+   			<p style="text-align: justify; font-style: italic; margin-top: 1em;">
+      		Hinweis: Teilaufgabe d) kann nur bearbeitet werden, wenn Teilaufgabe b) und c) richtig gelöst wurden
+    		</p>
+            <textarea id="final-verdict" rows="3" placeholder="Deine Begründung..."></textarea>
+            <button onclick="checkTheory()">Begründung prüfen</button>
+            <div id="fb8" class="feedback"></div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>&copy; 2026 edu-mrh.de &ndash; Physik Interaktiv</p>
+</footer>
+
+<script>
+    function showFb(id, ok, msg) {
+        const el = document.getElementById(id);
+        el.style.display = "block";
+        el.className = "feedback " + (ok ? "correct" : "incorrect");
+        el.innerHTML = msg;
+        if (window.MathJax) { MathJax.typeset(); }
+    }
+
+function savet_B() {
+    const val = parseFloat(
+        document.getElementById('t_B').value.replace(',', '.')
+    );
+    if (!isNaN(val) && Math.abs(val - 1.98) < 0.05) {
+        showFb('fb6', true,
+            "Richtig! Die Bremszeit beträgt etwa 1,98 s.");
+    } else {
+        showFb('fb6', false,
+            "Falscher Wert (" + val + ") gespeichert. Nutze ihn für die folgenden Aufgaben.");
+    }
+    updateProgressUI();
+}
+
+
+function checkFormula() {
+
+    const brakeDist = parseFloat(
+        document.getElementById('brake-dist').value.replace(',', '.')
+    );
+
+    const t_B = parseFloat(
+        document.getElementById('t_B').value.replace(',', '.')
+    );
+
+    if (isNaN(brakeDist) || isNaN(t_B)) {
+        showFb('fb7', false,
+            "Bitte zuerst eine Bremszeit in Teilaufgabe b) eingeben.");
+        return;
+    }
+
+    // Anfangsgeschwindigkeit 50 km/h in m/s
+    const v0 = 50 / 3.6;
+
+    // Bremsweg mit der vom Schüler eingegebenen Bremszeit
+    const expected = (v0 / 2) * t_B;
+
+    if (Math.abs(brakeDist - expected) < 0.2) {
+        showFb('fb7', true,
+            "Richtig! Der Bremsweg beträgt etwa "
+            + expected.toFixed(2).replace('.', ',')
+            + " m.");
+    } else {
+        showFb('fb7', false,
+            "Nicht ganz korrekt. Nutze die Bremszeit aus Teilaufgabe b).");
+    }
+
+    updateProgressUI();
+}
+
+    function checkVal(inputId, fbId, correct, unit) {
+        const val = parseFloat(document.getElementById(inputId).value.replace(',', '.'));
+        // Erlaubt eine kleine Abweichung durch Rundung
+        if (!isNaN(val) && Math.abs(val - correct) < 0.1) {
+            showFb(fbId, true, "Richtig! Das Ergebnis ist ca. " + correct + " " + unit + ".");
+        } else {
+            showFb(fbId, false, "Nicht ganz korrekt. Überprüfe deine Rechnung.");
+        }
+    }
+
+function checkTheory1() {
+    const val = document.getElementById('theory1').value.toLowerCase();
+
+    const kwW = ['nein', 'falsch', 'nicht'];
+    const kwD = ['30 sekunden', '30s'];
+
+    const hasW = kwW.some(k => val.includes(k));
+    const hasD = kwD.some(k => val.includes(k));
+
+    if (hasW && hasD) {
+        task4Correct = true;
+        showFb('fb9', true,
+            "Sehr gut! Du bist zu einem begründeten Urteil gekommen.");
+    } else if (hasW && !hasD) {
+        showFb('fb9', false,
+            "Es fehlt noch eine Begründung");
+    } else {
+        showFb('fb9', false,
+            "Deine Erklärung ist noch unvollständig.");
+    }
+    updateProgressUI();
+}
+
+
+
+
+function checkTheory() {
+    const text = document.getElementById('final-verdict').value.trim();
+    const val = text.toLowerCase();
+
+    // Wörter zählen
+    const wordCount = text.split(/\s+/).filter(word => word.length > 0).length;
+
+    // Keywords: Anhalteweg (ca. 24,9m) < 35m
+    const keywords = ['anhalteweg', 'reaktionsweg', 'bremsweg', 'kleiner', '35', 'rechtzeitig'];
+    const matches = keywords.filter(k => val.includes(k)).length;
+
+    if (matches >= 3) {
+        if (wordCount >= 10) {
+            showFb(
+                'fb8',
+                true,
+                "Sehr gute Begründung! Der gesamte Anhalteweg (\\( \\approx 24,9\\,m \\)) ist kleiner als die 35 m Distanz."
+            );
+        } else {
+            showFb(
+                'fb8',
+                false,
+                "Bitte formuliere deine Antwort als vollständigen deutschen Satz."
+            );
+        }
+    } else {
+        showFb(
+            'fb8',
+            false,
+            "Berechne den gesamten Anhalteweg (Reaktionsweg + Bremsweg) und vergleiche ihn mit den 35 m."
+        );
+    }
+}
+</script>
+
+</body>
+</html>

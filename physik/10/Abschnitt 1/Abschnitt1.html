@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+<!-- <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script> -->
+<!-- MathJax für die ordentliche Anzeige von Formeln -->
+<script id="MathJax-script" async src="https://edu-mrh.de/embed/MathJax/es5/tex-mml-chtml.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lineare Bewegungen: ICE München-Berlin - Physik - edu-mrh.de</title>
+    <meta name="description" content="Interaktive Analyse einer ICE-Fahrt. Berechne v0 und erstelle deine eigene Bewegungsgleichung basierend auf deinen Messwerten.">
+    <style>
+        :root { --primary: #c00; --bg: #f4f4f4; --card: #fff; --text: #333; --ok: #28a745; --fail: #dc3545; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; margin: 0; }
+        header { background: var(--primary); color: white; padding: 2rem; text-align: center; }
+        main { max-width: 850px; margin: 2rem auto; padding: 0 1rem; }
+        .card { background: var(--card); padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 2rem; }
+        .context-story { border-left: 5px solid var(--primary); padding-left: 1rem; font-style: italic; background: #fffafa; padding: 1rem; }
+        h2 { color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 0.5rem; }
+        .diagram-container { text-align: center; margin: 1.5rem 0; }
+        .diagram-container img { max-width: 100%; height: auto; border-radius: 5px; border: 1px solid #ddd; }
+        .input-box { margin: 1.2rem 0; }
+        label { display: block; font-weight: bold; margin-bottom: 0.4rem; }
+        input, textarea { width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1rem; }
+        button { background: var(--primary); color: white; border: none; padding: 0.8rem 1.4rem; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 0.6rem; }
+        .feedback { margin-top: 1rem; padding: 1rem; border-radius: 4px; display: none; font-weight: bold; }
+        .correct { background: #d4edda; color: #155724; }
+        .incorrect { background: #f8d7da; color: #721c24; }
+        footer { text-align: center; padding: 2rem; color: #777; font-size: 0.9rem; }
+#nextBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+<!--
+Thema: Beschleunigung, Kraft und Trägheit (S-Bahn Klassenfahrt)
+Jahrgangsstufe: 10. Klasse (laut Text 10C)
+Fachbereich: Physik
+Geprüftes Wissen
+-->
+
+<header>
+    <h1>Abenteuer Klassenfahrt: Physik in der S-Bahn</h1>
+    <p>Begleite die 10C auf ihrem Weg nach Berlin</p>
+</header>
+
+<main>
+    <section class="card">
+        <div class="context-story">
+Die Klasse 10C steht früh am Morgen gut gelaunt am S-Bahnsteig. Heute geht es auf Klassenfahrt nach Berlin! Die Rucksäcke sind gepackt, die Snacks verteilt und sogar der Klassenclown hat ausnahmsweise seinen Wecker gehört. Unglaublich, aber wahr: Alle sind pünktlich. Kein Sprint über den Bahnsteig, kein „Wartet auf mich!“, kein hektisches Hinterherwinken.
+</div>
+<div class="context-story">
+Während einige noch diskutieren, wer die besten Snacks dabeihat, schaut Frau Sonnenschein auf die Uhr. „Perfektes Timing“, sagt sie zufrieden. Genau in diesem Moment rollt die S-Bahn ein.
+Die Türen öffnen sich und die ganze Klasse steigt ein. Die Stimmung ist großartig – schließlich beginnt jetzt das Abenteuer Klassenfahrt!
+</div>
+        <div class="diagram-container">
+            <img src="Bild0.jpg" alt="Zeit-Weg-Diagramm der ICE-Fahrt">
+        </div>
+    </section>
+    <!-- Teilaufgabe a) -->
+    <section class="card">
+        <h2>a) Die Fahrt geht los</h2>
+        <div class="story-context">
+Ein leises Piepen ertönt, die Türen schließen sich und die S-Bahn setzt sich langsam in Bewegung. Erst langsam… dann immer schneller. „Merkt ihr das?“, fragt Herr Fröhlich. „Die S-Bahn beschleunigt gerade.“ David Dynamik fragt: „Wie stark beschleunigt denn die S-Bahn beim Losfahren?“
+</div>
+        <p><strong>Aufgabe:</strong> Berechne die Beschleunigung der S-Bahn, wenn diese innerhalb von <strong>42 Sekunden</strong> auf eine Geschwindigkeit von <strong>140 \(\frac{km}{h}\)</strong> beschleunigt.</p>
+
+        <div class="input-group">
+            <label for="accel">Beschleunigung <i>a</i> (in \(\frac{m}{s}\)):</label>
+            <input type="text" id="accel" placeholder="Zahl (z.B. 0,50)">
+        </div>
+        <button onclick="checkAccel()">Prüfen</button>
+        <div id="fb-accel" class="feedback"></div>
+    </section>
+
+    <!-- Teilaufgabe b) -->
+    <section class="card">
+        <h2>b) Das Anfahren erklärt</h2>
+    <section class="card">
+Herr Fröhlich schaut in die Runde. „Also“ sagt er schmunzelnd, „ihr habt gerade berechnet, wie stark unsere S-Bahn beschleunigt. Sehr gut!“ Konrad Kraft nickt stolz. „Klar, das war easy. Geschwindigkeitsänderung durch die dafür benötigte Zeit – zack, Beschleunigung!“ Frau Sonnenschein hebt eine Augenbraue. „Ganz so einfach ist Physik aber selten.“ Konrad Kraft meldet sich: „Wenn wir wissen, wie stark die S-Bahn beschleunigt, wissen wir ja doch noch nicht, warum sie beschleunigt.“ Herr Fröhlich nickt. „Ganz genau!“ Er zeigt aus dem Fenster auf die vorbeiziehenden Gleise. „Die S-Bahn beschleunigt nicht von allein. Dafür ist eine Kraft nötig, welche von den Motoren des S-Bahn-Zuges aufgebracht werden muss, um den ganzen Zug in Bewegung zu versetzen.“ Konrad Kraft runzelt die Stirn. „Aber woher weiß man, wie groß diese Kraft ist?“
+    </section>
+        <p><strong>Aufgabe:</strong> Erläutere, wie man die beschleunigende Kraft ermitteln kann. Nenne relevante Größen und Gesetzmäßigkeiten.</p>
+
+        <div class="input-group">
+            <label for="force">Deine Erläuterung:</label>
+            <textarea id="force" rows="5" placeholder="Beschreibe das Vorgehen und die Gesetze..."></textarea>
+        </div>
+        <button onclick="checkForce()">Text prüfen</button>
+        <div id="fb-force" class="feedback"></div>
+    </section>
+
+    <!-- Teilaufgabe c) -->
+    <section class="card">
+        <h2>c) Von der Bremse überrascht</h2>
+    <section class="card">
+Die S-Bahn fährt nun konstant mit 140 \(\frac{km}{h}\). Die Klasse steht gut gelaunt in der S-Bahn auf dem Weg zum Münchner Hauptbahnhof. Die Schülerinnen und Schüler halten sich an den silbernen Stangen fest. Nur Lars Lockerstand meint sich nicht festhalten zu müssen. „Festhalten ist doch was für Anfänger“, sagt er grinsend. Seine Mitschülerin Mia Mitgriff hebt eine Augenbraue: „Lars… wir fahren gerade S-Bahn, halte dich lieber fest. Die bremst auch mal.“ Lars winkt ab. „Ach was. Ich stehe hier ganz stabil.“ In diesem Moment fährt die S-Bahn in die nächste Station ein und beginnt zu bremsen. Plötzlich kippt Lars nach vorne. Seine Augen werden groß „WOAH—!“, ruft er. Mit einem schnellen Stolperschritt kann er sich gerade noch retten und bleibt wieder stehen. Mia zeigt auf die Stange neben Lars. „Pro-Tipp: Die sind nicht nur zur Deko da.“ Lars schaut kurz auf die Stange, dann auf seine Mitschüler und greift schließlich doch danach. Mia grinst zufrieden.</section>
+        <img src="Bild1.jpg" alt="Umfallender Schüler" style="display: block; margin: 0 auto;">
+        <p><strong>Doch jetzt stellt sich eine wichtige Frage:</strong> Warum ist Lars beim Bremsen nach vorne gekippt? Erkläre es ihm unter Verwendung von physikalischer Fachsprache.</p>
+
+        <div class="input-group">
+            <label for="inertia">Deine Erklärung:</label>
+            <textarea id="inertia" rows="5" placeholder="Verwende Fachbegriffe..."></textarea>
+        </div>
+        <button onclick="checkInertia()">Erklärung prüfen</button>
+        <div id="fb-inertia" class="feedback"></div>
+    </section>
+
+<!-- Weiter-Button -->
+<div style="text-align:center; margin: 2rem 0;">
+    <button id="nextBtn" disabled onclick="nextPage()">
+        Weiter zur nächsten Seite
+    </button>
+</div>
+
+</main>
+
+<footer>
+    <p>&copy; 2026 edu-mrh.de &ndash; Physik interaktiv</p>
+</footer>
+
+
+
+<script>
+// Status der Aufgaben
+let task1Correct = false;
+let task2Correct = false;
+let task3Correct = false;
+
+// Weiter-Button aktualisieren
+function updateNextButton() { const allCorrect = task1Correct && task2Correct && task3Correct; document.getElementById('nextBtn').disabled = !allCorrect; }
+    function showFeedback(id, isCorrect, text) {
+        const fb = document.getElementById(id);
+        fb.style.display = 'block';
+        fb.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+        fb.innerText = text;
+    }
+
+    // Teilaufgabe a) Validierung
+    // Berechnung: 140 km/h / 3.6 = 38.89 m/s. a = 38.89 / 42 = 0.9259... m/s^2
+    function checkAccel() {
+        const val = document.getElementById('accel').value.trim().replace(',', '.');
+        const numVal = parseFloat(val);
+
+        if (!isNaN(numVal) && numVal >= 0.92 && numVal <= 0.93) {
+            task1Correct = true;
+            showFeedback('fb-accel', true, 'Richtig! $$a = 0,93 \\frac{m}{s^2}$$');
+                // MathJax neu rendern
+    MathJax.typesetPromise();
+        } else {
+            showFeedback('fb-accel', false, 'Nicht ganz korrekt. Denke an die Umrechnung von $$\\frac{km}{h} in \\frac{m}{s}$$ (durch 3,6 teilen) vor der Berechnung von a in $$\\frac{m}{s^2}$$');
+                // MathJax neu rendern
+    MathJax.typesetPromise();
+    }
+updateNextButton();
+}
+
+    // Teilaufgabe b) Keyword-Check
+    function checkForce() {
+        const val = document.getElementById('force').value.toLowerCase();
+        const keywords = ['masse', 'beschleunigung', 'newton', 'f = m * a', 'grundgesetz'];
+        const matches = keywords.filter(k => val.includes(k));
+
+        if (matches.length >= 3) {
+      		task2Correct = true;
+            showFeedback('fb-force', true, 'Sehr gut! Du hast die wichtigen Größen (Masse, Beschleunigung) und das 2. Newtonsche Gesetz (F = m * a) korrekt benannt.');
+        } else {
+            showFeedback('fb-force', false, 'Deine Antwort ist noch unvollständig. Erwähne die Masse, die Beschleunigung und das 2. Newtonsche Gesetz.');
+        }
+updateNextButton();
+}
+
+    // Teilaufgabe c) Keyword-Check
+    function checkInertia() {
+        const val = document.getElementById('inertia').value.toLowerCase();
+        const wordCount = val.split(/\s+/).filter(word => word.length > 0).length;
+        const keywords = ['trägheit', 'bewegungszustand', 'beibehalten', 'kraftfrei', 'masse'];
+        const matches = keywords.filter(k => val.includes(k));
+
+    if (wordCount < 10 && matches.length >= 2 && val.includes('trägheit')) {
+        showFeedback(
+            'fb-inertia',
+            false,
+            'Bitte formuliere deine Antwort als vollständigen deutschen Satz.'
+        );
+    } else if (matches.length >= 2 && val.includes('trägheit')) {
+        task3Correct = true;
+        showFeedback(
+            'fb-inertia',
+            true,
+            'Korrekt! Das Trägheitsprinzip besagt, dass ein Körper seinen Bewegungszustand beibehalten möchte, solange keine äußere Kraft wirkt.'
+        );
+    } else {
+        showFeedback(
+            'fb-inertia',
+            false,
+            'Versuche, den Begriff Trägheit und das Prinzip des Beibehalten des Bewegungszustandes einzubauen.'
+        );
+    }
+updateNextButton();
+    // MathJax neu rendern
+    MathJax.typesetPromise();
+
+}
+// Weiter zur nächsten Seite
+function nextPage() { if (!(task1Correct && task2Correct && task3Correct)) { alert('Bitte bearbeite zuerst alle Aufgaben korrekt.'); return; }
+// Fortschritt speichern
+localStorage.setItem('seite1_abgeschlossen', 'true');
+// Zielseite anpassen
+window.location.href = 'Abschnitt2.html'; }
+</script>
+
+</body>
+</html>
