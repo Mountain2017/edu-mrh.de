@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narrative: How Facts Become Stories - Englisch - edu-mrh.de</title>
+    <meta name="description" content="Selbstlernpfad zur Lens 'Narrative' im Rahmen der Media-Einheit, Q12 Englisch, anhand von The Hunger Games">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+
+    <!-- CSS Framework -->
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+
+    <!-- JavaScript Framework -->
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>-->
+    <script src="https://edu-mrh.de/embed/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://edu-mrh.de/embed/jspdf/4.2.1/jspdf.umd.min.js"></script>
+
+    <style>
+        /* ============================================== */
+        /* Page-specific additions (kept inside the existing
+           design system: same vars, same component language) */
+        /* ============================================== */
+
+        /* Lens tag, mirrors chapter-number style but distinct color so
+           it reads as "this is the card you got in class" */
+        .lens-tag {
+            display: inline-block;
+            background: var(--secondary-color);
+            color: var(--white);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius-xl);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+        }
+
+        /* Timer / minutes-budget chip used on the intro section */
+        .time-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            background: var(--gray-lighter);
+            color: var(--dark);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* Step list for the landing page ("what you'll do today") */
+        .step-list {
+            list-style: none;
+            padding-left: 0;
+            counter-reset: step-counter;
+        }
+
+        .step-list li {
+            counter-increment: step-counter;
+            display: flex;
+            gap: var(--spacing-lg);
+            align-items: flex-start;
+            margin: 0 0 var(--spacing-lg) 0;
+            margin-left: 0;
+        }
+
+        .step-list li::before {
+            content: counter(step-counter);
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            background: var(--primary-color);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .step-list strong {
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .step-list span {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        /* Funnel graphic: raw events -> edited story */
+        .funnel-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+            margin: var(--spacing-xl) 0;
+        }
+
+        .funnel-stage {
+            background: var(--gray-lighter);
+            border-radius: var(--radius);
+            padding: var(--spacing-md) var(--spacing-lg);
+            text-align: center;
+            min-width: 110px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .funnel-stage.raw {
+            background: var(--gray-lighter);
+        }
+
+        .funnel-stage.story {
+            background: var(--primary-light);
+            color: var(--white);
+        }
+
+        .funnel-arrow {
+            font-size: 1.5rem;
+            color: var(--gray-light);
+        }
+
+        .funnel-ops {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 0.75rem;
+            color: var(--gray);
+            text-align: left;
+        }
+
+        /* Matching / self-check component */
+        .match-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md) var(--spacing-xl);
+            margin: var(--spacing-lg) 0;
+        }
+
+        @media (max-width: 768px) {
+            .match-grid { grid-template-columns: 1fr; }
+        }
+
+        .match-item select {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--radius);
+            border: 2px solid var(--gray-light);
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--dark);
+            background: var(--white);
+        }
+
+        .match-item {
+            background: var(--gray-lighter);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius);
+        }
+
+        .match-item label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .match-item.correct {
+            background: #ecfdf5;
+            border: 2px solid var(--success-color);
+        }
+
+        .match-item.incorrect {
+            background: #fef2f2;
+            border: 2px solid var(--danger-color);
+        }
+
+        .check-feedback {
+            margin-top: var(--spacing-lg);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius);
+            font-weight: 600;
+            display: none;
+        }
+
+        .check-feedback.show {
+            display: block;
+        }
+
+        .check-feedback.all-correct {
+            background: #ecfdf5;
+            color: var(--success-dark);
+            border: 2px solid var(--success-color);
+        }
+
+        .check-feedback.some-wrong {
+            background: #fef3c7;
+            color: var(--warning-dark);
+            border: 2px solid var(--warning-color);
+        }
+
+        /* Outlet-leaning reference cards */
+        .outlet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: var(--spacing-lg);
+            margin: var(--spacing-lg) 0;
+        }
+
+        .outlet-card {
+            background: var(--gray-lighter);
+            border-radius: var(--radius);
+            padding: var(--spacing-lg);
+        }
+
+        .outlet-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: var(--spacing-sm);
+            color: var(--dark);
+        }
+
+        .outlet-card p {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 0;
+        }
+
+        .outlet-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .outlet-tag.tone-sober { background: #dbeafe; color: var(--primary-dark); }
+        .outlet-tag.tone-charged { background: #fee2e2; color: var(--danger-dark); }
+        .outlet-tag.tone-human { background: #fef3c7; color: var(--warning-dark); }
+        .outlet-tag.tone-data { background: #d1fae5; color: var(--success-dark); }
+
+        /* Criteria checklist for the open task */
+        .criteria-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .criteria-list li {
+            margin-left: 0;
+            padding: var(--spacing-sm) 0 var(--spacing-sm) var(--spacing-xl);
+            position: relative;
+            color: var(--gray);
+        }
+
+        .criteria-list li::before {
+            content: "☐";
+            position: absolute;
+            left: 0;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+        }
+
+        /* Pointer reveal (open task self-check) */
+        .pointer-toggle {
+            margin-top: var(--spacing-md);
+        }
+
+        .pointer-box {
+            display: none;
+            margin-top: var(--spacing-md);
+        }
+
+        .pointer-box.show {
+            display: block;
+        }
+
+        /* Submission form */
+        .submit-form .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .submit-form label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--dark);
+        }
+
+        .submit-form input[type="text"],
+        .submit-form textarea {
+            width: 100%;
+            padding: var(--spacing-md);
+            border-radius: var(--radius);
+            border: 2px solid var(--gray-light);
+            font-family: inherit;
+            font-size: 1rem;
+            color: var(--dark);
+            resize: vertical;
+        }
+
+        .submit-form textarea {
+            min-height: 90px;
+        }
+
+        .submit-confirmation {
+            display: none;
+            text-align: center;
+            padding: var(--spacing-xl);
+        }
+
+        .submit-confirmation.show {
+            display: block;
+        }
+
+        .submit-confirmation .big-check {
+            font-size: 3rem;
+            color: var(--success-color);
+            margin-bottom: var(--spacing-md);
+        }
+
+        /* Early-finisher / forward-look chip row */
+        .option-row {
+            display: flex;
+            gap: var(--spacing-lg);
+            flex-wrap: wrap;
+        }
+
+        .option-row .feature {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        /* Supervisor note ribbon, only meaningful in print/teacher context but
+           kept visually quiet for students too */
+        .supervisor-note {
+            background: #fef3c7;
+            border: 2px dashed var(--warning-color);
+            border-radius: var(--radius);
+            padding: var(--spacing-md) var(--spacing-lg);
+            font-size: 0.85rem;
+            color: var(--warning-dark);
+            margin-bottom: var(--spacing-xl);
+        }
+    </style>
+</head>
+<body>
+<!--
+Fachbereich: Englisch
+Jahrgangsstufe: 12
+Thema: Media Unit - Lens 3: Narrative (independent self-study day, teacher absent)
+Erstellt: 2026-06-28
+Version: 1.0
+-->
+
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-brand">
+            <span class="icon">📚</span>
+            <a href="https://edu-mrh.de/">edu-mrh.de</a>
+        </div>
+        <div class="nav-links">
+            <a href="https://edu-mrh.de/englisch/englisch.html#jahrgang-12" class="btn btn-outline">Übersicht</a>
+            <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="main-content">
+    <div class="container">
+
+        <!-- ============================================== -->
+        <!-- INTRO -->
+        <!-- ============================================== -->
+        <section id="intro" class="content-section active">
+            <div class="hero">
+                <span class="lens-tag">🎬 Lens 3 · Narrative</span>
+                <h1 class="hero-title">How Facts Become Stories</h1>
+                <p class="hero-subtitle">Media turns facts into stories.</p>
+                <p class="hero-description">
+                    Your teacher isn't in class today, so this page runs the lesson. Work through it top to bottom —
+                    it's built to take about as long as a normal lesson, not longer.
+                </p>
+                <div class="hero-actions">
+                    <span class="time-chip">⏱️ About 50–60 minutes total</span>
+                </div>
+            </div>
+
+            <div class="chapter-header">
+                <span class="chapter-number">Today's Plan</span>
+                <h2>What You'll Do</h2>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <ul class="step-list">
+                        <li>
+                            <div>
+                                <strong>Quick recap</strong>
+                                <span>Where the story is right now (1 min read)</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <strong>New idea: Narrative</strong>
+                                <span>What it means for media to turn facts into stories (5 min read)</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <strong>See it in the book</strong>
+                                <span>How the Gamemakers do exactly this inside the arena (10 min read)</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <strong>Quick self-check</strong>
+                                <span>Match book examples to real techniques — instant feedback (5 min)</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <strong>Main task: framing comparison</strong>
+                                <span>Pick a real event, compare how two sources told it (20–25 min)</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <strong>Submit</strong>
+                                <span>One short form — this is what gets checked (5 min)</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <strong>Done early?</strong>
+                                <span>Optional reflection prompt, or just keep reading ahead</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="supervisor-note">
+                <strong>Note for whoever is supervising this lesson:</strong> no subject knowledge is needed —
+                everything students need is on this page. They should be working through the steps above in order.
+                The only thing that must happen is the form near the bottom of the page being filled in and
+                submitted before the lesson ends.
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('recap')">
+                    Start →
+                </button>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- RECAP -->
+        <!-- ============================================== -->
+        <section id="recap" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Step 1</span>
+                <h2>Where We Are in the Book</h2>
+            </div>
+
+            <div class="example-box info">
+                <h3>📖 Quick Recap</h3>
+                <div class="example-content">
+                    <p>
+                        Katniss has volunteered in place of her sister Prim. She and Peeta have been paraded
+                        through the Capitol, coached for the cameras, scored by the Gamemakers, and interviewed
+                        on live television — where Peeta's "star-crossed lovers" comment changed how the whole
+                        country sees them. The Games are about to begin.
+                    </p>
+                    <p>
+                        If you're behind on reading, that's all you need to follow today — you don't need every
+                        detail to get the idea this page is about.
+                    </p>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('intro')">
+                    ← Back
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('concept')">
+                    Continue →
+                </button>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- CONCEPT -->
+        <!-- ============================================== -->
+        <section id="concept" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Step 2</span>
+                <h2>What Does "Narrative" Mean Here?</h2>
+            </div>
+
+            <div class="example-box">
+                <h3>🎯 The Core Idea</h3>
+                <div class="example-content">
+                    <p>
+                        Media doesn't just record what happens. It builds events into a <strong>story</strong> —
+                        and every story needs choices about what goes in, what gets left out, and who looks like
+                        the hero.
+                    </p>
+                </div>
+            </div>
+
+            <div class="concept-box">
+                <h3>📚 Four Things Every Story-Builder Does</h3>
+
+                <div class="definition">
+                    <p><strong>Selection:</strong> deciding what to show at all. Out of everything that happened,
+                    only some of it makes it into the report, the broadcast, the post.</p>
+                </div>
+                <div class="definition">
+                    <p><strong>Emphasis:</strong> deciding what to make the centre of attention. The same event can
+                    be led with a different detail, a different image, a different headline.</p>
+                </div>
+                <div class="definition">
+                    <p><strong>Framing:</strong> deciding who looks like the hero, the villain, or the victim.
+                    The facts can stay identical while the framing changes the whole impression.</p>
+                </div>
+                <div class="definition">
+                    <p><strong>Omission:</strong> deciding what simply doesn't get mentioned. What's left out is
+                    often just as powerful as what's put in.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">From Raw Events to a Story</h3>
+                </div>
+                <div class="card-body">
+                    <p>Think of it as a funnel. The same raw material can come out as a very different story,
+                    depending on which choices get made along the way.</p>
+                    <div class="funnel-wrap">
+                        <div class="funnel-stage raw">Raw events</div>
+                        <span class="funnel-arrow">→</span>
+                        <div class="funnel-ops">
+                            <span>select</span>
+                            <span>emphasise</span>
+                            <span>frame</span>
+                            <span>omit</span>
+                        </div>
+                        <span class="funnel-arrow">→</span>
+                        <div class="funnel-stage story">A story</div>
+                    </div>
+                    <p style="margin-bottom:0;">
+                        Usually, you never see this happening — you just get the finished story. That's what makes
+                        the next part of this page unusual.
+                    </p>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('recap')">
+                    ← Back
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('gamemakers')">
+                    Continue →
+                </button>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- GAMEMAKERS (book lens) -->
+        <!-- ============================================== -->
+        <section id="gamemakers" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Step 3</span>
+                <h2>Seeing It in the Book</h2>
+            </div>
+
+            <div class="example-box info">
+                <h3>🎯 Why The Hunger Games Makes This Visible</h3>
+                <div class="example-content">
+                    <p>
+                        In most media, the four choices on the last page happen behind the scenes — an editor in
+                        an office, an algorithm you never see. <strong>The Hunger Games</strong> puts that process
+                        on screen, inside the story itself, as actual characters doing an actual job.
+                    </p>
+                </div>
+            </div>
+
+            <div class="example-box success">
+                <h3>🎮 The Gamemakers as Editors</h3>
+                <div class="example-content">
+                    <p>
+                        The Gamemakers don't just referee the arena — they actively reshape it to keep the
+                        broadcast compelling: setting fires to drive tributes together, releasing mutated
+                        creatures to manufacture danger, engineering the pace of events like a showrunner edits
+                        an episode. They are, quite literally, deciding what story the audience gets.
+                    </p>
+                </div>
+            </div>
+
+            <div class="example-box warning">
+                <h3>📹 The Broadcast Feed Is Curated, Not Raw</h3>
+                <div class="example-content">
+                    <p>
+                        Cameras don't follow everyone equally. They follow whoever is currently
+                        <strong>interesting</strong> — whoever is providing drama, romance, or conflict. Viewers
+                        at home never see "the arena as it is." They see a curated story built from selected
+                        footage. The same arena could be edited into a completely different story depending on
+                        whose feed gets airtime.
+                    </p>
+                </div>
+            </div>
+
+            <div class="example-box">
+                <h3>🎁 Narrative Has Stakes, Not Just Style</h3>
+                <div class="example-content">
+                    <p>
+                        Sponsor gifts are tied directly to which story a tribute is performing. The
+                        "star-crossed lovers" framing isn't just charming — it's the reason Peeta receives
+                        medicine he might not have gotten otherwise. In this world, controlling the narrative is
+                        a matter of survival, not just popularity.
+                    </p>
+                </div>
+            </div>
+
+            <div class="example-box danger">
+                <h3>🕊️ When a Moment Becomes a Symbol</h3>
+                <div class="example-content">
+                    <p>
+                        Rue's death, and the way District 11 reacts to it, shows the flip side: a single moment
+                        can be picked up, framed, and carried far beyond the original event — turning into
+                        something the people in power never intended and can't fully control.
+                    </p>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('concept')">
+                    ← Back
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('selfcheck')">
+                    Continue →
+                </button>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- SELF CHECK (auto-graded) -->
+        <!-- ============================================== -->
+        <section id="selfcheck" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Step 4</span>
+                <h2>Quick Self-Check</h2>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Match the Book Example to the Real Technique</h3>
+                </div>
+                <div class="card-body">
+                    <p>For each example from the book, choose which media technique it best matches. Then hit
+                    "Check answers."</p>
+
+                    <div class="match-grid" id="matchGrid">
+                        <div class="match-item" data-correct="emphasis">
+                            <label>1. The cameras follow Katniss and Peeta's romance far more than other tributes'
+                            stories.</label>
+                            <select>
+                                <option value="">— choose —</option>
+                                <option value="selection">Selection</option>
+                                <option value="emphasis">Emphasis</option>
+                                <option value="framing">Framing</option>
+                                <option value="omission">Omission</option>
+                            </select>
+                        </div>
+
+                        <div class="match-item" data-correct="omission">
+                            <label>2. The audience never sees what happens to most of the tributes who die
+                            off-camera, away from the action.</label>
+                            <select>
+                                <option value="">— choose —</option>
+                                <option value="selection">Selection</option>
+                                <option value="emphasis">Emphasis</option>
+                                <option value="framing">Framing</option>
+                                <option value="omission">Omission</option>
+                            </select>
+                        </div>
+
+                        <div class="match-item" data-correct="framing">
+                            <label>3. The Career tributes are shown as ruthless and intimidating, while Katniss is
+                            shown as an underdog.</label>
+                            <select>
+                                <option value="">— choose —</option>
+                                <option value="selection">Selection</option>
+                                <option value="emphasis">Emphasis</option>
+                                <option value="framing">Framing</option>
+                                <option value="omission">Omission</option>
+                            </select>
+                        </div>
+
+                        <div class="match-item" data-correct="selection">
+                            <label>4. The Gamemakers choose which of dozens of arena cameras actually makes it into
+                            the broadcast at any moment.</label>
+                            <select>
+                                <option value="">— choose —</option>
+                                <option value="selection">Selection</option>
+                                <option value="emphasis">Emphasis</option>
+                                <option value="framing">Framing</option>
+                                <option value="omission">Omission</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="checkMatches()">Check answers</button>
+                    <div class="check-feedback" id="matchFeedback"></div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('gamemakers')">
+                    ← Back
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('bridge')">
+                    Continue →
+                </button>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- BRIDGE -->
+        <!-- ============================================== -->
+        <section id="bridge" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Step 5</span>
+                <h2>Not Just a Fictional Games</h2>
+            </div>
+
+            <div class="info-box">
+                <h3>💡 The Same Thing Happens Outside the Book</h3>
+                <p>
+                    Selection, emphasis, framing, and omission aren't unique to a fictional arena. They happen to
+                    every real event you've ever heard about — on the news, on social media, anywhere a story
+                    gets told about something that happened. The next task asks you to go find it for yourself.
+                </p>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('selfcheck')">
+                    ← Back
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('task')">
+                    Continue to the Task →
+                </button>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- MAIN TASK -->
+        <!-- ============================================== -->
+        <section id="task" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Step 6 · Main Task</span>
+                <h2>Framing Comparison</h2>
+            </div>
+
+            <div class="example-box info">
+                <h3>🎯 Your Task</h3>
+                <div class="example-content">
+                    <p>
+                        Pick <strong>one real event</strong> from the last few weeks — something with actual news
+                        coverage, not something obscure. Then find how <strong>two different sources</strong>
+                        covered it, and compare how each one told the story.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Choosing Your Event</h3>
+                </div>
+                <div class="card-body">
+                    <p>Good choices are events that got covered by more than one type of outlet — a political
+                    decision, a protest, a court case, a strike, an election result, a major sports controversy.
+                    Avoid events so narrow that only one source covered them at all.</p>
+                </div>
+            </div>
+
+            <div class="strategy-grid">
+                <h3>🗞️ A Reference, Not a Requirement</h3>
+                <p style="margin-bottom: var(--spacing-lg); color: var(--gray);">
+                    You don't have to use these specific outlets — pick any two real sources covering your event.
+                    This is just to help you think about what kinds of differences to expect.
+                </p>
+                <div class="outlet-grid">
+                    <div class="outlet-card">
+                        <span class="outlet-tag tone-sober">Often sober / measured</span>
+                        <h4>Wire services & broadsheets</h4>
+                        <p>Tend toward neutral language, more context, less emotional framing. Still make
+                        selection and emphasis choices — just less obviously.</p>
+                    </div>
+                    <div class="outlet-card">
+                        <span class="outlet-tag tone-charged">Often charged / dramatic</span>
+                        <h4>Tabloids & opinion-heavy outlets</h4>
+                        <p>Tend toward strong headlines, clear heroes/villains, emotional language. Easier to
+                        spot framing in these.</p>
+                    </div>
+                    <div class="outlet-card">
+                        <span class="outlet-tag tone-human">Often human-interest led</span>
+                        <h4>Broadcast / human-interest coverage</h4>
+                        <p>Tends to lead with a person's story rather than the policy or numbers — emphasis
+                        shifted onto an individual.</p>
+                    </div>
+                    <div class="outlet-card">
+                        <span class="outlet-tag tone-data">Often data-led</span>
+                        <h4>Data journalism & explainers</h4>
+                        <p>Tends to foreground numbers, charts, timelines — selection here is about which
+                        statistics get shown.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ What to Compare</h4>
+                <ol>
+                    <li><strong>Headlines:</strong> Write down both headlines exactly. What's different?</li>
+                    <li><strong>Emphasis:</strong> What does each source lead with — what's the very first thing
+                    you're told?</li>
+                    <li><strong>Framing:</strong> If there's a person or group involved, who comes across as the
+                    hero, villain, or victim in each version — if anyone?</li>
+                    <li><strong>Omission:</strong> Is there something one source mentions that the other leaves
+                    out entirely?</li>
+                    <li><strong>Why might they differ?</strong> One sentence — think about audience, ownership,
+                    or the outlet's usual angle.</li>
+                </ol>
+            </div>
+
+            <div class="concept-box">
+                <h3>✅ What a Good Comparison Looks Like</h3>
+                <ul class="criteria-list">
+                    <li>You picked one specific real event with available coverage from more than one source.</li>
+                    <li>You quote or closely paraphrase what each source actually said — not what you assume they'd say.</li>
+                    <li>You name a real difference, not just "one was nicer than the other."</li>
+                    <li>Your answer to "why might they differ" goes beyond "because they're biased" — it names something specific about the source.</li>
+                </ul>
+
+                <div class="pointer-toggle">
+                    <button class="btn btn-outline btn-sm" onclick="togglePointers()">Not sure if you're on the right track? Show pointers</button>
+                </div>
+                <div class="pointer-box" id="pointerBox">
+                    <div class="highlight">
+                        <p><strong>If you're stuck on framing:</strong> look at the verbs. "Protesters clashed with
+                        police" and "police cracked down on protesters" describe the same event but assign action
+                        differently.</p>
+                        <p><strong>If you're stuck on omission:</strong> check whether one article includes a
+                        number, a quote, or a piece of context that the other simply never mentions.</p>
+                        <p><strong>If your two sources look identical:</strong> that's a real finding too — but
+                        check the headline and the opening line again before concluding that.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('bridge')">
+                    ← Back
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('submit')">
+                    Ready to Submit →
+                </button>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- SUBMIT -->
+        <!-- ============================================== -->
+        <section id="submit" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Step 7</span>
+                <h2>Submit Your Comparison</h2>
+            </div>
+
+            <div class="card" id="submitCard">
+                <div class="card-header">
+                    <h3 class="card-title">Your Framing Comparison</h3>
+                </div>
+                <div class="card-body">
+                    <form class="submit-form" id="submitForm" onsubmit="handleSubmit(event)">
+                        <div class="form-group">
+                            <label for="studentName">Your name</label>
+                            <input type="text" id="studentName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventChosen">The event you compared</label>
+                            <input type="text" id="eventChosen" required placeholder="e.g. the outcome of [event], [date]">
+                        </div>
+                        <div class="form-group">
+                            <label for="sourcesUsed">Your two sources (name + headline of each)</label>
+                            <textarea id="sourcesUsed" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="comparison">Your comparison (emphasis, framing, omission)</label>
+                            <textarea id="comparison" required style="min-height: 140px;"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="whyDiffer">Why might they differ?</label>
+                            <textarea id="whyDiffer" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>
+                    </form>
+
+                    <div class="submit-confirmation" id="submitConfirmation">
+                        <div class="big-check">✓</div>
+                        <h3>Submitted</h3>
+                        <p>Thanks — your comparison has been recorded for this session. You can move on to the
+                        last section now.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('task')">
+                    ← Back to Task
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('done')">
+                    Continue →
+                </button>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- DONE / EARLY FINISHERS / FORWARD LOOK -->
+        <!-- ============================================== -->
+        <section id="done" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Last Step</span>
+                <h2>Wrapping Up</h2>
+            </div>
+
+            <div class="example-box success">
+                <h3>🌟 Key Insight to Take With You</h3>
+                <div class="example-content">
+                    <p>
+                        Noticing that every story is built doesn't mean every story is a lie. The useful question
+                        isn't "can I trust media?" — it's <strong>"whose story is this, and what is it built to
+                        do?"</strong> Asking that question is the actual skill here, not blanket suspicion.
+                    </p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3>💭 If You've Got Time Left</h3>
+                <p>Optional — pick whichever appeals, or do both:</p>
+                <div class="option-row">
+                    <div class="feature">
+                        <div class="icon">📖</div>
+                        <div>
+                            <strong>Keep reading</strong>
+                            <p>Carry on with the book from wherever you are and read up to chapter 20.</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <div class="icon">✍️</div>
+                        <div>
+                            <strong>Reflect</strong>
+                            <p>Where else have you noticed selection, emphasis, framing, or omission happening —
+                            in something you watched or read recently? A few sentences is enough.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero" style="margin-top: var(--spacing-2xl);">
+                <p class="hero-description">
+                    You've just seen how facts get built into stories. Next time, we'll ask a different question:
+                    what happens once an audience starts reacting to that story?
+                </p>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('submit')">
+                    ← Back
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('intro')">
+                    Return to Start
+                </button>
+            </div>
+        </section>
+
+    </div>
+</div>
+
+<!-- Sidebar Navigation -->
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <h3>Navigation</h3>
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Close sidebar">✕</button>
+    </div>
+    <nav class="sidebar-menu">
+        <ul>
+            <li><a href="#intro" data-section="intro" class="active">
+                <span class="icon">🏠</span> Start Here
+            </a></li>
+
+            <li class="sidebar-section-title">Today's Lesson</li>
+
+            <li><a href="#recap" data-section="recap">
+                <span class="icon">📖</span> 1. Recap
+            </a></li>
+
+            <li><a href="#concept" data-section="concept">
+                <span class="icon">🎯</span> 2. What Is Narrative?
+            </a></li>
+
+            <li><a href="#gamemakers" data-section="gamemakers">
+                <span class="icon">🎮</span> 3. In the Book
+            </a></li>
+
+            <li><a href="#selfcheck" data-section="selfcheck">
+                <span class="icon">✅</span> 4. Self-Check
+            </a></li>
+
+            <li><a href="#bridge" data-section="bridge">
+                <span class="icon">🌉</span> 5. Bridge to Reality
+            </a></li>
+
+            <li><a href="#task" data-section="task">
+                <span class="icon">✏️</span> 6. Main Task
+            </a></li>
+
+            <li><a href="#submit" data-section="submit">
+                <span class="icon">📤</span> 7. Submit
+            </a></li>
+
+            <li class="sidebar-section-title">Finish</li>
+
+            <li><a href="#done" data-section="done">
+                <span class="icon">🏁</span> Wrap-Up
+            </a></li>
+        </ul>
+    </nav>
+</aside>
+
+<!-- Mobile Menu Button -->
+<button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2026 <a href="https://edu-mrh.de/">edu-mrh.de</a> - Educational Resources for Modern Learning</p>
+        <p>Fachbereich Englisch | Jahrgangsstufe 12 | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum</a></p>
+    </div>
+</footer>
+
+<script>
+    // ==========================================
+    // Self-check: match book examples to techniques
+    // ==========================================
+    function checkMatches() {
+        const items = document.querySelectorAll('#matchGrid .match-item');
+        let allCorrect = true;
+        let anyAnswered = false;
+
+        items.forEach(item => {
+            const select = item.querySelector('select');
+            const correct = item.getAttribute('data-correct');
+
+            item.classList.remove('correct', 'incorrect');
+
+            if (select.value === '') {
+                allCorrect = false;
+                return;
+            }
+
+            anyAnswered = true;
+
+            if (select.value === correct) {
+                item.classList.add('correct');
+            } else {
+                item.classList.add('incorrect');
+                allCorrect = false;
+            }
+        });
+
+        const feedback = document.getElementById('matchFeedback');
+        feedback.classList.add('show');
+
+        if (!anyAnswered) {
+            feedback.classList.remove('all-correct', 'some-wrong');
+            feedback.classList.add('some-wrong');
+            feedback.textContent = 'Choose an answer for each example first.';
+            return;
+        }
+
+        if (allCorrect) {
+            feedback.classList.remove('some-wrong');
+            feedback.classList.add('all-correct');
+            feedback.textContent = '✓ All correct — nice work. Move on to the next step.';
+        } else {
+            feedback.classList.remove('all-correct');
+            feedback.classList.add('some-wrong');
+            feedback.textContent = 'Not quite — the ones marked red need another look. Re-read the example and try again.';
+        }
+    }
+
+    // ==========================================
+    // Pointer reveal for the open-ended task
+    // ==========================================
+    function togglePointers() {
+        const box = document.getElementById('pointerBox');
+        box.classList.toggle('show');
+    }
+
+    
+    // PDF export: write the submission content directly into a PDF.
+    // This avoids the blank-page issue caused by HTML-to-PDF rendering.
+    // ==========================================
+
+    function sanitizeFilename(name) {
+        const cleaned = (name || 'student')
+            .trim()
+            // \p{L} and \p{N} keep letters/numbers from ANY script — this
+            // preserves umlauts (ü, ö, ä) instead of silently stripping them,
+            // which a plain a-zA-Z0-9 regex would do.
+            .replace(/[^\p{L}\p{N} _-]/gu, '')
+            .replace(/\s+/g, '_');
+        return cleaned.length ? cleaned : 'student';
+    }
+
+    function addWrappedText(doc, text, x, y, maxWidth, lineHeight, options = {}) {
+        const safeText = String(text || '');
+        const lines = doc.splitTextToSize(safeText, maxWidth);
+        doc.text(lines, x, y, options);
+        return y + (lines.length * lineHeight);
+    }
+
+    function exportSubmissionAsPDF(data) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+
+        const margin = 40;
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const contentWidth = pageWidth - (margin * 2);
+        let y = margin;
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(18);
+        doc.setTextColor(30, 41, 59);
+        y = addWrappedText(doc, 'Media Unit · Lens 3: Narrative', margin, y, contentWidth, 20);
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(12);
+        doc.setTextColor(100, 116, 139);
+        y = addWrappedText(doc, 'Submission for Task: Framing Comparison', margin, y + 6, contentWidth, 16);
+        y = addWrappedText(doc, data.submittedAt, margin, y + 4, contentWidth, 14);
+        y += 18;
+
+        const addSection = (label, value) => {
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.setTextColor(100, 116, 139);
+            y = addWrappedText(doc, label.toUpperCase(), margin, y, contentWidth, 12);
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(12);
+            doc.setTextColor(30, 41, 59);
+            y = addWrappedText(doc, value, margin + 12, y + 4, contentWidth - 12, 14);
+            y += 10;
+        };
+
+        addSection('Name', data.name);
+        addSection('Event Compared', data.event);
+        addSection('Sources Used', data.sources);
+        addSection('Comparison (Emphasis, Framing, Omission)', data.comparison);
+        addSection('Why Might They Differ?', data.whyDiffer);
+
+        doc.setFont('helvetica', 'italic');
+        doc.setFontSize(10);
+        doc.setTextColor(148, 163, 184);
+        y = addWrappedText(doc, 'Generated automatically from the Narrative lens self-study page · edu-mrh.de', margin, y + 10, contentWidth, 12);
+
+        const filename = `Framing_Comparison_${sanitizeFilename(data.name)}.pdf`;
+        doc.save(filename);
+    }
+
+    // ==========================================
+    // Submission form handler
+    // ==========================================
+    function handleSubmit(event) {
+        event.preventDefault();
+
+        const form = document.getElementById('submitForm');
+        const confirmation = document.getElementById('submitConfirmation');
+
+        const data = {
+            name: document.getElementById('studentName').value,
+            event: document.getElementById('eventChosen').value,
+            sources: document.getElementById('sourcesUsed').value,
+            comparison: document.getElementById('comparison').value,
+            whyDiffer: document.getElementById('whyDiffer').value,
+            submittedAt: new Date().toLocaleString('en-GB')
+        };
+
+        exportSubmissionAsPDF(data);
+
+        form.style.display = 'none';
+        confirmation.classList.add('show');
+
+        return false;
+    }
+</script>
+
+</body>
+</html>
