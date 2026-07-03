@@ -42,9 +42,15 @@ in dessen Ordner.**
 
    | Vorlage | Wofür |
    |---|---|
-   | [themenseite.html](templates/themenseite.html) | Der Normalfall: eine Inhaltsseite im Standard-Layout (Navbar, Seitenleiste, Karten, Aufgaben mit ausklappbaren Lösungen). |
+   | [themenseite.html](templates/themenseite.html) | Der Normalfall: eine lange Scroll-Seite im Standard-Layout (Navbar, Seitenleiste mit automatischer Hervorhebung, Karten, Aufgaben mit ausklappbaren Lösungen) – wie `informatik/informatik.html` oder `englisch/englisch.html`. |
    | [fachseite.html](templates/fachseite.html) | Nur für die eine Übersichtsseite eines (neuen) Fachs. |
-   | [freie-seite.html](templates/freie-seite.html) | Spiele, Simulationen, eigenes Design – volle Freiheit, nur die Basis-Bedienelemente sind Pflicht. |
+   | [freie-seite.html](templates/freie-seite.html) | Eigenes Design **und/oder** mehrere in sich abgeschlossene Abschnitte, zwischen denen per Klick umgeschaltet wird (Tab-Navigation), statt durchgängig zu scrollen – wie `englisch/12/uk/uk-and-writing.html` oder `informatik/11/verschluesselung/rsa.html`. Enthält zusätzlich kopierbare Bausteine (Zeitstrahl, Zitat-Box, Themen-Banner, Fakt-Box). |
+
+   Beide Vorlagen teilen denselben Kopf (Navbar mit Übersicht/Impressum,
+   `style.css`/`script.js`) – der Unterschied liegt allein darin, wie der
+   Inhalt darunter organisiert ist. Auch innerhalb einer Scroll-Seite darf
+   das Styling einzelner Abschnitte komplett eigenständig sein (siehe
+   `themenseite.html`, Abschnitt „Weitere Bausteine aus dem Bestand").
 
 2. **Kopieren** an den richtigen Ort: `fach/jahrgangsstufe/thema/thema.html`
    (Ordner- und Dateinamen bitte **klein, ohne Umlaute, ohne Leerzeichen** –
