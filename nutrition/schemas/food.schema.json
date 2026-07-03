@@ -1,0 +1,106 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://<subdomain>.edu-bay.de/schemas/food.schema.json",
+  "title": "Food item (curated database)",
+  "description": "One curated food entry. All user-facing text is a localized object keyed by language code ('de' required, others optional). Numbers are per 100 g edible portion unless stated otherwise. Tiers are deliberately coarse (1-3): this is a decision aid, not a lab report.",
+  "type": "object",
+  "required": ["id", "name", "category", "nutrition", "cost_tier", "convenience_tier", "eco", "tags", "blurb"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Stable slug, never changes once published. E.g. 'rote-linsen'."
+    },
+    "name": { "$ref": "#/definitions/localized" },
+    "category": {
+      "type": "string",
+      "enum": ["gemuese", "obst", "getreide", "huelsenfruechte", "milchprodukte", "eier", "fisch", "fleisch", "nuesse-samen", "fette-oele", "gewuerze-basics", "getraenke", "fertig-halbfertig"],
+      "description": "Primary shelf category (German slugs as canonical keys; labels are localized in ui strings)."
+    },
+    "nutrition": {
+      "type": "object",
+      "required": ["kcal", "protein_g", "fat_g", "carbs_g", "fiber_g"],
+      "additionalProperties": false,
+      "properties": {
+        "kcal": { "type": "number", "minimum": 0 },
+        "protein_g": { "type": "number", "minimum": 0 },
+        "fat_g": { "type": "number", "minimum": 0 },
+        "carbs_g": { "type": "number", "minimum": 0 },
+        "fiber_g": { "type": "number", "minimum": 0 },
+        "salt_g": { "type": "number", "minimum": 0 },
+        "sugar_g": { "type": "number", "minimum": 0 },
+        "micros": {
+          "type": "array",
+          "description": "Only micronutrients this food meaningfully contributes, as slugs: e.g. 'eisen', 'b12', 'jod', 'omega3', 'calcium', 'folat', 'zink', 'vitamin-c', 'vitamin-d'.",
+          "items": { "type": "string", "pattern": "^[a-z0-9-]+$" }
+        }
+      }
+    },
+    "typical_portion": {
+      "type": "object",
+      "description": "A realistic everyday portion, so the UI can translate per-100g values into per-portion values.",
+      "required": ["grams", "label"],
+      "properties": {
+        "grams": { "type": "number", "exclusiveMinimum": 0 },
+        "label": { "$ref": "#/definitions/localized" }
+      }
+    },
+    "cost_tier": {
+      "type": "integer", "minimum": 1, "maximum": 3,
+      "description": "1 = budget staple, 2 = normal, 3 = pricey. Judged per satiating portion in a German supermarket, not per kg."
+    },
+    "convenience_tier": {
+      "type": "integer", "minimum": 1, "maximum": 3,
+      "description": "1 = ready to eat / minutes, 2 = simple cooking, 3 = needs planning or skill (soaking, longer prep)."
+    },
+    "eco": {
+      "type": "object",
+      "description": "Environmental footprint, coarse. Source: Poore & Nemecek 2018 aggregates or comparable; document the source per entry if it deviates.",
+      "required": ["co2_tier"],
+      "additionalProperties": false,
+      "properties": {
+        "co2_tier": {
+          "type": "integer", "minimum": 1, "maximum": 3,
+          "description": "1 = low (most plants), 2 = medium (dairy, eggs, poultry, farmed fish), 3 = high (red meat, cheese, air-freighted goods)."
+        },
+        "co2_kg_per_kg": { "type": "number", "minimum": 0, "description": "Optional exact value for the detail view." },
+        "note": { "$ref": "#/definitions/localized" }
+      }
+    },
+    "tags": {
+      "type": "array",
+      "description": "Dietary-pattern and filter tags as slugs: 'vegan', 'vegetarisch', 'glutenfrei', 'laktosefrei', 'proteinquelle', 'ballaststoffquelle', 'vorratstauglich', 'saisonal-sommer', ...",
+      "items": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+      "uniqueItems": true
+    },
+    "blurb": {
+      "$ref": "#/definitions/localized",
+      "description": "The curated heart of each entry: 2-4 sentences in the site's voice. Practical, concrete, no moral score. What it does well, what to watch, one everyday use."
+    },
+    "swaps": {
+      "type": "array",
+      "description": "IDs of foods this one can stand in for or be swapped with (drives Stage 1 'easy wins').",
+      "items": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+      "uniqueItems": true
+    },
+    "allergens": {
+      "type": "array",
+      "description": "EU-regulated allergens contained, as slugs: 'gluten', 'laktose', 'ei', 'soja', 'erdnuss', 'schalenfruechte', 'fisch', 'krebstiere', 'sellerie', 'senf', 'sesam', 'lupine', 'weichtiere', 'sulfite'.",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    }
+  },
+  "definitions": {
+    "localized": {
+      "type": "object",
+      "required": ["de"],
+      "properties": {
+        "de": { "type": "string", "minLength": 1 },
+        "en": { "type": "string" }
+      },
+      "additionalProperties": { "type": "string" },
+      "description": "Localized string: 'de' is canonical and required; add 'en' (and later others) as translations land. The UI falls back to 'de'."
+    }
+  }
+}
