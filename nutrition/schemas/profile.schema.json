@@ -1,0 +1,124 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://<subdomain>.edu-bay.de/schemas/profile.schema.json",
+  "title": "User profile (browser-local only)",
+  "description": "The complete personalization state. Lives exclusively in the user's browser (localStorage key 'ews-profile') and in user-initiated JSON exports. It is NEVER transmitted to the server - this is a design guarantee, not an implementation detail. Every field is optional: tools degrade gracefully to generic mode with an empty profile.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "integer",
+      "description": "Schema version for future migrations. Current: 1.",
+      "const": 1
+    },
+    "lang": { "type": "string", "enum": ["de", "en"] },
+    "stage": {
+      "type": "integer", "minimum": 0, "maximum": 4,
+      "description": "Self-chosen current stage on the roadmap. Advancing is always the user's decision."
+    },
+    "body": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "age_years": { "type": "integer", "minimum": 14, "maximum": 120 },
+        "height_cm": { "type": "number", "minimum": 100, "maximum": 250 },
+        "weight_kg": { "type": "number", "minimum": 30, "maximum": 300 },
+        "sex_for_calculation": {
+          "type": "string", "enum": ["f", "m"],
+          "description": "Used only for the Mifflin-St Jeor estimate; labeled in the UI as 'for the formula', not as identity."
+        }
+      }
+    },
+    "activity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "daily_level": {
+          "type": "string",
+          "enum": ["sitzend", "leicht-aktiv", "aktiv", "sehr-aktiv"],
+          "description": "Everyday movement excluding sport."
+        },
+        "sport_sessions_per_week": { "type": "integer", "minimum": 0, "maximum": 21 },
+        "sport_focus": {
+          "type": "string",
+          "enum": ["keiner", "kraft", "ausdauer", "gemischt"],
+          "description": "Drives the protein target range."
+        }
+      }
+    },
+    "goals": {
+      "type": "array",
+      "description": "Multiple goals allowed; the UI resolves conflicts by asking, never by silently prioritizing.",
+      "items": {
+        "type": "string",
+        "enum": ["gesund-bleiben", "abnehmen", "muskelaufbau", "ausdauer", "mehr-energie", "nachhaltiger-essen", "guenstiger-essen", "einfacher-kochen"]
+      },
+      "uniqueItems": true
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "diet_pattern": {
+          "type": "string",
+          "enum": ["alles", "flexitarisch", "pescetarisch", "vegetarisch", "vegan"],
+          "description": "Current pattern, not an aspiration. Drives which micronutrients get attention flags."
+        },
+        "allergens_avoid": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Slugs matching food.schema allergens.",
+          "uniqueItems": true
+        },
+        "medical_flags": {
+          "type": "array",
+          "description": "Conditions the user chose to disclose. IMPORTANT DESIGN RULE: these flags only ever REMOVE or ADD CAUTION to recommendations (e.g. suppress protein targets for 'niere', add doctor-handoff notes). They never generate therapeutic advice.",
+          "items": {
+            "type": "string",
+            "enum": ["diabetes-t1", "diabetes-t2", "bluthochdruck", "niere", "schilddruese", "zoeliakie", "reizdarm", "schwangerschaft-stillzeit", "essstoerung-vorgeschichte"]
+          },
+          "uniqueItems": true
+        },
+        "budget_tier": { "type": "integer", "minimum": 1, "maximum": 3 },
+        "cooking_skill": { "type": "string", "enum": ["anfaenger", "geuebt", "sicher"] },
+        "weekday_minutes": {
+          "type": "integer", "minimum": 5, "maximum": 180,
+          "description": "Realistic cooking time on a weekday evening."
+        },
+        "household_size": { "type": "integer", "minimum": 1, "maximum": 12 },
+        "equipment": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["herd", "ofen", "mikrowelle", "mixer", "tiefkuehler"] },
+          "uniqueItems": true
+        }
+      }
+    },
+    "food_marks": {
+      "type": "object",
+      "description": "The heart of personalization: the user's ❤️/🤔/❌ marks from the food explorer. Keys are food ids.",
+      "additionalProperties": false,
+      "properties": {
+        "like": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "curious": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "avoid": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      }
+    },
+    "habits": {
+      "type": "array",
+      "description": "Weekly self check-ins (Phase 5). Append-only; oldest entries may be pruned client-side after 52 weeks.",
+      "items": {
+        "type": "object",
+        "required": ["week"],
+        "additionalProperties": false,
+        "properties": {
+          "week": { "type": "string", "pattern": "^\\d{4}-W\\d{2}$", "description": "ISO week, e.g. 2026-W27." },
+          "veg_days": { "type": "integer", "minimum": 0, "maximum": 7 },
+          "cooked_meals": { "type": "integer", "minimum": 0, "maximum": 21 },
+          "protein_answered_days": { "type": "integer", "minimum": 0, "maximum": 7, "description": "Days the 'Where is my protein?' question had an answer." },
+          "tried_new_food": { "type": "boolean" },
+          "note": { "type": "string", "maxLength": 500 }
+        }
+      }
+    }
+  }
+}
