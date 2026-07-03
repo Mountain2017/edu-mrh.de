@@ -1,56 +1,243 @@
 <!DOCTYPE html>
 <!-- ================================================================
-     VORLAGE: FREIE SEITE (komplett eigenes Design)
+     VORLAGE: FREIE SEITE (eigenes Design, eigene Struktur)
      ================================================================
-     Manche Inhalte brauchen ein völlig eigenes Erscheinungsbild –
-     ein Spiel, eine Simulation, ein immersives Lernmodul. Das ist
-     ausdrücklich erlaubt. Es gibt nur EINE Regel:
+     Manche Inhalte brauchen ein völlig eigenes Erscheinungsbild – ein
+     Spiel, eine Simulation, ein immersives Lernmodul, ein Thema mit
+     eigener Bildsprache. Das ist ausdrücklich erlaubt und im Bestand
+     bereits gelebte Praxis (siehe z. B.
+     englisch/12/uk/uk-and-writing.html oder
+     informatik/11/verschluesselung/rsa.html: beide behalten Navbar,
+     style.css/script.js und Impressum bei, aber alles darunter –
+     Farben, Komponenten, sogar die Art der Abschnittsnavigation –
+     ist komplett eigenständig gestaltet).
 
-         Die Basis-Bedienelemente (Zurück, Startseite, Impressum)
-         müssen vorhanden sein.
+     Diese Vorlage zeigt genau dieses Muster, nicht ein abstraktes
+     Beispiel: gemeinsamer Rahmen oben, freie Gestaltung darunter.
 
-     Dafür genügt die eine <script>-Zeile unten vor </body>. Sie fügt
-     die Elemente dezent unten links ein – mit eigenem Styling,
-     unabhängig vom Design der Seite. Baut die Seite selbst schon
-     einen Impressum-Link oder Zurück-Button ein, erkennt das Skript
-     das und fügt nichts doppelt hinzu.
+     1. Kopieren nach:  <fach>/<jahrgangsstufe>/<thema>/<thema>.html
+     2. "TODO:"-Stellen ausfüllen, eigenes CSS im <style>-Block bauen.
+     3. Eigene Sidebar-Einträge an die eigenen <section id="…"> anpassen.
+     4. Auf der Fachseite verlinken.
 
-     Ablageort wie immer:  <fach>/<jahrgangsstufe>/<thema>/….html
      Ausführliche Anleitung: /README.md im Repository.
      ================================================================ -->
-<html lang="de">
+<html lang="de"> <!-- TODO: lang="en" für englischsprachige Seiten -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- TODO: Titel nach dem Muster "Thema | Fach – edu-mrh.de" -->
     <title>Mein Thema | Fach – edu-mrh.de</title>
+    <meta name="description" content="TODO: ein Satz, worum es geht">
+
+    <!-- Gemeinsamer Rahmen – bleibt auch bei freiem Design bestehen -->
     <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+
+    <!-- Weitere Bausteine bei Bedarf, siehe templates/themenseite.html
+         für die vollständige Liste (MathJax, KaTeX, Java-IDE, SQL-IDE, GeoGebra) -->
 
     <style>
-        /* Ab hier gehört die Seite ganz dir. */
-        body {
-            margin: 0;
-            font-family: system-ui, sans-serif;
-            min-height: 100vh;
-            display: grid;
-            place-items: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
+        /* ============================================================
+           AB HIER GEHÖRT DIE SEITE DIR.
+           Eigene Farbvariablen, eigene Komponenten, eigener Charakter.
+           Die Beispiele unten (Banner, Zeitstrahl, Zitat, Merksatz)
+           sind reale, im Bestand verwendete Muster – als Ausgangspunkt
+           gedacht, nicht als Pflicht. Löschen, was nicht passt.
+           ============================================================ */
+        :root {
+            /* TODO: eigene Themen-Farben */
+            --thema-primary: #2563eb;
+            --thema-accent:  #f59e0b;
         }
+
+        /* Banner mit mehreren Farbfeldern, z. B. für Länder/Perioden/Kategorien */
+        .theme-banner {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,.15);
+        }
+        .theme-band { padding: 2rem 1.5rem; color: #fff; }
+        .theme-band h3 { font-size: 1.1rem; margin-bottom: .5rem; }
+
+        /* Zeitstrahl */
+        .timeline { position: relative; padding-left: 2.5rem; margin: 2rem 0; }
+        .timeline::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+            background: var(--thema-primary); border-radius: 4px;
+        }
+        .timeline-item { position: relative; margin-bottom: 2rem; padding-left: 1.5rem; }
+        .timeline-item::before {
+            content: ''; position: absolute; left: -1.85rem; top: 4px;
+            width: 18px; height: 18px; border-radius: 50%;
+            background: #fff; border: 4px solid var(--thema-primary);
+        }
+        .timeline-item h4 { color: var(--thema-primary); margin-bottom: .4rem; }
+
+        /* Zitat-Box */
+        .quote-box {
+            border-left: 5px solid var(--thema-accent);
+            background: #fffbeb; padding: 1.5rem 2rem;
+            border-radius: 0 8px 8px 0; margin: 1.5rem 0;
+            font-style: italic; color: #444;
+        }
+        .quote-box .source { display: block; margin-top: .5rem; font-style: normal; font-size: .85rem; color: #888; }
+
+        /* Merksatz / Fakt vs. Irrtum */
+        .fact-box { background:#d1fae5; border:2px solid #10b981; padding:1rem 1.5rem; border-radius:8px; margin:.75rem 0; }
+        .fact-box h4 { color:#059669; margin-bottom:.3rem; }
     </style>
 </head>
 <body>
 
-    <h1>Freies Design – nur die Basis-Bedienelemente sind Pflicht.</h1>
-
     <!-- ============================================================
-         PFLICHT: Basis-Bedienelemente (Zurück / Startseite / Impressum)
-         Optional anpassbar, z. B.:
-           data-back="../fach.html"   festes Zurück-Ziel
-           data-position="right"      Ecke unten rechts statt links
+         PFLICHT-KOPFZEILE – bleibt gleich, egal wie frei der Rest ist
          ============================================================ -->
-    <script defer src="https://edu-mrh.de/controls.js"></script>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <!-- TODO: Emoji und Fachname -->
+                <span class="icon"><a href="https://edu-mrh.de/">📘</a></span>
+                <span>edu-mrh Fach</span>
+            </div>
+            <div class="nav-links">
+                <!-- TODO: Pfad zur eigenen Fachseite prüfen -->
+                <a href="../../fach.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="container">
+
+            <!-- ========================================================
+                 AB HIER: EIGENE STRUKTUR.
+                 Diese Vorlage zeigt die "Tab-Sektionen"-Variante: jeder
+                 Sidebar-Link zeigt genau eine Section, per JS umgeschaltet
+                 (kein Scrollen durch alles). Alternative: die einfache
+                 Scroll-Seite aus templates/themenseite.html – beides ist
+                 im Bestand üblich, wähle, was zum Thema passt.
+                 ======================================================== -->
+
+            <section id="intro" class="content-section active">
+                <div class="chapter-header">
+                    <span class="chapter-number">1</span>
+                    <h1>TODO: Titel</h1>
+                </div>
+
+                <div class="hero">
+                    <p class="hero-description">TODO: Einleitung – worum geht es, was lernt man hier?</p>
+                </div>
+
+                <!-- Beispiel: Themen-Banner -->
+                <div class="theme-banner">
+                    <div class="theme-band" style="background:linear-gradient(135deg,#012169,#1a3a8a);">
+                        <h3>TODO</h3>
+                        <p>TODO</p>
+                    </div>
+                    <div class="theme-band" style="background:linear-gradient(135deg,#2d3748,#4a5568); text-align:center;">
+                        <h3>TODO</h3>
+                        <p>TODO</p>
+                    </div>
+                    <div class="theme-band" style="background:linear-gradient(135deg,#CF142B,#e84040); text-align:right;">
+                        <h3>TODO</h3>
+                        <p>TODO</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="vertiefung" class="content-section">
+                <div class="chapter-header">
+                    <span class="chapter-number">2</span>
+                    <h2>TODO: Vertiefung</h2>
+                </div>
+
+                <!-- Beispiel: Zeitstrahl -->
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h4>TODO: Jahr/Ereignis</h4>
+                        <p>TODO: Beschreibung</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>TODO: Jahr/Ereignis</h4>
+                        <p>TODO: Beschreibung</p>
+                    </div>
+                </div>
+
+                <!-- Beispiel: Zitat -->
+                <div class="quote-box">
+                    „TODO: Zitat"
+                    <span class="source">— TODO: Quelle</span>
+                </div>
+
+                <!-- Beispiel: Merksatz -->
+                <div class="fact-box">
+                    <h4>✓ TODO: Kernaussage</h4>
+                    <p>TODO: Erläuterung</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum</a> | <a href="https://edu-mrh.de/">Startseite</a></p>
+        </div>
+    </footer>
+
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menü öffnen">
+        <span></span><span></span><span></span>
+    </button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Navigation</h3>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Sidebar schließen">✕</button>
+        </div>
+        <nav class="sidebar-menu">
+            <ul>
+                <li><a href="#intro" data-section="intro" class="active">Einführung</a></li>
+                <li><a href="#vertiefung" data-section="vertiefung">Vertiefung</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- ================================================================
+         Tab-Navigation: blendet Sections ein/aus statt zu scrollen.
+         Eigenständiges, kleines Skript – bewusst kein zusätzliches
+         Framework, dieses Muster wiederholt sich so (leicht angepasst)
+         in mehreren Themenseiten des Bestands.
+         ================================================================ -->
+    <script>
+        function navigateToSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(function (section) {
+                section.classList.remove('active');
+            });
+            var target = document.getElementById(sectionId);
+            if (target) {
+                target.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            document.querySelectorAll('.sidebar-menu a').forEach(function (link) {
+                link.classList.toggle('active', link.dataset.section === sectionId);
+            });
+        }
+
+        document.querySelectorAll('.sidebar-menu a[data-section]').forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                navigateToSection(link.dataset.section);
+            });
+        });
+    </script>
 
 </body>
 </html>
