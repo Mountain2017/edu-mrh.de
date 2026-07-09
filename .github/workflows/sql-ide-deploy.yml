@@ -1,63 +1,51 @@
-name: Sync, Build and Deploy from Upstream
+name: Build and Deploy SQL-IDE (embedded)
 
 on:
-  push:
-    branches:
-      - main
   schedule:
-    # Läuft jeden Tag um 04:00 Uhr nachts (UTC) automatisch
+    # Jeden Tag um 04:00 Uhr (UTC)
     - cron: '0 4 * * *'
-  workflow_dispatch: # Erlaubt es Ihnen, den Build jederzeit manuell per Klick zu starten
+  workflow_dispatch: # Manueller Start jederzeit möglich
 
 jobs:
-  sync-and-deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Eigenen Fork auschecken
-    - name: Checkout Code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      # 1. Upstream-Repo direkt auschecken — kein Fork, kein Sync nötig
+      - name: Checkout SQL-IDE (upstream)
+        uses: actions/checkout@v4
+        with:
+          repository: martin-pabst/SQL-IDE
+          ref: main
 
-    # 2. Mit dem Original-Repository (Upstream) abgleichen
-    - name: Sync with Upstream
-      run: |
-        git config --global user.name "GitHub Action"
-        git config --global user.email "action@github.com"
-        # Das Original-Repository als Quelle hinzufügen
-        git remote add upstream https://github.com/martin-pabst/SQL-IDE.git
-        git fetch upstream
-        # Den main-Branch des Originals in den eigenen main-Branch mergen
-        git checkout main
-        git merge upstream/main --no-edit || echo "Keine neuen Änderungen oder Konflikt"
-        git push origin main
-      continue-on-error: true # Falls es keine Änderungen gab, läuft die Pipeline trotzdem weiter
+      # 2. Node.js einrichten (Build mit Node 22 LTS getestet)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
 
-    # 3. Node.js Umgebung einrichten
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '26'
+      # 3. Abhängigkeiten installieren
+      #    package.json liegt im Repo-Root, NICHT in einem Unterordner
+      - name: Install Dependencies
+        run: npm ci || npm install
 
-    # 4. Abhängigkeiten installieren
-    - name: Install Dependencies
-      run: npm install
-      working-directory: ./sql-ide-embed
+      # 4. Embedded-Version bauen
+      #    Output landet laut vite.config-embedded.ts in ./dist-embedded/
+      - name: Build Embedded IDE
+        run: npm run build-embedded
 
-    # 5. Embedded-IDE Version bauen
-    - name: Build Embedded IDE
-      run: npm run build-embedded
-      working-directory: ./sql-ide-embed
-
-    # 6. Fertige Dateien via SFTP zu Hetzner hochladen
-    - name: Deploy to Hetzner via SFTP
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-      with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        protocol: sftp
-        port: 22
-        local-dir: ./sql-ide-embed/dist/
-        server-dir: /embed/sql-IDE-embedded/
+      # 5. Via SFTP zu Hetzner hochladen
+      #    Sourcemaps (*.map, ~40 MB) werden ausgeschlossen — spart massiv Upload-Zeit
+      - name: Deploy to Hetzner via SFTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: sftp
+          port: 22
+          local-dir: ./dist-embedded/
+          server-dir: /embed/sql-IDE-embedded/
+          exclude: |
+            **/*.map
