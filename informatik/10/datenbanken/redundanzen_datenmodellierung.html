@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redundanzen und Datenmodellierung | Informatik 10 – edu-mrh.de</title>
+    <meta name="description" content="Interaktive Lerneinheit: Redundanz, Konsistenz und Datenmodellierung – entdecke selbst, warum gute Datenbankmodelle wichtig sind. Mit SQL-Übungen zu INSERT, UPDATE, DELETE und DISTINCT.">
+
+    <!-- SQL-IDE -->
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/sql-IDE-embedded/sql-ide-embedded.css">
+    <script type="module" src="https://edu-mrh.de/embed/sql-IDE-embedded/sql-ide-embedded.js"></script>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+
+    <!-- CSS Framework -->
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+
+    <!-- JavaScript Framework -->
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+</head>
+<body>
+<!--
+Fachbereich: Informatik
+Jahrgangsstufe: 10
+Thema: Redundanz, Konsistenz und Datenmodellierung (1.6 - 1.8)
+Erstellt: 2026-07-09
+Version: 1.0
+-->
+
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-brand">
+            <span class="icon">🖥️</span>
+            <a href="https://edu-mrh.de/">edu-mrh.de</a>
+        </div>
+        <div class="nav-links">
+            <a href="https://edu-mrh.de/informatik/informatik.html#jahrgang-10" class="btn btn-outline">Übersicht</a>
+            <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <h3>📦 Lagerbuch</h3>
+        <button id="sidebarToggle" class="sidebar-toggle">✕</button>
+    </div>
+
+    <nav class="sidebar-menu">
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Einführung</div>
+            <ul>
+                <li><a href="#intro" data-section="intro"><span class="icon">📦</span> Der Auftrag</a></li>
+                <li><a href="#lernziele" data-section="lernziele"><span class="icon">🎯</span> Lernziele</a></li>
+                <li><a href="#sql-befehle" data-section="sql-befehle"><span class="icon">🧰</span> Neue SQL-Befehle</a></li>
+            </ul>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Teil 1: Redundanz &amp; Konsistenz</div>
+            <ul>
+                <li><a href="#redundanz" data-section="redundanz"><span class="icon">🔁</span> Redundanz entdecken</a></li>
+                <li><a href="#distinct" data-section="distinct"><span class="icon">✨</span> DISTINCT</a></li>
+                <li><a href="#inkonsistenz" data-section="inkonsistenz"><span class="icon">⚠️</span> Inkonsistenzen</a></li>
+            </ul>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Teil 2: Redundanzen vermeiden</div>
+            <ul>
+                <li><a href="#aufteilung" data-section="aufteilung"><span class="icon">✂️</span> Tabellen aufteilen</a></li>
+                <li><a href="#anomalien-praxis" data-section="anomalien-praxis"><span class="icon">🧪</span> Anomalien im Praxistest</a></li>
+                <li><a href="#adressen" data-section="adressen"><span class="icon">🏠</span> Adressen speichern</a></li>
+                <li><a href="#sportverein" data-section="sportverein"><span class="icon">⚽</span> Übung: TSV Bertha</a></li>
+            </ul>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Teil 3: Datenmodellierung</div>
+            <ul>
+                <li><a href="#konsistenz-regeln" data-section="konsistenz-regeln"><span class="icon">🛡️</span> Konsistenz sichern</a></li>
+                <li><a href="#abfragen-aenderungen" data-section="abfragen-aenderungen"><span class="icon">🔮</span> Abfragen &amp; Änderungen</a></li>
+                <li><a href="#schluessel" data-section="schluessel"><span class="icon">🔑</span> Schlüssel festlegen</a></li>
+                <li><a href="#modellierung-praxis" data-section="modellierung-praxis"><span class="icon">📐</span> Vom Sachverhalt zum Modell</a></li>
+            </ul>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Abschluss</div>
+            <ul>
+                <li><a href="#zusammenfassung" data-section="zusammenfassung"><span class="icon">✅</span> Zusammenfassung</a></li>
+            </ul>
+        </div>
+    </nav>
+</aside>
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="container">
+
+        <!-- Intro Section -->
+        <section id="intro" class="content-section active">
+            <div class="chapter-header">
+                <span class="chapter-number">Informatik 10 · Datenbanken 1.6 – 1.8</span>
+                <h1>📦 Chaos im Lager: Der Auftrag des Hausmeisters</h1>
+            </div>
+
+            <div class="hero">
+                <h2 class="hero-title">Die Bestell-Tabelle des Hausmeisters</h2>
+                <p class="hero-subtitle">Ein Fall für Datenbank-Profis wie dich</p>
+                <p class="hero-description">
+                    Der Hausmeister eurer Schule kauft Wasser, Brezeln und Orangensaft bei verschiedenen Händlern ein.
+                    Bisher verwaltet er seine Bestellungen in einer einzigen riesigen Tabelle – und tippt dabei ständig
+                    dieselben Adressen und Telefonnummern ab. Jetzt bittet er die 10d um Hilfe:
+                    <strong>Übertragt meine Tabelle in ein richtiges Datenbanksystem – aber macht es besser als ich!</strong>
+                </p>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">📋</div>
+                    <h3>Die Ausgangslage</h3>
+                    <ul>
+                        <li>Eine einzige Tabelle <code>Bestellung</code></li>
+                        <li>Adressen &amp; Telefonnummern immer wieder neu getippt</li>
+                        <li>Tippfehler haben sich eingeschlichen</li>
+                        <li>Beim Pausenverkauf stimmen Preise nicht überein</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">🧭</div>
+                    <h3>Dein Weg</h3>
+                    <ul>
+                        <li><strong>Teil 1:</strong> Das Problem erleben (Redundanz &amp; Inkonsistenz)</li>
+                        <li><strong>Teil 2:</strong> Das Problem lösen (Tabellen aufteilen)</li>
+                        <li><strong>Teil 3:</strong> Von Anfang an richtig modellieren</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">🛠️</div>
+                    <h3>Deine Werkzeuge</h3>
+                    <ul>
+                        <li>SQL-Abfragen mit <code>SELECT</code></li>
+                        <li>Neu: <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code></li>
+                        <li>Neu: <code>DISTINCT</code></li>
+                        <li>Echte Datenbanken direkt im Browser</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h3>⚠️ Wichtig</h3>
+                <p>
+                    In dieser Einheit sollst du Probleme zuerst <strong>selbst erleben</strong>, bevor du die Lösung kennenlernst.
+                    Führe die Aufgaben in den SQL-Fenstern wirklich aus – auch (und gerade!) die, bei denen etwas schiefgeht.
+                    <strong>Fehlermeldungen sind hier kein Versagen, sondern Erkenntnis!</strong>
+                    Keine Sorge: Die Datenbanken laufen nur in deinem Browser. Du kannst nichts kaputt machen –
+                    ein Neuladen der Seite stellt den Ausgangszustand wieder her.
+                </p>
+            </div>
+        </section>
+
+        <!-- Lernziele Section -->
+        <section id="lernziele" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Vorbereitung</span>
+                <h1>🎯 Lernziele</h1>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Was du in dieser Einheit lernst</h2>
+                </div>
+                <div class="card-body">
+                    <div class="key-points">
+                        <div class="key-point">
+                            <div class="number">1</div>
+                            <div>
+                                <strong>Redundanz erkennen und erklären</strong>
+                                <p>Du erkennst mehrfach gespeicherte Informationen und kannst begründen, warum sie problematisch sind.</p>
+                            </div>
+                        </div>
+
+                        <div class="key-point">
+                            <div class="number">2</div>
+                            <div>
+                                <strong>Inkonsistenzen aufspüren</strong>
+                                <p>Du findest widersprüchliche Daten mit gezielten SQL-Abfragen und kennst die typischen Fälle von Inkonsistenz.</p>
+                            </div>
+                        </div>
+
+                        <div class="key-point">
+                            <div class="number">3</div>
+                            <div>
+                                <strong>Daten verändern mit SQL</strong>
+                                <p>Du kannst mit <code>INSERT</code>, <code>UPDATE</code> und <code>DELETE</code> Datensätze einfügen, ändern und löschen – und verstehst, was dabei schiefgehen kann.</p>
+                            </div>
+                        </div>
+
+                        <div class="key-point">
+                            <div class="number">4</div>
+                            <div>
+                                <strong>Anomalien verstehen und vermeiden</strong>
+                                <p>Du kennst Einfüge-, Änderungs- und Lösch-Anomalie und weißt, wie die Aufteilung in mehrere Tabellen sie verhindert.</p>
+                            </div>
+                        </div>
+
+                        <div class="key-point">
+                            <div class="number">5</div>
+                            <div>
+                                <strong>Datenbanken modellieren</strong>
+                                <p>Du modellierst Sachverhalte als Klassendiagramm und Tabellenschemata – redundanzfrei, atomar und mit sinnvollen Schlüsseln.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('sql-befehle')">
+                    Zum SQL-Werkzeugkasten 🧰
+                </button>
+            </div>
+        </section>
+
+        <!-- SQL-Befehle Section -->
+        <section id="sql-befehle" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Vorbereitung</span>
+                <h1>🧰 Neue SQL-Befehle: Daten verändern</h1>
+            </div>
+
+            <div class="info-box">
+                <h3>📚 Was du schon kannst</h3>
+                <p>
+                    Aus den letzten Stunden kennst du bereits <code>SELECT ... FROM ... WHERE ...</code>,
+                    Joins über mehrere Tabellen sowie <code>ORDER BY</code>, <code>GROUP BY</code> und Aggregatfunktionen.
+                    Bisher hast du Daten aber nur <em>gelesen</em>. Um dem Hausmeister zu helfen, musst du Daten auch
+                    <strong>einfügen, ändern und löschen</strong> können.
+                </p>
+            </div>
+
+            <div class="concept-box">
+                <h3>💡 INSERT – Datensätze einfügen</h3>
+                <p><strong>Syntax:</strong></p>
+                <pre><code>INSERT INTO Tabelle VALUES (Wert1, Wert2, ..., WertN);</code></pre>
+                <p>Die Werte müssen in der <strong>Reihenfolge der Spalten</strong> angegeben werden – für jede Spalte genau ein Wert. Texte stehen in einfachen Anführungszeichen.</p>
+                <p><strong>Beispiel:</strong></p>
+                <pre><code>INSERT INTO Schueler VALUES (7, 'Huber', '10d');</code></pre>
+                <p>Alternativ kannst du die Spalten explizit nennen (praktisch, wenn du nicht alle Spalten füllen willst):</p>
+                <pre><code>INSERT INTO Schueler (SId, Name) VALUES (8, 'Wagner');</code></pre>
+            </div>
+
+            <div class="concept-box">
+                <h3>💡 UPDATE – Datensätze ändern</h3>
+                <p><strong>Syntax:</strong></p>
+                <pre><code>UPDATE Tabelle
+SET Spalte = neuerWert
+WHERE Bedingung;</code></pre>
+                <p><strong>Beispiel:</strong> Der Schüler mit der Nummer 4 wechselt in die 10d:</p>
+                <pre><code>UPDATE Schueler
+SET Klasse = '10d'
+WHERE SId = 4;</code></pre>
+                <div class="warning-box">
+                    <h4>⚠️ Achtung: WHERE nicht vergessen!</h4>
+                    <p>Ohne <code>WHERE</code>-Bedingung ändert <code>UPDATE</code> <strong>alle</strong> Zeilen der Tabelle. Das ist einer der häufigsten (und gefährlichsten) Fehler im Umgang mit Datenbanken!</p>
+                </div>
+            </div>
+
+            <div class="concept-box">
+                <h3>💡 DELETE – Datensätze löschen</h3>
+                <p><strong>Syntax:</strong></p>
+                <pre><code>DELETE FROM Tabelle
+WHERE Bedingung;</code></pre>
+                <p><strong>Beispiel:</strong> Schüler Nummer 6 verlässt die Schule:</p>
+                <pre><code>DELETE FROM Schueler
+WHERE SId = 6;</code></pre>
+                <p>Auch hier gilt: Ohne <code>WHERE</code> wird die <strong>komplette Tabelle geleert</strong>!</p>
+            </div>
+
+            <div class="concept-box">
+                <h3>💡 SELECT DISTINCT – doppelte Ergebniszeilen ausblenden</h3>
+                <p><strong>Syntax:</strong></p>
+                <pre><code>SELECT DISTINCT Spalte1, Spalte2 FROM Tabelle;</code></pre>
+                <p>
+                    <code>DISTINCT</code> sorgt dafür, dass jede Wertekombination in der Ergebnistabelle
+                    <strong>nur einmal</strong> erscheint. Was das mit unserem Thema zu tun hat, findest du gleich selbst heraus.
+                </p>
+            </div>
+
+            <div class="ide-container">
+                <h3 class="ide-title">🔬 Aufwärmübung: Die Schülertabelle</h3>
+                <p>Probiere die neuen Befehle an der Tabelle <code>Schueler</code> aus. Mit <code>SELECT * FROM Schueler;</code> kannst du zwischendurch immer den aktuellen Stand kontrollieren.</p>
+
+                <iframe srcdoc="<script>window.jo_doc = window.frameElement.textContent;</script><script src='https://edu-mrh.de/embed/sql-IDE-embedded/includeIDE.js'></script>" width="100%" height="600" frameborder="0">
+{'id': 'dml-warmup', 'databaseURL': 'https://edu-mrh.de/informatik/10/datenbanken/databases/hausmeister_phase1.sqlite'}
+<script type="plain/text" title="Aufwaermen.sql">
+-- Schritt 0: Schau dir die Tabelle an
+SELECT * FROM Schueler;
+
+-- Schritt 1: Füge dich selbst als neuen Schüler ein (SId 7)
+-- INSERT INTO Schueler VALUES (7, 'DeinName', '10d');
+
+-- Schritt 2: Ändere die Klasse von Schüler 4 auf '10d'
+
+-- Schritt 3: Lösche den Schüler mit SId 6 wieder
+
+</script>
+                </iframe>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 1: Werkzeuge testen</h4>
+                <ol>
+                    <li>Füge dich selbst mit <code>INSERT</code> in die Tabelle <code>Schueler</code> ein und kontrolliere mit <code>SELECT</code>.</li>
+                    <li>Versetze Schüler 4 mit <code>UPDATE</code> in die Klasse 10d.</li>
+                    <li>Lösche Schüler 6 mit <code>DELETE</code>.</li>
+                    <li><strong>Knobelfrage:</strong> Was würde <code>UPDATE Schueler SET Klasse = '10d';</code> (ohne WHERE) bewirken?</li>
+                </ol>
+
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-dml-1')">💡 Lösung anzeigen</button>
+                <div id="solution-dml-1" class="solution-box hidden">
+                    <h4>✅ Lösung</h4>
+                    <pre><code>INSERT INTO Schueler VALUES (7, 'DeinName', '10d');
+
+UPDATE Schueler SET Klasse = '10d' WHERE SId = 4;
+
+DELETE FROM Schueler WHERE SId = 6;</code></pre>
+                    <p><strong>Knobelfrage:</strong> Ohne <code>WHERE</code> landen <em>alle</em> Schülerinnen und Schüler in der 10d – die ursprünglichen Klassen wären unwiederbringlich überschrieben.</p>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('lernziele')">
+                    ← Zurück zu den Lernzielen
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('redundanz')">
+                    Weiter zu Teil 1: Redundanz entdecken →
+                </button>
+            </div>
+        </section>
+
+        <!-- Redundanz Section -->
+        <section id="redundanz" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Teil 1 · Redundanz &amp; Konsistenz</span>
+                <h1>🔁 Redundanz entdecken</h1>
+            </div>
+
+            <div class="info-box">
+                <h3>🎬 Die Bestell-Tabelle des Hausmeisters</h3>
+                <p>
+                    So sieht die Tabelle aus, die der Hausmeister bisher in seinem Tabellenkalkulationsprogramm gepflegt hat.
+                    Jede Zeile ist eine Bestellung – mit <em>allen</em> Angaben zum Händler und zum Artikel:
+                </p>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr><th>Händler</th><th>Datum</th><th>Adresse</th><th>TelNr</th><th>Anzahl</th><th>Artikel</th><th>Kaufpreis</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Brehm</td><td>2025-09-19</td><td>98000 Neustadt, Hafenstr. 14</td><td>58812</td><td>80</td><td>Wasser</td><td>1,50</td></tr>
+                            <tr><td>Popp</td><td>2025-09-19</td><td>98000 Neustadt, Baumweg 5</td><td>11126</td><td>50</td><td>Sticker</td><td>0,50</td></tr>
+                            <tr><td>Kolb</td><td>2025-09-20</td><td>98001 Altdorf, Am Berg 7</td><td>223250</td><td>100</td><td>Brezel</td><td>0,40</td></tr>
+                            <tr><td>Brehm</td><td>2025-09-20</td><td>98000 Neustadt, Hafenstr. 14</td><td>58812</td><td>30</td><td>Orangensaft</td><td>2,80</td></tr>
+                            <tr><td>Kolb</td><td>2025-09-21</td><td>98001 Altdorf Am Berg 7</td><td>223250</td><td>100</td><td>Brezel</td><td>0,40</td></tr>
+                            <tr><td>Ruben</td><td>2025-09-22</td><td>98002 Erweiler, Hügelpfad 10</td><td>44455</td><td>50</td><td>Orangensaft</td><td>2,80</td></tr>
+                            <tr><td>Haller</td><td>2025-09-23</td><td>98000 Neustadt, Hafenstr. 1</td><td>12789</td><td>100</td><td>Wasser</td><td>1,50</td></tr>
+                            <tr><td colspan="7">… (weitere Bestellungen aus 2026)</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="ide-container">
+                <h3 class="ide-title">🔬 Selbst erleben: Eine Bestellung eintragen</h3>
+                <p>Der Hausmeister bestellt <strong>heute 90 Flaschen Wasser bei Brehm</strong>. Trage die Bestellung so ein, wie er es bisher tun musste – mit allen Angaben.</p>
+
+                <iframe srcdoc="<script>window.jo_doc = window.frameElement.textContent;</script><script src='https://edu-mrh.de/embed/sql-IDE-embedded/includeIDE.js'></script>" width="100%" height="600" frameborder="0">
+{'id': 'redundanz-erleben', 'databaseURL': 'https://edu-mrh.de/informatik/10/datenbanken/databases/hausmeister_phase1.sqlite'}
+<script type="plain/text" title="Bestellung.sql">
+-- Schritt 0: Verschaffe dir einen Überblick
+SELECT * FROM Bestellung;
+
+-- Schritt 1: Trage die neue Bestellung ein:
+-- 90 Wasser bei Brehm, heute.
+-- Tipp: Adresse und Telefonnummer findest du in den alten Zeilen ...
+-- INSERT INTO Bestellung VALUES (...);
+
+</script>
+                </iframe>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 2: Was fällt dir auf?</h4>
+                <ol>
+                    <li>Trage die neue Wasser-Bestellung bei Brehm vollständig ein.</li>
+                    <li><strong>Gib an, welche Angaben du eintippen musstest, obwohl sie schon in der Tabelle stehen.</strong></li>
+                    <li>Schau dir die beiden Kolb-Zeilen genau an. Findest du den Unterschied in der Adresse? Wie konnte der passieren?</li>
+                </ol>
+
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-red-1')">💡 Lösung anzeigen</button>
+                <div id="solution-red-1" class="solution-box hidden">
+                    <h4>✅ Lösung</h4>
+                    <pre><code>INSERT INTO Bestellung
+VALUES ('Brehm', '2026-07-09', '98000 Neustadt, Hafenstr. 14',
+        '58812', 90, 'Wasser', 1.50);</code></pre>
+                    <ol>
+                        <li><strong>Unnötig oft eingetippt:</strong> Adresse und Telefonnummer von Brehm standen schon viermal in der Tabelle – ebenso der Kaufpreis von Wasser. Genau das musste der Hausmeister bei <em>jeder</em> Bestellung wiederholen.</li>
+                        <li><strong>Kolb-Zeilen:</strong> Einmal steht dort <code>98001 Altdorf, Am Berg 7</code>, einmal <code>98001 Altdorf Am Berg 7</code> (Komma fehlt). Beim wiederholten Abtippen schleichen sich zwangsläufig Tippfehler ein – die Daten widersprechen sich dann.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 3: Zusammengesetzter Primärschlüssel</h4>
+                <p>
+                    Die Tabelle hat bisher gar keinen Primärschlüssel. Ein Vorschlag aus der 10d:
+                    Die Kombination aus <strong>Händler und Datum</strong> soll als zusammengesetzter Primärschlüssel dienen.
+                </p>
+                <p><strong>Nenne Voraussetzungen, unter denen das funktioniert.</strong></p>
+
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-red-2')">💡 Lösung anzeigen</button>
+                <div id="solution-red-2" class="solution-box hidden">
+                    <h4>✅ Lösung</h4>
+                    <p>
+                        Die Kombination (Händler, Datum) muss jede Zeile <strong>eindeutig</strong> identifizieren.
+                        Das klappt nur, wenn <strong>pro Tag höchstens einmal bei einem bestimmten Händler bestellt wird</strong>.
+                        Bestellt der Hausmeister zweimal am selben Tag bei Brehm (z.&nbsp;B. vormittags Wasser, nachmittags O-Saft),
+                        ist der Schlüssel nicht mehr eindeutig.
+                    </p>
+                </div>
+            </div>
+
+            <div class="concept-box">
+                <h3>📖 Merke: Redundanz</h3>
+                <div class="definition">
+                    <p>
+                        Unter <strong>Redundanz</strong> versteht man die <strong>mehrfache, unnötige Speicherung von gleichen Informationen</strong>.
+                    </p>
+                    <p>
+                        Problematisch sind Redundanzen, weil sie <strong>Speicherplatz und Zeit verschwenden</strong> –
+                        und weil bei jedem erneuten Eintippen <strong>Fehler entstehen können</strong>, sodass sich die Daten irgendwann widersprechen.
+                    </p>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('sql-befehle')">
+                    ← Zurück zum Werkzeugkasten
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('distinct')">
+                    Weiter zu DISTINCT →
+                </button>
+            </div>
+        </section>
+
+        <!-- DISTINCT Section -->
+        <section id="distinct" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Teil 1 · Redundanz &amp; Konsistenz</span>
+                <h1>✨ DISTINCT – Redundanz in Ergebnistabellen</h1>
+            </div>
+
+            <div class="info-box">
+                <h3>🎬 Der Hausmeister braucht eine Händlerliste</h3>
+                <p>
+                    „Bei welchen Händlern habe ich schon mal Wasser gekauft? Ich brauche Adresse und Telefonnummer –
+                    aber bitte <strong>jeden Händler nur einmal</strong>!“
+                </p>
+            </div>
+
+            <div class="ide-container">
+                <h3 class="ide-title">🔬 Händlerliste erstellen</h3>
+                <iframe srcdoc="<script>window.jo_doc = window.frameElement.textContent;</script><script src='https://edu-mrh.de/embed/sql-IDE-embedded/includeIDE.js'></script>" width="100%" height="600" frameborder="0">
+{'id': 'distinct-uebung', 'databaseURL': 'https://edu-mrh.de/informatik/10/datenbanken/databases/hausmeister_phase1.sqlite'}
+<script type="plain/text" title="Haendlerliste.sql">
+-- Aufgabe a): Alle Händler mit Adresse und TelNr,
+-- von denen schon einmal Wasser bezogen wurde.
+-- Starte ohne DISTINCT und schau dir das Ergebnis an:
+SELECT Haendler, Adresse, TelNr
+FROM Bestellung
+WHERE Artikel = 'Wasser';
+
+-- Was fällt dir auf? Ergänze nun DISTINCT nach SELECT.
+
+-- Aufgabe b): Nur Händler, bei denen DIESES Jahr (2026)
+-- eingekauft worden ist.
+
+</script>
+                </iframe>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 4: Verschiedene Händler auflisten</h4>
+                <ol>
+                    <li>Führe die vorbereitete Abfrage <strong>ohne</strong> <code>DISTINCT</code> aus. Welches Problem hat die Ergebnistabelle?</li>
+                    <li>Notiere eine SQL-Abfrage, die eine Liste aller <em>verschiedenen</em> Händler mit Adresse und Telefonnummer ausgibt, von denen der Hausmeister schon einmal Wasser bezogen hat.</li>
+                    <li>Ergänze den Befehl so, dass nur Händler aufgelistet werden, bei denen <em>in diesem Jahr</em> eingekauft worden ist.</li>
+                </ol>
+
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-distinct-1')">💡 Lösung anzeigen</button>
+                <div id="solution-distinct-1" class="solution-box hidden">
+                    <h4>✅ Lösung</h4>
+                    <p><strong>a)</strong> Ohne <code>DISTINCT</code> erscheint Haller mehrfach – die Ergebnistabelle ist redundant.</p>
+                    <pre><code>SELECT DISTINCT Haendler, Adresse, TelNr
+FROM Bestellung
+WHERE Artikel = 'Wasser';</code></pre>
+                    <p><strong>b)</strong></p>
+                    <pre><code>SELECT DISTINCT Haendler, Adresse, TelNr
+FROM Bestellung
+WHERE Artikel = 'Wasser'
+AND Datum >= '2026-01-01';</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-box">
+                <h3>📖 Merke: DISTINCT</h3>
+                <div class="definition">
+                    <p>
+                        Mithilfe des <strong>DISTINCT</strong>-Befehls in einer SQL-Abfrage werden Redundanzen in der
+                        Ergebnistabelle eliminiert, d.&nbsp;h. gleiche Wertekombinationen werden <strong>jeweils nur einmal angezeigt</strong>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 5: Diskussion – Redundanz trotz redundanzfreier Tabelle?</h4>
+                <p>
+                    <strong>Diskutiere:</strong> Ist es möglich, in der Ergebnistabelle einer SQL-Abfrage Redundanzen vorzufinden,
+                    obwohl die Eingabetabelle völlig redundanzfrei ist?
+                </p>
+                <p>Tipp: Stell dir eine Tabelle <code>Schueler(SId, Name, Lieblingsfach)</code> vor. Was passiert bei <code>SELECT Lieblingsfach FROM Schueler;</code>?</p>
+
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-distinct-2')">💡 Lösung anzeigen</button>
+                <div id="solution-distinct-2" class="solution-box hidden">
+                    <h4>✅ Lösung</h4>
+                    <p>
+                        <strong>Ja, das ist möglich</strong> – z.&nbsp;B. wenn nur eine einzelne Spalte projiziert wird, in der gleiche
+                        Attributwerte vorkommen, die aber gar nicht unnötig gespeichert sind:
+                        Haben mehrere Schüler dasselbe Lieblingsfach, liefert
+                        <code>SELECT Lieblingsfach FROM Schueler;</code> dieses Fach mehrfach, obwohl in der
+                        Ursprungstabelle nichts doppelt gespeichert ist. Die Redundanz entsteht erst durch die Abfrage –
+                        und lässt sich dort mit <code>DISTINCT</code> beseitigen.
+                    </p>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('redundanz')">
+                    ← Zurück zu Redundanz
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('inkonsistenz')">
+                    Weiter zu Inkonsistenzen →
+                </button>
+            </div>
+        </section>
+
+        <!-- Inkonsistenz Section -->
+        <section id="inkonsistenz" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Teil 1 · Redundanz &amp; Konsistenz</span>
+                <h1>⚠️ Inkonsistenzen aufspüren</h1>
+            </div>
+
+            <div class="info-box">
+                <h3>🎬 Fehlerjagd im Pausenverkauf</h3>
+                <p>
+                    Der Hausmeister verwaltet auch seinen Pausenverkauf mit einer Datenbank: In der Tabelle <code>Pausenverkauf</code>
+                    protokolliert er jede Transaktion (<code>TNr</code> = Transaktionsnummer), in <code>Schueler</code> stehen seine Kunden.
+                    Die Spalte <code>Kunde</code> verweist auf die <code>SId</code> der Schülertabelle.
+                    <strong>Leider haben sich einige Fehler eingeschlichen. Finde sie alle!</strong>
+                </p>
+            </div>
+
+            <div class="ide-container">
+                <h3 class="ide-title">🔬 Fehlersuche mit SQL</h3>
+                <p>Du kannst die Fehler mit bloßem Auge suchen – oder wie ein Profi mit gezielten Abfragen. Ein paar Detektiv-Abfragen sind vorbereitet.</p>
+
+                <iframe srcdoc="<script>window.jo_doc = window.frameElement.textContent;</script><script src='https://edu-mrh.de/embed/sql-IDE-embedded/includeIDE.js'></script>" width="100%" height="600" frameborder="0">
+{'id': 'inkonsistenz-suche', 'databaseURL': 'https://edu-mrh.de/informatik/10/datenbanken/databases/hausmeister_phase1.sqlite'}
+<script type="plain/text" title="Fehlersuche.sql">
+-- Überblick verschaffen:
+SELECT * FROM Pausenverkauf;
+SELECT * FROM Schueler;
+
+-- Detektiv-Abfrage 1: Gibt es doppelte Transaktionsnummern?
+SELECT TNr, COUNT(*) AS Anzahl
+FROM Pausenverkauf
+GROUP BY TNr
+HAVING COUNT(*) > 1;
+
+-- Detektiv-Abfrage 2: Verweist jede Verkaufszeile auf einen
+-- existierenden Schüler?
+SELECT *
+FROM Pausenverkauf
+WHERE Kunde NOT IN (SELECT SId FROM Schueler);
+
+-- Detektiv-Abfrage 3: Hat jeder Artikelname genau einen Preis
+-- und genau eine ArtNr?
+SELECT DISTINCT Name, ArtNr, Preis
+FROM Pausenverkauf
+ORDER BY Name;
+
+-- Detektiv-Abfrage 4: Gibt es unsinnige Preise?
+SELECT * FROM Pausenverkauf WHERE Preis <= 0;
+
+</script>
+                </iframe>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 6: Alle Fehler finden</h4>
+                <ol>
+                    <li>Führe die Detektiv-Abfragen aus und notiere <strong>alle</strong> Fehler, die du findest. Es sind mindestens <strong>sechs</strong>!</li>
+                    <li>Ordne jeden Fehler einer Kategorie zu: Ist es ein Schlüsselproblem, ein Verweis ins Leere, ein Widerspruch, ein falscher Datentyp oder ein im Sachkontext unmöglicher Wert?</li>
+                </ol>
+
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-inko-1')">💡 Lösung anzeigen</button>
+                <div id="solution-inko-1" class="solution-box hidden">
+                    <h4>✅ Lösung: Die Fehler im Pausenverkauf</h4>
+                    <ol>
+                        <li><strong>TNr 1308 kommt doppelt vor</strong> → Verletzung der Primärschlüsseleigenschaft (die Transaktionsnummer muss eindeutig sein).</li>
+                        <li><strong>Kunde 2 existiert nicht</strong> in der Tabelle <code>Schueler</code> → Fremdschlüsselbezug auf einen nicht existierenden Primärschlüsselwert.</li>
+                        <li><strong>Wasser kostet einmal 2,00&nbsp;€ und einmal 2,50&nbsp;€</strong> → gleiche Information mit verschiedenen Werten gespeichert.</li>
+                        <li><strong>O-Saft und Orangensaft</strong> haben dieselbe ArtNr 12, aber unterschiedliche Namen (ebenso <em>Brezel</em>/<em>Breze</em> mit ArtNr 14 bzw. 21) → gleiche Information verschieden gespeichert.</li>
+                        <li><strong>ArtNr „drölf“</strong> → falscher Datentyp (eine Artikelnummer muss eine Zahl sein).</li>
+                        <li><strong>Preis −1,00&nbsp;€</strong> → im Sachkontext falscher Wert (negative Preise gibt es beim Pausenverkauf nicht).</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="concept-box">
+                <h3>📖 Merke: Inkonsistenz</h3>
+                <div class="definition">
+                    <p>Ein Datenbestand, der <strong>widersprüchliche Informationen</strong> enthält, ist <strong>inkonsistent</strong>.</p>
+                </div>
+                <p>Dies schließt im Allgemeinen folgende Fälle mit ein:</p>
+                <ul>
+                    <li>gleiche Information mit verschiedenen Werten abgespeichert</li>
+                    <li>Verletzung der Primärschlüsseleigenschaften</li>
+                    <li>Fremdschlüsselbezug auf nicht existierende Primärschlüsselwerte</li>
+                    <li>falsche Datentypen</li>
+                    <li>im Sachkontext falsche Werte</li>
+                </ul>
+                <div class="highlight">
+                    <p>
+                        Die meisten Konsistenzbedingungen werden durch <strong>das Datenbankmanagementsystem (DBMS)</strong> sichergestellt –
+                        es lehnt fehlerhafte Einträge mit einer Fehlermeldung ab. Wie das aussieht, erlebst du in Teil&nbsp;2!
+                    </p>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <h3>🤔 Moment mal …</h3>
+                <p>
+                    Die Tabelle <code>Pausenverkauf</code> hat all diese Fehler <em>zugelassen</em> – niemand hat gemeckert.
+                    Und in der Bestell-Tabelle konntest du vorhin problemlos Unsinn eintragen.
+                    <strong>Eine gute Datenbank sollte solche Fehler von vornherein verhindern.</strong>
+                    Wie das geht, ist das Thema der nächsten Abschnitte.
+                </p>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('distinct')">
+                    ← Zurück zu DISTINCT
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('aufteilung')">
+                    Weiter zu Teil 2: Tabellen aufteilen →
+                </button>
+            </div>
+        </section>
+
+        <!-- Aufteilung Section -->
+        <section id="aufteilung" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Teil 2 · Redundanzen vermeiden</span>
+                <h1>✂️ Tabellen aufteilen</h1>
+            </div>
+
+            <div class="info-box">
+                <h3>🎬 Die Idee der 10d</h3>
+                <p>
+                    Die große Tabelle <code>Bestellung</code> enthält Informationen, die inhaltlich nichts miteinander zu tun haben:
+                    Angaben zum <em>Händler</em> (Adresse, Telefonnummer), zum <em>Artikel</em> (Kaufpreis) und zur eigentlichen
+                    <em>Bestellung</em> (Datum, Anzahl). Also wird sie aufgeteilt:
+                </p>
+            </div>
+
+            <div class="example-box">
+                <h3>📝 Die Aufteilung in drei Tabellen</h3>
+                <div class="info-grid">
+                    <div>
+                        <h4>Bestellung</h4>
+                        <table>
+                            <thead><tr><th>Haendler</th><th>Datum</th><th>Anzahl</th><th>Artikel</th></tr></thead>
+                            <tbody>
+                                <tr><td>Brehm</td><td>2025-09-19</td><td>80</td><td>Wasser</td></tr>
+                                <tr><td colspan="4">…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <h4>Haendler</h4>
+                        <table>
+                            <thead><tr><th>Name</th><th>Adresse</th><th>TelNr</th></tr></thead>
+                            <tbody>
+                                <tr><td>Brehm</td><td>98000 Neustadt, Hafenstr. 14</td><td>58812</td></tr>
+                                <tr><td colspan="3">…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <h4>Artikel</h4>
+                        <table>
+                            <thead><tr><th>Bezeichnung</th><th>Kaufpreis</th></tr></thead>
+                            <tbody>
+                                <tr><td>Wasser</td><td>1,50</td></tr>
+                                <tr><td colspan="2">…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <p>
+                    Die Spalten <code>Haendler</code> und <code>Artikel</code> in der Tabelle <code>Bestellung</code> sind jetzt
+                    <strong>Fremdschlüssel</strong>: Sie verweisen auf die Primärschlüssel der Tabellen <code>Haendler</code> und <code>Artikel</code>.
+                    Adresse, Telefonnummer und Kaufpreis stehen nur noch <strong>ein einziges Mal</strong> in der Datenbank.
+                </p>
+            </div>
+
+            <div class="concept-box">
+                <h3>💡 Theorie: Die drei Anomalien</h3>
+                <p>In der <em>alten</em>, großen Tabelle können drei typische Probleme („Anomalien“) auftreten:</p>
+
+                <div class="key-points">
+                    <div class="key-point">
+                        <div class="number">1</div>
+                        <div>
+                            <strong>Änderungs-Anomalie (Update)</strong>
+                            <p>Ändert sich die Adresse von Brehm, muss sie in <em>allen</em> seinen Bestellzeilen geändert werden. Wird eine Zeile vergessen, widersprechen sich die Daten.</p>
+                        </div>
+                    </div>
+                    <div class="key-point">
+                        <div class="number">2</div>
+                        <div>
+                            <strong>Lösch-Anomalie (Delete)</strong>
+                            <p>Werden die eingekauften Sticker gelöscht, gehen die Kontaktdaten von Popp mit verloren – er hatte ja nur diese eine Bestellung.</p>
+                        </div>
+                    </div>
+                    <div class="key-point">
+                        <div class="number">3</div>
+                        <div>
+                            <strong>Einfüge-Anomalie (Insertion)</strong>
+                            <p>Ein neuer Händler kann nicht eingetragen werden, ohne dass es schon eine Bestellung mit Datum gibt – seine Kontaktdaten hängen an Bestellzeilen.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 7: Die Aufteilung bewerten</h4>
+                <ol>
+                    <li><strong>Beschreibe</strong> für jede der drei Anomalien, wie sie <em>vor</em> der Aufteilung eintreten kann (nutze konkrete Beispiele aus der Tabelle).</li>
+                    <li><strong>Erkläre</strong> die Vorteile der Aufteilung im Hinblick auf Redundanz und Konsistenz.</li>
+                    <li><strong>Begründe</strong>, dass durch die Aufteilung alle drei Anomalien vermieden werden können.</li>
+                    <li><strong>Beschreibe</strong> auch Nachteile, die durch die Verteilung der Informationen auf mehrere Tabellen entstehen.</li>
+                    <li><strong>Nenne</strong> Daten, die immer noch mehrfach gespeichert werden.</li>
+                </ol>
+
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-auft-1')">💡 Lösung anzeigen</button>
+                <div id="solution-auft-1" class="solution-box hidden">
+                    <h4>✅ Lösung</h4>
+                    <p><strong>a) Anomalien vor der Aufteilung:</strong></p>
+                    <ul>
+                        <li><strong>Update:</strong> Die Adresse von Brehm ändert sich und wird nicht in allen Zeilen geändert → widersprüchliche Adressen.</li>
+                        <li><strong>Delete:</strong> Die eingekauften Sticker werden gelöscht → die Kontaktdaten von Popp gehen verloren.</li>
+                        <li><strong>Insertion:</strong> Ein neuer Händler kann nicht eingetragen werden, ohne das Datum einer Bestellung zu erfinden.</li>
+                    </ul>
+                    <p><strong>b) Vorteile:</strong> Weniger Redundanzen → weniger Möglichkeiten für Inkonsistenzen; die Anomalien werden vermieden.</p>
+                    <p><strong>c) Begründung:</strong></p>
+                    <ul>
+                        <li><strong>Update:</strong> Eine Preiserhöhung muss nur noch an <em>einer</em> Stelle in der Tabelle <code>Artikel</code> geschehen – unterschiedliche Preise für denselben Artikel sind nicht mehr möglich.</li>
+                        <li><strong>Delete:</strong> Wird die einzige Bestellung eines Händlers gelöscht, bleiben seine Kontaktdaten in der Tabelle <code>Haendler</code> erhalten.</li>
+                        <li><strong>Insertion:</strong> Neue Händler können in <code>Haendler</code> eingetragen werden, ohne dass es schon eine Bestellung gibt.</li>
+                    </ul>
+                    <p><strong>d) Nachteile:</strong> Die Bestellungen sind nicht mehr auf einen Blick einsehbar (man braucht Joins); es müssen mehrere Tabellen gepflegt werden; unterschiedliche Preise zu verschiedenen Zeitpunkten sind nicht mehr direkt speicherbar.</p>
+                    <p><strong>e) Immer noch mehrfach gespeichert:</strong> Postleitzahlen zu Städten, Städtenamen, Straßennamen (in den Adressen der Händler).</p>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('inkonsistenz')">
+                    ← Zurück zu Inkonsistenzen
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('anomalien-praxis')">
+                    Weiter zum Praxistest →
+                </button>
+            </div>
+        </section>
+
+        <!-- Anomalien-Praxis Section -->
+        <section id="anomalien-praxis" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Teil 2 · Redundanzen vermeiden</span>
+                <h1>🧪 Anomalien im Praxistest</h1>
+            </div>
+
+            <div class="info-box">
+                <h3>🎬 Die neue Datenbank ist da!</h3>
+                <p>
+                    Die 10d hat die Datenbank des Hausmeisters aufgeteilt: <code>Haendler</code>, <code>Artikel</code> und <code>Bestellung</code>.
+                    Zusätzlich hat sie dem Datenbanksystem <strong>Regeln (Constraints)</strong> mitgegeben:
+                </p>
+                <ul>
+                    <li><code>Haendler.Name</code> und <code>Artikel.Bezeichnung</code> sind <strong>Primärschlüssel</strong>.</li>
+                    <li>In <code>Bestellung</code> bilden (Haendler, Datum, Artikel) einen <strong>zusammengesetzten Primärschlüssel</strong>.</li>
+                    <li><code>Bestellung.Haendler</code> und <code>Bestellung.Artikel</code> sind <strong>Fremdschlüssel</strong> – sie dürfen nur auf existierende Händler bzw. Artikel verweisen.</li>
+                    <li>Kaufpreise dürfen nicht negativ sein, Bestellmengen müssen größer als 0 sein (<strong>CHECK-Regeln</strong>).</li>
+                </ul>
+                <p><strong>Teste jetzt selbst, ob die neue Datenbank die drei Anomalien wirklich verhindert – und was passiert, wenn du gegen die Regeln verstößt.</strong></p>
+            </div>
+
+            <div class="ide-container">
+                <h3 class="ide-title">🔬 Labor: Regeln einhalten und brechen</h3>
+                <p>Arbeite die Aufgaben in den SQL-Dateien nacheinander ab. Führe auch die „verbotenen“ Befehle wirklich aus und lies die Fehlermeldungen genau!</p>
+
+                <iframe srcdoc="<script>window.jo_doc = window.frameElement.textContent;</script><script src='https://edu-mrh.de/embed/sql-IDE-embedded/includeIDE.js'></script>" width="100%" height="650" frameborder="0">
+{'id': 'anomalien-labor', 'databaseURL': 'https://edu-mrh.de/informatik/10/datenbanken/databases/hausmeister_phase2.sqlite'}
+<script type="plain/text" title="A_Erlaubt.sql">
+-- Überblick:
+SELECT * FROM Haendler;
+SELECT * FROM Artikel;
+SELECT * FROM Bestellung;
+
+-- Aufgabe A1: Der neue Händler 'Schmidt'
+-- (98003 Waldheim, Ahornweg 2, Tel. 99871) möchte
+-- künftig liefern. Trage ihn ein – GANZ OHNE Bestellung!
+
+-- Aufgabe A2: Die Sticker waren ein Fehlkauf.
+-- Lösche die Sticker-Bestellungen aus der Tabelle Bestellung.
+-- Prüfe danach: Sind die Kontaktdaten von Popp noch da?
+
+-- Aufgabe A3: Der Orangensaft-Preis steigt auf 2,85 Euro.
+-- Ändere ihn mit einem einzigen UPDATE-Befehl.
+</script>
+<script type="plain/text" title="B_Verboten.sql">
+-- Jetzt wird es spannend: Versuche, gegen die Regeln
+-- zu verstoßen, und beobachte die Fehlermeldungen!
+
+-- Aufgabe B1: Bestelle 10 Wasser beim Händler 'Meyer'
+-- (den es nicht gibt):
+INSERT INTO Bestellung VALUES ('Meyer', '2026-07-09', 10, 'Wasser');
+
+-- Aufgabe B2: Trage die Bestellung
+-- (Kolb, 2026-03-05, Brezel) ein zweites Mal ein:
+INSERT INTO Bestellung VALUES ('Kolb', '2026-03-05', 99, 'Brezel');
+
+-- Aufgabe B3: Lege den Artikel 'Gratisprobe' mit
+-- Kaufpreis -1 an:
+INSERT INTO Artikel VALUES ('Gratisprobe', -1);
+
+-- Aufgabe B4: Lösche den Händler Brehm – obwohl es
+-- noch Bestellungen von ihm gibt:
+DELETE FROM Haendler WHERE Name = 'Brehm';
+</script>
+                </iframe>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 8: Erlaubte Änderungen (Datei A_Erlaubt.sql)</h4>
+                <ol>
+                    <li>Trage den neuen Händler <strong>Schmidt</strong> ein. Warum war das in der alten, großen Tabelle ein Problem – und jetzt nicht mehr?</li>
+                    <li>Lösche die <strong>Sticker-Bestellungen</strong>. Prüfe mit einem <code>SELECT</code>, ob Popps Kontaktdaten erhalten geblieben sind. Welche Anomalie wurde damit vermieden?</li>
+                    <li>Erhöhe den <strong>Orangensaft-Preis</strong> auf 2,85&nbsp;€. Wie viele Zeilen musstest du ändern? Wie viele wären es in der alten Tabelle gewesen?</li>
+                </ol>
+
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-anom-1')">💡 Lösung anzeigen</button>
+                <div id="solution-anom-1" class="solution-box hidden">
+                    <h4>✅ Lösung</h4>
+                    <pre><code>-- A1: Einfüge-Anomalie behoben
+INSERT INTO Haendler
+VALUES ('Schmidt', '98003 Waldheim, Ahornweg 2', '99871');
+
+-- A2: Lösch-Anomalie behoben
+DELETE FROM Bestellung WHERE Artikel = 'Sticker';
+SELECT * FROM Haendler WHERE Name = 'Popp';  -- Popp ist noch da!
+
+-- A3: Änderungs-Anomalie behoben
+UPDATE Artikel SET Kaufpreis = 2.85
+WHERE Bezeichnung = 'Orangensaft';</code></pre>
+                    <ol>
+                        <li>Früher hätte man für Schmidt eine „Bestellung ohne Bestellung“ mit erfundenem Datum anlegen müssen (<strong>Einfüge-Anomalie</strong>). Jetzt hat er seinen eigenen Platz in der Tabelle <code>Haendler</code>.</li>
+                        <li>Die Bestellzeilen sind weg, aber Popp steht weiterhin mit Adresse und Telefonnummer in <code>Haendler</code> (<strong>Lösch-Anomalie</strong> vermieden).</li>
+                        <li>Genau <strong>eine</strong> Zeile in <code>Artikel</code>. In der alten Tabelle hätte man jede einzelne Orangensaft-Bestellzeile ändern müssen – und beim Vergessen einer Zeile eine Inkonsistenz erzeugt (<strong>Änderungs-Anomalie</strong>).</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 9: Verbotene Änderungen (Datei B_Verboten.sql)</h4>
+                <p>Führe die vier Befehle in <code>B_Verboten.sql</code> einzeln aus. <strong>Notiere zu jedem: Welche Fehlermeldung erscheint – und welche Regel hat der Befehl verletzt?</strong></p>
+
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-anom-2')">💡 Erklärung anzeigen</button>
+                <div id="solution-anom-2" class="solution-box hidden">
+                    <h4>✅ Erklärung der Fehlermeldungen</h4>
+                    <ol>
+                        <li>
+                            <strong>B1 – Fremdschlüssel-Verletzung</strong> (<em>FOREIGN KEY constraint failed</em>):
+                            Der Wert <code>'Meyer'</code> in der Spalte <code>Bestellung.Haendler</code> müsste als Primärschlüssel
+                            in <code>Haendler</code> existieren – tut er aber nicht. Das DBMS verhindert so einen
+                            <em>Fremdschlüsselbezug ins Leere</em>: Es kann keine Bestellung bei einem Händler geben, den die Datenbank nicht kennt.
+                            <br><em>Ausweg:</em> Erst den Händler in <code>Haendler</code> anlegen, dann bestellen.
+                        </li>
+                        <li>
+                            <strong>B2 – Primärschlüssel-Verletzung</strong> (<em>UNIQUE/PRIMARY KEY constraint failed</em>):
+                            Die Kombination (Kolb, 2026-03-05, Brezel) existiert bereits. Der zusammengesetzte Primärschlüssel
+                            verlangt, dass jede Kombination aus Händler, Datum und Artikel nur <strong>einmal</strong> vorkommt.
+                            Erinnerst du dich an Aufgabe 3? Genau diese Voraussetzung hast du dort formuliert!
+                        </li>
+                        <li>
+                            <strong>B3 – CHECK-Verletzung</strong> (<em>CHECK constraint failed: Kaufpreis &gt;= 0</em>):
+                            Beim Anlegen der Tabelle wurde festgelegt, dass Kaufpreise nicht negativ sein dürfen.
+                            Der Wert −1 ist <em>im Sachkontext falsch</em> – das DBMS weist ihn ab, bevor er in die Datenbank gelangt.
+                            Genau so einen Fehler (Preis −1,00&nbsp;€) hast du in der Pausenverkauf-Tabelle gefunden – dort gab es keine Regel, die ihn verhindert hätte!
+                        </li>
+                        <li>
+                            <strong>B4 – Fremdschlüssel-Verletzung beim Löschen</strong> (<em>FOREIGN KEY constraint failed</em>):
+                            Würde Brehm gelöscht, würden alle seine Bestellungen ins Leere zeigen. Das DBMS lässt das Löschen
+                            deshalb nicht zu, solange noch Bestellungen von Brehm existieren.
+                            <br><em>Ausweg:</em> Erst alle Bestellungen von Brehm löschen, dann den Händler.
+                        </li>
+                    </ol>
+                    <div class="highlight">
+                        <p>
+                            <strong>Fazit:</strong> Das DBMS ist wie ein strenger Türsteher – es prüft jede Änderung gegen die
+                            beim Erstellen der Tabellen festgelegten Regeln und hält Inkonsistenzen von vornherein draußen.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('aufteilung')">
+                    ← Zurück zur Aufteilung
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('adressen')">
+                    Weiter zu Adressen →
+                </button>
+            </div>
+        </section>
+
+        <!-- Adressen Section -->
+        <section id="adressen" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Teil 2 · Redundanzen vermeiden</span>
+                <h1>🏠 Adressen richtig speichern</h1>
+            </div>
+
+            <div class="info-box">
+                <h3>🎬 Die 10e mischt sich ein</h3>
+                <p>
+                    Die Parallelklasse empfiehlt dem Hausmeister, auch die <strong>Speicherung der Adressen</strong> zu überdenken.
+                    In Aufgabe 7e hast du ja festgestellt: Städtenamen und Postleitzahlen werden immer noch mehrfach gespeichert.
+                    Drei Versionen stehen zur Wahl:
+                </p>
+            </div>
+
+            <div class="example-box">
+                <h3>📝 Drei Versionen für die Adresse</h3>
+                <div class="info-grid">
+                    <div>
+                        <h4>Version 1: Alles in einer Spalte</h4>
+                        <table>
+                            <thead><tr><th>Anschrift</th></tr></thead>
+                            <tbody><tr><td>98000 Neustadt, Hafenstr. 14</td></tr></tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <h4>Version 2: Vier Spalten</h4>
+                        <table>
+                            <thead><tr><th>PLZ</th><th>Ort</th><th>Straße</th><th>HsNr</th></tr></thead>
+                            <tbody><tr><td>98000</td><td>Neustadt</td><td>Hafenstr.</td><td>14</td></tr></tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <h4>Version 3: Eigene Ort-Tabelle</h4>
+                        <table>
+                            <thead><tr><th colspan="2">Ort</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>PLZ</strong></td><td><strong>Name</strong></td></tr>
+                                <tr><td>98000</td><td>Neustadt</td></tr>
+                            </tbody>
+                        </table>
+                        <table>
+                            <thead><tr><th colspan="3">Adresse</th></tr></thead>
+                            <tbody>
+                                <tr><td><strong>PLZ</strong></td><td><strong>Straße</strong></td><td><strong>HsNr</strong></td></tr>
+                                <tr><td>98000</td><td>Hafenstr.</td><td>14</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 10: Versionen vergleichen</h4>
+                <ol>
+                    <li><strong>Diskutiere</strong> die Vor- und Nachteile der drei Versionen.</li>
+                    <li><strong>Gib</strong> mögliche Primärschlüssel für alle Tabellen an.</li>
+                    <li><strong>Begründe</strong>, mit welcher Version sich Abfragen wie <em>„Welche Händler sind in der Hafenstraße?“</em> besonders einfach durchführen lassen.</li>
+                </ol>
+
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-adr-1')">💡 Lösung anzeigen</button>
+                <div id="solution-adr-1" class="solution-box hidden">
+                    <h4>✅ Lösung</h4>
+                    <ul>
+                        <li><strong>Version 1:</strong> ➕ einfach anzugeben · ➖ redundante Daten, die Suche nach einem Ort oder einer Straße ist schwierig (<code>LIKE '%Hafenstr%'</code> nötig).</li>
+                        <li><strong>Version 2:</strong> ➕ Suche ohne <code>LIKE</code> möglich · ➖ immer noch Redundanz (Ortsname wird bei jedem Händler derselben Stadt wiederholt).</li>
+                        <li><strong>Version 3:</strong> ➕ keine Redundanz, keine <code>LIKE</code>-Suche nötig · ➖ dafür zwei Tabellen, die per Join verknüpft werden müssen.</li>
+                    </ul>
+                    <p><strong>Primärschlüssel:</strong> V1: <u>Anschrift</u> · V2: <u>PLZ, Straße, HsNr</u> (zusammengesetzt) · V3: Ort: <u>PLZ</u>; Adresse: <u>PLZ, Straße, HsNr</u>.</p>
+                    <p><strong>Einfache Abfragen:</strong> Mit Version 2 oder 3 genügt <code>WHERE Straße = 'Hafenstr.'</code> – kein <code>LIKE</code> mit Platzhaltern nötig.</p>
+                </div>
+            </div>
+
+            <div class="concept-box">
+                <h3>📖 Merke</h3>
+                <div class="definition">
+                    <ul>
+                        <li><strong>Speichere jede Information nur einmal!</strong></li>
+                        <li>Redundanzen können durch die <strong>Aufspaltung</strong> in mehrere, inhaltlich zusammenhängende Tabellen vermieden werden. Damit lassen sich auch die drei Anomalien vermeiden.</li>
+                        <li>Die Informationen in einer Spalte sollten <strong>atomar</strong> (nicht weiter zerlegbar) sein.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('anomalien-praxis')">
+                    ← Zurück zum Praxistest
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('sportverein')">
+                    Weiter zur Übung: TSV Bertha →
+                </button>
+            </div>
+        </section>
+
+        <!-- Sportverein Section -->
+        <section id="sportverein" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Teil 2 · Redundanzen vermeiden</span>
+                <h1>⚽ Übung: Der Sportverein TSV Bertha</h1>
+            </div>
+
+            <div class="info-box">
+                <h3>🎬 Ein neuer Fall</h3>
+                <p>
+                    Der Sportverein <strong>TSV Bertha</strong> hat für seine Mitglieder und die ausgeübten Sportarten eine Tabelle angelegt.
+                    Außerdem weißt du: Man kann noch am <strong>Donnerstag Tennis</strong> auf dem Tennisplatz und am
+                    <strong>Dienstag Gymnastik</strong> in der Sporthalle betreiben. Jede Sportart findet immer am gleichen Ort statt.
+                </p>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead><tr><th>Sportart</th><th>Name</th><th>Ort</th><th>Wohnort</th></tr></thead>
+                        <tbody>
+                            <tr><td>Turnen, Mo</td><td>Luca Schießer</td><td>Sporthalle</td><td>Ballheim</td></tr>
+                            <tr><td>Fußball, Mi</td><td>Harry Ecker</td><td>Arena</td><td>Schnellingen</td></tr>
+                            <tr><td>Fußball, Mi</td><td>Felix Läufer</td><td>Arena</td><td>Lauf a. d. Pegnitz</td></tr>
+                            <tr><td>Fußball, Mi</td><td>Luca Schießer</td><td>Arena</td><td>Ballheim</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="ide-container">
+                <h3 class="ide-title">🔬 Erkunde die Tabelle</h3>
+                <p>Versuche z.&nbsp;B. herauszufinden, wer alles montags trainiert oder wie oft Luca Schießer gespeichert ist. Merkst du, wie unpraktisch die Tabelle ist?</p>
+
+                <iframe srcdoc="<script>window.jo_doc = window.frameElement.textContent;</script><script src='https://edu-mrh.de/embed/sql-IDE-embedded/includeIDE.js'></script>" width="100%" height="550" frameborder="0">
+{'id': 'tsv-bertha', 'databaseURL': 'https://edu-mrh.de/informatik/10/datenbanken/databases/tsv_bertha.sqlite'}
+<script type="plain/text" title="TSV.sql">
+SELECT * FROM Mitglied;
+
+-- Versuch 1: Wer trainiert montags?
+-- (Warum brauchst du hier LIKE?)
+SELECT * FROM Mitglied WHERE Sportart LIKE '%Mo%';
+
+-- Versuch 2: Alle Nachnamen alphabetisch sortiert.
+-- Geht das überhaupt sauber?
+
+</script>
+                </iframe>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 11: Modellierungsfehler finden und beheben</h4>
+                <ol>
+                    <li><strong>Beschreibe</strong> alle Fehler, die bei der Modellierung der Tabelle gemacht worden sind.</li>
+                    <li><strong>Gib</strong> eine bessere Aufteilung an, die diese Fehler vermeidet. Denke auch an Tennis und Gymnastik!</li>
+                </ol>
+
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-tsv-1')">💡 Lösung anzeigen</button>
+                <div id="solution-tsv-1" class="solution-box hidden">
+                    <h4>✅ Lösung</h4>
+                    <p><strong>a) Fehler:</strong></p>
+                    <ul>
+                        <li>Die Einträge in den Spalten <code>Sportart</code> („Turnen, Mo“) und <code>Name</code> („Luca Schießer“) sind <strong>nicht atomar</strong> → jeweils auf zwei Spalten aufteilen.</li>
+                        <li>Die Daten der Mitglieder sollten von den Sportarten/Orten <strong>getrennt</strong> werden – sonst wird z.&nbsp;B. Luca Schießer samt Wohnort mehrfach gespeichert (Redundanz!), und Tennis/Gymnastik lassen sich ohne Mitglied gar nicht eintragen (Einfüge-Anomalie).</li>
+                    </ul>
+                    <p><strong>b) Bessere Aufteilung:</strong></p>
+                    <div class="info-grid">
+                        <div>
+                            <h4>Mitglied</h4>
+                            <table>
+                                <thead><tr><th>Name</th><th>Vorname</th><th>Wohnort</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Schießer</td><td>Luca</td><td>Ballheim</td></tr>
+                                    <tr><td>Ecker</td><td>Harry</td><td>Schnellingen</td></tr>
+                                    <tr><td>Läufer</td><td>Felix</td><td>Lauf a. d. Pegnitz</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <h4>Sportart</h4>
+                            <table>
+                                <thead><tr><th>Art</th><th>Tag</th><th>Ort</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Turnen</td><td>Mo</td><td>Sporthalle</td></tr>
+                                    <tr><td>Fußball</td><td>Mi</td><td>Arena</td></tr>
+                                    <tr><td>Tennis</td><td>Do</td><td>Tennisplatz</td></tr>
+                                    <tr><td>Gymnastik</td><td>Di</td><td>Sporthalle</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <h4>uebtAus</h4>
+                            <table>
+                                <thead><tr><th>Id</th><th>Name</th><th>Vorname</th><th>Art</th></tr></thead>
+                                <tbody>
+                                    <tr><td>1</td><td>Schießer</td><td>Luca</td><td>Turnen</td></tr>
+                                    <tr><td>2</td><td>Ecker</td><td>Harry</td><td>Fußball</td></tr>
+                                    <tr><td>3</td><td>Läufer</td><td>Felix</td><td>Fußball</td></tr>
+                                    <tr><td>4</td><td>Schießer</td><td>Luca</td><td>Fußball</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <p>
+                        Die Tabelle <code>uebtAus</code> verbindet Mitglieder und Sportarten – du erkennst die
+                        <strong>n:m-Beziehung</strong> aus der letzten Lerneinheit wieder!
+                    </p>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('adressen')">
+                    ← Zurück zu Adressen
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('konsistenz-regeln')">
+                    Weiter zu Teil 3: Datenmodellierung →
+                </button>
+            </div>
+        </section>
+
+        <!-- Konsistenz-Regeln Section -->
+        <section id="konsistenz-regeln" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Teil 3 · Datenmodellierung</span>
+                <h1>🛡️ Konsistenz von Anfang an sichern</h1>
+            </div>
+
+            <div class="info-box">
+                <h3>🎬 Neue Wünsche des Hausmeisters</h3>
+                <p>
+                    Die Datenbank läuft! Aber der Hausmeister hat neue Ideen – und nicht jede davon ist gut.
+                    In diesem Teil lernst du, wie man schon <strong>beim Entwurf</strong> einer Datenbank dafür sorgt,
+                    dass sie dauerhaft konsistent bleibt.
+                </p>
+            </div>
+
+            <div class="concept-box">
+                <h3>💡 Drei allgemeine Regeln zur Konsistenzsicherung</h3>
+                <div class="key-points">
+                    <div class="key-point">
+                        <div class="number">i</div>
+                        <div>
+                            <strong>Fremdschlüssel-Regel</strong>
+                            <p>Ein Fremdschlüssel darf nur Werte enthalten, die im entsprechenden Primärschlüssel vorhanden sind. Dies kann von vielen Datenbanksystemen automatisch geprüft werden – fehlerhafte Einträge werden gar nicht erst zugelassen.</p>
+                        </div>
+                    </div>
+                    <div class="key-point">
+                        <div class="number">ii</div>
+                        <div>
+                            <strong>Einmal-Speichern-Regel</strong>
+                            <p>Daten, die übereinstimmen müssen, dürfen immer nur einmal gespeichert werden. In unserem Beispiel wird das durch die Aufteilung in drei Tabellen erreicht.</p>
+                        </div>
+                    </div>
+                    <div class="key-point">
+                        <div class="number">iii</div>
+                        <div>
+                            <strong>Nichts-Berechenbares-Regel</strong>
+                            <p>Es dürfen keine Daten gespeichert werden, die aus anderen berechenbar sind. Beispiel: Werden bei einem Quadrat Seitenlänge <em>und</em> Flächeninhalt gespeichert, ist nach einer Änderung der Seitenlänge der Flächeninhalt falsch.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 12: Vorschläge beurteilen</h4>
+                <p><strong>Beurteile</strong> die drei Vorschläge und <strong>ordne begründet</strong> jeweils eine der Regeln i) – iii) zu:</p>
+                <ol type="a">
+                    <li>Jede Bestellung soll auch den <strong>Bestellwert</strong> (Anzahl × Kaufpreis) enthalten.</li>
+                    <li>Jede Bestellung soll auch den <strong>Ansprechpartner</strong> des Händlers enthalten.</li>
+                    <li>Der Hausmeister erwägt, bei einem <strong>neuen Händler</strong> zu bestellen.</li>
+                </ol>
+
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-kons-1')">💡 Lösung anzeigen</button>
+                <div id="solution-kons-1" class="solution-box hidden">
+                    <h4>✅ Lösung</h4>
+                    <ol type="a">
+                        <li>Die Speicherung des Bestellwerts ist <strong>redundant</strong>, da er sich aus der Anzahl der bestellten Ware und dem Kaufpreis errechnen lässt. Nach einer Preisänderung wäre er falsch. → Regel <strong>iii</strong></li>
+                        <li>Die Speicherung des Ansprechpartners in der Bestellung wäre nur dann sinnvoll, wenn er sich von Bestellung zu Bestellung unterscheiden kann. Ist er pro Händler immer derselbe, sollte er <strong>einmalig</strong> in der Tabelle <code>Haendler</code> gespeichert werden. → Regel <strong>ii</strong></li>
+                        <li>Dank der Aufteilung kann der Hausmeister neue Händler ohne Komplikationen (Einfüge-Anomalie) in <code>Haendler</code> eintragen. Trägt er ihn dort <em>nicht</em> ein, kann er in <code>Bestellung</code> auch keinen unbekannten Händler verwenden – das DBMS prüft den Fremdschlüssel (das hast du in Aufgabe B1 selbst erlebt!). → Regel <strong>i</strong></li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('sportverein')">
+                    ← Zurück zu TSV Bertha
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('abfragen-aenderungen')">
+                    Weiter zu Abfragen &amp; Änderungen →
+                </button>
+            </div>
+        </section>
+
+        <!-- Abfragen & Änderungen Section -->
+        <section id="abfragen-aenderungen" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Teil 3 · Datenmodellierung</span>
+                <h1>🔮 Abfragen und Änderungen mitdenken</h1>
+            </div>
+
+            <div class="info-box">
+                <h3>🎬 Das endgültige Modell</h3>
+                <p>
+                    Die 10d hat alle Erkenntnisse eingearbeitet: Die Adresse ist jetzt <strong>atomar</strong> gespeichert,
+                    es gibt eine eigene <code>Ort</code>-Tabelle, und jede Bestellung hat eine eindeutige <code>BestellID</code>.
+                    Mit dieser Datenbank arbeitest du in den folgenden Aufgaben:
+                </p>
+                <pre><code>Ort(<u>PLZ</u>: Zahl; Name: Text)
+Haendler(<u>Name</u>: Text; PLZ↑: Zahl; Strasse: Text;
+         Hausnummer: Zahl; TelNr: Text)
+Artikel(<u>Bezeichnung</u>: Text; Kaufpreis: Zahl)
+Bestellung(<u>BestellID</u>: Zahl; Haendler↑: Text;
+           Artikel↑: Text; Anzahl: Zahl; Datum: Datum)</code></pre>
+                <p><small>Unterstrichen = Primärschlüssel, ↑ = Fremdschlüssel</small></p>
+            </div>
+
+            <div class="ide-container">
+                <h3 class="ide-title">🔬 Arbeiten mit dem endgültigen Modell</h3>
+
+                <iframe srcdoc="<script>window.jo_doc = window.frameElement.textContent;</script><script src='https://edu-mrh.de/embed/sql-IDE-embedded/includeIDE.js'></script>" width="100%" height="650" frameborder="0">
+{'id': 'modell-final', 'databaseURL': 'https://edu-mrh.de/informatik/10/datenbanken/databases/hausmeister_phase3.sqlite'}
+<script type="plain/text" title="Abfragen.sql">
+-- Überblick:
+SELECT * FROM Ort;
+SELECT * FROM Haendler;
+SELECT * FROM Artikel;
+SELECT * FROM Bestellung;
+
+-- Aufgabe a): Liste aller Händler, geordnet nach Ort und
+-- Straße. Tipp: Join über Haendler.PLZ = Ort.PLZ,
+-- dann ORDER BY.
+
+-- Aufgabe b): Alle Bestellungen des Monats Juni 2026.
+-- Tipp: WHERE mit "größer gleich" und "kleiner als"
+
+-- Aufgabe c): Welche Händler sind in der Hafenstr.?
+-- (Ganz ohne LIKE!)
+
+</script>
+<script type="plain/text" title="Aenderungen.sql">
+-- Aufgabe d): Händler Brehm bietet Wasser jetzt auch in
+-- kleinen Flaschen an. Schau in die Tabelle Artikel:
+-- Wie wurde das Problem gelöst?
+SELECT * FROM Artikel;
+
+-- Aufgabe e): Ruben erhöht den Preis für Orangensaft
+-- um 5 Cent. Führe die Änderung durch.
+-- Überlege danach: Was zeigen SQL-Abfragen über ALTE
+-- Bestellungen jetzt an?
+
+</script>
+                </iframe>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 13: Abfragen berücksichtigen (Datei Abfragen.sql)</h4>
+                <ol type="a">
+                    <li>Der Hausmeister benötigt eine <strong>Liste der Händler nach Ort und Straße geordnet</strong>. Formuliere die Abfrage. Überlege: Warum wäre das mit der alten Adress-Spalte („98000 Neustadt, Hafenstr. 14“) schwierig gewesen?</li>
+                    <li>Am Monatsende benötigt er eine <strong>Liste aller Bestellungen des Monats</strong> (Juni 2026). Formuliere die Abfrage.</li>
+                    <li>Beantworte: <strong>Welche Händler sind in der Hafenstraße?</strong> – ganz ohne <code>LIKE</code>.</li>
+                </ol>
+
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-abfr-1')">💡 Lösung anzeigen</button>
+                <div id="solution-abfr-1" class="solution-box hidden">
+                    <h4>✅ Lösung</h4>
+                    <pre><code>-- a)
+SELECT Ort.Name AS Ort, Haendler.Strasse, Haendler.Name
+FROM Haendler, Ort
+WHERE Haendler.PLZ = Ort.PLZ
+ORDER BY Ort.Name, Haendler.Strasse;
+
+-- b)
+SELECT * FROM Bestellung
+WHERE Datum >= '2026-06-01' AND Datum < '2026-07-01';
+
+-- c)
+SELECT Name FROM Haendler WHERE Strasse = 'Hafenstr.';</code></pre>
+                    <p>
+                        <strong>Zu a):</strong> Damit nach Ort und Straße geordnet werden kann, muss die Adresse <strong>atomar</strong>
+                        gespeichert sein – deshalb die Zerlegung in PLZ, Ort, Straße und Hausnummer.
+                        <strong>Fazit: Geplante Anwendungen (Abfragen) schon bei der Modellierung berücksichtigen!</strong>
+                    </p>
+                </div>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 14: Änderungen berücksichtigen (Datei Aenderungen.sql)</h4>
+                <ol type="a">
+                    <li>Brehm bietet Wasser jetzt in <strong>großen und kleinen Flaschen</strong> an. Schau in die Tabelle <code>Artikel</code>: Wie wurde das gelöst? Warum wurde die Bezeichnung <code>Wasser</code> nicht einfach umbenannt?</li>
+                    <li>Ruben erhöht den Preis für Orangensaft um 5 Cent. <strong>Führe die Änderung durch.</strong> Was liefern SQL-Abfragen über alte Bestellungen danach – den damals bezahlten oder den neuen Preis?</li>
+                </ol>
+
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-aend-1')">💡 Lösung anzeigen</button>
+                <div id="solution-aend-1" class="solution-box hidden">
+                    <h4>✅ Lösung</h4>
+                    <ol type="a">
+                        <li>
+                            Es wurde ein <strong>neuer Datensatz</strong> <code>Wasser_klein</code> in die Tabelle <code>Artikel</code> eingefügt.
+                            Die Bezeichnung <code>Wasser</code> blieb erhalten, damit bisherige Abfragen nicht umformuliert werden müssen.
+                        </li>
+                        <li>
+                            <pre><code>UPDATE Artikel
+SET Kaufpreis = Kaufpreis + 0.05
+WHERE Bezeichnung = 'Orangensaft';</code></pre>
+                            Abfragen über alte Bestellungen liefern jetzt den <strong>neuen</strong> Preis – nicht den damals bezahlten!
+                            Unser Modell kann historische Preise nicht abbilden.
+                            <strong>Fazit: Schon bei der Modellierung überlegen, welche Änderungen im Lauf der Zeit auftreten könnten.</strong>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('konsistenz-regeln')">
+                    ← Zurück zu Konsistenz sichern
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('schluessel')">
+                    Weiter zu Schlüsseln →
+                </button>
+            </div>
+        </section>
+
+        <!-- Schlüssel Section -->
+        <section id="schluessel" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Teil 3 · Datenmodellierung</span>
+                <h1>🔑 Primär- und Fremdschlüssel festlegen</h1>
+            </div>
+
+            <div class="concept-box">
+                <h3>💡 Warum einfache Schlüssel?</h3>
+                <p>
+                    Durch die Aufteilung in mehrere Tabellen müssen die Objektbeziehungen durch <strong>Joins</strong> wiederhergestellt
+                    werden (z.&nbsp;B.: <em>Wo muss angerufen werden, um Wasser zu bestellen?</em>). Dabei ist es hilfreich, wenn die
+                    Primär- und somit auch die Fremdschlüssel möglichst <strong>einfach</strong> sind, also nur ein Attribut umfassen.
+                </p>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 15: Schlüssel begründen</h4>
+                <ol type="a">
+                    <li><strong>Begründe</strong>, unter welchen Voraussetzungen bei den Tabellen <code>Artikel</code> und <code>Haendler</code> jeweils ein vorhandenes Attribut als Primärschlüssel geeignet ist.</li>
+                    <li><strong>Begründe</strong>, warum das bei der Tabelle <code>Bestellung</code> nicht möglich ist, und finde eine geeignete Lösung.</li>
+                </ol>
+
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-schl-1')">💡 Lösung anzeigen</button>
+                <div id="solution-schl-1" class="solution-box hidden">
+                    <h4>✅ Lösung</h4>
+                    <p>
+                        <strong>a)</strong> <code>Artikel.Bezeichnung</code> ist als Primärschlüssel geeignet, wenn jede Bezeichnung
+                        (z.&nbsp;B. „Wasser“) nur einmal vorkommt – also nur ein Preis gespeichert werden muss. Liefern mehrere Händler
+                        Wasser zu unterschiedlichen Preisen, braucht man einen künstlichen Schlüssel oder einen zusammengesetzten
+                        Primärschlüssel.
+                        Für <code>Haendler.Name</code> gilt: geeignet, solange es keine zwei gleichnamigen Händler gibt – sonst müsste
+                        der Primärschlüssel z.&nbsp;B. um die Adresse erweitert oder ein künstlicher Schlüssel eingeführt werden.
+                    </p>
+                    <p>
+                        <strong>b)</strong> Bei einem Händler wird <strong>mehrfach</strong> bestellt – kein einzelnes vorhandenes Attribut
+                        ist eindeutig. Man müsste mindestens (Haendler, Datum, Artikel) kombinieren. Einfacher ist ein
+                        <strong>künstlicher Schlüssel</strong> mit fortlaufender Nummer: die <code>BestellID</code>.
+                        Genau die hat unsere Datenbank aus dem letzten Abschnitt schon – beim <code>INSERT</code> vergibt das DBMS
+                        die nächste Nummer sogar automatisch, wenn du die Spalten explizit angibst:
+                    </p>
+                    <pre><code>INSERT INTO Bestellung (Haendler, Artikel, Anzahl, Datum)
+VALUES ('Kolb', 'Brezel', 50, '2026-07-09');</code></pre>
+                </div>
+            </div>
+
+            <div class="concept-box">
+                <h3>📖 Merke: Gute Datenmodellierung</h3>
+                <div class="definition">
+                    <p>Die Datenmodellierung sollte so erfolgen, dass</p>
+                    <ul>
+                        <li>der Datenbestand immer <strong>konsistent</strong> bleibt,</li>
+                        <li>berücksichtigt wird, welche <strong>SQL-Abfragen</strong> nötig sein werden,</li>
+                        <li>absehbare <strong>Änderungen</strong> keine Änderung am Modell nach sich ziehen.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('abfragen-aenderungen')">
+                    ← Zurück zu Abfragen &amp; Änderungen
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('modellierung-praxis')">
+                    Weiter zur Modellierungspraxis →
+                </button>
+            </div>
+        </section>
+
+        <!-- Modellierung-Praxis Section -->
+        <section id="modellierung-praxis" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Teil 3 · Datenmodellierung</span>
+                <h1>📐 Vom Sachverhalt zum Modell</h1>
+            </div>
+
+            <div class="concept-box">
+                <h3>💡 Vom Klassendiagramm zum Tabellenschema</h3>
+                <p>
+                    Bevor eine Datenbank angelegt wird, modelliert man den Sachverhalt – z.&nbsp;B. als
+                    <strong>Klassendiagramm</strong> mit Beziehungen und Kardinalitäten. Für die Bestellliste sieht das so aus:
+                </p>
+                <pre><code>┌──────────────────────┐                      ┌──────────────────────┐
+│       Artikel        │                      │       Haendler       │
+├──────────────────────┤   Bestellung >       ├──────────────────────┤
+│ Bezeichnung: Text    │ n ────────────── m   │ Name:       Text     │
+│ Kaufpreis:   Zahl    │  ┌────────────────┐  │ PLZ:        Zahl     │
+└──────────────────────┘  │ BestellID: Zahl│  │ Strasse:    Text     │
+                          │ Anzahl:    Zahl│  │ Hausnummer: Zahl     │
+                          │ Datum:     Datum│ │ TelNr:      Zahl     │
+                          └────────────────┘  └──────────┬───────────┘
+                                                       n │
+                                                         │ PLZist >
+                                                       1 │
+                                              ┌──────────┴───────────┐
+                                              │         Ort          │
+                                              ├──────────────────────┤
+                                              │ PLZ:  Zahl           │
+                                              │ Name: Text           │
+                                              └──────────────────────┘</code></pre>
+                <p>Daraus ergibt sich das <strong>relationale Modell</strong> (die Tabellenschemata):</p>
+                <pre><code>Artikel(<u>Bezeichnung</u>: Text; Kaufpreis: Zahl)
+Haendler(<u>Name</u>: Text; PLZ↑: Zahl; Strasse: Text;
+         Hausnummer: Zahl; TelNr: Zahl)
+Ort(<u>PLZ</u>: Zahl; Name: Text)
+Bestellung(<u>BestellID</u>: Zahl; Artikel↑: Text;
+           Haendler↑: Text; Anzahl: Zahl; Datum: Datum)</code></pre>
+                <p><small>Unterstrichen = Primärschlüssel, ↑ = Fremdschlüssel. Die n:m-Beziehung <em>Bestellung</em> wird zur eigenen Tabelle mit zwei Fremdschlüsseln; die 1:n-Beziehung <em>PLZist</em> wird durch den Fremdschlüssel <code>PLZ</code> in <code>Haendler</code> umgesetzt.</small></p>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 16: Händler mit allen Bestellungen</h4>
+                <p><strong>Gib eine SQL-Abfrage an</strong>, die für jeden Händler all seine Informationen und alle seine Bestellungen ausgibt. Teste sie in der SQL-IDE des vorherigen Abschnitts (Datenbank „endgültiges Modell“).</p>
+
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-mod-1')">💡 Lösung anzeigen</button>
+                <div id="solution-mod-1" class="solution-box hidden">
+                    <h4>✅ Lösung</h4>
+                    <pre><code>SELECT B.*, H.*
+FROM Bestellung AS B, Haendler AS H
+WHERE B.Haendler = H.Name;</code></pre>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3>🎬 Abschlussaufgabe: Der Reitstall</h3>
+                <p>
+                    Die 10d und ihre Freund:innen sind begeisterte Reiter:innen, einige von ihnen kümmern sich auch um die Tiere.
+                    Es gilt:
+                </p>
+                <ul>
+                    <li>Reiter:innen und Pferde werden in je einer Tabelle gespeichert.</li>
+                    <li>Je ein:e Reiter:in reitet zu einem bestimmten Zeitpunkt ein Pferd; alle Pferde werden zu einem bestimmten Zeitpunkt gleichzeitig versorgt.</li>
+                    <li>Neue Reiter:innen kommen dazu oder springen ab, auch die Pferde wechseln.</li>
+                </ul>
+            </div>
+
+            <div class="task-box">
+                <h4>✏️ Aufgabe 17: Reitstall modellieren</h4>
+                <ol type="a">
+                    <li><strong>Modelliere</strong> den Sachverhalt als Klassendiagramm und gib auch die Tabellenschemata an.</li>
+                    <li><strong>Gib eine SQL-Abfrage an</strong>, die alle Pferde ausgibt, die von der Reiterin mit <code>RId</code> 5 versorgt werden.</li>
+                </ol>
+
+                <button class="btn btn-secondary" onclick="toggleSolution('solution-mod-2')">💡 Lösung anzeigen</button>
+                <div id="solution-mod-2" class="solution-box hidden">
+                    <h4>✅ Lösung</h4>
+                    <p><strong>a) Klassendiagramm:</strong></p>
+                    <pre><code>                    reitet >  (Zeit: Zeit; Dauer: Zahl)
+┌───────────────┐ n ─────────────────────── m ┌───────────────┐
+│   Reiterin    │                             │     Pferd     │
+├───────────────┤ n ─────────────────────── m ├───────────────┤
+│ RId:     Zahl │    pflegt >  (Zeit: Zeit;   │ PId:   Zahl   │
+│ Name:    Text │              Dauer: Zahl)   │ Name:  Text   │
+│ Vorname: Text │                             │ Rasse: Text   │
+└───────────────┘                             │ Alter: Zahl   │
+                                              └───────────────┘</code></pre>
+                    <p><strong>Tabellenschemata:</strong></p>
+                    <pre><code>Reiterin(<u>RId</u>: Zahl; Name: Text; Vorname: Text)
+Pferd(<u>PId</u>: Zahl; Name: Text; Rasse: Text; Alter: Zahl)
+reitet(<u>RId↑</u>: Zahl; <u>PId↑</u>: Zahl; Zeit: Zeit; Dauer: Zahl)
+pflegt(<u>RId↑</u>: Zahl; <u>PId↑</u>: Zahl; Zeit: Zeit; Dauer: Zahl)</code></pre>
+                    <p>
+                        <em>reitet</em> kann als 1:n-Beziehung aufgefasst werden, da jede Person <em>zu einer bestimmten Zeit</em> nur ein
+                        Pferd reiten kann. Da aber jede Person irgendwann jedes Pferd reiten kann, handelt es sich um eine
+                        <strong>n:m-Beziehung</strong> – es muss dann sichergestellt werden, dass zu einer bestimmten Zeit eine Person
+                        nur ein Pferd reitet.
+                    </p>
+                    <p><strong>b)</strong></p>
+                    <pre><code>SELECT Pferd.*
+FROM Pferd, pflegt
+WHERE Pferd.PId = pflegt.PId AND pflegt.RId = 5;</code></pre>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('schluessel')">
+                    ← Zurück zu Schlüsseln
+                </button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('zusammenfassung')">
+                    Zur Zusammenfassung →
+                </button>
+            </div>
+        </section>
+
+        <!-- Zusammenfassung Section -->
+        <section id="zusammenfassung" class="content-section">
+            <div class="chapter-header">
+                <span class="chapter-number">Abschluss</span>
+                <h1>✅ Zusammenfassung</h1>
+            </div>
+
+            <div class="hero">
+                <h2 class="hero-title">🎉 Auftrag erledigt!</h2>
+                <p class="hero-subtitle">Der Hausmeister hat jetzt eine saubere Datenbank</p>
+                <p class="hero-description">
+                    Du hast erlebt, wie aus einer chaotischen Riesentabelle eine durchdachte Datenbank wird:
+                    redundanzfrei, konsistent und gegen Fehleingaben geschützt. Dabei hast du nicht nur neue
+                    SQL-Befehle gelernt, sondern vor allem verstanden, <strong>warum</strong> gute Datenmodellierung so wichtig ist.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">📚 Die wichtigsten Begriffe</h2>
+                </div>
+                <div class="card-body">
+                    <div class="definition-grid">
+                        <div class="definition-card">
+                            <div class="def-icon">🔁</div>
+                            <h4>Redundanz</h4>
+                            <ul>
+                                <li>Mehrfache, unnötige Speicherung gleicher Informationen</li>
+                                <li>Verschwendet Speicherplatz und Zeit</li>
+                                <li>Führt zu Tippfehlern und Widersprüchen</li>
+                                <li>In Ergebnistabellen: mit DISTINCT eliminierbar</li>
+                            </ul>
+                        </div>
+
+                        <div class="definition-card">
+                            <div class="def-icon">⚠️</div>
+                            <h4>Inkonsistenz</h4>
+                            <ul>
+                                <li>Widersprüchliche Informationen im Datenbestand</li>
+                                <li>Gleiche Info, verschiedene Werte</li>
+                                <li>Schlüsselverletzungen, Verweise ins Leere</li>
+                                <li>Falsche Datentypen oder unmögliche Werte</li>
+                            </ul>
+                        </div>
+
+                        <div class="definition-card">
+                            <div class="def-icon">🧪</div>
+                            <h4>Die drei Anomalien</h4>
+                            <ul>
+                                <li><strong>Änderung:</strong> Update muss an vielen Stellen erfolgen</li>
+                                <li><strong>Löschen:</strong> Ungewollter Verlust anderer Daten</li>
+                                <li><strong>Einfügen:</strong> Daten ohne „Träger“ nicht speicherbar</li>
+                                <li>Lösung: Aufteilung in mehrere Tabellen</li>
+                            </ul>
+                        </div>
+
+                        <div class="definition-card">
+                            <div class="def-icon">🛡️</div>
+                            <h4>Konsistenzsicherung</h4>
+                            <ul>
+                                <li>Jede Information nur einmal speichern</li>
+                                <li>Nichts speichern, was berechenbar ist</li>
+                                <li>Fremdschlüssel nur auf existierende Werte</li>
+                                <li>Das DBMS prüft die Regeln automatisch</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="concept-box">
+                <h3>🎯 Neue SQL-Befehle im Überblick</h3>
+                <div class="terminology-box">
+                    <div class="term">
+                        <strong>INSERT INTO Tabelle VALUES (…)</strong>
+                        <p>Fügt einen neuen Datensatz ein</p>
+                    </div>
+                    <div class="term">
+                        <strong>UPDATE Tabelle SET Spalte = Wert WHERE …</strong>
+                        <p>Ändert bestehende Datensätze (WHERE nicht vergessen!)</p>
+                    </div>
+                    <div class="term">
+                        <strong>DELETE FROM Tabelle WHERE …</strong>
+                        <p>Löscht Datensätze (WHERE nicht vergessen!)</p>
+                    </div>
+                    <div class="term">
+                        <strong>SELECT DISTINCT …</strong>
+                        <p>Blendet doppelte Zeilen in der Ergebnistabelle aus</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="best-practices">
+                <h3>✅ Checkliste: Gute Datenmodellierung</h3>
+
+                <div class="practice">
+                    <div class="icon">✓</div>
+                    <div>
+                        <strong>Speichere jede Information nur einmal</strong>
+                        <p>Teile Daten in inhaltlich zusammenhängende Tabellen auf – das vermeidet Redundanzen und Anomalien.</p>
+                    </div>
+                </div>
+
+                <div class="practice">
+                    <div class="icon">✓</div>
+                    <div>
+                        <strong>Halte Spalten atomar</strong>
+                        <p>„Turnen, Mo“ oder „98000 Neustadt, Hafenstr. 14“ gehören in getrennte Spalten.</p>
+                    </div>
+                </div>
+
+                <div class="practice">
+                    <div class="icon">✓</div>
+                    <div>
+                        <strong>Wähle einfache Schlüssel</strong>
+                        <p>Wenn kein vorhandenes Attribut eindeutig ist: künstlicher Schlüssel mit fortlaufender Nummer.</p>
+                    </div>
+                </div>
+
+                <div class="practice">
+                    <div class="icon">✓</div>
+                    <div>
+                        <strong>Denke Abfragen und Änderungen voraus</strong>
+                        <p>Welche Listen werden gebraucht? Welche Preise, Adressen oder Angebote können sich ändern?</p>
+                    </div>
+                </div>
+
+                <div class="practice">
+                    <div class="icon">✓</div>
+                    <div>
+                        <strong>Lass das DBMS für dich arbeiten</strong>
+                        <p>Primärschlüssel, Fremdschlüssel und CHECK-Regeln halten Fehler automatisch draußen.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero">
+                <h2>🎓 Geschafft!</h2>
+                <p>
+                    Der Hausmeister bedankt sich bei der 10d – und du bist jetzt in der Lage, Datenbanken nicht nur abzufragen,
+                    sondern auch selbst zu entwerfen und zu pflegen.
+                </p>
+                <div class="navigation-buttons">
+                    <button class="btn btn-success btn-lg" onclick="alert('Glückwunsch! Du hast den Auftrag des Hausmeisters erfolgreich abgeschlossen! 🎉')">
+                        🏆 Auftrag abschließen
+                    </button>
+                    <button class="btn btn-primary btn-lg" onclick="siteManager.navigateToSection('intro')">
+                        🔄 Nochmal von vorne
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<!-- Mobile Menu Button -->
+<button id="mobileMenuBtn" class="mobile-menu-btn">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2026 edu-mrh.de | Interaktive Lerneinheit: Redundanzen und Datenmodellierung</p>
+        <p>
+            <a href="https://edu-mrh.de/contribute.html#impressum">Impressum</a> |
+            <a href="https://edu-mrh.de/contribute.html#datenschutz">Datenschutz</a>
+        </p>
+    </div>
+</footer>
+
+</body>
+</html>
