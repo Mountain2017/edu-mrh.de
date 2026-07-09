@@ -1,13 +1,4 @@
-name: Build and Deploy Online-IDE (embedded)
-
-on:
-  schedule:
-    # Jeden Tag um 04:00 Uhr (UTC)
-    - cron: '0 4 * * *'
-  workflow_dispatch: # Manueller Start jederzeit möglich
-
-jobs:
-  build:
+build-online-ide:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,28 +9,22 @@ jobs:
           node-version: '22'
       - run: npm install
       - run: npm run build-embedded
-      - run: npm run build-embedded
       - name: Patch base URL in includeIDE.js
         run: |
-          sed -i 's|let base = "https://embed.learn-j.de/include/";|let base = "https://edu-mrh.de/embed/include/";|' dist-embedded/includeIDE.js
+          sed -i 's|let base = "https://embed.learnj.de/include/";|let base = "https://edu-mrh.de/embed/include/";|' dist-embedded/includeIDE.js
       - uses: actions/upload-artifact@v4
         with:
-          name: dist-embedded
-          path: dist-embedded/
-          retention-days: 3
-      - uses: actions/upload-artifact@v4
-        with:
-          name: dist-embedded
+          name: dist-online-ide-embedded
           path: dist-embedded/
           retention-days: 3
 
-  deploy:
-    needs: build
+  deploy-online-ide:
+    needs: build-online-ide
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: dist-embedded
+          name: dist-online-ide-embedded
           path: dist-embedded/
       - name: Deploy to Hetzner via FTPS
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -54,4 +39,3 @@ jobs:
           timeout: 600000
           exclude: |
             **/*.map
-            
