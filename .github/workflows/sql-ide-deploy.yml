@@ -18,9 +18,12 @@ jobs:
           node-version: '22'
       - run: npm install
       - run: npm run build-embedded
+      - name: Patch base URL in includeIDE.js
+        run: |
+          sed -i 's|let base = "https://embed.learn-sql.de/include/";|let base = "https://edu-mrh.de/embed/sql-IDE-embedded/";|' dist-embedded/includeIDE.js
       - uses: actions/upload-artifact@v4
         with:
-          name: dist-embedded
+          name: dist-sql-ide-embedded
           path: dist-embedded/
           retention-days: 3
 
