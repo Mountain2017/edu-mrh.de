@@ -7,46 +7,42 @@ on:
   workflow_dispatch: # Manueller Start jederzeit möglich
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      # 1. Upstream-Repo direkt auschecken — kein Fork, kein Sync nötig
-      - name: Checkout SQL-IDE (upstream)
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           repository: martin-pabst/SQL-IDE
-          # kein "ref:" — nimmt automatisch den Default-Branch (hier: master)
-
-      # 2. Node.js einrichten (Build mit Node 22 LTS getestet)
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          # kein "cache: npm" — Upstream committed keine package-lock.json
+      - run: npm install
+      - run: npm run build-embedded
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-embedded
+          path: dist-embedded/
+          retention-days: 3
 
-      # 3. Abhängigkeiten installieren
-      #    npm ci geht nicht (keine Lockfile im Upstream), daher npm install
-      - name: Install Dependencies
-        run: npm install
-
-      # 4. Embedded-Version bauen
-      #    Output landet laut vite.config-embedded.ts in ./dist-embedded/
-      - name: Build Embedded IDE
-        run: npm run build-embedded
-
-      # 5. Via SFTP zu Hetzner hochladen
-      #    Sourcemaps (*.map, ~40 MB) werden ausgeschlossen — spart massiv Upload-Zeit
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-embedded
+          path: dist-embedded/
       - name: Deploy to Hetzner via FTPS
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftps
+          protocol: ftps-legacy
+          port: 990
           local-dir: ./dist-embedded/
           server-dir: /embed/sql-IDE-embedded/
-          concurrency: 1
           timeout: 600000
           exclude: |
             **/*.map
+            
