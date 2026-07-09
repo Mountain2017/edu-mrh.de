@@ -23,12 +23,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
+          # kein "cache: npm" — Upstream committed keine package-lock.json
 
       # 3. Abhängigkeiten installieren
-      #    package.json liegt im Repo-Root, NICHT in einem Unterordner
+      #    npm ci geht nicht (keine Lockfile im Upstream), daher npm install
       - name: Install Dependencies
-        run: npm ci || npm install
+        run: npm install
 
       # 4. Embedded-Version bauen
       #    Output landet laut vite.config-embedded.ts in ./dist-embedded/
