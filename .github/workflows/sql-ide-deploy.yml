@@ -37,15 +37,16 @@ jobs:
 
       # 5. Via SFTP zu Hetzner hochladen
       #    Sourcemaps (*.map, ~40 MB) werden ausgeschlossen — spart massiv Upload-Zeit
-      - name: Deploy to Hetzner via SFTP
+      - name: Deploy to Hetzner via FTPS
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftps
-          port: 22
           local-dir: ./dist-embedded/
           server-dir: /embed/sql-IDE-embedded/
+          concurrency: 1
+          timeout: 600000
           exclude: |
             **/*.map
