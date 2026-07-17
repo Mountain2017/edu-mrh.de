@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Energy Quest Board — Der Rundweg</title>
+<title>Energy Quest Board — The 24-Hour Quest</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@400;600&family=Alegreya:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
@@ -61,8 +61,7 @@ header.top .sub{color:var(--ink-soft); font-style:italic}
 .map-legend{display:flex; gap:16px; flex-wrap:wrap; font-size:14px; color:var(--ink-soft); padding:8px 4px}
 .map-legend span{display:inline-flex; align-items:center; gap:6px}
 .station-marker{cursor:pointer}
-.station-marker:hover circle.bg{stroke-width:3}
-.wp-marker{cursor:pointer}
+.station-marker:hover circle.bg{stroke-width:3.5}
 .next-hint{
   position:absolute; top:12px; right:12px; background:var(--panel); border:1.5px solid var(--ink);
   border-radius:999px; padding:5px 16px; font-size:14px; box-shadow:2px 2px 0 rgba(53,44,29,.25);
@@ -145,6 +144,14 @@ input[type=range]{accent-color:var(--moss); width:100%}
 .deck .face .nm{font-family:var(--display); font-size:16px; line-height:1.1; text-align:center; padding:0 6px}
 .deck .face .ct{font-size:12px; color:var(--ink-soft)}
 
+/* Kartenkategorien des Spielbretts: Task (blau), Body (grün), Soul (violett) */
+.deck[data-cat="task"] .face{background:#E9F0F8; border-color:#2F5E96}
+.deck[data-cat="task"] .face .nm{color:#2F5E96}
+.deck[data-cat="body"] .face{background:#EAF2E4; border-color:#3F6D33}
+.deck[data-cat="body"] .face .nm{color:#3F6D33}
+.deck[data-cat="soul"] .face{background:#EFE9F6; border-color:#6E4E9E}
+.deck[data-cat="soul"] .face .nm{color:#6E4E9E}
+
 .drawn-card{
   width:min(340px,100%); margin:14px auto; border:1.5px solid var(--ink); border-radius:12px;
   background:#FBF6E8; padding:18px 20px; text-align:center;
@@ -154,6 +161,12 @@ input[type=range]{accent-color:var(--moss); width:100%}
 @keyframes flipIn{from{transform:rotateY(90deg); opacity:0} to{transform:rotateY(0); opacity:1}}
 @media (prefers-reduced-motion: reduce){ .drawn-card{animation:none} }
 .drawn-card .cat{font-size:13px; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink-soft)}
+.drawn-card.task{border-color:#2F5E96; background:#F3F7FB}
+.drawn-card.task .cat{color:#2F5E96}
+.drawn-card.body{border-color:#3F6D33; background:#F3F8EF}
+.drawn-card.body .cat{color:#3F6D33}
+.drawn-card.soul{border-color:#6E4E9E; background:#F6F2FA}
+.drawn-card.soul .cat{color:#6E4E9E}
 .drawn-card .ic{font-size:38px; margin:6px 0}
 .drawn-card .txt{font-size:19px; font-weight:500; line-height:1.45}
 .drawn-card .fx{margin-top:8px; font-size:14px; color:var(--moss)}
@@ -240,8 +253,8 @@ footer code{background:var(--panel); padding:1px 6px; border-radius:4px}
 
   <header class="top">
     <div>
-      <h1>Der Rundweg</h1>
-      <div class="sub">Ein Energy Quest Board — jede Reise beginnt und endet am Lager.</div>
+      <h1>The 24-Hour Quest</h1>
+      <div class="sub">Lass jede Stunde zählen. Leben. Lernen. Wachsen. — Die Reise beginnt und endet am Lager.</div>
     </div>
     <div class="stats">
       <div>
@@ -256,81 +269,19 @@ footer code{background:var(--panel); padding:1px 6px; border-radius:4px}
   </header>
 
   <div class="mapbox">
-    <svg id="map" viewBox="0 0 1000 640" role="img" aria-label="Karte des Tagesrundwegs mit Stationen, Wegmarken und Spielfigur">
-      <defs>
-        <g id="tree">
-          <rect x="-3" y="6" width="6" height="14" fill="#7A6644"/>
-          <path d="M0,-26 L16,8 L-16,8 Z" fill="#557048"/>
-          <path d="M0,-14 L20,16 L-20,16 Z" fill="#45633E"/>
-        </g>
-        <g id="bush">
-          <circle r="9" fill="#5B7A50"/><circle cx="9" cy="3" r="7" fill="#4C6B45"/><circle cx="-8" cy="3" r="7" fill="#557048"/>
-        </g>
-        <g id="flower">
-          <circle r="2.6" fill="#C88A9A"/><circle cx="6" cy="3" r="2.2" fill="#D9B15C"/><circle cx="-5" cy="4" r="2" fill="#C88A9A"/>
-        </g>
-        <g id="mountain">
-          <path d="M-70,0 L0,-88 L70,0 Z" fill="#C9BA93" stroke="#A99A73" stroke-width="1.5"/>
-          <path d="M0,-88 L-16,-64 L-6,-58 L6,-70 L14,-60 L24,-58 Z" fill="#F3EDDC" transform="translate(0,0)"/>
-        </g>
-      </defs>
+    <svg id="map" viewBox="0 0 1536 1024" role="img" aria-label="Spielbrett „The 24-Hour Quest“ mit 24 Stundenfeldern, Stationen und Spielfigur">
+      <image href="ChatGPT-Image-dnd.png" x="0" y="0" width="1536" height="1024"/>
 
-      <rect x="0" y="0" width="1000" height="640" fill="#E9DDBE"/>
+      <path id="trailDone" d="" fill="none" stroke="#F2C94C" stroke-width="8"
+        stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
 
-      <path id="skyArc" d="M 120 92 Q 500 -28 880 92" fill="none" stroke="#C9B98D" stroke-width="1.5" stroke-dasharray="2 7"/>
-      <text id="sunmoon" x="120" y="92" font-size="30" text-anchor="middle" dominant-baseline="middle">☀️</text>
-
-      <use href="#mountain" x="150" y="150"/>
-      <use href="#mountain" x="240" y="160" transform="scale(1)"/>
-      <use href="#mountain" x="90" y="165"/>
-
-      <path id="river" d="M 210 160 C 300 230, 380 250, 470 300 C 520 328, 545 350, 560 400 C 575 452, 560 520, 520 585"
-        fill="none" stroke="#9FB6BF" stroke-width="16" stroke-linecap="round" opacity="0.85"/>
-      <path d="M 210 160 C 300 230, 380 250, 470 300 C 520 328, 545 350, 560 400 C 575 452, 560 520, 520 585"
-        fill="none" stroke="#7C97A6" stroke-width="2" stroke-dasharray="10 14" opacity="0.7"/>
-      <ellipse cx="480" cy="315" rx="86" ry="40" fill="#BFCFD2" stroke="#7C97A6" stroke-width="2"/>
-      <text x="480" y="321" font-size="15" text-anchor="middle" fill="#4E6674" font-style="italic" font-family="Georgia, serif">Stiller See</text>
-
-      <use href="#tree" x="250" y="240"/>
-      <use href="#tree" x="292" y="262"/>
-      <use href="#tree" x="700" y="440"/>
-      <use href="#tree" x="745" y="415"/>
-      <use href="#tree" x="668" y="158"/>
-      <use href="#tree" x="620" y="185"/>
-      <use href="#tree" x="352" y="480"/>
-      <use href="#bush" x="415" y="205"/>
-      <use href="#bush" x="810" y="360"/>
-      <use href="#bush" x="255" y="470"/>
-      <use href="#flower" x="330" y="380"/>
-      <use href="#flower" x="640" y="300"/>
-      <use href="#flower" x="775" y="480"/>
-      <use href="#flower" x="205" y="330"/>
-
-      <path id="trail"
-        d="M 165 480
-           C 90 390, 100 250, 215 185
-           C 320 126, 450 102, 575 115
-           C 715 130, 865 185, 892 295
-           C 915 395, 830 475, 705 505
-           C 565 538, 300 550, 165 480 Z"
-        fill="none" stroke="#8A7455" stroke-width="4" stroke-dasharray="1 12" stroke-linecap="round"/>
-      <path id="trailDone"
-        d="M 165 480
-           C 90 390, 100 250, 215 185
-           C 320 126, 450 102, 575 115
-           C 715 130, 865 185, 892 295
-           C 915 395, 830 475, 705 505
-           C 565 538, 300 550, 165 480 Z"
-        fill="none" stroke="#45633E" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
-
-      <g id="bridge"></g>
-      <g id="hourTicks"></g>
-      <g id="waypoints"></g>
       <g id="stations"></g>
 
-      <g id="hero" style="cursor:default">
-        <circle r="13" fill="#F6EEDA" stroke="#352C1D" stroke-width="2.5"/>
-        <text y="1" font-size="15" text-anchor="middle" dominant-baseline="middle">🚶</text>
+      <g id="hero" style="cursor:default" aria-label="Deine Spielfigur">
+        <ellipse cx="0" cy="27" rx="17" ry="5" fill="rgba(20,12,4,.4)"/>
+        <path d="M0,-30 C8,-30 13,-24 13,-17 C13,-12 10,-8 6,-5 C14,-2 20,6 21,17 C22,23 17,27 10,27 L-10,27 C-17,27 -22,23 -21,17 C-20,6 -14,-2 -6,-5 C-10,-8 -13,-12 -13,-17 C-13,-24 -8,-30 0,-30 Z"
+          fill="#E5B33C" stroke="#4A3410" stroke-width="3"/>
+        <path d="M-6,-20 C-3,-24 3,-25 7,-22" fill="none" stroke="#F7DD9B" stroke-width="2.5" stroke-linecap="round"/>
       </g>
     </svg>
     <div class="time-note" id="timeNote">🕰️ Gerätezeit</div>
@@ -385,8 +336,8 @@ footer code{background:var(--panel); padding:1px 6px; border-radius:4px}
 <script>
 "use strict";
 /* =============== Grunddaten =============== */
-const LS_KEY = "energyQuest.v2";
-const DAY_START = 6 * 60, DAY_END = 22 * 60;
+const LS_KEY = "energyQuest.v3";
+const DAY_ANCHOR = 6 * 60; // Der Quest-Tag beginnt und endet um 06:00 am Lager.
 const XP_MAP = { haupt: 50, neben: 20, taeglich: 10, zufall: 10 };
 const TYPE_NAME = { haupt: "Hauptquest", neben: "Nebenquest", taeglich: "Täglich", zufall: "Zufallsbegegnung" };
 const COLS = [
@@ -395,23 +346,30 @@ const COLS = [
   { id: "unterwegs", name: "Unterwegs", icon: "⚔️" },
   { id: "chronik", name: "Chronik", icon: "📖" }
 ];
-function fracOf(hhmm) { return (toMins(hhmm) - DAY_START) / (DAY_END - DAY_START); }
+/* Minuten seit 06:00 (der Rundweg läuft volle 24 Stunden einmal ums Brett) */
+function qMins(mins) { return (mins - DAY_ANCHOR + 1440) % 1440; }
+function fracOf(hhmm) { return qMins(toMins(hhmm)) / 1440; }
 
+/* Die Felder des Spielbretts */
 const STATIONS = [
-  { id: "lager",      time: "06:00", icon: "⛺", name: "Das Lager",             type: "camp" },
-  { id: "quartier",   time: "07:30", icon: "🎒", name: "Quartiermeisterin Ida", type: "plan" },
-  { id: "stein",      time: "10:00", icon: "🪨", name: "Der Rätselstein",       type: "riddle" },
-  { id: "wirt",       time: "12:30", icon: "🍲", name: "Wirt Bromli",           type: "rast" },
-  { id: "heiler",     time: "15:00", icon: "🌿", name: "Heiler Corvus",         type: "heal" },
-  { id: "baum",       time: "17:30", icon: "🌳", name: "Der Flüsterbaum",       type: "riddle" },
-  { id: "chronistin", time: "20:00", icon: "🪶", name: "Chronistin Mera",       type: "reflect" }
-];
-const WAYPOINTS = [
-  { id: "wp1", time: "08:45" },
-  { id: "wp2", time: "11:15" },
-  { id: "wp3", time: "13:45" },
-  { id: "wp4", time: "16:15" },
-  { id: "wp5", time: "18:45" }
+  { id: "lager",     time: "06:00", icon: "⛺", name: "Das Lager (Start)", type: "camp" },
+  { id: "quartier",  time: "06:30", icon: "🎒", name: "Quartiermeisterin Ida", type: "plan" },
+  { id: "training",  time: "08:00", icon: "🏹", name: "Training", type: "draw", decks: ["body"],
+    speech: "„Ein Held pflegt zuerst sein Gefäß!“, ruft der Waffenmeister vom Übungsplatz herüber. „Zieh eine Body-Karte.“" },
+  { id: "mentor",    time: "10:00", icon: "🧙", name: "Der Mentor", type: "draw", decks: ["soul"],
+    speech: "Der alte Mentor mustert dich lange. „Wahre Stärke wächst von innen, Wanderer. Zieh eine Soul-Karte.“" },
+  { id: "challenge", time: "12:00", icon: "⚔️", name: "Die Challenge", type: "draw", decks: ["task"],
+    speech: "Mittag — die Sonne steht am höchsten, und eine Herausforderung versperrt den Weg. „Zieh eine Task-Karte und stell dich ihr!“" },
+  { id: "wirt",      time: "13:00", icon: "🍲", name: "Wirt Bromli (Marktflecken)", type: "rast" },
+  { id: "choice",    time: "14:00", icon: "🔀", name: "Die Wahl", type: "draw", decks: ["task", "soul"],
+    speech: "Eine Weggabelung hinter dem Markt. Auf dem Wegweiser steht: „Hier entscheidest du selbst — Task oder Soul?“" },
+  { id: "helper",    time: "16:00", icon: "🤝", name: "Der Helfer", type: "draw", decks: ["body", "soul"],
+    speech: "Ein freundlicher Helfer winkt dich zu sich. „Der Nachmittag zehrt an den Kräften. Was brauchst du gerade — Body oder Soul?“" },
+  { id: "rest",      time: "18:00", icon: "🪶", name: "Rest & Reflect — Chronistin Mera", type: "reflect" },
+  { id: "trial",     time: "22:00", icon: "🕯️", name: "Die Prüfung", type: "draw", decks: ["task", "body"],
+    speech: "Vor der Höhle flackert ein Licht: die letzte Prüfung des Tages. „Task oder Body — was bringst du noch zu Ende, bevor die Nacht dich holt?“" },
+  { id: "shadow",    time: "01:00", icon: "👤", name: "Der Schatten", type: "draw", decks: ["soul"],
+    speech: "Aus dem Dunkel flüstert der Schatten: „So spät noch unterwegs? Dann nimm wenigstens etwas für die Seele mit — zieh eine Soul-Karte.“" }
 ];
 
 const RAST_QUESTS = [
@@ -423,38 +381,19 @@ const RAST_QUESTS = [
   { id: "dehnen", label: "10 Minuten dehnen", gain: 1 }
 ];
 
+/* Die drei Kartenstapel des Spielbretts */
 const DECKS = {
-  selfcare: { name: "Selbstfürsorge", icon: "💛", energy: 1, cards: [
-    "Drei tiefe Atemzüge am offenen Fenster.",
-    "Schreib eine Sache auf, die heute schon gut war.",
-    "10 Minuten ohne Bildschirm — nur du und dein Getränk.",
-    "Sag heute einmal bewusst Nein zu etwas.",
-    "Hör ein Lied, das du früher geliebt hast.",
-    "Setz dich 5 Minuten in die Sonne oder ans Fenster.",
-    "Gönn dir nach der nächsten Aufgabe eine echte Belohnung.",
-    "Frag dich ehrlich: Was brauche ich gerade wirklich?"
-  ]},
-  freunde: { name: "Freunde & Familie", icon: "💌", energy: 0, cards: [
-    "Schreib jemandem, an den du heute gedacht hast.",
-    "Bedanke dich bei einer Person — konkret, nicht allgemein.",
-    "Schlag jemandem ein Treffen für diese Woche vor.",
-    "Ruf kurz zu Hause an.",
-    "Schick jemandem ein Foto, das ihn zum Lächeln bringt.",
-    "Antworte auf die Nachricht, die du vor dir herschiebst.",
-    "Erzähl heute Abend jemandem dein Tages-Highlight.",
-    "Denk an jemanden, dem es gerade schwerfällt — melde dich."
-  ]},
-  koerper: { name: "Körper", icon: "💪", energy: 1, cards: [
-    "Trink jetzt ein großes Glas Wasser.",
-    "20 Kniebeugen oder 1 Minute Dehnen — such es dir aus.",
-    "Geh eine Runde um den Block.",
-    "Iss ein Stück Obst oder Gemüse.",
-    "Rolle Schultern und Nacken — 10 langsame Kreise.",
-    "Steh auf und bleib 2 Minuten in Bewegung.",
-    "Prüfe deine Haltung: Füße, Rücken, Schultern.",
-    "Nimm heute bewusst den längeren Weg oder die Treppe."
-  ]},
-  haushalt: { name: "Haushalt", icon: "🧺", energy: 0, cards: [
+  task: { name: "Task", icon: "☑️", energy: 0,
+    motto: "Aktionen, die dich voranbringen: Herausforderungen, Ziele, To-dos.",
+    cards: [
+    "Wähle die kleinste Aufgabe vom Brett und erledige sie sofort.",
+    "Beantworte genau eine aufgeschobene Mail.",
+    "Zerlege eine große Quest in zwei kleinere.",
+    "2-Minuten-Regel: Was unter 2 Minuten dauert, jetzt tun.",
+    "Räume deinen digitalen Schreibtisch auf: Downloads, Tabs.",
+    "Notiere den allerersten konkreten Schritt deiner Hauptquest.",
+    "Setze einen 25-Minuten-Timer für eine Quest — nur diese.",
+    "Streiche eine Aufgabe, die ehrlich gesagt niemand braucht.",
     "5-Minuten-Sprint: ein Raum, ein Timer, los.",
     "Spülmaschine oder Abwasch — jetzt, nicht später.",
     "Eine Oberfläche komplett freiräumen.",
@@ -464,17 +403,29 @@ const DECKS = {
     "Schreibtisch: Nur das Nötigste bleibt liegen.",
     "Plane das Abendessen — was fehlt vom Einkauf?"
   ]},
-  arbeit: { name: "Arbeit", icon: "📚", energy: 0, cards: [
-    "Wähle die kleinste Aufgabe vom Brett und erledige sie sofort.",
-    "Beantworte genau eine aufgeschobene Mail.",
-    "Zerlege eine große Quest in zwei kleinere.",
-    "2-Minuten-Regel: Was unter 2 Minuten dauert, jetzt tun.",
-    "Räume deinen digitalen Schreibtisch auf: Downloads, Tabs.",
-    "Notiere den allerersten konkreten Schritt deiner Hauptquest.",
-    "Setze einen 25-Minuten-Timer für eine Quest — nur diese.",
-    "Streiche eine Aufgabe, die ehrlich gesagt niemand braucht."
+  body: { name: "Body", icon: "🌿", energy: 1,
+    motto: "Sorge für dein Gefäß: Gesundheit, Bewegung, Gewohnheiten, Treibstoff.",
+    cards: [
+    "Trink jetzt ein großes Glas Wasser.",
+    "20 Kniebeugen oder 1 Minute Dehnen — such es dir aus.",
+    "Geh eine Runde um den Block.",
+    "Iss ein Stück Obst oder Gemüse.",
+    "Rolle Schultern und Nacken — 10 langsame Kreise.",
+    "Steh auf und bleib 2 Minuten in Bewegung.",
+    "Prüfe deine Haltung: Füße, Rücken, Schultern.",
+    "Nimm heute bewusst den längeren Weg oder die Treppe.",
+    "Drei tiefe Atemzüge am offenen Fenster.",
+    "Setz dich 5 Minuten in die Sonne oder ans Fenster."
   ]},
-  kopf: { name: "Kopf & Geist", icon: "🧠", energy: 0, cards: [
+  soul: { name: "Soul", icon: "💜", energy: 1,
+    motto: "Nähre deine innere Welt: Gedanken, Gefühle, Werte, Sinn.",
+    cards: [
+    "Schreib eine Sache auf, die heute schon gut war.",
+    "10 Minuten ohne Bildschirm — nur du und dein Getränk.",
+    "Sag heute einmal bewusst Nein zu etwas.",
+    "Hör ein Lied, das du früher geliebt hast.",
+    "Gönn dir nach der nächsten Aufgabe eine echte Belohnung.",
+    "Frag dich ehrlich: Was brauche ich gerade wirklich?",
     "Schreib drei Gedanken ungefiltert auf — dann leg sie ab.",
     "1 Minute: Augen zu, nur hören.",
     "Lerne ein neues Wort oder einen neuen Fakt.",
@@ -482,24 +433,15 @@ const DECKS = {
     "Plane 10 Minuten für etwas, worauf du dich freust.",
     "Kein Multitasking bis zur nächsten Station.",
     "Erinnere dich an einen Erfolg der letzten Woche.",
-    "Skizziere etwas auf Papier — Qualität völlig egal."
+    "Skizziere etwas auf Papier — Qualität völlig egal.",
+    "Schreib jemandem, an den du heute gedacht hast.",
+    "Bedanke dich bei einer Person — konkret, nicht allgemein.",
+    "Schlag jemandem ein Treffen für diese Woche vor.",
+    "Ruf kurz zu Hause an.",
+    "Antworte auf die Nachricht, die du vor dir herschiebst.",
+    "Erzähl heute Abend jemandem dein Tages-Highlight."
   ]}
 };
-
-const RIDDLES = [
-  { q: "Ich habe Städte, doch keine Häuser. Wälder, doch keine Bäume. Flüsse, doch kein Wasser. Was bin ich?", a: ["landkarte", "karte", "eine landkarte", "eine karte"] },
-  { q: "Was wird nasser, je mehr es trocknet?", a: ["handtuch", "ein handtuch", "das handtuch"] },
-  { q: "Schnelle Rechnung am Wegesrand: 17 + 26 = ?", a: ["43"] },
-  { q: "Ordne die Buchstaben: L E P F A — welche Frucht versteckt sich?", a: ["apfel"] },
-  { q: "Welche Zahl setzt die Reihe fort: 2, 4, 8, 16, … ?", a: ["32"] },
-  { q: "Ich gehe und gehe, doch bewege mich nie vom Fleck. Was bin ich?", a: ["uhr", "die uhr", "eine uhr", "zeit", "die zeit"] },
-  { q: "Der Stein verlangt es knapp: 9 × 7 = ?", a: ["63"] },
-  { q: "Ordne die Buchstaben: N R E G E — was fällt vom Himmel?", a: ["regen"] },
-  { q: "Was hat einen Hals, aber keinen Kopf?", a: ["flasche", "eine flasche", "die flasche"] },
-  { q: "Je mehr du von mir wegnimmst, desto größer werde ich. Was bin ich?", a: ["loch", "ein loch", "das loch"] },
-  { q: "Noch eine Wegzoll-Rechnung: 45 − 18 = ?", a: ["27"] },
-  { q: "Was gehört dir allein, wird aber von anderen viel öfter benutzt?", a: ["name", "mein name", "der name"] }
-];
 
 /* =============== Zustand =============== */
 function defaultState() {
@@ -510,7 +452,7 @@ function defaultState() {
     ],
     energy: 10, maxEnergy: 10, xp: 0,
     day: "", visited: {}, drawn: {}, rastUsed: {},
-    usedRiddles: [], usedCards: {},
+    usedCards: {},
     chronicle: [], lastFrac: 0
   };
 }
@@ -543,16 +485,12 @@ function now() {
 }
 function todayKey() {
   const d = now();
+  d.setMinutes(d.getMinutes() - DAY_ANCHOR); // der Quest-Tag wechselt um 06:00, nicht um Mitternacht
   return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
 }
 function minsNow() { const d = now(); return d.getHours() * 60 + d.getMinutes(); }
 function toMins(hhmm) { const [h, m] = hhmm.split(":").map(Number); return h * 60 + m; }
-function timeFraction() {
-  const m = minsNow();
-  if (m <= DAY_START) return 0;
-  if (m >= DAY_END) return 1;
-  return (m - DAY_START) / (DAY_END - DAY_START);
-}
+function timeFraction() { return qMins(minsNow()) / 1440; }
 
 async function fetchWithTimeout(url, ms) {
   const ctrl = new AbortController();
@@ -635,43 +573,32 @@ function gainXP(n, why) {
   toast("+" + n + " XP — " + why + (after > before ? " · Stufe " + after + " erreicht!" : ""));
 }
 
-/* =============== Karte =============== */
+/* =============== Karte (Spielbrett) =============== */
 const svgNS = "http://www.w3.org/2000/svg";
-const trail = document.getElementById("trail");
+/* Bildkoordinaten der 24 Stundenfelder auf dem Brett, Index 0 = 06:00 (Start) */
+const HOUR_ANCHORS = [
+  [100, 497], [123, 352], [212, 239], [342, 156], [519, 104], [656, 93],
+  [772, 132], [890, 93], [1021, 100], [1175, 153], [1308, 238], [1398, 347],
+  [1412, 468], [1360, 628], [1239, 710], [1085, 758], [999, 768], [910, 778],
+  [772, 770], [625, 775], [430, 763], [272, 707], [148, 618], [112, 556]
+];
 const trailDone = document.getElementById("trailDone");
-const trailLen = trail.getTotalLength();
-trailDone.setAttribute("stroke-dasharray", "0 " + trailLen);
-function pointAt(frac) { return trail.getPointAtLength(((frac % 1) + 1) % 1 * trailLen); }
-function setProgress(frac) { trailDone.setAttribute("stroke-dasharray", (frac * trailLen) + " " + trailLen); }
-
-function buildBridgeAndTicks() {
-  const bp = pointAt(fracOf("13:05"));
-  const bp2 = pointAt(fracOf("13:05") + 0.006);
-  const ang = Math.atan2(bp2.y - bp.y, bp2.x - bp.x) * 180 / Math.PI;
-  const g = document.getElementById("bridge");
-  g.innerHTML = "";
-  const rect = document.createElementNS(svgNS, "rect");
-  rect.setAttribute("x", "-22"); rect.setAttribute("y", "-9");
-  rect.setAttribute("width", "44"); rect.setAttribute("height", "18");
-  rect.setAttribute("rx", "4");
-  rect.setAttribute("fill", "#B08D57"); rect.setAttribute("stroke", "#6E5230"); rect.setAttribute("stroke-width", "2");
-  const l1 = document.createElementNS(svgNS, "line");
-  l1.setAttribute("x1", "-22"); l1.setAttribute("x2", "22"); l1.setAttribute("y1", "-4"); l1.setAttribute("y2", "-4");
-  l1.setAttribute("stroke", "#6E5230"); l1.setAttribute("stroke-width", "1.2");
-  const l2 = l1.cloneNode(); l2.setAttribute("y1", "4"); l2.setAttribute("y2", "4");
-  g.appendChild(rect); g.appendChild(l1); g.appendChild(l2);
-  g.setAttribute("transform", "translate(" + bp.x + "," + bp.y + ") rotate(" + ang.toFixed(1) + ")");
-
-  const ticks = document.getElementById("hourTicks");
-  ticks.innerHTML = "";
-  for (let h = 7; h <= 21; h++) {
-    const p = pointAt(fracOf(String(h).padStart(2, "0") + ":00"));
-    const c = document.createElementNS(svgNS, "circle");
-    c.setAttribute("cx", p.x); c.setAttribute("cy", p.y);
-    c.setAttribute("r", "2.6");
-    c.setAttribute("fill", "#8A7455");
-    ticks.appendChild(c);
+function pointAt(frac) {
+  const t = (((frac % 1) + 1) % 1) * 24;
+  const i = Math.floor(t) % 24, k = t - Math.floor(t);
+  const a = HOUR_ANCHORS[i], b = HOUR_ANCHORS[(i + 1) % 24];
+  return { x: a[0] + (b[0] - a[0]) * k, y: a[1] + (b[1] - a[1]) * k };
+}
+function setProgress(frac) {
+  const f = Math.max(0, Math.min(1, frac));
+  let d = "M " + HOUR_ANCHORS[0][0] + " " + HOUR_ANCHORS[0][1];
+  const steps = Math.floor(f * 24);
+  for (let i = 1; i <= steps && i < 24; i++) {
+    d += " L " + HOUR_ANCHORS[i][0] + " " + HOUR_ANCHORS[i][1];
   }
+  const p = pointAt(f);
+  d += " L " + p.x.toFixed(1) + " " + p.y.toFixed(1);
+  trailDone.setAttribute("d", d);
 }
 
 function buildStations() {
@@ -686,27 +613,20 @@ function buildStations() {
     grp.setAttribute("role", "button");
     grp.setAttribute("aria-label", st.name + ", " + st.time + " Uhr");
     const c = document.createElementNS(svgNS, "circle");
-    c.setAttribute("r", "17");
+    c.setAttribute("r", "26");
     c.setAttribute("class", "bg");
-    c.setAttribute("fill", state.visited[st.id] ? "#DCE4D2" : "#F6EEDA");
+    c.setAttribute("fill", state.visited[st.id] ? "rgba(220,228,210,.9)" : "rgba(246,238,218,.9)");
     c.setAttribute("stroke", "#352C1D");
-    c.setAttribute("stroke-width", "2");
+    c.setAttribute("stroke-width", "2.5");
     const ic = document.createElementNS(svgNS, "text");
-    ic.setAttribute("y", "1"); ic.setAttribute("font-size", "16");
+    ic.setAttribute("y", "1"); ic.setAttribute("font-size", "24");
     ic.setAttribute("text-anchor", "middle"); ic.setAttribute("dominant-baseline", "middle");
     ic.textContent = st.icon;
-    const lbl = document.createElementNS(svgNS, "text");
-    lbl.setAttribute("y", p.y < 210 ? "-26" : "36");
-    lbl.setAttribute("font-size", "14");
-    lbl.setAttribute("text-anchor", "middle");
-    lbl.setAttribute("fill", "#6B5D42");
-    lbl.setAttribute("font-family", "Georgia, serif");
-    lbl.textContent = st.time;
-    grp.appendChild(c); grp.appendChild(ic); grp.appendChild(lbl);
+    grp.appendChild(c); grp.appendChild(ic);
     if (state.visited[st.id]) {
       const flag = document.createElementNS(svgNS, "path");
-      flag.setAttribute("d", "M 12 -28 L 12 -12 M 12 -28 L 24 -24 L 12 -20");
-      flag.setAttribute("stroke", "#45633E"); flag.setAttribute("stroke-width", "2.4");
+      flag.setAttribute("d", "M 18 -42 L 18 -18 M 18 -42 L 36 -36 L 18 -30");
+      flag.setAttribute("stroke", "#45633E"); flag.setAttribute("stroke-width", "3.5");
       flag.setAttribute("fill", "#45633E"); flag.setAttribute("stroke-linejoin", "round");
       grp.appendChild(flag);
     }
@@ -721,51 +641,9 @@ function buildStations() {
     li.textContent = st.icon + " " + st.time + " " + st.name;
     legend.appendChild(li);
   });
-  const wpLegend = document.createElement("span");
-  wpLegend.textContent = "🃏 Wegmarke: Karte ziehen";
-  legend.appendChild(wpLegend);
-}
-
-function buildWaypoints() {
-  const g = document.getElementById("waypoints");
-  g.innerHTML = "";
-  WAYPOINTS.forEach(wp => {
-    const p = pointAt(fracOf(wp.time));
-    const drawn = state.drawn[wp.id];
-    const grp = document.createElementNS(svgNS, "g");
-    grp.setAttribute("class", "wp-marker");
-    grp.setAttribute("transform", "translate(" + p.x + "," + p.y + ")");
-    grp.setAttribute("tabindex", "0");
-    grp.setAttribute("role", "button");
-    grp.setAttribute("aria-label", "Wegmarke " + wp.time + " Uhr — Karte ziehen");
-    const card = document.createElementNS(svgNS, "rect");
-    card.setAttribute("x", "-7"); card.setAttribute("y", "-10");
-    card.setAttribute("width", "14"); card.setAttribute("height", "20");
-    card.setAttribute("rx", "2.5");
-    card.setAttribute("fill", drawn ? "#DCE4D2" : "#FBF6E8");
-    card.setAttribute("stroke", drawn ? "#45633E" : "#352C1D");
-    card.setAttribute("stroke-width", "1.8");
-    card.setAttribute("transform", "rotate(-8)");
-    const mark = document.createElementNS(svgNS, "text");
-    mark.setAttribute("y", "1"); mark.setAttribute("font-size", "11");
-    mark.setAttribute("text-anchor", "middle"); mark.setAttribute("dominant-baseline", "middle");
-    mark.setAttribute("fill", drawn ? "#45633E" : "#6B5D42");
-    mark.textContent = drawn ? "✓" : "?";
-    grp.appendChild(card); grp.appendChild(mark);
-    grp.addEventListener("click", () => openWaypoint(wp, true));
-    grp.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openWaypoint(wp, true); } });
-    g.appendChild(grp);
-  });
-}
-
-function placeSunMoon() {
-  const arc = document.getElementById("skyArc");
-  const L = arc.getTotalLength();
-  const p = arc.getPointAtLength(timeFraction() * L);
-  const el = document.getElementById("sunmoon");
-  el.setAttribute("x", p.x); el.setAttribute("y", p.y);
-  const m = minsNow();
-  el.textContent = (m < DAY_START + 30 || m > DAY_END - 90) ? "🌙" : "☀️";
+  const deckLegend = document.createElement("span");
+  deckLegend.textContent = "Kartenstapel: ☑️ Task · 🌿 Body · 💜 Soul";
+  legend.appendChild(deckLegend);
 }
 
 let animHandle = null;
@@ -791,16 +669,14 @@ function moveHero(fromFrac, toFrac) {
 
 /* =============== Ereignis-Warteschlange =============== */
 function allEvents() {
-  const evs = [];
-  STATIONS.forEach(st => { if (st.type !== "camp") evs.push({ kind: "station", ref: st, mins: toMins(st.time) }); });
-  WAYPOINTS.forEach(wp => evs.push({ kind: "waypoint", ref: wp, mins: toMins(wp.time) }));
-  return evs.sort((a, b) => a.mins - b.mins);
+  return STATIONS
+    .filter(st => st.type !== "camp")
+    .map(st => ({ ref: st, q: qMins(toMins(st.time)) }))
+    .sort((a, b) => a.q - b.q);
 }
 function pendingEvents() {
-  const m = minsNow();
-  return allEvents().filter(ev =>
-    ev.mins <= m && (ev.kind === "station" ? !state.visited[ev.ref.id] : !state.drawn[ev.ref.id])
-  );
+  const q = qMins(minsNow());
+  return allEvents().filter(ev => ev.q <= q && !state.visited[ev.ref.id]);
 }
 function updateNextHint() {
   const hint = document.getElementById("nextHint");
@@ -810,20 +686,18 @@ function updateNextHint() {
     hint.textContent = "🔔 " + pend.length + " Ereignis" + (pend.length > 1 ? "se warten" : " wartet");
     return;
   }
-  const m = minsNow();
-  const next = allEvents().find(ev => ev.mins > m);
+  const q = qMins(minsNow());
+  const next = allEvents().find(ev => ev.q > q);
   if (next) {
-    const label = next.kind === "station" ? next.ref.icon + " " + next.ref.name : "🃏 Wegmarke";
-    hint.textContent = "Als Nächstes: " + label + " (" + next.ref.time + ")";
+    hint.textContent = "Als Nächstes: " + next.ref.icon + " " + next.ref.name + " (" + next.ref.time + ")";
   } else {
-    hint.textContent = "Der Weg ist für heute gegangen. 🌙";
+    hint.textContent = "Der Rundweg ist für heute vollendet. 🌙";
   }
 }
 function openNextEncounter() {
   const pend = pendingEvents();
   if (pend.length > 0) {
-    const ev = pend[0];
-    if (ev.kind === "station") openStation(ev.ref, false); else openWaypoint(ev.ref, false);
+    openStation(pend[0].ref, false);
     return true;
   }
   enc.innerHTML = '<div class="scroll-card"><div class="enc-empty">Kein Reisender wartet gerade am Weg. Das Questbuch liegt unten bereit.</div></div>';
@@ -832,7 +706,7 @@ function openNextEncounter() {
 function finishEvent(chronText) {
   if (chronText) addChronicle(chronText);
   save();
-  buildStations(); buildWaypoints(); updateNextHint(); renderHeader(); renderLog();
+  buildStations(); updateNextHint(); renderHeader(); renderLog();
   const pend = pendingEvents();
   if (pend.length > 0) {
     enc.innerHTML = '<div class="scroll-card"><div class="enc-empty">Der Weg führt weiter …</div>' +
@@ -860,22 +734,21 @@ function openStation(st, manual) {
       '<p class="speech">„Hier beginnt und endet jede Reise. Was heute nicht bezwungen wird, wartet geduldig auf morgen.“</p>');
     return;
   }
-  if (manual && toMins(st.time) > minsNow()) {
-    enc.innerHTML = encWrap({ icon: st.icon, name: st.name, subtitle: "Station von " + st.time + " Uhr" },
+  if (manual && qMins(toMins(st.time)) > qMins(minsNow())) {
+    enc.innerHTML = encWrap({ icon: st.icon, name: st.name, subtitle: "Feld von " + st.time + " Uhr" },
       '<p class="speech">„Noch bin ich nicht an der Reihe, Wanderer — komm um ' + st.time + ' Uhr wieder.“</p>');
     return;
   }
-  if (state.visited[st.id] && manual) {
-    enc.innerHTML = encWrap({ icon: st.icon, name: st.name, subtitle: "Station von " + st.time + " Uhr" },
+  if (state.visited[st.id] && manual && st.type !== "draw") {
+    enc.innerHTML = encWrap({ icon: st.icon, name: st.name, subtitle: "Feld von " + st.time + " Uhr" },
       '<p class="speech">„Wir haben heute schon gesprochen, Wanderer. Bis morgen!“</p>');
     return;
   }
-  const head = { icon: st.icon, name: st.name, subtitle: "Station von " + st.time + " Uhr" };
+  const head = { icon: st.icon, name: st.name, subtitle: "Feld von " + st.time + " Uhr" };
   switch (st.type) {
     case "plan": renderPlan(st, head); break;
-    case "riddle": renderRiddle(st, head); break;
+    case "draw": renderDraw(st, head); break;
     case "rast": renderRast(st, head); break;
-    case "heal": renderHeal(st, head); break;
     case "reflect": renderReflect(st, head); break;
   }
   enc.scrollIntoView({ block: "nearest" });
@@ -917,71 +790,6 @@ function renderPlan(st, head) {
   });
 }
 
-/* --- Rätselstationen --- */
-function pickRiddle() {
-  let unused = RIDDLES.map((r, i) => i).filter(i => !state.usedRiddles.includes(i));
-  if (unused.length === 0) { state.usedRiddles = []; unused = RIDDLES.map((r, i) => i); }
-  const i = unused[Math.floor(Math.random() * unused.length)];
-  state.usedRiddles.push(i);
-  save();
-  return RIDDLES[i];
-}
-function renderRiddle(st, head) {
-  const r = pickRiddle();
-  const intro = st.id === "stein"
-    ? "„Halt, Wanderer! Sieh zurück: Du bist schon weit gekommen. Löse mein Rätsel, und ich erlaube dir, eine Quest deiner Wahl voranzubringen.“"
-    : "„Psst … der Nachmittag ist lang, doch du hast schon einiges bezwungen. Ein Rätsel gegen einen Handgriff im Questbuch?“";
-  enc.innerHTML = encWrap(head,
-    '<p class="speech">' + intro + "</p>" +
-    '<div class="riddle-box"><div class="riddle-q">' + esc(r.q) + "</div>" +
-    '<div class="riddle-row"><input type="text" id="riddleAns" placeholder="Deine Antwort" autocomplete="off">' +
-    '<button class="primary" id="riddleCheck">Antwort geben</button></div>' +
-    '<div id="riddleFeed" style="margin-top:8px;font-size:15px"></div></div>' +
-    '<div class="enc-actions"><button class="ghost" id="riddleSkip">Schweigend vorbeigehen</button></div>');
-  const input = document.getElementById("riddleAns");
-  const check = () => {
-    const val = input.value.trim().toLowerCase();
-    if (r.a.includes(val)) {
-      gainXP(10, "Rätsel gelöst");
-      renderRiddleReward(st, head);
-    } else {
-      document.getElementById("riddleFeed").innerHTML = '<span style="color:var(--wine)">„Nicht ganz … versuch es noch einmal.“</span>';
-      input.select();
-    }
-  };
-  document.getElementById("riddleCheck").addEventListener("click", check);
-  input.addEventListener("keydown", e => { if (e.key === "Enter") check(); });
-  document.getElementById("riddleSkip").addEventListener("click", () => finishStation(st, "Der Wanderer zog schweigend am " + st.name + " vorbei."));
-  input.focus();
-}
-function renderRiddleReward(st, head) {
-  const cands = state.tasks.filter(t => t.col === "reise" || t.col === "unterwegs");
-  let list = "";
-  if (cands.length === 0) {
-    list = '<p style="color:var(--ink-soft);font-style:italic">Keine Quest ist gerade auf der Reise — hefte unten welche ans Brett und nimm sie mit.</p>';
-  } else {
-    list = '<div class="pick-list">' + cands.map(t => {
-      const btns = t.col === "unterwegs"
-        ? '<button class="primary" data-done="' + t.id + '">✓ Bezwungen</button>'
-        : '<button data-go="' + t.id + '">→ Angehen</button> <button class="primary" data-done="' + t.id + '">✓ Bezwungen</button>';
-      return '<div class="pick-item"><span class="t">' + esc(t.title) + ' <span style="color:var(--ink-soft);font-size:13px">(' + TYPE_NAME[t.type] + " · −" + t.cost + ")</span></span>" + btns + "</div>";
-    }).join("") + "</div>";
-  }
-  enc.innerHTML = encWrap(head,
-    '<p class="speech">„Wohl gesprochen! Sieh nur, was du heute schon alles trägst — nun wähle: Welche Quest bringst du voran?“</p>' +
-    list +
-    '<div class="enc-actions" style="margin-top:12px"><button class="ghost" id="rewardSkip">Ohne Tat weiterziehen</button></div>');
-  enc.querySelectorAll("[data-done]").forEach(b => b.addEventListener("click", () => {
-    completeTask(b.getAttribute("data-done"));
-    finishStation(st, "Am " + st.name + " wurde eine Quest bezwungen.");
-  }));
-  enc.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => {
-    const ok = startTask(b.getAttribute("data-go"));
-    if (ok) finishStation(st, "Am " + st.name + " nahm der Wanderer eine neue Quest in Angriff.");
-  }));
-  document.getElementById("rewardSkip").addEventListener("click", () => finishStation(st, null));
-}
-
 /* --- Wirt --- */
 function renderRast(st, head) {
   enc.innerHTML = encWrap(head,
@@ -990,23 +798,6 @@ function renderRast(st, head) {
     '<div class="enc-actions" style="margin-top:14px"><button class="ghost" id="wirtLater">„Später, Bromli.“</button></div>');
   renderFireChips(document.getElementById("wirtChips"), () => finishStation(st, "Bei Bromli gab es eine ehrliche Rast."));
   document.getElementById("wirtLater").addEventListener("click", () => finishStation(st, "Der Wanderer winkte Bromli nur kurz zu. Der Wirt seufzte."));
-}
-
-/* --- Heiler --- */
-function renderHeal(st, head) {
-  const low = state.energy <= Math.ceil(state.maxEnergy * 0.3);
-  const speech = low
-    ? "„Bleib stehen. Dein Vorrat ist fast aufgezehrt — du blutest aus, ohne es zu merken. Wann hast du zuletzt getrunken, gegessen, das Lager verlassen? Nimm eine Rast, das ist keine Bitte.“"
-    : "„Dein Schritt ist noch fest, gut. Trotzdem: Wer erst rastet, wenn er fällt, rastet zu spät. Gönn dir etwas — oder zieh mit meinem Segen weiter.“";
-  enc.innerHTML = encWrap(head,
-    '<p class="speech">' + speech + "</p>" +
-    '<div class="fire-chips" id="healChips"></div>' +
-    '<div class="enc-actions" style="margin-top:14px">' +
-    (low ? "" : '<button class="ghost" id="healLater">Mit Segen weiterziehen</button>') +
-    "</div>");
-  renderFireChips(document.getElementById("healChips"), () => finishStation(st, "Corvus nickte zufrieden: Der Wanderer hat auf seinen Körper gehört."));
-  const later = document.getElementById("healLater");
-  if (later) later.addEventListener("click", () => finishStation(st, null));
 }
 
 /* --- Chronistin --- */
@@ -1027,7 +818,7 @@ function renderReflect(st, head) {
   document.getElementById("reflectSkip").addEventListener("click", () => finishStation(st, "Der Wanderer saß still bei Mera am Feuer. Auch das ist eine Geschichte."));
 }
 
-/* =============== Wegmarken: Karten ziehen =============== */
+/* =============== Kartenfelder: Task, Body, Soul ziehen =============== */
 function drawCardFrom(cat) {
   const deck = DECKS[cat];
   if (!state.usedCards[cat]) state.usedCards[cat] = [];
@@ -1038,52 +829,56 @@ function drawCardFrom(cat) {
   return i;
 }
 
-function openWaypoint(wp, manual) {
-  const head = { icon: "🃏", name: "Eine Wegmarke", subtitle: "Kartenzug von " + wp.time + " Uhr" };
-  if (manual && toMins(wp.time) > minsNow()) {
-    enc.innerHTML = encWrap(head, '<p class="speech">Die Karten liegen noch verdeckt — komm um ' + wp.time + ' Uhr hier vorbei.</p>');
-    return;
-  }
-  const drawn = state.drawn[wp.id];
+function renderDraw(st, head) {
+  const drawn = state.drawn[st.id];
   if (drawn) {
-    const deck = DECKS[drawn.cat];
-    enc.innerHTML = encWrap(head, renderDrawnCardHTML(deck, drawn.idx, drawn.done) +
+    enc.innerHTML = encWrap(head, renderDrawnCardHTML(drawn.cat, drawn.idx, drawn.done) +
       '<div class="enc-actions" style="justify-content:center">' +
-      (drawn.done ? "" : '<button class="primary" id="cardDoneLate">✓ Jetzt erledigt</button>') +
+      (drawn.cat && !drawn.done ? '<button class="primary" id="cardDoneLate">✓ Jetzt erledigt</button>' : "") +
       "</div>");
     const late = document.getElementById("cardDoneLate");
-    if (late) late.addEventListener("click", () => resolveCard(wp, true, true));
+    if (late) late.addEventListener("click", () => {
+      applyCardDone(st);
+      save(); buildStations(); updateNextHint(); renderHeader(); renderLog();
+      openNextEncounter();
+    });
     enc.scrollIntoView({ block: "nearest" });
     return;
   }
-  const decksHTML = Object.keys(DECKS).map(cat => {
+  const decksHTML = st.decks.map(cat => {
     const d = DECKS[cat];
-    return '<button class="deck" data-cat="' + cat + '" aria-label="Kategorie ' + d.name + ' ziehen">' +
+    return '<button class="deck" data-cat="' + cat + '" aria-label="Eine ' + d.name + '-Karte ziehen">' +
       '<span class="layer"></span><span class="layer"></span>' +
       '<span class="face"><span class="ic">' + d.icon + '</span><span class="nm">' + d.name + "</span>" +
       '<span class="ct">' + (d.energy > 0 ? "+" + d.energy + " ⚡ · " : "") + '15 XP</span></span></button>';
   }).join("");
+  const mottos = st.decks.map(cat => {
+    const d = DECKS[cat];
+    return d.icon + " <strong>" + d.name + "</strong> — " + d.motto;
+  }).join("<br>");
   enc.innerHTML = encWrap(head,
-    '<p class="speech">Ein Wegstein mit einer kleinen Truhe voller Karten. Eine Inschrift: „Zieh eine Karte, Wanderer — der Weg besteht nicht nur aus Pflichten.“</p>' +
+    '<p class="speech">' + st.speech + "</p>" +
     '<div class="deck-row">' + decksHTML + "</div>" +
+    '<div style="font-size:14px;color:var(--ink-soft)">' + mottos + "</div>" +
     '<div class="enc-actions" style="margin-top:10px">' +
-    '<button id="deckRandom">🎲 Das Schicksal entscheiden lassen</button>' +
-    '<button class="ghost" id="deckSkip">Truhe geschlossen lassen</button></div>');
-  enc.querySelectorAll(".deck").forEach(b => b.addEventListener("click", () => revealCard(wp, b.getAttribute("data-cat"))));
-  document.getElementById("deckRandom").addEventListener("click", () => {
-    const cats = Object.keys(DECKS);
-    revealCard(wp, cats[Math.floor(Math.random() * cats.length)]);
+    (st.decks.length > 1 ? '<button id="deckRandom">🎲 Das Schicksal entscheiden lassen</button>' : "") +
+    '<button class="ghost" id="deckSkip">Feld überspringen</button></div>');
+  enc.querySelectorAll(".deck").forEach(b => b.addEventListener("click", () => revealCard(st, b.getAttribute("data-cat"))));
+  const rnd = document.getElementById("deckRandom");
+  if (rnd) rnd.addEventListener("click", () => {
+    revealCard(st, st.decks[Math.floor(Math.random() * st.decks.length)]);
   });
   document.getElementById("deckSkip").addEventListener("click", () => {
-    state.drawn[wp.id] = { cat: null, idx: -1, done: false, skipped: true };
-    finishEvent("Die Truhe an der Wegmarke blieb heute geschlossen.");
+    state.drawn[st.id] = { cat: null, idx: -1, done: false, skipped: true };
+    finishStation(st, "Das Feld „" + st.name + "“ blieb heute ungenutzt.");
   });
   enc.scrollIntoView({ block: "nearest" });
 }
 
-function renderDrawnCardHTML(deck, idx, done) {
-  if (!deck || idx < 0) return '<p class="enc-empty">Die Truhe blieb geschlossen.</p>';
-  return '<div class="drawn-card' + (done ? "" : "") + '">' +
+function renderDrawnCardHTML(cat, idx, done) {
+  if (!cat || idx < 0) return '<p class="enc-empty">Dieses Feld wurde heute übersprungen.</p>';
+  const deck = DECKS[cat];
+  return '<div class="drawn-card ' + cat + '">' +
     '<div class="cat">' + deck.name + "</div>" +
     '<div class="ic">' + deck.icon + "</div>" +
     '<div class="txt">' + esc(deck.cards[idx]) + "</div>" +
@@ -1091,34 +886,39 @@ function renderDrawnCardHTML(deck, idx, done) {
     "</div>";
 }
 
-function revealCard(wp, cat) {
+function revealCard(st, cat) {
   const deck = DECKS[cat];
   const idx = drawCardFrom(cat);
-  state.drawn[wp.id] = { cat: cat, idx: idx, done: false };
+  state.drawn[st.id] = { cat: cat, idx: idx, done: false };
   save();
-  const head = { icon: deck.icon, name: "Karte: " + deck.name, subtitle: "Wegmarke von " + wp.time + " Uhr" };
+  const head = { icon: deck.icon, name: "Karte: " + deck.name, subtitle: st.name + " · " + st.time + " Uhr" };
   enc.innerHTML = encWrap(head,
-    renderDrawnCardHTML(deck, idx, false) +
+    renderDrawnCardHTML(cat, idx, false) +
     '<div class="enc-actions" style="justify-content:center">' +
     '<button class="primary" id="cardDone">✓ Erledigt</button>' +
     '<button class="ghost" id="cardLater">Beiseitelegen — mach ich später</button></div>');
-  document.getElementById("cardDone").addEventListener("click", () => resolveCard(wp, true, false));
-  document.getElementById("cardLater").addEventListener("click", () => resolveCard(wp, false, false));
+  document.getElementById("cardDone").addEventListener("click", () => resolveCard(st, true));
+  document.getElementById("cardLater").addEventListener("click", () => resolveCard(st, false));
 }
-function resolveCard(wp, done, wasLate) {
-  const d = state.drawn[wp.id];
-  if (!d || d.idx < 0) return;
+function applyCardDone(st) {
+  const d = state.drawn[st.id];
+  if (!d || d.idx < 0 || d.done) return;
   const deck = DECKS[d.cat];
-  d.done = done;
+  d.done = true;
+  if (deck.energy > 0) gainEnergy(deck.energy);
+  gainXP(15, "Karte „" + deck.name + "“ erfüllt");
+  addChronicle("Karte gezogen und erfüllt (" + deck.name + ", " + st.name + "): " + deck.cards[d.idx]);
+}
+function resolveCard(st, done) {
+  const d = state.drawn[st.id];
+  if (!d || d.idx < 0) return;
   if (done) {
-    if (deck.energy > 0) gainEnergy(deck.energy);
-    gainXP(15, "Karte „" + deck.name + "“ erfüllt");
-    addChronicle("Karte gezogen und erfüllt (" + deck.name + "): " + deck.cards[d.idx]);
+    applyCardDone(st);
+    finishStation(st, null);
   } else {
-    addChronicle("Karte gezogen (" + deck.name + "): " + deck.cards[d.idx] + " — liegt noch auf dem Tisch.");
+    const deck = DECKS[d.cat];
+    finishStation(st, "Karte gezogen (" + deck.name + ", " + st.name + "): " + deck.cards[d.idx] + " — liegt noch auf dem Tisch.");
   }
-  if (wasLate) { save(); buildWaypoints(); renderHeader(); renderLog(); openNextEncounter(); return; }
-  finishEvent(null);
 }
 
 /* =============== Lagerfeuer =============== */
@@ -1284,9 +1084,6 @@ function toast(msg) {
 function renderAllTimeDependent(animateFrom) {
   rollover();
   buildStations();
-  buildWaypoints();
-  buildBridgeAndTicks();
-  placeSunMoon();
   updateNextHint();
   renderTimeNote();
   const fracNow = timeFraction();
@@ -1313,8 +1110,13 @@ syncClock().then(synced => {
 });
 
 setInterval(() => {
+  if (todayKey() !== state.day) { // 06:00 — ein neuer Quest-Tag beginnt am Lager
+    renderAllTimeDependent(0);
+    renderHeader(); renderBoard(); renderFire(); renderLog();
+    openNextEncounter();
+    return;
+  }
   renderTimeNote();
-  placeSunMoon();
   updateNextHint();
   const fracNow = timeFraction();
   if (Math.abs(fracNow - (state.lastFrac || 0)) > 0.004) {
