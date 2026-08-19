@@ -465,6 +465,13 @@ function shuffle(arr){
   return a;
 }
 
+// Hides the target word inside an example sentence so games that train
+// spelling never show the correct letters before the student answers.
+function blankWord(ex, word){
+  const re = new RegExp(word.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'i');
+  return ex.replace(re, '_____');
+}
+
 /* ================= RENDER SHELL ================= */
 
 const app = document.getElementById('app');
@@ -624,7 +631,7 @@ function scrambleHTML(){
     <button class="back-link" onclick="WC.abandonGame()">\u2190 leave realm</button>
     <div class="game-shell">
       <div class="prompt-label">ORE SCRAMBLE \u00b7 ${G.idx+1} / ${G.words.length}</div>
-      <div class="word-hint">Clue: <b>${word.de}</b> \u2014 <i>"${word.ex}"</i></div>
+      <div class="word-hint">Clue: <b>${word.de}</b> \u2014 <i>"${blankWord(word.ex, word.word)}"</i></div>
       <div class="answer-slots">${slots}</div>
       <div class="scramble-letters">${tiles}</div>
       <div class="feedback ${G.feedback?G.feedback.cls:''}">${G.feedback?G.feedback.msg:''}</div>
@@ -670,7 +677,7 @@ function forgeHTML(){
     <button class="back-link" onclick="WC.abandonGame()">\u2190 leave realm</button>
     <div class="game-shell">
       <div class="prompt-label">FORGE TYPE \u00b7 ${G.idx+1} / ${G.words.length}</div>
-      <div class="word-hint">German clue: <b>${word.de}</b><br><i>"${word.ex.replace(word.word, '_____')}"</i></div>
+      <div class="word-hint">German clue: <b>${word.de}</b><br><i>"${blankWord(word.ex, word.word)}"</i></div>
       <input id="forgeInput" class="spell-input ${checked?(G.lastCorrect?'correct':'wrong'):''}" type="text"
         autocomplete="off" autocapitalize="off" spellcheck="false"
         value="${value}" placeholder="type the word..." onkeydown="WC.forgeKey(event)" oninput="WC.forgeInput(this.value)"/>
