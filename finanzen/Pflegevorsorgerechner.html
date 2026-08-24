@@ -435,6 +435,22 @@
     </div>
   </section>
 
+  <!-- Break-Even: zeitliche Entwicklung der drei Modelle -->
+  <section class="card rounded-2xl p-5 md:p-6 mb-6">
+    <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+      <div>
+        <h3 class="font-display font-semibold text-base mb-1">Zeitliche Entwicklung &amp; Break-Even der drei Modelle</h3>
+        <p class="text-xs text-muted max-w-xl">Monatliche Gesamtverfügbarkeit aller drei Modelle bei gleichbleibender Rendite und gleichbleibendem Budget, abhängig vom Alter bei Pflegebeginn bzw. vom erwarteten Sterbealter. Die gestrichelte rote Linie markiert den Break-even zwischen reiner Versicherung und reinem ETF-Aufbau.</p>
+      </div>
+      <div class="flex rounded-lg border border-token overflow-hidden text-xs font-medium shrink-0" role="group" aria-label="X-Achse wählen">
+        <button type="button" id="breakEvenModeCare" aria-pressed="true" class="px-3 py-1.5 transition-colors">Pflegealter variabel</button>
+        <button type="button" id="breakEvenModeDeath" aria-pressed="false" class="px-3 py-1.5 transition-colors">Sterbealter variabel</button>
+      </div>
+    </div>
+    <div class="chart-wrap"><canvas id="chartBreakEven"></canvas></div>
+    <p id="breakEvenText" class="text-sm text-muted mt-3 leading-relaxed"></p>
+  </section>
+
   <!-- Footer / assumptions -->
   <footer id="methodik" class="text-xs text-muted leading-relaxed border-t border-token pt-6 pb-2 scroll-mt-4">
     <h2 class="font-display text-sm font-semibold text-ink mb-3">Methodik, Steuerannahmen &amp; Grenzen dieser Berechnung</h2>
@@ -515,6 +531,9 @@
     goalBadge: el('goalBadge'),
     goalFill: el('goalFill'),
     goalText: el('goalText'),
+    breakEvenText: el('breakEvenText'),
+    breakEvenModeCare: el('breakEvenModeCare'),
+    breakEvenModeDeath: el('breakEvenModeDeath'),
   };
 
   // ---------- Formatting helpers ----------
@@ -559,12 +578,111 @@
     return { bruttoFV, contributions, tax, nettoDepot, etfMonthly, insMonthly, otherBenefits, combined };
   }
 
+  // Sweeps either careAge (Sterbealter fest) or deathAge (Pflegealter fest) across its slider range
+  // and recomputes all three scenarios per year, to plot how the monthly amounts evolve with age
+  // and where the pure-insurance and pure-ETF strategies cross over.
+  function computeBreakEvenData(mode, params) {
+    const { startAge, careAge, deathAge, etfReturn, totalBudget, insuranceBudget, etfBudget, dailyFactor, otherBenefits, sparerpauschbetrag, churchTaxRate } = params;
+    let xMin, xMax;
+    if (mode === 'care') {
+      xMin = Math.max(Number(inputs.careAge.min), startAge + 1);
+      xMax = Math.min(Number(inputs.careAge.max), deathAge - 1);
+    } else {
+      xMin = Math.max(Number(inputs.deathAge.min), careAge + 1);
+      xMax = Number(inputs.deathAge.max);
+    }
+    if (xMin > xMax) return { ages: [], s1: [], s2: [], s3: [], crossoverX: null, xMin, xMax, valid: false };
+
+    const ages = [], s1 = [], s2 = [], s3 = [];
+    for (let x = xMin; x <= xMax; x++) {
+      const care = mode === 'care' ? x : careAge;
+      const death = mode === 'care' ? deathAge : x;
+      const n1 = Math.max(0, (care - startAge) * 12);
+      const n2 = Math.max(0, (death - care) * 12);
+      const r1 = computeScenario(totalBudget, 0, n1, n2, etfReturn, dailyFactor, otherBenefits, sparerpauschbetrag, churchTaxRate);
+      const r2 = computeScenario(insuranceBudget, etfBudget, n1, n2, etfReturn, dailyFactor, otherBenefits, sparerpauschbetrag, churchTaxRate);
+      const r3 = computeScenario(0, totalBudget, n1, n2, etfReturn, dailyFactor, otherBenefits, sparerpauschbetrag, churchTaxRate);
+      ages.push(x);
+      s1.push(r1.combined);
+      s2.push(r2.combined);
+      s3.push(r3.combined);
+    }
+
+    // Break-even zwischen 100% Versicherung (s1) und 100% ETF (s3): erste Vorzeichenänderung linear interpolieren
+    let crossoverX = null;
+    for (let idx = 1; idx < ages.length; idx++) {
+      const prevDiff = s3[idx - 1] - s1[idx - 1];
+      const currDiff = s3[idx] - s1[idx];
+      if (prevDiff === 0) { crossoverX = ages[idx - 1]; break; }
+      if ((prevDiff < 0 && currDiff >= 0) || (prevDiff > 0 && currDiff <= 0)) {
+        const t = prevDiff / (prevDiff - currDiff);
+        crossoverX = ages[idx - 1] + t * (ages[idx] - ages[idx - 1]);
+        break;
+      }
+    }
+
+    return { ages, s1, s2, s3, crossoverX, xMin, xMax, valid: true };
+  }
+
+  function updateBreakEvenChart(params) {
+    if (!chartBreakEven) return;
+    const data = computeBreakEvenData(breakEvenMode, params);
+    const { careAge, deathAge } = params;
+
+    if (!data.valid) {
+      chartBreakEven.data.datasets.forEach((ds) => { ds.data = []; });
+      chartBreakEven.options.plugins.verticalLines = [];
+      chartBreakEven.update();
+      out.breakEvenText.textContent = 'Für die aktuelle Alterskombination ist im gewählten Modus kein sinnvoller Wertebereich darstellbar – bitte Einstiegs-, Pflege- oder Sterbealter anpassen.';
+      return;
+    }
+
+    chartBreakEven.data.datasets[0].data = data.ages.map((age, idx) => ({ x: age, y: data.s1[idx] }));
+    chartBreakEven.data.datasets[1].data = data.ages.map((age, idx) => ({ x: age, y: data.s2[idx] }));
+    chartBreakEven.data.datasets[2].data = data.ages.map((age, idx) => ({ x: age, y: data.s3[idx] }));
+    chartBreakEven.options.scales.x.min = data.xMin;
+    chartBreakEven.options.scales.x.max = data.xMax;
+    chartBreakEven.options.scales.x.title.text = breakEvenMode === 'care' ? 'Pflegealter (Jahre)' : 'Sterbealter (Jahre)';
+
+    const currentX = breakEvenMode === 'care' ? careAge : deathAge;
+    const lines = [
+      { value: currentX, color: cssVar('--ink-muted') || '#8D9AAE', dash: [2, 3], label: 'aktuell gewählt', isBreakEven: false },
+    ];
+    if (data.crossoverX != null) {
+      lines.push({ value: data.crossoverX, color: cssVar('--danger') || '#B4433D', dash: [6, 4], label: `Break-even: ~${Math.round(data.crossoverX)} J.`, isBreakEven: true });
+    }
+    chartBreakEven.options.plugins.verticalLines = lines;
+    chartBreakEven.update();
+
+    out.breakEvenText.textContent = describeBreakEven(breakEvenMode, data, careAge, deathAge);
+  }
+
+  function describeBreakEven(mode, data, careAge, deathAge) {
+    const etfStartsLower = data.s3[0] < data.s1[0];
+    const beforeLabel = etfStartsLower ? '100% Versicherung' : '100% ETF';
+    const afterLabel = etfStartsLower ? '100% ETF' : '100% Versicherung';
+
+    if (data.crossoverX != null) {
+      if (mode === 'care') {
+        return `Bei festem Sterbealter (${deathAge} Jahre) liefert bis zu einem Pflegealter von rund ${Math.round(data.crossoverX)} Jahren das Modell „${beforeLabel}“ die höhere monatliche Verfügbarkeit, danach das Modell „${afterLabel}“. Aktuell gewähltes Pflegealter: ${careAge} Jahre.`;
+      }
+      const duration = Math.round(data.crossoverX - careAge);
+      return `Bei festem Pflegealter (${careAge} Jahre) liefert bis zu einem Sterbealter von rund ${Math.round(data.crossoverX)} Jahren (Pflegedauer ≈ ${duration} Jahre) das Modell „${beforeLabel}“ die höhere monatliche Verfügbarkeit, danach das Modell „${afterLabel}“. Aktuell gewähltes Sterbealter: ${deathAge} Jahre.`;
+    }
+
+    const lastIdx = data.ages.length - 1;
+    const dominant = data.s3[lastIdx] >= data.s1[lastIdx] ? '100% ETF' : '100% Versicherung';
+    return `Im dargestellten Bereich (${data.xMin}–${data.xMax} Jahre) liefert „${dominant}“ durchgehend die höhere monatliche Verfügbarkeit als die jeweils andere reine Strategie – innerhalb dieser Spanne kein Break-even-Punkt.`;
+  }
+
   // ---------- Charts ----------
-  let chartDepot, chartLiquidity;
+  let chartDepot, chartLiquidity, chartBreakEven;
+  let breakEvenMode = 'care'; // 'care' = Pflegealter variabel (Sterbealter fest) · 'death' = Sterbealter variabel (Pflegealter fest)
 
   function initCharts() {
     const ctxDepot = el('chartDepot').getContext('2d');
     const ctxLiquidity = el('chartLiquidity').getContext('2d');
+    const ctxBreakEven = el('chartBreakEven').getContext('2d');
 
     chartDepot = new Chart(ctxDepot, {
       type: 'bar',
@@ -615,6 +733,18 @@
       options: baseChartOptions(true),
       plugins: [targetLinePlugin],
     });
+
+    chartBreakEven = new Chart(ctxBreakEven, {
+      type: 'line',
+      data: {
+        datasets: [
+          { label: '100% Versicherung', data: [], borderColor: '#B5762A', backgroundColor: '#B5762A', borderWidth: 2, pointRadius: 0, tension: 0 },
+          { label: 'Hybrid-Modell', data: [], borderColor: '#2F5D8A', backgroundColor: '#2F5D8A', borderWidth: 2, pointRadius: 0, tension: 0 },
+          { label: '100% ETF', data: [], borderColor: '#1C8A5E', backgroundColor: '#1C8A5E', borderWidth: 2, pointRadius: 0, tension: 0 },
+        ],
+      },
+      options: breakEvenChartOptions(),
+    });
   }
 
   // Custom lightweight plugin: draws a dashed reference line at options.plugins.targetLine.value
@@ -645,6 +775,79 @@
     },
   };
   Chart.register(targetLinePlugin);
+
+  // Custom lightweight plugin: draws one or more dashed vertical reference lines
+  // at options.plugins.verticalLines = [{ value, color, label, dash }, ...]
+  const verticalLinesPlugin = {
+    id: 'verticalLines',
+    afterDraw(chart) {
+      const lines = chart.options.plugins && chart.options.plugins.verticalLines;
+      if (!lines || !lines.length) return;
+      const xScale = chart.scales.x;
+      if (!xScale) return;
+      const { ctx, chartArea } = chart;
+      lines.forEach((line) => {
+        if (line.value == null) return;
+        const xPixel = xScale.getPixelForValue(line.value);
+        if (xPixel < chartArea.left || xPixel > chartArea.right) return;
+        ctx.save();
+        ctx.strokeStyle = line.color || '#999999';
+        ctx.setLineDash(line.dash || [6, 4]);
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(xPixel, chartArea.top);
+        ctx.lineTo(xPixel, chartArea.bottom);
+        ctx.stroke();
+        if (line.label) {
+          ctx.font = '600 11px Inter, sans-serif';
+          ctx.fillStyle = line.color || '#999999';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'top';
+          ctx.fillText(line.label, xPixel, chartArea.top + 4);
+        }
+        ctx.restore();
+      });
+    },
+  };
+  Chart.register(verticalLinesPlugin);
+
+  function breakEvenChartOptions() {
+    const muted = cssVar('--ink-muted') || '#5B6472';
+    const border = cssVar('--border') || '#E3E6EB';
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 400 },
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'bottom',
+          labels: { color: muted, font: { family: 'Inter', size: 11 }, boxWidth: 12, padding: 14 },
+        },
+        tooltip: {
+          callbacks: {
+            title: (items) => `Alter: ${items[0].parsed.x} Jahre`,
+            label: (ctx) => `${ctx.dataset.label}: ${fmtEUR(ctx.parsed.y)}`,
+          },
+        },
+        verticalLines: [],
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          title: { display: true, text: 'Alter (Jahre)', color: muted, font: { family: 'Inter', size: 11 } },
+          ticks: { color: muted, font: { family: 'Inter', size: 11 }, stepSize: 5 },
+          grid: { color: border },
+        },
+        y: {
+          beginAtZero: true,
+          ticks: { color: muted, font: { family: 'Inter', size: 11 }, callback: (v) => fmtEuroWhole(v) },
+          grid: { color: border },
+        },
+      },
+    };
+  }
 
   function baseChartOptions(stacked) {
     const ink = cssVar('--ink') || '#101828';
@@ -691,15 +894,22 @@
     const ink = cssVar('--ink');
     const muted = cssVar('--ink-muted');
     const border = cssVar('--border');
-    [chartDepot, chartLiquidity].forEach((chart) => {
+    [chartDepot, chartLiquidity, chartBreakEven].forEach((chart) => {
       if (!chart) return;
       chart.options.scales.x.ticks.color = muted;
       chart.options.scales.y.ticks.color = muted;
       chart.options.scales.y.grid.color = border;
+      chart.options.scales.x.grid.color = border;
+      if (chart.options.scales.x.title) chart.options.scales.x.title.color = muted;
       if (chart.options.plugins.legend) chart.options.plugins.legend.labels.color = muted;
     });
     if (chartLiquidity && chartLiquidity.options.plugins.targetLine) {
       chartLiquidity.options.plugins.targetLine.color = cssVar('--danger');
+    }
+    if (chartBreakEven && chartBreakEven.options.plugins.verticalLines) {
+      chartBreakEven.options.plugins.verticalLines.forEach((line) => {
+        if (line.isBreakEven) line.color = cssVar('--danger');
+      });
     }
   }
 
@@ -799,6 +1009,7 @@
       }
       chartLiquidity.update();
     }
+    updateBreakEvenChart({ startAge, careAge, deathAge, etfReturn, totalBudget, insuranceBudget, etfBudget, dailyFactor, otherBenefits, sparerpauschbetrag, churchTaxRate });
   }
 
   function fillScenario(prefix, s) {
@@ -831,6 +1042,25 @@
   el('printBtn').addEventListener('click', () => {
     window.print();
   });
+
+  // ---------- Break-Even Modus-Umschalter ----------
+  function updateBreakEvenModeButtons() {
+    const careActive = breakEvenMode === 'care';
+    out.breakEvenModeCare.style.background = careActive ? 'var(--primary-soft)' : 'transparent';
+    out.breakEvenModeCare.style.color = careActive ? 'var(--primary)' : 'var(--ink-muted)';
+    out.breakEvenModeCare.setAttribute('aria-pressed', String(careActive));
+    out.breakEvenModeDeath.style.background = careActive ? 'transparent' : 'var(--primary-soft)';
+    out.breakEvenModeDeath.style.color = careActive ? 'var(--ink-muted)' : 'var(--primary)';
+    out.breakEvenModeDeath.setAttribute('aria-pressed', String(!careActive));
+  }
+  function setBreakEvenMode(mode) {
+    breakEvenMode = mode;
+    updateBreakEvenModeButtons();
+    calculate();
+  }
+  out.breakEvenModeCare.addEventListener('click', () => setBreakEvenMode('care'));
+  out.breakEvenModeDeath.addEventListener('click', () => setBreakEvenMode('death'));
+  updateBreakEvenModeButtons();
 
   // ---------- Wire up events ----------
   Object.values(inputs).forEach((input) => {
