@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pflegevorsorge-Rechner · ETF vs. Pflegetagegeld</title>
+
+<!-- Alle Skripte, Schriften und Bibliotheken sind lokal eingebunden (assets/) – keine externen CDNs, Fonts oder Tracker, siehe Methodik-Abschnitt im Footer. -->
+<script src="assets/js/tailwind.js"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: {
+          display: ['Inter', 'system-ui', 'sans-serif'],
+          body: ['Inter', 'system-ui', 'sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+
+<script src="assets/js/chart.umd.min.js"></script>
+
+<style>
+  @font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('assets/fonts/inter-latin-400-normal.woff2') format('woff2'),
+         url('assets/fonts/inter-latin-ext-400-normal.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('assets/fonts/inter-latin-600-normal.woff2') format('woff2'),
+         url('assets/fonts/inter-latin-ext-600-normal.woff2') format('woff2');
+  }
+
+  :root {
+    --bg: #F5F6F8;
+    --surface: #FFFFFF;
+    --surface-2: #F0F1F4;
+    --ink: #101828;
+    --ink-muted: #5B6472;
+    --border: #E3E6EB;
+    --primary: #2F5D8A;
+    --primary-soft: #E7EEF5;
+    --etf: #1C8A5E;
+    --etf-soft: #E4F3EC;
+    --ins: #B5762A;
+    --ins-soft: #FBF0DF;
+    --danger: #B4433D;
+    --danger-soft: #F8E7E5;
+    --success: #1C8A5E;
+    --shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.06);
+  }
+  html.dark {
+    --bg: #0C121C;
+    --surface: #151F2C;
+    --surface-2: #101823;
+    --ink: #E8ECF2;
+    --ink-muted: #8D9AAE;
+    --border: #263447;
+    --primary: #7BB0E0;
+    --primary-soft: #1C2C40;
+    --etf: #45C293;
+    --etf-soft: #142B22;
+    --ins: #E3A75C;
+    --ins-soft: #2E2413;
+    --danger: #E58079;
+    --danger-soft: #341F1D;
+    --success: #45C293;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.25);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  .font-display { font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; letter-spacing: -0.01em; }
+  .tabular { font-variant-numeric: tabular-nums; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+
+  .surface-2 { background: var(--surface-2); }
+  .border-token { border-color: var(--border); }
+  .text-ink { color: var(--ink); }
+  .text-muted { color: var(--ink-muted); }
+
+  /* Range slider styling */
+  input[type="range"].slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    outline: none;
+    cursor: pointer;
+  }
+  input[type="range"].slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: 3px solid var(--surface);
+    box-shadow: 0 0 0 1px var(--primary);
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+  input[type="range"].slider::-webkit-slider-thumb:hover { transform: scale(1.12); }
+  input[type="range"].slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: 3px solid var(--surface);
+    box-shadow: 0 0 0 1px var(--primary);
+    cursor: pointer;
+  }
+  input[type="range"].slider::-moz-range-track {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--surface-2);
+  }
+  input[type="range"].slider.accent-ins::-webkit-slider-thumb { background: var(--ins); box-shadow: 0 0 0 1px var(--ins); }
+  input[type="range"].slider.accent-ins::-moz-range-thumb { background: var(--ins); box-shadow: 0 0 0 1px var(--ins); }
+  input[type="range"].slider.accent-target::-webkit-slider-thumb { background: var(--danger); box-shadow: 0 0 0 1px var(--danger); }
+  input[type="range"].slider.accent-target::-moz-range-thumb { background: var(--danger); box-shadow: 0 0 0 1px var(--danger); }
+
+  input[type="range"]:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+  }
+  button:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+  input[type="number"] {
+    background: var(--surface-2);
+    color: var(--ink);
+  }
+  input[type="number"]:focus-visible,
+  input[type="checkbox"]:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+  #otherBenefitsRow { transition: opacity 0.2s ease; }
+
+  .scenario-card { border-top-width: 3px; }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+
+  .chart-wrap { position: relative; height: 280px; }
+
+  @media print {
+    body { background: #ffffff !important; color: #101828 !important; }
+    .card { box-shadow: none !important; border-color: #ccc !important; background: #ffffff !important; }
+    input[type="range"] { display: none; }
+  }
+</style>
+</head>
+
+<body class="font-body min-h-screen">
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+
+  <!-- Header -->
+  <header class="flex items-start justify-between gap-4 mb-8">
+    <div>
+      <p class="text-xs font-semibold tracking-widest uppercase text-muted mb-1">Pflegevorsorge · Simulation</p>
+      <h1 class="font-display text-2xl sm:text-3xl font-700 font-bold leading-tight text-ink">Eigenständiger ETF-Vermögensaufbau <span class="text-muted font-normal">vs.</span> Pflegetagegeldversicherung</h1>
+      <p class="text-sm text-muted mt-2 max-w-2xl">Stelle Alter, Budget und Renditeerwartung ein und vergleiche drei Strategien: reine Versicherung, ein Hybrid-Modell und reinen ETF-Vermögensaufbau &mdash; jeweils mit Netto-Depotwert, Steuerabzug und monatlicher Verfügbarkeit in der Pflegephase.</p>
+      <a href="#methodik" class="inline-flex items-center gap-1.5 text-xs font-semibold mt-3 hover:underline" style="color:var(--primary)">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 16v-4M12 8h.01"></path>
+        </svg>
+        Methodik, Steuerannahmen &amp; Grenzen dieser Berechnung
+      </a>
+    </div>
+    <div class="flex items-center gap-2 shrink-0 print:hidden">
+      <button id="printBtn" type="button" aria-label="Ergebnis drucken / als PDF speichern"
+        class="w-11 h-11 rounded-full card flex items-center justify-center hover:opacity-80 transition-opacity">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 6 2 18 2 18 9"></polyline>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+          <rect x="6" y="14" width="12" height="8"></rect>
+        </svg>
+      </button>
+      <button id="themeToggle" type="button" aria-label="Hell-/Dunkelmodus umschalten"
+        class="w-11 h-11 rounded-full card flex items-center justify-center hover:opacity-80 transition-opacity">
+        <svg id="iconSun" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+        </svg>
+        <svg id="iconMoon" class="w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Controls -->
+  <section class="card rounded-2xl p-5 md:p-6 mb-6">
+    <h2 class="font-display text-lg font-semibold mb-4">Eingabeparameter</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5">
+
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <label for="startAge" class="text-sm font-medium">Einstiegsalter</label>
+          <span id="startAgeVal" class="text-sm font-semibold tabular" style="color:var(--primary)">30 Jahre</span>
+        </div>
+        <input type="range" id="startAge" class="slider" min="18" max="65" step="1" value="30">
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <label for="careAge" class="text-sm font-medium">Erwartetes Pflegealter</label>
+          <span id="careAgeVal" class="text-sm font-semibold tabular" style="color:var(--primary)">75 Jahre</span>
+        </div>
+        <input type="range" id="careAge" class="slider" min="50" max="90" step="1" value="75">
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <label for="deathAge" class="text-sm font-medium">Erwartetes Sterbealter</label>
+          <span id="deathAgeVal" class="text-sm font-semibold tabular" style="color:var(--primary)">85 Jahre</span>
+        </div>
+        <input type="range" id="deathAge" class="slider" min="60" max="100" step="1" value="85">
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <label for="etfReturn" class="text-sm font-medium">ETF-Rendite p.&nbsp;a.</label>
+          <span id="etfReturnVal" class="text-sm font-semibold tabular" style="color:var(--etf)">8,0 %</span>
+        </div>
+        <input type="range" id="etfReturn" class="slider" min="0" max="12" step="0.1" value="8">
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <label for="totalBudget" class="text-sm font-medium">Monatliches Gesamtbudget</label>
+          <span id="totalBudgetVal" class="text-sm font-semibold tabular" style="color:var(--primary)">50 €</span>
+        </div>
+        <input type="range" id="totalBudget" class="slider" min="10" max="500" step="1" value="50">
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <label for="insuranceBudget" class="text-sm font-medium">davon Versicherung (Hybrid)</label>
+          <span id="insuranceBudgetVal" class="text-sm font-semibold tabular" style="color:var(--ins)">25 €</span>
+        </div>
+        <input type="range" id="insuranceBudget" class="slider accent-ins" min="0" max="50" step="1" value="25">
+        <p class="text-xs text-muted mt-1">Rest fließt automatisch in den ETF: <span id="restEtfVal" class="tabular font-medium" style="color:var(--etf)">25 €</span></p>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <label for="dailyFactor" class="text-sm font-medium">Tagegeld je 1&nbsp;€ Beitrag</label>
+          <span id="dailyFactorVal" class="text-sm font-semibold tabular" style="color:var(--ins)">1,22 €</span>
+        </div>
+        <input type="range" id="dailyFactor" class="slider accent-ins" min="0.5" max="2.5" step="0.01" value="1.22">
+        <p id="dailyFactorExample" class="text-xs text-muted mt-1">z. B. 25 € Beitrag → 31 € Tagegeld</p>
+      </div>
+
+      <div class="flex flex-col justify-end">
+        <p id="phaseInfo" class="text-xs text-muted leading-relaxed"></p>
+      </div>
+
+    </div>
+
+    <div class="mt-5 pt-5 border-t border-token">
+      <h3 class="text-xs font-semibold tracking-widest uppercase text-muted mb-4">Erweiterte Annahmen (für Beratungsgespräche)</h3>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-5">
+
+        <div>
+          <div class="mb-1.5">
+            <label class="text-sm font-medium flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" id="otherBenefitsEnabled" checked class="w-4 h-4 rounded border-token" style="accent-color:var(--primary)">
+              <span>Weitere Leistungen einrechnen</span>
+            </label>
+          </div>
+          <div id="otherBenefitsRow" class="flex items-center gap-2 max-w-xs">
+            <input type="number" id="otherBenefits" min="0" step="10" value="800"
+              class="w-full rounded-lg border border-token px-3 py-1.5 text-sm tabular">
+            <span class="text-sm text-muted shrink-0">€ / Monat</span>
+          </div>
+          <p class="text-xs text-muted mt-1 max-w-md">z.&nbsp;B. Leistungen der gesetzlichen Pflegepflichtversicherung &ndash; fließt gleichermaßen in alle drei Szenarien ein.</p>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label for="sparerpauschbetrag" class="text-sm font-medium">Sparerpauschbetrag (Freibetrag)</label>
+            <span id="sparerpauschbetragVal" class="text-sm font-semibold tabular" style="color:var(--primary)">1.000 €</span>
+          </div>
+          <input type="range" id="sparerpauschbetrag" class="slider" min="0" max="2000" step="50" value="1000">
+          <p class="text-xs text-muted mt-1 max-w-md">Wird einmalig auf den steuerpflichtigen Gewinn beim Pflegeeintritt angerechnet (gesetzlich 1.000&nbsp;€ ledig / 2.000&nbsp;€ verheiratet <em>pro Jahr</em> &ndash; hier vereinfacht als einmaliger Betrag zum Auszahlzeitpunkt).</p>
+
+          <div class="flex items-center justify-between mb-1.5 mt-4">
+            <label for="churchTax" class="text-sm font-medium">Kirchensteuer</label>
+          </div>
+          <select id="churchTax" class="w-full max-w-xs rounded-lg border border-token px-3 py-1.5 text-sm">
+            <option value="0" selected>keine</option>
+            <option value="0.08">8 % (Bayern, Baden-Württemberg)</option>
+            <option value="0.09">9 % (übrige Bundesländer)</option>
+          </select>
+          <p class="text-xs text-muted mt-1 max-w-md">Zuschlag auf die Kapitalertragsteuer. In der Realität mindert der Sonderausgabenabzug die Kirchensteuerlast geringfügig &ndash; hier vereinfacht linear aufaddiert.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Goal gauge (signature element) -->
+  <section class="card rounded-2xl p-5 md:p-6 mb-6">
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+      <h2 class="font-display text-lg font-semibold">Wunsch-Zielmarke: <span id="goalTargetHeading" class="tabular">2.800 €</span> monatliche Gesamtverfügbarkeit</h2>
+      <span id="goalBadge" class="badge"></span>
+    </div>
+    <div class="mb-4 max-w-sm">
+      <div class="flex items-center justify-between mb-1.5">
+        <label for="targetIncome" class="text-sm font-medium">Zielmarke anpassen</label>
+        <span id="targetIncomeVal" class="text-sm font-semibold tabular" style="color:var(--danger)">2.800 €</span>
+      </div>
+      <input type="range" id="targetIncome" class="slider accent-target" min="500" max="6000" step="50" value="2800">
+    </div>
+    <div class="relative h-4 rounded-full overflow-hidden surface-2 border border-token">
+      <div id="goalFill" class="h-full rounded-full" style="width:0%; background:var(--primary); transition: width 0.5s ease, background-color 0.3s ease;"></div>
+    </div>
+    <div class="flex justify-between text-xs text-muted mt-1.5">
+      <span>0 €</span>
+      <span>Ziel: <span id="goalTargetLabel">2.800 €</span></span>
+    </div>
+    <p id="goalText" class="text-sm text-muted mt-3 leading-relaxed"></p>
+  </section>
+
+  <!-- Scenario cards -->
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+
+    <div class="card scenario-card rounded-2xl p-5" style="border-top-color:var(--ins)">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="w-2.5 h-2.5 rounded-full" style="background:var(--ins)"></span>
+        <h3 class="font-display font-semibold text-base">100&nbsp;% Versicherung</h3>
+      </div>
+      <dl class="space-y-2.5 text-sm">
+        <div class="flex justify-between"><dt class="text-muted">Depotwert brutto</dt><dd id="s1_brutto" class="tabular font-medium">–</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">Steuerabzug</dt><dd id="s1_steuer" class="tabular font-medium">–</dd></div>
+        <div class="flex justify-between pb-2.5 border-b border-token"><dt class="font-medium">Netto-Depot bei Pflegebeginn</dt><dd id="s1_netto" class="tabular font-semibold">–</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">ETF-Auszahlung / Monat</dt><dd id="s1_etfmonthly" class="tabular font-medium">–</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">Versicherungsleistung / Monat</dt><dd id="s1_insmonthly" class="tabular font-medium">–</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">Weitere Leistungen / Monat</dt><dd id="s1_other" class="tabular font-medium">–</dd></div>
+        <div class="flex justify-between pt-2.5 border-t border-token"><dt class="font-semibold">Gesamtverfügbarkeit / Monat</dt><dd id="s1_combined" class="tabular font-display font-bold text-base">–</dd></div>
+      </dl>
+    </div>
+
+    <div class="card scenario-card rounded-2xl p-5 ring-1" style="border-top-color:var(--primary); box-shadow: 0 0 0 1px var(--primary), var(--shadow);">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full" style="background:var(--primary)"></span>
+          <h3 class="font-display font-semibold text-base">Gewähltes Hybrid-Modell</h3>
+        </div>
+        <span class="badge" style="background:var(--primary-soft); color:var(--primary)">gewählt</span>
+      </div>
+      <p id="s2_split" class="text-xs text-muted mb-3">–</p>
+      <dl class="space-y-2.5 text-sm">
+        <div class="flex justify-between"><dt class="text-muted">Depotwert brutto</dt><dd id="s2_brutto" class="tabular font-medium">–</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">Steuerabzug</dt><dd id="s2_steuer" class="tabular font-medium">–</dd></div>
+        <div class="flex justify-between pb-2.5 border-b border-token"><dt class="font-medium">Netto-Depot bei Pflegebeginn</dt><dd id="s2_netto" class="tabular font-semibold">–</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">ETF-Auszahlung / Monat</dt><dd id="s2_etfmonthly" class="tabular font-medium">–</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">Versicherungsleistung / Monat</dt><dd id="s2_insmonthly" class="tabular font-medium">–</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">Weitere Leistungen / Monat</dt><dd id="s2_other" class="tabular font-medium">–</dd></div>
+        <div class="flex justify-between pt-2.5 border-t border-token"><dt class="font-semibold">Gesamtverfügbarkeit / Monat</dt><dd id="s2_combined" class="tabular font-display font-bold text-base" style="color:var(--primary)">–</dd></div>
+      </dl>
+    </div>
+
+    <div class="card scenario-card rounded-2xl p-5" style="border-top-color:var(--etf)">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="w-2.5 h-2.5 rounded-full" style="background:var(--etf)"></span>
+        <h3 class="font-display font-semibold text-base">100&nbsp;% ETF</h3>
+      </div>
+      <dl class="space-y-2.5 text-sm">
+        <div class="flex justify-between"><dt class="text-muted">Depotwert brutto</dt><dd id="s3_brutto" class="tabular font-medium">–</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">Steuerabzug</dt><dd id="s3_steuer" class="tabular font-medium">–</dd></div>
+        <div class="flex justify-between pb-2.5 border-b border-token"><dt class="font-medium">Netto-Depot bei Pflegebeginn</dt><dd id="s3_netto" class="tabular font-semibold">–</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">ETF-Auszahlung / Monat</dt><dd id="s3_etfmonthly" class="tabular font-medium">–</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">Versicherungsleistung / Monat</dt><dd id="s3_insmonthly" class="tabular font-medium">–</dd></div>
+        <div class="flex justify-between"><dt class="text-muted">Weitere Leistungen / Monat</dt><dd id="s3_other" class="tabular font-medium">–</dd></div>
+        <div class="flex justify-between pt-2.5 border-t border-token"><dt class="font-semibold">Gesamtverfügbarkeit / Monat</dt><dd id="s3_combined" class="tabular font-display font-bold text-base">–</dd></div>
+      </dl>
+    </div>
+
+  </section>
+
+  <!-- Charts -->
+  <section class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+    <div class="card rounded-2xl p-5 md:p-6">
+      <h3 class="font-display font-semibold text-base mb-1">Netto-Depotvolumen bei Pflegebeginn</h3>
+      <p class="text-xs text-muted mb-4">Vergleich der drei Szenarien nach Abzug der Kapitalertragsteuer</p>
+      <div class="chart-wrap"><canvas id="chartDepot"></canvas></div>
+    </div>
+    <div class="card rounded-2xl p-5 md:p-6">
+      <h3 class="font-display font-semibold text-base mb-1">Monatliche Liquidität in der Pflegephase</h3>
+      <p class="text-xs text-muted mb-4">Versicherungsanteil (steuerfrei) und ETF-Netto-Auszahlung, gestapelt</p>
+      <div class="chart-wrap"><canvas id="chartLiquidity"></canvas></div>
+    </div>
+  </section>
+
+  <!-- Footer / assumptions -->
+  <footer id="methodik" class="text-xs text-muted leading-relaxed border-t border-token pt-6 pb-2 scroll-mt-4">
+    <h2 class="font-display text-sm font-semibold text-ink mb-3">Methodik, Steuerannahmen &amp; Grenzen dieser Berechnung</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 mb-4">
+      <div>
+        <h3 class="text-ink font-semibold mb-1">Ansparphase</h3>
+        <p>Monatliche Beiträge werden nachschüssig (zum Monatsende) angelegt und monatlich mit <code>ETF-Rendite&nbsp;p.&nbsp;a.&nbsp;/&nbsp;12</code> verzinst (klassische Zinseszinsformel für eine nachschüssige Rente). Der Zinssatz bleibt über die gesamte Ansparphase konstant &ndash; keine Schwankung, kein Crash-Szenario, keine Glidepath-Umschichtung mit steigendem Alter.</p>
+      </div>
+      <div>
+        <h3 class="text-ink font-semibold mb-1">Besteuerung beim Pflegeeintritt</h3>
+        <p>Der Gewinn (Endwert minus Einzahlungen) wird zu 70&nbsp;% steuerpflichtig gestellt (30&nbsp;% Teilfreistellung für Aktien-ETFs). Davon wird einmalig der eingestellte Sparerpauschbetrag abgezogen. Auf den Rest werden 25&nbsp;% Kapitalertragsteuer zzgl. 5,5&nbsp;% Solidaritätszuschlag sowie optional die gewählte Kirchensteuer erhoben &ndash; alles in einer einzigen fiktiven Veräußerung zum Zeitpunkt des Pflegeeintritts, nicht laufend während der Ansparphase.</p>
+      </div>
+      <div>
+        <h3 class="text-ink font-semibold mb-1">Pflegephase / Entnahme</h3>
+        <p>Das bereits versteuerte Netto-Depot verbleibt investiert und verzinst sich weiter mit derselben ETF-Rendite. Eine konstante monatliche Rate wird annuitätisch entnommen, sodass das Depot nach genau der eingestellten Pflegephasendauer exakt auf 0&nbsp;€ sinkt. Auf die während der Entnahmephase weiter erzielten Erträge fällt in diesem Modell keine erneute Steuer an.</p>
+      </div>
+      <div>
+        <h3 class="text-ink font-semibold mb-1">Versicherung &amp; weitere Leistungen</h3>
+        <p>Das Pflegetagegeld ergibt sich linear aus Beitrag&nbsp;×&nbsp;Tagegeldfaktor&nbsp;×&nbsp;30,41 (Ø Tage/Monat), ist steuerfrei und wird über die gesamte Pflegephase als konstant angenommen &ndash; keine Wartezeiten, Karenzzeiten, Leistungsausschlüsse oder Pflegegrad-Staffelung. Der optionale Fixbetrag &bdquo;Weitere Leistungen&ldquo; (z.&nbsp;B. gesetzliche Pflegepflichtversicherung) fließt unverändert in alle drei Szenarien ein.</p>
+      </div>
+    </div>
+
+    <h3 class="text-ink font-semibold mb-1.5">Bewusste Vereinfachungen &ndash; nicht berücksichtigt</h3>
+    <ul class="list-disc pl-4 space-y-1 mb-4">
+      <li>Keine Inflation: alle Beträge sind nominal, nicht kaufkraftbereinigt.</li>
+      <li>Keine Vorabpauschale (jährliche Vorab-Besteuerung thesaurierender Fonds während der Ansparphase).</li>
+      <li>Der Sparerpauschbetrag gilt gesetzlich jährlich neu (1.000&nbsp;€ ledig / 2.000&nbsp;€ verheiratet) &ndash; hier wird er vereinfacht nur einmalig zum Auszahlzeitpunkt angerechnet.</li>
+      <li>Kirchensteuer wird linear auf die Kapitalertragsteuer aufaddiert; der reale mindernde Sonderausgabenabzug bleibt unberücksichtigt.</li>
+      <li>Kein individueller, ggf. niedrigerer persönlicher Steuersatz (Günstigerprüfung) wird geprüft.</li>
+      <li>Keine ETF-Kosten (TER), Transaktions- oder Depotkosten; keine Beitragsdynamik der Versicherung.</li>
+      <li>Pflegealter und Sterbealter sind feste Einzelwerte, keine Wahrscheinlichkeitsverteilung/Sterbetafel und kein Sequence-of-Returns-Risiko (z.&nbsp;B. ein Kurseinbruch kurz nach Pflegebeginn).</li>
+    </ul>
+
+    <p class="mt-2"><strong class="text-ink">Hinweis für den Beratungseinsatz:</strong> Dieser Rechner liefert unverbindliche Modellrechnungen auf Basis der oben genannten, bewusst vereinfachten Annahmen. Er dient ausschließlich der Veranschaulichung von Wirkzusammenhängen und ersetzt keine individuelle Steuer-, Versicherungs- oder Anlageberatung sowie keine Berechnung nach WpHG/§ 34d GewO. Sämtliche Eingaben verbleiben ausschließlich im Browser der Nutzerin bzw. des Nutzers und werden nicht an einen Server übertragen oder gespeichert.</p>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------- DOM references ----------
+  const el = (id) => document.getElementById(id);
+
+  const inputs = {
+    startAge: el('startAge'),
+    careAge: el('careAge'),
+    deathAge: el('deathAge'),
+    etfReturn: el('etfReturn'),
+    totalBudget: el('totalBudget'),
+    insuranceBudget: el('insuranceBudget'),
+    dailyFactor: el('dailyFactor'),
+    targetIncome: el('targetIncome'),
+    otherBenefitsEnabled: el('otherBenefitsEnabled'),
+    otherBenefits: el('otherBenefits'),
+    sparerpauschbetrag: el('sparerpauschbetrag'),
+    churchTax: el('churchTax'),
+  };
+
+  const out = {
+    startAgeVal: el('startAgeVal'),
+    careAgeVal: el('careAgeVal'),
+    deathAgeVal: el('deathAgeVal'),
+    etfReturnVal: el('etfReturnVal'),
+    totalBudgetVal: el('totalBudgetVal'),
+    insuranceBudgetVal: el('insuranceBudgetVal'),
+    dailyFactorVal: el('dailyFactorVal'),
+    dailyFactorExample: el('dailyFactorExample'),
+    restEtfVal: el('restEtfVal'),
+    targetIncomeVal: el('targetIncomeVal'),
+    goalTargetHeading: el('goalTargetHeading'),
+    goalTargetLabel: el('goalTargetLabel'),
+    otherBenefitsRow: el('otherBenefitsRow'),
+    sparerpauschbetragVal: el('sparerpauschbetragVal'),
+    phaseInfo: el('phaseInfo'),
+    goalBadge: el('goalBadge'),
+    goalFill: el('goalFill'),
+    goalText: el('goalText'),
+  };
+
+  // ---------- Formatting helpers ----------
+  const currencyFmt = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 });
+  const fmtEUR = (n) => currencyFmt.format(Number.isFinite(n) ? n : 0);
+  const fmtPct = (n) => n.toFixed(1).replace('.', ',') + ' %';
+  const fmtFactor = (n) => n.toFixed(2).replace('.', ',') + ' €';
+  const fmtAge = (n) => n + ' Jahre';
+  const fmtEuroWhole = (n) => Math.round(n) + ' €';
+
+  const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+  // ---------- Financial core ----------
+  // Ordinary annuity future value: contributions at end of each month, compounded monthly.
+  function futureValueOrdinary(payment, i, n) {
+    if (n <= 0 || payment <= 0) return 0;
+    if (i === 0) return payment * n;
+    return payment * ((Math.pow(1 + i, n) - 1) / i);
+  }
+
+  // Payment that fully amortizes a present value over n periods at rate i (annuity-immediate),
+  // i.e. balance grows at i and is drawn down to exactly 0 after n withdrawals.
+  function annuityPayment(pv, i, n) {
+    if (n <= 0 || pv <= 0) return 0;
+    if (i === 0) return pv / n;
+    return (pv * i) / (1 - Math.pow(1 + i, -n));
+  }
+
+  function computeScenario(pIns, pEtf, n1, n2, annualReturnPct, dailyFactor, otherBenefits, sparerpauschbetrag, churchTaxRate) {
+    const i = (annualReturnPct / 100) / 12;
+    const bruttoFV = futureValueOrdinary(pEtf, i, n1);
+    const contributions = pEtf * n1;
+    const gain = Math.max(0, bruttoFV - contributions);
+    const taxableGain = Math.max(0, gain * 0.7 - sparerpauschbetrag); // 30% Teilfreistellung, abzgl. Sparerpauschbetrag
+    const kapESt = 0.25;
+    const effectiveTaxRate = kapESt * (1 + 0.055 + churchTaxRate); // KapESt + Soli + optionale Kirchensteuer
+    const tax = taxableGain * effectiveTaxRate;
+    const nettoDepot = Math.max(0, bruttoFV - tax);
+    const etfMonthly = annuityPayment(nettoDepot, i, n2);
+    const insMonthly = pIns * dailyFactor * 30.41;
+    const combined = etfMonthly + insMonthly + otherBenefits;
+    return { bruttoFV, contributions, tax, nettoDepot, etfMonthly, insMonthly, otherBenefits, combined };
+  }
+
+  // ---------- Charts ----------
+  let chartDepot, chartLiquidity;
+
+  function initCharts() {
+    const ctxDepot = el('chartDepot').getContext('2d');
+    const ctxLiquidity = el('chartLiquidity').getContext('2d');
+
+    chartDepot = new Chart(ctxDepot, {
+      type: 'bar',
+      data: {
+        labels: ['100% Versicherung', 'Hybrid-Modell', '100% ETF'],
+        datasets: [{
+          label: 'Netto-Depot bei Pflegebeginn',
+          data: [0, 0, 0],
+          backgroundColor: ['#B5762A', '#2F5D8A', '#1C8A5E'],
+          borderRadius: 6,
+          maxBarThickness: 80,
+        }],
+      },
+      options: baseChartOptions(false),
+    });
+
+    chartLiquidity = new Chart(ctxLiquidity, {
+      type: 'bar',
+      data: {
+        labels: ['100% Versicherung', 'Hybrid-Modell', '100% ETF'],
+        datasets: [
+          {
+            label: 'Versicherung (steuerfrei)',
+            data: [0, 0, 0],
+            backgroundColor: '#B5762A',
+            stack: 'stack1',
+            borderRadius: 4,
+            maxBarThickness: 70,
+          },
+          {
+            label: 'ETF-Auszahlung (netto)',
+            data: [0, 0, 0],
+            backgroundColor: '#1C8A5E',
+            stack: 'stack1',
+            borderRadius: 4,
+            maxBarThickness: 70,
+          },
+          {
+            label: 'Weitere Leistungen',
+            data: [0, 0, 0],
+            backgroundColor: '#6E5AA8',
+            stack: 'stack1',
+            borderRadius: 4,
+            maxBarThickness: 70,
+          },
+        ],
+      },
+      options: baseChartOptions(true),
+      plugins: [targetLinePlugin],
+    });
+  }
+
+  // Custom lightweight plugin: draws a dashed reference line at options.plugins.targetLine.value
+  const targetLinePlugin = {
+    id: 'targetLine',
+    afterDraw(chart) {
+      const opts = chart.options.plugins && chart.options.plugins.targetLine;
+      if (!opts || !opts.value) return;
+      const yScale = chart.scales.y;
+      if (!yScale) return;
+      const { ctx, chartArea } = chart;
+      const yPixel = yScale.getPixelForValue(opts.value);
+      if (yPixel < chartArea.top || yPixel > chartArea.bottom) return;
+      ctx.save();
+      ctx.strokeStyle = opts.color || '#B4433D';
+      ctx.setLineDash([6, 4]);
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(chartArea.left, yPixel);
+      ctx.lineTo(chartArea.right, yPixel);
+      ctx.stroke();
+      ctx.font = '600 11px Inter, sans-serif';
+      ctx.fillStyle = opts.color || '#B4433D';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(opts.label || '', chartArea.right, yPixel - 4);
+      ctx.restore();
+    },
+  };
+  Chart.register(targetLinePlugin);
+
+  function baseChartOptions(stacked) {
+    const ink = cssVar('--ink') || '#101828';
+    const muted = cssVar('--ink-muted') || '#5B6472';
+    const border = cssVar('--border') || '#E3E6EB';
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 400 },
+      plugins: {
+        legend: {
+          display: stacked,
+          position: 'bottom',
+          labels: { color: muted, font: { family: 'Inter', size: 11 }, boxWidth: 12, padding: 14 },
+        },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `${ctx.dataset.label}: ${fmtEUR(ctx.parsed.y)}`,
+          },
+        },
+        targetLine: stacked ? { value: 2800, color: cssVar('--danger') || '#B4433D', label: 'Ziel 2.800 €' } : undefined,
+      },
+      scales: {
+        x: {
+          stacked: stacked,
+          ticks: { color: muted, font: { family: 'Inter', size: 11 } },
+          grid: { color: border, display: false },
+        },
+        y: {
+          stacked: stacked,
+          beginAtZero: true,
+          ticks: {
+            color: muted,
+            font: { family: 'Inter', size: 11 },
+            callback: (v) => fmtEuroWhole(v),
+          },
+          grid: { color: border },
+        },
+      },
+    };
+  }
+
+  function refreshChartTheme() {
+    const ink = cssVar('--ink');
+    const muted = cssVar('--ink-muted');
+    const border = cssVar('--border');
+    [chartDepot, chartLiquidity].forEach((chart) => {
+      if (!chart) return;
+      chart.options.scales.x.ticks.color = muted;
+      chart.options.scales.y.ticks.color = muted;
+      chart.options.scales.y.grid.color = border;
+      if (chart.options.plugins.legend) chart.options.plugins.legend.labels.color = muted;
+    });
+    if (chartLiquidity && chartLiquidity.options.plugins.targetLine) {
+      chartLiquidity.options.plugins.targetLine.color = cssVar('--danger');
+    }
+  }
+
+  // ---------- Main calculation ----------
+  function calculate() {
+    const startAge = Number(inputs.startAge.value);
+    const careAge = Number(inputs.careAge.value);
+    const deathAge = Number(inputs.deathAge.value);
+    const etfReturn = Number(inputs.etfReturn.value);
+    const totalBudget = Number(inputs.totalBudget.value);
+    let insuranceBudget = Number(inputs.insuranceBudget.value);
+    const dailyFactor = Number(inputs.dailyFactor.value);
+    const targetIncome = Number(inputs.targetIncome.value);
+    const otherBenefitsEnabled = inputs.otherBenefitsEnabled.checked;
+    const otherBenefits = otherBenefitsEnabled ? Number(inputs.otherBenefits.value) : 0;
+    const sparerpauschbetrag = Number(inputs.sparerpauschbetrag.value);
+    const churchTaxRate = Number(inputs.churchTax.value);
+
+    // Keep the insurance slider in sync with the total budget
+    inputs.insuranceBudget.max = totalBudget;
+    if (insuranceBudget > totalBudget) {
+      insuranceBudget = totalBudget;
+      inputs.insuranceBudget.value = totalBudget;
+    }
+    const etfBudget = totalBudget - insuranceBudget;
+
+    // Live slider labels
+    out.startAgeVal.textContent = fmtAge(startAge);
+    out.careAgeVal.textContent = fmtAge(careAge);
+    out.deathAgeVal.textContent = fmtAge(deathAge);
+    out.etfReturnVal.textContent = fmtPct(etfReturn);
+    out.totalBudgetVal.textContent = fmtEuroWhole(totalBudget);
+    out.insuranceBudgetVal.textContent = fmtEuroWhole(insuranceBudget);
+    out.dailyFactorVal.textContent = fmtFactor(dailyFactor);
+    out.restEtfVal.textContent = fmtEuroWhole(etfBudget);
+    out.dailyFactorExample.textContent = `z. B. ${fmtEuroWhole(insuranceBudget)} Beitrag → ${fmtEuroWhole(insuranceBudget * dailyFactor)} Tagegeld`;
+    out.sparerpauschbetragVal.textContent = fmtEuroWhole(sparerpauschbetrag);
+    out.targetIncomeVal.textContent = fmtEuroWhole(targetIncome);
+    out.goalTargetHeading.textContent = fmtEuroWhole(targetIncome);
+    out.goalTargetLabel.textContent = fmtEuroWhole(targetIncome);
+    out.otherBenefitsRow.style.opacity = otherBenefitsEnabled ? '1' : '0.5';
+    inputs.otherBenefits.disabled = !otherBenefitsEnabled;
+
+    const n1raw = (careAge - startAge) * 12;
+    const n2raw = (deathAge - careAge) * 12;
+    const n1 = Math.max(0, n1raw);
+    const n2 = Math.max(0, n2raw);
+
+    let phaseMsg = `Ansparphase: ${(n1 / 12).toFixed(1)} Jahre (${n1} Monate) · Pflegephase: ${(n2 / 12).toFixed(1)} Jahre (${n2} Monate)`;
+    if (n1raw <= 0) phaseMsg += ' — Hinweis: Pflegealter liegt nicht nach dem Einstiegsalter, Ansparphase auf 0 gesetzt.';
+    if (n2raw <= 0) phaseMsg += ' — Hinweis: Sterbealter liegt nicht nach dem Pflegealter, Pflegephase auf 0 gesetzt.';
+    out.phaseInfo.textContent = phaseMsg;
+
+    const s1 = computeScenario(totalBudget, 0, n1, n2, etfReturn, dailyFactor, otherBenefits, sparerpauschbetrag, churchTaxRate);          // 100% Versicherung
+    const s2 = computeScenario(insuranceBudget, etfBudget, n1, n2, etfReturn, dailyFactor, otherBenefits, sparerpauschbetrag, churchTaxRate); // Hybrid
+    const s3 = computeScenario(0, totalBudget, n1, n2, etfReturn, dailyFactor, otherBenefits, sparerpauschbetrag, churchTaxRate);           // 100% ETF
+
+    fillScenario('s1', s1);
+    fillScenario('s2', s2);
+    fillScenario('s3', s3);
+    el('s2_split').textContent = `${fmtEuroWhole(insuranceBudget)} Versicherung · ${fmtEuroWhole(etfBudget)} ETF`;
+
+    // Goal gauge (based on chosen hybrid model)
+    const target = targetIncome;
+    const combined = s2.combined;
+    const pct = Math.max(0, Math.min(100, (combined / target) * 100));
+    out.goalFill.style.width = pct.toFixed(1) + '%';
+
+    if (combined >= target) {
+      const surplus = combined - target;
+      out.goalFill.style.background = 'var(--success)';
+      out.goalBadge.textContent = `Ziel erreicht · +${fmtEUR(surplus)}`;
+      out.goalBadge.style.background = 'var(--etf-soft)';
+      out.goalBadge.style.color = 'var(--success)';
+      out.goalText.textContent = `Das gewählte Hybrid-Modell erreicht ${fmtEUR(combined)} monatliche Gesamtverfügbarkeit in der Pflegephase und übertrifft die Zielmarke von ${fmtEUR(target)} um ${fmtEUR(surplus)}.`;
+    } else {
+      const gap = target - combined;
+      out.goalFill.style.background = 'var(--danger)';
+      out.goalBadge.textContent = `Lücke: ${fmtEUR(gap)}`;
+      out.goalBadge.style.background = 'var(--danger-soft)';
+      out.goalBadge.style.color = 'var(--danger)';
+      out.goalText.textContent = `Das gewählte Hybrid-Modell erreicht mit ${fmtEUR(combined)} monatlich nicht die Wunsch-Zielmarke von ${fmtEUR(target)}. Es fehlen ${fmtEUR(gap)} pro Monat, die z. B. durch weitere Leistungen der gesetzlichen Pflegekasse gedeckt werden müssten.`;
+    }
+
+    // Charts
+    if (chartDepot) {
+      chartDepot.data.datasets[0].data = [s1.nettoDepot, s2.nettoDepot, s3.nettoDepot];
+      chartDepot.update();
+    }
+    if (chartLiquidity) {
+      chartLiquidity.data.datasets[0].data = [s1.insMonthly, s2.insMonthly, s3.insMonthly];
+      chartLiquidity.data.datasets[1].data = [s1.etfMonthly, s2.etfMonthly, s3.etfMonthly];
+      chartLiquidity.data.datasets[2].data = [s1.otherBenefits, s2.otherBenefits, s3.otherBenefits];
+      if (chartLiquidity.options.plugins.targetLine) {
+        chartLiquidity.options.plugins.targetLine.value = targetIncome;
+        chartLiquidity.options.plugins.targetLine.label = `Ziel ${fmtEuroWhole(targetIncome)}`;
+      }
+      chartLiquidity.update();
+    }
+  }
+
+  function fillScenario(prefix, s) {
+    el(prefix + '_brutto').textContent = fmtEUR(s.bruttoFV);
+    el(prefix + '_steuer').textContent = fmtEUR(s.tax);
+    el(prefix + '_netto').textContent = fmtEUR(s.nettoDepot);
+    el(prefix + '_etfmonthly').textContent = fmtEUR(s.etfMonthly);
+    el(prefix + '_insmonthly').textContent = fmtEUR(s.insMonthly);
+    el(prefix + '_other').textContent = fmtEUR(s.otherBenefits);
+    el(prefix + '_combined').textContent = fmtEUR(s.combined);
+  }
+
+  // ---------- Theme toggle ----------
+  const html = document.documentElement;
+  const iconSun = el('iconSun');
+  const iconMoon = el('iconMoon');
+
+  function setTheme(dark) {
+    html.classList.toggle('dark', dark);
+    iconSun.classList.toggle('hidden', dark);
+    iconMoon.classList.toggle('hidden', !dark);
+    refreshChartTheme();
+    calculate();
+  }
+
+  el('themeToggle').addEventListener('click', () => {
+    setTheme(!html.classList.contains('dark'));
+  });
+
+  el('printBtn').addEventListener('click', () => {
+    window.print();
+  });
+
+  // ---------- Wire up events ----------
+  Object.values(inputs).forEach((input) => {
+    input.addEventListener('input', calculate);
+  });
+
+  // ---------- Init ----------
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  initCharts();
+  setTheme(prefersDark);
+})();
+</script>
+
+<script defer src="https://edu-mrh.de/controls.js"></script>
+
+</body>
+</html>
