@@ -530,6 +530,73 @@
     <p id="breakEvenText" class="text-sm text-muted mt-3 leading-relaxed"></p>
   </section>
 
+  <!-- Optimaler Versicherungsanteil (Monte-Carlo-Schätzung) -->
+  <section class="card rounded-2xl p-5 md:p-6 mb-6">
+    <div class="mb-4">
+      <h3 class="font-display font-semibold text-base mb-1">Optimaler Versicherungsanteil (Monte-Carlo-Schätzung)</h3>
+      <p class="text-xs text-muted max-w-2xl">Statt fixer Werte werden Pflegealter, Pflegedauer und ETF-Rendite als Zufallsgrößen um die oben eingestellten Werte simuliert (Safety-First-Kriterium nach Roy). Gesucht wird der günstigste Versicherungsanteil, der die Wunsch-Zielmarke mit dem gewünschten Sicherheitsniveau erreicht.</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5 mb-5">
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <label for="mcCareSd" class="text-sm font-medium">Streuung Pflegealter (σ)</label>
+          <span class="flex items-baseline gap-1">
+            <input type="number" id="mcCareSdVal" class="value-input" style="color:var(--primary)" value="5" step="0.5">
+            <span class="value-unit">Jahre</span>
+          </span>
+        </div>
+        <input type="range" id="mcCareSd" class="slider" min="0" max="15" step="0.5" value="5">
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <label for="mcDurationSd" class="text-sm font-medium">Streuung Pflegedauer (σ)</label>
+          <span class="flex items-baseline gap-1">
+            <input type="number" id="mcDurationSdVal" class="value-input" style="color:var(--primary)" value="3" step="0.5">
+            <span class="value-unit">Jahre</span>
+          </span>
+        </div>
+        <input type="range" id="mcDurationSd" class="slider" min="0" max="10" step="0.5" value="3">
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <label for="mcReturnSd" class="text-sm font-medium">Streuung ETF-Rendite (σ&nbsp;p.&nbsp;a.)</label>
+          <span class="flex items-baseline gap-1">
+            <input type="number" id="mcReturnSdVal" class="value-input" style="color:var(--etf)" value="15" step="1">
+            <span class="value-unit">%</span>
+          </span>
+        </div>
+        <input type="range" id="mcReturnSd" class="slider accent-ins" min="0" max="30" step="1" value="15">
+      </div>
+
+      <div>
+        <div class="mb-1.5">
+          <label for="mcConfidence" class="text-sm font-medium">Sicherheitsniveau</label>
+        </div>
+        <select id="mcConfidence" class="w-full rounded-lg border border-token px-3 py-1.5 text-sm">
+          <option value="0.5">50&nbsp;% (Median)</option>
+          <option value="0.8">80&nbsp;%</option>
+          <option value="0.9">90&nbsp;%</option>
+          <option value="0.95" selected>95&nbsp;%</option>
+          <option value="0.99">99&nbsp;%</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="rounded-xl surface-2 border border-token p-4 mb-4">
+      <div class="flex flex-wrap items-baseline justify-between gap-2 mb-2">
+        <p class="text-sm font-medium">Empfohlener Versicherungsanteil</p>
+        <p id="mcRecommendation" class="font-display text-xl font-bold" style="color:var(--primary)">–</p>
+      </div>
+      <p id="mcExplanation" class="text-sm text-muted leading-relaxed"></p>
+    </div>
+
+    <div class="chart-wrap" style="height:260px;"><canvas id="chartMonteCarlo"></canvas></div>
+    <p class="text-xs text-muted mt-3 leading-relaxed">Simulation mit 1.500 Ziehungen je getestetem Versicherungsanteil, deterministisch reproduzierbar (fester Zufalls-Seed) &ndash; bei gleichen Eingaben immer dasselbe Ergebnis, keine Zufallsschwankung zwischen Neuberechnungen. Pflegealter, Pflegedauer und ETF-Rendite werden je Ziehung normalverteilt um die aktuell eingestellten Werte gezogen und an sinnvollen Grenzen gekappt (Pflegealter &gt; Einstiegsalter, Pflegedauer &ge;&nbsp;0).</p>
+  </section>
+
   <!-- Footer / assumptions -->
   <footer id="methodik" class="text-xs text-muted leading-relaxed border-t border-token pt-6 pb-2 scroll-mt-4">
     <h2 class="font-display text-sm font-semibold text-ink mb-3">Methodik, Steuerannahmen &amp; Grenzen dieser Berechnung</h2>
@@ -562,7 +629,8 @@
       <li>Kein individueller, ggf. niedrigerer persönlicher Steuersatz (Günstigerprüfung) wird geprüft.</li>
       <li>Die Einkommensteuer-Rückerstattung auf Versicherungsbeiträge wird linear aus Versicherungsbeitrag&nbsp;×&nbsp;Grenzsteuersatz berechnet, ohne Berücksichtigung der gesetzlichen Höchstbeträge für Vorsorgeaufwendungen (§10 EStG) oder einer Günstigerprüfung; sie fließt nur ein, wenn die entsprechende Option aktiviert ist.</li>
       <li>Keine ETF-Kosten (TER), Transaktions- oder Depotkosten; keine Beitragsdynamik der Versicherung.</li>
-      <li>Pflegealter und Sterbealter sind feste Einzelwerte, keine Wahrscheinlichkeitsverteilung/Sterbetafel und kein Sequence-of-Returns-Risiko (z.&nbsp;B. ein Kurseinbruch kurz nach Pflegebeginn).</li>
+      <li>Pflegealter und Sterbealter sind in der Haupt-Berechnung feste Einzelwerte, keine Wahrscheinlichkeitsverteilung/Sterbetafel und kein Sequence-of-Returns-Risiko (z.&nbsp;B. ein Kurseinbruch kurz nach Pflegebeginn).</li>
+      <li>Die Monte-Carlo-Schätzung des optimalen Versicherungsanteils zieht Pflegealter und Pflegedauer als (an sinnvollen Grenzen gekappt) normalverteilte Zufallsgrößen &ndash; reale Verteilungen (z.&nbsp;B. aus Sterbetafeln) sind rechtsschief statt symmetrisch. Die ETF-Rendite wird in der Ansparphase als monatlicher Zufallspfad um die eingestellte Rendite simuliert (erfasst Sequence-of-Returns-Risiko beim Vermögensaufbau); die Verrentung in der Pflegephase selbst nutzt weiterhin die deterministische Rendite-Annahme, wie bei einer beim Pflegeeintritt fix geplanten Entnahme.</li>
     </ul>
 
     <p class="mt-2"><strong class="text-ink">Hinweis für den Beratungseinsatz:</strong> Dieser Rechner liefert unverbindliche Modellrechnungen auf Basis der oben genannten, bewusst vereinfachten Annahmen. Er dient ausschließlich der Veranschaulichung von Wirkzusammenhängen und ersetzt keine individuelle Steuer-, Versicherungs- oder Anlageberatung sowie keine Berechnung nach WpHG/§ 34d GewO. Sämtliche Eingaben verbleiben ausschließlich im Browser der Nutzerin bzw. des Nutzers und werden nicht an einen Server übertragen oder gespeichert.</p>
@@ -592,6 +660,10 @@
     churchTax: el('churchTax'),
     incomeTaxRate: el('incomeTaxRate'),
     reinvestRefund: el('reinvestRefund'),
+    mcCareSd: el('mcCareSd'),
+    mcDurationSd: el('mcDurationSd'),
+    mcReturnSd: el('mcReturnSd'),
+    mcConfidence: el('mcConfidence'),
   };
 
   const out = {
@@ -623,6 +695,11 @@
     amountModeAccumulated: el('amountModeAccumulated'),
     liquidityTitle: el('liquidityTitle'),
     liquiditySubtitle: el('liquiditySubtitle'),
+    mcCareSdVal: el('mcCareSdVal'),
+    mcDurationSdVal: el('mcDurationSdVal'),
+    mcReturnSdVal: el('mcReturnSdVal'),
+    mcRecommendation: el('mcRecommendation'),
+    mcExplanation: el('mcExplanation'),
   };
 
   // ---------- Formatting helpers ----------
@@ -648,10 +725,12 @@
     return (pv * i) / (1 - Math.pow(1 + i, -n));
   }
 
-  function computeScenario(pIns, pEtf, n1, n2, annualReturnPct, dailyFactor, otherBenefits, sparerpauschbetrag, churchTaxRate) {
+  // Versteuert den ETF-Bruttoendwert beim Pflegeeintritt und verrentet das Netto-Depot über die
+  // Pflegephase. Ausgelagert aus computeScenario, damit die Monte-Carlo-Simulation denselben
+  // Steuer-/Verrentungs-Code auf einen pfadsimulierten (statt geschlossen berechneten) Bruttoendwert
+  // anwenden kann, ohne die Logik zu duplizieren.
+  function taxAndAnnuity(bruttoFV, contributions, n2, annualReturnPct, sparerpauschbetrag, churchTaxRate) {
     const i = (annualReturnPct / 100) / 12;
-    const bruttoFV = futureValueOrdinary(pEtf, i, n1);
-    const contributions = pEtf * n1;
     const gain = Math.max(0, bruttoFV - contributions);
     const taxableGain = Math.max(0, gain * 0.7 - sparerpauschbetrag); // 30% Teilfreistellung, abzgl. Sparerpauschbetrag
     const kapESt = 0.25;
@@ -659,9 +738,151 @@
     const tax = taxableGain * effectiveTaxRate;
     const nettoDepot = Math.max(0, bruttoFV - tax);
     const etfMonthly = annuityPayment(nettoDepot, i, n2);
+    return { tax, nettoDepot, etfMonthly };
+  }
+
+  function computeScenario(pIns, pEtf, n1, n2, annualReturnPct, dailyFactor, otherBenefits, sparerpauschbetrag, churchTaxRate) {
+    const i = (annualReturnPct / 100) / 12;
+    const bruttoFV = futureValueOrdinary(pEtf, i, n1);
+    const contributions = pEtf * n1;
+    const { tax, nettoDepot, etfMonthly } = taxAndAnnuity(bruttoFV, contributions, n2, annualReturnPct, sparerpauschbetrag, churchTaxRate);
     const insMonthly = pIns * dailyFactor * 30.41;
     const combined = etfMonthly + insMonthly + otherBenefits;
     return { bruttoFV, contributions, tax, nettoDepot, etfMonthly, insMonthly, otherBenefits, combined };
+  }
+
+  // ---------- Monte-Carlo: optimaler Versicherungsanteil (Safety-First-Kriterium) ----------
+  // Deterministischer, seed-basierter Zufallsgenerator (mulberry32) statt Math.random():
+  // gleiche Eingaben liefern immer dasselbe Ergebnis, kein Flackern bei jeder Neuberechnung.
+  function mulberry32(seed) {
+    let a = seed >>> 0;
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function makeGaussianSampler(rng) {
+    let spare = null;
+    return function () {
+      if (spare != null) { const v = spare; spare = null; return v; }
+      let u, v, s;
+      do {
+        u = rng() * 2 - 1;
+        v = rng() * 2 - 1;
+        s = u * u + v * v;
+      } while (s === 0 || s >= 1);
+      const mul = Math.sqrt((-2 * Math.log(s)) / s);
+      spare = v * mul;
+      return u * mul;
+    };
+  }
+
+  const MC_DRAWS = 1500;
+  const MC_GRID_STEPS = 21; // 0 %, 5 %, ..., 100 % des Gesamtbudgets
+
+  // Simuliert die Ansparphase als monatlichen Zufallspfad (statt eines einzelnen konstanten Zinssatzes
+  // über Jahrzehnte) und gibt den Endwert je 1 € monatlichem Beitrag zurück. Wichtig: dieser Wert ist
+  // linear im Beitrag, d.h. derselbe Pfad kann für jeden Versicherungsanteil im Raster wiederverwendet
+  // werden (bruttoFV = etfBudget * fvPerEuro), ohne den Pfad erneut zu simulieren.
+  // Ein einzelner Ziehungswert der *Jahres*-Rendite als konstanter Zins über bis zu 45 Jahre würde durch
+  // exponentielle Verzinsung schon bei realistischer Schwankungsbreite absurde Ausreißer erzeugen.
+  function simulatePathFvPerEuro(n1, annualReturnMean, annualReturnSd, gauss) {
+    if (n1 <= 0) return 0;
+    const monthlyMean = (annualReturnMean / 100) / 12;
+    const monthlySd = (annualReturnSd / 100) / Math.sqrt(12);
+    let fv = 0;
+    const months = Math.round(n1);
+    for (let m = 0; m < months; m++) {
+      const r = monthlyMean + gauss() * monthlySd;
+      fv = fv * (1 + r) + 1;
+    }
+    return fv;
+  }
+
+  // Testet für ein Raster von Versicherungsanteilen (0..totalBudget), mit welcher Wahrscheinlichkeit
+  // die Zielmarke unter simuliertem Pflegealter, Pflegedauer und ETF-Rendite erreicht wird.
+  function runMonteCarlo(params) {
+    const {
+      startAge, careAge, deathAge, etfReturn, totalBudget, dailyFactor, otherBenefits,
+      sparerpauschbetrag, churchTaxRate, incomeTaxRate, reinvestRefundEnabled,
+      careSd, durationSd, returnSd, target,
+    } = params;
+
+    const rng = mulberry32(20240501);
+    const gauss = makeGaussianSampler(rng);
+    const durationMean = Math.max(0, deathAge - careAge);
+
+    // Zufallspfade einmal ziehen und für jeden Rasterpunkt wiederverwenden, damit die
+    // Erfolgswahrscheinlichkeit über die Versicherungsanteile hinweg vergleichbar bleibt.
+    // Die Rendite-Unsicherheit fließt über den simulierten Pfad in fvPerEuro ein, nicht als
+    // zusätzlicher konstanter Zins in der Verrentungsphase (dort bleibt die Annahme deterministisch,
+    // wie bei einer beim Pflegeeintritt festgelegten Entnahmeplanung).
+    const n1Draws = [], n2Draws = [], fvPerEuroDraws = [];
+    for (let k = 0; k < MC_DRAWS; k++) {
+      const care = Math.max(startAge + 0.1, careAge + gauss() * careSd);
+      const duration = Math.max(0, durationMean + gauss() * durationSd);
+      const n1 = Math.max(0, (care - startAge) * 12);
+      n1Draws.push(n1);
+      n2Draws.push(Math.max(0, duration * 12));
+      fvPerEuroDraws.push(simulatePathFvPerEuro(n1, etfReturn, returnSd, gauss));
+    }
+
+    const grid = [];
+    for (let g = 0; g < MC_GRID_STEPS; g++) {
+      const insuranceBudget = (g / (MC_GRID_STEPS - 1)) * totalBudget;
+      const etfBudgetBase = totalBudget - insuranceBudget;
+      const refund = insuranceBudget * (incomeTaxRate / 100);
+      const etfBudget = reinvestRefundEnabled ? etfBudgetBase + refund : etfBudgetBase;
+      const insMonthly = insuranceBudget * dailyFactor * 30.41;
+
+      let successCount = 0, sum = 0, sumSq = 0;
+      for (let k = 0; k < MC_DRAWS; k++) {
+        const bruttoFV = etfBudget * fvPerEuroDraws[k];
+        const contributions = etfBudget * n1Draws[k];
+        const { etfMonthly } = taxAndAnnuity(bruttoFV, contributions, n2Draws[k], etfReturn, sparerpauschbetrag, churchTaxRate);
+        const combined = etfMonthly + insMonthly + otherBenefits;
+        if (combined >= target) successCount++;
+        sum += combined;
+        sumSq += combined * combined;
+      }
+      const mean = sum / MC_DRAWS;
+      const variance = Math.max(0, sumSq / MC_DRAWS - mean * mean);
+      grid.push({ insuranceBudget, mean, sd: Math.sqrt(variance), probability: successCount / MC_DRAWS });
+    }
+    return grid;
+  }
+
+  function updateMonteCarlo(params) {
+    if (!chartMonteCarlo) return;
+    const { totalBudget, insuranceBudget, target, confidence } = params;
+    const grid = runMonteCarlo(params);
+
+    const candidates = grid.filter((g) => g.probability >= confidence);
+    const chosen = candidates.length
+      ? candidates.reduce((a, b) => (a.insuranceBudget <= b.insuranceBudget ? a : b))
+      : grid.reduce((a, b) => (a.probability >= b.probability ? a : b));
+
+    chartMonteCarlo.data.datasets[0].data = grid.map((g) => ({ x: g.insuranceBudget, y: g.probability * 100 }));
+    chartMonteCarlo.options.plugins.horizontalLines = [
+      { value: confidence * 100, color: cssVar('--danger') || '#B4433D', dash: [6, 4], label: `Ziel: ${Math.round(confidence * 100)} %` },
+    ];
+    chartMonteCarlo.options.plugins.verticalLines = [
+      { value: chosen.insuranceBudget, color: cssVar('--primary') || '#2F5D8A', dash: [6, 4], label: `Empfehlung: ${fmtEuroWhole(chosen.insuranceBudget)}`, isRecommendation: true },
+      { value: insuranceBudget, color: cssVar('--ink-muted') || '#8D9AAE', dash: [2, 3], label: 'aktuell gewählt' },
+    ];
+    chartMonteCarlo.update();
+
+    const pct = Math.round((chosen.insuranceBudget / totalBudget) * 100);
+    out.mcRecommendation.textContent = `${fmtEuroWhole(chosen.insuranceBudget)} (${pct} % vom Budget)`;
+
+    if (candidates.length) {
+      out.mcExplanation.textContent = `Mit ${fmtEuroWhole(chosen.insuranceBudget)} Versicherungsbeitrag (${pct} % des Budgets) erreichst du die Zielmarke von ${fmtEuroWhole(target)} in der Simulation mit ${Math.round(chosen.probability * 100)} % Wahrscheinlichkeit – bei geringerem Versicherungsanteil sinkt die Erfolgswahrscheinlichkeit unter das gewählte Sicherheitsniveau von ${Math.round(confidence * 100)} %.`;
+    } else {
+      out.mcExplanation.textContent = `Kein getesteter Versicherungsanteil erreicht das gewählte Sicherheitsniveau von ${Math.round(confidence * 100)} %. Am besten schneidet ${fmtEuroWhole(chosen.insuranceBudget)} Versicherung (${pct} % des Budgets) ab, mit ${Math.round(chosen.probability * 100)} % Wahrscheinlichkeit, die Zielmarke von ${fmtEuroWhole(target)} zu erreichen. Erhöhe das Gesamtbudget, senke die Zielmarke oder reduziere die angenommene Streuung.`;
+    }
   }
 
   // Sweeps either careAge (Sterbealter fest) or deathAge (Pflegealter fest) across its slider range
@@ -780,7 +1001,7 @@
   }
 
   // ---------- Charts ----------
-  let chartDepot, chartLiquidity, chartBreakEven;
+  let chartDepot, chartLiquidity, chartBreakEven, chartMonteCarlo;
   let breakEvenMode = 'care'; // 'care' = Pflegealter variabel (Sterbealter fest) · 'death' = Sterbealter variabel (Pflegealter fest)
   let amountMode = 'monthly'; // 'monthly' = €/Monat · 'accumulated' = Σ über die gesamte Pflegephase
 
@@ -788,6 +1009,7 @@
     const ctxDepot = el('chartDepot').getContext('2d');
     const ctxLiquidity = el('chartLiquidity').getContext('2d');
     const ctxBreakEven = el('chartBreakEven').getContext('2d');
+    const ctxMonteCarlo = el('chartMonteCarlo').getContext('2d');
 
     chartDepot = new Chart(ctxDepot, {
       type: 'bar',
@@ -850,6 +1072,16 @@
       },
       options: breakEvenChartOptions(),
     });
+
+    chartMonteCarlo = new Chart(ctxMonteCarlo, {
+      type: 'line',
+      data: {
+        datasets: [
+          { label: 'Erfolgswahrscheinlichkeit', data: [], borderColor: '#2F5D8A', backgroundColor: '#2F5D8A', borderWidth: 2, pointRadius: 0, tension: 0.15, fill: false },
+        ],
+      },
+      options: monteCarloChartOptions(),
+    });
   }
 
   // Custom lightweight plugin: draws a dashed reference line at options.plugins.targetLine.value
@@ -881,40 +1113,56 @@
   };
   Chart.register(targetLinePlugin);
 
-  // Custom lightweight plugin: draws one or more dashed vertical reference lines
-  // at options.plugins.verticalLines = [{ value, color, label, dash }, ...]
-  const verticalLinesPlugin = {
-    id: 'verticalLines',
+  // Custom lightweight plugin: draws dashed reference lines
+  // at options.plugins.verticalLines = [{ value, color, label, dash }, ...] (vertical, x-scale)
+  // and options.plugins.horizontalLines = [{ value, color, label, dash }, ...] (horizontal, y-scale)
+  const referenceLinesPlugin = {
+    id: 'referenceLines',
     afterDraw(chart) {
-      const lines = chart.options.plugins && chart.options.plugins.verticalLines;
-      if (!lines || !lines.length) return;
-      const xScale = chart.scales.x;
-      if (!xScale) return;
       const { ctx, chartArea } = chart;
-      lines.forEach((line) => {
-        if (line.value == null) return;
-        const xPixel = xScale.getPixelForValue(line.value);
-        if (xPixel < chartArea.left || xPixel > chartArea.right) return;
+      function drawLine(x1, y1, x2, y2, color, dash, label, labelX, labelY, align) {
         ctx.save();
-        ctx.strokeStyle = line.color || '#999999';
-        ctx.setLineDash(line.dash || [6, 4]);
+        ctx.strokeStyle = color || '#999999';
+        ctx.setLineDash(dash || [6, 4]);
         ctx.lineWidth = 1.5;
         ctx.beginPath();
-        ctx.moveTo(xPixel, chartArea.top);
-        ctx.lineTo(xPixel, chartArea.bottom);
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
         ctx.stroke();
-        if (line.label) {
+        if (label) {
           ctx.font = '600 11px Inter, sans-serif';
-          ctx.fillStyle = line.color || '#999999';
-          ctx.textAlign = 'center';
+          ctx.fillStyle = color || '#999999';
+          ctx.textAlign = align || 'center';
           ctx.textBaseline = 'top';
-          ctx.fillText(line.label, xPixel, chartArea.top + 4);
+          ctx.fillText(label, labelX, labelY);
         }
         ctx.restore();
-      });
+      }
+
+      const vLines = (chart.options.plugins && chart.options.plugins.verticalLines) || [];
+      const xScale = chart.scales.x;
+      if (xScale) {
+        vLines.forEach((line) => {
+          if (line.value == null) return;
+          const xPixel = xScale.getPixelForValue(line.value);
+          if (xPixel < chartArea.left || xPixel > chartArea.right) return;
+          drawLine(xPixel, chartArea.top, xPixel, chartArea.bottom, line.color, line.dash, line.label, xPixel, chartArea.top + 4, 'center');
+        });
+      }
+
+      const hLines = (chart.options.plugins && chart.options.plugins.horizontalLines) || [];
+      const yScale = chart.scales.y;
+      if (yScale) {
+        hLines.forEach((line) => {
+          if (line.value == null) return;
+          const yPixel = yScale.getPixelForValue(line.value);
+          if (yPixel < chartArea.top || yPixel > chartArea.bottom) return;
+          drawLine(chartArea.left, yPixel, chartArea.right, yPixel, line.color, line.dash, line.label, chartArea.right, yPixel - 4, 'right');
+        });
+      }
     },
   };
-  Chart.register(verticalLinesPlugin);
+  Chart.register(referenceLinesPlugin);
 
   function breakEvenChartOptions() {
     const muted = cssVar('--ink-muted') || '#5B6472';
@@ -949,6 +1197,42 @@
           beginAtZero: true,
           title: { display: true, text: '€ / Monat', color: muted, font: { family: 'Inter', size: 11 } },
           ticks: { color: muted, font: { family: 'Inter', size: 11 }, callback: (v) => fmtEuroWhole(v) },
+          grid: { color: border },
+        },
+      },
+    };
+  }
+
+  function monteCarloChartOptions() {
+    const muted = cssVar('--ink-muted') || '#5B6472';
+    const border = cssVar('--border') || '#E3E6EB';
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 400 },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: (items) => `Versicherungsanteil: ${fmtEuroWhole(items[0].parsed.x)}`,
+            label: (ctx) => `Erfolgswahrscheinlichkeit: ${ctx.parsed.y.toFixed(0)} %`,
+          },
+        },
+        verticalLines: [],
+        horizontalLines: [],
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          title: { display: true, text: 'Versicherungsanteil vom Budget (€/Monat)', color: muted, font: { family: 'Inter', size: 11 } },
+          ticks: { color: muted, font: { family: 'Inter', size: 11 }, callback: (v) => fmtEuroWhole(v) },
+          grid: { color: border },
+        },
+        y: {
+          min: 0,
+          max: 100,
+          title: { display: true, text: 'Erfolgswahrscheinlichkeit (%)', color: muted, font: { family: 'Inter', size: 11 } },
+          ticks: { color: muted, font: { family: 'Inter', size: 11 }, callback: (v) => v + ' %' },
           grid: { color: border },
         },
       },
@@ -1000,7 +1284,7 @@
     const ink = cssVar('--ink');
     const muted = cssVar('--ink-muted');
     const border = cssVar('--border');
-    [chartDepot, chartLiquidity, chartBreakEven].forEach((chart) => {
+    [chartDepot, chartLiquidity, chartBreakEven, chartMonteCarlo].forEach((chart) => {
       if (!chart) return;
       chart.options.scales.x.ticks.color = muted;
       chart.options.scales.y.ticks.color = muted;
@@ -1008,7 +1292,7 @@
       chart.options.scales.x.grid.color = border;
       if (chart.options.scales.x.title) chart.options.scales.x.title.color = muted;
       if (chart.options.scales.y.title) chart.options.scales.y.title.color = muted;
-      if (chart.options.plugins.legend) chart.options.plugins.legend.labels.color = muted;
+      if (chart.options.plugins.legend && chart.options.plugins.legend.labels) chart.options.plugins.legend.labels.color = muted;
     });
     if (chartLiquidity && chartLiquidity.options.plugins.targetLine) {
       chartLiquidity.options.plugins.targetLine.color = cssVar('--danger');
@@ -1017,6 +1301,20 @@
       chartBreakEven.options.plugins.verticalLines.forEach((line) => {
         if (line.isBreakEven) line.color = cssVar('--danger');
       });
+    }
+    if (chartMonteCarlo) {
+      if (chartMonteCarlo.options.plugins.verticalLines) {
+        chartMonteCarlo.options.plugins.verticalLines.forEach((line) => {
+          if (line.isRecommendation) line.color = cssVar('--primary');
+        });
+      }
+      if (chartMonteCarlo.options.plugins.horizontalLines) {
+        chartMonteCarlo.options.plugins.horizontalLines.forEach((line) => {
+          line.color = cssVar('--danger');
+        });
+      }
+      chartMonteCarlo.data.datasets[0].borderColor = cssVar('--primary');
+      chartMonteCarlo.data.datasets[0].backgroundColor = cssVar('--primary');
     }
   }
 
@@ -1125,6 +1423,17 @@
       ? 'Monatliche Gesamtverfügbarkeit aller drei Modelle bei gleichbleibender Rendite und gleichbleibendem Budget, abhängig vom Alter bei Pflegebeginn bzw. vom erwarteten Sterbealter. Die gestrichelte rote Linie markiert den Break-even zwischen reiner Versicherung und reinem ETF-Aufbau.'
       : 'Kumulierte Gesamtsumme über die jeweilige Pflegephase, abhängig vom Alter bei Pflegebeginn bzw. vom erwarteten Sterbealter. Die gestrichelte rote Linie markiert den Break-even zwischen reiner Versicherung und reinem ETF-Aufbau.';
     updateBreakEvenChart({ startAge, careAge, deathAge, etfReturn, totalBudget, insuranceBudget, etfBudget: etfBudgetHybrid, dailyFactor, otherBenefits, sparerpauschbetrag, churchTaxRate });
+
+    const mcCareSd = Number(inputs.mcCareSd.value);
+    const mcDurationSd = Number(inputs.mcDurationSd.value);
+    const mcReturnSd = Number(inputs.mcReturnSd.value);
+    const mcConfidence = Number(inputs.mcConfidence.value);
+    updateMonteCarlo({
+      startAge, careAge, deathAge, etfReturn, totalBudget, dailyFactor, otherBenefits,
+      sparerpauschbetrag, churchTaxRate, incomeTaxRate, reinvestRefundEnabled,
+      careSd: mcCareSd, durationSd: mcDurationSd, returnSd: mcReturnSd,
+      target: targetIncome, confidence: mcConfidence, insuranceBudget,
+    });
   }
 
   function fillScenario(prefix, s, multiplier) {
@@ -1226,6 +1535,9 @@
   linkRangeAndNumber(inputs.targetIncome, out.targetIncomeVal);
   linkRangeAndNumber(inputs.sparerpauschbetrag, out.sparerpauschbetragVal);
   linkRangeAndNumber(inputs.incomeTaxRate, out.incomeTaxRateVal);
+  linkRangeAndNumber(inputs.mcCareSd, out.mcCareSdVal);
+  linkRangeAndNumber(inputs.mcDurationSd, out.mcDurationSdVal);
+  linkRangeAndNumber(inputs.mcReturnSd, out.mcReturnSdVal);
 
   // ---------- Wire up events ----------
   Object.values(inputs).forEach((input) => {
