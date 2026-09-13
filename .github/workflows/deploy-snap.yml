@@ -1,0 +1,126 @@
+name: Deploy Snap! (selbst gehostet, embed/snap)
+
+# Stellt die Programmierumgebung Snap! (https://github.com/jmoenig/Snap, AGPL)
+# unter https://edu-mrh.de/embed/snap/ bereit – ohne Tracker und ohne Cloud,
+# damit keine Daten an Dritte gehen (DSGVO). Genutzt von
+# informatik/11/algorithmik/ (edu-snap.html#open:… lädt eine Vorlage).
+#
+# Version aktualisieren: SNAP_REF unten auf ein neues Release-Tag setzen
+# (https://github.com/jmoenig/Snap/tags) und den Workflow manuell starten.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+    paths:
+      - '.github/workflows/deploy-snap.yml'
+
+env:
+  SNAP_REF: v12.1.3
+
+jobs:
+  build-snap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Snap! auschecken
+        uses: actions/checkout@v4
+        with:
+          repository: jmoenig/Snap
+          ref: ${{ env.SNAP_REF }}
+          path: snap
+
+      - name: edu-snap.html erzeugen (ohne Tracker, ohne Cloud, Deutsch)
+        run: |
+          cd snap
+          SCRIPTS=$(grep -E '^\s*<script src="src/' snap.html | grep -v santa | sed 's/^ *//')
+          {
+            cat <<'HEAD'
+          <!DOCTYPE html>
+          <!-- Snap! für edu-mrh.de – erzeugt vom Workflow .github/workflows/deploy-snap.yml.
+               Unterschiede zur Original-snap.html: kein Matomo-Tracker, kein Service
+               Worker, Cloud deaktiviert (noCloud), Deutsch als Startsprache. -->
+          <html lang="de">
+              <head>
+                  <title>Snap! – edu-mrh.de</title>
+                  <link rel="icon" href="src/favicon.ico" type="image/x-icon">
+                  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1">
+                  <meta name="theme-color" content="white"/>
+          HEAD
+            echo "$SCRIPTS" | sed 's/^/        /'
+            cat <<'TAIL'
+                  <script>
+                      var world, ide;
+                      window.onload = function () {
+                          var FPS = 60,
+                              lastTime = 0,
+                              loop = (timestamp) => {
+                                  requestAnimationFrame(loop);
+                                  if (timestamp - lastTime < 1000 / FPS) {return; }
+                                  world.doOneCycle();
+                                  lastTime = Math.max(
+                                      lastTime + 1000 / FPS,
+                                      timestamp - 1000 / FPS
+                                  );
+                              };
+                          try {
+                              // Deutsch als Startsprache, solange nichts anderes gewählt wurde
+                              if (!localStorage['-snap-setting-language']) {
+                                  localStorage['-snap-setting-language'] = 'de';
+                              }
+                          } catch (ignored) {}
+                          world = new WorldMorph(document.getElementById('world'));
+                          ide = new IDE_Morph({noCloud: true});
+                          // Die Standard-Konfiguration würde beim Start ein neues Projekt
+                          // anlegen und dabei den Projekt-Anker (#open:…) verwerfen. Wir
+                          // brauchen von der Konfiguration nur "Cloud aus".
+                          ide.applyConfigurations = function () {
+                              this.cloud.disable();
+                              this.fixLayout();
+                          };
+                          ide.openIn(world);
+                          requestAnimationFrame(loop);
+                      };
+                  </script>
+              </head>
+              <body style="margin: 0;">
+                  <canvas id="world" tabindex="1" style="position: absolute;"></canvas>
+              </body>
+          </html>
+          TAIL
+          } > edu-snap.html
+          echo "---- edu-snap.html:"; head -30 edu-snap.html
+          grep -q 'noCloud' edu-snap.html
+          test "$(grep -c '<script src=' edu-snap.html)" -ge 20
+
+      - name: Nicht benötigte Dateien entfernen
+        run: |
+          cd snap
+          rm -rf .git .github docs tests *.md
+          du -sh . ; find . -type f | wc -l
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: snap-dist
+          path: snap/
+          retention-days: 3
+
+  deploy-snap:
+    needs: build-snap
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: snap-dist
+          path: snap/
+      - name: Deploy to Hetzner via FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./snap/
+          server-dir: /embed/snap/
+          timeout: 600000

@@ -104,6 +104,7 @@ auf edu-mrh.de und später auf edu-bay.de:
 | Java-Online-IDE | `https://edu-mrh.de/embed/include/online-ide-embedded.js` |
 | SQL-IDE | `https://edu-mrh.de/embed/sql-IDE-embedded/includeIDE.js` |
 | GeoGebra | `https://edu-mrh.de/embed/GeoGebra/deployggb.js` |
+| Snap! (Blockprogrammierung, selbst gehostet) | `https://edu-mrh.de/embed/snap/edu-snap.html` – Projekt laden per `#open:<URL-kodiertes Projekt-XML>`; Beispiel-Einbindung: `informatik/11/algorithmik/snap-ide.html` |
 
 Die fertigen Einbinde-Zeilen stehen auskommentiert in
 [templates/themenseite.html](templates/themenseite.html) – einfach den
@@ -138,6 +139,14 @@ Schritt – **was auf `main` liegt, ist online.**
   „Add file“ → „Upload files“. Auch das löst das Deployment aus.
 - **Vorsichtig sein bei:** Löschen/Umbenennen von Dateien – bestehende Links
   (z. B. in Notizen von Schüler:innen) brechen dann.
+
+Die eingebetteten Werkzeuge unter `/embed/` (Java-Online-IDE, SQL-IDE, Snap!)
+werden von eigenen Workflows gebaut und hochgeladen:
+[`online-ide-deploy.yml`](.github/workflows/online-ide-deploy.yml), [`sql-ide-deploy.yml`](.github/workflows/sql-ide-deploy.yml) (täglich)
+und [`deploy-snap.yml`](.github/workflows/deploy-snap.yml) (manuell bzw. bei
+Änderung des Workflows; Snap!-Version dort über `SNAP_REF` gepinnt). Snap!
+wird dabei ohne Tracker und ohne Cloud-Anbindung als `edu-snap.html`
+bereitgestellt.
 
 ## Mit KI arbeiten
 
