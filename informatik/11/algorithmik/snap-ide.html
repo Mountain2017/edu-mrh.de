@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snap! Programmierumgebung | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Snap! direkt im Browser – mit den Vorlagen der Algorithmik-Sequenz (Informatik 11, spätbeginnend).">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script src="snap-config.js"></script>
+    <style>
+        :root { --alg-primary: #0f766e; --alg-primary-dark: #115e59; --alg-light: #ccfbf1; --alg-snap: #f7c33b; }
+        body { overflow: hidden; }
+        .ide-page { position: fixed; top: var(--navbar-height); left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; background: #fff; }
+        .ide-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .5rem .9rem; border-bottom: 1px solid #e5e7eb; background: #f8fafc; }
+        .ide-bar label { font-size: .85rem; color: var(--gray); }
+        .ide-bar select { font: inherit; font-size: .95rem; padding: .35rem .5rem; border: 1px solid #cbd5e1; border-radius: 6px; background: #fff; max-width: 100%; }
+        .ide-bar .btn { padding: .4rem .8rem; font-size: .9rem; }
+        .btn-snap { background: var(--alg-snap); color: #222; border: 0; font-weight: 700; }
+        .btn-snap:hover { background: #e6b52e; color: #111; }
+        .ide-bar .spacer { flex: 1; }
+        .ide-bar details { font-size: .85rem; color: var(--gray); }
+        .ide-bar details summary { cursor: pointer; font-weight: 600; color: var(--alg-primary-dark); }
+        .ide-bar details p { margin: .3rem 0 0; max-width: 60ch; }
+        .ide-frame { flex: 1; position: relative; }
+        .ide-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+        .ide-hinweis { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; padding: 2rem; background: #fff; overflow: auto; }
+        .ide-hinweis.sichtbar { display: flex; }
+        .ide-hinweis .box { max-width: 620px; background: #fffbeb; border: 2px solid #f59e0b; border-radius: 12px; padding: 1.5rem 1.8rem; }
+        .ide-hinweis h2 { color: #b45309; font-size: 1.4rem; margin-bottom: .6rem; }
+        .ide-hinweis p { margin: .5rem 0; color: #374151; }
+        .ide-hinweis .aktionen { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1rem; }
+        .lade { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--gray); font-size: 1.1rem; pointer-events: none; }
+        @media (max-width: 768px) { .ide-bar .text { display: none; } }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="icon"><a href="https://edu-mrh.de/">💻</a></span>
+                <span>edu-mrh Informatik</span>
+            </div>
+            <div class="nav-links">
+                <a href="algorithmik.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="ide-page">
+        <div class="ide-bar">
+            <label for="projektwahl">Vorlage:</label>
+            <select id="projektwahl"></select>
+            <button class="btn btn-snap" id="btnLaden">▶ In Snap! laden</button>
+            <a class="btn btn-outline" id="btnDownload" href="#" download>⬇ .xml</a>
+            <a class="btn btn-outline" id="btnVollbild" href="#" target="_blank" rel="noopener">⛶ <span class="text">Neuer Tab</span></a>
+            <a class="btn btn-outline" id="btnStation" href="algorithmik.html">← <span class="text">Zur Station</span></a>
+            <span class="spacer"></span>
+            <details>
+                <summary>Speichern &amp; Abgeben</summary>
+                <p><strong>Speichern:</strong> Datei-Symbol ▸ <em>Speichern</em> legt dein Projekt in diesem Browser ab (Snap! merkt es sich auf diesem Gerät).<br>
+                   <strong>Abgeben / mitnehmen:</strong> Datei-Symbol ▸ <em>Exportiere Projekt…</em> lädt eine .xml-Datei herunter. Laden per Datei-Symbol ▸ <em>Importieren…</em> oder Datei ins Fenster ziehen.</p>
+            </details>
+        </div>
+        <div class="ide-frame">
+            <div class="lade" id="lade">Snap! wird geladen …</div>
+            <iframe id="snapFrame" title="Snap! Programmierumgebung" allow="fullscreen"></iframe>
+            <div class="ide-hinweis" id="hinweis">
+                <div class="box">
+                    <h2>Snap! ist gerade nicht erreichbar</h2>
+                    <p>Die Programmierumgebung auf edu-mrh.de konnte nicht geladen werden (vielleicht ist sie noch nicht eingerichtet oder du bist offline).</p>
+                    <p>Du kannst die Vorlage herunterladen und in einer anderen Snap!-Installation öffnen – oder die Vorlage direkt bei Snap! in Berkeley (USA) öffnen. <strong>Hinweis:</strong> Dabei verlässt du edu-mrh.de; für diese Seite gilt die Datenschutzerklärung der University of California.</p>
+                    <div class="aktionen">
+                        <a class="btn btn-primary" id="hwDownload" href="#" download>⬇ Vorlage herunterladen (.xml)</a>
+                        <a class="btn btn-outline" id="hwExtern" href="#" target="_blank" rel="noopener noreferrer">Bei snap.berkeley.edu öffnen ↗</a>
+                        <button class="btn btn-outline" id="hwRetry">Nochmal versuchen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        var S = window.EDU_SNAP;
+        var sel = document.getElementById('projektwahl');
+        var frame = document.getElementById('snapFrame');
+        var hinweis = document.getElementById('hinweis');
+        var lade = document.getElementById('lade');
+        var stationDateien = {};
+        S.STATIONS.forEach(function (st) { stationDateien[st.id] = st.file; });
+
+        // Auswahlliste füllen (Vorlagen / Lösungen)
+        var gVorlagen = document.createElement('optgroup'); gVorlagen.label = 'Vorlagen';
+        var gLsg = document.createElement('optgroup'); gLsg.label = 'Lösungen';
+        Object.keys(S.PROJECTS).forEach(function (id) {
+            var p = S.PROJECTS[id], o = document.createElement('option');
+            o.value = id; o.textContent = 'Station ' + p.station + ' – ' + p.title;
+            (p.solution ? gLsg : gVorlagen).appendChild(o);
+        });
+        sel.appendChild(gVorlagen); sel.appendChild(gLsg);
+        var leer = document.createElement('option'); leer.value = ''; leer.textContent = 'Leeres Projekt'; sel.insertBefore(leer, sel.firstChild);
+
+        var param = new URLSearchParams(location.search).get('p') || '';
+        sel.value = S.PROJECTS[param] ? param : (param === '' ? '' : '');
+        if (param && !S.PROJECTS[param]) { sel.value = ''; }
+
+        function aktuelleId() { return sel.value; }
+
+        function linksAktualisieren() {
+            var id = aktuelleId();
+            var dl = document.getElementById('btnDownload'), hw = document.getElementById('hwDownload');
+            var station = document.getElementById('btnStation');
+            if (id) {
+                dl.href = S.projectFileUrl(id); dl.download = id + '.xml'; dl.style.display = '';
+                hw.href = dl.href; hw.download = dl.download; hw.style.display = '';
+                station.href = stationDateien[S.PROJECTS[id].station] || 'algorithmik.html';
+            } else {
+                dl.style.display = 'none'; hw.style.display = 'none';
+                station.href = 'algorithmik.html';
+            }
+            // Vollbild-Link: gleiches Projekt in neuem Tab
+            var voll = document.getElementById('btnVollbild');
+            voll.href = S.SNAP_URL;
+            var ext = document.getElementById('hwExtern');
+            ext.href = S.EXTERNAL_URL;
+            if (id) {
+                S.snapOpenUrl(id, S.SNAP_URL).then(function (u) { voll.href = u; }).catch(function () {});
+                S.snapOpenUrl(id, S.EXTERNAL_URL).then(function (u) { ext.href = u; }).catch(function () {});
+            }
+            history.replaceState(null, '', id ? '?p=' + encodeURIComponent(id) : location.pathname);
+        }
+
+        function laden() {
+            var id = aktuelleId();
+            hinweis.classList.remove('sichtbar');
+            lade.style.display = 'flex';
+            linksAktualisieren();
+            S.probeSelfHosted().then(function (ok) {
+                if (!ok) { lade.style.display = 'none'; hinweis.classList.add('sichtbar'); return; }
+                var p = id ? S.snapOpenUrl(id) : Promise.resolve(S.SNAP_URL);
+                return p.then(function (url) {
+                    frame.src = 'about:blank';
+                    setTimeout(function () { frame.src = url; }, 50);
+                    frame.onload = function () { lade.style.display = 'none'; };
+                    setTimeout(function () { lade.style.display = 'none'; }, 8000);
+                });
+            }).catch(function () { lade.style.display = 'none'; hinweis.classList.add('sichtbar'); });
+        }
+
+        document.getElementById('btnLaden').addEventListener('click', function () {
+            if (frame.src && frame.src !== 'about:blank' && !confirm('Das aktuelle Projekt in Snap! wird ersetzt. Vorher speichern? (Abbrechen = zurück)')) { return; }
+            laden();
+        });
+        document.getElementById('hwRetry').addEventListener('click', laden);
+        sel.addEventListener('change', linksAktualisieren);
+        window.addEventListener('beforeunload', function (e) {
+            if (frame.src && frame.src !== 'about:blank') { e.preventDefault(); e.returnValue = ''; }
+        });
+        laden();
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+/* ==========================================================================
+   Algorithmik mit Snap! – gemeinsames Styling der Stationsseiten
+   Ergänzt https://edu-mrh.de/embed/style.css (wird zusätzlich geladen).
+   ========================================================================== */
+:root {
+    --alg-primary: #0f766e;      /* Petrol – Hauptfarbe der Sequenz */
+    --alg-primary-dark: #115e59;
+    --alg-light: #ccfbf1;
+    --alg-accent: #f59e0b;
+    --alg-snap: #f7c33b;         /* Snap!-Gelb für IDE-Buttons */
+    --ph-predict: #7c3aed;
+    --ph-run: #2563eb;
+    --ph-investigate: #0891b2;
+    --ph-modify: #d97706;
+    --ph-make: #dc2626;
+    --ph-note: #16a34a;
+}
+
+/* Hero der Station */
+.alg-hero { text-align: left; border-left: 8px solid var(--alg-primary); }
+.alg-hero .hero-title { font-size: 2.4rem; background: none; -webkit-text-fill-color: initial; color: var(--alg-primary-dark); }
+.alg-hero .hero-subtitle { color: var(--gray); }
+.alg-kompetenz {
+    display: inline-block; margin-top: .75rem; padding: .35rem .8rem; border-radius: 999px;
+    background: var(--alg-light); color: var(--alg-primary-dark); font-size: .9rem; font-weight: 600;
+}
+
+/* Leiste mit den Phasen (Ablauf der Station) */
+.phase-bar { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 2rem; }
+.phase-bar a {
+    flex: 1 1 140px; text-align: center; padding: .6rem .5rem; border-radius: 8px; font-weight: 600;
+    text-decoration: none; color: #fff; font-size: .95rem; opacity: .9; transition: opacity .2s, transform .2s;
+}
+.phase-bar a:hover { opacity: 1; transform: translateY(-2px); }
+.phase-bar .p-predict     { background: var(--ph-predict); }
+.phase-bar .p-run         { background: var(--ph-run); }
+.phase-bar .p-investigate { background: var(--ph-investigate); }
+.phase-bar .p-modify      { background: var(--ph-modify); }
+.phase-bar .p-make        { background: var(--ph-make); }
+.phase-bar .p-note        { background: var(--ph-note); }
+
+/* Phasen-Abschnitte */
+.phase { background: var(--white); border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 1.75rem; overflow: hidden; }
+.phase-head { display: flex; align-items: center; gap: .9rem; padding: 1rem 1.5rem; color: #fff; }
+.phase-head .phase-icon { font-size: 1.6rem; line-height: 1; }
+.phase-head h2 { margin: 0; font-size: 1.35rem; color: #fff; }
+.phase-head small { display: block; font-weight: 400; opacity: .85; font-size: .85rem; }
+.phase-body { padding: 1.25rem 1.5rem 1.5rem; }
+.phase-body p:last-child { margin-bottom: 0; }
+.phase.predict     .phase-head { background: var(--ph-predict); }
+.phase.run         .phase-head { background: var(--ph-run); }
+.phase.investigate .phase-head { background: var(--ph-investigate); }
+.phase.modify      .phase-head { background: var(--ph-modify); }
+.phase.make        .phase-head { background: var(--ph-make); }
+.phase.note        .phase-head { background: var(--ph-note); }
+
+/* Aufgabenliste innerhalb einer Phase */
+.aufgaben { list-style: none; margin: 0; padding: 0; counter-reset: aufg; }
+.aufgaben li {
+    position: relative; padding: .55rem 0 .55rem 2.6rem; border-bottom: 1px dashed var(--gray-lighter, #e5e7eb); line-height: 1.6;
+}
+.aufgaben li:last-child { border-bottom: 0; }
+.aufgaben li::before {
+    counter-increment: aufg; content: counter(aufg);
+    position: absolute; left: 0; top: .5rem; width: 1.8rem; height: 1.8rem; border-radius: 50%;
+    background: var(--alg-light); color: var(--alg-primary-dark); font-weight: 700; text-align: center; line-height: 1.8rem; font-size: .9rem;
+}
+
+/* Vorhersage-Tabelle */
+.vorhersage { width: 100%; border-collapse: collapse; margin: .5rem 0 1rem; font-size: .95rem; }
+.vorhersage th, .vorhersage td { border: 1px solid #e5e7eb; padding: .5rem .7rem; text-align: left; vertical-align: top; }
+.vorhersage th { background: #f3f4f6; }
+.vorhersage td.frei { min-width: 130px; background: repeating-linear-gradient(transparent, transparent 1.4em, #e5e7eb 1.4em, #e5e7eb calc(1.4em + 1px)); }
+
+/* Snap!-Block-Darstellung im Text (Block-Optik ohne Bilder) */
+.blk {
+    display: inline-block; padding: .12rem .5rem; border-radius: 6px; color: #fff; font-family: 'Segoe UI', system-ui, sans-serif;
+    font-size: .88em; font-weight: 600; white-space: nowrap; margin: .05rem 0; vertical-align: middle; box-shadow: inset 0 -2px 0 rgba(0,0,0,.25);
+}
+.blk-motion    { background: #4a6cd4; }
+.blk-looks     { background: #8f56e3; }
+.blk-pen       { background: #00a89c; }
+.blk-control   { background: #e6a822; }
+.blk-sensing   { background: #0494dc; }
+.blk-operators { background: #62c213; }
+.blk-variables { background: #f3761d; }
+.blk-other     { background: #969696; }
+.blk-hat { border-radius: 14px 14px 6px 6px; }
+.blk-rep { border-radius: 999px; }
+.blk-bool { clip-path: polygon(8% 0, 92% 0, 100% 50%, 92% 100%, 8% 100%, 0 50%); padding-left: .8rem; padding-right: .8rem; }
+.blk .slot { display: inline-block; background: #fff; color: #333; border-radius: 999px; padding: 0 .4rem; font-weight: 500; margin: 0 .1rem; }
+.blk .slot-txt { border-radius: 4px; }
+.blk .slot-bool { clip-path: polygon(10% 0, 90% 0, 100% 50%, 90% 100%, 10% 100%, 0 50%); padding: 0 .6rem; }
+
+/* Buttons für Snap! */
+.snap-actions { display: flex; flex-wrap: wrap; gap: .6rem; margin: .8rem 0 .4rem; }
+.btn-snap { background: var(--alg-snap); color: #222; border: 0; font-weight: 700; }
+.btn-snap:hover { background: #e6b52e; color: #111; }
+.btn-ab { background: var(--ph-note); color: #fff; border: 0; font-weight: 600; }
+.btn-ab:hover { background: #15803d; color: #fff; }
+
+/* Merkkasten */
+.merke { background: #f0fdf4; border: 2px solid var(--ph-note); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
+.merke h4 { color: #15803d; margin: 0 0 .4rem; }
+.merke dl { margin: 0; }
+.merke dt { font-weight: 700; margin-top: .5rem; }
+.merke dd { margin: 0 0 .2rem 0; color: var(--gray); }
+
+/* Tipp / Hinweis */
+.tipp { background: #fffbeb; border-left: 5px solid var(--alg-accent); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; margin: 1rem 0; }
+.tipp strong { color: #b45309; }
+
+/* Lösung (ausklappbar) */
+details.loesung { background: #f8fafc; border: 1px dashed #94a3b8; border-radius: 8px; padding: .6rem 1rem; margin: .8rem 0; }
+details.loesung summary { cursor: pointer; font-weight: 600; color: #334155; }
+details.loesung[open] summary { margin-bottom: .5rem; }
+
+/* Projektideen-Karten */
+.ideen { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1rem 0; }
+.idee { background: #fff; border: 2px solid #e5e7eb; border-radius: 10px; padding: 1rem; }
+.idee h4 { margin: 0 0 .4rem; color: var(--alg-primary-dark); }
+.idee p { margin: 0 0 .5rem; font-size: .95rem; color: var(--gray); }
+.idee .stern { color: var(--alg-accent); font-size: .85rem; }
+
+/* Navigation zwischen Stationen */
+.station-nav { display: flex; justify-content: space-between; gap: 1rem; margin: 2rem 0 1rem; flex-wrap: wrap; }
+.station-nav a { text-decoration: none; }
+
+/* Sequenzplan (Übersichtsseite) */
+.sequenz { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.2rem; }
+.station-card { background: #fff; border-radius: 12px; box-shadow: var(--shadow); padding: 1.25rem 1.4rem; border-top: 6px solid var(--alg-primary); display: flex; flex-direction: column; }
+.station-card .st-nr { font-size: .8rem; font-weight: 700; color: var(--alg-primary); letter-spacing: .05em; text-transform: uppercase; }
+.station-card h3 { margin: .2rem 0 .4rem; font-size: 1.25rem; color: var(--dark); }
+.station-card .st-std { font-size: .85rem; color: var(--gray); margin-bottom: .6rem; }
+.station-card p { font-size: .95rem; color: var(--gray); flex: 1; }
+.station-card .st-links { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .75rem; }
+
+.phasen-erklaerung { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: .8rem; margin: 1rem 0; }
+.phasen-erklaerung div { color: #fff; border-radius: 10px; padding: .9rem 1rem; }
+.phasen-erklaerung strong { display: block; font-size: 1.05rem; margin-bottom: .25rem; }
+.phasen-erklaerung span { font-size: .9rem; opacity: .95; }
+
+@media (max-width: 768px) {
+    .alg-hero .hero-title { font-size: 1.8rem; }
+    .phase-head { padding: .8rem 1rem; }
+    .phase-body { padding: 1rem; }
+    .vorhersage { font-size: .85rem; }
+}

@@ -28,9 +28,9 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
    vor `</body>`.
 2. **Keine externen CDNs, Google Fonts oder Tracker (DSGVO).** Bibliotheken
    über `https://edu-mrh.de/embed/…` (verfügbar: style.css, script.js,
-   MathJax, KaTeX, Java-Online-IDE, SQL-IDE, GeoGebra – Einbinde-Zeilen
-   stehen auskommentiert in `templates/themenseite.html`). Schriften als
-   lokale `.woff2`.
+   MathJax, KaTeX, Java-Online-IDE, SQL-IDE, GeoGebra, Snap! – Einbinde-Zeilen
+   stehen auskommentiert in `templates/themenseite.html`; Snap!-Beispiel in
+   `informatik/11/algorithmik/snap-ide.html`). Schriften als lokale `.woff2`.
 3. **Nutzerdaten bleiben im Browser** (`localStorage`), nie zum Server.
 4. **Bestehende URLs nicht brechen**: Dateien nicht umbenennen/verschieben,
    ohne dass es der Auftrag verlangt.
