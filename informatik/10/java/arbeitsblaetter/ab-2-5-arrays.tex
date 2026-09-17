@@ -1,0 +1,136 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{2.5}{Verwaltung gleichartiger Objekte -- Das Array / Feld}
+
+\begin{aufgabe}[Projekt Zufallszahlen]{1}
+\textbf{a)} Ergänze die Attribute \code{zahl1} bis \code{zahl3}.\quad \textbf{b)} Weise ihnen im Konstruktor Werte von 1 bis 6 zu.\\
+\textbf{c)} Und bei 100 Zahlen? Skizziere, wie ein Speicher aussehen müsste, in dem du „die i-te Zahl“ ansprechen kannst:
+\linien{2}
+\end{aufgabe}
+
+\begin{minipage}[t]{0.7\linewidth}
+\begin{merke}[Felder]
+Felder (engl. \luecke[2.5cm]) dienen der Speicherung einer \luecke[2.5cm] \luecke[2.5cm] von Werten \luecke[4cm], die über einen Index (Positionszahl) adressiert werden können.
+
+Dadurch kann z.\,B. mit einer Wiederholung auf alle Elemente zugegriffen werden, ohne jedes einzeln zu behandeln.
+\end{merke}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.27\linewidth}
+\vspace{3mm}
+\begin{tabular}{|c|c|}\hline
+Index i & \code{textFeld[i]}\\\hline
+0 & \code{"Hallo "}\\\hline
+1 & \code{"Welt, "}\\\hline
+2 & \code{"ein "}\\\hline
+3 & \code{"Satz."}\\\hline
+\end{tabular}
+\end{minipage}
+
+\begin{aufgabe}{2}
+Übertrage den Code in das Projekt (TODO 2) und beschreibe die Funktion der Zeilen.
+\end{aufgabe}
+\begin{java}
+class Zufallszahlen {
+   private int[] zahlenFeld;              // ________________________________________
+
+   Zufallszahlen() {
+      zahlenFeld = new int[8];            // ________________________________________
+      zahlenFeld[0] = 5;                  // ________________________________________
+      zahlenFeld[7] = Random.randint(1, 6); // ______________________________________
+   }                                      // ________________________________________
+}
+\end{java}
+
+\begin{minipage}[t]{0.7\linewidth}
+\begin{merke}
+\begin{itemize}
+\item Felder beginnen ihren Index immer bei \luecke[1.2cm].
+\item Die Größe eines Feldes liefert \code{<Feldname>.length}. Hier also: \luecke[3.5cm]. Das Array ist \luecke[1cm] Zellen groß.
+\item Was passiert bei \code{zahlenFeld[8]}? \luecke[4.5cm]
+\end{itemize}
+\end{merke}
+Fülle die Tabelle und erkläre, warum wir \code{zahlenFeld[7]} verwenden müssen, um auf die letzte Zelle zuzugreifen.
+\linien{2}
+Auf die letzte Zelle eines beliebig großen Feldes greift man also mit \luecke[5cm] zu.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.27\linewidth}
+\vspace{3mm}
+\begin{tabular}{|c|c|}\hline
+Index i & \code{zahlenFeld[i]}\\\hline
+0 & 5\\\hline
+1 & 0\\\hline
+2 & \\\hline
+\rule{0pt}{4.5mm} & \\\hline
+\rule{0pt}{4.5mm} & \\\hline
+\rule{0pt}{4.5mm} & \\\hline
+\rule{0pt}{4.5mm} & \\\hline
+\rule{0pt}{4.5mm} & \\\hline
+\end{tabular}
+\end{minipage}
+
+\newpage
+\begin{aufgabe}{3}
+\textbf{a)} Weise allen Zellen zufällige Werte zu (Wiederholung mit fester Anzahl).\quad
+\textbf{b)} 100 Zellen, jede mit der Summe zweier Würfel.\\
+Was änderst du an der Schleife aus a), damit sie bei jeder Feldgröße stimmt?\\ \luecke[9cm]
+\end{aufgabe}
+
+\textbf{1:n-Beziehung als Sammlung umsetzen -- Arrays mit Referenzen}
+
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[draw,fill=cyan!15,minimum height=6mm] (m) at (0,0) {Mannschaft};
+\node[draw,fill=cyan!15,minimum height=6mm] (s) at (5,0) {Spieler};
+\draw (m) -- (s) node[midway,above] {\small $<$ spielt in} node[pos=0.08,below] {\small 1} node[pos=0.92,below] {\small n};
+\foreach \i/\n in {0/paul,1/tim,2/maja,3/tina} {
+  \node[draw,fill=red!10,minimum width=13mm,minimum height=5mm] (z\i) at (6.6+\i*2.2,0.3) {\small\bfseries \i};
+  \node[draw,fill=red!10,font=\scriptsize\ttfamily,inner sep=2pt] (o\i) at (6.6+\i*2.2,-1.1) {\n: Spieler};
+  \draw[-{Stealth}] (z\i.south) -- (o\i.north);
+}
+\end{tikzpicture}
+\end{center}
+Auch Referenzen können in Arrays verwaltet werden. Dabei verweist jede Zelle auf ein \luecke[2.5cm] der anderen \luecke[2.5cm], hier: \luecke[2.5cm].
+
+\begin{hinweis}
+\textbf{Beachte:} Alle Elemente eines Feldes müssen denselben \luecke[3cm] besitzen, dieser kann aber beliebig gewählt werden: auch \code{boolean}, \code{String}, \code{Rectangle}, \ldots
+\end{hinweis}
+
+\begin{merke}[Syntaxübersicht]\small
+\begin{tabular}{@{}l l@{}}
+\code{<Sichtbarkeit> <Datentyp>[] <Feldname>;} & Deklaration: \code{[]} nach dem Datentyp macht ein Feld daraus.\\
+\code{<Feldname> = new <Datentyp>[<Groesse>];} & Erzeugung mit fester Größe (nicht veränderbar).\\
+\code{<Feldname>[<Index>]} & Zugriff auf die Zelle an dieser Position.\\
+\end{tabular}
+
+\textbf{Beispiele:}\\
+lesen: \code{int eineZahl = zahlenFeld[0];}\hfill schreiben: \code{zahlenFeld[0] = eineZahl;}\\
+Methode aufrufen: \code{kreisFeld[0].tuEtwas();}\hfill Attribut: \code{kreisFeld[0].xPosition = 100;}
+\end{merke}
+
+\begin{minipage}[t]{0.62\linewidth}
+\begin{merke}[Mehrdimensionale Arrays]
+Arrays können mehrere Dimensionen haben und so eine \luecke[3cm] aufspannen.\\
+Deklaration und Erzeugung: \luecke[5cm]\\
+Zugriff auf Spalte x, Zeile y: \luecke[3cm]
+\end{merke}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.34\linewidth}
+\vspace{2mm}
+\begin{tikzpicture}[x=6mm,y=6mm]
+\fill[gray!60] (-0.4,-0.4) rectangle (5.4,5.4);
+\foreach \x in {0,...,4} \foreach \y in {0,...,4} {
+  \pgfmathsetmacro{\r}{int(random(0,100))}\pgfmathsetmacro{\g}{int(random(0,100))}\pgfmathsetmacro{\b}{int(random(0,100))}
+  \fill[red!\r!green!\g!blue!\b] (\x,\y) rectangle (\x+0.95,\y+0.95);
+}
+\fill[white] (1,3) rectangle (1.95,3.95); \fill[white] (3,3) rectangle (3.95,3.95);
+\fill[white] (1,1) rectangle (1.95,1.95); \fill[white] (2,0) rectangle (2.95,0.95); \fill[white] (3,1) rectangle (3.95,1.95);
+\end{tikzpicture}
+\end{minipage}
+
+\begin{aufgabe}[Projekt Mosaik]{4}
+\textbf{a)} TODO 1 und 2 in \code{Mosaik1}: zweidimensionales Array passender Größe erzeugen und in \code{neuesMosaik()} füllen.\\
+\textbf{b)} Im Hauptprogramm auf \code{Mosaik2} wechseln und TODO 3 bis 5 bearbeiten (Smiley).\\
+Welche Zellen \code{fuellung[x][y]} hast du für den Smiley gefärbt?\\ \luecke[9cm]
+\end{aufgabe}
+\end{document}

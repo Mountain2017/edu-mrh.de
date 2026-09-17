@@ -1,0 +1,66 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{2.2}{Typumwandlung}
+
+\begin{minipage}[t]{0.40\linewidth}
+Yusuf hat den Code rechts entworfen. Er führt das Programm aus und erhält die Bildschirmausgaben. Zwei fehlen.\\[2mm]
+\textbf{Vorhersage:} Trage die fehlenden Ausgaben ein und erkläre in einem Satz, wie sie zustande kommen.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.57\linewidth}
+\vspace{0pt}
+\begin{tabular}{|l|l|}\hline
+\code{println(3 + 5);} & Ausgabe: \code{8}\\\hline
+\code{println("3" + "5");} & \rule{0pt}{5mm}Ausgabe: \luecke[2cm]\\\hline
+\code{println("Test" + 5 + 8);} & \rule{0pt}{5mm}Ausgabe: \luecke[2cm]\\\hline
+\code{println("Test" + (5 + 8));} & Ausgabe: \code{Test13}\\\hline
+\end{tabular}
+\end{minipage}
+\linien{1}
+
+\begin{aufgabe}[Projekt Intro]{1}
+\textbf{a)} Ausführen und vergleichen.\quad \textbf{b)} Eigene Kombinationen (TODO 1).\quad \textbf{c)} \code{0 + 'A'} (TODO 2): Ausgabe \luecke[1.5cm], Grund:
+\linien{1}
+\end{aufgabe}
+
+\begin{merke}[Implizite Typumwandlung]
+Bei \code{"Test" + 5} findet eine so genannte implizite \luecke statt: Die Zahl 5, üblicherweise vom Datentyp \code{int}, wird als \luecke[2.5cm] (Datentyp von Text) interpretiert. Das Plus-Zeichen ist dann kein Rechenoperator, sondern eine \luecke[3cm] (Aneinanderhängen) der Zeichen.
+
+Die implizite Typumwandlung ist in Java nur möglich, wenn dabei \luecke[2.5cm] Informationen verloren gehen. Daher gilt in Java folgende Kette:
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm,node distance=6mm,every node/.style={draw,rounded corners=2pt,minimum height=6mm,minimum width=13mm,font=\ttfamily}]
+\node (c) {char}; \node[right=of c] (i) {int}; \node[right=of i] (l) {long}; \node[right=of l] (d) {double}; \node[right=of d] (s) {String};
+\draw[-{Stealth}] (c) -- (i); \draw[-{Stealth}] (i) -- (l); \draw[-{Stealth}] (l) -- (d); \draw[-{Stealth}] (d) -- (s);
+\end{tikzpicture}
+\end{center}
+Jeder Datentyp kann direkt in die weiter rechts stehenden umgewandelt werden. Prüfe: \code{double d = 5;} \luecke[1.2cm]\quad \code{int i = 5.0;} \luecke[1.2cm]
+\end{merke}
+
+\begin{aufgabe}{2}
+Entferne TODO 3: \code{int x = 3.7;} \quad Fehlermeldung (sinngemäß) und Grund:
+\linien{2}
+Wie könnte man Java sagen „ich nehme den Verlust in Kauf“? Idee:
+\linien{1}
+\end{aufgabe}
+
+\newpage
+\begin{merke}[Explizite Typumwandlung]
+Der gewünschte Zieldatentyp wird in runden Klammern vor den umzuwandelnden Wert geschrieben (englisch: \emph{cast}):\\
+\code{int i = (int) 3.7;}\qquad \code{char c = (char) 65;}\qquad \code{int k = (int) 4294967298L;}
+
+\begin{center}
+\begin{tabular}{|l|c|c|}\hline
+\textbf{Typumwandlung} & \textbf{Startwert} & \textbf{Endwert}\\\hline
+double $\rightarrow$ int & 3.0 & \\\hline
+double $\rightarrow$ int & 3.7 & \\\hline
+double $\rightarrow$ int & $-3.7$ & \\\hline
+int $\rightarrow$ char & 65 & \\\hline
+int $\rightarrow$ char & 66 & \\\hline
+char $\rightarrow$ int & 'a' & \\\hline
+long $\rightarrow$ int & 300 & \\\hline
+long $\rightarrow$ int & 4294967298 & \\\hline
+\end{tabular}
+\end{center}
+\textbf{Achtung:} Hierbei kann es zu \luecke (nicht alles bleibt erhalten) kommen. Nachkommastellen werden \luecke[2.5cm], nicht gerundet.
+\end{merke}
+\end{document}

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2.3 Polymorphie | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Objektorientierte Programmierung mit Java, Informatik 10: Polymorphie und dynamische Bindung – ein Haustier-Rennen in der Online-IDE.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/include/online-ide-embedded.css">
+    <script type="module" src="https://edu-mrh.de/embed/include/online-ide-embedded.js"></script>
+    <link rel="stylesheet" href="java.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">💻</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="java.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 2.3</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#rennen">▶ Das Rennen</a></li>
+            <li><a href="#stolperstein">⚠️ Stolperstein</a></li>
+            <li><a href="#polymorphie">📝 Polymorphie</a></li>
+            <li><a href="#bindung">🔍 Dynamische Bindung</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Alle Stationen</div>
+            <ul class="sidebar-menu">
+                <li><a href="java.html">Übersicht</a></li>
+                <li><a href="2-0-wiederholung-oop.html">2.0 Wiederholung OOP</a></li>
+                <li><a href="2-0-1-kontrollstrukturen.html">2.0.1 Kontrollstrukturen</a></li>
+                <li><a href="2-0-2-vererbung.html">2.0.2 Vererbung</a></li>
+                <li><a href="2-1-referenzen.html">2.1 Referenzen</a></li>
+                <li><a href="2-2-typumwandlung.html">2.2 Typumwandlung</a></li>
+                <li><a href="2-3-polymorphie.html">2.3 Polymorphie</a></li>
+                <li><a href="2-4-zugriffsrechte.html">2.4 Zugriffsrechte</a></li>
+                <li><a href="2-5-arrays.html">2.5 Arrays</a></li>
+                <li><a href="2-6-suchen.html">2.6 Suchen</a></li>
+                <li><a href="2-7-sortieren.html">2.7 Sortieren</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero jv-hero">
+                <h1 class="hero-title">2.3 Polymorphie</h1>
+                <p class="hero-subtitle">Objektorientierte Programmierung mit Java · Informatik 10 (NTG) · 2 Stunden</p>
+                <span class="jv-kompetenz">Du kannst: erklären, warum ein Objekt der Unterklasse in einer Variablen der Oberklasse gespeichert werden kann, was dabei verloren geht und wie dynamische Bindung funktioniert.</span>
+                <div class="jv-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-2-3-polymorphie.pdf">📝 Arbeitsblatt 2.3 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-2-3-polymorphie.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-run" href="#rennen">▶ Ausprobieren</a><a class="p-problem" href="#stolperstein">⚠️ Stolperstein</a><a class="p-note" href="#polymorphie">📝 Festhalten</a><a class="p-investigate" href="#bindung">🔍 Untersuchen</a>
+            </div>
+
+            <section id="rennen" class="phase run">
+                <div class="phase-head"><span class="phase-icon">▶</span><h2>Ausprobieren<small>Aufgabe 1: Projekt Haustier-Rennen</small></h2></div>
+                <div class="phase-body">
+                    <p>Drei Haustiere laufen um die Wette. Sieh dir zuerst das Klassendiagramm auf dem Blatt an und beantworte dort die Frage: Warum darf man <code>Haustier h = new Frosch();</code> schreiben?</p>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-3-polymorphie.pdf">📝 Blatt 2.3 · Einstieg (Klassendiagramm)</a></p>
+                    <ol class="aufgaben">
+                        <li>Starte das Rennen mehrmals. Im Hauptprogramm wird zufällig ein Tier gewählt. Welchen Datentyp hat die Variable <code>h</code>? Welche Objekte landen darin?</li>
+                        <li>Trage in der Klasse <code>Frosch</code> beim Attribut <code>besitzer</code> deinen Namen ein (TODO 1.0) und lies die Methode <code>besitzerAusgeben()</code> (TODO 1.1).</li>
+                        <li>Rufe bei TODO 1.2 im Hauptprogramm <code>h.besitzerAusgeben()</code> auf. Was passiert?</li>
+                    </ol>
+                    <div class="ide-block">
+                        <div class="ide-kopf"><h3>Projekt Haustier-Rennen</h3></div>
+                        <div class="java-online" style="width:100%;height:620px" data-java-online="{ 'id': 'j10-23-rennen', 'speed': 1000000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true, 'withErrorList': true }">
+                            <script type="text/plain" title="Hauptprogramm.java">
+World world = new World(1000, 500);
+world.setBackgroundColor(new Color(47, 243, 12));
+
+// Teil 1 – TODO 2.1: diesen Block mit /* und */ auskommentieren
+
+Haustier h;
+
+int r = Random.randint(0, 3);
+if (r == 0) {
+   h = new Hund();
+} else if (r == 1) {
+   h = new Frosch();
+} else if (r == 2) {
+   h = new Schildkroete();
+   // TODO 1.2: h.besitzerAusgeben();
+} else {
+   h = new Haustier();
+}
+
+
+// Teil 2 – TODO 2.2: /* und */ entfernen
+/*
+Haustier tier1 = new Hund();
+Haustier tier2 = new Frosch();
+Haustier tier3 = new Schildkroete();
+
+tier1.besitzerAusgeben();
+tier2.besitzerAusgeben();
+tier3.besitzerAusgeben();
+*/
+                            </script>
+                            <script type="text/plain" title="Haustier.java">
+class Haustier extends Sprite {
+
+   String name = "???";
+   int geschwindigkeit = 1;
+
+   Haustier() {
+      super(50, 50, SpriteLibrary.pixelmon, 3);
+      scale(2);
+   }
+
+   public void act() {
+      laufen();
+      if (isOutsideView()) {
+         println(name + " gewinnt!");
+         System.exit(0);
+      }
+   }
+
+   void laufen() {
+      move(geschwindigkeit, 0);
+   }
+
+}
+                            </script>
+                            <script type="text/plain" title="Hund.java">
+class Hund extends Haustier {
+
+   String besitzer = "Ute";
+
+   Hund() {
+      setImage(SpriteLibrary.pixelmon, 0);
+      scale(1.6);
+      name = "Rex";
+      geschwindigkeit = 3;
+      moveTo(0, 100);
+   }
+
+   void besitzerAusgeben() {
+      println(name + " gehört " + besitzer);
+   }
+}
+                            </script>
+                            <script type="text/plain" title="Frosch.java">
+class Frosch extends Haustier {
+
+   String besitzer;
+
+   Frosch() {
+      setImage(SpriteLibrary.Frogger, 0);
+      name = "Quaki";
+      geschwindigkeit = 4;
+      moveTo(0, 250);
+      besitzer = "Platzhalter"; // TODO 1.0: deinen Namen eintragen
+   }
+
+   // TODO 1.1: Was soll diese Methode tun?
+   void besitzerAusgeben() {
+      println(name + " gehört " + besitzer);
+   }
+}
+                            </script>
+                            <script type="text/plain" title="Schildkroete.java">
+class Schildkroete extends Haustier {
+
+   String besitzer = "Sirona";
+
+   Schildkroete() {
+      setImage(SpriteLibrary.Frogger, 2);
+      name = "Emma";
+      geschwindigkeit = 2;
+      moveTo(0, 400);
+   }
+
+   void besitzerAusgeben() {
+      println(name + " gehört " + besitzer);
+   }
+}
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="stolperstein" class="phase problem">
+                <div class="phase-head"><span class="phase-icon">⚠️</span><h2>Stolperstein<small>Die Methode ist doch da!</small></h2></div>
+                <div class="phase-body">
+                    <div class="stolper"><strong>Der Compiler lehnt <code>h.besitzerAusgeben()</code> ab</strong>, obwohl in <code>h</code> gerade eine Schildkröte steckt, und die Schildkröte hat die Methode. Lies die Fehlermeldung. Von welcher Klasse redet der Compiler?</div>
+                    <div class="idee"><strong>Idee zuerst:</strong> Der Compiler kennt beim Übersetzen nur den <em>Datentyp der Variablen</em>. Was weiß er über <code>h</code>, was weiß er nicht? Notiere auf dem Blatt, welche Methoden er für <code>h</code> zulassen kann.</div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-3-polymorphie.pdf">📝 Blatt 2.3 · Aufgabe 1c</a></p>
+                </div>
+            </section>
+
+            <section id="polymorphie" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Polymorphie</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Das Konzept</h4>
+                        <p>Ein Objekt der Unterklasse darf in einer Variablen vom Typ der Oberklasse gespeichert werden: Jede Schildkröte <em>ist ein</em> Haustier. Dabei wird das Objekt wie sein Behälter behandelt: Nur das, was <code>Haustier</code> kennt, ist über <code>h</code> erreichbar. Das Objekt hat gleichzeitig mehrere Typen. Dieses Verhalten heißt <strong>Polymorphie</strong> (griechisch: Vielgestaltigkeit).</p>
+                    </div>
+                    <p>Fülle den Merkkasten auf dem Blatt.</p>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-3-polymorphie.pdf">📝 Blatt 2.3 · Merkkasten „Polymorphie“</a></p>
+                </div>
+            </section>
+
+            <section id="bindung" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Untersuchen<small>Aufgabe 2: Dynamische Bindung</small></h2></div>
+                <div class="phase-body">
+                    <ol class="aufgaben">
+                        <li>Ergänze in <code>Haustier</code> die Methode <code>besitzerAusgeben()</code>, die <em>„Ein Haustier ohne Besitzer“</em> ausgibt. Jetzt akzeptiert der Compiler auch <code>h.besitzerAusgeben()</code>.</li>
+                        <li>Kommentiere Teil 1 im Hauptprogramm aus (TODO 2.1) und Teil 2 ein (TODO 2.2). Sage vorher: Welche drei Zeilen erwartest du in der Konsole? Dann starten.</li>
+                        <li>Untersuche die Klassen: Warum erscheint nicht dreimal „Ein Haustier ohne Besitzer“, obwohl alle drei Variablen den Typ <code>Haustier</code> haben? Fülle den Merkkasten „Dynamische Bindung“.</li>
+                    </ol>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-3-polymorphie.pdf">📝 Blatt 2.3 · Aufgabe 2 und Merkkasten „Dynamische Bindung“</a></p>
+                    <div class="konzept">
+                        <h4>Das Konzept</h4>
+                        <p>Der Compiler prüft nur, ob die Oberklasse die Methode hat. Welche Fassung beim Ausführen wirklich läuft, entscheidet sich erst zur Laufzeit anhand des tatsächlichen Objekts: Ist die Methode in der Unterklasse überschrieben, läuft die überschriebene. Das heißt <strong>dynamische Bindung</strong>. Markiere die überschriebenen Methoden mit <code>@Override</code>.</p>
+                    </div>
+                    <div class="tipp"><strong>Bonus:</strong> Lass die Tiere unterschiedlich laufen: Der Frosch hüpft (mal schnell, mal gar nicht), die Schildkröte kriecht gleichmäßig. Welche Methode musst du dafür wo überschreiben?</div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="2-2-typumwandlung.html">← 2.2 Typumwandlung</a>
+                <a class="btn btn-primary" href="2-4-zugriffsrechte.html">Weiter: 2.4 Zugriffsrechte →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum &amp; Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>
