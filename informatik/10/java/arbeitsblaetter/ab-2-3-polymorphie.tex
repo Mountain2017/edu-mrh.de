@@ -1,0 +1,48 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{2.3}{Polymorphismus}
+
+\begin{center}\small
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node (sprite) at (4.5,5.4) {\klassenkarte{Sprite}{angle\\centerX, centerY}{act()\\collidesWith(objekt)\\move(dx, dy)\\destroy() \ldots}};
+\node (haus) at (4.5,2.4) {\klassenkarte{Haustier}{name\\geschwindigkeit}{act()\\laufen()}};
+\node (h) at (0,0) {\klassenkarte{Hund}{besitzer}{besitzerAusgeben()}};
+\node (f) at (4.5,0) {\klassenkarte{Frosch}{besitzer}{besitzerAusgeben()}};
+\node (s) at (9,0) {\klassenkarte{Schildkroete}{besitzer}{besitzerAusgeben()}};
+\draw[-{Triangle[open,length=3mm]}] (haus.north) -- (sprite.south);
+\draw[-{Triangle[open,length=3mm]}] (h.north) -- (haus.south);
+\draw[-{Triangle[open,length=3mm]}] (f.north) -- (haus.south);
+\draw[-{Triangle[open,length=3mm]}] (s.north) -- (haus.south);
+\end{tikzpicture}
+\end{center}
+
+Beschreibe das Klassendiagramm und erkläre, warum die folgenden Zuweisungen erlaubt sind. Achte auf die Vererbungsbeziehungen (Ober- und Unterklassen).
+\begin{java}
+Haustier tier1 = new Hund();
+Haustier tier2 = new Frosch();
+Haustier tier3 = new Schildkroete();
+\end{java}
+\linien{2}
+
+\begin{aufgabe}[Projekt Haustier-Rennen]{1}
+\textbf{a)} Ausführen.\quad \textbf{b)} Deinen Namen als Besitzer eintragen.\quad \textbf{c)} \code{h.besitzerAusgeben()} aufrufen. Was meldet der Compiler? Welche Methoden darf er für \code{h} überhaupt zulassen?
+\linien{2}
+\end{aufgabe}
+
+\begin{merke}[Polymorphie bei höheren Datentypen]
+Speichert man ein Objekt der \luecke in einer Variablen vom Datentyp der \luecke, so ist es nicht mehr möglich, Attribute und Methoden zu nutzen, die nur auf der Unterklasse definiert sind. Stattdessen wird das Objekt der Unterklasse wie sein Behälter (mit dem Datentyp der Oberklasse) behandelt. Hier hat also eine implizite Typumwandlung stattgefunden. Diese Art der Typumwandlung, bei der ein Objekt gleichzeitig mehrere Typen hat, bezeichnet man als \luecke (griechisch: Vielgestaltigkeit).
+\end{merke}
+
+\newpage
+\begin{aufgabe}[Projekt Haustier-Rennen]{2}
+\textbf{a)} \code{besitzerAusgeben()} in \code{Haustier} ergänzen.\quad \textbf{b)} Teil 2 im Hauptprogramm einkommentieren. Vorhersage der drei Ausgaben:
+\linien{2}
+\textbf{c)} Tatsächliche Ausgabe und Erklärung:
+\linien{1}
+\end{aufgabe}
+
+\begin{merke}[Dynamische Bindung]
+Wird ein Objekt der Unterklasse im Behälter der Oberklasse gespeichert, so sind nur die Methoden der \luecke verfügbar. Diese können jedoch von den Unterklassen \luecke werden. Deshalb muss \emph{während der Ausführung} geprüft werden, ob die Methode überschrieben ist. Ist das der Fall, wird die Methode der \luecke ermittelt und ausgeführt. Diese Art der Vermittlung nennt man \luecke[4.5cm]. Um im Programmcode klarzumachen, dass eine Methode überschrieben wird, nutzt man die Annotation \code{@Override} in der Zeile über der Methode.
+\end{merke}
+\end{document}

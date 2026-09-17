@@ -1,0 +1,90 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{2.1}{Objektbeziehungen -- Klassen als Datentypen}
+
+Verschiedene Objekte eines Systems können miteinander kommunizieren:
+\begin{itemize}
+\item Ein Objekt \luecke[12cm]
+\item Ein Objekt \luecke[12cm]
+\end{itemize}
+Dafür müssen sie einander jedoch „kennen“.
+
+\begin{aufgabe}[Projekt Flaggen]{1}
+\textbf{a)} Zeichne ein Objektdiagramm (alle Objekte beim Start, Pfeile: wer kennt wen?) und ein Klassendiagramm zu \code{Flagge} und \code{Rechteck}.\quad \textbf{b)}, \textbf{c)} und Bonus auf der Website.
+\end{aufgabe}
+Objektdiagramm:
+\kariert{9}
+Klassendiagramm:
+\kariert{6}
+
+\begin{merke}[Referenzattribute]
+Die Attribute der Klasse \code{Flagge} sind Objekte einer anderen Klasse (hier \code{Rechteck}). Als Datentyp haben sie ihre Klasse. Der Wert des Attributs ist eine \luecke (Verweis auf den Speicherplatz) auf das enthaltene Objekt. Deshalb nennt man solche Attribute auch \luecke.
+\end{merke}
+
+\newpage
+\begin{minipage}[t]{0.5\linewidth}
+\begin{java}
+class Flagge
+{
+   Rechteck oben;
+   ...
+
+   Flagge()
+   {
+      oben = new Rechteck(10, 10, 150, 30);
+      ...
+   }
+
+   void zeichneDeutschlandFlagge()
+   {
+      oben.farbeSetzen("schwarz");
+   }
+}
+\end{java}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.46\linewidth}
+\vspace{4mm}
+\luecke[3.2cm] des Referenzattributs\\
+$\rightarrow$ Datentyp ist \luecke[3.5cm]\\[9mm]
+\luecke[3.2cm] des Objekts\\
+$\rightarrow$ mit dem Operator \luecke[2cm]\\[9mm]
+\luecke[3.2cm] einer Methode des Objekts\\
+$\rightarrow$ mit \luecke[5cm]
+\end{minipage}
+
+\vspace{2mm}
+\textbf{Beispiel: So sieht es im Speicher aus}\quad {\small (\code{f1} ist die Flagge, \code{oben} ihr erstes Rechteck)}
+
+\begin{center}\small
+\begin{tabular}{r|c|c|l}
+ & \textbf{Nr. der Speicherzelle} & \textbf{Inhalt} & Attributwert von: \\\cline{2-3}
+ & \ldots & \ldots & \\\cline{2-3}
+\code{f1} $\rightarrow$ & 10000 & \ldots & \\\cline{2-3}
+ & \ldots & \ldots & \\\cline{2-3}
+ & 10100 & \textbf{10800} & \code{oben}\quad (Referenz!)\\\cline{2-3}
+ & \ldots & \ldots & \\\cline{2-3}
+\code{oben} $\rightarrow$ & 10800 & \ldots & \\\cline{2-3}
+ & 10820 & schwarz & \code{farbe}\\\cline{2-3}
+ & \ldots & \ldots & \\\cline{2-3}
+\end{tabular}
+\end{center}
+Was steht in Zelle 10100, und was passiert bei \code{f1.oben.farbeSetzen("blue")}?
+\linien{1}
+
+\begin{aufgabe}[Projekt Autofahrer]{2}
+Implementiere die Klassen \code{Auto} und \code{Fahrer} gemäß Klassendiagramm. Der Fahrer erzeugt sein Auto selbst im Konstruktor.
+\end{aufgabe}
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm]
+\node[anchor=north west] (f) at (0,0) {\klassenkarte{Fahrer}{name}{Fahrer(nameNeu)\\beschleunige(wieviel)\\bremse(wieviel)}};
+\node[anchor=north west] (a) at (8,0) {\klassenkarte{Auto}{geschwindigkeit}{Auto(geschwindigkeitNeu)\\werdeSchneller(wieviel)\\werdeLangsamer(wieviel)}};
+\draw (f.east) -- (a.west) node[midway,above] {\small meinAuto $>$};
+\end{tikzpicture}
+\end{center}
+
+\begin{aufgabe}[Projekt Sterne fangen]{3}
+Skizziere, welches Objekt welches andere Objekt kennen muss, und wer diese Verweise beim Erzeugen weitergibt (Pfeile mit Beschriftung). Notiere in einem Satz, was \code{this} in \code{new Leben(1, this)} bedeutet.
+\end{aufgabe}
+\kariert{5}
+\end{document}
