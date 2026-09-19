@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Stadtrallye Triest | Oberstufenfahrt &ndash; edu-mrh.de</title>
+<meta name="description" content="GPS-Stadtrallye durch Triest für die Q12: acht historische Orte, Rätsel in drei Schwierigkeitsstufen, Fortschritt bleibt im Browser.">
+<link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+<style>
+/* ===================================================================
+   Stadtrallye Triest – eigenständiges Design (freie Seite).
+   Kein externes CSS, keine Fremd-Skripte, keine Karten-Tiles:
+   alles läuft offline im Browser, es verlässt kein Datum das Gerät.
+   =================================================================== */
+:root{
+  --sea:#0b3550; --sea2:#14577e; --sea3:#2b7fae;
+  --gold:#c9882b; --gold-l:#f0c674;
+  --red:#b3261e;
+  --stone:#f5f2ec; --card:#ffffff;
+  --ink:#1b2430; --ink-2:#4a5866; --line:#ddd6c9;
+  --ok:#1c7a4d; --ok-bg:#e6f4ec;
+  --warn:#8a5a00; --warn-bg:#fdf3dc;
+  --bad:#9b1c14; --bad-bg:#fbe9e7;
+  --r:14px;
+  --pad-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--stone); color:var(--ink);
+  font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  overflow-wrap:break-word;
+}
+h1,h2,h3{line-height:1.25;margin:0 0 .5rem}
+h1{font-size:1.45rem} h2{font-size:1.2rem} h3{font-size:1.02rem}
+p{margin:0 0 .75rem}
+a{color:var(--sea2)}
+em{color:var(--ink-2)}
+img{max-width:100%}
+[hidden]{display:none!important}
+
+/* ---------- Grundgerüst ---------- */
+.app{max-width:760px;margin:0 auto;padding:0 16px calc(96px + var(--pad-b))}
+.topbar{
+  position:sticky; top:0; z-index:40;
+  background:linear-gradient(135deg,var(--sea) 0%,var(--sea2) 100%);
+  color:#fff; padding-top:env(safe-area-inset-top,0px);
+  box-shadow:0 2px 10px rgba(0,0,0,.18);
+}
+.topbar-in{max-width:760px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.topbar .brand{font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:8px;margin-right:auto}
+.topbar .brand .alb{font-size:1.25rem;line-height:1}
+.topbar a{color:#fff}
+.pill{
+  background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.28);
+  border-radius:999px; padding:4px 11px; font-size:.82rem; white-space:nowrap;
+}
+.pill b{font-weight:700}
+.topbar-nav{display:flex;gap:6px;width:100%;margin-top:2px}
+.topbar-nav a{
+  flex:1; text-align:center; text-decoration:none; font-size:.82rem;
+  padding:6px 4px; border-radius:8px; background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.2);
+}
+
+/* ---------- Karten & Bausteine ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:14px 0;box-shadow:0 1px 3px rgba(27,36,48,.06)}
+.card.tight{padding:13px}
+.hero{
+  background:linear-gradient(135deg,var(--sea) 0%,var(--sea2) 62%,var(--sea3) 100%);
+  color:#fff;border:0;padding:22px 18px;
+}
+.hero h1{color:#fff}
+.hero p{color:rgba(255,255,255,.92);margin-bottom:0}
+.hero .kicker{font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-l);margin-bottom:.35rem;font-weight:700}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  font:inherit;font-weight:600;cursor:pointer;text-decoration:none;
+  padding:12px 16px;border-radius:10px;border:1px solid transparent;
+  background:var(--sea2);color:#fff;min-height:46px;
+}
+.btn:active{transform:translateY(1px)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn-wide{width:100%}
+.btn-gold{background:var(--gold);color:#241a06}
+.btn-ghost{background:#fff;color:var(--sea2);border-color:var(--line)}
+.btn-sm{padding:8px 12px;min-height:38px;font-size:.88rem}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.btn-row .btn{flex:1 1 150px}
+
+label{display:block;font-weight:600;font-size:.9rem;margin-bottom:.3rem}
+input[type=text],textarea{
+  width:100%;font:inherit;padding:11px 12px;border:1px solid var(--line);
+  border-radius:10px;background:#fff;color:var(--ink);min-height:46px;
+}
+input[type=text]:focus,textarea:focus{outline:2px solid var(--sea3);outline-offset:1px;border-color:var(--sea3)}
+textarea{min-height:88px;font-size:.82rem;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.hint{font-size:.85rem;color:var(--ink-2)}
+
+.note{border-left:4px solid var(--sea3);background:#eef5fa;padding:11px 14px;border-radius:0 10px 10px 0;margin:.75rem 0;font-size:.92rem}
+.note.gold{border-color:var(--gold);background:var(--warn-bg)}
+.note.ok{border-color:var(--ok);background:var(--ok-bg)}
+.note.bad{border-color:var(--bad);background:var(--bad-bg)}
+
+/* ---------- Stationsliste ---------- */
+.st-list{list-style:none;margin:0;padding:0}
+.st-item{
+  display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:13px;margin-bottom:10px;font:inherit;color:inherit;cursor:pointer;
+}
+.st-item:active{background:#fbfaf7}
+.st-item.is-solved{border-color:#bfe3cd;background:linear-gradient(0deg,var(--ok-bg),#fff 70%)}
+.st-item.is-failed{border-color:#eec9c5;background:linear-gradient(0deg,var(--bad-bg),#fff 70%)}
+.st-item.is-bonus{border-style:dashed}
+.st-num{
+  flex:0 0 38px;height:38px;border-radius:50%;display:grid;place-items:center;
+  background:var(--sea);color:#fff;font-weight:700;font-size:1rem;
+}
+.st-item.is-solved .st-num{background:var(--ok)}
+.st-item.is-failed .st-num{background:var(--bad)}
+.st-item.is-bonus .st-num{background:var(--gold);color:#241a06}
+.st-body{flex:1;min-width:0}
+.st-body h3{margin-bottom:.15rem}
+.st-meta{font-size:.82rem;color:var(--ink-2);display:flex;gap:10px;flex-wrap:wrap}
+.st-chip{font-size:.78rem;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.chip-open{background:#eceae3;color:#56606c}
+.chip-here{background:#e3eef7;color:#1a5c86}
+.chip-solved{background:var(--ok-bg);color:var(--ok)}
+.chip-failed{background:var(--bad-bg);color:var(--bad)}
+.st-arrow{align-self:center;color:#a9b2bc;font-size:1.3rem}
+
+/* ---------- Stationsdetail ---------- */
+.crumb{font-size:.85rem;color:var(--ink-2);margin:12px 0 0}
+.story{font-size:.96rem}
+.story .src{font-size:.82rem;color:var(--ink-2)}
+
+.geo-box{border:1px solid var(--line);border-radius:12px;padding:13px;background:#f8fbfd}
+.geo-box.near{background:var(--ok-bg);border-color:#bfe3cd}
+.geo-box.off{background:#f3f1ec}
+.dist{font-size:2rem;font-weight:800;line-height:1.1;letter-spacing:-.01em}
+.dist small{font-size:.95rem;font-weight:600;color:var(--ink-2)}
+.bar{height:10px;border-radius:999px;background:#e3e0d7;overflow:hidden;margin:9px 0 5px}
+.bar>i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--sea3),var(--ok));transition:width .4s ease}
+
+.lvl-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:.6rem}
+.lvl-badge{font-weight:700;font-size:.82rem;padding:4px 10px;border-radius:999px;background:var(--sea);color:#fff}
+.lvl-badge.l2{background:var(--gold);color:#241a06}
+.lvl-badge.l3{background:#6b7785}
+.tries{display:flex;gap:5px;margin-left:auto}
+.tries i{width:11px;height:11px;border-radius:50%;background:var(--sea3);display:block}
+.tries i.used{background:#d7d2c7}
+.puzzle{font-size:1.02rem;background:#fbfaf6;border:1px dashed var(--line);border-radius:12px;padding:14px;margin-bottom:.9rem}
+.puzzle b{color:var(--sea)}
+.cyr{font-size:1.5rem;letter-spacing:.09em;font-weight:700;color:var(--sea);display:block;margin:.5rem 0;text-align:center}
+.locked{text-align:center;color:var(--ink-2);padding:18px 10px}
+.locked .lk{font-size:2rem;display:block;margin-bottom:.3rem}
+
+/* ---------- Karte ---------- */
+.map-wrap{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fbfaf6}
+.map-wrap svg{display:block;width:100%;height:auto}
+.legend{list-style:none;margin:.75rem 0 0;padding:0;font-size:.88rem}
+.legend li{display:flex;gap:9px;align-items:baseline;padding:3px 0}
+.legend .n{flex:0 0 22px;height:22px;border-radius:50%;background:var(--sea);color:#fff;font-size:.74rem;font-weight:700;display:grid;place-items:center}
+.legend li.bonus .n{background:var(--gold);color:#241a06}
+
+/* ---------- Mitglieder ---------- */
+.member-row{display:flex;gap:8px;margin-bottom:8px}
+.member-row input{flex:1}
+.member-row button{flex:0 0 46px;min-height:46px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:1.1rem;cursor:pointer;color:var(--bad)}
+
+/* ---------- Ergebnis ---------- */
+.score-big{text-align:center;padding:6px 0 2px}
+.score-big .v{font-size:3.2rem;font-weight:800;line-height:1;color:var(--sea)}
+.score-big .of{color:var(--ink-2);font-weight:600}
+.rank{display:inline-block;margin-top:.5rem;background:var(--gold);color:#241a06;font-weight:700;padding:6px 16px;border-radius:999px}
+table.res{width:100%;border-collapse:collapse;font-size:.9rem}
+table.res th,table.res td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.res th{font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-2)}
+table.res td.pts{text-align:right;font-weight:700;white-space:nowrap}
+
+/* ---------- Toast ---------- */
+#toast{
+  position:fixed;left:50%;transform:translateX(-50%);
+  bottom:calc(18px + var(--pad-b));z-index:90;max-width:min(92vw,520px);
+  background:var(--ink);color:#fff;padding:12px 16px;border-radius:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,.28);font-size:.92rem;
+  opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+#toast.ok{background:#15603d}
+#toast.bad{background:#7f1a13}
+
+.footer{max-width:760px;margin:0 auto;padding:22px 16px calc(28px + var(--pad-b));font-size:.84rem;color:var(--ink-2);text-align:center}
+.footer a{color:var(--ink-2)}
+
+@media (min-width:620px){
+  h1{font-size:1.7rem}
+  .app{padding-bottom:calc(40px + var(--pad-b))}
+  .topbar-nav{width:auto;margin-top:0}
+  .topbar-nav a{padding:6px 12px}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <span class="brand"><span class="alb">&#128481;</span> Stadtrallye Triest</span>
+    <span class="pill" id="pillScore">0&nbsp;/&nbsp;24&nbsp;P</span>
+    <span class="pill" id="pillTime">00:00</span>
+    <nav class="topbar-nav">
+      <a href="#" data-go="stations">Stationen</a>
+      <a href="#" data-go="map">Karte</a>
+      <a href="#" data-go="result">Ergebnis</a>
+      <a href="#" data-go="info">Hilfe</a>
+      <a href="../stadtrally.html">&#8593; Übersicht</a>
+    </nav>
+  </div>
+</header>
+
+<main class="app">
+
+  <!-- ============================ SETUP ============================ -->
+  <section id="view-setup" hidden>
+    <div class="card hero">
+      <div class="kicker">Oberstufenfahrt &middot; Q12</div>
+      <h1>Tergeste &ndash; die Rallye durch Triest</h1>
+      <p>Acht Orte, acht Rätsel, zweieinhalb Stunden. Start und Ziel sind die
+         Piazza dell&rsquo;Unità d&rsquo;Italia &ndash; dort, wo der Bus steht.</p>
+    </div>
+
+    <div class="card">
+      <h2>Gruppe anlegen</h2>
+      <p class="hint">Es gibt keinen Login. Alles bleibt auf diesem Gerät gespeichert.
+         Legt die Gruppe auf <b>einem</b> Handy an &ndash; dem, das am meisten Akku hat.</p>
+
+      <label for="inTeam">Teamname</label>
+      <input type="text" id="inTeam" maxlength="40" placeholder="z.&nbsp;B. Die Bora-Brigade" autocomplete="off">
+
+      <label style="margin-top:1rem">Teilnehmende</label>
+      <div id="members"></div>
+      <button class="btn btn-ghost btn-sm" id="btnAddMember" type="button">+ Weitere Person</button>
+
+      <div style="margin-top:1.2rem">
+        <button class="btn btn-wide btn-gold" id="btnStart" type="button">Rallye starten</button>
+      </div>
+    </div>
+
+    <div class="card tight">
+      <h3>Ihr habt schon angefangen?</h3>
+      <p class="hint">Fortschritt von einer gesicherten Datei oder einem Sicherungscode
+         wiederherstellen &ndash; z.&nbsp;B. wenn ihr auf ein anderes Handy wechselt.</p>
+      <div class="btn-row">
+        <button class="btn btn-ghost btn-sm" id="btnImportFile" type="button">Datei laden</button>
+        <button class="btn btn-ghost btn-sm" id="btnImportCode" type="button">Code einfügen</button>
+      </div>
+      <div id="importBox" hidden style="margin-top:.8rem">
+        <label for="inCode">Sicherungscode einfügen</label>
+        <textarea id="inCode" placeholder="Langer Buchstaben-Zahlen-Code aus dem Ergebnis-Bereich"></textarea>
+        <button class="btn btn-sm btn-wide" id="btnCodeGo" type="button" style="margin-top:.5rem">Fortschritt übernehmen</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================== STATIONEN =========================== -->
+  <section id="view-stations" hidden>
+    <div class="card tight" id="teamCard"></div>
+    <div class="card tight" id="geoBanner"></div>
+    <h2 style="margin:1.2rem 0 .6rem">Route</h2>
+    <ul class="st-list" id="stList"></ul>
+    <div class="card tight" id="endCard">
+      <h3>&#127937; Ziel: zurück zur Piazza dell&rsquo;Unità</h3>
+      <p class="hint" style="margin:0">Vom Dom geht es bergab durch die Altstadt zurück
+         zum Bus &ndash; etwa 12&nbsp;Minuten. Wenn noch Zeit bleibt, hängt die Bonus&shy;station
+         an der Uferpromenade dran.</p>
+    </div>
+  </section>
+
+  <!-- ====================== EINZELNE STATION ======================== -->
+  <section id="view-station" hidden>
+    <p class="crumb"><a href="#" data-go="stations">&#8592; Alle Stationen</a></p>
+    <div id="stationDetail"></div>
+  </section>
+
+  <!-- ============================ KARTE ============================= -->
+  <section id="view-map" hidden>
+    <div class="card">
+      <h2>Übersichtskarte</h2>
+      <p class="hint">Schematisch, ohne Straßen &ndash; sie lädt nichts aus dem Netz nach.
+         Zum genauen Navigieren nehmt eure Karten-App; in jeder Station findet ihr
+         dafür einen Link.</p>
+      <div class="map-wrap" id="mapWrap"></div>
+      <ul class="legend" id="mapLegend"></ul>
+    </div>
+    <div class="card tight">
+      <h3>Wegzeiten</h3>
+      <p class="hint" style="margin:0">Gesamtstrecke rund <b>3&nbsp;km</b> zu Fuß,
+        davon etwa 65&nbsp;Höhenmeter hinauf zum Dom. Reine Gehzeit ca. 55&nbsp;Minuten,
+        mit Rätseln plant ihr <b>2 bis 2,5&nbsp;Stunden</b>.
+        Die Bonusstation kostet zusätzlich rund 20&nbsp;Minuten.</p>
+    </div>
+  </section>
+
+  <!-- =========================== ERGEBNIS =========================== -->
+  <section id="view-result" hidden>
+    <div id="resultBox"></div>
+  </section>
+
+  <!-- ============================ HILFE ============================= -->
+  <section id="view-info" hidden>
+    <div class="card">
+      <h2>So läuft die Rallye</h2>
+      <ol style="padding-left:1.15rem">
+        <li><b>Hingehen.</b> Jede Station schaltet sich erst frei, wenn ihr wirklich
+            dort seid &ndash; das Handy prüft den Standort. Ihr braucht nichts zu
+            drücken, es meldet sich von selbst.</li>
+        <li><b>Rätsel öffnen.</b> Ihr bekommt zuerst die <b>schwere</b> Variante:
+            3&nbsp;Punkte, drei Versuche.</li>
+        <li><b>Nicht geknackt?</b> Nach drei Fehlversuchen kommt die <b>mittlere</b>
+            Variante (2&nbsp;Punkte), danach die <b>leichte</b> (1&nbsp;Punkt).
+            Ihr könnt auch freiwillig eine Stufe runtergehen.</li>
+        <li><b>Weitergehen &ndash; oder sitzenbleiben.</b> Ein einmal besuchter Ort
+            bleibt freigeschaltet. Ihr dürft euch also ins Café setzen und dort
+            weiterknobeln.</li>
+      </ol>
+      <div class="note gold">
+        <b>Maximal 24&nbsp;Punkte</b> auf den acht Pflichtstationen, plus 3&nbsp;Bonuspunkte
+        an der Uferpromenade.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Fortschritt sichern</h2>
+      <p>Nach jeder Antwort wird automatisch im Browser gespeichert. Damit der
+         Stand auch einen leeren Akku oder einen Handywechsel übersteht, sichert
+         ihn zusätzlich:</p>
+      <div class="btn-row">
+        <button class="btn btn-sm" id="btnExport2" type="button">Als Datei sichern</button>
+        <button class="btn btn-sm btn-ghost" id="btnShowCode2" type="button">Sicherungscode zeigen</button>
+      </div>
+      <div id="codeBox2" hidden style="margin-top:.8rem">
+        <label for="outCode2">Sicherungscode (markieren &amp; kopieren)</label>
+        <textarea id="outCode2" readonly></textarea>
+      </div>
+      <p class="hint" style="margin-top:.8rem">Wiederherstellen könnt ihr beides auf dem
+         Startbildschirm (&bdquo;Ihr habt schon angefangen?&ldquo;).</p>
+    </div>
+
+    <div class="card">
+      <h2>Wenn das GPS streikt</h2>
+      <p>In den engen Gassen der Città Vecchia kann die Ortung ungenau werden.
+         Die Rallye rechnet die Messungenauigkeit schon großzügig mit ein. Hilft das
+         nicht, bekommt ihr von der Begleitperson einen <b>Freischaltcode</b>:</p>
+      <label for="inOverride">Freischaltcode der Begleitperson</label>
+      <input type="text" id="inOverride" placeholder="Code eingeben" autocomplete="off">
+      <button class="btn btn-sm btn-wide btn-ghost" id="btnOverride" type="button" style="margin-top:.5rem">Notfall-Freischaltung aktivieren</button>
+      <p class="hint" style="margin-top:.6rem">Damit könnt ihr Stationen von Hand als besucht
+         markieren. Solche Stationen werden im Ergebnis mit &#9873; gekennzeichnet.</p>
+    </div>
+
+    <div class="card">
+      <h2>Daten</h2>
+      <p class="hint" style="margin:0">Teamname, Namen und Fortschritt liegen ausschließlich
+        im Speicher dieses Browsers (<code>localStorage</code>). Die Standortdaten werden nur
+        im Gerät mit den Stationskoordinaten verglichen und nirgendwo gespeichert oder
+        gesendet. Die Seite lädt nichts von fremden Servern nach.</p>
+      <div class="btn-row" style="margin-top:.9rem">
+        <button class="btn btn-sm btn-ghost" id="btnReset" type="button" style="color:var(--bad)">Alles löschen und neu anfangen</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>Stadtrallye Triest &middot; Oberstufenfahrt &middot;
+     <a href="../stadtrally.html">Übersicht</a> &middot;
+     <a href="https://edu-mrh.de/contribute.html#impressum">Impressum</a></p>
+</footer>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ==================================================================
+   1. STATIONSDATEN
+   ------------------------------------------------------------------
+   Die Lösungen stehen nicht im Klartext hier, sondern als Prüfsumme
+   (FNV-1a über die normalisierte Antwort). Wer den Quelltext liest,
+   findet also nicht einfach das Lösungswort. Klartext-Lösungen für
+   Begleitpersonen: loesungen.html
+   ================================================================== */
+
+var SALT = 'tergeste-2026:';
+
+var STATIONS = [
+{
+  id:'piazza-unita', nr:1, name:'Piazza dell’Unità d’Italia',
+  sub:'Start &amp; Ziel – der größte Platz Europas am offenen Meer',
+  lat:45.65010, lon:13.76770, radius:90, hintRadius:40,
+  walk:'Startpunkt. Hier hält der Bus, hier endet die Rallye auch wieder.',
+  story:'Kein anderer Platz dieser Größe in Europa öffnet sich auf einer ganzen Seite zum offenen Meer. Bis 1918 hieß er schlicht <em>Piazza Grande</em>. Rundherum steht die Vergangenheit der Stadt in Stein: das <b>Palazzo del Municipio</b> (1875) mit den beiden Bronzemännern <em>Michez</em> und <em>Jachez</em>, die zur vollen Stunde die Glocke schlagen; der <b>Palazzo Pitteri</b> (1780), das älteste Haus am Platz; der <b>Palazzo Stratti</b> mit dem Caffè degli Specchi; der <b>Palazzo del Lloyd Triestino</b> (1884), einst Zentrale der größten österreichischen Reederei. Auf der Säule neben dem Brunnen steht seit 1728 Kaiser <b>Karl VI.</b> Er erklärte Triest 1719 zum Freihafen – und machte damit aus einem Fischerort den zweitwichtigsten Hafen der Habsburgermonarchie.',
+  onSite:'Stellt euch an den Brunnen und geht einmal herum. Jede der vier Frauengestalten trägt ein Erkennungszeichen ihres Erdteils: Federkrone, Kamel, Krokodil, Füllhorn. Ganz oben thront Triest selbst, umgeben von Handelswaren.',
+  levels:[
+   {t:'Der Brunnen in der Mitte des Platzes wurde 1751–1754 von Giovanni Battista Mazzoleni geschaffen und heißt <b>Brunnen der vier Erdteile</b>. Vier Frauengestalten sitzen darauf – jede steht für einen Kontinent, den Europa damals kannte und mit dem Triest Handel trieb.<br><br>Ein Kontinent fehlt. Er wurde erst zwei Jahrzehnte nach dem Bau des Brunnens von James Cook kartiert.<br><br><b>Welcher Erdteil fehlt?</b>'},
+   {t:'Dargestellt sind Europa, Asien, Afrika und Amerika.<br><br>Gesucht ist der Kontinent, der 1751 auf europäischen Karten noch ein weißer Fleck war – die Antarktis zählt nicht mit, die kannte man erst recht nicht.'},
+   {t:'Der gesuchte Kontinent ist gleichzeitig ein einziges Land. Hauptstadt Canberra, größte Stadt Sydney, Wappentier Känguru.'}
+  ],
+  a:['d6af467f','cf3d70d7'],
+  sol:'Australien',
+  after:'Australien war 1751 für Europa noch Gerücht. Erst 1770 kartierte James Cook die Ostküste. Der Brunnen zeigt also nicht die Welt, sondern das Weltbild eines Handelshafens im 18. Jahrhundert.'
+},
+{
+  id:'molo-audace', nr:2, name:'Molo Audace',
+  sub:'246 Meter hinaus aufs Meer',
+  lat:45.65229, lon:13.76608, radius:130, hintRadius:60,
+  walk:'Rund 4 Minuten nach Nordwesten, immer am Wasser entlang.',
+  story:'Der Molo wurde 1743–1751 gebaut – auf dem Wrack der österreichischen Fregatte <em>San Carlo</em>, die 1740 im Hafen gesunken war. Nach ihr hieß er lange <b>Molo San Carlo</b>. Am 3. November 1918 legte hier als erstes italienisches Schiff der Zerstörer <em>Audace</em> an; seit 1922 trägt der Molo dessen Namen. Am äußersten Ende liegt seit 1925 eine bronzene <b>Windrose</b> im Pflaster, mit einer Inschrift des Triestiner Schriftstellers Silvio Benco.',
+  onSite:'Geht bis ganz nach vorn zur Bronzescheibe. Von dort seht ihr an klaren Tagen über den Golf bis nach Slowenien und Istrien – und im Rücken die vollständige Stadtkulisse mit dem Domhügel.',
+  levels:[
+   {t:'Die Bronzescheibe am Ende des Molos ist eine <b>Windrose</b>: Sie ordnet den Himmelsrichtungen Winde zu.<br><br>Einer davon ist das inoffizielle Wahrzeichen Triests. Er stürzt im Winter aus Nordosten vom Karstplateau herab, erreicht in Böen über 150 km/h, und die Stadt hat seinetwegen an manchen Gassen Halteseile gespannt. Sein Name geht auf <em>Boreas</em> zurück, den griechischen Gott des Nordwinds.<br><br><b>Wie heißt dieser Wind?</b>'},
+   {t:'Der Name ist die kurze italienische Form von <em>Boreas</em>: vier Buchstaben, er beginnt mit B und endet auf -a.'},
+   {t:'B – O – R – ?<br><br>Ergänzt den letzten Buchstaben und schreibt das ganze Wort.'}
+  ],
+  a:['c00f7435'],
+  sol:'Bora',
+  after:'Die Bora ist ein Fallwind: Kalte Luft staut sich hinter dem Karstrand und stürzt dann über die Kante zum Meer hinab. Bei der <em>bora scura</em> bringt sie Regen, bei der <em>bora chiara</em> strahlend blauen Himmel – und beides mit Orkanstärke.'
+},
+{
+  id:'piazza-borsa', nr:3, name:'Piazza della Borsa',
+  sub:'Handel als Gottesdienst',
+  lat:45.65027, lon:13.77043, radius:70, hintRadius:30,
+  walk:'Rund 6 Minuten: zurück am Hauptplatz vorbei und dahinter nach Osten.',
+  story:'Hier schlug ab 1806 das kaufmännische Herz der Stadt. Die <b>Borsa Vecchia</b>, die alte Börse, sieht aus wie ein griechischer Tempel – das war keine Spielerei, sondern Programm: Der Handel bekam die Architektur der Religion. Auf der Säule daneben steht Kaiser <b>Leopold I.</b> Gegenüber liegt der <b>Palazzo Tergesteo</b> mit seiner gläsernen Einkaufspassage. Gehandelt wurde mit Kaffee, Zucker, Baumwolle, Salz – und vor allem mit Versicherungen: Die Generali und die Assicurazioni Riunite wurden hier gegründet.',
+  onSite:'Sucht den Brunnen mit der Figur, die einen Dreizack hält. Er stammt von 1755 und stand früher an einer anderen Stelle des Platzes.',
+  levels:[
+   {t:'Triest lebte vom Meer: Salz, Kaffee, Zucker, Schiffsversicherungen. Kein Wunder, dass auf dem Brunnen dieses Handelsplatzes der Herrscher über die Meere thront.<br><br>Er hält einen Dreizack. Die Römer gaben ihm den Namen, den heute auch der achte Planet unseres Sonnensystems trägt.<br><br><b>Wie heißt dieser Gott?</b>'},
+   {t:'Bei den Griechen heißt er Poseidon.<br><br>Gesucht ist sein <b>römischer</b> Name.'},
+   {t:'Sechs Buchstaben, beginnt mit <b>N‑E‑P</b>, endet auf <b>‑N</b>. Der achte Planet heißt genauso.'}
+  ],
+  a:['8520e2ad','5ac500d8','29635172','8f48afa1'],
+  sol:'Neptun',
+  after:'Dass ausgerechnet der Meeresgott vor der Börse steht, ist folgerichtig: Triests Reichtum kam über das Wasser – und die größten Vermögen entstanden nicht mit Waren, sondern mit dem Versichern des Risikos, sie zu verlieren.'
+},
+{
+  id:'canal-grande', nr:4, name:'Canal Grande &amp; Ponte Rosso',
+  sub:'Der Mann mit dem Hut',
+  lat:45.65219, lon:13.77220, radius:55, hintRadius:32,
+  walk:'Rund 4 Minuten nach Norden, hinein ins Borgo Teresiano.',
+  story:'Maria Theresia ließ das Viertel nördlich der Altstadt auf trockengelegten Salinen im Schachbrettmuster anlegen – eine geplante Stadt für eine geplante Wirtschaft. Damit die Schiffe bis mitten hinein fahren konnten, grub der venezianische Unternehmer Matteo Pirona 1754–1756 den <b>Canal Grande</b>. Die <b>Ponte Rosso</b> war zuerst aus Holz (1756), seit 1832 ist sie aus Eisen. Am Kopf des Kanals steht die klassizistische Kirche <b>Sant’Antonio Taumaturgo</b> (1849, Pietro Nobile) – auf den ersten Blick ein antiker Tempel mit Säulenportikus.',
+  onSite:'Auf der Brücke steht eine lebensgroße Bronzefigur mit Hut, runder Brille und einem Buch unter dem Arm. Schaut auf die Tafel zu ihren Füßen – dort stehen die Jahre, die der Mann in Triest verbracht hat.',
+  levels:[
+   {t:'1904 kam ein 22-jähriger Ire nach Triest. Er unterrichtete an der Berlitz-Schule Englisch, hatte ständig Geldsorgen und blieb trotzdem elf Jahre. Hier schrieb er seine Erzählungen <em>Dubliner</em> fertig und begann den Roman, der ihn berühmt machte: Er erzählt einen einzigen Tag in Dublin, den 16. Juni 1904 – und trägt den lateinischen Namen eines Helden, der zehn Jahre lang nicht nach Hause fand.<br><br><b>Wie heißt dieser Roman?</b>'},
+   {t:'Der Mann auf der Brücke ist <b>James Joyce</b>.<br><br>Der gesuchte Roman heißt wie <em>Odysseus</em> in seiner lateinisch-englischen Form.'},
+   {t:'Odysseus heißt auf Lateinisch <em>Ulixes</em>, auf Englisch <b>U l y s _ _ _</b>.<br><br>Ergänzt die drei fehlenden Buchstaben – so heißt der Roman.'}
+  ],
+  a:['5591e533','9d8e39e2','89f9f4df'],
+  sol:'Ulysses',
+  after:'Joyce nannte Triest später seine „zweite Heimat“. Sein Schüler Italo Svevo – im Hauptberuf Farbenfabrikant hier in der Stadt – wurde zur Vorlage für Leopold Bloom, die Hauptfigur des <em>Ulysses</em>.'
+},
+{
+  id:'san-spiridione', nr:5, name:'San Spiridione',
+  sub:'Buchstaben aus dem Osten',
+  lat:45.65146, lon:13.77332, radius:45, hintRadius:28,
+  walk:'Rund 2 Minuten – gleich um die Ecke am Kanal.',
+  story:'Der Freihafen zog nicht nur Waren an, sondern Menschen jeder Konfession: Griechen, Serben, Juden, Protestanten, Armenier. Kaiser Karl VI. und nach ihm Maria Theresia und Joseph II. ließen sie gewähren, weil Handel wichtiger war als Rechtgläubigkeit. Das Ergebnis siehst du in wenigen Gehminuten um dich herum: eine katholische Kirche, diese serbisch-orthodoxe, eine griechisch-orthodoxe, eine evangelische – und eine der größten Synagogen Europas. Dieser Bau (1861–1869, Carlo Maciachini) gehört der serbisch-orthodoxen Gemeinde: byzantinischer Stil, blaue Kuppeln, Gold und Mosaik.',
+  onSite:'Tretet ein Stück zurück, bis ihr die ganze Fassade seht: ein griechisches Kreuz als Grundriss, blaue Kuppeln – und Schriftzeichen, die ihr nicht auf Anhieb lesen könnt.',
+  levels:[
+   {t:'Die serbisch-orthodoxe Gemeinde schreibt <b>kyrillisch</b>. Der Name des Heiligen, dem diese Kirche geweiht ist, lautet dort:<span class="cyr">СВЕТИ СПИРИДОН</span>Das erste Wort СВЕТИ heißt „Heiliger“.<br><br><b>Übertragt das zweite Wort in lateinische Buchstaben. Wie heißt der Heilige?</b>'},
+   {t:'Schlüssel: С&nbsp;=&nbsp;S · П&nbsp;=&nbsp;P · И&nbsp;=&nbsp;I · Р&nbsp;=&nbsp;R · Д&nbsp;=&nbsp;D · О&nbsp;=&nbsp;O · Н&nbsp;=&nbsp;N<br><br>Setzt ein: <b>С – П – И – Р – И – Д – О – Н</b>'},
+   {t:'Die Kirche heißt auf Italienisch <em>San Spiridione</em>.<br><br>Gesucht ist der Name des Heiligen ohne „San“ – in der serbischen Form endet er auf <b>-on</b> statt auf <em>-one</em>.'}
+  ],
+  a:['fed39c5b','1d8e66eb','9f22237b','810c271c','bbcee20f','1a330446'],
+  sol:'Spiridon (italienisch: Spiridione)',
+  after:'Spyridon war im 4. Jahrhundert Bischof auf Zypern – und vorher Schäfer. Auf Ikonen erkennt man ihn an der geflochtenen Hirtenmütze, die er auch als Bischof nicht ablegte.'
+},
+{
+  id:'teatro-romano', nr:6, name:'Teatro Romano',
+  sub:'Rechnen wie die Römer',
+  lat:45.64917, lon:13.77167, radius:70, hintRadius:35,
+  walk:'Rund 5 Minuten nach Süden, Richtung Altstadt und Domhügel.',
+  story:'Unter dem Hügel von San Giusto lag <b>Tergeste</b>, die römische Stadt. Ende des 1. Jahrhunderts n. Chr. baute man dieses Theater direkt an den Hang – so sparte man sich den teuren Unterbau für die Zuschauerränge. Ausgebaut wurde es unter Kaiser <b>Trajan</b>, vermutlich finanziert von Quintus Petronius Modestus, einem hohen Beamten der Stadt. Jahrhundertelang lag es unter Häusern begraben. 1814 erkannte der Architekt Pietro Nobile, was da im Boden steckt – freigelegt wurde es aber erst 1938, als ein ganzes Altstadtviertel abgerissen wurde.',
+  onSite:'Stellt euch an die Balustrade und schaut von oben hinein: der halbrunde Zuschauerraum (<em>cavea</em>), davor der Halbkreis der <em>orchestra</em>, dahinter die Reste der Bühnenwand. Die Bühne zeigte zum Meer hin.',
+  levels:[
+   {t:'Wie viele Menschen hier Platz fanden, schätzen die Quellen unterschiedlich. Der <b>untere</b> der beiden üblichen Werte wird oft in römischen Ziffern angegeben:<span class="cyr">M M M D</span><b>Schreibt diese Zahl in unseren Ziffern.</b>'},
+   {t:'M&nbsp;=&nbsp;1000, D&nbsp;=&nbsp;500.<br><br>Die Zahl besteht aus drei M und einem D. Addiert.'},
+   {t:'Dreitausendfünfhundert.<br><br>Schreibt es als Zahl – nur Ziffern, ohne Punkt.'}
+  ],
+  a:['b524e513','ebca3f63'],
+  sol:'3500',
+  after:'3500 Plätze – bei vielleicht 12 000 Einwohnern. Ein römisches Theater war kein Kulturangebot für wenige, sondern der Ort, an dem sich fast die halbe Stadt gleichzeitig versammeln konnte.'
+},
+{
+  id:'arco-riccardo', nr:7, name:'Arco di Riccardo',
+  sub:'Der König, der nie hier war',
+  lat:45.64781, lon:13.76890, radius:60, hintRadius:28,
+  walk:'Rund 5 Minuten durch die engen Gassen der Città Vecchia.',
+  story:'Dieser Bogen steht seit rund 2000 Jahren an derselben Stelle – nur ist die Stadt um ihn herum gewachsen: Etwa zwei Meter seines Unterbaus stecken heute im Boden, so weit ist das Straßenniveau seit der Antike gestiegen. Errichtet wurde er wohl unter Octavian/Augustus (33/32 v. Chr.); die heutige Bauform datiert man ins 1. Jahrhundert n. Chr. Vermutlich war er ein Tor in der Stadtmauer des Augustus.',
+  onSite:'Schaut auf den Sockel: Der Bogen wirkt zu gedrungen, weil ein gutes Stück von ihm unter dem Pflaster liegt. Über euch seht ihr das antike Gesims mit seinem Dekor.',
+  levels:[
+   {t:'Der Name des Bogens ist wahrscheinlich ein Missverständnis: Er stand am Beginn des <em>cardo</em>, der römischen Nord-Süd-Hauptstraße – aus „Arco del Cardo“ wurde im Volksmund „Arco di Riccardo“.<br><br>Die Triestiner erzählten sich aber lieber eine andere Geschichte: Ein englischer König sei auf dem Heimweg vom Dritten Kreuzzug hier gefangen gesetzt worden. Auf Italienisch heißt er <em>Riccardo Cuor di Leone</em>.<br><br><b>Wie heißt er auf Deutsch – Vorname und Beiname?</b>'},
+   {t:'<em>Cuor di Leone</em> heißt wörtlich „Löwenherz“.<br><br>Der König war Richard I. von England. Setzt beides zusammen.'},
+   {t:'<b>Richard L Ö _ _ _ herz</b><br><br>Schreibt den vollständigen Namen.'}
+  ],
+  a:['f37f13bf','c9271dda','efc8b294','befbe007','151e6c9d','31206b6c','4245b4a4'],
+  sol:'Richard Löwenherz',
+  after:'Gefangen war Richard tatsächlich – nur nicht hier, sondern ab 1192 bei Wien und danach auf Burg Trifels in der Pfalz. Triest hat sich die Geschichte schlicht ausgeliehen, weil sie besser klang als „Bogen an der Hauptstraße“.'
+},
+{
+  id:'san-giusto', nr:8, name:'Cattedrale di San Giusto',
+  sub:'Vom Himmel gefallen – und der Blick über alles',
+  lat:45.64639, lon:13.77250, radius:95, hintRadius:45,
+  walk:'Rund 12–15 Minuten bergauf – der anstrengendste Abschnitt. Nehmt die Treppen der Via della Cattedrale oder die Scala dei Giganti. Oben wartet der Blick über den ganzen Golf.',
+  story:'Der Dom entstand zwischen 1302 und 1320, indem Bischof Rodolfo Pedrazzani zwei nebeneinanderstehende Kirchen zu einer einzigen zusammenbauen ließ: Santa Maria und die Kirche des Märtyrers Giusto. Deshalb sitzt die riesige <b>Rosette</b> aus Karststein nicht in der Mitte der Fassade, und das Portal ist aus einem antiken Grabmal wiederverwendet. Der Glockenturm war ursprünglich höher – 1422 schlug der Blitz ein. Nebenan liegt das <b>Castello di San Giusto</b> (ab 1468); der Hügel war schon das Zentrum des römischen Tergeste.',
+  onSite:'Stellt euch vor die Fassade und sucht die Mittelachse des Portals. Die Rosette sitzt nicht darüber – hier wurden zwei Kirchen aneinandergeschoben. Dann dreht euch um: unter euch die Stadt, dahinter der Golf.',
+  levels:[
+   {t:'Auf dem ganzen Weg hierher ist sie euch begegnet: im Stadtwappen, auf Fahnen, an Hausfassaden, auf Kanaldeckeln – immer dieselbe Stangenwaffe mit Beil und Spitze.<br><br>Der Legende nach fiel sie im Jahr 303 vom Himmel auf den Hauptplatz der Stadt – genau in dem Augenblick, in dem der Legionär Sergius fern in Syrien für seinen Glauben hingerichtet wurde. Er hatte seinen Freunden ein Zeichen versprochen. Die Reliquie liegt bis heute im Schatz dieses Doms.<br><br><b>Wie heißt diese Waffe auf Deutsch?</b>'},
+   {t:'Auf Italienisch heißt sie <em>alabarda</em>.<br><br>Das deutsche Wort hat zehn Buchstaben und beginnt mit <b>Helle‑</b>.'},
+   {t:'Die Waffe, die die Schweizergarde im Vatikan trägt:<br><br><b>H E L L E _ _ _ _ _</b>'}
+  ],
+  a:['708e3f1b','9bb8ec9d','de50f5a7','2ce916f7'],
+  sol:'Hellebarde (italienisch: alabarda)',
+  after:'Röntgenaufnahmen zeigen: Die Reliquie ist aus einem einzigen Stück Eisen geschmiedet, mit einer Technik, die man im Westen damals nicht kannte, wohl aber in Indien – das erklärt auch, warum sie kaum rostet. Wie alt sie wirklich ist, weiß niemand. Im Stadtwappen steht sie seit dem 13. Jahrhundert.'
+},
+{
+  id:'rive-barcola', nr:9, name:'Le Rive – Uferpromenade',
+  sub:'BONUS · nur wenn ihr noch Zeit habt',
+  lat:45.64756, lon:13.76136, radius:150, hintRadius:70,
+  optional:true,
+  walk:'Rund 10 Minuten von der Piazza dell’Unità an der Promenade nach Südwesten – und die gleiche Strecke wieder zurück zum Bus. Nur anhängen, wenn die Zeit reicht!',
+  story:'Die <b>Rive</b> sind Triests Uferpromenaden: ein durchgehender Spazierweg am Wasser, vom Molo Audace bis zur Sacchetta. Hier sitzt die Stadt am Abend auf den Kaimauern, schaut den Booten zu und wartet auf den Sonnenuntergang. Die eigentliche Badepromenade liegt weiter draußen im Stadtteil <b>Barcola</b> – Betonterrassen und Pinien statt Sand, und trotzdem der Lieblingsort der Triestiner im Sommer.',
+  onSite:'Setzt euch fünf Minuten ans Wasser. Blickt nach Nordwesten: Die Landzunge dort drüben, wo das Weiße im Grün steht, ist das Schloss Miramare.',
+  levels:[
+   {t:'An einem Sonntag im Oktober ist das Wasser vor euch nicht mehr zu sehen: Über 2000 Segelboote starten dann gleichzeitig zur teilnehmerstärksten Segelregatta der Welt.<br><br>Benannt ist sie nach dem Stadtteil im Nordwesten, an dessen Küste sie vorbeiführt – dort liegt auch Triests Badepromenade.<br><br><b>Wie heißt diese Regatta?</b>'},
+   {t:'Der Stadtteil heißt <b>Barcola</b>.<br><br>Der Name der Regatta besteht aus diesem Stadtteilnamen plus der Endung <b>-na</b>.'},
+   {t:'<b>B A R C O L A _ A</b><br><br>Ergänzt den fehlenden Buchstaben.'}
+  ],
+  a:['ebb2465c'],
+  sol:'Barcolana',
+  after:'Die Barcolana findet seit 1969 am zweiten Sonntag im Oktober statt. 2018 gingen 2689 Boote an den Start – Weltrekord. Start und Ziel liegen genau vor der Küste, an der ihr gerade steht.'
+}
+];
+
+var OVERRIDE_HASH = '73d0b321';   /* Freischaltcode der Begleitperson, siehe loesungen.html */
+var MAX_POINTS = 24;              /* 8 Pflichtstationen x 3 Punkte */
+
+/* ==================================================================
+   2. HILFSFUNKTIONEN
+   ================================================================== */
+
+function $(sel,root){return (root||document).querySelector(sel);}
+function el(tag,cls,html){var n=document.createElement(tag);if(cls)n.className=cls;if(html!=null)n.innerHTML=html;return n;}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+/* Antwort auf eine Vergleichsform bringen: Kleinschreibung, Umlaute
+   ausgeschrieben, Akzente weg, alles außer a-z0-9 entfernt. */
+function norm(s){
+  return String(s==null?'':s)
+    .normalize('NFC').toLowerCase()
+    .replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss')
+    .normalize('NFD').replace(/[̀-ͯ]/g,'')
+    .replace(/[^a-z0-9]/g,'');
+}
+/* FNV-1a, 32 Bit – reicht, um die Lösungen aus dem Quelltext fernzuhalten. */
+function fnv(s){
+  var x=0x811c9dc5;
+  for(var i=0;i<s.length;i++){x^=s.charCodeAt(i);x=Math.imul(x,0x01000193)>>>0;}
+  return ('0000000'+x.toString(16)).slice(-8);
+}
+function hashAnswer(s){return fnv(SALT+norm(s));}
+
+function toRad(d){return d*Math.PI/180;}
+function distance(aLat,aLon,bLat,bLon){          /* Haversine, Meter */
+  var R=6371000;
+  var dLat=toRad(bLat-aLat), dLon=toRad(bLon-aLon);
+  var s=Math.sin(dLat/2)*Math.sin(dLat/2)+
+        Math.cos(toRad(aLat))*Math.cos(toRad(bLat))*Math.sin(dLon/2)*Math.sin(dLon/2);
+  return 2*R*Math.asin(Math.min(1,Math.sqrt(s)));
+}
+var COMPASS=['Norden','Nordosten','Osten','Südosten','Süden','Südwesten','Westen','Nordwesten'];
+function compass(aLat,aLon,bLat,bLon){
+  var dLon=toRad(bLon-aLon);
+  var y=Math.sin(dLon)*Math.cos(toRad(bLat));
+  var x=Math.cos(toRad(aLat))*Math.sin(toRad(bLat))-Math.sin(toRad(aLat))*Math.cos(toRad(bLat))*Math.cos(dLon);
+  var deg=(Math.atan2(y,x)*180/Math.PI+360)%360;
+  return COMPASS[Math.round(deg/45)%8];
+}
+function fmtDist(m){
+  if(m<1000) return Math.round(m/5)*5+' m';
+  return (m/1000).toFixed(1).replace('.',',')+' km';
+}
+function fmtClock(ms){
+  var t=Math.max(0,Math.floor(ms/1000));
+  var h=Math.floor(t/3600), m=Math.floor(t%3600/60);
+  return (h<10?'0':'')+h+':'+(m<10?'0':'')+m;
+}
+function timeOf(iso){
+  var d=new Date(iso);
+  if(isNaN(d)) return '';
+  return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
+}
+
+var toastTimer=null;
+function toast(msg,kind){
+  var t=$('#toast');
+  t.textContent=msg;
+  t.className='show'+(kind?' '+kind:'');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){t.className='';},3600);
+}
+
+/* ==================================================================
+   3. ZUSTAND (localStorage + Export/Import)
+   ================================================================== */
+
+var KEY='edu-mrh.triest-rallye.v1';
+var S=null;
+
+function blankStation(){return{visited:false,visitedAt:null,manual:false,level:0,tries:[0,0,0],solved:false,failed:false,points:0,solvedAt:null,hint:false};}
+
+function newState(team,members){
+  var st={};
+  STATIONS.forEach(function(s){st[s.id]=blankStation();});
+  return {v:1,team:{name:team,members:members},startedAt:new Date().toISOString(),st:st,override:false};
+}
+
+function save(){
+  if(!S) return;
+  try{localStorage.setItem(KEY,JSON.stringify(S));}
+  catch(e){toast('Achtung: Speichern im Browser hat nicht geklappt. Sichert euren Code!','bad');}
+}
+function load(){
+  try{
+    var raw=localStorage.getItem(KEY);
+    if(!raw) return null;
+    return migrate(JSON.parse(raw));
+  }catch(e){return null;}
+}
+/* Fremde oder ältere Stände auf das aktuelle Schema bringen, damit ein
+   Import nie einen halb gefüllten Zustand hinterlässt. */
+function migrate(o){
+  if(!o||typeof o!=='object'||!o.team) throw new Error('kein gültiger Stand');
+  var st=o.st&&typeof o.st==='object'?o.st:{};
+  var out={};
+  STATIONS.forEach(function(s){
+    var b=blankStation(), src=st[s.id];
+    if(src&&typeof src==='object'){
+      for(var k in b){ if(src[k]!=null) b[k]=src[k]; }
+      if(!Array.isArray(b.tries)||b.tries.length!==3) b.tries=[0,0,0];
+      b.level=Math.max(0,Math.min(2,b.level|0));
+      b.points=b.points|0;
+    }
+    out[s.id]=b;
+  });
+  return {
+    v:1,
+    team:{name:String(o.team.name||'Team'),members:Array.isArray(o.team.members)?o.team.members.map(String):[]},
+    startedAt:o.startedAt||new Date().toISOString(),
+    finishedAt:o.finishedAt||null,
+    override:!!o.override,
+    st:out
+  };
+}
+
+function toCode(){
+  return btoa(unescape(encodeURIComponent(JSON.stringify(S)))).replace(/=+$/,'');
+}
+function fromCode(code){
+  var c=String(code).replace(/\s+/g,'');
+  while(c.length%4) c+='=';
+  return migrate(JSON.parse(decodeURIComponent(escape(atob(c)))));
+}
+function exportFile(){
+  var name=(S.team.name||'team').replace(/[^\wÀ-ſ -]/g,'').trim().replace(/\s+/g,'-').toLowerCase()||'team';
+  var blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url; a.download='triest-rallye-'+name+'.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url);},2000);
+  toast('Datei gesichert – schaut in eure Downloads.','ok');
+}
+
+function totalPoints(){
+  var p=0; STATIONS.forEach(function(s){p+=S.st[s.id].points;}); return p;
+}
+function requiredDone(){
+  var n=0; STATIONS.forEach(function(s){if(!s.optional&&(S.st[s.id].solved||S.st[s.id].failed))n++;}); return n;
+}
+
+/* ==================================================================
+   4. ORTUNG
+   ================================================================== */
+
+var pos=null;           /* {lat,lon,acc} */
+var geoState='idle';    /* idle | on | denied | error | unsupported | paused */
+var watchId=null;
+
+function startGeo(){
+  if(!('geolocation' in navigator)){geoState='unsupported';renderGeo();return;}
+  if(watchId!=null) return;
+  geoState='on';
+  watchId=navigator.geolocation.watchPosition(onPos,onGeoErr,
+    {enableHighAccuracy:true,maximumAge:8000,timeout:25000});
+  renderGeo();
+}
+function stopGeo(){
+  if(watchId!=null){navigator.geolocation.clearWatch(watchId);watchId=null;}
+  geoState='paused'; renderGeo();
+}
+function onPos(p){
+  geoState='on';
+  pos={lat:p.coords.latitude,lon:p.coords.longitude,acc:p.coords.accuracy||0};
+  /* checkArrivals() zeichnet die Station komplett neu, wenn sich ihr
+     Status ändert; sonst wird nur die Entfernungsanzeige aufgefrischt –
+     sonst würde jede Positionsmeldung das Antwortfeld leeren. */
+  var full=checkArrivals();
+  if(currentView==='stations')     renderList();      /* Entfernungen mitlaufen lassen */
+  else if(currentView==='map')     renderMap();
+  else if(currentView==='station'&&current){ if(full) renderStation(current); else { renderGeo(); refreshGeo(); } }
+  else renderGeo();
+}
+function onGeoErr(e){
+  geoState=(e&&e.code===1)?'denied':'error';
+  renderGeo();
+  if(currentView==='station'&&current) refreshGeo();
+}
+
+/* Wirksame Entfernung: Wir ziehen die gemeldete Messungenauigkeit ab
+   (höchstens 100 m), damit ein schlechter Fix in den Altstadtgassen
+   die Gruppe nicht aussperrt. */
+function effDist(s){
+  if(!pos) return null;
+  var d=distance(pos.lat,pos.lon,s.lat,s.lon);
+  return {raw:d, eff:Math.max(0,d-Math.min(pos.acc||0,100))};
+}
+function isHere(s){var d=effDist(s);return d!==null&&d.eff<=s.radius;}
+function isVeryClose(s){var d=effDist(s);return d!==null&&d.raw<=s.hintRadius+Math.min(pos.acc||0,25);}
+
+/* Liefert true, wenn sich der Status der gerade geöffneten Station
+   geändert hat – dann muss sie komplett neu gezeichnet werden. */
+function checkArrivals(){
+  if(!S||!pos) return false;
+  var changed=false, currentChanged=false;
+  STATIONS.forEach(function(s){
+    var t=S.st[s.id], before=t.visited+'|'+t.hint;
+    if(!t.visited&&isHere(s)){
+      t.visited=true;t.visitedAt=new Date().toISOString();
+      toast('✓ '+(s.optional?'Bonusstation':'Station '+s.nr)+' erreicht – das Rätsel ist frei!','ok');
+    }
+    if(t.visited&&!t.hint&&isVeryClose(s)) t.hint=true;
+    if(before!==t.visited+'|'+t.hint){
+      changed=true;
+      if(current&&current.id===s.id) currentChanged=true;
+    }
+  });
+  if(changed){save();if(currentView==='stations')renderList();}
+  return currentChanged;
+}
+
+function checkOnce(){
+  if(!('geolocation' in navigator)){toast('Dieses Gerät kann den Standort nicht bestimmen.','bad');return;}
+  toast('Standort wird bestimmt …');
+  navigator.geolocation.getCurrentPosition(function(p){
+    onPos(p);
+    if(current){
+      var t=S.st[current.id];
+      if(!t.visited){
+        var d=effDist(current);
+        toast('Noch '+fmtDist(d.raw)+' entfernt – ihr müsst näher ran.','bad');
+      }
+    }
+  },function(e){onGeoErr(e);toast('Standort nicht verfügbar.','bad');},
+  {enableHighAccuracy:true,maximumAge:0,timeout:20000});
+}
+
+/* ==================================================================
+   5. ANSICHTEN
+   ================================================================== */
+
+var currentView='setup';
+var current=null;   /* geöffnete Station */
+
+function show(v){
+  currentView=v;
+  ['setup','stations','station','map','result','info'].forEach(function(n){
+    $('#view-'+n).hidden=(n!==v);
+  });
+  if(v==='stations')      renderList();
+  else if(v==='map')      renderMap();
+  else if(v==='result')   renderResult();
+  window.scrollTo(0,0);
+}
+
+/* ---------------- Kopfzeile ---------------- */
+function renderTop(){
+  if(!S){$('#pillScore').textContent='0 / 24 P';$('#pillTime').textContent='00:00';return;}
+  var bonus=S.st['rive-barcola'].points, base=totalPoints()-bonus;
+  $('#pillScore').innerHTML='<b>'+base+'</b> / '+MAX_POINTS+' P'+(bonus?' <span style="color:var(--gold-l)">+'+bonus+'</span>':'');
+  var until=S.finishedAt?new Date(S.finishedAt).getTime():Date.now();
+  $('#pillTime').textContent=fmtClock(until-new Date(S.startedAt).getTime());
+}
+setInterval(function(){if(S)renderTop();},20000);
+
+/* ---------------- GPS-Banner ---------------- */
+function renderGeo(){
+  var box=$('#geoBanner'); if(!box) return;
+  var h='';
+  if(geoState==='on'&&pos){
+    h='<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">'+
+      '<span style="font-size:1.2rem">\u{1F4E1}</span>'+
+      '<span class="hint" style="flex:1;min-width:150px">Ortung aktiv · Genauigkeit &plusmn;'+Math.round(pos.acc)+' m</span>'+
+      '<button class="btn btn-sm btn-ghost" data-act="geo-pause" type="button">Pausieren</button></div>';
+  }else if(geoState==='on'){
+    h='<span class="hint">\u{1F4E1} Ortung wird gestartet … Das kann draußen 10–20 Sekunden dauern.</span>';
+  }else if(geoState==='paused'){
+    h='<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">'+
+      '<span class="hint" style="flex:1;min-width:150px">Ortung pausiert (spart Akku).</span>'+
+      '<button class="btn btn-sm" data-act="geo-start" type="button">Wieder einschalten</button></div>';
+  }else if(geoState==='denied'){
+    h='<div class="note bad" style="margin:0"><b>Die Ortung ist blockiert.</b> Erlaubt der Seite in den '+
+      'Browser-Einstellungen den Zugriff auf den Standort und tippt dann auf &bdquo;Erneut versuchen&ldquo;. '+
+      'Wenn das nicht klappt, fragt die Begleitperson nach dem Freischaltcode (siehe <a href="#" data-go="info">Hilfe</a>).<br>'+
+      '<button class="btn btn-sm" data-act="geo-start" type="button" style="margin-top:.6rem">Erneut versuchen</button></div>';
+  }else if(geoState==='unsupported'){
+    h='<div class="note bad" style="margin:0">Dieser Browser kann den Standort nicht bestimmen. '+
+      'Fragt die Begleitperson nach dem Freischaltcode (siehe <a href="#" data-go="info">Hilfe</a>).</div>';
+  }else if(geoState==='error'){
+    h='<div class="note gold" style="margin:0">Kein Standort-Signal. Geht ein paar Schritte ins Freie, weg von hohen Häuserwänden.<br>'+
+      '<button class="btn btn-sm" data-act="geo-start" type="button" style="margin-top:.6rem">Erneut versuchen</button></div>';
+  }else{
+    h='<button class="btn btn-sm btn-wide" data-act="geo-start" type="button">Ortung einschalten</button>';
+  }
+  box.innerHTML=h;
+}
+
+/* ---------------- Stationsliste ---------------- */
+function renderList(){
+  renderTop(); renderGeo();
+
+  var m=S.team.members.filter(function(x){return x;});
+  $('#teamCard').innerHTML=
+    '<h3 style="margin-bottom:.2rem">'+esc(S.team.name)+'</h3>'+
+    '<p class="hint" style="margin:0">'+(m.length?esc(m.join(' · ')):'—')+'</p>'+
+    '<p class="hint" style="margin:.5rem 0 0">'+requiredDone()+' von 8 Pflichtstationen abgeschlossen · '+
+    totalPoints()+' Punkte</p>';
+
+  var list=$('#stList'); list.innerHTML='';
+  STATIONS.forEach(function(s){
+    var t=S.st[s.id];
+    var cls='st-item'+(t.solved?' is-solved':'')+(t.failed?' is-failed':'')+(s.optional?' is-bonus':'');
+    var chip, chipCls;
+    if(t.solved){chip=t.points+' P';chipCls='chip-solved';}
+    else if(t.failed){chip='0 P';chipCls='chip-failed';}
+    else if(t.visited){chip='Rätsel offen';chipCls='chip-here';}
+    else {chip='noch hin';chipCls='chip-open';}
+
+    var meta='';
+    if(!t.visited&&pos){
+      var d=effDist(s);
+      meta='<span>'+fmtDist(d.raw)+' Richtung '+compass(pos.lat,pos.lon,s.lat,s.lon)+'</span>';
+    }else if(t.visited){
+      meta='<span>✓ vor Ort um '+timeOf(t.visitedAt)+(t.manual?' ⚑':'')+'</span>';
+    }
+
+    var b=el('button',cls);
+    b.type='button';
+    b.setAttribute('data-open',s.id);
+    b.innerHTML=
+      '<span class="st-num">'+(s.optional?'★':s.nr)+'</span>'+
+      '<span class="st-body"><h3>'+s.name+'</h3>'+
+      '<div class="st-meta"><span class="st-chip '+chipCls+'">'+chip+'</span>'+meta+'</div></span>'+
+      '<span class="st-arrow">›</span>';
+    list.appendChild(b);
+  });
+}
+
+/* ---------------- Stationsdetail ---------------- */
+function openStation(id){
+  current=STATIONS.filter(function(s){return s.id===id;})[0];
+  if(!current) return;
+  renderStation(current);
+  show('station');
+}
+
+function renderStation(s){
+  var t=S.st[s.id];
+  var box=$('#stationDetail');
+  /* Bereits Getipptes retten: Ein Vollrender kann mitten im Tippen
+     ausgelöst werden, etwa wenn der Vor-Ort-Hinweis freischaltet. */
+  var typed=(function(){var i=$('#ans');return (i&&current&&current.id===s.id)?i.value:'';})();
+  var h='';
+
+  h+='<div class="card hero" style="padding:18px 16px">'+
+     '<div class="kicker">'+(s.optional?'Bonusstation':'Station '+s.nr+' von 8')+'</div>'+
+     '<h1>'+s.name+'</h1><p>'+s.sub+'</p></div>';
+
+  /* Weg */
+  h+='<div class="card tight"><h3>\u{1F6B6} Weg hierher</h3><p class="hint" style="margin:0">'+s.walk+'</p>'+
+     '<p style="margin:.7rem 0 0"><a href="https://www.openstreetmap.org/?mlat='+s.lat+'&amp;mlon='+s.lon+'#map=18/'+s.lat+'/'+s.lon+'" target="_blank" rel="noopener noreferrer">In OpenStreetMap öffnen ↗</a> <span class="hint">(externe Seite)</span></p></div>';
+
+  /* Ortung */
+  h+='<div class="card" id="geoCard">'+renderGeoPanel(s,t)+'</div>';
+
+  /* Hintergrund */
+  h+='<div class="card"><h2>Hintergrund</h2><div class="story"><p>'+s.story+'</p></div></div>';
+
+  /* Vor-Ort-Hinweis */
+  if(t.hint){
+    h+='<div class="card tight"><div class="note gold" style="margin:0"><b>\u{1F50D} Vor Ort:</b> '+s.onSite+'</div></div>';
+  }else if(t.visited){
+    h+='<div class="card tight"><p class="hint" style="margin:0">\u{1F50D} Es gibt hier noch einen genaueren Hinweis – '+
+       'er erscheint, wenn ihr direkt davorsteht.</p></div>';
+  }
+
+  /* Rätsel */
+  h+='<div class="card" id="puzzleCard">'+renderPuzzle(s,t)+'</div>';
+
+  h+='<div class="btn-row"><button class="btn btn-ghost" data-go="stations" type="button">← Alle Stationen</button>'+
+     (nextStation(s)?'<button class="btn btn-ghost" data-open="'+nextStation(s).id+'" type="button">Nächste Station →</button>':'')+'</div>';
+
+  box.innerHTML=h;
+  if(typed){var inp=$('#ans'); if(inp) inp.value=typed;}
+}
+
+/* Teil-Auffrischungen: lassen das Antwortfeld bzw. den Rest der Seite in Ruhe. */
+function refreshGeo(){
+  var c=$('#geoCard');
+  if(c&&current) c.innerHTML=renderGeoPanel(current,S.st[current.id]);
+}
+function refreshPuzzle(){
+  var c=$('#puzzleCard');
+  if(c&&current) c.innerHTML=renderPuzzle(current,S.st[current.id]);
+}
+
+function nextStation(s){
+  var i=STATIONS.indexOf(s);
+  return (i>=0&&i<STATIONS.length-1)?STATIONS[i+1]:null;
+}
+
+function renderGeoPanel(s,t){
+  if(t.visited){
+    return '<div class="geo-box near"><b>✅ Ihr wart hier</b><p class="hint" style="margin:.35rem 0 0">'+
+      'Bestätigt um '+timeOf(t.visitedAt)+(t.manual?' · von Hand freigeschaltet ⚑':'')+
+      '. Diese Station bleibt offen – ihr könnt euch beim Knobeln gern woanders hinsetzen.</p></div>';
+  }
+  var h='<div class="geo-box'+(pos&&isHere(s)?' near':'')+'">';
+  if(pos){
+    var d=effDist(s);
+    var pct=Math.max(0,Math.min(100,100-(d.raw-s.radius)/9));
+    h+='<div class="dist">'+fmtDist(d.raw)+' <small>Richtung '+compass(pos.lat,pos.lon,s.lat,s.lon)+'</small></div>'+
+       '<div class="bar"><i style="width:'+pct.toFixed(0)+'%"></i></div>'+
+       '<p class="hint" style="margin:0">Messgenauigkeit &plusmn;'+Math.round(pos.acc)+' m · '+
+       'freigeschaltet wird ab etwa '+s.radius+' m.</p>';
+  }else if(geoState==='denied'||geoState==='unsupported'){
+    h+='<b>Standort nicht verfügbar</b><p class="hint" style="margin:.35rem 0 0">'+
+       'Erlaubt die Ortung oder holt euch den Freischaltcode (<a href="#" data-go="info">Hilfe</a>).</p>';
+  }else{
+    h+='<b>Noch kein Standort</b><p class="hint" style="margin:.35rem 0 0">Schaltet die Ortung ein, damit sich die Station freischalten kann.</p>';
+  }
+  h+='<div class="btn-row" style="margin-top:.8rem">'+
+     '<button class="btn btn-sm" data-act="geo-check" type="button">Standort jetzt prüfen</button>'+
+     (S.override?'<button class="btn btn-sm btn-ghost" data-act="manual" type="button">⚑ Von Hand freischalten</button>':'')+
+     '</div></div>';
+  return h;
+}
+
+function renderPuzzle(s,t){
+  if(!t.visited){
+    return '<div class="locked"><span class="lk">\u{1F512}</span><b>Das Rätsel öffnet sich vor Ort.</b>'+
+      '<p class="hint" style="margin:.4rem 0 0">Geht hin, dann klappt es von selbst auf.</p></div>';
+  }
+  if(t.solved){
+    return '<h2>✅ Gelöst</h2>'+
+      '<div class="note ok"><b>'+t.points+' von 3 Punkten</b> · Lösung: <b>'+esc(s.sol)+'</b></div>'+
+      '<p class="story">'+s.after+'</p>';
+  }
+  if(t.failed){
+    return '<h2>Nicht geknackt</h2>'+
+      '<div class="note bad">0 Punkte. Die Lösung lautet: <b>'+esc(s.sol)+'</b></div>'+
+      '<p class="story">'+s.after+'</p>';
+  }
+
+  var lv=t.level, L=s.levels[lv], pts=3-lv, left=3-t.tries[lv];
+  var names=['Schwer','Mittel','Leicht'];
+  var h='<div class="lvl-head">'+
+        '<span class="lvl-badge'+(lv===1?' l2':lv===2?' l3':'')+'">'+names[lv]+' · '+pts+' '+(pts===1?'Punkt':'Punkte')+'</span>'+
+        '<span class="tries" title="'+left+' Versuche übrig">'+
+        [0,1,2].map(function(i){return '<i class="'+(i<t.tries[lv]?'used':'')+'"></i>';}).join('')+
+        '</span></div>';
+  h+='<div class="puzzle">'+L.t+'</div>';
+  h+='<label for="ans">Eure Antwort</label>'+
+     '<input type="text" id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Antwort eingeben …">'+
+     '<div id="ansFeedback"></div>'+
+     '<div class="btn-row" style="margin-top:.8rem">'+
+     '<button class="btn" data-act="answer" type="button">Antwort prüfen ('+left+' übrig)</button>'+
+     (lv<2?'<button class="btn btn-ghost btn-sm" data-act="easier" type="button">Leichtere Variante – kostet einen Punkt</button>':'')+
+     '</div>';
+  return h;
+}
+
+function submitAnswer(){
+  var s=current, t=S.st[s.id];
+  if(!s||t.solved||t.failed||!t.visited) return;
+  var inp=$('#ans'); if(!inp) return;
+  var val=inp.value.trim();
+  if(!val){toast('Schreibt erst eine Antwort hinein.');return;}
+
+  if(s.a.indexOf(hashAnswer(val))!==-1){
+    t.solved=true; t.points=3-t.level; t.solvedAt=new Date().toISOString();
+    if(!s.optional&&requiredDone()===8&&!S.finishedAt) S.finishedAt=new Date().toISOString();
+    save(); refreshPuzzle(); renderTop();
+    toast('Richtig! ' + t.points + (t.points===1?' Punkt':' Punkte')+' für '+S.team.name+'.','ok');
+    return;
+  }
+
+  t.tries[t.level]++;
+  var left=3-t.tries[t.level], msg;
+  if(left>0){
+    msg='<div class="note bad" style="margin-top:.7rem"><b>Leider nicht.</b> Noch '+
+        left+(left===1?' Versuch':' Versuche')+' auf dieser Stufe.</div>';
+    toast('Falsch – noch '+left+(left===1?' Versuch':' Versuche')+'.','bad');
+  }else if(t.level<2){
+    t.level++; t.tries[t.level]=0;
+    msg='<div class="note gold" style="margin-top:.7rem">Drei Versuche verbraucht – '+
+        'hier ist die leichtere Variante. Sie bringt jetzt '+(3-t.level)+(3-t.level===1?' Punkt':' Punkte')+'.</div>';
+    toast('Neue Stufe: '+['Schwer','Mittel','Leicht'][t.level]+'.');
+  }else{
+    t.failed=true; t.points=0;
+    if(!s.optional&&requiredDone()===8&&!S.finishedAt) S.finishedAt=new Date().toISOString();
+    save(); refreshPuzzle(); renderTop();
+    toast('Station ohne Punkte beendet.','bad');
+    return;
+  }
+  save(); refreshPuzzle();
+  $('#ansFeedback').innerHTML=msg;
+  var inp2=$('#ans'); if(inp2) inp2.focus();
+}
+
+function easier(){
+  var s=current, t=S.st[s.id];
+  if(!s||t.solved||t.failed||t.level>=2) return;
+  t.level++; t.tries[t.level]=0;
+  save(); refreshPuzzle();
+  toast('Stufe '+['Schwer','Mittel','Leicht'][t.level]+' · jetzt '+(3-t.level)+(3-t.level===1?' Punkt':' Punkte')+'.');
+}
+
+/* ---------------- Karte ---------------- */
+var MAPB={latMin:45.6455,latMax:45.6533,lonMin:13.7590,lonMax:13.7745,w:1000,h:720};
+var COAST=[[45.6533,13.7681],[45.6528,13.7674],[45.6521,13.7667],[45.6512,13.7668],
+           [45.6504,13.7671],[45.6497,13.7664],[45.6489,13.7650],[45.6482,13.7635],
+           [45.6476,13.7614],[45.6470,13.7598],[45.6455,13.7593]];
+
+function mp(lat,lon){
+  return [ (lon-MAPB.lonMin)/(MAPB.lonMax-MAPB.lonMin)*MAPB.w,
+           (MAPB.latMax-lat)/(MAPB.latMax-MAPB.latMin)*MAPB.h ];
+}
+function pts(arr){return arr.map(function(p){var q=mp(p[0],p[1]);return q[0].toFixed(1)+','+q[1].toFixed(1);}).join(' ');}
+
+function renderMap(){
+  var sea=COAST.concat([[45.6533,13.7590]]);
+  var route=STATIONS.filter(function(s){return !s.optional;}).map(function(s){return [s.lat,s.lon];});
+  var last=STATIONS[7], bonus=STATIONS[8], start=STATIONS[0];
+  var a=mp(last.lat,last.lon), b=mp(start.lat,start.lon), c=mp(bonus.lat,bonus.lon);
+  var hill=mp(45.6468,13.7730);
+  var mAu=mp(45.6517,13.7668), mAe=mp(45.6527,13.7654);
+  var cg1=mp(45.6524,13.7690), cg2=mp(45.6522,13.7731);
+
+  var svg='<svg viewBox="0 0 '+MAPB.w+' '+MAPB.h+'" role="img" aria-label="Schematische Karte der Rallye-Route durch Triest">';
+  svg+='<rect width="'+MAPB.w+'" height="'+MAPB.h+'" fill="#f6f2e8"/>';
+  svg+='<polygon points="'+pts(sea)+'" fill="#cfe4ef"/>';
+  svg+='<polyline points="'+pts(COAST)+'" fill="none" stroke="#7fb2cc" stroke-width="3"/>';
+  svg+='<line x1="'+mAu[0].toFixed(1)+'" y1="'+mAu[1].toFixed(1)+'" x2="'+mAe[0].toFixed(1)+'" y2="'+mAe[1].toFixed(1)+'" stroke="#9aa5ad" stroke-width="7" stroke-linecap="round"/>';
+  svg+='<line x1="'+cg1[0].toFixed(1)+'" y1="'+cg1[1].toFixed(1)+'" x2="'+cg2[0].toFixed(1)+'" y2="'+cg2[1].toFixed(1)+'" stroke="#cfe4ef" stroke-width="9" stroke-linecap="round"/>';
+  svg+='<ellipse cx="'+hill[0].toFixed(1)+'" cy="'+hill[1].toFixed(1)+'" rx="150" ry="145" fill="#eae4d2" stroke="#cfc4a6" stroke-width="2" stroke-dasharray="7 7"/>';
+
+  svg+='<text x="'+mp(45.6502,13.7622)[0].toFixed(0)+'" y="'+mp(45.6502,13.7622)[1].toFixed(0)+'" fill="#5b90ac" font-size="26" font-style="italic" text-anchor="middle">Golf von Triest</text>';
+  svg+='<text x="'+mp(45.6530,13.7716)[0].toFixed(0)+'" y="'+mp(45.6530,13.7716)[1].toFixed(0)+'" fill="#a09477" font-size="23" text-anchor="middle">Borgo Teresiano</text>';
+  svg+='<text x="'+mp(45.6485,13.7648)[0].toFixed(0)+'" y="'+mp(45.6485,13.7648)[1].toFixed(0)+'" fill="#a09477" font-size="23" text-anchor="middle">Città Vecchia</text>';
+  svg+='<text x="'+mp(45.6461,13.7730)[0].toFixed(0)+'" y="'+mp(45.6461,13.7730)[1].toFixed(0)+'" fill="#9a8f70" font-size="22" text-anchor="middle">Colle di San Giusto</text>';
+
+  svg+='<polyline points="'+pts(route)+'" fill="none" stroke="#14577e" stroke-width="6" stroke-linejoin="round" stroke-linecap="round" opacity=".75"/>';
+  svg+='<line x1="'+a[0].toFixed(1)+'" y1="'+a[1].toFixed(1)+'" x2="'+b[0].toFixed(1)+'" y2="'+b[1].toFixed(1)+'" stroke="#14577e" stroke-width="5" stroke-dasharray="12 10" opacity=".6"/>';
+  svg+='<line x1="'+b[0].toFixed(1)+'" y1="'+b[1].toFixed(1)+'" x2="'+c[0].toFixed(1)+'" y2="'+c[1].toFixed(1)+'" stroke="#c9882b" stroke-width="5" stroke-dasharray="12 10" opacity=".8"/>';
+
+  if(pos&&pos.lat>MAPB.latMin&&pos.lat<MAPB.latMax&&pos.lon>MAPB.lonMin&&pos.lon<MAPB.lonMax){
+    var me=mp(pos.lat,pos.lon);
+    svg+='<circle cx="'+me[0].toFixed(1)+'" cy="'+me[1].toFixed(1)+'" r="26" fill="#b3261e" opacity=".22"/>';
+    svg+='<circle cx="'+me[0].toFixed(1)+'" cy="'+me[1].toFixed(1)+'" r="11" fill="#b3261e" stroke="#fff" stroke-width="3"/>';
+  }
+
+  STATIONS.forEach(function(s){
+    var q=mp(s.lat,s.lon), t=S?S.st[s.id]:null;
+    var fill=s.optional?'#c9882b':(t&&t.solved?'#1c7a4d':(t&&t.failed?'#9b1c14':'#0b3550'));
+    svg+='<circle cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="23" fill="'+fill+'" stroke="#fff" stroke-width="4"/>';
+    svg+='<text x="'+q[0].toFixed(1)+'" y="'+(q[1]+9).toFixed(1)+'" fill="'+(s.optional?'#241a06':'#fff')+'" font-size="25" font-weight="700" text-anchor="middle">'+(s.optional?'★':s.nr)+'</text>';
+  });
+  svg+='</svg>';
+
+  $('#mapWrap').innerHTML=svg;
+
+  $('#mapLegend').innerHTML=STATIONS.map(function(s){
+    var t=S?S.st[s.id]:null;
+    var badge=t&&t.solved?' – <b style="color:var(--ok)">'+t.points+' P</b>':(t&&t.failed?' – 0 P':'');
+    return '<li'+(s.optional?' class="bonus"':'')+'><span class="n">'+(s.optional?'★':s.nr)+'</span>'+
+           '<span>'+s.name+badge+'</span></li>';
+  }).join('')+'<li><span class="n" style="background:#b3261e">●</span><span>eure aktuelle Position</span></li>';
+}
+
+/* ---------------- Ergebnis ---------------- */
+function renderResult(){
+  var p=totalPoints(), bonus=S.st['rive-barcola'].points, base=p-bonus;
+  var done=requiredDone();
+  var rank = base>=21?'Cittadini onorari – Ehrenbürger von Tergeste'
+           : base>=16?'Capitani – die Stadt hat euch wenig verschwiegen'
+           : base>=11?'Mercanti – solide durch den Freihafen'
+           : base>=6 ?'Viaggiatori – unterwegs war’s schön'
+           :          'Turisti – immerhin: Triest gesehen';
+
+  var rows=STATIONS.map(function(s){
+    var t=S.st[s.id];
+    var st = t.solved?('gelöst ('+['schwer','mittel','leicht'][3-t.points]+')')
+           : t.failed?'nicht gelöst'
+           : t.visited?'besucht, offen'
+           : 'nicht besucht';
+    return '<tr><td><b>'+(s.optional?'★':s.nr)+'</b></td><td>'+s.name+
+      (t.manual?' <span title="von Hand freigeschaltet">⚑</span>':'')+
+      '<br><span class="hint">'+st+'</span></td><td class="pts">'+t.points+' P</td></tr>';
+  }).join('');
+
+  var elapsed=fmtClock((S.finishedAt?new Date(S.finishedAt):new Date())-new Date(S.startedAt));
+  var anyManual=STATIONS.some(function(s){return S.st[s.id].manual;});
+
+  $('#resultBox').innerHTML=
+    '<div class="card"><h2 style="text-align:center">'+esc(S.team.name)+'</h2>'+
+    '<div class="score-big"><div class="v">'+p+'</div><div class="of">'+
+      (bonus?'Punkte – '+base+' von '+MAX_POINTS+' plus '+bonus+' Bonus':'von '+MAX_POINTS+' Punkten')+'</div>'+
+      '<div class="rank">'+rank+'</div></div>'+
+    '<p class="hint" style="text-align:center;margin-top:1rem">'+done+' von 8 Pflichtstationen · unterwegs '+elapsed+' h<br>'+
+      esc(S.team.members.filter(function(x){return x;}).join(' · '))+'</p></div>'+
+
+    '<div class="card"><h2>Im Einzelnen</h2><table class="res">'+
+    '<tr><th></th><th>Station</th><th style="text-align:right">Punkte</th></tr>'+rows+
+    '<tr><td></td><td><b>Gesamt</b></td><td class="pts">'+p+' P</td></tr></table>'+
+    (anyManual?'<p class="hint" style="margin-top:.8rem">⚑ = Station wurde über den Freischaltcode von Hand bestätigt, nicht per Ortung.</p>':'')+
+    '</div>'+
+
+    '<div class="card"><h2>Ergebnis sichern</h2>'+
+    '<p class="hint">Zeigt den Stand der Begleitperson – oder sichert ihn als Datei bzw. Code.</p>'+
+    '<div class="btn-row"><button class="btn btn-sm" data-act="export" type="button">Als Datei sichern</button>'+
+    '<button class="btn btn-sm btn-ghost" data-act="code" type="button">Sicherungscode zeigen</button></div>'+
+    '<div id="codeBox" hidden style="margin-top:.8rem"><label for="outCode">Sicherungscode</label>'+
+    '<textarea id="outCode" readonly></textarea></div></div>';
+}
+
+/* ==================================================================
+   6. SETUP-BILDSCHIRM
+   ================================================================== */
+
+function addMemberRow(val){
+  var wrap=$('#members');
+  var row=el('div','member-row');
+  var i=document.createElement('input');
+  i.type='text'; i.maxLength=40; i.autocomplete='off';
+  i.placeholder='Vorname'; i.value=val||'';
+  var b=el('button',null,'✕');
+  b.type='button'; b.setAttribute('aria-label','Person entfernen');
+  b.onclick=function(){ if($('#members').children.length>1) wrap.removeChild(row); };
+  row.appendChild(i); row.appendChild(b);
+  wrap.appendChild(row);
+  return i;
+}
+
+function startRally(){
+  var name=$('#inTeam').value.trim();
+  if(!name){toast('Gebt eurem Team einen Namen.','bad');$('#inTeam').focus();return;}
+  var members=[].slice.call($('#members').querySelectorAll('input'))
+                .map(function(i){return i.value.trim();}).filter(function(x){return x;});
+  if(!members.length){toast('Tragt mindestens eine Person ein.','bad');return;}
+  S=newState(name,members);
+  save(); startGeo(); show('stations');
+  toast('Viel Erfolg, '+name+'!','ok');
+}
+
+/* ==================================================================
+   7. EREIGNISSE
+   ================================================================== */
+
+document.addEventListener('click',function(e){
+  if(!e.target||!e.target.closest) return;
+  var go=e.target.closest('[data-go]');
+  if(go){e.preventDefault();
+    if(!S&&go.getAttribute('data-go')!=='info'){show('setup');return;}
+    show(go.getAttribute('data-go'));return;}
+
+  var open=e.target.closest('[data-open]');
+  if(open){e.preventDefault();openStation(open.getAttribute('data-open'));return;}
+
+  var act=e.target.closest('[data-act]');
+  if(!act) return;
+  e.preventDefault();
+  switch(act.getAttribute('data-act')){
+    case 'geo-start': startGeo(); break;
+    case 'geo-pause': stopGeo(); break;
+    case 'geo-check': checkOnce(); break;
+    case 'answer':    submitAnswer(); break;
+    case 'easier':    easier(); break;
+    case 'manual':
+      if(!S.override) break;
+      var t=S.st[current.id];
+      t.visited=true;t.manual=true;t.hint=true;t.visitedAt=new Date().toISOString();
+      save(); renderStation(current);
+      toast('Station von Hand freigeschaltet ⚑');
+      break;
+    case 'export':    exportFile(); break;
+    case 'code':
+      var cb=$('#codeBox'); cb.hidden=!cb.hidden;
+      if(!cb.hidden){$('#outCode').value=toCode();$('#outCode').select();}
+      break;
+  }
+});
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='Enter'&&e.target&&e.target.id==='ans'){e.preventDefault();submitAnswer();}
+});
+
+$('#btnAddMember').onclick=function(){addMemberRow('').focus();};
+$('#btnStart').onclick=startRally;
+
+$('#btnImportCode').onclick=function(){var b=$('#importBox');b.hidden=!b.hidden;if(!b.hidden)$('#inCode').focus();};
+$('#btnCodeGo').onclick=function(){
+  try{
+    S=fromCode($('#inCode').value);
+    save(); startGeo(); show('stations');
+    toast('Fortschritt wiederhergestellt: '+S.team.name,'ok');
+  }catch(err){toast('Der Code ließ sich nicht lesen. Stimmt er vollständig?','bad');}
+};
+$('#btnImportFile').onclick=function(){
+  var f=document.createElement('input');
+  f.type='file'; f.accept='application/json,.json';
+  f.onchange=function(){
+    var file=f.files&&f.files[0]; if(!file) return;
+    var r=new FileReader();
+    r.onload=function(){
+      try{
+        S=migrate(JSON.parse(r.result));
+        save(); startGeo(); show('stations');
+        toast('Fortschritt geladen: '+S.team.name,'ok');
+      }catch(err){toast('Diese Datei passt nicht zur Rallye.','bad');}
+    };
+    r.readAsText(file);
+  };
+  f.click();
+};
+
+$('#btnExport2').onclick=function(){if(S)exportFile();else toast('Legt zuerst eine Gruppe an.');};
+$('#btnShowCode2').onclick=function(){
+  if(!S){toast('Legt zuerst eine Gruppe an.');return;}
+  var b=$('#codeBox2'); b.hidden=!b.hidden;
+  if(!b.hidden){$('#outCode2').value=toCode();$('#outCode2').select();}
+};
+$('#btnOverride').onclick=function(){
+  if(!S){toast('Legt zuerst eine Gruppe an.','bad');return;}
+  if(hashAnswer($('#inOverride').value)===OVERRIDE_HASH){
+    S.override=true; save();
+    toast('Notfall-Freischaltung aktiv. In jeder Station gibt es jetzt den Knopf ⚑.','ok');
+    $('#inOverride').value='';
+  }else{
+    toast('Der Code stimmt nicht.','bad');
+  }
+};
+$('#btnReset').onclick=function(){
+  if(!confirm('Wirklich alles löschen? Punkte und Fortschritt sind dann weg.')) return;
+  try{localStorage.removeItem(KEY);}catch(e){}
+  S=null; current=null; stopGeo(); geoState='idle';
+  location.reload();
+};
+
+/* ==================================================================
+   8. START
+   ================================================================== */
+
+addMemberRow(''); addMemberRow('');
+S=load();
+if(S){ show('stations'); startGeo(); }
+else { show('setup'); }
+renderTop();
+
+})();
+</script>
+
+<script defer src="https://edu-mrh.de/controls.js"></script>
+</body>
+</html>
