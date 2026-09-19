@@ -474,7 +474,7 @@ table.res td.pts{text-align:right;font-weight:700;white-space:nowrap}
     <label for="qrUrl" style="margin-top:.7rem">Oder diesen Link weitergeben</label>
     <textarea id="qrUrl" class="qr-url" readonly></textarea>
     <div class="btn-row" style="margin-top:.8rem">
-      <button class="btn btn-ghost" data-act="export" type="button">&#11015; Zusätzlich als Datei</button>
+      <button class="btn btn-ghost" data-act="qr-copy" type="button">&#128203; Link kopieren</button>
       <button class="btn" data-act="qr-close" type="button">Schließen</button>
     </div>
   </div></div>
@@ -1131,6 +1131,34 @@ function showQr(){
 }
 function hideQr(){ $('#qrOverlay').hidden=true; }
 
+/* Kopiert genau die URL, die auch im QR-Code steckt – also den Inhalt des
+   Feldes, das showQr() gesetzt hat, nicht eine neu erzeugte. So können Bild
+   und Zwischenablage nie auseinanderlaufen.
+   navigator.clipboard braucht einen sicheren Kontext (https); auf http oder
+   file:// greift die Auswahl-Variante, und zur Not bleibt der Text markiert. */
+function copyQrLink(){
+  var ta=$('#qrUrl');
+  var url=(ta && ta.value) ? ta.value : shortUrl();
+  if(ta && !ta.value) ta.value=url;
+
+  function gelungen(){ toast('Link kopiert \u2013 jetzt einf\u00fcgen und verschicken.','ok'); }
+  function ueberAuswahl(){
+    try{
+      ta.focus();
+      ta.setSelectionRange(0, ta.value.length);
+      if(document.execCommand && document.execCommand('copy')){ gelungen(); return; }
+    }catch(e){}
+    try{ ta.focus(); ta.select(); }catch(e){}
+    toast('Kopieren hat der Browser verweigert \u2013 der Link ist markiert, kopiert ihn von Hand.','bad');
+  }
+
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url).then(gelungen, ueberAuswahl);
+  }else{
+    ueberAuswahl();
+  }
+}
+
 /* ---- Automatische Sicherungsabfrage ---- */
 var lastAsk=0;
 function askSave(grund){
@@ -1705,6 +1733,7 @@ document.addEventListener('click',function(e){
     case 'export':     exportFile(); hideSheet(); break;
     case 'qr':         showQr(); break;
     case 'qr-close':   hideQr(); break;
+    case 'qr-copy':    copyQrLink(); break;
     case 'sheet-qr':   showQr(); break;
     case 'sheet-json': exportFile(); hideSheet(); break;
     case 'sheet-no':   hideSheet(); break;
