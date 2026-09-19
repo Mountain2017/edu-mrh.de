@@ -180,6 +180,38 @@ table.res th,table.res td{text-align:left;padding:8px 6px;border-bottom:1px soli
 table.res th{font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-2)}
 table.res td.pts{text-align:right;font-weight:700;white-space:nowrap}
 
+/* ---------- Sichern: Knoepfe, Blatt, Overlay ---------- */
+.save-group{display:flex;gap:6px;margin-right:4px}
+.topbar-nav .save-btn{
+  flex:0 0 auto;background:var(--gold);color:#241a06;border:1px solid rgba(0,0,0,.12);
+  font:inherit;font-size:.82rem;font-weight:700;padding:6px 10px;border-radius:8px;
+  cursor:pointer;display:inline-flex;align-items:center;gap:5px;line-height:1.2;
+}
+.topbar-nav .save-btn:active{transform:translateY(1px)}
+
+.sheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:95;
+  background:var(--card);border-top:3px solid var(--gold);
+  border-radius:16px 16px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.28);
+  padding:16px 16px calc(16px + var(--pad-b));
+}
+.sheet h3{margin-bottom:.2rem}
+.sheet .why{font-size:.86rem;color:var(--ink-2);margin-bottom:.9rem}
+
+.ov{
+  position:fixed;top:0;right:0;bottom:0;left:0;z-index:100;
+  background:rgba(11,53,80,.9);overflow:auto;
+  padding:18px;padding-top:calc(18px + env(safe-area-inset-top,0px));
+  padding-bottom:calc(18px + var(--pad-b));
+}
+.ov-inner{min-height:100%;display:flex;align-items:center;justify-content:center}
+.ov-box{background:#fff;border-radius:16px;padding:18px;max-width:430px;width:100%;text-align:center}
+.ov-box h2{margin-bottom:.3rem}
+.qr-hold{background:#fff;border-radius:10px;margin:.6rem auto .8rem;max-width:320px}
+.qr-hold svg{display:block;width:100%;height:auto}
+.qr-meta{font-size:.8rem;color:var(--ink-2)}
+.qr-url{font-size:.72rem;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;min-height:64px}
+
 /* ---------- Toast ---------- */
 #toast{
   position:fixed;left:50%;transform:translateX(-50%);
@@ -211,6 +243,10 @@ table.res td.pts{text-align:right;font-weight:700;white-space:nowrap}
     <span class="pill" id="pillScore">0&nbsp;/&nbsp;24&nbsp;P</span>
     <span class="pill" id="pillTime">00:00</span>
     <nav class="topbar-nav">
+      <span class="save-group">
+        <button type="button" class="save-btn" data-act="qr" title="Fortschritt als QR-Code zum Abscannen">&#9638; QR</button>
+        <button type="button" class="save-btn" data-act="export" title="Fortschritt als JSON-Datei sichern">&#11015; JSON</button>
+      </span>
       <a href="#" data-go="stations">Stationen</a>
       <a href="#" data-go="map">Karte</a>
       <a href="#" data-go="result">Ergebnis</a>
@@ -349,7 +385,18 @@ table.res td.pts{text-align:right;font-weight:700;white-space:nowrap}
       <h2>Fortschritt sichern</h2>
       <p>Nach jeder Antwort wird automatisch im Browser gespeichert. Damit der
          Stand auch einen leeren Akku oder einen Handywechsel übersteht, sichert
-         ihn zusätzlich:</p>
+         ihn zusätzlich. Oben in der Leiste stehen dafür dauerhaft zwei Knöpfe:</p>
+      <ul style="padding-left:1.15rem">
+        <li><b>&#9638;&nbsp;QR</b> zeigt euren Stand als QR-Code. Ein anderes Handy
+            scannt ihn mit der Kamera und landet sofort mit eurem Fortschritt in der
+            Rallye &ndash; praktisch, wenn ein Akku schlappmacht oder ihr das
+            Spielgerät wechseln wollt.</li>
+        <li><b>&#11015;&nbsp;JSON</b> legt eine Datei in euren Downloads ab.</li>
+      </ul>
+      <p>Nach jedem erreichten Ort und nach jeder abgeschlossenen Station fragt die
+         Rallye von selbst nach, ob ihr sichern wollt. Ihr könnt jedes Mal
+         &bdquo;Jetzt nicht&ldquo; wählen &ndash; es geht nichts verloren, solange ihr
+         denselben Browser behaltet.</p>
       <div class="btn-row">
         <button class="btn btn-sm" id="btnExport2" type="button">Als Datei sichern</button>
         <button class="btn btn-sm btn-ghost" id="btnShowCode2" type="button">Sicherungscode zeigen</button>
@@ -393,6 +440,34 @@ table.res td.pts{text-align:right;font-weight:700;white-space:nowrap}
      <a href="../stadtrallye.html">Übersicht</a> &middot;
      <a href="https://edu-mrh.de/contribute.html#impressum">Impressum</a></p>
 </footer>
+
+<!-- Sicherungsabfrage nach Ankunft oder geloester Aufgabe -->
+<div class="sheet" id="saveSheet" hidden role="dialog" aria-labelledby="saveSheetTitle">
+  <h3 id="saveSheetTitle">Fortschritt sichern?</h3>
+  <p class="why" id="saveSheetWhy"></p>
+  <div class="btn-row">
+    <button class="btn btn-gold" data-act="sheet-qr" type="button">&#9638; QR-Code</button>
+    <button class="btn" data-act="sheet-json" type="button">&#11015; Datei</button>
+    <button class="btn btn-ghost" data-act="sheet-no" type="button">Jetzt nicht</button>
+  </div>
+</div>
+
+<!-- QR-Overlay -->
+<div class="ov" id="qrOverlay" hidden role="dialog" aria-labelledby="qrTitle">
+  <div class="ov-inner"><div class="ov-box">
+    <h2 id="qrTitle">Fortschritt als QR-Code</h2>
+    <p class="qr-meta">Mit der Kamera des anderen Handys scannen &ndash; es landet
+       direkt mit eurem Stand in der Rallye.</p>
+    <div class="qr-hold" id="qrHold"></div>
+    <p class="qr-meta" id="qrInfo"></p>
+    <label for="qrUrl" style="margin-top:.7rem">Oder diesen Link weitergeben</label>
+    <textarea id="qrUrl" class="qr-url" readonly></textarea>
+    <div class="btn-row" style="margin-top:.8rem">
+      <button class="btn btn-ghost" data-act="export" type="button">&#11015; Zusätzlich als Datei</button>
+      <button class="btn" data-act="qr-close" type="button">Schließen</button>
+    </div>
+  </div></div>
+</div>
 
 <div id="toast" role="status" aria-live="polite"></div>
 
@@ -635,6 +710,237 @@ function toast(msg,kind){
 }
 
 /* ==================================================================
+   2b. QR-ENCODER (Byte-Modus, Fehlerkorrektur M, Version 1-20)
+   ------------------------------------------------------------------
+   Eigenimplementierung, weil die Seite keine fremden Skripte laden darf.
+   Gegen zwei unabhaengige Referenzimplementierungen geprueft.
+   ================================================================== */
+var QR = (function(){
+
+/* Stufe M: [EC-Woerter je Block, Bloecke G1, Daten G1, Bloecke G2, Daten G2] */
+var ECM = [null,
+ [10,1,16,0,0],[16,1,28,0,0],[26,1,44,0,0],[18,2,32,0,0],[24,2,43,0,0],
+ [16,4,27,0,0],[18,4,31,0,0],[22,2,38,2,39],[22,3,36,2,37],[26,4,43,1,44],
+ [30,1,50,4,51],[22,6,36,2,37],[22,8,37,1,38],[24,4,40,5,41],[24,5,41,5,42],
+ [28,7,45,3,46],[28,10,46,1,47],[26,9,43,4,44],[26,3,44,11,45],[26,3,41,13,42]];
+/* Mittelpunkte der Ausrichtungsmuster je Version */
+var ALIGN = [null,[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],
+ [6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],
+ [6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90]];
+
+var EXP=new Array(512), LOG=new Array(256);
+(function(){ var x=1,i;
+  for(i=0;i<255;i++){ EXP[i]=x; LOG[x]=i; x<<=1; if(x&256) x^=0x11d; }
+  for(i=255;i<512;i++) EXP[i]=EXP[i-255];
+})();
+function gmul(a,b){ return (a===0||b===0)?0:EXP[LOG[a]+LOG[b]]; }
+
+function genPoly(k){
+  var g=[1], i, j;
+  for(i=0;i<k;i++){
+    var ng=[]; for(j=0;j<=g.length;j++) ng[j]=0;
+    for(j=0;j<g.length;j++){ ng[j]^=g[j]; ng[j+1]^=gmul(g[j],EXP[i]); }
+    g=ng;
+  }
+  return g;
+}
+function rsRemainder(data, ecLen){
+  var g=genPoly(ecLen), res=[], i, j;
+  for(i=0;i<ecLen;i++) res[i]=0;
+  for(i=0;i<data.length;i++){
+    var f=data[i]^res[0];
+    res.shift(); res.push(0);
+    for(j=0;j<ecLen;j++) res[j]^=gmul(g[j+1],f);
+  }
+  return res;
+}
+function bchRem(value, poly, bits){
+  var v=value<<bits, pb=0, t=poly, vb=0;
+  while(t){ pb++; t>>>=1; }
+  t=v; while(t){ vb++; t>>>=1; }
+  while(vb>=pb){ v^=poly<<(vb-pb); t=v; vb=0; while(t){ vb++; t>>>=1; } }
+  return v;
+}
+function formatBits(mask){ var d=(0<<3)|mask; return ((d<<10)|bchRem(d,0x537,10))^0x5412; }
+function versionBits(v){ return (v<<12)|bchRem(v,0x1f25,12); }
+
+function toUtf8(str){
+  var out=[], i, c;
+  for(i=0;i<str.length;i++){
+    c=str.charCodeAt(i);
+    if(c<0x80) out.push(c);
+    else if(c<0x800){ out.push(0xc0|(c>>6),0x80|(c&63)); }
+    else if(c>=0xd800&&c<=0xdbff&&i+1<str.length){
+      var cp=0x10000+((c-0xd800)<<10)+(str.charCodeAt(i+1)-0xdc00);
+      out.push(0xf0|(cp>>18),0x80|((cp>>12)&63),0x80|((cp>>6)&63),0x80|(cp&63)); i++;
+    } else { out.push(0xe0|(c>>12),0x80|((c>>6)&63),0x80|(c&63)); }
+  }
+  return out;
+}
+
+function makeCodewords(bytes, version){
+  var e=ECM[version], dataWords=e[1]*e[2]+e[3]*e[4], bits=[], i, j;
+  function put(val,cnt){ for(var k=cnt-1;k>=0;k--) bits.push((val>>k)&1); }
+  put(4,4);
+  put(bytes.length, version<10?8:16);
+  for(i=0;i<bytes.length;i++) put(bytes[i],8);
+  var term=Math.min(4, dataWords*8-bits.length);
+  for(i=0;i<term;i++) bits.push(0);
+  while(bits.length%8) bits.push(0);
+  var words=[];
+  for(i=0;i<bits.length;i+=8){ var b=0; for(j=0;j<8;j++) b=(b<<1)|bits[i+j]; words.push(b); }
+  var pad=[0xec,0x11], k2=0;
+  while(words.length<dataWords) words.push(pad[k2++&1]);
+
+  var blocks=[], ecs=[], pos=0, m;
+  for(m=0;m<e[1];m++){ blocks.push(words.slice(pos,pos+e[2])); pos+=e[2]; }
+  for(m=0;m<e[3];m++){ blocks.push(words.slice(pos,pos+e[4])); pos+=e[4]; }
+  for(m=0;m<blocks.length;m++) ecs.push(rsRemainder(blocks[m],e[0]));
+  var out=[], maxD=Math.max(e[2],e[4]);
+  for(i=0;i<maxD;i++) for(m=0;m<blocks.length;m++) if(i<blocks[m].length) out.push(blocks[m][i]);
+  for(i=0;i<e[0];i++) for(m=0;m<blocks.length;m++) out.push(ecs[m][i]);
+  return out;
+}
+
+function putFinder(g,r,c){
+  var size=g.length, i, j;
+  for(i=-1;i<=7;i++) for(j=-1;j<=7;j++){
+    var y=r+i, x=c+j;
+    if(y<0||x<0||y>=size||x>=size) continue;
+    g[y][x] = ((i>=0&&i<=6&&(j===0||j===6)) || (j>=0&&j<=6&&(i===0||i===6)) ||
+               (i>=2&&i<=4&&j>=2&&j<=4)) ? 1 : 0;
+  }
+}
+function putAlign(g,r,c){
+  for(var i=-2;i<=2;i++) for(var j=-2;j<=2;j++)
+    g[r+i][c+j] = (Math.max(Math.abs(i),Math.abs(j))!==1) ? 1 : 0;
+}
+function functionGrid(version){
+  var size=version*4+17, g=[], i, j;
+  for(i=0;i<size;i++){ g[i]=[]; for(j=0;j<size;j++) g[i][j]=null; }
+  putFinder(g,0,0); putFinder(g,0,size-7); putFinder(g,size-7,0);
+  var ap=ALIGN[version];
+  for(i=0;i<ap.length;i++) for(j=0;j<ap.length;j++){
+    var r=ap[i], c=ap[j];
+    if((r===6&&c===6)||(r===6&&c===size-7)||(r===size-7&&c===6)) continue;
+    putAlign(g,r,c);
+  }
+  for(i=8;i<size-8;i++){ var b=(i%2===0)?1:0; g[6][i]=b; g[i][6]=b; }
+  g[size-8][8]=1;
+  for(i=0;i<9;i++){ if(g[8][i]===null) g[8][i]=0; if(g[i][8]===null) g[i][8]=0; }
+  for(i=0;i<8;i++){ if(g[8][size-1-i]===null) g[8][size-1-i]=0;
+                    if(g[size-1-i][8]===null) g[size-1-i][8]=0; }
+  if(version>=7) for(i=0;i<6;i++) for(j=0;j<3;j++){
+    if(g[i][size-11+j]===null) g[i][size-11+j]=0;
+    if(g[size-11+j][i]===null) g[size-11+j][i]=0;
+  }
+  return g;
+}
+function placeData(g, words, fixed){
+  var size=g.length, idx=0, total=words.length*8, col=size-1, up=true;
+  function bitAt(k){ return k<total ? (words[k>>3]>>(7-(k&7)))&1 : 0; }
+  while(col>0){
+    if(col===6) col--;
+    for(var k=0;k<size;k++){
+      var row = up ? size-1-k : k;
+      for(var sdx=0;sdx<2;sdx++){
+        var c=col-sdx;
+        if(fixed[row][c]) continue;
+        g[row][c]=bitAt(idx++);
+      }
+    }
+    up=!up; col-=2;
+  }
+}
+function maskAt(m,i,j){
+  if(m===0) return (i+j)%2===0;
+  if(m===1) return i%2===0;
+  if(m===2) return j%3===0;
+  if(m===3) return (i+j)%3===0;
+  if(m===4) return (Math.floor(i/2)+Math.floor(j/3))%2===0;
+  if(m===5) return ((i*j)%2)+((i*j)%3)===0;
+  if(m===6) return ((((i*j)%2)+((i*j)%3))%2)===0;
+  return ((((i+j)%2)+((i*j)%3))%2)===0;
+}
+function penalty(g){
+  var size=g.length, sc=0, i, j, k, d;
+  for(i=0;i<size;i++) for(d=0;d<2;d++){
+    var run=1, prev=-1;
+    for(j=0;j<size;j++){
+      var v = d===0 ? g[i][j] : g[j][i];
+      if(v===prev) run++; else { if(run>=5) sc+=3+(run-5); run=1; prev=v; }
+    }
+    if(run>=5) sc+=3+(run-5);
+  }
+  for(i=0;i<size-1;i++) for(j=0;j<size-1;j++){
+    var a=g[i][j];
+    if(a===g[i][j+1]&&a===g[i+1][j]&&a===g[i+1][j+1]) sc+=3;
+  }
+  var p1=[1,0,1,1,1,0,1,0,0,0,0], p2=[0,0,0,0,1,0,1,1,1,0,1];
+  for(i=0;i<size;i++) for(j=0;j<=size-11;j++) for(d=0;d<2;d++){
+    var o1=true, o2=true;
+    for(k=0;k<11;k++){
+      var w = d===0 ? g[i][j+k] : g[j+k][i];
+      if(w!==p1[k]) o1=false;
+      if(w!==p2[k]) o2=false;
+    }
+    if(o1) sc+=40;
+    if(o2) sc+=40;
+  }
+  var dark=0;
+  for(i=0;i<size;i++) for(j=0;j<size;j++) dark+=g[i][j];
+  sc += 10*Math.floor(Math.abs(dark*100/(size*size)-50)/5);
+  return sc;
+}
+function putFormat(g,mask){
+  var size=g.length, f=formatBits(mask), i;
+  for(i=0;i<15;i++){
+    var b=(f>>i)&1;
+    if(i<6)        g[i][8]=b;
+    else if(i===6) g[7][8]=b;
+    else if(i===7) g[8][8]=b;
+    else if(i===8) g[8][7]=b;
+    else           g[8][14-i]=b;
+    if(i<8) g[8][size-1-i]=b; else g[size-15+i][8]=b;
+  }
+}
+function putVersion(g,version){
+  if(version<7) return;
+  var size=g.length, vb=versionBits(version), i;
+  for(i=0;i<18;i++){
+    var b=(vb>>i)&1, r=Math.floor(i/3), c=i%3;
+    g[r][size-11+c]=b; g[size-11+c][r]=b;
+  }
+}
+
+function encode(text){
+  var bytes=toUtf8(text), version=0, v, i, j;
+  for(v=1;v<=20;v++){
+    var e=ECM[v];
+    if(bytes.length*8 + 4 + (v<10?8:16) <= (e[1]*e[2]+e[3]*e[4])*8){ version=v; break; }
+  }
+  if(!version) throw new Error('zu lang');
+  var size=version*4+17;
+  var fg=functionGrid(version), fixed=[], g=[];
+  for(i=0;i<size;i++){ fixed[i]=[]; g[i]=[];
+    for(j=0;j<size;j++){ fixed[i][j]=fg[i][j]!==null; g[i][j]=fg[i][j]===null?0:fg[i][j]; } }
+  placeData(g, makeCodewords(bytes,version), fixed);
+
+  var best=null, bestSc=Infinity;
+  for(var mk=0;mk<8;mk++){
+    var t=[];
+    for(i=0;i<size;i++){ t[i]=[];
+      for(j=0;j<size;j++) t[i][j] = fixed[i][j] ? g[i][j] : (g[i][j]^(maskAt(mk,i,j)?1:0)); }
+    putFormat(t,mk); putVersion(t,version);
+    var sc=penalty(t);
+    if(sc<bestSc){ bestSc=sc; best=t; }
+  }
+  return { size:size, version:version, matrix:best };
+}
+return { encode: encode };
+})();
+
+/* ==================================================================
    3. ZUSTAND (localStorage + Export/Import)
    ================================================================== */
 
@@ -706,6 +1012,127 @@ function exportFile(){
   toast('Datei gesichert – schaut in eure Downloads.','ok');
 }
 
+/* ---- Kurzcode fuer den QR-Link ---------------------------------
+   Der volle JSON-Stand waere fuer einen scannbaren QR zu gross. Hier
+   wird er auf das Noetige eingedampft: 15 Bitflags je Station in drei
+   Base32-Zeichen, Zeiten als Minutenabstand zum Start. Typisch ergibt
+   das rund 180 Zeichen und damit einen QR der Version 9 bis 11.
+   Getrennt wird mit ~ und . – beide werden von Browsern in einem
+   URL-Fragment nie umkodiert. */
+var B32='0123456789abcdefghijklmnopqrstuv';
+function encTxt(t){ return encodeURIComponent(String(t)).replace(/~/g,'%7E').replace(/\./g,'%2E'); }
+function minOff(iso, startMs){
+  if(!iso) return '--';
+  var m=Math.round((new Date(iso).getTime()-startMs)/60000);
+  if(!isFinite(m)||m<0) m=0;
+  if(m>1295) m=1295;
+  return ('0'+m.toString(36)).slice(-2);
+}
+function minBack(code, startMs){
+  if(!code||code==='--') return null;
+  var m=parseInt(code,36);
+  return isFinite(m) ? new Date(startMs+m*60000).toISOString() : null;
+}
+function toShort(){
+  var startMs=new Date(S.startedAt).getTime(), blob='';
+  STATIONS.forEach(function(st){
+    var t=S.st[st.id];
+    var b=(t.visited?1:0)|(t.manual?2:0)|(t.hint?4:0)|(t.solved?8:0)|(t.failed?16:0)|
+          ((t.level&3)<<5)|((t.points&3)<<7)|
+          ((t.tries[0]&3)<<9)|((t.tries[1]&3)<<11)|((t.tries[2]&3)<<13);
+    blob += B32.charAt((b>>10)&31)+B32.charAt((b>>5)&31)+B32.charAt(b&31)+
+            minOff(t.visitedAt,startMs)+minOff(t.solvedAt,startMs);
+  });
+  return 'T1~'+Math.floor(startMs/60000).toString(36)+
+         '~'+(S.finishedAt?minOff(S.finishedAt,startMs):'--')+
+         '~'+(S.override?'1':'0')+
+         '~'+blob+
+         '~'+encTxt(S.team.name)+
+         '~'+S.team.members.map(encTxt).join('.');
+}
+function fromShort(code){
+  var p=String(code).split('~');
+  if(p[0]!=='T1'||p.length<7) throw new Error('unbekanntes Format');
+  var startMs=parseInt(p[1],36)*60000;
+  if(!isFinite(startMs)||startMs<=0) throw new Error('Startzeit unlesbar');
+  var blob=p[4]||'', st={};
+  STATIONS.forEach(function(station,i){
+    var c=blob.substr(i*7,7), t=blankStation();
+    if(c.length===7){
+      var a=B32.indexOf(c.charAt(0)), b2=B32.indexOf(c.charAt(1)), c2=B32.indexOf(c.charAt(2));
+      if(a>=0&&b2>=0&&c2>=0){
+        var b=(a<<10)|(b2<<5)|c2;
+        t.visited=!!(b&1); t.manual=!!(b&2); t.hint=!!(b&4);
+        t.solved=!!(b&8);  t.failed=!!(b&16);
+        t.level=(b>>5)&3;  t.points=(b>>7)&3;
+        t.tries=[(b>>9)&3,(b>>11)&3,(b>>13)&3];
+        t.visitedAt=minBack(c.substr(3,2),startMs);
+        t.solvedAt =minBack(c.substr(5,2),startMs);
+      }
+    }
+    st[station.id]=t;
+  });
+  var mem=(p[6]||'').split('.').map(function(x){
+    try{ return decodeURIComponent(x); }catch(e){ return x; }
+  }).filter(function(x){ return x; });
+  return migrate({
+    team:{ name:decodeURIComponent(p[5]||'Team'), members:mem },
+    startedAt:new Date(startMs).toISOString(),
+    finishedAt:(p[2]==='--'?null:minBack(p[2],startMs)),
+    override:(p[3]==='1'),
+    st:st
+  });
+}
+function shortUrl(){
+  var base = location.protocol==='file:'
+    ? 'https://edu-mrh.de/Stadtrallye/triest/triest.html'
+    : location.origin + location.pathname;
+  return base + '#r=' + toShort();
+}
+
+/* ---- QR als Inline-SVG (nichts wird nachgeladen) ---- */
+function qrSvg(text){
+  var r=QR.encode(text), n2=r.size, q=4, tot=n2+2*q, d='', i, j;
+  for(i=0;i<n2;i++) for(j=0;j<n2;j++)
+    if(r.matrix[i][j]) d+='M'+(j+q)+' '+(i+q)+'h1v1h-1z';
+  return { version:r.version, svg:
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+tot+' '+tot+'" '+
+    'shape-rendering="crispEdges" role="img" aria-label="QR-Code mit eurem Fortschritt">'+
+    '<rect width="'+tot+'" height="'+tot+'" fill="#ffffff"/>'+
+    '<path d="'+d+'" fill="#000000"/></svg>' };
+}
+function showQr(){
+  if(!S){ toast('Legt zuerst eine Gruppe an.','bad'); return; }
+  var url=shortUrl();
+  try{
+    var r=qrSvg(url);
+    $('#qrHold').innerHTML=r.svg;
+    $('#qrInfo').textContent='Enthält '+S.team.name+' und '+requiredDone()+
+      ' abgeschlossene Stationen \u00b7 '+totalPoints()+' Punkte.';
+  }catch(err){
+    $('#qrHold').innerHTML='';
+    $('#qrInfo').textContent='Der Stand ist zu lang für einen QR-Code \u2013 '+
+      'nehmt die Datei oder den Sicherungscode aus der Hilfe.';
+  }
+  $('#qrUrl').value=url;
+  $('#qrOverlay').hidden=false;
+  hideSheet();
+}
+function hideQr(){ $('#qrOverlay').hidden=true; }
+
+/* ---- Automatische Sicherungsabfrage ---- */
+var lastAsk=0;
+function askSave(grund){
+  if(!S || currentView==='setup') return;
+  if(!$('#qrOverlay').hidden) return;
+  if(Date.now()-lastAsk < 90000) return;      /* nicht zweimal kurz hintereinander */
+  lastAsk=Date.now();
+  $('#saveSheetWhy').textContent=grund+' \u2013 jetzt ist ein guter Moment, damit der '+
+    'Stand einen leeren Akku überlebt.';
+  $('#saveSheet').hidden=false;
+}
+function hideSheet(){ var el2=$('#saveSheet'); if(el2) el2.hidden=true; }
+
 function totalPoints(){
   var p=0; STATIONS.forEach(function(s){p+=S.st[s.id].points;}); return p;
 }
@@ -769,12 +1196,13 @@ function isVeryClose(s){var d=effDist(s);return d!==null&&d.raw<=s.hintRadius+Ma
    geändert hat – dann muss sie komplett neu gezeichnet werden. */
 function checkArrivals(){
   if(!S||!pos) return false;
-  var changed=false, currentChanged=false;
+  var changed=false, currentChanged=false, ankunft=false;
   STATIONS.forEach(function(s){
     var t=S.st[s.id], before=t.visited+'|'+t.hint;
     if(!t.visited&&isHere(s)){
       t.visited=true;t.visitedAt=new Date().toISOString();
       toast('✓ '+(s.optional?'Bonusstation':'Station '+s.nr)+' erreicht – das Rätsel ist frei!','ok');
+      ankunft=true;
     }
     if(t.visited&&!t.hint&&isVeryClose(s)) t.hint=true;
     if(before!==t.visited+'|'+t.hint){
@@ -783,6 +1211,7 @@ function checkArrivals(){
     }
   });
   if(changed){save();if(currentView==='stations')renderList();}
+  if(ankunft) askSave('Ihr habt einen neuen Ort erreicht');
   return currentChanged;
 }
 
@@ -1043,6 +1472,7 @@ function submitAnswer(){
     if(!s.optional&&requiredDone()===PFLICHT&&!S.finishedAt) S.finishedAt=new Date().toISOString();
     save(); refreshPuzzle(); renderTop();
     toast('Richtig! ' + t.points + (t.points===1?' Punkt':' Punkte')+' für '+S.team.name+'.','ok');
+    askSave('Station gelöst');
     return;
   }
 
@@ -1062,6 +1492,7 @@ function submitAnswer(){
     if(!s.optional&&requiredDone()===PFLICHT&&!S.finishedAt) S.finishedAt=new Date().toISOString();
     save(); refreshPuzzle(); renderTop();
     toast('Station ohne Punkte beendet.','bad');
+    askSave('Station abgeschlossen');
     return;
   }
   save(); refreshPuzzle();
@@ -1245,7 +1676,12 @@ document.addEventListener('click',function(e){
       save(); renderStation(current);
       toast('Station von Hand freigeschaltet ⚑');
       break;
-    case 'export':    exportFile(); break;
+    case 'export':     exportFile(); hideSheet(); break;
+    case 'qr':         showQr(); break;
+    case 'qr-close':   hideQr(); break;
+    case 'sheet-qr':   showQr(); break;
+    case 'sheet-json': exportFile(); hideSheet(); break;
+    case 'sheet-no':   hideSheet(); break;
     case 'code':
       var cb=$('#codeBox'); cb.hidden=!cb.hidden;
       if(!cb.hidden){$('#outCode').value=toCode();$('#outCode').select();}
@@ -1255,7 +1691,10 @@ document.addEventListener('click',function(e){
 
 document.addEventListener('keydown',function(e){
   if(e.key==='Enter'&&e.target&&e.target.id==='ans'){e.preventDefault();submitAnswer();}
+  if(e.key==='Escape'){ hideQr(); hideSheet(); }
 });
+/* Klick auf den dunklen Rand schliesst das QR-Overlay */
+$('#qrOverlay').addEventListener('click',function(e){ if(e.target===this) hideQr(); });
 
 $('#btnAddMember').onclick=function(){addMemberRow('').focus();};
 $('#btnStart').onclick=startRally;
@@ -1315,6 +1754,27 @@ $('#btnReset').onclick=function(){
 
 addMemberRow(''); addMemberRow('');
 S=load();
+
+/* Aus einem gescannten QR-Code kommend: #r=... uebernehmen */
+(function(){
+  var h=location.hash||'';
+  if(h.indexOf('#r=')!==0) return;
+  var eingehend;
+  try{ eingehend=fromShort(h.slice(3)); }
+  catch(err){ toast('Der gescannte Code ließ sich nicht lesen.','bad'); return; }
+  var ersetzen=true;
+  if(S && (totalPoints()>0 || requiredDone()>0)){
+    ersetzen = confirm('Gescannter Stand von \u201e'+eingehend.team.name+'\u201c \u00fcbernehmen?\n\n'+
+      'Der Fortschritt, der auf diesem Ger\u00e4t gespeichert ist, wird dabei ersetzt.');
+  }
+  if(!ersetzen) return;
+  S=eingehend; save();
+  toast('Fortschritt übernommen: '+S.team.name,'ok');
+})();
+if(location.hash.indexOf('#r=')===0 && history.replaceState){
+  history.replaceState(null,'',location.pathname+location.search);
+}
+
 if(S){ show('stations'); startGeo(); }
 else { show('setup'); }
 renderTop();
