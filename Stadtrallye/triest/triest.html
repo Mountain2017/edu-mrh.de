@@ -151,7 +151,15 @@ textarea{min-height:88px;font-size:.82rem;font-family:ui-monospace,SFMono-Regula
 .tries{display:flex;gap:5px;margin-left:auto}
 .tries i{width:11px;height:11px;border-radius:50%;background:var(--sea3);display:block}
 .tries i.used{background:#d7d2c7}
-.puzzle{font-size:1.02rem;background:#fbfaf6;border:1px dashed var(--line);border-radius:12px;padding:14px;margin-bottom:.9rem}
+.puzzle{font-size:1.02rem;background:#fbfaf6;border:1px dashed var(--line);border-radius:12px;padding:14px;margin-bottom:.7rem;position:relative}
+.puzzle.past{background:#f3f1ea;border-style:solid;font-size:.95rem;color:#3c4652}
+.pz-tag{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.05em;
+  text-transform:uppercase;padding:2px 8px;border-radius:999px;margin-bottom:.6rem;
+  background:var(--sea);color:#fff}
+.pz-tag.t2{background:var(--gold);color:#241a06}
+.pz-tag.t3{background:#6b7785;color:#fff}
+.puzzle.past .pz-tag{opacity:.72}
+.pz-stack{margin-bottom:.9rem}
 .puzzle b{color:var(--sea)}
 .cyr{font-size:1.5rem;letter-spacing:.09em;font-weight:700;color:var(--sea);display:block;margin:.5rem 0;text-align:center}
 .locked{text-align:center;color:var(--ink-2);padding:18px 10px}
@@ -181,7 +189,7 @@ table.res th{font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;colo
 table.res td.pts{text-align:right;font-weight:700;white-space:nowrap}
 
 /* ---------- Sichern: Knoepfe, Blatt, Overlay ---------- */
-.save-group{display:flex;gap:6px;margin-right:4px}
+.save-group{display:flex;gap:6px;margin-right:4px;align-items:center}
 .topbar-nav .save-btn{
   flex:0 0 auto;background:var(--gold);color:#241a06;border:1px solid rgba(0,0,0,.12);
   font:inherit;font-size:.82rem;font-weight:700;padding:6px 10px;border-radius:8px;
@@ -247,7 +255,7 @@ table.res td.pts{text-align:right;font-weight:700;white-space:nowrap}
       <span class="save-group">
         <button type="button" class="save-btn" data-act="qr" title="Fortschritt als QR-Code zum Abscannen">&#9638; QR</button>
         <button type="button" class="save-btn" data-act="export" title="Fortschritt als JSON-Datei sichern">&#11015; JSON</button>
-      </span style="align-items:center">
+      </span>
       <a href="#" data-go="stations"> 📋<br>Stationen</a>
       <a href="#" data-go="map">🧭<br>Karte</a>
       <a href="#" data-go="result">📊<br>Ergebnis</a>
@@ -264,7 +272,7 @@ table.res td.pts{text-align:right;font-weight:700;white-space:nowrap}
     <div class="card hero">
       <div class="kicker">Oberstufenfahrt &middot; Q12</div>
       <h1>Tergeste &ndash; die Rallye durch Triest</h1>
-      <p>Acht Orte, acht harte Nüsse, rund drei Stunden. Start und Ziel sind die
+      <p>Acht Orte, acht harte Nüsse, zweieinhalb Stunden. Start und Ziel sind die
          Piazza dell&rsquo;Unità d&rsquo;Italia &ndash; dort, wo der Bus steht.</p>
     </div>
 
@@ -335,7 +343,7 @@ table.res td.pts{text-align:right;font-weight:700;white-space:nowrap}
       <h3>Wegzeiten</h3>
       <p class="hint" style="margin:0">Gesamtstrecke rund <b>3&nbsp;km</b> zu Fuß,
         davon etwa 65&nbsp;Höhenmeter hinauf zum Dom. Reine Gehzeit ca. 55&nbsp;Minuten,
-        mit den Rätseln plant ihr <b>2,5 bis 3&nbsp;Stunden</b>.
+        mit den Rätseln plant ihr <b>2 bis 2,5&nbsp;Stunden</b>.
         Die Bonusstation kostet zusätzlich rund 20&nbsp;Minuten.</p>
     </div>
   </section>
@@ -353,22 +361,20 @@ table.res td.pts{text-align:right;font-weight:700;white-space:nowrap}
         <li><b>Hingehen.</b> Jede Station schaltet sich erst frei, wenn ihr wirklich
             dort seid &ndash; das Handy prüft den Standort. Ihr braucht nichts zu
             drücken, es meldet sich von selbst.</li>
-        <li><b>Rätsel öffnen.</b> Ihr bekommt zuerst die <b>schwere</b> Variante:
-            3&nbsp;Punkte, drei Versuche. Sie sagt euch bewusst nicht, wonach ihr
-            suchen sollt – hinschauen, kombinieren und ruhig auch nachschlagen.</li>
-        <li><b>Nicht geknackt?</b> Nach drei Fehlversuchen kommt die <b>mittlere</b>
-            Variante (2&nbsp;Punkte): Sie nennt das Thema und grenzt ein. Danach die
-            <b>leichte</b> (1&nbsp;Punkt). Auch die schenkt euch nichts: Sie sagt euch,
-            <i>wonach</i> ihr sucht, aber die Antwort müsst ihr immer noch selbst
-            herleiten – übersetzen, umrechnen, ableiten. Wer alle neun Versuche
-            verbraucht, geht mit <b>null Punkten</b> aus der Station.
-            Ihr könnt auch freiwillig eine Stufe runtergehen.</li>
+        <li><b>Rätsel öffnen.</b> Zuerst kommt die <b>schwere</b> Stufe:
+            3&nbsp;Punkte, drei Versuche.</li>
+        <li><b>Nicht geknackt?</b> Nach drei Fehlversuchen erscheint die <b>mittlere</b>
+            Stufe (2&nbsp;Punkte), danach die <b>leichte</b> (1&nbsp;Punkt).
+            Die früheren Stufen bleiben dabei <b>stehen</b> – ihr könnt jederzeit
+            zurückblättern und am Ende alles nachlesen.
+            Wer alle neun Versuche verbraucht, geht mit <b>null Punkten</b> aus der
+            Station. Ihr könnt auch freiwillig eine Stufe runtergehen.</li>
+        <li><b>Ihr braucht nichts nachzuschlagen.</b> Alles, was zur Lösung nötig ist,
+            steht im Rätsel selbst oder ist vor euren Augen. Gefragt sind Lesen,
+            Kombinieren und Rechnen – kein Wissen, das ihr erst suchen müsstet.</li>
         <li><b>Raten bringt nichts.</b> Keine Antwort lässt sich irgendwo ablesen oder
             in drei Versuchen durchprobieren. Denkt lieber eine Minute länger nach,
             bevor ihr auf &bdquo;Antwort prüfen&ldquo; tippt.</li>
-        <li><b>Nachschlagen ist erlaubt.</b> Zu mehreren Rätseln findet ihr die
-            entscheidende Information nur, wenn ihr sucht. Das gehört dazu –
-            die Lösungen selbst stehen nirgends im Netz.</li>
         <li><b>Vor-Ort-Hinweis.</b> An jeder Station gibt es einen zusätzlichen Tipp,
             der zeigt, worauf ihr genau schauen müsst. Er verlangt zweierlei: Ihr
             müsst dicht am Ort stehen – und auf der schweren Stufe bleibt er zu.</li>
@@ -494,31 +500,31 @@ var STATIONS = [
   lat:45.65010, lon:13.76770, radius:90, hintRadius:40,
   walk:'Startpunkt. Hier hält der Bus, hier endet die Rallye auch wieder.',
   story:'Kein anderer Platz dieser Größe in Europa öffnet sich auf einer ganzen Seite zum offenen Meer. Bis 1918 hieß er schlicht <em>Piazza Grande</em>. Rundherum steht die Vergangenheit der Stadt in Stein: das <b>Palazzo del Municipio</b> (1875) mit den beiden Bronzemännern <em>Michez</em> und <em>Jachez</em>, die zur vollen Stunde die Glocke schlagen; der <b>Palazzo Pitteri</b> (1780), das älteste Haus am Platz; der <b>Palazzo Stratti</b> mit dem Caffè degli Specchi; der <b>Palazzo del Lloyd Triestino</b> (1884), einst Zentrale der größten österreichischen Reederei. Auf der Säule neben dem Brunnen steht seit 1728 Kaiser <b>Karl VI.</b> Er erklärte Triest 1719 zum Freihafen – und machte damit aus einem Fischerort den zweitwichtigsten Hafen der Habsburgermonarchie.',
-  onSite:'Der Brunnen in der Mitte lohnt eine Runde zu Fu\xdf. Vier weibliche Figuren, jede mit einem Gegenstand in der Hand \u2013 und ganz oben eine f\xfcnfte, die niemand anderes ist als die Stadt selbst.',
+  onSite:'Geh einmal rings um den Brunnen und sieh jeder der vier Frauen auf die H\xe4nde. Wer die vier Zeichen zu deuten wei\xdf, wei\xdf auch, welcher Erdteil hier fehlt.',
   levels:[
-   {t:'Der Brunnen mitten auf dem Platz tr\xe4gt vier weibliche Figuren, jede mit einem Attribut, das sie eindeutig zuordnet. Sie geh\xf6ren zu einer Reihe, die eigentlich vollst\xe4ndig sein m\xfcsste \u2013 doch das letzte Glied dieser Reihe war f\xfcr Europa zur Bauzeit ab 1751 noch kein gesichertes Wissen. Erst 1770 kartierte eine britische Expedition seine Ostk\xfcste und machte aus der Vermutung Gewissheit.<br><br><b>Wie hie\xdf das Schiff dieser Expedition?</b>'},
-   {t:'Der Brunnen hei\xdft <em>Fontana dei Quattro Continenti</em>; dargestellt sind Europa, Asien, Afrika und Amerika. Der fehlende Erdteil ist Australien.<br><br>Gesucht ist der Name des Schiffes, mit dem James Cook 1768\u20131771 seine erste S\xfcdseereise unternahm \u2013 ein umgebauter Kohlenfrachter aus dem Hafen von Whitby.<br><br><b>Wie hie\xdf es?</b>'},
-   {t:'Der Schiffsname ist ein englisches Substantiv und bedeutet \u201eBestreben, Bem\xfchung, Unterfangen\u201c. In genau dieser britischen Schreibweise trug ihn sp\xe4ter auch das letzte gebaute Space Shuttle der NASA.<br><br><b>Wie lautet er?</b>'}
+   {t:'Vier Frauen sitzen auf dem Brunnen, und jede h\xe4lt ihren Erdteil in der Hand: Federn, ein Kamel, ein Krokodil, ein F\xfcllhorn. Geh einmal um sie herum, dann wei\xdft du, welcher fehlt.<br><br>Jener Fehlende lag damals noch als Ger\xfccht auf den Karten. Der Mann, der ihn endlich einzeichnete, ri\xdf seinem Schiff dabei den Bauch an scharfen Korallen auf \u2013 weit von jedem Hafen, und das Wasser stieg in den Lader\xe4umen.<br><br>Um wieder flott zu werden, warf die Mannschaft \xfcber Bord, was am schwersten wog. Es war ausgerechnet das, was das Schiff bis dahin besch\xfctzt hatte.<br><br><b>Was flog ins Meer?</b>'},
+   {t:'<b>Ein Nachtrag.</b> Es geschah im Juni 1770, vor der Ostk\xfcste eben jenes fehlenden Erdteils, am gr\xf6\xdften Riff der Welt.<br><br>Denk dir ein Segelschiff jener Zeit: Was daran ist aus Eisen und schwer \u2013 liegt aber nicht als Ballast unten im Kiel, sondern steht oben an der Bordwand?'},
+   {t:'<b>Die letzte Handreichung.</b> Sechs St\xfcck waren es. Taucher haben sie 1969 an derselben Stelle wieder gehoben, dick verkrustet von Korallen; heute stehen sie in Museen dreier Erdteile.<br><br>Sie waren aus Gu\xdfeisen, sprachen mit Pulver und trugen jede eine Kugel.'}
   ],
-  a:['cf39acbe','6a961a7d','b651342c','ded64b8f','72cff055','d1c62536'],
-  sol:'HMS Endeavour',
-  after:'Der Brunnen stammt von Giovanni Battista Mazzoleni (1751\u20131754) und hei\xdft <em>Brunnen der vier Erdteile</em>. Die Figuren tragen Federkrone (Amerika), Kamel (Asien), Krokodil (Afrika) und F\xfcllhorn (Europa); obenauf thront Triest selbst zwischen Handelswaren. Australien war 1751 noch Ger\xfccht \u2013 der Brunnen zeigt also nicht die Welt, sondern das Weltbild eines Handelshafens des 18. Jahrhunderts. Cooks <em>Endeavour</em> war ein plumper Kohlenfrachter aus Whitby, gerade deshalb flachgehend genug f\xfcrs Great Barrier Reef \u2013 und Namenspatron des letzten Space Shuttles.'
+  a:['deef040d','a0b6e7b1','d6b43c75','5378c266','31e8cba7','8d89ec37'],
+  sol:'Kanonen (sechs St\u00fcck, Great Barrier Reef 1770)',
+  after:'Es war die <em>Endeavour</em> unter James Cook, die am 11. Juni 1770 am Great Barrier Reef auflief. Um sie freizubekommen, warf die Mannschaft rund f\xfcnfzig Tonnen \xfcber Bord: Ballast, F\xe4sser, verdorbene Vorr\xe4te \u2013 und sechs gu\xdfeiserne Kanonen. 1969 wurden genau diese sechs geborgen und auf Museen in Australien, Gro\xdfbritannien, Neuseeland und den USA verteilt. Der Brunnen selbst stammt von Giovanni Battista Mazzoleni (1751\u20131754): Australien war zur Bauzeit f\xfcr Europa noch Ger\xfccht, darum sitzen nur vier Erdteile darauf.'
 },
 {
   id:'molo-audace', nr:2, name:'Molo Audace',
   sub:'246 Meter hinaus aufs Meer',
   lat:45.65229, lon:13.76608, radius:130, hintRadius:60,
   walk:'Rund 4 Minuten nach Nordwesten, immer am Wasser entlang.',
-  story:'Der Molo wurde 1743–1751 gebaut – auf dem Wrack der österreichischen Fregatte <em>San Carlo</em>, die 1740 im Hafen gesunken war. Nach ihr hieß er lange <b>Molo San Carlo</b>. Am 3. November 1918 legte hier als erstes italienisches Schiff der Zerstörer <em>Audace</em> an; seit 1922 trägt der Molo dessen Namen. Am äußersten Ende liegt seit 1925 eine bronzene <b>Windrose</b> im Pflaster, mit einer Inschrift des Triestiner Schriftstellers Silvio Benco.',
-  onSite:'Geht bis ganz nach vorn zur Bronzescheibe und lest die Inschrift: Sie nennt ein Schiff, einen Tag \u2013 und die Jahreszahl in r\xf6mischen Ziffern.',
+  story:'Der Molo ruht auf einem Wrack: Ein \xf6sterreichisches Kriegsschiff sank im Hafenbecken, und wenige Jahre darauf begann man, auf seinem Rumpf diesen Damm ins Meer zu sch\xfctten. Fast zwei Jahrhunderte trug er den Namen jenes Schiffes. Dann lief ein anderes ein \u2013 und mit ihm wechselte Triest den Staat. Am \xe4u\xdfersten Ende liegt eine bronzene <b>Windrose</b> im Pflaster, mit einer Inschrift des Triestiner Schriftstellers Silvio Benco.',
+  onSite:'Tritt bis ans \xe4u\xdferste Ende, wo die Bronze im Pflaster liegt, und lies die Inschrift. Die Jahreszahl steht dort in r\xf6mischen Zeichen \u2013 sie ist der Anfang der Kette.',
   levels:[
-   {t:'Die Bronzescheibe am Ende des Molos tr\xe4gt eine Inschrift: Hier legte am 3. November 1918 als erstes italienisches Schiff der Zerst\xf6rer <em>Audace</em> an \u2013 seit 1922 tr\xe4gt der Molo dessen Namen.<br><br>Am selben Tag wurde rund 200 Kilometer westlich, in einem Landhaus bei Padua, ein Abkommen unterzeichnet, das den Krieg zwischen Italien und \xd6sterreich-Ungarn beendete und Triest den Staat wechseln lie\xdf. Benannt ist es nach diesem Landhaus.<br><br><b>Wie hei\xdft das Abkommen?</b>'},
-   {t:'Gesucht ist der Waffenstillstand, den Italien und \xd6sterreich-Ungarn am 3. November 1918 um 15 Uhr schlossen; in Kraft trat er 24 Stunden sp\xe4ter und beendete f\xfcr \xd6sterreich-Ungarn den Ersten Weltkrieg.<br><br>Sucht nach dem Ort der Unterzeichnung \u2013 einem Landgut in der N\xe4he von Padua.<br><br><b>Wie hei\xdft es? Zwei W\xf6rter.</b>'},
-   {t:'Das italienische Wort f\xfcr ein herrschaftliches Landhaus lautet <em>villa</em>. Dahinter steht der Familienname des Grafen, dem es geh\xf6rte: Vettor <b>Giusti</b> del Giardino \u2013 verwendet wird nur der erste Teil dieses Namens.<br><br><b>Setzt beides zusammen.</b>'}
+   {t:'Lies, was das Erz zu deinen F\xfc\xdfen in r\xf6mischen Zeichen nennt. Der Tag, den es festh\xe4lt, beendete f\xfcr diese Stadt die Herrschaft eines Hauses, das hier mehr als f\xfcnf Jahrhunderte gebot.<br><br>Diese Herrschaft war keine Eroberung: Die Stadt hatte sich jenem Hause einst selbst angetragen \u2013 aus Furcht vor einer Republik am anderen Ende desselben Meeres, die jedem Hafen ihren Willen aufzwang und das Wasser vor deinen F\xfc\xdfen schlicht ihren eigenen Golf nannte.<br><br><b>Wie hei\xdft die Hauptstadt jener Republik?</b>'},
+   {t:'<b>Ein Nachtrag.</b> Die Jahreszahl im Erz lautet <b>MCMXVIII</b>. Rechne f\xfcnfeinhalb Jahrhunderte zur\xfcck, und du stehst im 14. Jahrhundert \u2013 dort begann Triests \xf6sterreichische Zeit.<br><br>Die gef\xfcrchtete Republik nannte sich selbst die Durchlauchtigste. Sie ruht auf Pf\xe4hlen in einer Lagune, und an ihrer Spitze stand kein K\xf6nig, sondern ein Doge.'},
+   {t:'<b>Die letzte Handreichung.</b> Ihr Wahrzeichen ist ein gefl\xfcgelter L\xf6we mit einem aufgeschlagenen Buch.<br><br>Sie hat keine Stra\xdfen, sondern Kan\xe4le, und ihr ber\xfchmtester Platz tr\xe4gt den Namen des Evangelisten Markus.'}
   ],
-  a:['b6874a4a','4d3f4ea0','9bbe7611','a1887874','383f13f8'],
-  sol:'Villa Giusti (Waffenstillstand von Villa Giusti)',
-  after:'Der Waffenstillstand von Villa Giusti wurde am 3. November 1918 um 15 Uhr unterzeichnet und trat am 4. November um 15 Uhr in Kraft \u2013 General Badoglio hatte auf 24 Stunden Frist bestanden, in denen weitergek\xe4mpft wurde. Noch am Tag der Unterzeichnung lief die <em>Audace</em> hier ein. Aus der \xf6sterreichischen Hafenstadt Triest wurde damit eine italienische. Der Molo selbst ruht \xfcbrigens auf einem Wrack: 1740 sank hier das Schiff <em>San Carlo</em>, drei Jahre sp\xe4ter begann man, auf seinem Rumpf aufzusch\xfctten.'
+  a:['76ec78a9','6826a265','7493269b','3dfcc421','17d6b47e','19a96653'],
+  sol:'Venedig (Republik Venedig, La Serenissima)',
+  after:'Die Scheibe h\xe4lt den 3. November 1918 fest: Da legte der italienische Zerst\xf6rer <em>Audace</em> an, das erste Schiff unter italienischer Flagge. Damit endeten 536 Jahre habsburgischer Herrschaft \u2013 begonnen 1382, als sich Triest freiwillig Herzog Leopold III. unterstellte, um dem Zugriff Venedigs zu entgehen. Die Republik beherrschte die Adria so selbstverst\xe4ndlich, dass sie sie <em>Golfo di Venezia</em> nannte. Der Molo selbst ruht auf dem Wrack der 1740 gesunkenen <em>San Carlo</em>; seit 1922 tr\xe4gt er den Namen des Zerst\xf6rers.'
 },
 {
   id:'piazza-borsa', nr:3, name:'Piazza della Borsa',
@@ -526,15 +532,15 @@ var STATIONS = [
   lat:45.65027, lon:13.77043, radius:70, hintRadius:30,
   walk:'Rund 6 Minuten: zurück am Hauptplatz vorbei und dahinter nach Osten.',
   story:'Hier schlug ab 1806 das kaufmännische Herz der Stadt. Die <b>Borsa Vecchia</b>, die alte Börse, sieht aus wie ein griechischer Tempel – das war keine Spielerei, sondern Programm: Der Handel bekam die Architektur der Religion. Auf der Säule daneben steht Kaiser <b>Leopold I.</b> Gegenüber liegt der <b>Palazzo Tergesteo</b> mit seiner gläsernen Einkaufspassage. Gehandelt wurde mit Kaffee, Zucker, Baumwolle, Salz – und vor allem mit Versicherungen: Die Generali und die Assicurazioni Riunite wurden hier gegründet.',
-  onSite:'Auf dem Platz steht ein Brunnen von 1755. Schaut nach, was die Figur ganz oben in der Hand h\xe4lt.',
+  onSite:'Such den Brunnen und sieh, was die Gestalt zuh\xf6chst in den H\xe4nden h\xe4lt. Wende dich dann zum alten B\xf6rsenhaus: Es gibt sich als griechischer Tempel \u2013 Handel als Gottesdienst.',
   levels:[
-   {t:'Ab 1806 wurde auf diesem Platz gehandelt: mit Kaffee, Zucker, Baumwolle \u2013 und vor allem mit dem Risiko, das alles auf See zu verlieren. Der Brunnen hier zeigt die Gestalt, die \xfcber genau dieses Risiko gebietet.<br><br>Vier Jahrzehnte sp\xe4ter trug dieselbe Gestalt ihren Namen in den Weltraum: Ein Planet wurde nach ihr benannt, den niemand gesucht hatte \u2013 jemand sagte aus den Bahnst\xf6rungen des Uranus voraus, wo er stehen m\xfcsse, und dort stand er.<br><br><b>Wie hie\xdf der Mann, dessen Rechnung 1846 zum Ziel f\xfchrte?</b>'},
-   {t:'Der Brunnen zeigt Neptun; der achte Planet tr\xe4gt seinen Namen. Am 23. September 1846 fand Johann Gottfried Galle ihn an der Berliner Sternwarte \u2013 weniger als ein Grad von der vorausberechneten Stelle entfernt.<br><br>Gesucht ist der franz\xf6sische Astronom, der diese Stelle berechnet hatte. Sein englischer Konkurrent hie\xdf John Couch Adams.<br><br><b>Wie hie\xdf der Franzose?</b>'},
-   {t:'Sein Nachname besteht aus zwei Teilen: dem franz\xf6sischen Artikel <em>Le</em> und der Berufsbezeichnung f\xfcr jemanden, der Glas herstellt und verarbeitet \u2013 abgeleitet von <em>verre</em>, dem franz\xf6sischen Wort f\xfcr Glas.<br><br><b>Wie lautet der Nachname?</b>'}
+   {t:'Auf dem Brunnen steht der Falsche. Er h\xe4lt eine Gabel mit drei Zinken und gebietet \xfcber das Wasser \u2013 doch in dem Tempel dahinter betete man einen anderen an.<br><br>Der Rechte tr\xe4gt Fl\xfcgel an den Fersen und am Hut und einen Stab, um den sich zwei Schlangen ringeln. Er ist der Bote, der Schutzherr der H\xe4ndler und Reisenden \u2013 und, so raunt man, auch der Diebe.<br><br>Sein Name h\xe4ngt bis heute an einem Metall, das man nicht fassen kann, weil es davonl\xe4uft wie er.<br><br><b>Nenne das Metall.</b>'},
+   {t:'<b>Ein Nachtrag.</b> Der Gott hei\xdft bei den R\xf6mern Merkur, bei den Griechen Hermes.<br><br>Das gesuchte Metall ist das einzige, das bei Zimmerw\xe4rme fl\xfcssig ist: schwer, silbrig, giftig \u2013 und auf einer glatten Fl\xe4che zerf\xe4llt es in lauter zitternde Kugeln.'},
+   {t:'<b>Die letzte Handreichung.</b> Es stand fr\xfcher in jedem Fieberthermometer und in jedem Barometer.<br><br>Sein Zeichen im Periodensystem ist <b>Hg</b>, nach dem griechischen <em>hydrargyros</em>: Wassersilber. Im Deutschen hei\xdft es fast genauso \u2013 nur ist aus dem Wasser etwas Lebendiges geworden.'}
   ],
-  a:['4ed6d19f','ebfe2810','74ca776b'],
-  sol:'Urbain Le Verrier',
-  after:'Le Verrier hatte Neptun nie gesehen, als er ihn fand: Er rechnete aus den Abweichungen der Uranusbahn, wo ein weiterer Planet stehen m\xfcsse, schickte die Koordinaten nach Berlin \u2013 und Galle hatte ihn noch in derselben Nacht im Fernrohr. Ein Triumph der reinen Rechnung. Dass der Meeresgott vor der B\xf6rse steht, ist derweil folgerichtig: Triests Verm\xf6gen entstanden nicht mit Waren, sondern mit dem Versichern des Risikos, sie zu verlieren \u2013 die Generali wurden 1831 hier gegr\xfcndet.'
+  a:['6df9d9ef','ffac137e','11de94a7','b02aa3d0','98465574'],
+  sol:'Quecksilber (Hg, lateinisch mercurius)',
+  after:'Merkur, Gott der Kaufleute und der Diebe zugleich \u2013 die Triestiner Kaufmannschaft hat den Witz sicher verstanden. Nach ihm hei\xdft das Quecksilber (lateinisch <em>mercurius</em>, englisch <em>mercury</em>), das einzige bei Raumtemperatur fl\xfcssige Metall. Das deutsche Wort kommt von <em>queck</em>, der alten Form von \u201elebendig\u201c \u2013 es bewegt sich eben wie etwas Lebendes. Der Brunnen davor zeigt Neptun (1755); die Borsa Vecchia entstand 1802\u20131806, und die Generali wurden 1831 an diesem Platz gegr\xfcndet.'
 },
 {
   id:'canal-grande', nr:4, name:'Canal Grande &amp; Ponte Rosso',
@@ -542,15 +548,15 @@ var STATIONS = [
   lat:45.65219, lon:13.77220, radius:55, hintRadius:32,
   walk:'Rund 4 Minuten nach Norden, hinein ins Borgo Teresiano.',
   story:'Maria Theresia ließ das Viertel nördlich der Altstadt auf trockengelegten Salinen im Schachbrettmuster anlegen – eine geplante Stadt für eine geplante Wirtschaft. Damit die Schiffe bis mitten hinein fahren konnten, grub der venezianische Unternehmer Matteo Pirona 1754–1756 den <b>Canal Grande</b>. Die <b>Ponte Rosso</b> war zuerst aus Holz (1756), seit 1832 ist sie aus Eisen. Am Kopf des Kanals steht die klassizistische Kirche <b>Sant’Antonio Taumaturgo</b> (1849, Pietro Nobile) – auf den ersten Blick ein antiker Tempel mit Säulenportikus.',
-  onSite:'Auf der Br\xfccke steht eine lebensgro\xdfe Bronzefigur. Zu ihren F\xfc\xdfen liegt eine Tafel \u2013 dort stehen ein Name und zwei Jahreszahlen.',
+  onSite:'Auf der Br\xfccke steht die Gestalt aus Erz. Zu ihren F\xfc\xdfen liegt eine Tafel mit einem Namen \u2013 merk ihn dir, doch die L\xf6sung steht nicht darauf.',
   levels:[
-   {t:'Der Mann aus Bronze auf dieser Br\xfccke gab in Triest Englischunterricht, um \xfcber die Runden zu kommen. Einer seiner Sch\xfcler war ein Triestiner Gesch\xe4ftsmann, der nebenher Romane schrieb, die praktisch niemand las \u2013 bis sein Lehrer sie an die richtigen Leute in Paris weiterreichte und aus dem Gescheiterten mit \xfcber sechzig Jahren ein gefeierter Autor wurde. Derselbe Sch\xfcler lieferte Z\xfcge f\xfcr die Hauptfigur im ber\xfchmtesten Werk seines Lehrers.<br><br>Geschrieben hat er unter einem K\xfcnstlernamen, der seine beiden Herk\xfcnfte in zwei W\xf6rtern zusammenfasst.<br><br><b>Wie lautet dieser K\xfcnstlername?</b>'},
-   {t:'Der Lehrer ist James Joyce. Der Sch\xfcler hie\xdf b\xfcrgerlich Ettore Schmitz, war Sohn eines deutschst\xe4mmigen Vaters und einer italienischen Mutter und schrieb den Roman <em>Zenos Gewissen</em> (1923).<br><br>Sein K\xfcnstlername bedeutet w\xf6rtlich \u201eder italienische Schwabe\u201c.<br><br><b>Wie lautet er auf Italienisch?</b>'},
-   {t:'Der K\xfcnstlername besteht aus zwei W\xf6rtern. Das erste ist die italienische Kurzform f\xfcr \u201eitalienisch\u201c \u2013 sie steckt auch in Begriffen wie <em>Italo-Western</em>. Das zweite ist das italienische Adjektiv zu <em>Svevia</em>, so hei\xdft Schwaben auf Italienisch.<br><br><b>Setzt beides zusammen.</b>'}
+   {t:'Der Mann aus Erz auf dieser Br\xfccke \u2013 Hut, runde Gl\xe4ser, ein Buch unter dem Arm \u2013 schrieb ein Werk, dessen Held zehn Jahre lang nicht heimfand.<br><br>In einer H\xf6hle nahm dieser Held einem Riesen das einzige Auge. Der Riese br\xfcllte, und seine Br\xfcder kamen von den Nachbarh\xf6hlen gelaufen und riefen durch den Stein: <em>Wer tut dir Gewalt an?</em><br><br>Er nannte ihnen den Namen, den der Held ihm zuvor genannt hatte. Da gingen die Br\xfcder wieder heim und lie\xdfen ihn blind zur\xfcck.<br><br><b>Welchen Namen nannte er?</b>'},
+   {t:'<b>Ein Nachtrag.</b> Der Held hei\xdft Odysseus, der Riese Polyphem, und das Buch des Mannes auf der Br\xfccke tr\xe4gt den lateinischen Namen des Helden.<br><br>Der Held hatte sich vorgestellt, bevor er zuschlug \u2013 und zwar mit Bedacht. Seine Antwort war kein Name, sondern eine Falle.'},
+   {t:'<b>Die letzte Handreichung.</b> Auf Griechisch lautet sie <em>Outis</em>, auf Lateinisch <em>Nemo</em>.<br><br>Antworte auf Deutsch, ein einziges Wort.'}
   ],
-  a:['b90d18d7','2982177e'],
-  sol:'Italo Svevo (b\u00fcrgerlich Ettore Schmitz)',
-  after:'Italo Svevo \u2013 \u201eder italienische Schwabe\u201c \u2013 war im Hauptberuf Farbenfabrikant hier in der Stadt und nahm 1905 bei Joyce Englischstunden. Seine ersten beiden Romane hatte niemand gelesen; erst als Joyce 1925 den Kritiker Valery Larbaud auf <em>Zenos Gewissen</em> aufmerksam machte, wurde der 64-J\xe4hrige \xfcber Paris ber\xfchmt \u2013 und dann auch in Italien. Umgekehrt lieferte Svevo Z\xfcge f\xfcr Leopold Bloom, die Hauptfigur des <em>Ulysses</em>, dessen Handlung an einem einzigen Tag spielt: dem 16. Juni 1904, bis heute weltweit als Bloomsday gefeiert.'
+  a:['42a2a2ad','0e1b6e89','c443a7ae','c18b5f27'],
+  sol:'Niemand (griechisch Outis)',
+  after:'Der Mann ist <b>James Joyce</b>, der kurz nach 1900 aus Irland kam und \xfcber ein Jahrzehnt hier Englisch unterrichtete. Sein <em>Ulysses</em> \u2013 der lateinische Name des Odysseus \u2013 spielt an einem einzigen Tag, dem 16. Juni 1904. Die List mit <em>Outis</em> ist eines der \xe4ltesten Wortspiele der Literatur: Als die \xfcbrigen Kyklopen fragen, wer Polyphem blende, antwortet er \u201eNiemand\u201c \u2013 und sie gehen wieder. Homer treibt den Witz noch weiter, denn <em>outis</em> klingt an <em>metis</em> an, die List selbst.'
 },
 {
   id:'san-spiridione', nr:5, name:'Die Kirche mit den blauen Kuppeln',
@@ -558,15 +564,15 @@ var STATIONS = [
   lat:45.65146, lon:13.77332, radius:45, hintRadius:28,
   walk:'Rund 2 Minuten – gleich um die Ecke am Kanal.',
   story:'Der Freihafen zog nicht nur Waren an, sondern Menschen jeder Konfession: Griechen, Serben, Juden, Protestanten, Armenier. Kaiser Karl VI. und nach ihm Maria Theresia und Joseph II. ließen sie gewähren, weil Handel wichtiger war als Rechtgläubigkeit. Das Ergebnis siehst du in wenigen Gehminuten um dich herum: eine katholische Kirche, diese serbisch-orthodoxe, eine griechisch-orthodoxe, eine evangelische – und eine der größten Synagogen Europas. Dieser Bau (1861–1869, Carlo Maciachini) gehört der serbisch-orthodoxen Gemeinde: byzantinischer Stil, blaue Kuppeln, Gold und Mosaik.',
-  onSite:'Tretet ein St\xfcck zur\xfcck, bis ihr die ganze Fassade seht. Die Kirche tr\xe4gt zwei Namen: Den einen findet ihr \xfcber dem Portal \u2013 der andere steht im offiziellen italienischen Namen des Baus, etwa auf dem Schild der Gemeinde.',
+  onSite:'Tritt ein St\xfcck zur\xfcck, bis du die ganze Stirn der Kirche siehst, und such die Zeichen \xfcber dem Portal. Entziffern mu\xdft du sie \u2013 gefragt ist aber nicht, was dort steht.',
   levels:[
-   {t:'Diese Kirche ist zwei Patronen geweiht. Den einen, einen Heiligen, findet ihr an der Fassade. Der andere ist kein Mensch. Die Gemeinde schreibt ihn in ihrer eigenen Schrift so:<span class="cyr">\u0421\u0412\u0415\u0422\u0410 \u0422\u0420\u041e\u0408\u0418\u0426\u0410</span>\xdcbertragt die Zeichen in unser Alphabet. Im zweiten Wort steckt dieselbe Wurzel wie in den slawischen Zahlw\xf6rtern f\xfcr \u201edrei\u201c.<br><br><b>Wie hei\xdft dieser zweite Patron auf Deutsch?</b>'},
-   {t:'Buchstabenschl\xfcssel: \u0421&nbsp;=&nbsp;S \xb7 \u0412&nbsp;=&nbsp;V \xb7 \u0415&nbsp;=&nbsp;E \xb7 \u0422&nbsp;=&nbsp;T \xb7 \u0410&nbsp;=&nbsp;A \xb7 \u0420&nbsp;=&nbsp;R \xb7 \u041e&nbsp;=&nbsp;O \xb7 \u0408&nbsp;=&nbsp;J \xb7 \u0418&nbsp;=&nbsp;I \xb7 \u0426&nbsp;=&nbsp;C<br><br>Das erste Wort hei\xdft \u201eheilig\u201c. Das zweite bezeichnet ein zentrales christliches Glaubensgeheimnis, das drei Personen in einem einzigen Wesen zusammenfasst.<br><br><b>Wie hei\xdft es auf Deutsch?</b>'},
-   {t:'Die beiden W\xf6rter lauten <em>Sveta Trojica</em>. Gemeint ist die Lehre von Vater, Sohn und Heiligem Geist als drei Personen eines einzigen Gottes; im offiziellen italienischen Namen der Kirche hei\xdft sie <em>Santissima Trinit\xe0</em>.<br><br><b>Wie hei\xdft dieser Glaubenssatz auf Deutsch?</b>'}
+   {t:'\xdcber dem Portal stehen Zeichen, die dich t\xe4uschen: Was aussieht wie ein <b>C</b>, klingt wie <b>S</b>. Was aussieht wie ein <b>H</b>, klingt wie <b>N</b>. Was aussieht wie ein <b>P</b>, klingt wie <b>R</b>. Entziffere geduldig, dann liest du den Namen des Heiligen, dem dieses Haus geweiht ist.<br><br>Doch nicht er ist gesucht, sondern der Mann, dessen Namen <em>die Schrift selbst</em> tr\xe4gt. Er zog mit seinem Bruder von Thessaloniki nach M\xe4hren und schuf den Slawen Buchstaben, damit sie das Evangelium in der eigenen Zunge h\xf6ren konnten.<br><br>Sein Name steckt in einem Ruf, den jede Messe kennt \u2013 drei Silben, gefolgt von <em>eleison</em>.<br><br><b>Nenne ihn.</b>'},
+   {t:'<b>Ein Nachtrag.</b> Der Ruf lautet <em>Kyrie eleison</em>: Herr, erbarme dich. Das griechische <em>kyrios</em> hei\xdft Herr.<br><br>Der gesuchte Mann wurde als Konstantin geboren und nahm seinen ber\xfchmten Namen erst kurz vor dem Tod an, als er M\xf6nch wurde. Die Kirche nennt ihn und seinen Bruder Method die Slawenapostel.'},
+   {t:'<b>Die letzte Handreichung.</b> Nimm den Ruf <em>Kyrie</em>, tausche das schlie\xdfende <b>e</b> gegen zwei <b>l</b> \u2013 und du hast den Namen.<br><br>Im Deutschen schreibt man ihn mit <b>K</b>.'}
   ],
-  a:['ea439193','cf252068','2e87738d','56a0cb50','50720409','0d77760b','618b0a5e','fad8e6c4','a47ba8fa'],
-  sol:'Dreifaltigkeit (serbisch Sveta Trojica, italienisch Santissima Trinit\u00e0)',
-  after:'Der volle Name des Baus lautet <em>Tempio serbo-ortodosso della Santissima Trinit\xe0 e di San Spiridione</em> \u2013 er ist der Dreifaltigkeit <b>und</b> dem heiligen Spyridon geweiht. Spyridon war im 4. Jahrhundert Bischof auf Zypern und vorher Schafhirte; auf Ikonen erkennt man ihn an der geflochtenen Hirtenm\xfctze, die er auch als Bischof nicht ablegte. Die Kirche entstand 1861\u20131869 nach Pl\xe4nen von Carlo Maciachini.'
+  a:['080368b2','3618d1fc','50e5514a','bf87dfa2','35e2b802','48cae6a3','e09d4b1d'],
+  sol:'Kyrill (von Thessaloniki)',
+  after:'Die Schrift hei\xdft kyrillisch, nach <b>Kyrill</b> von Thessaloniki (826\u2013869), der mit seinem Bruder Method den Slawen eine Schrift gab. Genau genommen entwickelten erst seine Sch\xfcler jenes Alphabet, das heute seinen Namen tr\xe4gt \u2013 Kyrill selbst ersann die \xe4ltere glagolitische Schrift. Der Heilige \xfcber dem Portal ist Spyridon, im 4. Jahrhundert Bischof auf Zypern und zuvor Schafhirte. Der volle Name des Baues lautet <em>Tempio serbo-ortodosso della Santissima Trinit\xe0 e di San Spiridione</em>; er entstand 1861\u20131869 nach Pl\xe4nen von Carlo Maciachini.'
 },
 {
   id:'teatro-romano', nr:6, name:'Teatro Romano',
@@ -574,15 +580,15 @@ var STATIONS = [
   lat:45.64917, lon:13.77167, radius:70, hintRadius:35,
   walk:'Rund 5 Minuten nach Süden, Richtung Altstadt und Domhügel.',
   story:'Unter dem H\xfcgel von San Giusto lag <b>Tergeste</b>, die r\xf6mische Stadt. Ende des 1. Jahrhunderts n. Chr. baute man dieses Theater direkt an den Hang \u2013 so sparte man sich den teuren Unterbau f\xfcr die Zuschauerr\xe4nge. Im fr\xfchen 2. Jahrhundert wurde es ausgebaut, vermutlich finanziert von Quintus Petronius Modestus, einem hohen Beamten der Stadt. Jahrhundertelang lag es unter H\xe4usern begraben. 1814 erkannte der Architekt Pietro Nobile, was da im Boden steckt \u2013 freigelegt wurde es aber erst 1938, als ein ganzes Altstadtviertel abgerissen wurde.',
-  onSite:'Stellt euch an die Balustrade und schaut von oben hinein: der halbrunde Zuschauerraum, davor der Halbkreis der <em>orchestra</em>, dahinter die Reste der B\xfchnenwand. Gespielt wurde mit Blick zum Meer.',
+  onSite:'Stell dich an die Br\xfcstung und sieh von oben hinab: der halbrunde Zuschauerraum, davor der Halbkreis der <em>orchestra</em>, dahinter die Reste der B\xfchnenwand. Merk dir die Form des Halbrunds \u2013 sie ist der Schl\xfcssel.',
   levels:[
-   {t:'Die R\xf6mer z\xe4hlten die Jahre nicht ab Christi Geburt, sondern ab der Gr\xfcndung ihrer Stadt: <em>ab urbe condita</em>.<br><br>Dieses Theater erhielt seine heutige Gestalt unter jenem Kaiser, unter dem das R\xf6mische Reich seine gr\xf6\xdfte Ausdehnung erreichte \u2013 von Britannien bis an den Persischen Golf. In Rom steht bis heute seine Siegess\xe4ule mit dem umlaufenden Relief \xfcber die Dakerkriege.<br><br><b>Schreibt das Jahr seines Regierungsantritts so, wie ein Steinmetz von Tergeste es in den Stein geschlagen h\xe4tte: in Jahren ab urbe condita, in r\xf6mischen Ziffern.</b>'},
-   {t:'Der Kaiser ist <b>Trajan</b>; er kam im Jahr 98 n. Chr. an die Macht. Rom wurde der \xdcberlieferung nach 753 v. Chr. gegr\xfcndet \u2013 das Jahr 1 n. Chr. ist also das Jahr 754 dieser Z\xe4hlung.<br><br><b>Rechnet Trajans Antrittsjahr in die r\xf6mische \xc4ra um und schreibt das Ergebnis in r\xf6mischen Ziffern.</b>'},
-   {t:'98 + 753 = <b>851</b>.<br><br>Zerlegt die Zahl in ihre Bausteine (M&nbsp;=&nbsp;1000, D&nbsp;=&nbsp;500, C&nbsp;=&nbsp;100, L&nbsp;=&nbsp;50, X&nbsp;=&nbsp;10, V&nbsp;=&nbsp;5, I&nbsp;=&nbsp;1) und schreibt sie in r\xf6mischen Ziffern \u2013 in Gro\xdfbuchstaben, ohne Leerzeichen.<br><br><b>Wie lautet sie?</b>'}
+   {t:'Sieh von der Br\xfcstung hinab: Die R\xe4nge bilden einen <em>halben</em> Kreis, an den Hang gelehnt, damit man sich den Unterbau spare.<br><br>Nun denk dir zwei solcher H\xe4lften, R\xfccken an R\xfccken zusammengef\xfcgt. Dann hast du keinen Ort mehr zum Spielen, sondern einen zum Sterben \u2013 dort k\xe4mpften Menschen gegen Menschen und gegen Tiere.<br><br>Der gr\xf6\xdfte je gebaute steht in Rom. Er hei\xdft nicht nach dem Kaiserhaus, das ihn errichten lie\xdf, sondern nach etwas ungeheuer Gro\xdfem, das einst daneben stand und l\xe4ngst verschwunden ist.<br><br><b>Nenne ihn.</b>'},
+   {t:'<b>Ein Nachtrag.</b> Das Ungeheure war eine vergoldete Bronzefigur von \xfcber drei\xdfig Metern H\xf6he, die sich Kaiser Nero selbst hatte setzen lassen. Die R\xf6mer nannten so etwas einen <em>colossus</em>.<br><br>Der Bau selbst hei\xdft amtlich <em>Amphitheatrum Flavium</em>, nach dem Kaiserhaus der Flavier.'},
+   {t:'<b>Die letzte Handreichung.</b> Aus <em>colossus</em> wurde der Volksname, und der setzte sich durch.<br><br>Er endet auf <b>-eum</b>, wie Museum und Mausoleum. Im Deutschen schreibt man ihn mit <b>K</b>.'}
   ],
-  a:['b1b72c0b'],
-  sol:'DCCCLI (= 851 ab urbe condita = 98 n. Chr.)',
-  after:'851 a.u.c. \u2013 so h\xe4tte hier tats\xe4chlich eine Inschrift aussehen k\xf6nnen. Trajan regierte 98\u2013117 n. Chr., stammte aus Italica in Spanien und war der erste Kaiser, der nicht aus Italien kam; unter ihm erreichte das Reich seine gr\xf6\xdfte Ausdehnung. Das Theater fasste je nach Sch\xe4tzung 3500 bis 6000 Zuschauer \u2013 bei vielleicht 12 000 Einwohnern. Ein r\xf6misches Theater war eben kein Kulturangebot f\xfcr wenige, sondern der Ort, an dem sich die halbe Stadt versammeln konnte.'
+  a:['9daa2ffb','571f4a63','f647d002','a3381304','93318cdf'],
+  sol:'Kolosseum (Amphitheatrum Flavium)',
+  after:'Ein Theater ist ein halber Kreis, ein Amphitheater ein ganzer \u2013 <em>amphi</em> hei\xdft auf Griechisch \u201eauf beiden Seiten\u201c. Das Kolosseum, amtlich <em>Amphitheatrum Flavium</em>, fa\xdfte rund 50 000 Zuschauer; sein Volksname stammt vom <em>Colossus Neronis</em>, der daneben stand und im Mittelalter verschwand. Dieses Theater hier fa\xdfte 3500 bis 6000 Menschen, erbaut Ende des 1. Jahrhunderts n. Chr., ausgebaut unter Kaiser Trajan; 1814 erkannte Pietro Nobile, was da im Boden steckt, freigelegt ward es aber erst 1938.'
 },
 {
   id:'arco-riccardo', nr:7, name:'Arco di Riccardo',
@@ -590,15 +596,15 @@ var STATIONS = [
   lat:45.64781, lon:13.76890, radius:60, hintRadius:28,
   walk:'Rund 5 Minuten durch die engen Gassen der Città Vecchia.',
   story:'Dieser Bogen steht seit rund 2000 Jahren an derselben Stelle – nur ist die Stadt um ihn herum gewachsen: Etwa zwei Meter seines Unterbaus stecken heute im Boden, so weit ist das Straßenniveau seit der Antike gestiegen. Errichtet wurde er wohl unter Octavian/Augustus (33/32 v. Chr.); die heutige Bauform datiert man ins 1. Jahrhundert n. Chr. Vermutlich war er ein Tor in der Stadtmauer des Augustus.',
-  onSite:'Schaut auf den Sockel: Der Bogen wirkt zu gedrungen, weil ein gutes St\xfcck von ihm unter dem Pflaster liegt. Und achtet darauf, in welche Richtung die Gasse l\xe4uft, in der er steht.',
+  onSite:'Sieh auf den Sockel: Der Bogen wirkt gedrungen, weil ein gutes St\xfcck von ihm unter dem Pflaster steckt. Genau darum geht es \u2013 nicht der Bogen sank, die Stadt stieg.',
   levels:[
-   {t:'Im Volksmund hei\xdft dieser Bogen nach einem englischen K\xf6nig, der hier angeblich gefangen sa\xdf. Historiker halten das f\xfcr eine Verschleifung: Der Name stamme aus dem lateinischen Wort f\xfcr jene Stra\xdfe, an der der Bogen stand \u2013 in jeder r\xf6mischen Stadt die Hauptachse von Nord nach S\xfcd.<br><br><b>Wie hei\xdft diese Stra\xdfe auf Lateinisch?</b>'},
-   {t:'Eine r\xf6mische Stadt ist nach zwei sich kreuzenden Hauptachsen angelegt. Die Ost-West-Achse hei\xdft <em>decumanus maximus</em>; ihr Name h\xe4ngt mit der Zahl zehn zusammen.<br><br>Die gesuchte Nord-S\xfcd-Achse ist dagegen nach einem Gegenstand aus dem Handwerk benannt: nach dem Zapfen, um den sich eine T\xfcr dreht.<br><br><b>Wie hei\xdft sie?</b>'},
-   {t:'Das gesuchte lateinische Wort bedeutet w\xf6rtlich \u201eT\xfcrangel\u201c, \u201eDrehpunkt\u201c. Von ihm stammt unser Fremdwort <em>kardinal</em> im Sinne von \u201egrundlegend, entscheidend\u201c \u2013 und der Kirchentitel <em>Kardinal</em>.<br><br><b>Wie lautet das lateinische Wort im Nominativ Singular?</b>'}
+   {t:'Der Bogen ist nicht geschrumpft \u2013 der Boden ist gestiegen. Zwei Meter Schutt, Asche und Abfall haben sich hier in zweitausend Jahren \xfcber die Stra\xdfe gelegt, auf der einst Karren fuhren.<br><br>Rom hat f\xfcr denselben Vorgang ein Denkmal: Hinter dem Tiber wuchs aus nichts als Scherben ein H\xfcgel von fast f\xfcnfzig Metern H\xf6he. Rund f\xfcnfundzwanzig Millionen zerschlagene Gef\xe4\xdfe liegen darin \u2013 Gef\xe4\xdfe, in denen das Oliven\xf6l aus Spanien \xfcber See gekommen war. Man zerschlug sie, weil der Ton vom \xd6l ranzig wurde und kein zweites Mal taugte.<br><br><b>Wie hei\xdft diese Art von Gef\xe4\xdf?</b>'},
+   {t:'<b>Ein Nachtrag.</b> Es ist ein bauchiger Tonkrug mit zwei Henkeln und einem spitzen Fu\xdf.<br><br>Der spitze Fu\xdf ist kein Fehler: Man stellte solche Gef\xe4\xdfe nicht hin, sondern steckte sie in Sand oder in Gestelle \u2013 und im Schiffsbauch lie\xdfen sie sich so Reihe \xfcber Reihe stapeln.'},
+   {t:'<b>Die letzte Handreichung.</b> Das Wort kommt aus dem Griechischen: <em>amphi</em> \u2013 auf beiden Seiten, und <em>phoreus</em> \u2013 Tr\xe4ger. Also: das beidseits zu Tragende, wegen der zwei Henkel.<br><br>Sieben Buchstaben, im Deutschen weiblich.'}
   ],
-  a:['09170bda','f349193e','cb2b1b55','a2a2d242','0006c04d'],
-  sol:'Cardo (cardo maximus)',
-  after:'\u201eArco del Cardo\u201c wurde \xfcber die Jahrhunderte zu \u201eArco di Riccardo\u201c \u2013 eine Verschleifung, keine Geschichte. Richard L\xf6wenherz war zwar tats\xe4chlich gefangen, aber ab 1192 bei Wien und danach auf Burg Trifels in der Pfalz, nie in Triest. Eine dritte Deutung f\xfchrt den Namen auf den <em>ricario</em> zur\xfcck, ein mittelalterliches Amt mit Sitz in der N\xe4he. Dass <em>cardo</em> und <em>Kardinal</em> zusammenh\xe4ngen, ist kein Zufall: Beides meint den Punkt, um den sich alles dreht.'
+  a:['ad55103b','31e8b5cf','b1551687','0af305c6'],
+  sol:'Amphore',
+  after:'Der H\xfcgel hei\xdft <em>Monte Testaccio</em>, von lateinisch <em>testa</em>, Scherbe: ein antiker M\xfcllberg aus rund 25 Millionen \xd6lamphoren, meist vom Typ Dressel 20 aus der spanischen Provinz Baetica. Auch in Triest ist der Boden seit der Antike um etwa zwei Meter gestiegen \u2013 deshalb steckt der Bogen so tief. Er stammt wohl aus augusteischer Zeit. Sein Name ist \xfcbrigens eine Verschleifung von <em>Arco del Cardo</em>, nach der r\xf6mischen Nord-S\xfcd-Hauptstra\xdfe \u2013 und nicht, wie das Volk erz\xe4hlt, von Richard L\xf6wenherz, der nie in dieser Stadt war.'
 },
 {
   id:'san-giusto', nr:8, name:'Cattedrale di San Giusto',
@@ -606,15 +612,15 @@ var STATIONS = [
   lat:45.64639, lon:13.77250, radius:95, hintRadius:45,
   walk:'Rund 12–15 Minuten bergauf – der anstrengendste Abschnitt. Nehmt die Treppen der Via della Cattedrale oder die Scala dei Giganti. Oben wartet der Blick über den ganzen Golf.',
   story:'Der Dom entstand zwischen 1302 und 1320, indem Bischof Rodolfo Pedrazzani zwei nebeneinanderstehende Kirchen zu einer einzigen zusammenbauen ließ: Santa Maria und die Kirche des Märtyrers Giusto. Deshalb sitzt die riesige <b>Rosette</b> aus Karststein nicht in der Mitte der Fassade, und das Portal ist aus einem antiken Grabmal wiederverwendet. Der Glockenturm war ursprünglich höher – 1422 schlug der Blitz ein. Nebenan liegt das <b>Castello di San Giusto</b> (ab 1468); der Hügel war schon das Zentrum des römischen Tergeste.',
-  onSite:'Stellt euch vor die Fassade und sucht die Mittelachse des Portals \u2013 die Rosette sitzt nicht dar\xfcber. Dann dreht euch um: unter euch die Stadt, dahinter der Golf. Und auf dem Weg herauf kam euch ein Zeichen immer wieder unter die Augen.',
+  onSite:'Stell dich vor die Fassade und such die Mittelachse des Portals \u2013 die Rosette sitzt nicht dar\xfcber. Dann dreh dich um: unter dir die Stadt, dahinter der Golf. Und halt Ausschau nach dem Eisen im Wappen, das dir den ganzen Weg herauf begegnet ist.',
   levels:[
-   {t:'Ihr habt ihn auf dem ganzen Weg hierher gesehen, ohne ihn vielleicht zu beachten: im Stadtwappen, an Fahnen, auf Kanaldeckeln, an Hausfassaden \u2013 Triest f\xfchrt seit dem 13. Jahrhundert ein einziges Zeichen.<br><br>Der Legende nach fiel dieser Gegenstand im Jahr 303 vom Himmel auf den Hauptplatz der Stadt, im selben Augenblick, in dem ein r\xf6mischer Legion\xe4r namens Sergius weit entfernt in Syrien f\xfcr seinen Glauben starb; er hatte seinen Freunden ein Zeichen versprochen. Das Original liegt bis heute im Schatz dieses Doms.<br><br><b>Um was f\xfcr einen Gegenstand handelt es sich? Nennt den deutschen Fachbegriff.</b>'},
-   {t:'Es ist eine Waffe \u2013 genauer: ein Waffentyp, der drei Werkzeuge auf einem langen Schaft vereint: eine Beilklinge zum Hauen, einen Haken, um einen Reiter vom Pferd zu rei\xdfen, und eine Spitze zum Stechen. Ab dem 14. Jahrhundert machte sie die Schweizer Fu\xdftruppen in ganz Europa gef\xfcrchtet.<br><br><b>Wie hei\xdft dieser Waffentyp auf Deutsch?</b>'},
-   {t:'Der deutsche Name ist im Mittelhochdeutschen zusammengewachsen: <em>helm</em> bedeutete hier nicht die Kopfbedeckung, sondern den Stiel oder Schaft; <em>barte</em> war das Beil. Aus <em>helmbarte</em> wurde \xfcber die Jahrhunderte das heutige Wort mit zehn Buchstaben.<br><br><b>Wie lautet es?</b>'}
+   {t:'Du hast es den ganzen Weg heraufgetragen, ohne hinzusehen: an Fahnen, an Hausfassaden, auf den Deckeln der Gossen, im Wappen der Stadt \u2013 immer dasselbe Eisen.<br><br>Die Sage sagt, es sei im Jahre 303 aus heiterem Himmel auf den Marktplatz gefallen, zur selben Stunde, da fern in Syrien ein Soldat f\xfcr seinen Glauben starb. Es ruht bis heute im Schatz dieses Domes.<br><br>Die Sage ist \xe4lter als die Wissenschaft \u2013 und hat doch recht: Eisen f\xe4llt wirklich vom Himmel. Die \xc4gypter schmiedeten daraus Dolche, lange bevor sie gelernt hatten, Erz aus der Erde zu schmelzen, und nannten es \u201eEisen des Himmels\u201c.<br><br><b>Wie nennen wir einen solchen Himmelsbrocken, wenn er den Boden erreicht?</b>'},
+   {t:'<b>Ein Nachtrag.</b> Achte genau auf den Unterschied: Solange der Brocken in der Luft vergl\xfcht und leuchtet, tr\xe4gt er einen anderen Namen \u2013 das ist die Sternschnuppe.<br><br>Gesucht ist das, was \xfcbrig bleibt und liegen bleibt. Das Wort ist l\xe4nger.'},
+   {t:'<b>Die letzte Handreichung.</b> Nimm das Wort f\xfcr die Erscheinung am Himmel und h\xe4nge jene Endung an, die auch Granit, Dolomit und Graphit tragen \u2013 die Endung, an der man Steine erkennt.'}
   ],
-  a:['708e3f1b','5066fd4b','2ce916f7','9bb8ec9d','de50f5a7'],
-  sol:'Hellebarde (italienisch alabarda)',
-  after:'R\xf6ntgenaufnahmen zeigen: Die Reliquie ist aus einem einzigen St\xfcck Eisen geschmiedet, mit einer Technik, die man im Westen damals nicht kannte, in Indien aber schon \u2013 das erkl\xe4rt auch, warum sie kaum rostet. Wie alt sie wirklich ist, wei\xdf niemand. Im Stadtwappen steht die <em>alabarda</em> seit dem 13. Jahrhundert; im 14. wurde sie in der Gegend tats\xe4chlich als Waffe gef\xfchrt.'
+  a:['c6ab7bce','bc9b7f8d','9cac39e0'],
+  sol:'Meteorit (nicht Meteor – der verglüht in der Luft)',
+  after:'Die Reliquie ist eine Hellebarde (italienisch <em>alabarda</em>) und steht seit dem 13. Jahrhundert im Stadtwappen. R\xf6ntgenaufnahmen zeigen: Sie ist aus einem einzigen St\xfcck Eisen geschmiedet, mit einer Technik, die man im Westen damals nicht kannte \u2013 das erkl\xe4rt auch, warum sie kaum rostet. Ob wirklich Meteoreisen darin steckt, ist nie bewiesen worden; die \xc4gypter jedoch nutzten es nachweislich, etwa f\xfcr den Dolch im Grab des Tutanchamun. Und die schiefe Fassade \xfcber dir hat ihren Grund: Der Dom entstand 1302\u20131320, indem man zwei nebeneinanderstehende Kirchen zu einer einzigen zusammenschob.'
 },
 {
   id:'rive-barcola', nr:9, name:'Le Rive – Uferpromenade',
@@ -623,15 +629,15 @@ var STATIONS = [
   optional:true,
   walk:'Rund 10 Minuten von der Piazza dell’Unità an der Promenade nach Südwesten – und die gleiche Strecke wieder zurück zum Bus. Nur anhängen, wenn die Zeit reicht!',
   story:'Die <b>Rive</b> sind Triests Uferpromenaden: ein durchgehender Spazierweg am Wasser, vom Molo Audace bis zur Sacchetta. Hier sitzt die Stadt am Abend auf den Kaimauern, schaut den Booten zu und wartet auf den Sonnenuntergang. Die eigentliche Badepromenade liegt weiter drau\xdfen an der K\xfcste nach Nordwesten \u2013 Betonterrassen und Pinien statt Sand, und trotzdem der Lieblingsort der Triestiner im Sommer.',
-  onSite:'Setzt euch f\xfcnf Minuten ans Wasser. Blickt nach Nordwesten: Die K\xfcste dort dr\xfcben unterhalb der Pinien ist der Streifen, um den es im R\xe4tsel geht \u2013 und die wei\xdfe Landzunge dahinter ist das Schloss Miramare.',
+  onSite:'Setz dich f\xfcnf Minuten ans Wasser und sieh nach Nordwesten: die wei\xdfe Landzunge im Gr\xfcn. Dort beginnt die Kette.',
   levels:[
-   {t:'An einem Sonntag im Oktober verschwindet das Wasser vor euch unter Segeln: \xfcber 2000 Boote starten gleichzeitig, der Rekord von 2018 liegt bei 2689 gemeldeten Booten. Nach Teilnehmerzahl ist das die gr\xf6\xdfte Segelregatta der Welt.<br><br>Ihren Namen hat sie von dem K\xfcstenstreifen im Nordwesten, an dem Triest im Sommer badet.<br><br><b>Wie hei\xdft die Regatta?</b>'},
-   {t:'Der K\xfcstenstreifen ist ein Stadtteil von Triest, rund vier Kilometer nordwestlich von hier, zwischen der Stadt und dem Schloss Miramare: Betonterrassen und Pinien statt Sand.<br><br>Sucht seinen Namen \u2013 die Regatta hei\xdft fast genauso.<br><br><b>Wie hei\xdft die Regatta?</b>'},
-   {t:'Der Stadtteil hei\xdft <em>Barcola</em>. Der Regattaname ist die davon abgeleitete Form auf <b>-ana</b>: Ortsname ohne das End-a, dann die Endung anh\xe4ngen.<br><br><b>Wie lautet er?</b>'}
+   {t:'Blick nach Nordwesten, auf die Landzunge: das wei\xdfe Schlo\xdf im Gr\xfcn.<br><br>Der es bauen lie\xdf, war Admiral und der Bruder eines Kaisers. Man trug ihm eine Krone jenseits des Ozeans an; er nahm sie, und drei Jahre darauf stellte man ihn an eine Mauer und erscho\xdf ihn.<br><br>Sein Bruder aber sa\xdf in Wien und regierte achtundsechzig Jahre lang \u2013 l\xe4nger als fast jeder Herrscher Europas. Er verlor seine Frau und seinen Neffen durch M\xf6rderhand, seinen Sohn durch die eigene. Und diese Stadt hier war sein Hafen.<br><br><b>Nenne den Bruder.</b>'},
+   {t:'<b>Ein Nachtrag.</b> Das Schlo\xdf hei\xdft Miramare, der Erschossene war Maximilian, und die Krone jenseits des Ozeans war die von Mexiko.<br><br>Der Bruder in Wien war der vorletzte Kaiser \xd6sterreichs. Seine ermordete Frau kennt jeder unter ihrem Kosenamen: Sisi.'},
+   {t:'<b>Die letzte Handreichung.</b> Sein Name besteht aus zwei Vornamen: Der erste ist der des heiligen Franziskus in deutscher Form, der zweite der des Ziehvaters Jesu.<br><br>Er regierte von 1848 bis 1916.'}
   ],
-  a:['ebb2465c','16904631','6170be04'],
-  sol:'Barcolana',
-  after:'Die Barcolana findet seit 1969 am zweiten Sonntag im Oktober statt. 2018 gingen 2689 Boote an den Start \u2013 Weltrekord. Start und Ziel liegen genau vor der K\xfcste, an der ihr gerade steht; vom Molo Audace aus sieht man an diesem Tag kein Wasser mehr, nur Segel.'
+  a:['ba733999','5b4ca66d','736434d0','bda9584c','62040b44','e5949f03'],
+  sol:'Franz Joseph I.',
+  after:'Erzherzog Maximilian lie\xdf Schlo\xdf Miramare 1856\u20131860 bauen, brach 1864 nach Mexiko auf und wurde dort am 19. Juni 1867 erschossen. Sein Bruder Franz Joseph I. regierte von 1848 bis 1916, achtundsechzig Jahre: Seine Frau Elisabeth wurde 1898 in Genf ermordet, sein Sohn Rudolf nahm sich 1889 in Mayerling das Leben, sein Neffe Franz Ferdinand fiel 1914 in Sarajevo dem Attentat zum Opfer \u2013 jenem Attentat, das den Ersten Weltkrieg ausl\xf6ste, an dessen Ende Triest aufh\xf6rte, \xf6sterreichisch zu sein. Damit schlie\xdft sich der Kreis zum Molo Audace.'
 }
 ];
 
@@ -1427,6 +1433,19 @@ function renderGeoPanel(s,t){
   return h;
 }
 
+/* Alle bis einschliesslich Stufe "bis" freigeschalteten Raetseltexte
+   untereinander. Aeltere Stufen bleiben lesbar, nur zurueckgenommen. */
+function levelStack(s, bis){
+  var namen=['Schwer \u00b7 3 Punkte','Mittel \u00b7 2 Punkte','Leicht \u00b7 1 Punkt'];
+  var h='<div class="pz-stack">';
+  for(var i=0;i<=bis && i<s.levels.length;i++){
+    h+='<div class="puzzle'+(i<bis?' past':'')+'">'+
+       '<span class="pz-tag'+(i===1?' t2':i===2?' t3':'')+'">'+namen[i]+'</span><br>'+
+       s.levels[i].t+'</div>';
+  }
+  return h+'</div>';
+}
+
 function renderPuzzle(s,t){
   if(!t.visited){
     return '<div class="locked"><span class="lk">\u{1F512}</span><b>Das Rätsel öffnet sich vor Ort.</b>'+
@@ -1435,22 +1454,24 @@ function renderPuzzle(s,t){
   if(t.solved){
     return '<h2>✅ Gelöst</h2>'+
       '<div class="note ok"><b>'+t.points+' von 3 Punkten</b> · Lösung: <b>'+esc(s.sol)+'</b></div>'+
-      '<p class="story">'+s.after+'</p>';
+      '<p class="story">'+s.after+'</p>'+
+      '<h3 style="margin-top:1.2rem">Zum Nachlesen</h3>'+levelStack(s,t.level);
   }
   if(t.failed){
     return '<h2>Nicht geknackt</h2>'+
       '<div class="note bad">0 Punkte. Die Lösung lautet: <b>'+esc(s.sol)+'</b></div>'+
-      '<p class="story">'+s.after+'</p>';
+      '<p class="story">'+s.after+'</p>'+
+      '<h3 style="margin-top:1.2rem">Zum Nachlesen</h3>'+levelStack(s,t.level);
   }
 
-  var lv=t.level, L=s.levels[lv], pts=3-lv, left=3-t.tries[lv];
+  var lv=t.level, pts=3-lv, left=3-t.tries[lv];
   var names=['Schwer','Mittel','Leicht'];
   var h='<div class="lvl-head">'+
         '<span class="lvl-badge'+(lv===1?' l2':lv===2?' l3':'')+'">'+names[lv]+' · '+pts+' '+(pts===1?'Punkt':'Punkte')+'</span>'+
         '<span class="tries" title="'+left+' Versuche übrig">'+
         [0,1,2].map(function(i){return '<i class="'+(i<t.tries[lv]?'used':'')+'"></i>';}).join('')+
         '</span></div>';
-  h+='<div class="puzzle">'+L.t+'</div>';
+  h+=levelStack(s,lv);
   h+='<label for="ans">Eure Antwort</label>'+
      '<input type="text" id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Antwort eingeben …">'+
      '<div id="ansFeedback"></div>'+
