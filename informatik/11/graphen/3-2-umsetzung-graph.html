@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3.2 Umsetzung Graph | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Graphen, Informatik 11 (NTG): Graphen als Adjazenzmatrix darstellen und in Java mit einem zweidimensionalen Array implementieren – Kanten hinzufügen, Matrix ausgeben, Nachbarn finden.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/include/online-ide-embedded.css">
+    <script type="module" src="https://edu-mrh.de/embed/include/online-ide-embedded.js"></script>
+    <link rel="stylesheet" href="graphen.css">
+    <script defer src="graphen.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🕸️</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="graphen.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 3.2</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#achterbahn">🎢 Achterbahn</a></li>
+            <li><a href="#matrix">📝 Die Adjazenzmatrix</a></li>
+            <li><a href="#werkstatt">🧩 Matrix-Werkstatt</a></li>
+            <li><a href="#projekt">✏️ Projekt Graph</a></li>
+            <li><a href="#nachbarn">🛠️ Nachbarn und Wald</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Graphen</div>
+            <ul class="sidebar-menu">
+                <li><a href="graphen.html">Übersicht</a></li>
+                <li><a href="3-1-grundbegriffe.html">3.1 Grundbegriffe</a></li>
+                <li><a href="3-2-umsetzung-graph.html">3.2 Umsetzung Graph</a></li>
+                <li><a href="graphen.html#breitensuche">3.3 Breitensuche</a></li>
+                <li><a href="graphen.html#dijkstra">3.4 Dijkstra</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero gr-hero">
+                <h1 class="hero-title">3.2 Graphen implementieren: die Adjazenzmatrix</h1>
+                <p class="hero-subtitle">Graphen · Informatik 11 (NTG) · 2 Stunden</p>
+                <span class="gr-kompetenz">Du kannst: einen Graphen als Adjazenzmatrix darstellen, ihn in Java mit einem zweidimensionalen Array umsetzen und die Nachbarn eines Knotens bestimmen.</span>
+                <div class="gr-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-3-2-umsetzung-graph.pdf">📝 Arbeitsblatt 3.2 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-3-2-umsetzung-graph.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#achterbahn">🎢 Einstieg</a><a class="p-note" href="#matrix">📝 Festhalten</a><a class="p-investigate" href="#werkstatt">🧩 Üben</a><a class="p-modify" href="#projekt">✏️ Verändern</a><a class="p-make" href="#nachbarn">🛠️ Selbst bauen</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="achterbahn" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🎢</span><h2>Einstieg<small>Aufgabe 1: Wer fährt mit wem?</small></h2></div>
+                <div class="phase-body">
+                    <p>Deine Karte aus 3.1 kann ein Mensch lesen, ein Computer aber nicht. Er braucht etwas mit festen Plätzen, eine Tabelle zum Beispiel. Beim Ausflug in einen Vergnügungspark haben sechs Freunde notiert, mit wem sie gerne Achterbahn fahren möchten (Zeile B: Björn möchte mit Doris und Gerda fahren):</p>
+                    <div class="tab-scroll">
+                        <table class="gr-tab" style="width:auto">
+                            <tr><th></th><th>B</th><th>D</th><th>F</th><th>G</th><th>J</th><th>S</th></tr>
+                            <tr><th>B</th><td></td><td>X</td><td></td><td>X</td><td></td><td></td></tr>
+                            <tr><th>D</th><td>X</td><td></td><td></td><td></td><td>X</td><td>X</td></tr>
+                            <tr><th>F</th><td></td><td>X</td><td></td><td>X</td><td></td><td></td></tr>
+                            <tr><th>G</th><td></td><td></td><td></td><td></td><td>X</td><td>X</td></tr>
+                            <tr><th>J</th><td></td><td></td><td>X</td><td></td><td></td><td></td></tr>
+                            <tr><th>S</th><td>X</td><td></td><td>X</td><td></td><td>X</td><td></td></tr>
+                        </table>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Begründe, dass die Tabelle einen Graphen darstellt, und zeichne ihn.</li>
+                        <li>Ist der Graph gerichtet? Finde ein Beispiel in der Tabelle.</li>
+                        <li>Welche beiden sollten auf jeden Fall nebeneinandersitzen?</li>
+                    </ol>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-3-2-umsetzung-graph.pdf">📝 Blatt 3.2 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="matrix" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Aufgabe 2: Die Adjazenzmatrix</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Das Konzept</h4>
+                        <p>Eine <strong>Adjazenzmatrix</strong> (adjazent = benachbart) speichert einen Graphen als Tabelle. Zeilen und Spalten stehen für die Knoten. Führt eine Kante von Knoten i nach Knoten j, steht in Zeile i, Spalte j ein X, in Java <code>true</code>. Bei gewichteten Graphen steht dort das Gewicht.</p>
+                    </div>
+                    <p>Fülle den Merkkasten und die Matrizen zu G<sub>1</sub> und G<sub>2</sub> auf dem Blatt aus. Vergleiche: Was fällt bei der Matrix des ungerichteten Graphen G<sub>2</sub> auf?</p>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-3-2-umsetzung-graph.pdf">📝 Blatt 3.2 · Merkkasten und Aufgabe 2</a></p>
+                </div>
+            </section>
+
+            <section id="werkstatt" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🧩</span><h2>Üben<small>Matrix-Werkstatt: Graph und Matrix hin und her</small></h2></div>
+                <div class="phase-body">
+                    <div data-werkstatt>
+                        <div class="werkstatt-knoepfe" role="group" aria-label="Modus wählen">
+                            <button type="button" data-wmodus="frei">Freies Spiel</button>
+                            <button type="button" data-wmodus="bild">Rätsel: Graph → Matrix</button>
+                            <button type="button" data-wmodus="notation">Rätsel: G = (V, E) → Matrix</button>
+                        </div>
+                        <p class="werkstatt-aufgabe"></p>
+                        <div class="werkstatt">
+                            <div>
+                                <table class="matrix" aria-label="Adjazenzmatrix"></table>
+                                <p class="matrix-legende">Zeile = von, Spalte = nach · X = Kante</p>
+                                <div class="werkstatt-knoepfe" style="margin-top:.8rem">
+                                    <label><input type="checkbox" data-symmetrisch> ungerichtet (spiegelt jeden Klick)</label>
+                                    <button type="button" data-leeren>Leeren</button>
+                                    <button type="button" data-pruefen hidden>Prüfen</button>
+                                </div>
+                                <p class="pruef-ergebnis" aria-live="polite"></p>
+                            </div>
+                            <div>
+                                <svg class="graph-svg" viewBox="0 0 340 320" role="img" aria-label="Graph zur Matrix"></svg>
+                                <pre class="notation"></pre>
+                            </div>
+                        </div>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Erzeuge im freien Spiel einen ungerichteten Graphen. Wie sieht die Matrix aus? Probier dann eine Schlinge (ein X auf der Diagonalen).</li>
+                        <li>Löse je zwei Rätsel. Achte auf die Kurzschreibweise aus 3.1: {A, B} bedeutet zwei Einträge.</li>
+                    </ol>
+                </div>
+            </section>
+
+            <section id="projekt" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">✏️</span><h2>Verändern<small>Aufgaben 3 bis 5: Projekt Graph</small></h2></div>
+                <div class="phase-body">
+                    <p>In Java wird die Adjazenzmatrix ein <strong>zweidimensionales Array</strong> <code>boolean[][] adja</code>, wie das Mosaik in der 10. Klasse (<a href="../../10/java/2-5-arrays.html#mosaik">Station 2.5</a>). Jeder Knoten hat eine Nummer, den Index. Die Knoten-Objekte liegen in einem zweiten Feld <code>Knoten[] knoten</code> an derselben Position.</p>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 3:</strong> Starte das Projekt unverändert. Was meldet die IDE, und warum? Erzeuge dann in <code>Graph</code> das Knotenfeld und die Matrix (TODO 1, Code auf dem Blatt).</li>
+                        <li><strong>Aufgabe 4:</strong> Übertrage <code>kanteHinzufuegen</code> vom Blatt (TODO 2). Sage vorher, was bei den Aufrufen im Hauptprogramm passiert, und teste sie einzeln.</li>
+                        <li><strong>Aufgabe 5:</strong> Ergänze <code>printAdja()</code> (TODO 3): eine zweite Schleife für die Spalten.</li>
+                    </ol>
+                    <div class="stolper"><strong>Stolperstein:</strong> <code>kanteHinzufuegen(5, 0)</code> stürzt ab, obwohl die Methode doch prüft, ob die Nummer zu groß ist. Warum? Welche Nummern sind bei fünf Knoten gültig? Und was passiert mit der Kante 0 → 1: Wird sie in beide Richtungen eingetragen?</div>
+                    <div class="ide-block">
+                        <div class="ide-kopf"><h3>Projekt Graph</h3></div>
+                        <div class="java-online" style="width:100%;height:640px" data-java-online="{ 'id': 'g11-32-graph', 'speed': 1000000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true, 'withErrorList': true }">
+                            <script type="text/plain" title="Hauptprogramm.java">
+World world = new World(600, 800);
+Graph graph = new Graph();
+
+// Aufgabe 4: Aufrufe einzeln einkommentieren und testen
+graph.kanteHinzufuegen(0, 1);
+// graph.kanteHinzufuegen(4, 2);
+// graph.kanteHinzufuegen(7, 1);
+// graph.kanteHinzufuegen(5, 0);
+
+// Aufgabe 6: graph.nachbarnAusgeben(1);
+
+// Bonus (Website): Hänsel und Gretel
+// 0 Hexenhaus, 1 Pilze, 2 Wald1, 3 Wald2, 4 Zuhause
+                            </script>
+                            <script type="text/plain" title="Graph.java">
+/**
+ * Ein Graph, gespeichert als Adjazenzmatrix.
+ * Suche (Strg + F) nach "TODO" und ergänze den Code.
+ */
+public class Graph {
+   Knoten[] knoten;     // knoten[i] ist der Knoten mit der Nummer i
+   boolean[][] adja;    // adja[start][ende] ist true, wenn es eine Kante gibt
+   int anzKnoten = 5;
+
+   Graph() {
+      // TODO 1: Knotenfeld und Adjazenzmatrix erzeugen (Blatt, Aufgabe 3)
+
+
+      // Knoten erzeugen und anordnen (nur für die Darstellung)
+      for (int i = 0; i < anzKnoten; i++) {
+         knoten[i] = new Knoten();
+         knoten[i].setKnotenname("" + i);
+         knoten[i].moveTo(100 + (i % 3) * 200, 100 + i * 100);
+         new Text(knoten[i].getCenterX() - 8, knoten[i].getCenterY() - 16, 32, "" + i);
+      }
+   }
+
+   // Fügt eine Kante von start nach ende hinzu.
+   void kanteHinzufuegen(int start, int ende) {
+      // TODO 2: Methode vom Blatt übertragen (Aufgabe 4), testen, dann verbessern
+
+   }
+
+   // Gibt die Adjazenzmatrix mit X (Kante) und O (keine Kante) aus.
+   void printAdja() {
+      for (int zeile = 0; zeile < anzKnoten; zeile++) {
+         int spalte = 0; // TODO 3: durch eine Wiederholung über alle Spalten ersetzen (Aufgabe 5)
+         if (adja[zeile][spalte]) {
+            print("X ");
+         } else {
+            print("O ");
+         }
+         println();
+      }
+      println();
+   }
+
+   // Gibt alle Nachbarn von Knoten k aus.
+   void nachbarnAusgeben(int k) {
+      // TODO 4 (Aufgabe 6)
+
+   }
+
+   // Zeichnet eine Kante als halbtransparenten Balken. Muss nicht verändert werden.
+   void zeichneKante(int start, int ende) {
+      double startX = knoten[start].getCenterX();
+      double startY = knoten[start].getCenterY();
+      double endeX = knoten[ende].getCenterX();
+      double endeY = knoten[ende].getCenterY();
+
+      double abstand = Vector2.distance(startX, startY, endeX, endeY);
+      double winkel = new Vector2(endeX - startX, endeY - startY).getAngleDeg();
+
+      Rectangle balken = new Rectangle(startX, startY, 10, abstand);
+      balken.setFillColor(Color.white);
+      balken.setAlpha(0.6);
+      balken.rotate(90 - winkel, startX, startY);
+   }
+}
+                            </script>
+                            <script type="text/plain" title="Knoten.java">
+class Knoten extends Circle {
+   private String knotenname = "Knoten X";
+
+   Knoten() {
+      setFillColor(Color.orange);
+   }
+
+   String getKnotenname() {
+      return knotenname;
+   }
+
+   void setKnotenname(String knotenname) {
+      this.knotenname = knotenname;
+   }
+}
+                            </script>
+                        </div>
+                    </div>
+                    <details class="denk"><summary>Denkanstoß zu Aufgabe 4</summary>
+                        <p>Bei fünf Knoten gibt es die Nummern 0 bis 4. Welcher Vergleichsoperator passt also zu <code>anzKnoten</code>: <code>&gt;</code> oder <code>&gt;=</code>? Und was ist mit negativen Nummern?</p>
+                    </details>
+                    <details class="denk"><summary>Denkanstoß zu Aufgabe 5</summary>
+                        <p>Die äußere Schleife geht die Zeilen durch, die innere die Spalten einer Zeile. Der Zeilenumbruch gehört deshalb hinter die innere Schleife.</p>
+                    </details>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-3-2-umsetzung-graph.pdf">📝 Blatt 3.2 · Aufgaben 3 bis 5 (Seite 2)</a></p>
+                </div>
+            </section>
+
+            <section id="nachbarn" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Selbst bauen<small>Aufgabe 6 und Bonus: Nachbarn und der Wald</small></h2></div>
+                <div class="phase-body">
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 6:</strong> Schreibe <code>nachbarnAusgeben(int k)</code> (TODO 4). Die Methode gibt alle Knoten aus, zu denen von <code>k</code> eine Kante führt. Welchen Teil der Matrix musst du dafür durchlaufen?</li>
+                        <li><strong>Bonus:</strong> Baue einen Ausschnitt des Hänsel-und-Gretel-Waldes nach: 0 Hexenhaus, 1 Pilze, 2 Wald1, 3 Wald2, 4 Zuhause. Nimm die Kanten aus deiner Karte (Blatt 3.1) und lass dir die Matrix ausgeben. Bei einer Kante gibt es ein Problem. Welches, und wie löst du es?</li>
+                    </ol>
+                    <div class="tipp"><strong>Bonus:</strong> Färbe in <code>nachbarnAusgeben</code> den Knoten <code>k</code> rot und seine Nachbarn grün: <code>knoten[i].setFillColor(Color.green);</code>. Diese Einfärbung siehst du in der Breitensuche wieder.</div>
+                    <details class="denk"><summary>Denkanstoß: Mehr Knoten?</summary>
+                        <p>Ein Array hat eine feste Größe. Um später Knoten hinzufügen zu können, legt man es größer an als nötig (z. B. <code>maxAnzahl = 20</code>) und merkt sich in <code>anzKnoten</code>, wie viele Plätze belegt sind. Genau so ist das Projekt in der Breitensuche aufgebaut.</p>
+                    </details>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-3-2-umsetzung-graph.pdf">📝 Blatt 3.2 · Aufgabe 6 und Merksatz</a></p>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Von der Matrix zu den Suchverfahren</small></h2></div>
+                <div class="phase-body">
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🔍 3.3 Breitensuche</h4>
+                            <p>Dein <code>nachbarnAusgeben</code> ist der Kern: „Besuche alle Nachbarn des aktuellen Knotens“. Dazu kommen eine Warteschlange und eine Liste der besuchten Knoten, die Brotkrumen. Das Projekt dort nutzt dieselbe Klasse <code>Graph</code>.</p>
+                            <a class="btn btn-primary btn-sm" href="graphen.html#breitensuche">Weiter zur Breitensuche</a>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>🛣️ 3.4 Dijkstra</h4>
+                            <p>Für gewichtete Graphen wird aus <code>boolean[][] adja</code> ein <code>int[][] adja</code>: In jeder Zelle steht das Gewicht, ein besonderer Wert bedeutet „keine Kante“. Welcher Wert eignet sich dafür?</p>
+                            <a class="btn btn-outline btn-sm" href="graphen.html#dijkstra">Zu Dijkstra</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="3-1-grundbegriffe.html">← 3.1 Grundbegriffe</a>
+                <a class="btn btn-primary" href="graphen.html#breitensuche">Weiter: 3.3 Breitensuche →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-3-2-umsetzung-graph-lsg.pdf">Lösung Blatt 3.2 (PDF)</a></p>
+                    <p>Die Methode <code>kanteHinzufuegen</code> auf dem Blatt ist absichtlich fehlerhaft: <code>&gt;</code> statt <code>&gt;=</code> (Absturz bei <code>(5, 0)</code>), keine Prüfung auf negative Werte, und sie trägt nur eine Richtung ein. Die Klassen <code>Graph</code> und <code>Knoten</code> entsprechen im Aufbau dem Projekt der Breitensuche (3.3, dort mit <code>maxAnzahl</code> und <code>knotenHinzufuegen</code>). Das Projekt hat eine eigene ID (<code>g11-32-graph</code>), der Bearbeitungsstand bleibt im Browser der Schüler:innen.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum &amp; Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

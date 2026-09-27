@@ -1,0 +1,181 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+% Dörfer-Graph (Merkkasten Begriffe): Koordinaten wie im Begriffe-Explorer der Website
+\newcommand{\doerferknoten}{%
+  \node[knoten,font=\tiny,minimum height=4mm,inner sep=1.5pt] (A) at (4.4,3.3) {Altdorf};
+  \node[knoten,font=\tiny,minimum height=4mm,inner sep=1.5pt] (W) at (1.2,2.9) {Weiler};
+  \node[knoten,font=\tiny,minimum height=4mm,inner sep=1.5pt] (F) at (5.1,2.0) {Fischbach};
+  \node[knoten,font=\tiny,minimum height=4mm,inner sep=1.5pt] (Z) at (2.9,2.0) {Ziegelstein};
+  \node[knoten,font=\tiny,minimum height=4mm,inner sep=1.5pt] (N) at (0.9,0.95) {Neustadt};
+  \node[knoten,font=\tiny,minimum height=4mm,inner sep=1.5pt] (B) at (4.4,0.8) {Burg};
+  \node[knoten,font=\tiny,minimum height=4mm,inner sep=1.5pt] (R) at (2.6,0.2) {Rain};}
+\begin{document}
+\abtitel{3.1}{Graphen -- Grundbegriffe}
+
+Hänsel und Gretel haben die Hexe überlistet. Doch die Brotkrumen, mit denen sie ihren Weg markiert hatten, haben die Vögel gefressen. Findest du trotzdem nach Hause?
+
+\begin{aufgabe}[Hänsel und Gretel]{1}
+Starte das Spiel auf der Website (Station 3.1).
+\textbf{a)} Zeichne beim Spielen eine Karte des Waldes: jeder Ort ein Kästchen, jeder Weg eine Linie. Führt ein Weg nur in eine Richtung, zeichne einen Pfeil. Das Hexenhaus ist schon eingezeichnet.
+\end{aufgabe}
+\noindent\begin{tikzpicture}
+\draw[step=5mm,gray!55,thin] (0,0) grid (17.4,7);
+\node[knoten,fill=green!15] (hex) at (4,2.3) {Hexenhaus (Start)};
+\ifloesung
+  \node[lsgknoten] (warn) at (5.5,6.5) {Warnung};
+  \node[lsgknoten] (wolf) at (10.5,6.5) {Werwolf};
+  \node[lsgknoten] (stadt) at (1.6,5.2) {Stadt};
+  \node[lsgknoten] (abz) at (5.5,5.2) {Abzweigung};
+  \node[lsgknoten] (spinne) at (13,5.2) {Spinne};
+  \node[lsgknoten] (baeck) at (1.6,3.6) {Bäckerei};
+  \node[lsgknoten] (pilze) at (4,3.9) {Pilze};
+  \node[lsgknoten] (w3) at (13,3.4) {Wald3};
+  \node[lsgknoten] (w1) at (8,1.0) {Wald1};
+  \node[lsgknoten] (stein) at (12.2,2.0) {Steinkreis};
+  \node[lsgknoten] (w2) at (15,0.8) {Wald2};
+  \node[lsgknoten] (heim) at (16.2,2.6) {Zuhause};
+  \draw[lsgkante] (stadt) -- (baeck);
+  \draw[lsgkante] (stadt) -- (pilze);
+  \draw[lsgkante] (pilze) -- (abz);
+  \draw[lsgkante] (pilze) -- (hex);
+  \draw[lsggkante] (pilze) to[bend left=50] node[right,font=\scriptsize,text=red!75!black] {Pilze essen} (hex);
+  \draw[lsgkante] (abz) -- (warn);
+  \draw[lsggkante] (warn) -- (wolf);
+  \draw[lsgkante] (abz) -- (spinne);
+  \draw[lsgkante] (spinne) -- (w3);
+  \draw[lsgkante] (hex) -- (w1);
+  \draw[lsgkante] (w1) -- (w3);
+  \draw[lsgkante] (w1) -- (w2);
+  \draw[lsgkante] (w1) -- (stein);
+  \draw[lsgkante] (w2) -- (w3);
+  \draw[lsgkante] (w2) -- (stein);
+  \draw[lsgkante] (w3) -- (stein);
+  \draw[lsggkante] (w2) -- (heim);
+  \node[text=red!75!black,font=\scriptsize,align=left,anchor=north west] at (0.2,1.3) {13 Knoten, 17 Kanten\\(14 ungerichtet, 3 gerichtet)};
+\fi
+\end{tikzpicture}
+
+\textbf{b)} Am Ende zeigt dir das Spiel deinen Weg. Notiere ihn und die Anzahl der Schritte:
+\lsglinien{1}{individuell; kürzester Weg: Hexenhaus -- Wald1 -- Wald2 -- Zuhause (3 Schritte)}
+
+\begin{minipage}[t]{0.6\linewidth}
+\begin{merke}[Graph und Kurzschreibweise $G = (V, E)$]\raggedright
+Ein Graph besteht aus \lsg[2.3cm]{Knoten} (engl. \textit{vertices}) und \lsg[2.3cm]{Kanten} (engl. \textit{edges}). Eine Kante verbindet zwei Knoten. Im Spiel sind die Orte die \lsg[2cm]{Knoten}, die Wege die \lsg[2cm]{Kanten}.\\[1mm]
+Kurzschreibweise $G = (V, E)$: $V$ ist die Menge der Knoten, $E$ die Menge der Kanten.
+\begin{itemize}
+\item $(A, B)$: \lsg[2.5cm]{gerichtete} Kante, nur von $A$ nach $B$
+\item $\{A, B\}$: \lsg[2.5cm]{ungerichtete} Kante, steht für $(A, B)$ und \lsg[1.4cm]{$(B, A)$}
+\end{itemize}
+\end{merke}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.37\linewidth}
+\vspace{1mm}
+\centering\small \textbf{Beispiel: Wer folgt wem?}\\[1mm]
+\begin{tikzpicture}[x=0.95cm,y=0.9cm]
+\node[knoten] (leon) at (0.7,2.2) {Leon};
+\node[knoten] (letifa) at (3.3,2.4) {Letifa};
+\node[knoten] (luise) at (4.3,1.1) {Luise};
+\node[knoten] (hamza) at (2.4,0.3) {Hamza};
+\node[knoten] (sabine) at (0.5,0.6) {Sabine};
+\draw[dkante] (leon) -- (letifa);
+\draw[gkante] (letifa) -- (luise);
+\draw[gkante] (leon) -- (luise);
+\draw[dkante] (leon) -- (hamza);
+\draw[gkante] (hamza) -- (luise);
+\end{tikzpicture}
+\end{minipage}\\[1mm]
+{\small $V = \{\text{Hamza}, \text{Leon}, \text{Letifa}, \text{Luise}, \text{Sabine}\}$\\
+$E = \{\{\text{Leon}, \text{Letifa}\}, \{\text{Leon}, \text{Hamza}\}, (\text{Letifa}, \text{Luise}), (\text{Leon}, \text{Luise}), (\text{Hamza}, \text{Luise})\}$}
+
+\begin{aufgabe}[Hänsel und Gretel]{1}
+\textbf{c)} Schreibe den Ausschnitt deiner Karte mit den Knoten Hexenhaus, Pilze, Stadt, Bäckerei und Wald1 in Kurzschreibweise auf (5 Kanten).\\[2mm]
+$V = \{$\lsg[15.4cm]{Hexenhaus, Pilze, Stadt, Bäckerei, Wald1}$\}$\\[3mm]
+$E = \{$\lsg[15.4cm]{\{Hexenhaus, Pilze\}, (Pilze, Hexenhaus), \{Pilze, Stadt\}, \{Stadt, Bäckerei\}, \{Hexenhaus, Wald1\}}$\}$
+\end{aufgabe}
+
+\newpage
+\begin{minipage}[t]{0.71\linewidth}
+\begin{merke}[Pfade, Zyklen, Richtung, Gewicht]\raggedright\small
+\textbf{Pfad (Weg):} Folge von Knoten, in der aufeinanderfolgende Knoten durch eine \lsg[1.8cm]{Kante} verbunden sind; keine Kante wird doppelt benutzt.\\[0.6mm]
+\textbf{Einfacher Pfad:} Pfad, in dem sich kein \lsg[1.8cm]{Knoten} wiederholt.\\
+Beispiel in A: \lsg[5.6cm]{Altdorf -- Weiler -- Ziegelstein -- Neustadt}\\[0.6mm]
+\textbf{Länge eines Pfades:} ungewichtet die \lsg[3.2cm]{Anzahl der Kanten}, gewichtet die \lsg[3.2cm]{Summe der Gewichte}.\\[0.6mm]
+\textbf{Zyklus:} einfacher Pfad, dessen \lsg[5cm]{Start- und Endknoten gleich sind}.\\
+Beispiel in A: \lsg[5.6cm]{Weiler -- Ziegelstein -- Fischbach -- Weiler}\\
+Graph mit Zyklus: \emph{zyklisch}, sonst \lsg[3.4cm]{azyklisch (zyklenfrei)}.\\[0.6mm]
+\textbf{Gerichtet:} Kanten nur \lsg[3cm]{in Pfeilrichtung} (Pfeil).\ \textbf{Ungerichtet:} \lsg[2.8cm]{in beide Richtungen} (Strich).\\[0.6mm]
+\textbf{Stark zusammenhängend:} Von \lsg[2.4cm]{jedem Knoten} gibt es einen Pfad zu \lsg[3.2cm]{jedem anderen Knoten}.\\
+\textbf{Schwach zusammenhängend:} \lsg[5.4cm]{nur ohne Beachtung der Richtungen}\\ \lsg[\linewidth]{hängt alles zusammen. B ist schwach, denn von Rain führt keine Kante weg.}\\[0.6mm]
+\textbf{Gewichtet:} Jede Kante trägt eine \lsg[2.6cm]{Zahl (Gewicht)}, z.\,B. \lsg[3.6cm]{Entfernung, Fahrzeit}.
+\end{merke}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.27\linewidth}
+\vspace{1mm}
+\textbf{\small A} {\scriptsize ungerichtet}\\
+\begin{tikzpicture}[x=0.8cm,y=0.85cm]
+\doerferknoten
+\draw[kante] (A)--(W); \draw[kante] (F)--(A); \draw[kante] (W)--(F); \draw[kante] (W)--(Z);
+\draw[kante] (Z)--(F); \draw[kante] (Z)--(N); \draw[kante] (B)--(Z); \draw[kante] (F)--(B);
+\draw[kante] (N)--(R); \draw[kante] (B)--(R);
+\end{tikzpicture}\\[2mm]
+\textbf{\small B} {\scriptsize gerichtet}\\
+\begin{tikzpicture}[x=0.8cm,y=0.85cm]
+\doerferknoten
+\draw[gkante] (A)--(W); \draw[gkante] (F)--(A); \draw[gkante] (W)--(F); \draw[gkante] (W)--(Z);
+\draw[gkante] (Z)--(F); \draw[gkante] (Z)--(N); \draw[gkante] (B)--(Z); \draw[gkante] (F)--(B);
+\draw[gkante] (N)--(R); \draw[gkante] (B)--(R);
+\end{tikzpicture}
+\end{minipage}
+
+\begin{aufgabe}{2}
+{\raggedright Zeichne $G = (V, E)$ mit $V = \{A, B, C, D, E, F\}$ und\\ $E = \{(A, B), (A, C), (A, E), (B, C), (C, C), (C, D), (E, C), (F, D)\}$. Beantworte die Fragen.\par}\vspace{1mm}
+\begin{minipage}[t]{0.42\linewidth}
+\vspace{0pt}
+\begin{tikzpicture}
+\draw[step=5mm,gray!55,thin] (0,0) grid (7,3);
+\ifloesung
+  \foreach \n/\x/\y/\t in {a/0.6/1.5/A, b/2/2.55/B, e/2/0.45/E, c/3.4/1.5/C, d/4.9/1.5/D, f/6.4/1.5/F} {
+    \node[kknoten,minimum size=6mm,draw=red!75!black,text=red!75!black] (\n) at (\x,\y) {\t};}
+  \draw[lsggkante] (a)--(b); \draw[lsggkante] (a)--(c); \draw[lsggkante] (a)--(e);
+  \draw[lsggkante] (b)--(c); \draw[lsggkante] (c)--(d); \draw[lsggkante] (e)--(c);
+  \draw[lsggkante] (f)--(d);
+  \draw[lsggkante] (c) to[out=60,in=120,looseness=6] (c);
+\fi
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.55\linewidth}
+\vspace{0pt}\small\raggedright
+Gerichtet? Woran erkennbar? \lsg[3.9cm]{ja, Paare ( ) statt \{ \}}\\[1.5mm]
+Ein Zyklus: \lsg[5.7cm]{(C, C), eine Schlinge (Länge 1)}\\[1.5mm]
+Stark/schwach zusammenhängend? \lsg[3.6cm]{schwach: von D}\\[1.5mm]
+\lsg[0.98\linewidth]{kommt man nirgends hin.}\\[1.5mm]
+Länge des längsten einfachen Pfades: \lsg[3.2cm]{3 (A--B--C--D)}
+\end{minipage}
+\end{aufgabe}
+
+\begin{aufgabe}[Zurück in den Wald]{3}
+Deine Karte aus Aufgabe 1: \textbf{a)} gerichtet?\ \textbf{b)} ein Zyklus?\ \textbf{c)} stark oder schwach zusammenhängend?\ \textbf{d)} „Der Weg zurück … scheint verschwunden“: Ist die Kante Hexenhaus -- Wald1 gerichtet? Prüfe im Spiel.
+\lsglinien{2}{\small a) gemischt; gerichtet nur (Pilze, Hexenhaus), (Warnung, Werwolf), (Wald2, Zuhause)\quad b) Wald1 -- Wald2 -- Wald3 -- Wald1\\ c) schwach: Von Zuhause/Werwolf führt keine Kante weg.\quad d) nein: Von Wald2 aus führt ein Weg zurück.}
+\end{aufgabe}
+
+\begin{aufgabe}[Ordne die Graphen ein.]{4}
+\vspace{-1mm}
+\small\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\linewidth}{|>{\centering\arraybackslash}m{5.6cm}|>{\centering\arraybackslash}m{1.7cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}X|}\hline
+\textbf{Graph} & \scriptsize\textbf{zusammen-\newline hängend?}\newline stark/schwach/nein & \scriptsize\textbf{ge-\newline richtet?} & \scriptsize\textbf{ge-\newline wichtet?} & \scriptsize\textbf{zyklisch?} & \scriptsize\textbf{Länge eines längsten einfachen Pfades}\\\hline
+\rule{0pt}{8mm}\textbf{I}\ \begin{tikzpicture}[baseline=(k5.base),x=0.85cm,y=0.55cm]
+\foreach \n/\x/\y in {1/0/1,2/1/1,3/2/1,4/3/1,5/1/0,6/3/0} {\node[kknoten,minimum size=5mm,inner sep=0pt,font=\tiny] (k\n) at (\x,\y) {K\n};}
+\draw[kante] (k1)--(k2)--(k3)--(k4); \draw[kante] (k2)--(k5);
+\end{tikzpicture}
+& \lsgoder{\lsgfarbe nein}{} & \lsgoder{\lsgfarbe nein}{} & \lsgoder{\lsgfarbe nein}{} & \lsgoder{\lsgfarbe nein}{} & \lsgoder{\lsgfarbe 3: K1--K2--K3--K4}{}\\\hline
+\rule{0pt}{5mm}\textbf{II}\ $V = \{A, B, C\}$\newline $E =\{(A, B), (B, A), (C, B), (C, C)\}$
+& \lsgoder{\lsgfarbe schwach}{} & \lsgoder{\lsgfarbe ja}{} & \lsgoder{\lsgfarbe nein}{} & \lsgoder{\lsgfarbe ja}{} & \lsgoder{\lsgfarbe 2: C$\to$B$\to$A}{}\\\hline
+\rule{0pt}{8mm}\textbf{III}\ \begin{tikzpicture}[baseline=(k3.base),x=0.9cm,y=0.6cm]
+\foreach \n/\x/\y in {1/0/1,2/2/1,3/1/0,4/3/0} {\node[kknoten,minimum size=5mm,inner sep=0pt,font=\tiny] (k\n) at (\x,\y) {K\n};}
+\draw[kante] (k1) -- node[gewicht] {4} (k2); \draw[kante] (k2) -- node[gewicht] {1} (k3);
+\draw[kante] (k3) -- node[gewicht] {5} (k1); \draw[kante] (k3) -- node[gewicht] {2} (k4);
+\end{tikzpicture}
+& \lsgoder{\lsgfarbe stark}{} & \lsgoder{\lsgfarbe nein}{} & \lsgoder{\lsgfarbe ja}{} & \lsgoder{\lsgfarbe ja}{} & \lsgoder{\lsgfarbe 11: K2--K1--K3--K4}{}\\\hline
+\end{tabularx}
+\end{aufgabe}
+\end{document}

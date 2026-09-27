@@ -72,6 +72,15 @@
                     </p>
                 </div>
 
+                <div class="info-box" style="margin-bottom: 1.5rem;">
+                    <h3>🧭 Neu: Stationen mit Arbeitsblatt</h3>
+                    <p>Die ersten beiden Kapitel gibt es als eigene Stationen mit Hänsel-und-Gretel-Spiel, interaktiven Graphen, Java-Projekt und Arbeitsblättern (PDF, auch mit Lösung):</p>
+                    <p>
+                        <a href="3-1-grundbegriffe.html" class="btn btn-primary">3.1 Grundbegriffe</a>
+                        <a href="3-2-umsetzung-graph.html" class="btn btn-primary">3.2 Umsetzung Graph</a>
+                    </p>
+                </div>
+
                 <div class="info-grid">
                     <div class="info-card">
                         <div class="info-icon">🎯</div>
@@ -121,6 +130,11 @@
                     <h2>Grundbegriffe von Graphen</h2>
                 </div>
 
+                <div class="info-box">
+                    <p>💡 Dieses Kapitel gibt es ausführlicher als <strong>Station 3.1</strong>, mit eingebettetem Spiel, Begriffe-Explorer und neuem Arbeitsblatt.
+                    <a href="3-1-grundbegriffe.html" class="btn btn-primary">Zur Station 3.1 →</a></p>
+                </div>
+
                 <div class="pdf-download-box">
                     <div class="pdf-icon">📄</div>
                     <div class="pdf-content">
@@ -153,9 +167,8 @@
                         den Weg durch den Wald zu finden. Jeder Ort ist ein Knoten, jeder Weg eine Kante.
                     </p>
                     <div class="highlight">
-                        <a href="https://edu-mrh.de/informatik/11/graphen/haenselundgretel/_Spiel_starten.html" 
-                           target="_blank" class="btn btn-primary">
-                            🎮 Spiel starten
+                        <a href="3-1-grundbegriffe.html#spiel" class="btn btn-primary">
+                            🎮 Spiel starten (Station 3.1)
                         </a>
                     </div>
                 </div>
@@ -269,6 +282,11 @@
                     <h2>Implementierung eines Graphen</h2>
                 </div>
 
+                <div class="info-box">
+                    <p>💡 Dieses Kapitel gibt es ausführlicher als <strong>Station 3.2</strong>, mit Matrix-Werkstatt, Java-Projekt und neuem Arbeitsblatt.
+                    <a href="3-2-umsetzung-graph.html" class="btn btn-primary">Zur Station 3.2 →</a></p>
+                </div>
+
                 <div class="pdf-download-box">
                     <div class="pdf-icon">📄</div>
                     <div class="pdf-content">
@@ -380,7 +398,7 @@ public class Graph
       // Dies ist für adja nicht nötig, da boolean automatisch mit "false" initialisiert wird.
       for (int i = 0; i < knoten.length; i++) {
          knoten[i] = new Knoten(); 
-         knoten[i].setKnotenname((String) i);
+         knoten[i].setKnotenname("" + i);
          // nur für die graphische Darstellung
          knoten[i].moveTo(100 + ((i % 3 * 200)), 100 + (i * 100));
       }
@@ -673,7 +691,7 @@ public class Graph
       knoten = new Knoten[maxAnzahl];
       for (int i = 0; i < anzKnoten; i++) {
          knoten[i] = new Knoten(); 
-         knoten[i].setKnotenname((String) i);
+         knoten[i].setKnotenname("" + i);
          
          //nur für grafische Darstellung
          knoten[i].moveTo(100 + ((i % 3 * 200)), 100 + (i * 100));
@@ -1419,6 +1437,14 @@ if(aktuellerKnoten == zielKnoten) {
             originalShowSection(sectionId);
             history.pushState({ section: sectionId }, '', '#' + sectionId);
         };
+
+        // Open the section named in the URL hash on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const ziel = document.getElementById(location.hash.slice(1));
+            if (ziel && ziel.classList.contains('content-section')) {
+                originalShowSection(ziel.id);
+            }
+        });
 
         // Toggle PDF Download Box with confirmation
         function togglePDF(pdfId) {
