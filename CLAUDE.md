@@ -35,6 +35,32 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
 4. **Bestehende URLs nicht brechen**: Dateien nicht umbenennen/verschieben,
    ohne dass es der Auftrag verlangt.
 
+## Online-IDE (Java-Projekte in Seiten)
+
+- Eingebettet über `<div class="java-online" data-java-online="{ 'id': '…', … }">`
+  mit `<script type="text/plain" title="Datei.java">` je Datei (Beispiel:
+  `informatik/10/java/2-5-arrays.html`). Jede Projekt-`id` nur einmal
+  vergeben: Der Bearbeitungsstand liegt unter dieser ID im Browser.
+- Der Code ist **Java** mit Erweiterungen der Online-IDE: Hauptprogramm
+  ohne `main`, Grafikklassen (`World`, `Circle`, `Rectangle`, `Line`,
+  `Text`, `Sprite`, `Turtle` …), `Color`-Konstanten (auch deutsch, z. B.
+  `Color.grau`), `Vector2`, `Random`, `LinkedList` usw. `print`/`println`
+  sind als globale Funktionen nutzbar.
+- **Referenz: `Online-IDE API-Documentation.txt` im Repo-Root.** Jede
+  verwendete Klasse, jeden Konstruktor und jede Methode dort prüfen,
+  nichts aus dem Gedächtnis annehmen. Alles andere muss gültiges Java
+  sein (z. B. kein `(String) zahl`, sondern `"" + zahl`).
+- Code und Arbeitsblatt müssen zusammenpassen: TODO-Nummern und
+  Kommentare verweisen auf die Aufgabennummern des Blatts, Methodennamen
+  und Code-Ausschnitte sind auf Blatt und in der IDE identisch.
+
+## Arbeitsblätter
+
+- LaTeX-Quelle + PDF nebeneinander, gemeinsame `ab-vorlage.tex` (Vorbild:
+  `informatik/10/java/arbeitsblaetter/`, `informatik/11/graphen/arbeitsblaetter/`).
+- Höchstens **2 Seiten** pro Blatt, kein Ausblick auf Folgethemen auf dem
+  Blatt (der gehört auf die Website). Gedrängte Aufgaben/Grafiken sind ok.
+
 ## Sprache & Inhalt
 
 - Seitensprache Deutsch (`lang="de"`); Englisch-Fachseiten englisch

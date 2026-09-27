@@ -1,0 +1,32 @@
+{
+   "name": "LSG 11-3-2 Umsetzung Graph ",
+   "id": 256267,
+   "modules": [
+      {
+         "name": "Hauptprogramm",
+         "text": "World world = new World(600, 800);\nGraph graph = new Graph(); \ngraph.kanteHinzufügen(0, 1);\ngraph.kanteHinzufügen(2, 1);\ngraph.kanteHinzufügen(1, 3);\ngraph.kanteHinzufügen(0, 3);\ngraph.kanteHinzufügen(2, 4);\ngraph.knotenHinzufügen();\ngraph.kanteHinzufügen(4, 5);\n\n\n\n\n// ////////////////////////////////////////////////////////////////////////////////////////// //\n// Aufgaben: Bearbeite zunächst die TODOs 1-2 in Mosaik1.                                     //\n// Ändere anschließend das obige Objekt zum Datentyp Mosaik2 und bearbeite die Aufgaben dort. //\n// Die TODOs sind durchnummeriert.                                                            //\n// ////////////////////////////////////////////////////////////////////////////////////////// // ",
+         "identical_to_repository_version": false,
+         "repository_file_version": -1,
+         "isFolder": false
+      },
+      {
+         "name": "Graph",
+         "text": "/**\n * Klasse zur Implementation eines Mosaiks.\n * \n * Suche (STRG + F) nach \"TODO\" und ergänze den Code. \n */\npublic class Graph\n{\n   Knoten[] knoten;\n   boolean [][] adja; \n   int maxAnzahl = 20; \n   int anzKnoten = 5; \n\n\n    /**\n     * Konstruktor für Objekte der Klasse Mosaik.\n     */\n   Graph()\n   {\n      knoten = new Knoten[maxAnzahl];\n      for (int i = 0; i < anzKnoten; i++) {\n         knoten[i] = new Knoten(); \n         knoten[i].setKnotenname((String)i);\n         //nur für grafische Darstellung\n         knoten[i].moveTo(100 + ((i % 3 * 200)), 100 + (i * 100));\n         new Text(knoten[i].getCenterX() - 8, knoten[i].getCenterY() - 16, 32, i);\n      }\n\n      // wird automatisch mit \"false\" initialisiert. \n      adja = new boolean [maxAnzahl][maxAnzahl]; \n      \n   \n   }\n\n    /**\n     * Diese Methode fügt der Adjazenzmatrix eine Kante von start nach ende hinzu. \n     */\n   void kanteHinzufügen(int start, int ende) \n   {\n      if(start < 0 || start >= anzKnoten || ende < 0 || ende >= anzKnoten) {\n         println(\"Ein Einfügen ist leider nicht möglich.\");\n      } else {\n         adja[start][ende] = true;\n         adja[ende][start] = true;\n      }\n      printAdja();\n      zeichneKante(start, ende);\n   } \n   \n\n    /**\n     * Diese Methode fügt dem Knotenfeld einen neuen Knoten hinzu.\n     */\n   void knotenHinzufügen() \n   {\n      if(anzKnoten < maxAnzahl) {\n         knoten[anzKnoten] = new Knoten();\n         knoten[anzKnoten].moveTo(100 + ((anzKnoten % 3 * 200)), 100 + (anzKnoten * 100));\n         new Text(knoten[anzKnoten].getCenterX() - 8, knoten[anzKnoten].getCenterY() - 16, 32, anzKnoten);\n         anzKnoten++;\n      } else {\n         System.out.println(\"Ein Einfügen ist leider nicht möglich.\");\n      }\n      /*\n      Knoten[] knotenNeu = new Knoten[knoten.length + 1];\n      boolean [][] adjaNeu = new boolean[adja.length + 1][adja.length + 1]; \n\n      for (int i = 0; i < knoten.length; i++) { }\n      */ \n     \n\n   } \n\n   /**\n    * Methode um die Adjazenzmatrix auf der Konsole auszugeben. \n    */\n   void printAdja() {\n      for (int x = 0; x < anzKnoten; x++) {\n         for (int y = 0; y < anzKnoten; y++) {\n\n            if(adja[x][y]) {\n               print(\"X \");\n            } else {\n               print(\"O \");\n            }\n\n            if(y == anzKnoten - 1) {\n               println();\n            } \n         }\n      } \n      println(); \n   }\n\n\n   void zeichneKante(int start, int ende) {\n      double startX = knoten[start].getCenterX(); \n      double startY = knoten[start].getCenterY();\n      \n      double endeX = knoten[ende].getCenterX();\n      double endeY = knoten[ende].getCenterY();\n      \n      double abstand = Vector2.distance(startX, startY, endeX, endeY);\n     \n      double winkel = new Vector2(endeX - startX, endeY - startY).getAngleDeg(); \n\n      Rectangle rectangle = new Rectangle(startX, startY, 10, abstand);\n      rectangle.setFillColor(Color.white);\n      rectangle.setAlpha(0.6); \n      rectangle.rotate(90 - winkel, startX, startY);\n      \n      //some troubleshooting calls\n      println(\"Start: \" + start + \" startX: \" + startX + \" startY: \" + startY); \n      println(\"Ende: \" + ende + \" endeX: \" + endeX + \" endeY: \" + endeY);\n      println(\"Abstand: \" + abstand);\n      println(\"Winkel: \" + winkel);\n      println();\n\n   }\n\n   public void alleKantenEntfernen() {\n      for (int i = 0; i < anzKnoten; i++) {\n         for (int j = 0; j < anzKnoten; j++) {\n            adja[i][j] = false;\n         }\n      }\n      printAdja();\n   }\n   \n}\n",
+         "identical_to_repository_version": false,
+         "repository_file_version": -1,
+         "isFolder": false
+      },
+      {
+         "name": "Knoten",
+         "text": "class Knoten extends Sprite {\n   private String knotenname = \"Knoten X\"; \n\n   Knoten() {\n      super(0,0, SpriteLibrary.PMan, 2);\n   }\n\n   String getKnotenname() {\n      return knotenname; \n   }\n\n   void setKnotenname(String _knotenname) {\n      knotenname = _knotenname; \n   }\n}",
+         "identical_to_repository_version": false,
+         "repository_file_version": -1,
+         "isFolder": false
+      }
+   ],
+   "settings": {
+      "libraries": []
+   },
+   "parent_folder_id": 520063,
+   "isFolder": false
+}

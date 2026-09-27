@@ -1,0 +1,186 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{3.2}{Graphen implementieren -- die Adjazenzmatrix}
+
+\begin{minipage}[t]{0.6\linewidth}
+\vspace{0pt}\raggedright
+Beim Ausflug in einen Vergnügungspark werden die Sitzplätze der Achterbahn verteilt. Björn, Doris, Fatma, Gerda, Jakob und Simon haben mit einem Kreuz notiert, mit wem sie gerne fahren möchten. Gelesen wird zeilenweise: Björn (Zeile B) möchte mit Doris und mit Gerda fahren.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.36\linewidth}
+\vspace{0pt}\centering\small
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{|c|c|c|c|c|c|c|}\hline
+ & \textbf{B} & \textbf{D} & \textbf{F} & \textbf{G} & \textbf{J} & \textbf{S}\\\hline
+\textbf{B} &   & X &   & X &   &  \\\hline
+\textbf{D} & X &   &   &   & X & X\\\hline
+\textbf{F} &   & X &   & X &   &  \\\hline
+\textbf{G} &   &   &   &   & X & X\\\hline
+\textbf{J} &   &   & X &   &   &  \\\hline
+\textbf{S} & X &   & X &   & X &  \\\hline
+\end{tabular}
+\end{minipage}
+
+\begin{aufgabe}[Achterbahn]{1}
+\begin{minipage}[t]{0.42\linewidth}
+\vspace{0pt}
+\begin{tikzpicture}
+\draw[step=5mm,gray!55,thin] (0,0) grid (7,3);
+\ifloesung
+  \foreach \n/\x/\y in {B/0.8/2.5, D/3.5/2.55, G/6.2/2.5, S/0.8/0.6, F/3.5/0.5, J/6.2/0.6} {
+    \node[kknoten,minimum size=6mm,draw=red!75!black,text=red!75!black] (\n) at (\x,\y) {\n};}
+  \draw[lsggkante,{Stealth[length=2.6mm]}-{Stealth[length=2.6mm]}] (B)--(D);
+  \draw[lsggkante] (B)--(G); \draw[lsggkante] (D)--(J); \draw[lsggkante] (D)--(S);
+  \draw[lsggkante] (F)--(D); \draw[lsggkante] (F)--(G); \draw[lsggkante] (G)--(J);
+  \draw[lsggkante] (G)--(S); \draw[lsggkante] (J)--(F); \draw[lsggkante] (S)--(B);
+  \draw[lsggkante] (S)--(F); \draw[lsggkante] (S) to[bend right=14] (J);
+\fi
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.55\linewidth}
+\vspace{0pt}\small\raggedright
+\textbf{a)} Begründe, dass die Tabelle einen Graphen darstellt, und zeichne ihn links.\\
+\lsg[0.98\linewidth]{Personen = Knoten, Kreuz = Kante von Zeile zu Spalte}\\[1.5mm]
+\textbf{b)} Ist der Graph gerichtet? Begründe mit einem Beispiel.\\
+\lsg[0.98\linewidth]{ja: B möchte mit G fahren, G aber nicht mit B.}\\[1.5mm]
+\textbf{c)} Wer sollte auf jeden Fall nebeneinandersitzen?\\
+\lsg[0.98\linewidth]{nur Björn und Doris: Sie haben sich gegenseitig gewählt.}
+\end{minipage}
+\end{aufgabe}
+
+\begin{merke}[Die Adjazenzmatrix]\raggedright
+Ein Graph wird im Computer meist als \textbf{Adjazenzmatrix} (adjazent = benachbart) gespeichert, einer Tabelle wie oben. Zeilen und Spalten stehen für die \lsg[2.2cm]{Knoten}.
+\begin{itemize}
+\item Führt eine Kante von Knoten $i$ nach Knoten $j$, steht in \lsg[1.9cm]{Zeile $i$} und \lsg[1.9cm]{Spalte $j$} ein X (in Java: \code{true}).
+\item Bei gewichteten Graphen steht dort statt des X das \lsg[2.2cm]{Gewicht} der Kante.
+\item Bei ungerichteten Graphen ist die Matrix \lsg[2.6cm]{symmetrisch} zur Hauptdiagonalen: Jede Kante $\{i, j\}$ steht zweimal in der Matrix, \lsg[3.8cm]{bei $(i, j)$ und bei $(j, i)$}.
+\end{itemize}
+\end{merke}
+
+\begin{aufgabe}{2}
+\textbf{a)} Gib zu $G_1$ und $G_2$ die Adjazenzmatrix an.\quad
+\textbf{b)} Vergleiche die Matrizen. Was fällt bei $G_2$ auf?\\[1mm]
+\begin{tabular}{@{}c@{\hspace{4mm}}c@{\hspace{9mm}}c@{\hspace{4mm}}c@{}}
+$G_1$\ \begin{tikzpicture}[baseline=(c.base),x=1cm,y=1cm]
+\node[kknoten] (a) at (0,1.5) {A}; \node[kknoten] (b) at (1.8,1.5) {B};
+\node[kknoten] (c) at (0.9,0.5) {C}; \node[kknoten] (d) at (2.7,0.3) {D};
+\draw[gkante] (a)--(b); \draw[gkante] (a)--(c); \draw[gkante] (c)--(b);
+\draw[gkante] (b) to[bend left=15] (d); \draw[gkante] (d) to[bend left=15] (b);
+\end{tikzpicture}
+&
+\adjmx[1/2/X,1/3/X,2/4/X,3/2/X,4/2/X]{4}{A,B,C,D}{6.5mm}
+&
+$G_2$\ \begin{tikzpicture}[baseline=(k3.base),x=1cm,y=1cm]
+\node[kknoten] (k1) at (1.2,1.8) {K1}; \node[kknoten] (k2) at (0,0.9) {K2};
+\node[kknoten] (k3) at (1.2,0) {K3}; \node[kknoten] (k4) at (2.5,0.5) {K4};
+\draw[kante] (k1)-- node[gewicht] {4} (k2); \draw[kante] (k1)-- node[gewicht] {7} (k3);
+\draw[kante] (k1)-- node[gewicht] {3} (k4); \draw[kante] (k2)-- node[gewicht] {10} (k3);
+\draw[kante] (k3)-- node[gewicht] {5} (k4);
+\end{tikzpicture}
+&
+\adjmx[1/2/4,1/3/7,1/4/3,2/1/4,2/3/10,3/1/7,3/2/10,3/4/5,4/1/3,4/3/5]{4}{K1,K2,K3,K4}{7mm}
+\end{tabular}\\[1mm]
+\textbf{b)} \lsg[15.5cm]{$G_1$: X-Einträge; $G_2$: Gewichte, Matrix symmetrisch zur Hauptdiagonalen, da ungerichtet.}
+\end{aufgabe}
+
+\newpage
+\textbf{Implementierung in Java} \web{Projekt Graph}\\[1mm]
+\begin{minipage}[t]{0.57\linewidth}
+\vspace{0pt}
+\begin{java}[basicstyle=\ttfamily\footnotesize]
+public class Graph {
+   Knoten[] knoten;     // §\lsg[3.8cm]{Knotenfeld}§
+   boolean[][] adja;    // §\lsg[3.8cm]{Adjazenzmatrix}§
+   int anzKnoten = 5;
+
+   Graph() {
+      knoten = new Knoten[§\lsg[2cm]{anzKnoten}§];
+      adja = new boolean[§\lsg[2cm]{anzKnoten}§][§\lsg[2cm]{anzKnoten}§];
+      // ... Knoten erzeugen
+   }
+}
+\end{java}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.4\linewidth}
+\vspace{0pt}\small\raggedright
+Die Matrix ist ein Feld von Feldern (jede Zeile ein Feld): ein \lsg[0.98\linewidth]{zweidimensionales Array}\\[1mm]
+Die Knoten werden über ihre \lsg[3cm]{Nummer (Index)} angesprochen. Die Knoten-Objekte liegen im Knotenfeld an derselben Position. \code{adja} muss nicht befüllt werden, \code{boolean} ist anfangs \code{false}.\\[1.5mm]
+\textbf{Aufgabe 3)} Starte das Projekt auf der Website unverändert. Was meldet die IDE, und warum?\\
+\lsg[0.98\linewidth]{Fehler: knoten ist null}\\[1mm]
+Ergänze dann TODO 1 wie im Code links.
+\end{minipage}
+
+
+
+\begin{aufgabe}[Projekt Graph]{4}
+Übertrage die Methode ins Projekt (TODO 2). Sage vorher, was bei den Aufrufen passiert, und teste.\\[1mm]
+\begin{minipage}[t]{0.49\linewidth}
+\vspace{0pt}
+\begin{java}[basicstyle=\ttfamily\scriptsize]
+void kanteHinzufuegen(int start, int ende) {
+   if (start > anzKnoten || ende > anzKnoten) {
+      println("Einfügen nicht möglich.");
+   } else {
+      adja[start][ende] = true;
+      zeichneKante(start, ende);
+   }
+   printAdja();
+}
+\end{java}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}
+\vspace{1mm}\scriptsize\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\linewidth}{|l|X|}\hline
+\textbf{Aufruf} & \textbf{Was passiert?}\\\hline
+\code{(0, 1)} & \lsgoder{\lsgfarbe adja[0][1] = true, Kante 0 $\to$ 1}{}\\\hline
+\code{(4, 2)} & \lsgoder{\lsgfarbe adja[4][2] = true, Kante 4 $\to$ 2}{}\\\hline
+\code{(7, 1)} & \lsgoder{\lsgfarbe 7 > 5: „Einfügen nicht möglich.“}{}\\\hline
+\code{(5, 0)} & \lsgoder{\lsgfarbe 5 > 5 falsch: adja[5][0] $\Rightarrow$ Absturz, Index 5 gibt es nicht}{}\\\hline
+\end{tabularx}
+\end{minipage}\\[1mm]
+\textbf{b)} Für welche Art von Graphen passt die Methode? \lsg[5cm]{für gerichtete Graphen}\\[1mm]
+\textbf{c)} Verbessere sie: keine ungültigen Nummern, ungerichtete Kanten. Notiere nur die geänderten Zeilen.
+\lsglinien{2}{\ttfamily\small if (start < 0 || start >= anzKnoten || ende < 0 || ende >= anzKnoten) \{\\
+adja[start][ende] = true;\ \ adja[ende][start] = true;}
+\end{aufgabe}
+
+\begin{aufgabe}[Projekt Graph]{5 und 6}
+\textbf{5)} Ergänze \code{printAdja()} (TODO 3): Die Matrix soll zeilenweise mit X und O erscheinen.\\
+\textbf{6)} \code{nachbarnAusgeben(int k)} gibt alle Knoten aus, zu denen von \code{k} eine Kante führt (TODO 4).\\[1mm]
+\begin{minipage}[t]{0.58\linewidth}
+\vspace{0pt}
+\begin{java}[basicstyle=\ttfamily\scriptsize]
+void printAdja() {
+   for (int zeile = 0; zeile < §\lsg[1.5cm]{anzKnoten}§; zeile++) {
+      for (int spalte = 0; spalte < §\lsg[1.4cm]{anzKnoten}§; §\lsg[1.1cm]{spalte++}§) {
+         if (adja[§\lsg[0.9cm]{zeile}§][§\lsg[0.9cm]{spalte}§]) {
+            print("X ");
+         } else {
+            print("O ");
+         }
+      }
+      §\lsg[1.8cm]{println();}§ // Zeilenumbruch
+   }
+   println();
+}
+\end{java}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.4\linewidth}
+\vspace{0pt}
+\begin{java}[basicstyle=\ttfamily\scriptsize]
+void nachbarnAusgeben(int k) {
+   print("Nachbarn von " + k + ": ");
+   for (int i = 0; i < §\lsg[1.4cm]{anzKnoten}§; i++) {
+      if (§\lsg[2cm]{adja[k][i]}§) {
+         print(§\lsg[1.6cm]{i + " "}§);
+      }
+   }
+   println();
+}
+\end{java}
+\end{minipage}\\[1mm]
+\textbf{Merke:} Die Nachbarn von Knoten $k$ stehen in \lsg[2cm]{Zeile $k$}. Man durchläuft sie mit einer \lsg[5cm]{Wiederholung mit fester Anzahl} und prüft jeden Eintrag.
+\end{aufgabe}
+
+
+\end{document}

@@ -1,0 +1,95 @@
+% =====================================================================
+%  Gemeinsame Vorlage der Arbeitsblätter "Graphen" – Informatik 11 (NTG)
+%  (gleiches Layout wie informatik/10/java/arbeitsblaetter/ab-vorlage.tex)
+%  Einbinden in jedem Blatt direkt nach \documentclass: \input{ab-vorlage}
+%  Übersetzen mit XeLaTeX, LuaLaTeX, pdfLaTeX oder Tectonic.
+%
+%  Blatt:   xelatex ab-3-1-grundbegriffe.tex
+%  Lösung:  xelatex -jobname=ab-3-1-grundbegriffe-lsg "\def\mitloesung{}\input{ab-3-1-grundbegriffe}"
+%           (füllt alle Lücken rot aus; siehe \lsg, \lsglinien, \lsgoder)
+% =====================================================================
+\usepackage[a4paper,left=18mm,right=18mm,top=26mm,bottom=17mm,headheight=15mm,headsep=4mm,footskip=8mm]{geometry}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{helvet}
+  \usepackage[scaled=0.86]{beramono}
+  \renewcommand{\familydefault}{\sfdefault}
+\else
+  \usepackage{fontspec}
+  \setmainfont{texgyreheros}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,ItalicFont=*-italic,BoldItalicFont=*-bolditalic]
+  \setmonofont{DejaVuSansMono}[Extension=.ttf,UprightFont=*,BoldFont=*-Bold,ItalicFont=*-Oblique,BoldItalicFont=*-BoldOblique,Scale=0.86]
+\fi
+\usepackage[ngerman,shorthands=off]{babel}
+\usepackage{xcolor,graphicx,tabularx,array,enumitem,fancyhdr,tikz,listings,multicol,calc,etoolbox}
+\usepackage[most]{tcolorbox}
+\usetikzlibrary{arrows.meta,positioning,calc,decorations.pathreplacing,shapes.geometric}
+\usepackage[hidelinks]{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+\setlist{nosep,leftmargin=*}
+
+% ---------- Lösungsschalter ----------
+\newif\ifloesung
+\ifdefined\mitloesung\loesungtrue\fi
+\newcommand{\lsgfarbe}{\color{red!75!black}}
+
+% ---------- Kopf- und Fußzeile (einheitliche Form) ----------
+\newcommand{\lehrkraft}{Hau}
+\newcommand{\themenbereich}{3. Graphen}
+\newcommand{\abnummer}{}
+\pagestyle{fancy}\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancyhead[L]{\small Klasse 11\\Datum:}
+\fancyhead[C]{\small Themenbereich:\\\themenbereich}
+\fancyhead[R]{\small \lehrkraft\ifloesung\\{\lsgfarbe\bfseries Lösung}\fi}
+\fancyfoot[C]{\scriptsize edu-mrh.de\,·\,Informatik 11\,·\,Blatt \abnummer\ifloesung\ (Lösung)\fi\,·\,Seite \thepage}
+\newcommand{\abtitel}[2]{\renewcommand{\abnummer}{#1}\begin{center}\Large\bfseries #1\quad\underline{#2}\end{center}\vspace{-1mm}}
+
+% ---------- Boxen ----------
+\newenvironment{aufgabe}[2][]{\begin{tcolorbox}[enhanced,breakable,colback=white,colframe=black,boxrule=0.7pt,arc=3mm,left=2mm,right=2mm,top=1.5mm,bottom=1.5mm,before skip=2.5mm,after skip=2.5mm]\textbf{Aufgabe #2)}\ifstrempty{#1}{}{ \textit{#1}}\par\vspace{0.6mm}}{\end{tcolorbox}}
+\newtcolorbox{merke}[1][Merke]{enhanced,breakable,colback=green!5,colframe=green!40!black,boxrule=0.8pt,arc=2mm,left=2mm,right=2mm,top=1.5mm,bottom=1.5mm,before skip=2.5mm,after skip=2.5mm,title={#1},fonttitle=\bfseries,coltitle=white}
+\newtcolorbox{hinweis}{enhanced,breakable,colback=yellow!12,colframe=orange!70!black,boxrule=0.6pt,arc=2mm,left=2mm,right=2mm,top=1mm,bottom=1mm,before skip=2mm,after skip=2mm}
+\newtcolorbox{ausblick}[1][Ausblick]{enhanced,breakable,colback=teal!5,colframe=teal!60!black,boxrule=0.8pt,arc=2mm,left=2mm,right=2mm,top=1.5mm,bottom=1.5mm,before skip=2.5mm,after skip=2.5mm,title={#1},fonttitle=\bfseries,coltitle=white}
+\newcommand{\web}[1]{{\small\color{gray}\textit{Website: #1}}}
+
+% ---------- Lücken, Linien, Karos ----------
+\newcommand{\luecke}[1][3.5cm]{\rule[-0.5ex]{#1}{0.4pt}}
+\newcommand{\linien}[1]{\par\vspace{1.5mm}\foreach \i in {1,...,#1}{\noindent\rule[0pt]{\linewidth}{0.3pt}\par\vspace{5.5mm}}\vspace{-3mm}}
+\newcommand{\kariert}[1]{\par\vspace{1.5mm}\noindent\begin{tikzpicture}\draw[step=5mm,gray!55,thin] (0,0) grid (\linewidth-1pt,#1*5mm);\end{tikzpicture}\par}
+\newcommand{\karobox}[2]{\begin{tikzpicture}\draw[step=5mm,gray!55,thin] (0,0) grid (#1,#2);\end{tikzpicture}}
+\newcommand{\code}[1]{\texttt{#1}}
+
+% Lücke mit Lösung: \lsg[Mindestbreite]{Lösungstext}
+\newlength{\lsgbreite}
+\newcommand{\lsg}[2][3.5cm]{\ifloesung\settowidth{\lsgbreite}{\,#2\,}\ifdim\lsgbreite<#1\setlength{\lsgbreite}{#1}\fi\underline{\makebox[\lsgbreite][l]{\lsgfarbe\,#2}}\else\luecke[#1]\fi}
+% Schreiblinien mit Lösung: \lsglinien{Anzahl}{Lösungstext} (gleiche Höhe wie \linien)
+\newcommand{\lsglinien}[2]{\ifloesung\par\vspace{1.5mm}\noindent\begin{minipage}[t][#1\dimexpr 6.9mm\relax][t]{\linewidth}\lsgfarbe #2\end{minipage}\par\vspace{-1.5mm}\else\linien{#1}\fi}
+% Beliebiger Inhalt: \lsgoder{nur in der Lösung}{nur im Blatt}
+\newcommand{\lsgoder}[2]{\ifloesung#1\else#2\fi}
+
+% ---------- Graphen zeichnen ----------
+\tikzset{
+  knoten/.style={draw,rounded corners=3pt,fill=orange!12,minimum height=6mm,inner sep=3pt,font=\small},
+  kknoten/.style={draw,circle,fill=orange!12,minimum size=7mm,inner sep=1pt,font=\small},
+  kante/.style={thick},
+  gkante/.style={thick,-{Stealth[length=2.6mm]}},
+  dkante/.style={thick,{Stealth[length=2.6mm]}-{Stealth[length=2.6mm]}},
+  gewicht/.style={font=\scriptsize,fill=white,inner sep=1pt,text=teal!60!black},
+  lsgkante/.style={thick,red!75!black},
+  lsggkante/.style={thick,red!75!black,-{Stealth[length=2.6mm]}},
+  lsgknoten/.style={knoten,draw=red!75!black,text=red!75!black,fill=red!4},
+}
+% Adjazenzmatrix zum Ausfüllen: \adjmx[Lösungseinträge]{Anzahl}{Knotenliste}{Zellbreite}
+% Lösungseinträge als Zeile/Spalte/Text, z. B. \adjmx[1/2/X,2/1/X]{3}{A,B,C}{7mm}
+\newcommand{\adjmx}[4][]{\begin{tikzpicture}[x=#4,y=#4]
+  \foreach \n [count=\i] in {#3} {\node[font=\small\bfseries] at (\i,0) {\n}; \node[font=\small\bfseries,anchor=east] at (0.45,-\i) {\n};}
+  \foreach \k in {0,...,#2} {\draw[gray] (\k+0.5,-0.5) -- (\k+0.5,-#2-0.5); \draw[gray] (0.5,-\k-0.5) -- (#2+0.5,-\k-0.5);}
+  \ifloesung\ifstrempty{#1}{}{\foreach \z/\s/\t in {#1} {\node[text=red!75!black,font=\small] at (\s,-\z) {\t};}}\fi
+\end{tikzpicture}}
+
+% ---------- Java-Listings ----------
+\lstset{language=Java,basicstyle=\ttfamily\small,keywordstyle=\bfseries,commentstyle=\color{gray!80!black},stringstyle=\color{black},showstringspaces=false,columns=flexible,keepspaces=true,tabsize=3,frame=single,framerule=0.4pt,rulecolor=\color{black},xleftmargin=2mm,framexleftmargin=1mm,aboveskip=2mm,belowskip=2mm,breaklines=true,escapechar=§,
+ literate={ä}{{\"a}}1 {ö}{{\"o}}1 {ü}{{\"u}}1 {Ä}{{\"A}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1 {ß}{{\ss}}1 {–}{{--}}1 {„}{{\glqq}}1 {“}{{\grqq}}1}
+\lstnewenvironment{java}[1][]{\lstset{#1}}{}

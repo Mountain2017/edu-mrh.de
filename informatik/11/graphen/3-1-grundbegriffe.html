@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3.1 Graphen – Grundbegriffe | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Graphen, Informatik 11 (NTG): Mit dem Spiel Hänsel und Gretel einen Graphen entdecken, Knoten, Kanten und die Kurzschreibweise G = (V, E) festhalten, Pfade, Zyklen, Zusammenhang, gerichtete und gewichtete Graphen untersuchen.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <link rel="stylesheet" href="graphen.css">
+    <script defer src="graphen.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🕸️</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="graphen.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 3.1</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#spiel">▶ Hänsel und Gretel</a></li>
+            <li><a href="#untersuchen">🔍 Wie ist das Spiel gebaut?</a></li>
+            <li><a href="#graph">📝 Knoten und Kanten</a></li>
+            <li><a href="#begriffe">🧭 Begriffe entdecken</a></li>
+            <li><a href="#anwenden">✏️ Anwenden</a></li>
+            <li><a href="#ausblick">🚀 Der kürzeste Weg</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Graphen</div>
+            <ul class="sidebar-menu">
+                <li><a href="graphen.html">Übersicht</a></li>
+                <li><a href="3-1-grundbegriffe.html">3.1 Grundbegriffe</a></li>
+                <li><a href="3-2-umsetzung-graph.html">3.2 Umsetzung Graph</a></li>
+                <li><a href="graphen.html#breitensuche">3.3 Breitensuche</a></li>
+                <li><a href="graphen.html#dijkstra">3.4 Dijkstra</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero gr-hero">
+                <h1 class="hero-title">3.1 Graphen – Grundbegriffe</h1>
+                <p class="hero-subtitle">Graphen · Informatik 11 (NTG) · 2 Stunden</p>
+                <span class="gr-kompetenz">Du kannst: eine Situation als Graph modellieren, ihn in der Kurzschreibweise G = (V, E) notieren und mit den Begriffen Pfad, Zyklus, Zusammenhang, gerichtet und gewichtet beschreiben.</span>
+                <div class="gr-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-3-1-grundbegriffe.pdf">📝 Arbeitsblatt 3.1 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-3-1-grundbegriffe.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-run" href="#spiel">▶ Spielen</a><a class="p-investigate" href="#untersuchen">🔍 Untersuchen</a><a class="p-note" href="#graph">📝 Festhalten</a><a class="p-investigate" href="#begriffe">🧭 Begriffe</a><a class="p-modify" href="#anwenden">✏️ Anwenden</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="spiel" class="phase run">
+                <div class="phase-head"><span class="phase-icon">▶</span><h2>Ausprobieren<small>Aufgabe 1: Hänsel und Gretel</small></h2></div>
+                <div class="phase-body">
+                    <p>Hänsel und Gretel haben die Hexe überlistet. Aber die Brotkrumen, mit denen sie ihren Weg markiert hatten, haben die Vögel gefressen. Bring die beiden nach Hause!</p>
+                    <ol class="aufgaben">
+                        <li>Zeichne beim Spielen auf dem Blatt eine Karte des Waldes: jeder Ort ein Kästchen, jeder Weg eine Linie. Führt ein Weg nur in eine Richtung, zeichne einen Pfeil.</li>
+                        <li>Am Ende zeigt dir das Spiel deinen Weg. Notiere ihn. Spiel dann weiter, bis deine Karte vollständig ist.</li>
+                    </ol>
+                    <iframe class="spiel-rahmen" src="haenselundgretel/_Spiel_starten.html" title="Spiel Hänsel und Gretel"></iframe>
+                    <p class="mt-2"><a class="btn btn-outline btn-sm" href="haenselundgretel/_Spiel_starten.html" target="_blank" rel="noopener">Spiel in eigenem Tab öffnen ↗</a></p>
+                    <div class="tipp"><strong>Brotkrumen:</strong> Wege, die du schon gegangen bist, färbt dein Browser <span class="krume">braun</span>. So siehst du an jeder Kreuzung, was du schon ausprobiert hast. Den Zurück-Knopf des Browsers gibt es im Wald allerdings nicht: Wer ihn benutzt, landet wieder beim Hexenhaus.</div>
+                    <details class="denk"><summary>Denkanstoß: Ist meine Karte vollständig?</summary>
+                        <p>Der Wald hat 13 Orte. Wenn deine Karte weniger hat: Steh an jeder Kreuzung einmal still und prüfe, ob alle Wege schon braun sind.</p>
+                    </details>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-3-1-grundbegriffe.pdf">📝 Blatt 3.1 · Aufgabe 1a und 1b</a></p>
+                </div>
+            </section>
+
+            <section id="untersuchen" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Untersuchen<small>Wie ist das Spiel gebaut?</small></h2></div>
+                <div class="phase-body">
+                    <p>Das Spiel ist nichts weiter als eine Sammlung von Webseiten, die aufeinander verlinken. Öffne es in einem eigenen Tab und achte beim Spielen auf die Adresszeile: Dort stehen Namen wie <code>Wald1-von-Hexenhaus.html</code>.</p>
+                    <ol class="aufgaben">
+                        <li>Was bedeutet der Dateiname <code>Wald1-von-Wald2.html</code>?</li>
+                        <li>Für Wald1 gibt es vier Dateien. Warum reicht nicht eine Datei pro Ort? Tipp: Was heißt „links“?</li>
+                        <li>Was im Spiel entspricht den Kästchen deiner Karte, was den Linien? Und was sind die braunen Brotkrumen?</li>
+                    </ol>
+                    <details class="denk"><summary>Denkanstoß</summary>
+                        <p>„Links“ hängt davon ab, aus welcher Richtung du kommst. Deshalb gibt es für jeden Ort eine Seite pro Ankunftsrichtung. Ein Ort bleibt aber ein Ort, egal von wo du kommst. Die Links zwischen den Seiten sind die Wege.</p>
+                    </details>
+                    <div class="idee"><strong>Merk dir die Brotkrumen:</strong> Sie markieren, was schon besucht ist. Genau so eine Markierung braucht ein Computer, wenn er einen Graphen systematisch durchsucht. Das siehst du in der Breitensuche (3.3) wieder.</div>
+                </div>
+            </section>
+
+            <section id="graph" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Knoten, Kanten und G = (V, E)</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Das Konzept</h4>
+                        <p>Deine Karte ist ein <strong>Graph</strong>: Er besteht aus <strong>Knoten</strong> (den Orten) und <strong>Kanten</strong> (den Wegen). Eine Kante verbindet zwei Knoten. Ob Straßennetz, Freundesliste oder Computernetz: Überall, wo Dinge miteinander verbunden sind, steckt ein Graph.</p>
+                    </div>
+                    <p>Ein Graph lässt sich auch ohne Zeichnung aufschreiben, als Paar <strong>G = (V, E)</strong>. V (engl. <em>vertices</em>) ist die Menge der Knoten, E (engl. <em>edges</em>) die Menge der Kanten. Beispiel: Wer folgt wem in einem sozialen Netzwerk?</p>
+                    <svg class="graph-svg" data-graph="folgen" viewBox="0 0 500 260" role="img" aria-label="Graph: Leon und Letifa folgen sich gegenseitig, ebenso Leon und Hamza. Letifa, Leon und Hamza folgen Luise. Sabine folgt niemandem."></svg>
+                    <pre class="jv">V = {Hamza, Leon, Letifa, Luise, Sabine}
+E = {(Leon, Letifa), (Letifa, Leon), (Letifa, Luise), (Leon, Luise),
+     (Leon, Hamza), (Hamza, Leon), (Hamza, Luise)}</pre>
+                    <p>Ein Paar (A, B) ist eine Kante <em>von</em> A <em>nach</em> B. Gilt eine Kante in beide Richtungen, schreibt man kürzer {A, B}. Wie die Liste dann aussieht, steht auf dem Blatt.</p>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-3-1-grundbegriffe.pdf">📝 Blatt 3.1 · Merkkästen und Aufgabe 1c</a></p>
+                </div>
+            </section>
+
+            <section id="begriffe" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🧭</span><h2>Untersuchen<small>Begriffe am Dörfer-Graphen entdecken</small></h2></div>
+                <div class="phase-body">
+                    <p>Im Merkkasten „Pfade, Zyklen, Richtung, Gewicht“ auf dem Blatt fehlen die entscheidenden Wörter. Klicke dich durch die Beispiele und formuliere die Definitionen selbst.</p>
+                    <div class="explorer" data-explorer>
+                        <div>
+                            <div class="explorer-knoepfe" role="group" aria-label="Begriff wählen">
+                                <button type="button" data-modus="pfad">Pfad</button>
+                                <button type="button" data-modus="einfach">einfacher Pfad</button>
+                                <button type="button" data-modus="zyklus">Zyklus</button>
+                                <button type="button" data-modus="keinpfad">kein Pfad</button>
+                                <button type="button" data-modus="gerichtet">gerichtet</button>
+                                <button type="button" data-modus="gewichtet">gewichtet</button>
+                            </div>
+                            <svg class="graph-svg" viewBox="0 0 600 380" role="img" aria-label="Graph mit sieben Dörfern: Altdorf, Weiler, Fischbach, Ziegelstein, Neustadt, Burg und Rain"></svg>
+                        </div>
+                        <div class="explorer-text" aria-live="polite"></div>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-3-1-grundbegriffe.pdf">📝 Blatt 3.1 · Merkkasten „Pfade, Zyklen, Richtung, Gewicht“</a></p>
+                    <div class="stolper"><strong>Vorsicht, Falle:</strong> Beim Hin- und Zurückgehen auf demselben Weg (Weiler → Ziegelstein → Weiler) kommt eine Kante doppelt vor. Ist das ein Pfad? Ein Zyklus?</div>
+                </div>
+            </section>
+
+            <section id="anwenden" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">✏️</span><h2>Anwenden<small>Aufgaben 2 bis 4</small></h2></div>
+                <div class="phase-body">
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 2:</strong> Zeichne den Graphen, der auf dem Blatt in Kurzschreibweise gegeben ist. Ist er gerichtet? Welchen Zyklus hat er? Wie lang ist sein längster einfacher Pfad?</li>
+                        <li><strong>Aufgabe 3, zurück in den Wald:</strong> Untersuche deine Karte mit den neuen Begriffen. Prüfe dabei im Spiel, ob der Weg vom Wald zurück zum Hexenhaus wirklich „verschwunden“ ist.</li>
+                        <li><strong>Aufgabe 4:</strong> Ordne die drei Graphen in der Tabelle ein: zusammenhängend, gerichtet, gewichtet, zyklisch? Wie lang ist jeweils ein längster einfacher Pfad?</li>
+                    </ol>
+                    <details class="denk"><summary>Denkanstoß zu Aufgabe 2</summary>
+                        <p>Die Kante (C, C) beginnt und endet im selben Knoten. Man nennt sie <em>Schlinge</em>. Zeichne sie als kleinen Bogen an C.</p>
+                    </details>
+                    <details class="denk"><summary>Denkanstoß zu Aufgabe 3</summary>
+                        <p>Gibt es Orte, von denen aus es nicht mehr weitergeht? Was bedeutet das für „von jedem Knoten zu jedem anderen“?</p>
+                    </details>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-3-1-grundbegriffe.pdf">📝 Blatt 3.1 · Aufgaben 2 bis 4</a></p>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Der kürzeste Weg</small></h2></div>
+                <div class="phase-body">
+                    <p>Am Ende hat dir das Spiel gezeigt, wie viele Schritte du gebraucht hast. Aber ging es kürzer? Klicke im Begriffe-Explorer oben auf <strong>gewichtet</strong>: An den Straßen stehen Fahrzeiten. Suche den Weg von Weiler nach Rain einmal mit den <em>wenigsten Kanten</em> und einmal mit der <em>kürzesten Fahrzeit</em>. Sind das dieselben Wege?</p>
+                    <details class="denk"><summary>Zum Vergleichen</summary>
+                        <p>Wenigste Kanten: z. B. Weiler → Ziegelstein → Neustadt → Rain (3 Kanten, aber 50 Minuten). Kürzeste Fahrzeit: Weiler → Ziegelstein → Fischbach → Burg → Rain (4 Kanten, 38 Minuten).</p>
+                    </details>
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>💻 3.2 Umsetzung Graph</h4>
+                            <p>Wie speichert ein Computer einen Graphen? Mit einer Tabelle, der Adjazenzmatrix.</p>
+                            <a class="btn btn-primary btn-sm" href="3-2-umsetzung-graph.html">Zur Station 3.2</a>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>🔍 3.3 Breitensuche</h4>
+                            <p>Findet den Weg mit den wenigsten Kanten, Schicht für Schicht, mit Brotkrumen für besuchte Knoten.</p>
+                            <a class="btn btn-outline btn-sm" href="graphen.html#breitensuche">Zur Breitensuche</a>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>🛣️ 3.4 Dijkstra</h4>
+                            <p>Findet den Weg mit der kleinsten Summe der Gewichte, so wie ein Navi.</p>
+                            <a class="btn btn-outline btn-sm" href="graphen.html#dijkstra">Zu Dijkstra</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="graphen.html">← Übersicht Graphen</a>
+                <a class="btn btn-primary" href="3-2-umsetzung-graph.html">Weiter: 3.2 Umsetzung Graph →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise zum Spiel</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-3-1-grundbegriffe-lsg.pdf">Lösung Blatt 3.1 (PDF)</a> Entsteht aus derselben <code>.tex</code>-Datei: <code>xelatex -jobname=ab-3-1-grundbegriffe-lsg "\def\mitloesung{}\input{ab-3-1-grundbegriffe}"</code>.</p>
+                    <h4>Der Wald als Graph</h4>
+                    <p>13 Knoten: Hexenhaus (Start), Pilze, Stadt, Bäckerei, Abzweigung, Warnung, Werwolf, Spinne, Wald1, Wald2, Wald3, Steinkreis, Zuhause. 17 Kanten, davon drei gerichtet:</p>
+                    <table>
+                        <tr><th>ungerichtet (14)</th><td>{Hexenhaus, Pilze}, {Hexenhaus, Wald1}, {Pilze, Stadt}, {Stadt, Bäckerei}, {Pilze, Abzweigung}, {Abzweigung, Warnung}, {Abzweigung, Spinne}, {Spinne, Wald3}, {Wald1, Wald2}, {Wald1, Wald3}, {Wald1, Steinkreis}, {Wald2, Wald3}, {Wald2, Steinkreis}, {Wald3, Steinkreis}</td></tr>
+                        <tr><th>gerichtet (3)</th><td>(Pilze, Hexenhaus) „Pilze essen“, (Warnung, Werwolf), (Wald2, Zuhause)</td></tr>
+                    </table>
+                    <p>Kürzester Weg: Hexenhaus → Wald1 → Wald2 → Zuhause (3 Kanten). Der Graph ist nur schwach zusammenhängend (Zuhause und Werwolf sind Senken). Wald1, Wald2, Wald3 und Steinkreis bilden einen vollständigen Teilgraphen. Nach der Ankunft Hexenhaus → Wald1 und Spinne → Wald3 versteckt der Text den Rückweg, die Kante existiert aber in beide Richtungen: ein guter Anlass, über Modell und Geschichte zu sprechen.</p>
+                    <h4>Technik des Spiels</h4>
+                    <p>Eine HTML-Datei pro Zustand „Ort-von-Herkunft“ (nötig wegen der relativen Richtungen links/geradeaus/rechts). Die Brotkrumen sind die <code>:visited</code>-Farbe der Links, jede Link-Adresse steht für eine gerichtete Kante. Der Browser löscht sie nur mit dem Verlauf, für einen frischen Durchgang also ein privates Fenster verwenden. Ein kleines Skript verhindert Abkürzungen über Adresszeile oder Zurück-Knopf und merkt sich den gegangenen Weg, nur im <code>localStorage</code> des Browsers. Gegen Ende lohnt ein Blick in den Quelltext einer Seite: Die Links sind die Kanten.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum &amp; Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

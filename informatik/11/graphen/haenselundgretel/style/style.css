@@ -1,25 +1,175 @@
-#mainPic {
-    margin-top: 40px;
+/* ==========================================================================
+   Hänsel und Gretel – Graphen-Spiel (Informatik 11)
+   Eigenständig (keine Abhängigkeiten), Farben passend zu edu-mrh.de.
+   ========================================================================== */
+:root {
+    --hg-karte: rgba(17, 24, 20, .84);
+    --hg-text: #f8fafc;
+    --hg-text-leise: #cbd5e1;
+    --hg-weg: #fefce8;
+    --hg-weg-text: #1e293b;
+    --hg-weg-rand: #facc15;
+    --hg-krume: #92400e;       /* Brotkrumen: besuchte Wege */
+    --hg-krume-text: #fff7ed;
+    --hg-krume-rand: #fdba74;
 }
 
-#background {
+* { box-sizing: border-box; }
+
+html {
+    min-height: 100%;
+    background: #1b2a1f url("../images/bg.jpg") center / cover no-repeat;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--hg-text);
+    background: linear-gradient(rgba(0, 0, 0, .25), rgba(0, 0, 0, .55));
+}
+
+/* ---------- Kopfzeile ---------- */
+.hg-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem 1rem;
+    padding: .55rem 1rem;
+    background: rgba(0, 0, 0, .6);
+    font-size: .95rem;
+}
+.hg-titel { font-weight: 700; }
+.hg-schritte {
+    padding: .15rem .7rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .12);
+    font-variant-numeric: tabular-nums;
+}
+.hg-schritte:empty { display: none; }
+.hg-nav { display: flex; flex-wrap: wrap; gap: .4rem; margin-left: auto; }
+.hg-nav a,
+.hg-nav a:visited {
+    color: var(--hg-text);
+    text-decoration: none;
+    padding: .2rem .75rem;
+    border: 1px solid rgba(255, 255, 255, .4);
+    border-radius: 999px;
+}
+.hg-nav a:hover { background: rgba(255, 255, 255, .15); }
+.eingebettet .hg-extern { display: none; }
+
+/* ---------- Szene ---------- */
+.hg-karte {
+    max-width: 860px;
+    margin: 1.2rem auto 2rem;
+    background: var(--hg-karte);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .45);
+}
+.hg-bild {
+    display: block;
     width: 100%;
-    height: 100%;
-    position: absolute;
-    z-index: -100;
+    height: auto;
+    max-height: 48vh;
+    object-fit: cover;
+}
+.hg-text {
+    padding: 1.1rem 1.4rem 1.4rem;
+    text-align: center;
+    font-size: 1.25rem;
+    line-height: 1.5;
+}
+.hg-text p { margin: .2rem 0; }
+.hg-intro,
+.hg-geschummelt {
+    font-size: 1rem;
+    border-radius: 10px;
+    padding: .6rem .9rem;
+    margin-bottom: .8rem !important;
+}
+.hg-intro { background: rgba(255, 255, 255, .08); }
+.hg-geschummelt { background: #7f1d1d; }
+.hg-hinweis { font-style: italic; color: var(--hg-text-leise); }
+.hg-frage { font-weight: 600; margin-top: .6rem !important; }
+.hg-gameover { font-size: 2rem; font-weight: 800; letter-spacing: .12em; color: #f87171; }
+
+/* ---------- Wege (Kanten) ---------- */
+.hg-wege {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: .6rem;
+    margin-top: 1rem;
+}
+.weg {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    min-height: 44px;
+    padding: .55rem 1.1rem;
+    border: 2px solid var(--hg-weg-rand);
+    border-radius: 999px;
+    background-color: var(--hg-weg);
+    color: var(--hg-weg-text);
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform .15s;
+}
+.weg:hover { transform: translateY(-2px); }
+.weg:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+/* Brotkrumen: Browser erlauben für :visited nur Farbänderungen */
+.weg:visited {
+    background-color: var(--hg-krume);
+    color: var(--hg-krume-text);
+    border-color: var(--hg-krume-rand);
+}
+.weg-neu,
+.weg-neu:visited {
+    background-color: var(--hg-weg);
+    color: var(--hg-weg-text);
+    border-color: var(--hg-weg-rand);
+}
+.weg-icon { font-size: 1.1em; line-height: 1; }
+
+.hg-legende { font-size: .85rem; color: var(--hg-text-leise); margin-top: .9rem !important; }
+.hg-krume {
+    padding: 0 .4rem;
+    border-radius: 4px;
+    background: var(--hg-krume);
+    color: var(--hg-krume-text);
 }
 
-#backgrounddiv {
-    position: absolute;
-    top: 0px;
-    bottom: 0px;
-    right: 0px;
-    left: 0px;
-    pointer-events: none;
+/* ---------- Bilanz am Ende ---------- */
+.hg-bilanz:empty { display: none; }
+.hg-bilanz {
+    margin-top: 1rem;
+    padding: .8rem 1rem;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, .08);
+    font-size: 1rem;
+    text-align: left;
 }
+.hg-bilanz p { margin: .35rem 0; }
+.hg-pfad { line-height: 1.9; }
+.hg-ort {
+    display: inline-block;
+    padding: 0 .45rem;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, .15);
+    white-space: nowrap;
+}
+.hg-auftrag { color: #bbf7d0; }
 
-p {
-    font-size: 27px;
-    font-weight: normal;
-    color: white;
+/* ---------- Eingebettet und schmal ---------- */
+.eingebettet .hg-karte { margin: .6rem auto 1rem; }
+.eingebettet .hg-bild { max-height: 40vh; }
+
+@media (max-width: 600px) {
+    .hg-bar { font-size: .85rem; padding: .45rem .7rem; }
+    .hg-karte { margin: .6rem .5rem 1.2rem; }
+    .hg-text { font-size: 1.05rem; padding: .9rem 1rem 1.1rem; }
+    .weg { font-size: .98rem; padding: .5rem .9rem; }
 }

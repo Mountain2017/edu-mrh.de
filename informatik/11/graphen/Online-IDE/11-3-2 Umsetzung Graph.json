@@ -1,0 +1,32 @@
+{
+   "name": "11-3-2 Umsetzung Graph",
+   "id": 267413,
+   "modules": [
+      {
+         "name": "Hauptprogramm",
+         "text": "World world = new World(600, 800);\nGraph graph = new Graph(); \n\n// TODO Teste deine Methoden mit weiteren Methodenaufrufen\ngraph.kanteHinzufügen(0, 1);\n\n\n\n\n// /////////////////////////////////////// //\n// Aufgaben: Bearbeite die TODOs in Graph. //\n// /////////////////////////////////////// // ",
+         "identical_to_repository_version": false,
+         "repository_file_version": -1,
+         "isFolder": false
+      },
+      {
+         "name": "Graph",
+         "text": "/**\n * Klasse zur Implementation eines Mosaiks.\n * \n * Suche (STRG + F) nach \"TODO\" und ergänze den Code. \n */\npublic class Graph\n{\n   Knoten[] knoten;\n   boolean [][] adja; \n\n   // Wird vorläufig einfach festgesetzt. \n   int anzKnoten = 5; \n\n\n    /**\n     * Konstruktor für Objekte der Klasse Mosaik.\n     */\n   Graph()\n   {\n      // TODO 1: Initialisiere knoten und adja\n      \n\n      // Um knoten anschließend mit passenden Objekten zu befüllen. \n      // Dies ist für adja nicht nötig, da boolean automatisch mit \"false\" initialisiert wird.\n      for (int i = 0; i < knoten.length; i++) {\n         knoten[i] = new Knoten(); \n         knoten[i].setKnotenname((String)i);\n         // nur für die graphische Darstellung\n         knoten[i].moveTo(100 + ((i % 3 * 200)), 100 + (i * 100));\n      }\n   }\n\n    /**\n     * Diese Methode fügt der Adjazenzmatrix eine Kante von start nach ende hinzu. \n     */\n   void kanteHinzufügen(int start, int ende) \n   {\n      //TODO 2: Übertrage die Methode von deinem Arbeitsblatt und ergänze sie wenn nötig. \n      \n      \n      // ist dies nun ein gerichteter oder ungerichteter Graph, basierend auf der Methode vom Blatt? \n      zeichneKante(start, ende);\n      printAdja();\n   } \n   \n\n   /**\n    * Methode um die Adjazenzmatrix auf der Konsole auszugeben. \n    */\n   void printAdja() {\n      // TODO Ergänze die Methode. du benötigst hierzu \n      // zwei geschachtelte Wiederholungen mit fester Anzahl. \n      // eine ist bereits vorhanden. \n      for (int x = 0; x < anzKnoten; x++) {\n         int y = 0; // Ersetze dies mit der zweiten Wiederholung\n         if(adja[x][y]) {\n            print(\"X \");\n         } else {\n            print(\"O \");\n         }\n         if(y == anzKnoten - 1) {\n            println();\n         }\n         \n      }\n   }\n\n\n\n   void zeichneKante(int start, int ende) {\n      double startX = knoten[start].getCenterX(); \n      double startY = knoten[start].getCenterY();\n      \n      double endeX = knoten[ende].getCenterX();\n      double endeY = knoten[ende].getCenterY();\n      \n      double abstand = Vector2.distance(startX, startY, endeX, endeY);\n     \n      double winkel = new Vector2(endeX - startX, endeY - startY).getAngleDeg(); \n\n      Rectangle rectangle = new Rectangle(startX, startY, 10, abstand);\n      rectangle.setFillColor(Color.white);\n      rectangle.setAlpha(0.6); \n      rectangle.rotate(90 - winkel, startX, startY);\n      \n      //some troubleshooting calls\n      println(\"Start: \" + start + \" startX: \" + startX + \" startY: \" + startY); \n      println(\"Ende: \" + ende + \" endeX: \" + endeX + \" endeY: \" + endeY);\n      println(\"Abstand: \" + abstand);\n      println(\"Winkel: \" + winkel);\n      println();\n\n   }\n}\n",
+         "identical_to_repository_version": false,
+         "repository_file_version": -1,
+         "isFolder": false
+      },
+      {
+         "name": "Knoten",
+         "text": "class Knoten extends Sprite {\n   private String knotenname = \"Knoten X\"; \n\n   Knoten() {\n      super(0,0, SpriteLibrary.PMan, 2);\n   }\n\n   String getKnotenname() {\n      return knotenname; \n   }\n\n   void setKnotenname(String _knotenname) {\n      knotenname = _knotenname; \n   }\n}",
+         "identical_to_repository_version": false,
+         "repository_file_version": -1,
+         "isFolder": false
+      }
+   ],
+   "settings": {
+      "libraries": []
+   },
+   "parent_folder_id": 862853,
+   "isFolder": false
+}
