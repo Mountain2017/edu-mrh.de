@@ -1,0 +1,46 @@
+{
+   "name": "LSG 12-1-3 Taxiliste",
+   "id": 884061,
+   "modules": [
+      {
+         "name": "MeineListe",
+         "text": "class MeineListe {\n   private Knoten anfang; \n   \n   \n   //ändere Knoten knoten -> DatenElement daten\n   boolean add(DatenElement daten) {\n      //anfang noch null oder nicht \n      if(anfang == null) {\n         anfang = new Knoten(daten);;\n      } else {\n         anfang.add(daten); \n      }\n      return true; \n   }\n   \n   boolean entfernen(DatenElement daten) {\n      //Liste nicht leer\n      if(anfang != null) {\n         // speichere anfang zwischen\n         if(anfang.getDaten() == daten) {\n            anfang = anfang.getNachfolger();\n            return true; \n         } else {\n            //Rekursion\n            return anfang.entfernen(daten);\n         }\n      } else {\n         return false;\n      }\n      \n   }\n\n   Knoten getAnfang() {\n      return anfang;\n   }\n   \n   void setAnfang(Knoten anfang) {\n      this.anfang = anfang;\n   }\n\n   \n}\n",
+         "identical_to_repository_version": true,
+         "repository_file_version": -1,
+         "isFolder": false
+      },
+      {
+         "name": "Knoten",
+         "text": "class Knoten {\n   private Knoten nachfolger;\n   private DatenElement daten; \n\n   Knoten(DatenElement daten) {\n      this.daten = daten;\n   }\n\n   DatenElement getDaten() {\n      return daten;\n   }\n\n   void setDaten(DatenElement daten) {\n      this.daten = daten;\n   }\n\n   Knoten getNachfolger() {\n      return nachfolger;\n   }\n\n   void setNachfolger(Knoten nachfolger) {\n      this.nachfolger = nachfolger;\n   }\n\n   boolean add(DatenElement daten) {\n      //ist schon letzter Knoten\n      if(nachfolger == null) {\n         nachfolger = new Knoten(daten); \n         return true;\n      } else {\n         // nicht letzer Knoten --> Rekursion\n         return nachfolger.add(daten);\n      }\n   }\n   \n\n   \n   boolean entfernen(DatenElement daten) {\n      //gibt es noch einen Nachfolger\n      if(nachfolger != null) {\n         //hat mein Nachfolger die passenden Daten?\n         if(nachfolger.getDaten() == daten) {\n            //ja, dann überspringe ich ihn und hole mir seinen Nachfolger\n            nachfolger = nachfolger.getNachfolger(); \n            // und war erfolgreich\n            return true;\n         } else {\n            // Rekursion --> weitergeben der Aufgabe \n            return nachfolger.entfernen(daten); \n         }\n      } else {\n         //kein Nachfolger aber nicht gefunden --> falsch\n         return false; \n      }\n   }\n\n   \n}\n\n",
+         "identical_to_repository_version": true,
+         "repository_file_version": -1,
+         "isFolder": false
+      },
+      {
+         "name": "Taxi",
+         "text": "class Taxi implements DatenElement {\n   \n   int autonummer;\n   String fahrerName; \n\n   //Konstruktor\n   Taxi(int autonummer, String fahrerName) {\n      this.autonummer = autonummer;\n      this.fahrerName = fahrerName;\n   }\n   \n   String getFahrerName() {\n      return fahrerName;\n   }\n\n   void setFahrerName(String fahrerName) {\n      this.fahrerName = fahrerName;\n   }\n\n   int getAutonummer() {\n      return autonummer;\n   }\n\n   void setAutonummer(int autonummer) {\n      this.autonummer = autonummer;\n   }\n\n   public String toString() {\n      return \"Autonummer: \" + autonummer + \" Fahrername: \" + fahrerName; \n   }\n}\n\nTaxi t1 = new Taxi(12, \"Stefan\");\nTaxi t2 = new Taxi(13, \"Haunschild\");\n\nprintln(t1.toString());\nprintln(t2.toString());\n\n\n",
+         "identical_to_repository_version": true,
+         "repository_file_version": -1,
+         "isFolder": false
+      },
+      {
+         "name": "DatenElemet",
+         "text": "interface DatenElement {\n\n   String toString();\n}\n",
+         "identical_to_repository_version": true,
+         "repository_file_version": -1,
+         "isFolder": false
+      },
+      {
+         "name": "Patient",
+         "text": "class Patient implements DatenElement{\n   String name;\n   String adresse;\n   String krankheit;\n   int alter;\n   \n   public String toString() {\n      return \"Name: \" + name + \"; Adresse: \" + adresse + \"; Krankheit: \" + krankheit + \"; Alter: \" + alter + \";\"; \n   }\n}\n",
+         "identical_to_repository_version": true,
+         "repository_file_version": -1,
+         "isFolder": false
+      }
+   ],
+   "settings": {
+      "libraries": []
+   },
+   "parent_folder_id": 930100,
+   "isFolder": false
+}

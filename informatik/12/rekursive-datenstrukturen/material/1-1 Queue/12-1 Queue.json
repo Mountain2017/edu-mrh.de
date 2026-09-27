@@ -1,0 +1,76 @@
+{
+   "name": "12-1 Queue",
+   "id": 849815,
+   "modules": [
+      {
+         "name": "Main",
+         "text": "   // chose which type of queue to use\nPatientManagementSystem queue;\nqueue = new PatientManagement1(8);\n//queue = new PatientManagement2WithNumber(8);\n//queue = new PatientManagement3WithMoveUp(8);\nqueue = new PatientManagementWithQueue();\n\n\n   // patients arrive\nqueue.addPatient(new Patient(\"Hans\", \"Hinterdupfing\", \"Husten\", 12));\nSystemTools.pause(500);\nqueue.addPatient(new Patient(\"Sepp\", \"Hinterdupfing\", \"Fieber\", 12));\nSystemTools.pause(500);\nqueue.addPatient(new Patient(\"Schorsch\", \"Hinterdupfing\", \"Erkältung\", 12));\nSystemTools.pause(500);\nqueue.addPatient(new Patient(\"Huaba\", \"Hinterdupfing\", \"Grippe\", 12));\nSystemTools.pause(500);\nqueue.addPatient(new Patient(\"Bene\", \"Hinterdupfing\", \"Corona\", 12));\nqueue.printPatients();\nprintln();\nSystemTools.pause(1000);\n\n   // doctor sees the first couple of patients\nprintln(queue.pollPatient().getName());\nSystemTools.pause(500);\nprintln(queue.pollPatient().getName());\nSystemTools.pause(500);\nprintln(queue.pollPatient().getName());\nqueue.printPatients();\nprintln();\nSystemTools.pause(1000);\n\n   // new patients arrive\nqueue.addPatient(new Patient(\"Gustav\", \"Hinterdupfing\", \"Atemprobleme\", 12));\nSystemTools.pause(500);\nqueue.addPatient(new Patient(\"Thommy\", \"Hinterdupfing\", \"Bluthochdruck\", 12));\nSystemTools.pause(500);\nqueue.addPatient(new Patient(\"Ludwig\", \"Hinterdupfing\", \"Tachykardie\", 12));\nqueue.printPatients();\nprintln();\nSystemTools.pause(1000);\n\n   // doctor sees another patient\nprintln(queue.pollPatient().getName());\nqueue.printPatients();\nSystemTools.pause(500);\n",
+         "identical_to_repository_version": true,
+         "repository_file_version": -1,
+         "isFolder": false
+      },
+      {
+         "name": "PatientManagementSystem",
+         "text": "public interface PatientManagementSystem {\n\n\n    void printPatients();\n\n    Patient pollPatient();\n\n    boolean addPatient(Patient patientData);\n}\n",
+         "identical_to_repository_version": true,
+         "repository_file_version": -1,
+         "isFolder": false
+      },
+      {
+         "name": "Patient",
+         "text": "public class Patient {\n    String name;\n    String adresse;\n    String krankheit;\n    int alter;\n\n    public Patient(String name, String address, String illness, int age) {\n        this.name = name;\n        this.adresse = address;\n        this.krankheit = illness;\n        this.alter = age;\n    }\n\n    public String getName() {\n        return name;\n    }\n\n    public void setName(String name) {\n        this.name = name;\n    }\n\n    public String getAdresse() {\n        return adresse;\n    }\n\n    public void setAdresse(String adresse) {\n        this.adresse = adresse;\n    }\n\n    public String getKrankheit() {\n        return krankheit;\n    }\n\n    public void setKrankheit(String krankheit) {\n        this.krankheit = krankheit;\n    }\n\n    public int getAlter() {\n        return alter;\n    }\n\n    public void setAlter(int alter) {\n        this.alter = alter;\n    }\n}\n",
+         "identical_to_repository_version": true,
+         "repository_file_version": -1,
+         "isFolder": false
+      },
+      {
+         "name": "PatientManagement1",
+         "text": "public class PatientManagement1 implements PatientManagementSystem {\n\n   Patient [] patients;\n   int capacity;\n\n   public PatientManagement1(int capacity) {\n      patients = new Patient[capacity];\n      this.capacity = capacity;\n   }\n\n   public boolean addPatient(Patient patient) {\n      for (int i = 0; i < patients.length; i++) {\n         if(patients[i] == null) {\n            patients[i] = patient;\n            return true;\n         }\n      }\n      System.out.println(\"Cannot add patient!\");\n      return false;\n   }\n\n\n   public Patient pollPatient() {\n      for (int i = 0; i < patients.length; i++) {\n         if(patients[i] != null) {\n            Patient patient = patients[i];\n            patients[i] = null;\n            return patient;\n         }\n      }\n      System.out.println(\"No patients\");\n      return null;\n   }\n\n   public void printPatients() {\n      for (int i = 0; i < patients.length; i++) {\n         Patient patient = patients[i];\n         if(patient != null) {\n            System.out.println(i + \" \" + patient.getName());\n         }\n      }\n   }\n}\n",
+         "identical_to_repository_version": true,
+         "repository_file_version": -1,
+         "isFolder": false
+      },
+      {
+         "name": "ListElement",
+         "text": "public class ListElement {\n   \n   Patient patient; \n   ListElement nachfolger;\n\n   public ListElement(String name, String address, String illness, int age) {\n      this.patient = new Patient(name, address, illness, age); \n   }\n\n   public ListElement(Patient patient) {\n      this.patient = patient; \n   }\n\n   public ListElement getNachfolger() {\n      return nachfolger;\n   }\n\n   public void setNachfolger(ListElement nachfolger) {\n      this.nachfolger = nachfolger;\n   }\n\n   public Patient getPatient() {\n      return this.patient; \n   }\n}\n",
+         "identical_to_repository_version": true,
+         "repository_file_version": -1,
+         "isFolder": false
+      },
+      {
+         "name": "PatientManagement2WithNumber",
+         "text": "public class PatientManagement2WithNumber implements PatientManagementSystem {\n\n    Patient [] patients;\n    int capacity;\n    int currentPatient;\n\n    public PatientManagement2WithNumber(int capacity) {\n        patients = new Patient[capacity];\n        this.capacity = capacity;\n    }\n\n\n    public boolean addPatient(Patient patient) {\n        for (int i = 0; i < patients.length; i++) {\n            if(patients[i] == null) {\n                patients[i] = patient;\n                return true;\n            }\n        }\n        System.out.println(\"Cannot add patient!\");\n        return false;\n    }\n\n\n    public Patient pollPatient() {\n        if(patients[currentPatient] != null) {\n            Patient patient = patients[currentPatient];\n            patients[currentPatient] = null;\n            currentPatient++;\n            return patient;\n        }\n        System.out.println(\"No patients\");\n        return null;\n    }\n\n\n    public void printPatients() {\n        for (int i = 0; i < patients.length; i++) {\n            Patient patient = patients[i];\n            if(patient != null) {\n                System.out.println(i + \" \" + patient.getName());\n            }\n        }\n    }\n}\n\n\n",
+         "identical_to_repository_version": true,
+         "repository_file_version": -1,
+         "isFolder": false
+      },
+      {
+         "name": "PatientManagement3WithMoveUp",
+         "text": "public class PatientManagement3WithMoveUp implements PatientManagementSystem{\n\n    Patient [] patients;\n    int capacity;\n\n    int lastPatient;\n\n    public PatientManagement3WithMoveUp(int capacity) {\n        patients = new Patient[capacity];\n        this.capacity = capacity;\n    }\n\n\n    public boolean addPatient(Patient patient) {\n        if(patients[lastPatient] == null && lastPatient < capacity -1) {\n            patients[lastPatient] = patient;\n            lastPatient++;\n            return true;\n        } else {\n            System.out.println(\"Cannot add patient!\");\n            return false;\n        }\n    }\n\n\n    public Patient pollPatient() {\n        if(patients[0] != null) {\n            Patient patient = patients[0];\n            for(int i = 0; i < lastPatient - 1; i++) {\n                //Screen.getScreen().warte(500);\n                patients[i] = patients[i+1];\n            }\n            lastPatient--;\n            patients[lastPatient] = null;\n            return patient;\n        } else {\n            System.out.println(\"No patients\");\n            return null;\n        }\n    }\n\n\n    public void printPatients() {\n        for (int i = 0; i < patients.length; i++) {\n            Patient patient = patients[i];\n            if(patient != null) {\n                System.out.println(i + \" \" + patient.getName());\n            }\n        }\n    }\n}\n",
+         "identical_to_repository_version": true,
+         "repository_file_version": -1,
+         "isFolder": false
+      },
+      {
+         "name": "PatientManagementWithQueue",
+         "text": "public class PatientManagementWithQueue implements PatientManagementSystem {\n    PatientQueue patientQueue;\n    \n\n    public PatientManagementWithQueue() {\n        patientQueue = new PatientQueue(null);\n        \n    }\n\n\n    public boolean addPatient(Patient patient) {\n        return patientQueue.add(new ListElement(patient));\n    }\n\n\n    public Patient pollPatient() {\n        return patientQueue.poll().getPatient();\n    }\n\n\n    public void printPatients () {\n        patientQueue.printPatients();\n    }\n}\n",
+         "identical_to_repository_version": true,
+         "repository_file_version": -1,
+         "isFolder": false
+      },
+      {
+         "name": "PatientQueue",
+         "text": "public class PatientQueue {\n\n   ListElement anfang;\n   ListElement ende; \n\n   public PatientQueue(ListElement anfang) {\n      this.anfang = anfang;\n   }\n\n    /**\n     * Inserts the specified element into this queue returning true upon\n     * success.\n     * @param patient the patient to add\n     * @return true\n     */\n   public boolean add(ListElement patient) {\n      if(anfang == null) {\n         this.anfang = patient;\n         this.ende = patient; \n      } else {\n         ende.setNachfolger(patient);\n         ende = patient; \n      }\n      return true;\n   }\n\n    /**\n     * Retrieves and removes the head of this queue, or returns null if\n     * this queue is empty.\n     * @return the head of this queue, or null if this queue is empty\n     */\n   public ListElement poll() {\n      ListElement ret = anfang;\n      if(anfang != null) {\n         anfang = anfang.getNachfolger();\n      }\n      return ret;\n   }\n\n    /**\n     * Retrieves, but does not remove, the head of this queue, or returns null\n     * if this queue is empty.\n     * @return the head of this queue, or null if this queue is empty\n     */\n   public ListElement peek() {\n      return anfang;\n   }\n\n   public void printPatients() {\n      ListElement tmp = anfang;\n      int count = 0; \n      while (tmp != null) {\n         println(count + \" \" + tmp.getPatient().getName());\n         tmp = tmp.getNachfolger();\n         count++;\n      }\n   }\n}\n",
+         "identical_to_repository_version": true,
+         "repository_file_version": -1,
+         "isFolder": false
+      }
+   ],
+   "settings": {
+      "libraries": [
+         "gng"
+      ]
+   },
+   "parent_folder_id": 849813,
+   "isFolder": false
+}

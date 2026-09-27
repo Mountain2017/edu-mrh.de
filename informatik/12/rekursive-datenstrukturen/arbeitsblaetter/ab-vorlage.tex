@@ -1,0 +1,90 @@
+% =====================================================================
+%  Gemeinsame Vorlage der Arbeitsblätter "Rekursive Datenstrukturen"
+%  – Informatik 12 (gleiches Layout wie informatik/10/java/arbeitsblaetter/
+%  und informatik/11/graphen/arbeitsblaetter/ab-vorlage.tex)
+%  Einbinden in jedem Blatt direkt nach \documentclass: \input{ab-vorlage}
+%  Übersetzen mit XeLaTeX, LuaLaTeX, pdfLaTeX oder Tectonic.
+%
+%  Blatt:   xelatex ab-1-1-queue.tex
+%  Lösung:  xelatex -jobname=ab-1-1-queue-lsg "\def\mitloesung{}\input{ab-1-1-queue}"
+%           (füllt alle Lücken rot aus; siehe \lsg, \lsglinien, \lsgoder)
+% =====================================================================
+\usepackage[a4paper,left=18mm,right=18mm,top=26mm,bottom=17mm,headheight=15mm,headsep=4mm,footskip=8mm]{geometry}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{helvet}
+  \usepackage[scaled=0.86]{beramono}
+  \renewcommand{\familydefault}{\sfdefault}
+\else
+  \usepackage{fontspec}
+  \setmainfont{texgyreheros}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,ItalicFont=*-italic,BoldItalicFont=*-bolditalic]
+  \setmonofont{DejaVuSansMono}[Extension=.ttf,UprightFont=*,BoldFont=*-Bold,ItalicFont=*-Oblique,BoldItalicFont=*-BoldOblique,Scale=0.86]
+\fi
+\usepackage[ngerman,shorthands=off]{babel}
+\usepackage{xcolor,graphicx,tabularx,array,enumitem,fancyhdr,tikz,listings,multicol,calc,etoolbox,pifont}
+\usepackage[most]{tcolorbox}
+\usetikzlibrary{arrows.meta,positioning,calc,decorations.pathreplacing,shapes.multipart}
+\usepackage[hidelinks]{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+\setlist{nosep,leftmargin=*}
+
+% ---------- Lösungsschalter ----------
+\newif\ifloesung
+\ifdefined\mitloesung\loesungtrue\fi
+\newcommand{\lsgfarbe}{\color{red!75!black}}
+
+% ---------- Kopf- und Fußzeile (einheitliche Form) ----------
+\newcommand{\lehrkraft}{Hau}
+\newcommand{\themenbereich}{1. Rekursive Datenstrukturen}
+\newcommand{\abnummer}{}
+\pagestyle{fancy}\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancyhead[L]{\small Klasse 12\\Datum:}
+\fancyhead[C]{\small Themenbereich:\\\themenbereich}
+\fancyhead[R]{\small \lehrkraft\ifloesung\\{\lsgfarbe\bfseries Lösung}\fi}
+\fancyfoot[C]{\scriptsize edu-mrh.de\,·\,Informatik 12\,·\,Blatt \abnummer\ifloesung\ (Lösung)\fi\,·\,Seite \thepage}
+\newcommand{\abtitel}[2]{\renewcommand{\abnummer}{#1}\begin{center}\Large\bfseries #1\quad\underline{#2}\end{center}\vspace{-1mm}}
+
+% ---------- Boxen ----------
+\newenvironment{aufgabe}[2][]{\begin{tcolorbox}[enhanced,breakable,colback=white,colframe=black,boxrule=0.7pt,arc=3mm,left=2mm,right=2mm,top=1.5mm,bottom=1.5mm,before skip=2.5mm,after skip=2.5mm]\textbf{Aufgabe #2)}\ifstrempty{#1}{}{ \textit{#1}}\par\vspace{0.6mm}}{\end{tcolorbox}}
+\newtcolorbox{merke}[1][Merke]{enhanced,breakable,colback=green!5,colframe=green!40!black,boxrule=0.8pt,arc=2mm,left=2mm,right=2mm,top=1.5mm,bottom=1.5mm,before skip=2.5mm,after skip=2.5mm,title={#1},fonttitle=\bfseries,coltitle=white}
+\newtcolorbox{hinweis}{enhanced,breakable,colback=yellow!12,colframe=orange!70!black,boxrule=0.6pt,arc=2mm,left=2mm,right=2mm,top=1mm,bottom=1mm,before skip=2mm,after skip=2mm}
+\newcommand{\web}[1]{{\small\color{gray}\textit{Website: #1}}}
+
+% ---------- Lücken, Linien, Karos ----------
+\newcommand{\luecke}[1][3.5cm]{\rule[-0.5ex]{#1}{0.4pt}}
+\newcommand{\linien}[1]{\par\vspace{1.5mm}\foreach \i in {1,...,#1}{\noindent\rule[0pt]{\linewidth}{0.3pt}\par\vspace{5.5mm}}\vspace{-3mm}}
+\newcommand{\kariert}[1]{\par\vspace{1.5mm}\noindent\begin{tikzpicture}\draw[step=5mm,gray!55,thin] (0,0) grid (\linewidth-1pt,#1*5mm);\end{tikzpicture}\par}
+\newcommand{\karobox}[2]{\begin{tikzpicture}\draw[step=5mm,gray!55,thin] (0,0) grid (#1,#2);\end{tikzpicture}}
+\newcommand{\klassenkarte}[3]{\begin{tabular}{|l|}\hline\multicolumn{1}{|c|}{\textbf{#1}}\\\hline #2\\\hline #3\\\hline\end{tabular}}
+\newcommand{\code}[1]{\texttt{#1}}
+
+% Lücke mit Lösung: \lsg[Mindestbreite]{Lösungstext}
+\newlength{\lsgbreite}
+\newcommand{\lsg}[2][3.5cm]{\ifloesung\settowidth{\lsgbreite}{\,#2\,}\ifdim\lsgbreite<#1\setlength{\lsgbreite}{#1}\fi\underline{\makebox[\lsgbreite][l]{\lsgfarbe\,#2}}\else\luecke[#1]\fi}
+% Schreiblinien mit Lösung: \lsglinien{Anzahl}{Lösungstext} (gleiche Höhe wie \linien)
+\newcommand{\lsglinien}[2]{\ifloesung\par\vspace{1.5mm}\noindent\begin{minipage}[t][#1\dimexpr 6.9mm\relax][t]{\linewidth}\lsgfarbe #2\end{minipage}\par\vspace{-1.5mm}\else\linien{#1}\fi}
+% Beliebiger Inhalt: \lsgoder{nur in der Lösung}{nur im Blatt}
+\newcommand{\lsgoder}[2]{\ifloesung\leavevmode#1\else#2\fi}
+
+% ---------- Verkettete Strukturen zeichnen ----------
+% Objekt mit Kopf und Attributen:  \node[obj] (k1) {k1: Knoten \nodepart{second} daten = Hans\\ nachfolger};
+\tikzset{
+  obj/.style={draw,rectangle split,rectangle split parts=2,rectangle split part fill={orange!25,orange!8},
+              rounded corners=2pt,font=\scriptsize,inner sep=2pt,align=left},
+  qobj/.style={obj,rectangle split part fill={teal!25,teal!8}},
+  pobj/.style={draw,rounded corners=2pt,fill=gray!8,font=\scriptsize,inner sep=2pt,align=left},
+  zeiger/.style={thick,-{Stealth[length=2.2mm]}},
+  lsgzeiger/.style={zeiger,red!75!black},
+  nullref/.style={font=\scriptsize\ttfamily,inner sep=1pt},
+  schritt/.style={circle,draw,fill=white,inner sep=0.6pt,font=\scriptsize\bfseries},
+  lsgschritt/.style={schritt,draw=red!75!black,text=red!75!black},
+}
+
+% ---------- Java-Listings ----------
+\lstset{language=Java,basicstyle=\ttfamily\small,keywordstyle=\bfseries,commentstyle=\color{gray!80!black},stringstyle=\color{black},showstringspaces=false,columns=flexible,keepspaces=true,tabsize=3,frame=single,framerule=0.4pt,rulecolor=\color{black},xleftmargin=2mm,framexleftmargin=1mm,aboveskip=2mm,belowskip=2mm,breaklines=true,escapechar=§,
+ literate={ä}{{\"a}}1 {ö}{{\"o}}1 {ü}{{\"u}}1 {Ä}{{\"A}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1 {ß}{{\ss}}1 {–}{{--}}1 {„}{{\glqq}}1 {“}{{\grqq}}1 {→}{{$\to$}}1 {①}{{\ding{172}}}1 {②}{{\ding{173}}}1 {③}{{\ding{174}}}1 {④}{{\ding{175}}}1}
+\lstnewenvironment{java}[1][]{\lstset{#1}}{}

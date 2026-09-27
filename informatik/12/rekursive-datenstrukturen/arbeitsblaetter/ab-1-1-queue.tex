@@ -1,0 +1,190 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+\newcommand{\zeile}{\rule[-6mm]{0pt}{9.5mm}}
+% Lösungszeichnung: im Blatt unsichtbar, belegt aber denselben Platz
+\ifloesung\tikzset{lsgbild/.style={red!75!black}}\else\tikzset{lsgbild/.style={opacity=0}}\fi
+\newcommand{\lsgtext}[1]{\ifloesung#1\else\phantom{#1}\fi}
+\begin{document}
+\abtitel{1.1}{Die Warteschlange (Queue)}
+
+In der Arztpraxis wird in der Reihenfolge der Ankunft aufgerufen. Das \textbf{Projekt Praxis} \web{Station 1.1} verwaltet das Wartezimmer zunächst mit einem \textbf{Array}. Jedes Wartezimmer kann \code{add(Patient p)} (hinten anstellen), \code{poll()} (vorne aufrufen) und \code{ausgeben()}.
+
+\begin{aufgabe}[Projekt Praxis]{1}
+Starte das Hauptprogramm nacheinander mit Variante 1, 2 und 3. Notiere Idee und Problem.\\[1mm]
+\small\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\linewidth}{|p{2.9cm}|X|X|}\hline
+\textbf{Variante} & \textbf{Idee} & \textbf{Was geht schief?}\\\hline
+1 \code{Suchen}\zeile & \lsgoder{\lsgfarbe add: erster freier Platz, poll: erster belegter Platz}{} & \lsgoder{\lsgfarbe Neue rücken vorne in freie Plätze und kommen vor Resi und Bene dran.}{}\\\hline
+2 \code{Nummer}\zeile & \lsgoder{\lsgfarbe Eine Nummer merkt sich, welcher Platz als nächster dran ist.}{} & \lsgoder{\lsgfarbe Vorne Belegte kommen nie dran, die Nummer läuft übers Array hinaus.}{}\\\hline
+3 \code{Aufrücken}\zeile & \lsgoder{\lsgfarbe Nach jedem Aufruf rücken alle einen Platz vor.}{} & \lsgoder{\lsgfarbe Reihenfolge stimmt, aber bei jedem Aufruf werden alle verschoben.}{}\\\hline
+\end{tabularx}\\[1.5mm]
+Was passiert bei \textbf{allen drei} Varianten mit Mia? \lsg[9.2cm]{Sie wird abgewiesen: Das Array ist voll (5 Plätze).}
+\end{aufgabe}
+
+\begin{merke}[Probleme mit Arrays]
+Ein Array hat eine \lsg[2.6cm]{feste Größe} und belegt schon beim Erzeugen \lsg[2.2cm]{Speicher} für alle Plätze, auch für leere (\code{null}). Zum Vergrößern müsste man \lsg[3.2cm]{ein neues Array} erzeugen und alles \lsg[2.2cm]{kopieren}. Damit die Reihenfolge stimmt, müssen beim Herausnehmen alle \lsg[2.4cm]{aufrücken}.\\[0.5mm]
+\textbf{Idee:} Jedes Element kennt zusätzlich \lsg[3.4cm]{seinen Nachfolger}. So entsteht eine \textbf{Kette} beliebiger Länge.
+\end{merke}
+
+\begin{aufgabe}{2}
+\textbf{a)} Resi, Bene und Gustav warten. Zeichne alle Verweise als Pfeile ein (oder \code{null}). Markiere, wo \code{poll()} herausnimmt und wo \code{add()} anhängt.\\[-1mm]
+\begin{tikzpicture}[node distance=12mm]
+\node[qobj] (ws) {\textbf{ws : Warteschlange}\nodepart{second}anfang\\[5mm]ende};
+\node[obj,right=14mm of ws.north east,anchor=north west] (k1) {\textbf{k1 : Knoten}\nodepart{second}daten = Resi\\nachfolger};
+\node[obj,right=of k1] (k2) {\textbf{k2 : Knoten}\nodepart{second}daten = Bene\\nachfolger};
+\node[obj,right=of k2] (k3) {\textbf{k3 : Knoten}\nodepart{second}daten = Gustav\\nachfolger};
+\begin{scope}[lsgbild]
+  \draw[zeiger] ([yshift=2.4mm]ws.east) -- ([yshift=2.4mm]ws.east -| k1.west);
+  \draw[zeiger] ([yshift=-3.6mm]ws.east) -| (k3.south);
+  \draw[zeiger] ([yshift=-2.5mm]k1.east) -- ([yshift=-2.5mm]k2.west);
+  \draw[zeiger] ([yshift=-2.5mm]k2.east) -- ([yshift=-2.5mm]k3.west);
+\end{scope}
+\node[nullref,red!75!black,right=1mm of k3.east,yshift=-2.5mm] {\lsgtext{null}};
+\node[font=\scriptsize,red!75!black,above=0.5mm of k1] {\lsgtext{poll() nimmt vorne weg}};
+\node[font=\scriptsize,red!75!black,above=0.5mm of k3] {\lsgtext{add() hängt hinten an}};
+\end{tikzpicture}\\[0.5mm]
+\textbf{b)} Ergänze die Datentypen und zeichne die Beziehungen mit Namen und Multiplizitäten ein.\\[1.5mm]
+\begin{tikzpicture}
+\node[draw,rectangle split,rectangle split parts=3,font=\scriptsize,align=left,fill=teal!6,anchor=north] (W) at (0,0)
+  {\textbf{Warteschlange}\nodepart{second}- anfang: \lsg[1.3cm]{Knoten}\\- ende: \lsg[1.3cm]{Knoten}
+   \nodepart{third}+ add(Patient p): boolean\\+ poll(): Patient\\+ peek(): Patient\\+ isEmpty(): boolean\\+ ausgeben()};
+\node[draw,rectangle split,rectangle split parts=3,font=\scriptsize,align=left,fill=orange!8,anchor=north] (K) at (6.9,0)
+  {\textbf{Knoten}\nodepart{second}- daten: \lsg[1.3cm]{Patient}\\- nachfolger: \lsg[1.3cm]{Knoten}
+   \nodepart{third}+ Knoten(Patient daten)\\+ getDaten(): Patient\\+ getNachfolger(): Knoten\\+ setNachfolger(Knoten k)};
+\node[draw,rectangle split,rectangle split parts=3,font=\scriptsize,align=left,fill=gray!8,anchor=north] (P) at (13.2,0)
+  {\textbf{Patient}\nodepart{second}- name: String\\- beschwerden: String
+   \nodepart{third}+ getName(): String\\+ getBeschwerden(): String};
+\begin{scope}[font=\scriptsize,red!75!black]
+  \draw[zeiger,lsgbild] ([yshift=-5mm]W.north east) -- ([yshift=-5mm]W.north east -| K.west);
+  \draw[zeiger,lsgbild] ([yshift=-11mm]W.north east) -- ([yshift=-11mm]W.north east -| K.west);
+  \draw[zeiger,lsgbild] ([yshift=-8mm]K.north east) -- ([yshift=-8mm]K.north east -| P.west);
+  \draw[zeiger,lsgbild] ([xshift=-6mm]K.north east) -- ++(0,5mm) -| ([xshift=6mm]K.north west);
+  \node[above] at ($([yshift=-5mm]W.north east)!0.45!([yshift=-5mm]W.north east -| K.west)$) {\lsgtext{anfang}};
+  \node[above left] at ([yshift=-5mm]W.north east -| K.west) {\lsgtext{0..1}};
+  \node[below] at ($([yshift=-11mm]W.north east)!0.45!([yshift=-11mm]W.north east -| K.west)$) {\lsgtext{ende}};
+  \node[below left] at ([yshift=-11mm]W.north east -| K.west) {\lsgtext{0..1}};
+  \node[above] at ($([yshift=-8mm]K.north east)!0.45!([yshift=-8mm]K.north east -| P.west)$) {\lsgtext{daten}};
+  \node[above left] at ([yshift=-8mm]K.north east -| P.west) {\lsgtext{1}};
+  \node[right] at ($(K.north east)+(-5mm,3.5mm)$) {\lsgtext{nachfolger\quad 0..1}};
+\end{scope}
+\end{tikzpicture}
+\end{aufgabe}
+
+\begin{merke}[Die Warteschlange (Queue)]
+\begin{itemize}
+\item Eine Warteschlange speichert \lsg[2.5cm]{beliebig viele} Objekte in einer festen \lsg[2.3cm]{Reihenfolge}.
+\item Die Warteschlange kennt nur den ersten (\code{anfang}) und letzten Knoten (\code{ende}), jeder Knoten seine \code{daten} und seinen \lsg[2.3cm]{Nachfolger}. Beim letzten Knoten ist er \lsg[1.3cm]{null}.
+\item Eine Beziehung zwischen Objekten \textbf{derselben} Klasse heißt \lsg[3.8cm]{rekursive Beziehung}. Im Code wird sie zu einem Referenzattribut, dessen Typ die \lsg[2.6cm]{eigene Klasse} ist: \code{private Knoten nachfolger;}
+\item \code{add} hängt \lsg[1.5cm]{hinten} an, \code{poll} nimmt \lsg[1.5cm]{vorne} weg: \lsg[1.4cm]{FIFO}, First In -- First Out.
+\end{itemize}
+\end{merke}
+
+\newpage
+\begin{aufgabe}[Projekt Praxis, TODO 3]{3}
+\code{add(Patient p)} braucht drei Schritte. Übersetze jeden Schritt im Bild in eine Zeile Code.\\[1mm]
+\begin{minipage}[t]{0.47\linewidth}
+\vspace{0pt}
+\begin{tikzpicture}[node distance=6mm]
+\node[obj] (a) {\textbf{Knoten}\nodepart{second}Resi};
+\node[obj,right=of a] (b) {\textbf{Knoten}\nodepart{second}Bene};
+\node[obj,right=11mm of b] (n) {\textbf{Knoten}\nodepart{second}Gustav};
+\node[font=\scriptsize\ttfamily,above=5mm of a] (an) {anfang};
+\node[font=\scriptsize\ttfamily,above=5mm of b] (en) {ende};
+\draw[zeiger] (an) -- (a); \draw[zeiger] (a) -- (b);
+\draw[zeiger,gray,densely dashed] (en) -- (b);
+\draw[gray] ($(en)!0.55!(b)+(-1.2mm,-1.2mm)$) -- ++(2.4mm,2.4mm);
+\draw[zeiger,teal!60!black] (b) -- node[schritt,above=0.5mm] {2} (n);
+\draw[zeiger,teal!60!black] (en) -- node[schritt,above right=-0.6mm] {3} (n.north west);
+\node[schritt,below=1mm of n] {1};
+\node[font=\scriptsize,below=5mm of n.south,align=center] {\code{neu}};
+\end{tikzpicture}\\[1mm]
+\scriptsize\raggedright
+\textcircled{\tiny 1} Neuen Knoten für \code{p} erzeugen.\\
+\textcircled{\tiny 2} Bisher letzter Knoten bekommt \code{neu} als Nachfolger.\\
+\textcircled{\tiny 3} \code{ende} verweist auf den neuen Knoten.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.51\linewidth}
+\vspace{0pt}
+\begin{java}[basicstyle=\ttfamily\scriptsize]
+public boolean add(Patient p) {
+   Knoten neu = §\lsg[2.4cm]{new Knoten(p)}§;   // §\ding{172}§
+   if (isEmpty()) {         // Sonderfall
+      anfang = §\lsg[1.1cm]{neu}§;
+      ende = §\lsg[1.1cm]{neu}§;
+   } else {
+      §\lsg[3.4cm]{ende.setNachfolger(neu)}§;     // §\ding{173}§
+      §\lsg[2cm]{ende = neu}§;                    // §\ding{174}§
+   }
+   return true;
+}
+\end{java}
+\end{minipage}\\[1mm]
+\textbf{b)} Warum braucht man den Sonderfall für die leere Schlange? Was passiert ohne ihn?\\ \lsg[0.99\linewidth]{ende ist null: ende.setNachfolger(neu) führt zu einer NullPointerException.}\\[1mm]
+\textbf{c)} Übertrage die Methode ins Projekt und teste sie mit \code{new Warteschlange()}.
+\end{aufgabe}
+
+\begin{aufgabe}[Projekt Praxis, TODO 4]{4}
+\code{poll()} holt den vordersten Patienten heraus und gibt ihn zurück.\\[1mm]
+\begin{minipage}[t]{0.47\linewidth}
+\vspace{0pt}
+\begin{tikzpicture}[node distance=6mm]
+\node[obj] (a) {\textbf{Knoten}\nodepart{second}Resi};
+\node[obj,right=of a] (b) {\textbf{Knoten}\nodepart{second}Bene};
+\node[obj,right=of b] (c) {\textbf{Knoten}\nodepart{second}Gustav};
+\node[font=\scriptsize\ttfamily,above=5mm of a] (an) {anfang};
+\node[font=\scriptsize\ttfamily,above=5mm of c] (en) {ende};
+\node[font=\scriptsize\ttfamily,below=5mm of a] (p) {p};
+\draw[zeiger,gray,densely dashed] (an) -- (a);
+\draw[gray] ($(an)!0.5!(a)+(-1.2mm,-1.2mm)$) -- ++(2.4mm,2.4mm);
+\draw[zeiger] (a) -- (b); \draw[zeiger] (b) -- (c); \draw[zeiger] (en) -- (c);
+\draw[zeiger,teal!60!black] (p) -- node[schritt,left=0.5mm] {1} (a);
+\draw[zeiger,teal!60!black] (an) -- node[schritt,above right=-0.6mm] {2} (b.north west);
+\end{tikzpicture}\\[1mm]
+\scriptsize\raggedright
+\textcircled{\tiny 1} Die Daten des ersten Knotens in \code{p} merken.\\
+\textcircled{\tiny 2} \code{anfang} rückt auf den Nachfolger weiter.\\
+\textcircled{\tiny 3} War das der letzte Knoten, wird auch \code{ende} leer.\\
+\textcircled{\tiny 4} \code{p} zurückgeben.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.51\linewidth}
+\vspace{0pt}
+\begin{java}[basicstyle=\ttfamily\scriptsize]
+public Patient poll() {
+   if (isEmpty()) {
+      return §\lsg[1.1cm]{null}§;          // niemand wartet
+   } else {
+      Patient p = §\lsg[2.8cm]{anfang.getDaten()}§;      // §\ding{172}§
+      anfang = §\lsg[3.4cm]{anfang.getNachfolger()}§;    // §\ding{173}§
+      if (§\lsg[2.4cm]{anfang == null}§) {               // §\ding{174}§
+         ende = null;
+      }
+      return §\lsg[0.8cm]{p}§;                           // §\ding{175}§
+   }
+}
+\end{java}
+\end{minipage}\\[1mm]
+\textbf{b)} Warum muss Schritt 1 vor Schritt 2 stehen?\\ \lsg[0.99\linewidth]{Nach Schritt 2 verweist nichts mehr auf Resis Knoten: Man käme nicht mehr an ihre Daten.}\\[1mm]
+\textbf{c)} Was geschieht danach mit dem Knoten von Resi?\\ \lsg[0.99\linewidth]{Kein Verweis zeigt mehr auf ihn: Java räumt ihn automatisch weg (Garbage Collector).}
+\end{aufgabe}
+
+\begin{aufgabe}[Projekt Praxis]{5}
+Stelle das Hauptprogramm auf \code{new Warteschlange()} um und vergleiche mit Variante 3.\\[1mm]
+\small\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\linewidth}{|l|X|X|}\hline
+ & \textbf{Variante 3 (Aufrücken)} & \textbf{Warteschlange}\\\hline
+Verschiebungen bei \code{poll()}, wenn $n$ warten\zeile & \lsgoder{\lsgfarbe $n-1$: Der Aufwand wächst mit der Länge.}{} & \lsgoder{\lsgfarbe keine: immer gleich viele Anweisungen}{}\\\hline
+Wie viele können warten?\zeile & \lsgoder{\lsgfarbe höchstens 5 (Größe des Arrays)}{} & \lsgoder{\lsgfarbe beliebig viele (nur der Arbeitsspeicher begrenzt)}{}\\\hline
+\end{tabularx}
+\end{aufgabe}
+
+\begin{hinweis}\small
+\textbf{Es geht auch anders -- besprecht mündlich, warum man es so machen kann:}
+\begin{itemize}
+\item Die Warteschlange merkt sich \textbf{nur \code{anfang}}, kein \code{ende}. Wie findet \code{add} dann den letzten Knoten? Was wird einfacher, was langsamer?
+\item \code{poll()} gibt den \textbf{Knoten} statt des Patienten zurück. Warum ist es besser, wenn das Hauptprogramm die Klasse \code{Knoten} gar nicht kennen muss?
+\item \code{Patient} bekommt \textbf{selbst} ein Attribut \code{nachfolger}, die Klasse \code{Knoten} entfällt. Was spart man, was verliert man?
+\item \code{add} liefert \code{boolean}, obwohl hier immer \code{true} herauskommt. Warum ist das trotzdem sinnvoll? (Tipp: \code{LinkedList} in der Breitensuche, Klasse 11)
+\end{itemize}
+\end{hinweis}
+
+\end{document}

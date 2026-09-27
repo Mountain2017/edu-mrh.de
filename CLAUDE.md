@@ -56,10 +56,34 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
 
 ## Arbeitsblätter
 
-- LaTeX-Quelle + PDF nebeneinander, gemeinsame `ab-vorlage.tex` (Vorbild:
-  `informatik/10/java/arbeitsblaetter/`, `informatik/11/graphen/arbeitsblaetter/`).
-- Höchstens **2 Seiten** pro Blatt, kein Ausblick auf Folgethemen auf dem
-  Blatt (der gehört auf die Website). Gedrängte Aufgaben/Grafiken sind ok.
+- **Neues Format** (Vorbild Jahrgangsstufe 10 Java: `informatik/10/java/`,
+  ebenso `informatik/11/graphen/`, `informatik/12/rekursive-datenstrukturen/`):
+  Stationsseite `<nr>-<thema>.html` mit Phasen (Einstieg, Festhalten, Üben,
+  Verändern, Selbst bauen, Ausblick, Lehrkräfte-Bereich) plus Arbeitsblatt in
+  `arbeitsblaetter/` als `ab-<nr>-<thema>.tex/.pdf` und Lösung `…-lsg.pdf`.
+  Wird ein Thema „nach dem neuen Format überarbeitet“, ist genau das gemeint.
+- LaTeX-Quelle + PDF nebeneinander, gemeinsame `ab-vorlage.tex` je Themenordner
+  (Lösungsschalter `\mitloesung`, Befehle `\lsg`, `\lsglinien`, `\lsgoder`;
+  Übersetzen siehe Kopf der Vorlage, z. B. mit `xelatex`).
+- **Immer höchstens 2 Seiten** pro Blatt, auch die Lösungsfassung. Nach dem
+  Übersetzen die Seitenzahl beider PDFs prüfen. Lösungseinträge dürfen das
+  Layout nicht verschieben (Platz im Blatt gleich groß reservieren).
+- Kein Ausblick auf Folgethemen auf dem Blatt (der gehört auf die Website).
+  Gedrängte Aufgaben/Grafiken sind ok.
+
+## Didaktik bei Programmierthemen
+
+- Methodennamen, Parameter und Rückgabetypen so wählen, dass sie in den
+  Folgestationen weiter tragen (z. B. Datenstrukturen 12: `add(daten): boolean`,
+  `poll()`/`peek()` liefern die Daten oder `null`, Knoten mit `getDaten()`,
+  `getNachfolger()`, `setNachfolger(…)`, wie `java.util.Queue`/`LinkedList`,
+  bis hin zu Liste und Kompositum). Vor dem Ändern die Materialien der
+  Folgestationen ansehen.
+- Logik → Code sichtbar machen: jeden Schritt als Bild und als genau eine
+  Codezeile mit gleicher Nummer (①②③) auf Blatt, Website und in der IDE.
+- Gibt es mehrere sinnvolle Implementierungen, kurz darauf hinweisen und als
+  **mündlichen** Impuls stellen (warum könnte man es so machen?), ohne
+  Schreibplatz auf dem Blatt; Hinweise zum Nachlesen gehören auf die Website.
 
 ## Sprache & Inhalt
 
