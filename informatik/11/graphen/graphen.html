@@ -74,10 +74,11 @@
 
                 <div class="info-box" style="margin-bottom: 1.5rem;">
                     <h3>🧭 Neu: Stationen mit Arbeitsblatt</h3>
-                    <p>Die ersten beiden Kapitel gibt es als eigene Stationen mit Hänsel-und-Gretel-Spiel, interaktiven Graphen, Java-Projekt und Arbeitsblättern (PDF, auch mit Lösung):</p>
+                    <p>Die ersten drei Kapitel gibt es als eigene Stationen mit Hänsel-und-Gretel-Spiel, interaktiven Graphen, Java-Projekten und Arbeitsblättern (PDF, auch mit Lösung):</p>
                     <p>
                         <a href="3-1-grundbegriffe.html" class="btn btn-primary">3.1 Grundbegriffe</a>
                         <a href="3-2-umsetzung-graph.html" class="btn btn-primary">3.2 Umsetzung Graph</a>
+                        <a href="3-3-breitensuche.html" class="btn btn-primary">3.3 Breitensuche</a>
                     </p>
                 </div>
 
@@ -544,12 +545,17 @@ class Knoten extends Sprite {
                     <h2>Breitensuche (Breadth-First Search)</h2>
                 </div>
 
+                <div class="info-box">
+                    <p>💡 Dieses Kapitel gibt es ausführlicher als <strong>Station 3.3</strong>, mit Schritt-für-Schritt-Animation, korrigiertem Java-Projekt und neuem Arbeitsblatt.
+                    <a href="3-3-breitensuche.html" class="btn btn-primary">Zur Station 3.3 →</a></p>
+                </div>
+
                 <div class="pdf-download-box">
                     <div class="pdf-icon">📄</div>
                     <div class="pdf-content">
                         <h3>Arbeitsblatt herunterladen</h3>
                         <p>Arbeitsblatt mit Aufgaben:</p>
-                        <a href="3-3 Breitensuche.pdf" target="_blank" class="btn btn-secondary" download>
+                        <a href="arbeitsblaetter/ab-3-3-breitensuche.pdf" target="_blank" class="btn btn-secondary" download>
                             📥 PDF herunterladen
                         </a>
                     </div>
@@ -636,297 +642,19 @@ class Knoten extends Sprite {
                     </ul>
                 </div>
 
-                <div class="ide-container">
-                    <h3 class="ide-title">💻 Programmieraufgabe: Breitensuche implementieren</h3>
-                    <p>
-                        Vervollständige den Breitensuchalgorithmus. Die Codefragmente sind bereits gegeben - 
-                        du musst sie nur noch an die richtige Stelle setzen!
-                    </p>
-                    
-                    <div class="java-online" 
-                         style="width: 100%; height: 700px;" 
-                         data-java-online="{ 'id': 'breitensuche-implementation', 'speed': 1000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true }">
-                        
-                        <script type="text/plain" title="Hauptprogramm.java">
-// ////////////////////////////////////////////////////////////////////////////////////////// //
-// Aufgabe: Ergänze den Breitensuchalgorithmus in der Klasse Graph.                           //
-//    Hinweis: Du hast bereits alle nötigen Codefragmente gegeben.                            //
-//       Du musst diese nur noch sortieren bzw. zuordnen.                                     //
-//       {...} bedeutet, dass du zwischen die Klammern noch Codefragmente ergänzen musst.    //
-// ////////////////////////////////////////////////////////////////////////////////////////// // 
-
-
-World world = new World(600, 800);
-Graph graph = new Graph(); 
-graph.kanteHinzufuegen(0, 1);
-graph.kanteHinzufuegen(2, 1);
-graph.kanteHinzufuegen(1, 3);
-graph.kanteHinzufuegen(0, 3);
-graph.kanteHinzufuegen(2, 4);
-
-graph.knotenHinzufuegen();
-//graph.kanteHinzufuegen(4, 5);
-
-graph.breitensuche(3, 2);
-                        </script>
-                        
-                        <script type="text/plain" title="Graph.java">
-/**
- * Klasse zur Implementation eines Graphen.
- * 
- * Suche (STRG + F) nach "TODO" und ergänze den Code. 
- */
-public class Graph
-{
-   Knoten[] knoten;
-   boolean [][] adja; 
-   int maxAnzahl = 20; 
-   int anzKnoten = 5; 
-   
-   /**
-     * Konstruktor für Objekte der Klasse Graph.
-     */
-   Graph()
-   {
-      knoten = new Knoten[maxAnzahl];
-      for (int i = 0; i < anzKnoten; i++) {
-         knoten[i] = new Knoten(); 
-         knoten[i].setKnotenname("" + i);
-         
-         //nur für grafische Darstellung
-         knoten[i].moveTo(100 + ((i % 3 * 200)), 100 + (i * 100));
-         new Text(knoten[i].getCenterX() - 8, knoten[i].getCenterY() - 16, 32, i);
-      }
-
-      // wird automatisch mit "false" initialisiert. 
-      adja = new boolean [maxAnzahl][maxAnzahl]; 
-   }
-
-
-   /**
-   * Durchsucht den Graph nach dem angegebenen zielKnoten, ausgehend von startKnoten. 
-   * 
-   * @param startKnoten Zahl des Knotens von dem aus gesucht werden soll. 
-   * @param zielKnoten Zahl des Knotens zu dem ein Pfad gefunden werden soll. 
-   */
-   void breitensuche(int startKnoten, int zielKnoten) {
-      LinkedList<Integer> besuchteKnoten = new LinkedList<Integer>(); 
-      LinkedList<Integer> warteschlange = new LinkedList<Integer>();
-      // TODO1 Zählvariable aktuellerKnoten mit startKnoten belegen und zur warteschlange hinzufügen (-> .add(...))
-      int aktuellerKnoten = 0;
-      
-      
-
-            // zur Visualisierung
-      for (int i = 0; i < anzKnoten; i++) {
-         knoten[i].setFillColor(Color.grau);
-      }
-      knoten[aktuellerKnoten].setFillColor(Color.green);
-
-
-
-      // TODO2 Breitensuchalgorithmus              
-            
-      // TODO 2.1 solange aktuellerKnoten nicht zielKnoten :
-      
-
-         // TODO 2.2 Durchlaufe alle Knoten von aktuellerKnoten aus in adja (-> adja[aktuellerKnoten][...])
-         
-           // TODO 2.3 Prüfe ob Nachbarknoten des aktuellerKnoten zur warteschlange hinzugefügt werden soll. 
-            
-      
-         
-         // TODO 2.4
-         // aktuellerKnoten zu besuchteKnoten hinzufügen 
-         // aktuellerKnoten wird nächster Knoten in der warteschlange
-         
-
-            // Einfärben zur Visualisierung am Ende 
-            // des Durchlaufs, wenn abgearbeitet
-      knoten[aktuellerKnoten].setFillColor(Color.green);
-       
-
-   }
-   
-
-
-
-   // Weitere Methoden, müssen nicht näher betrachtet werden. 
-
-
-   /**
-     * Diese Methode fügt der Adjazenzmatrix eine Kante von start nach ende hinzu. 
-     */
-   void kanteHinzufuegen(int start, int ende) 
-   {
-      if(start < 0 || start >= anzKnoten || ende < 0 || ende >= anzKnoten) {
-         println("Ein Einfügen ist leider nicht möglich.");
-      } else {
-         adja[start][ende] = true;
-         adja[ende][start] = true;
-      }
-      //printAdja();
-      zeichneKante(start, ende);
-   } 
-   
-   /**
-     * Diese Methode fügt dem Knotenfeld einen neuen Knoten hinzu.
-     */
-   void knotenHinzufuegen() 
-   {
-      if(anzKnoten < maxAnzahl) {
-         knoten[anzKnoten] = new Knoten();
-         knoten[anzKnoten].moveTo(100 + ((anzKnoten % 3 * 200)), 100 + (anzKnoten * 100));
-         new Text(knoten[anzKnoten].getCenterX() - 8, knoten[anzKnoten].getCenterY() - 16, 32, anzKnoten);
-         anzKnoten++;
-      } else {
-         System.out.println("Ein Einfügen ist leider nicht möglich.");
-      }
-   } 
-
-   /**
-    * Methode um die Adjazenzmatrix auf der Konsole auszugeben. 
-    */
-   void printAdja() {
-      for (int x = 0; x < anzKnoten; x++) {
-         for (int y = 0; y < anzKnoten; y++) {
-
-            if(adja[x][y]) {
-               print("X ");
-            } else {
-               print("O ");
-            }
-
-            if(y == anzKnoten - 1) {
-               println();
-            } 
-         }
-      } 
-      println(); 
-   }
-
-   /** 
-    * Zeichnet die Kanten in die graphische Ausgabe 
-    */
-   void zeichneKante(int start, int ende) {
-      double startX = knoten[start].getCenterX(); 
-      double startY = knoten[start].getCenterY();
-      
-      double endeX = knoten[ende].getCenterX();
-      double endeY = knoten[ende].getCenterY();
-      
-      double abstand = Vector2.distance(startX, startY, endeX, endeY);
-     
-      double winkel = new Vector2(endeX - startX, endeY - startY).getAngleDeg(); 
-
-      Rectangle rectangle = new Rectangle(startX, startY, 10, abstand);
-      rectangle.setFillColor(Color.white);
-      rectangle.setAlpha(0.6); 
-      rectangle.rotate(90 - winkel, startX, startY);
-   }
-}
-                        </script>
-                        
-                        <script type="text/plain" title="Knoten.java">
-class Knoten extends Circle {
-   private String knotenname = "Knoten X"; 
-
-   Knoten() {
-      setFillColor(Color.orange);
-   }
-
-   String getKnotenname() {
-      return knotenname; 
-   }
-
-   void setKnotenname(String _knotenname) {
-      knotenname = _knotenname; 
-   }
-}
-                        </script>
-
-                        <script type="text/plain" title="Codefragmente.java">
-// 1
-warteschlange.add(aktuellerKnoten); 
-
-// 2
-int aktuellerKnoten = startKnoten; 
-
-//3 
-print(aktuellerKnoten + " ");
-
-//4 
-aktuellerKnoten = warteschlange.poll(); 
-
-//5 
-for (int i = 0; i < anzKnoten; i++) { ... }
-   
-//6
-while (aktuellerKnoten != zielKnoten && !warteschlange.isEmpty()) { ... }
-
-//7
-print("Reihenfolge: ");
-
-//8         
-besuchteKnoten.add(aktuellerKnoten);
-
-//9
-if(adja[aktuellerKnoten][i] && !besuchteKnoten.contains(i) && !warteschlange.contains(i)) {
-   warteschlange.addLast(i);
-}
-
-
-
-//10 
-      // Endüberprüfung und Ausgabe
-if(aktuellerKnoten == zielKnoten) {
-   println("Es gibt einen Pfad von Knoten " + startKnoten + " zu Knoten " + zielKnoten);
-   new Text(125, 400, 64, "GEFUNDEN!"); 
-} else {
-   println("Knoten konnte nicht gefunden werden"); 
-   new Text(50, 400, 64, "NICHT gefunden!"); 
-}
-                        </script>
-                    </div>
+                <div class="info-box">
+                    <h3>💻 Programmieraufgabe: Breitensuche implementieren</h3>
+                    <p>Das Java-Projekt zur Breitensuche (Codefragmente zuordnen, testen, Stolperstein) liegt in Station 3.3, zusammen mit einer Schritt-für-Schritt-Animation der Warteschlange.</p>
+                    <p><a href="3-3-breitensuche.html#projekt" class="btn btn-primary">Zum Projekt in Station 3.3 →</a></p>
                 </div>
 
-                <div class="task-box">
-                    <h4>📝 Aufgabe 6: Breitensuche verstehen und erweitern</h4>
-                    <ol>
-                        <li>Teste die Breitensuche mit verschiedenen Start- und Zielknoten.</li>
-                        <li>Was passiert, wenn Start und Ziel identisch sind?</li>
-                        <li>Erweitere die Methode so, dass sie den gefundenen Pfad zurückgibt (nicht nur ob ein Pfad existiert).</li>
-                        <li>Implementiere eine Methode, die die Länge des kürzesten Pfades zurückgibt.</li>
-                    </ol>
-                </div>
-
-                <div class="solution-box hidden" id="solution-breitensuche">
-                    <h4>💡 Lösungshinweise zur Reihenfolge</h4>
-                    <p><strong>Richtige Reihenfolge der Codefragmente:</strong></p>
-                    <ol>
-                        <li>Fragment 2: <code>int aktuellerKnoten = startKnoten;</code></li>
-                        <li>Fragment 1: <code>warteschlange.add(aktuellerKnoten);</code></li>
-                        <li>Fragment 7: <code>print("Reihenfolge: ");</code></li>
-                        <li>Fragment 6: <code>while (aktuellerKnoten != zielKnoten && !warteschlange.isEmpty())</code></li>
-                        <li>Fragment 3: <code>print(aktuellerKnoten + " ");</code></li>
-                        <li>Fragment 5: <code>for (int i = 0; i < anzKnoten; i++)</code></li>
-                        <li>Fragment 9: Bedingung zum Hinzufügen zur Warteschlange</li>
-                        <li>Fragment 8: <code>besuchteKnoten.add(aktuellerKnoten);</code></li>
-                        <li>Fragment 4: <code>aktuellerKnoten = warteschlange.poll();</code></li>
-                        <li>Fragment 10: Endüberprüfung und Ausgabe</li>
-                    </ol>
-                </div>
-
-                <button class="btn btn-outline" onclick="toggleSolution('solution-breitensuche')" style="margin-bottom: 20px;">
-                    💡 Lösung anzeigen
-                </button>
 
                 <div class="pdf-download-box hidden" id="pdf-breitensuche">
                     <div class="pdf-icon">📄</div>
                     <div class="pdf-content">
                         <h3>Lösungen herunterladen</h3>
                         <p>Vollständige Musterlösung mit Erklärungen:</p>
-                        <a href="3-3 LSG Breitensuche.pdf" class="btn btn-secondary" download>
+                        <a href="arbeitsblaetter/ab-3-3-breitensuche-lsg.pdf" class="btn btn-secondary" download>
                             📥 PDF herunterladen
                         </a>
                     </div>
