@@ -1,0 +1,128 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{3.3}{Breitensuche}
+
+\begin{aufgabe}[Silvesterfeuerwerk]{1}
+\begin{minipage}[t]{0.45\linewidth}
+\vspace{0pt}\raggedright
+Die Stadt hat Feuerwerksbatterien mit Zündschnüren verbunden. Batterie A wird um 0\,s gezündet, jede Zündschnur brennt genau 1\,s. Welche Batterien zünden wann?\\[2mm]
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{|c|p{4.3cm}|}\hline
+\textbf{Zeit} & \textbf{Batterien}\\\hline
+0\,s & A\\\hline
+1\,s & \lsgoder{\lsgfarbe B, C, D, E}{}\\\hline
+2\,s & \lsgoder{\lsgfarbe F, G, H}{}\\\hline
+3\,s & \lsgoder{\lsgfarbe I, J (zuletzt)}{}\\\hline
+\end{tabular}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.5\linewidth}
+\vspace{0pt}\centering
+\begin{tikzpicture}[x=1.25cm,y=0.95cm]
+\foreach \n/\x/\y in {I/0/3, C/1.7/3.3, B/3.6/3.3, F/0.9/2.3, A/2.7/2.3, D/4.3/1.8, E/2.0/1.2, H/1.0/0.3, G/3.0/0.3, J/2.0/-0.5} {
+  \node[kknoten,minimum size=6mm] (\n) at (\x,\y) {\n};}
+\node[font=\scriptsize,anchor=west] at (A.east) {\,Start};
+\foreach \a/\b in {A/B, A/C, A/D, A/E, B/D, C/F, E/F, E/H, E/G, F/I, H/J, G/J} {\draw[kante] (\a)--(\b);}
+\end{tikzpicture}
+\end{minipage}
+\end{aufgabe}
+
+\begin{merke}[Breitensuche]\raggedright
+Die Breitensuche durchläuft (\emph{traversiert}) einen Graphen \lsg[2.8cm]{schichtweise}: zuerst alle Nachbarn des Startknotens, dann deren noch nicht besuchte Nachbarn usw. Mit jeder Schicht wird die Pfadlänge um \lsg[1.8cm]{eins} größer. Deshalb findet sie in ungewichteten Graphen den Pfad mit den \lsg[3.2cm]{wenigsten Kanten}.\\[1mm]
+Die noch zu besuchenden Knoten stehen in einer \lsg[3.2cm]{Warteschlange}: Wer zuerst hineinkommt, kommt zuerst wieder heraus (engl. \emph{first in, first out}). Besuchte Knoten werden \lsg[2.8cm]{markiert}, damit kein Knoten doppelt besucht wird -- wie die Brotkrumen im Spiel.
+\end{merke}
+
+\begin{aufgabe}{2}
+\begin{minipage}[t]{0.4\linewidth}
+\vspace{0pt}\raggedright
+\textbf{a)} Führe die Breitensuche ab Knoten A durch. Nimm Nachbarn immer alphabetisch. Notiere nach jedem Schritt den aktuellen Knoten und die Warteschlange.\\[2mm]
+\begin{tikzpicture}[x=1.05cm,y=0.95cm]
+\foreach \n/\x/\y in {A/2.6/3, B/0.3/2.3, C/3.6/2.2, G/4.7/2.9, H/5.7/2.0, F/1.9/1.0, D/4.6/1.1, E/3.2/0.5, I/4.3/-0.1} {
+  \node[kknoten,minimum size=6mm] (\n) at (\x,\y) {\n};}
+\foreach \a/\b in {A/B, A/C, A/F, C/G, C/H, B/D, D/H, D/E, E/F, E/I} {\draw[kante] (\a)--(\b);}
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.56\linewidth}
+\vspace{0pt}\small
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\linewidth}{|c|c|X|}\hline
+\textbf{Schritt} & \textbf{aktueller Knoten} & \textbf{Warteschlange danach}\\\hline
+0 & -- & A\\\hline
+1 & \lsgoder{\lsgfarbe A}{} & \lsgoder{\lsgfarbe B C F}{}\\\hline
+2 & \lsgoder{\lsgfarbe B}{} & \lsgoder{\lsgfarbe C F D}{}\\\hline
+3 & \lsgoder{\lsgfarbe C}{} & \lsgoder{\lsgfarbe F D G H}{}\\\hline
+4 & \lsgoder{\lsgfarbe F}{} & \lsgoder{\lsgfarbe D G H E}{}\\\hline
+5 & \lsgoder{\lsgfarbe D}{} & \lsgoder{\lsgfarbe G H E}{}\\\hline
+6 & \lsgoder{\lsgfarbe G}{} & \lsgoder{\lsgfarbe H E}{}\\\hline
+7 & \lsgoder{\lsgfarbe H}{} & \lsgoder{\lsgfarbe E}{}\\\hline
+8 & \lsgoder{\lsgfarbe E}{} & \lsgoder{\lsgfarbe I}{}\\\hline
+9 & \lsgoder{\lsgfarbe I}{} & \lsgoder{\lsgfarbe (leer)}{}\\\hline
+\end{tabularx}
+\end{minipage}\\[2mm]
+\begin{minipage}[t]{0.44\linewidth}
+\vspace{0pt}\raggedright
+\textbf{b)} Zeichne den \emph{Besuchsbaum}: einen Pfeil von jedem Knoten zu den Knoten, die er in die Warteschlange gestellt hat.\\[1mm]
+\begin{tikzpicture}
+\draw[step=5mm,gray!55,thin] (0,0) grid (7,3);
+\ifloesung
+  \foreach \n/\x/\y in {A/3.5/2.6, B/1.2/1.6, C/3.5/1.6, F/5.8/1.6, D/0.6/0.45, G/2.8/0.45, H/4.2/0.45, E/5.8/0.45, I/6.7/0.45} {
+    \node[kknoten,minimum size=5mm,inner sep=0pt,font=\scriptsize,draw=red!75!black,text=red!75!black] (\n) at (\x,\y) {\n};}
+  \foreach \a/\b in {A/B, A/C, A/F, B/D, C/G, C/H, F/E, E/I} {\draw[lsggkante] (\a)--(\b);}
+\fi
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.53\linewidth}
+\vspace{0pt}\raggedright\small
+\textbf{c)} Reihenfolge ab Knoten E:\\[1mm]
+\lsg[\linewidth]{E, D, F, I, B, H, A, C, G}\\[2mm]
+\textbf{d)} Anton behauptet: „Die Breitensuche besucht immer alle Knoten.“ Nimm Stellung.\\[1mm]
+\lsg[\linewidth]{Falsch: Nur Knoten, die vom Start aus erreichbar sind.}\\[1mm]
+\lsg[\linewidth]{Bei nicht zusammenhängenden oder nur schwach}\\[1mm]
+\lsg[\linewidth]{zusammenhängenden Graphen fehlen Knoten.}
+\end{minipage}
+\end{aufgabe}
+
+\newpage
+\begin{aufgabe}[Projekt Breitensuche]{3}
+\textbf{a)} Ordne jeder Zeile des Pseudocodes die Nummer des passenden Codefragments zu (Website bzw. Datei \code{Codefragmente.java}).\quad
+\textbf{b)} Setze die Methode \code{breitensuche} im Projekt um (TODO 1 bis 3) und teste sie.
+\end{aufgabe}
+{\renewcommand{\arraystretch}{1.25}\small
+\begin{tabularx}{\linewidth}{|X|c|}\hline
+\textbf{Pseudocode} \code{breitensuche(start, ziel)} & \textbf{Fragment}\\\hline
+aktuellerKnoten $\leftarrow$ start & \lsgoder{\lsgfarbe 2}{}\\\hline
+lege aktuellerKnoten in die Warteschlange & \lsgoder{\lsgfarbe 1}{}\\\hline
+gib „Reihenfolge: “ aus & \lsgoder{\lsgfarbe 7}{}\\\hline
+\textbf{solange} aktuellerKnoten $\neq$ ziel \textbf{und} Warteschlange nicht leer & \lsgoder{\lsgfarbe 6}{}\\\hline
+\quad aktuellerKnoten $\leftarrow$ vordersten Knoten aus der Warteschlange nehmen & \lsgoder{\lsgfarbe 4}{}\\\hline
+\quad aktuellerKnoten als besucht markieren & \lsgoder{\lsgfarbe 8}{}\\\hline
+\quad gib aktuellerKnoten aus & \lsgoder{\lsgfarbe 3}{}\\\hline
+\quad \textbf{für alle} Knoten $i$ & \lsgoder{\lsgfarbe 5}{}\\\hline
+\quad\quad \textbf{falls} Kante von aktuellerKnoten zu $i$ \textbf{und} $i$ nicht besucht \textbf{und} nicht in der Warteschlange:\newline\quad\quad\quad stelle $i$ hinten an die Warteschlange & \lsgoder{\lsgfarbe 9}{}\\\hline
+\textbf{falls} aktuellerKnoten $=$ ziel: „gefunden“, \textbf{sonst}: „nicht gefunden“ & \lsgoder{\lsgfarbe 10}{}\\\hline
+\end{tabularx}}
+
+\begin{aufgabe}[Projekt Breitensuche: Testen]{4}
+\begin{minipage}[t]{0.5\linewidth}
+\vspace{0pt}\raggedright
+Im Hauptprogramm entsteht dieser Graph. Knoten 5 wird mit \code{knotenHinzufuegen()} ergänzt, hat aber keine Kante.\\[1mm]
+\textbf{a)} Sage die Ausgabe voraus, dann teste.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.46\linewidth}
+\vspace{0pt}\centering
+\begin{tikzpicture}[x=1.1cm,y=0.75cm]
+\foreach \n/\x/\y in {0/0/2, 1/1.5/1.2, 2/3/2, 3/0/0.4, 4/3/0.2, 5/4.3/1.1} {\node[kknoten,minimum size=6mm] (k\n) at (\x,\y) {\n};}
+\foreach \a/\b in {0/1, 2/1, 1/3, 0/3, 2/4} {\draw[kante] (k\a)--(k\b);}
+\end{tikzpicture}
+\end{minipage}\\[1mm]
+{\renewcommand{\arraystretch}{1.35}\small
+\begin{tabularx}{\linewidth}{|l|X|c|}\hline
+\textbf{Aufruf} & \textbf{Reihenfolge} & \textbf{gefunden?}\\\hline
+\code{breitensuche(3, 2)} & \lsgoder{\lsgfarbe 3 0 1 2}{} & \lsgoder{\lsgfarbe ja}{}\\\hline
+\code{breitensuche(4, 0)} & \lsgoder{\lsgfarbe 4 2 1 0}{} & \lsgoder{\lsgfarbe ja}{}\\\hline
+\code{breitensuche(0, 5)} & \lsgoder{\lsgfarbe 0 1 3 2 4}{} & \lsgoder{\lsgfarbe nein}{}\\\hline
+\end{tabularx}}\\[2mm]
+\textbf{b)} \textit{Stolperstein:} Verschiebe Fragment 4 (\code{poll}) an das Ende der Schleife. Was gibt \code{breitensuche(3, 2)} jetzt aus? Erkläre, was schiefgeht.
+\lsglinien{3}{„Reihenfolge: 3 3 0“, nicht gefunden. Der Startknoten liegt noch in der Warteschlange und wird ein zweites Mal geholt. Nach dem Holen von Knoten 1 ist die Warteschlange leer, die Schleife endet, bevor Knoten 1 untersucht wird: Knoten 2 wird nie erreicht.}
+\end{aufgabe}
+\end{document}

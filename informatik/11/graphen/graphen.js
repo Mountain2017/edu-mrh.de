@@ -39,7 +39,8 @@
      */
     function zeichne(svg, graph, optionen) {
         var opt = Object.assign({ form: 'rechteck', breite: 108, hoehe: 34, radius: 22,
-            gerichtet: false, gewichte: false, hlKanten: [], hlKnoten: [], fehlKanten: [] }, optionen);
+            gerichtet: false, gewichte: false, hlKanten: [], hlKnoten: [], fehlKanten: [],
+            klassen: {} }, optionen);
         while (svg.firstChild) svg.removeChild(svg.firstChild);
         var id = 'pfeil' + (++zaehler);
         var defs = el('defs', {}, svg);
@@ -93,7 +94,8 @@
 
         Object.keys(graph.knoten).forEach(function (kid) {
             var k = graph.knoten[kid];
-            var cls = 'knoten' + (opt.hlKnoten.indexOf(kid) !== -1 ? ' hl' : '') + (k.start ? ' start' : '');
+            var cls = 'knoten' + (opt.hlKnoten.indexOf(kid) !== -1 ? ' hl' : '') + (k.start ? ' start' : '') +
+                (opt.klassen[kid] ? ' ' + opt.klassen[kid] : '');
             var g = el('g', { 'class': cls }, ebeneKnoten);
             if (opt.form === 'kreis') {
                 el('circle', { cx: k.x, cy: k.y, r: opt.radius }, g);
@@ -348,6 +350,90 @@
     }
 
     // ------------------------------------------------------------------
+    // Breitensuche Schritt für Schritt (3.3): Feuerwerks-Graph von Blatt 3.3
+    // Ablauf wie im Java-Projekt: holen, markieren, ausgeben, Nachbarn anstellen
+    // ------------------------------------------------------------------
+    var FEUERWERK = {
+        knoten: {
+            A: { x: 330, y: 150 }, B: { x: 470, y: 70 }, C: { x: 220, y: 70 }, D: { x: 530, y: 190 },
+            E: { x: 250, y: 250 }, F: { x: 120, y: 150 }, G: { x: 370, y: 330 }, H: { x: 130, y: 330 },
+            I: { x: 30, y: 90 }, J: { x: 250, y: 400 }
+        },
+        kanten: [
+            { a: 'A', b: 'B' }, { a: 'A', b: 'C' }, { a: 'A', b: 'D' }, { a: 'A', b: 'E' }, { a: 'B', b: 'D' },
+            { a: 'C', b: 'F' }, { a: 'E', b: 'F' }, { a: 'E', b: 'H' }, { a: 'E', b: 'G' }, { a: 'F', b: 'I' },
+            { a: 'H', b: 'J' }, { a: 'G', b: 'J' }
+        ]
+    };
+
+    function nachbarn(graph, k) {
+        var n = [];
+        graph.kanten.forEach(function (e) {
+            if (e.a === k) n.push(e.b);
+            if (e.b === k) n.push(e.a);
+        });
+        return n.sort();
+    }
+
+    function bfsAnimation(box) {
+        var svg = box.querySelector('svg');
+        var auswahl = box.querySelector('[data-bfs-start]');
+        var text = box.querySelector('.bfs-text');
+        var zustand;
+
+        Object.keys(FEUERWERK.knoten).sort().forEach(function (k) {
+            var o = document.createElement('option');
+            o.value = o.textContent = k;
+            auswahl.appendChild(o);
+        });
+
+        function zeige(meldung) {
+            var klassen = {};
+            zustand.warteschlange.forEach(function (k) { klassen[k] = 'wartend'; });
+            zustand.besucht.forEach(function (k) { klassen[k] = 'besucht'; });
+            if (zustand.aktuell) klassen[zustand.aktuell] = 'aktuell';
+            zeichne(svg, FEUERWERK, { form: 'kreis', radius: 22, klassen: klassen, hlKanten: zustand.baum });
+            text.innerHTML = '<p>' + meldung + '</p>' +
+                '<p><strong>Warteschlange:</strong> ' + (zustand.warteschlange.join(' ') || '(leer)') + '</p>' +
+                '<p><strong>Reihenfolge:</strong> ' + (zustand.besucht.join(' ') || '–') + '</p>';
+        }
+
+        function neu() {
+            zustand = { warteschlange: [auswahl.value], besucht: [], aktuell: null, baum: [], schritt: 0 };
+            zeige('Start: ' + auswahl.value + ' steht in der Warteschlange. Klicke auf „Schritt“.');
+        }
+
+        function schritt() {
+            if (!zustand.warteschlange.length) {
+                zeige('Die Warteschlange ist leer: Die Breitensuche ist fertig.');
+                return false;
+            }
+            var akt = zustand.warteschlange.shift();
+            zustand.aktuell = akt;
+            zustand.besucht.push(akt);
+            zustand.schritt++;
+            var neuDazu = [];
+            nachbarn(FEUERWERK, akt).forEach(function (n) {
+                if (zustand.besucht.indexOf(n) === -1 && zustand.warteschlange.indexOf(n) === -1) {
+                    zustand.warteschlange.push(n);
+                    zustand.baum.push([akt, n]);
+                    neuDazu.push(n);
+                }
+            });
+            zeige('Schritt ' + zustand.schritt + ': <strong>' + akt + '</strong> vorne aus der Warteschlange geholt und markiert. ' +
+                (neuDazu.length ? 'Hinten angestellt: ' + neuDazu.join(', ') + '.' :
+                    'Keine neuen Nachbarn (alle schon besucht oder in der Warteschlange).'));
+            return true;
+        }
+
+        box.querySelector('[data-bfs-schritt]').addEventListener('click', schritt);
+        box.querySelector('[data-bfs-alles]').addEventListener('click', function () { while (schritt()) { /* weiter */ } });
+        box.querySelector('[data-bfs-neu]').addEventListener('click', neu);
+        auswahl.addEventListener('change', neu);
+        neu();
+    }
+
+    // ------------------------------------------------------------------
     // Statische Beispielgraphen: <svg data-graph="name">
     // ------------------------------------------------------------------
     var BEISPIELE = {
@@ -372,6 +458,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('[data-explorer]').forEach(explorer);
         document.querySelectorAll('[data-werkstatt]').forEach(werkstatt);
+        document.querySelectorAll('[data-bfs]').forEach(bfsAnimation);
         document.querySelectorAll('svg[data-graph]').forEach(function (svg) {
             var b = BEISPIELE[svg.getAttribute('data-graph')];
             if (b) zeichne(svg, b.graph, b.optionen);

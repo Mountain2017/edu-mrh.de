@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3.3 Breitensuche | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Graphen, Informatik 11 (NTG): Breitensuche mit Warteschlange und besucht-Markierung – Feuerwerk-Einstieg, Schritt-für-Schritt-Animation und Umsetzung in Java in der Online-IDE.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/include/online-ide-embedded.css">
+    <script type="module" src="https://edu-mrh.de/embed/include/online-ide-embedded.js"></script>
+    <link rel="stylesheet" href="graphen.css">
+    <script defer src="graphen.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🕸️</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="graphen.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 3.3</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#feuerwerk">🎆 Feuerwerk</a></li>
+            <li><a href="#konzept">📝 Die Breitensuche</a></li>
+            <li><a href="#animation">🧩 Schritt für Schritt</a></li>
+            <li><a href="#projekt">✏️ Projekt Breitensuche</a></li>
+            <li><a href="#testen">⚠️ Testen und Stolperstein</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Graphen</div>
+            <ul class="sidebar-menu">
+                <li><a href="graphen.html">Übersicht</a></li>
+                <li><a href="3-1-grundbegriffe.html">3.1 Grundbegriffe</a></li>
+                <li><a href="3-2-umsetzung-graph.html">3.2 Umsetzung Graph</a></li>
+                <li><a href="3-3-breitensuche.html">3.3 Breitensuche</a></li>
+                <li><a href="graphen.html#dijkstra">3.4 Dijkstra</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero gr-hero">
+                <h1 class="hero-title">3.3 Breitensuche</h1>
+                <p class="hero-subtitle">Graphen · Informatik 11 (NTG) · 2 Stunden</p>
+                <span class="gr-kompetenz">Du kannst: einen Graphen per Breitensuche von Hand durchlaufen, dabei die Warteschlange protokollieren und den Algorithmus in Java umsetzen.</span>
+                <div class="gr-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-3-3-breitensuche.pdf">📝 Arbeitsblatt 3.3 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-3-3-breitensuche.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#feuerwerk">🎆 Einstieg</a><a class="p-note" href="#konzept">📝 Festhalten</a><a class="p-investigate" href="#animation">🧩 Üben</a><a class="p-modify" href="#projekt">✏️ Verändern</a><a class="p-problem" href="#testen">⚠️ Stolperstein</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="feuerwerk" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🎆</span><h2>Einstieg<small>Aufgabe 1: Silvesterfeuerwerk</small></h2></div>
+                <div class="phase-body">
+                    <p>Im Wald aus 3.1 hast du ausprobiert, bis du zu Hause warst. Geht das auch systematisch? Stell dir ein Feuerwerk vor: Batterien sind mit Zündschnüren verbunden, jede Schnur brennt genau eine Sekunde. Batterie A wird gezündet. Das Feuer breitet sich gleichzeitig in alle Richtungen aus.</p>
+                    <ol class="aufgaben">
+                        <li>Welche Batterien zünden nach 1, 2 und 3 Sekunden? Trage sie auf dem Blatt ein.</li>
+                        <li>Welche Batterien zünden zuletzt? Was haben sie mit „Entfernung“ zu tun?</li>
+                    </ol>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-3-3-breitensuche.pdf">📝 Blatt 3.3 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="konzept" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Warteschlange und Brotkrumen</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Das Konzept</h4>
+                        <p>Die <strong>Breitensuche</strong> geht einen Graphen schichtweise durch: erst alle Nachbarn des Startknotens, dann deren Nachbarn und so weiter, genau wie das Feuer. Die Knoten, die noch dran kommen, stehen in einer <strong>Warteschlange</strong>: Wer zuerst hineinkommt, kommt zuerst heraus. Besuchte Knoten werden <strong>markiert</strong>, wie mit den Brotkrumen im Spiel, damit keiner doppelt besucht wird.</p>
+                    </div>
+                    <p>Fülle den Merkkasten auf dem Blatt aus. Überlege dabei: Warum findet dieses Verfahren in einem ungewichteten Graphen immer den Weg mit den wenigsten Kanten?</p>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-3-3-breitensuche.pdf">📝 Blatt 3.3 · Merkkasten</a></p>
+                </div>
+            </section>
+
+            <section id="animation" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🧩</span><h2>Üben<small>Aufgabe 2: Breitensuche Schritt für Schritt</small></h2></div>
+                <div class="phase-body">
+                    <p>Probiere den Ablauf am Feuerwerk-Graphen aus. In jedem Schritt wird der vorderste Knoten aus der Warteschlange geholt und markiert. Dann werden seine Nachbarn hinten angestellt, sofern sie weder besucht sind noch schon warten. Die orangen Kanten ergeben den Besuchsbaum.</p>
+                    <div data-bfs>
+                        <div class="werkstatt-knoepfe" role="group" aria-label="Steuerung">
+                            <label>Start <select data-bfs-start aria-label="Startknoten"></select></label>
+                            <button type="button" data-bfs-schritt>Schritt</button>
+                            <button type="button" data-bfs-alles>Bis zum Ende</button>
+                            <button type="button" data-bfs-neu>Zurücksetzen</button>
+                        </div>
+                        <div class="bfs">
+                            <div>
+                                <svg class="graph-svg" viewBox="0 30 580 400" role="img" aria-label="Feuerwerk-Graph mit den Batterien A bis J"></svg>
+                                <p class="bfs-legende"><span class="l-aktuell">gerade besucht</span><span class="l-wartend">in der Warteschlange</span><span class="l-besucht">besucht (Brotkrume)</span><span class="l-offen">noch unbekannt</span></p>
+                            </div>
+                            <div class="bfs-text" aria-live="polite"></div>
+                        </div>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Vergleiche mit deiner Lösung von Aufgabe 1: In welcher Reihenfolge werden die Knoten besucht? Welche gehören zur selben „Sekunde“?</li>
+                        <li><strong>Aufgabe 2 (Blatt):</strong> Führe die Breitensuche auf dem zweiten Graphen von Hand durch und protokolliere nach jedem Schritt die Warteschlange. Zeichne den Besuchsbaum. Starte danach bei E.</li>
+                    </ol>
+                    <details class="denk"><summary>Denkanstoß zu Aufgabe 2d (Anton)</summary>
+                        <p>Stell in der Animation den Graphen gedanklich um: Was passiert mit einem Knoten, zu dem keine einzige Kante führt? Kommt er jemals in die Warteschlange?</p>
+                    </details>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-3-3-breitensuche.pdf">📝 Blatt 3.3 · Aufgabe 2</a></p>
+                </div>
+            </section>
+
+            <section id="projekt" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">✏️</span><h2>Verändern<small>Aufgabe 3: Projekt Breitensuche</small></h2></div>
+                <div class="phase-body">
+                    <p>Die Klasse <code>Graph</code> kennst du aus Station 3.2. Neu ist die Methode <code>breitensuche</code>. Sie benutzt zwei Listen vom Typ <code>LinkedList&lt;Integer&gt;</code>: <code>warteschlange</code> (<code>add</code>/<code>addLast</code> stellt hinten an, <code>poll()</code> holt vorne heraus) und <code>besuchteKnoten</code> (<code>contains</code> prüft, ob ein Knoten schon drin ist).</p>
+                    <ol class="aufgaben">
+                        <li>Ordne auf dem Blatt jeder Zeile des Pseudocodes ein Codefragment zu.</li>
+                        <li>Setze die Methode im Projekt zusammen (TODO 1 bis 3). Die Fragmente stehen auch in der Datei <code>Codefragmente.java</code>.</li>
+                    </ol>
+<pre class="jv"><span class="c">// Codefragmente – { ... } heißt: Hier kommen weitere Fragmente hinein.</span>
+ 1  warteschlange.add(aktuellerKnoten);
+ 2  <span class="k">int</span> aktuellerKnoten = startKnoten;
+ 3  print(aktuellerKnoten + " ");
+ 4  aktuellerKnoten = warteschlange.poll();
+ 5  <span class="k">for</span> (<span class="k">int</span> i = 0; i &lt; anzKnoten; i++) { ... }
+ 6  <span class="k">while</span> (aktuellerKnoten != zielKnoten &amp;&amp; !warteschlange.isEmpty()) { ... }
+ 7  print("Reihenfolge: ");
+ 8  besuchteKnoten.add(aktuellerKnoten);
+ 9  <span class="k">if</span> (adja[aktuellerKnoten][i] &amp;&amp; !besuchteKnoten.contains(i) &amp;&amp; !warteschlange.contains(i)) {
+       warteschlange.addLast(i);
+    }
+10  Endüberprüfung: "gefunden" oder "nicht gefunden" ausgeben (ganzer Code in Codefragmente.java)</pre>
+                    <div class="ide-block">
+                        <div class="ide-kopf"><h3>Projekt Breitensuche</h3></div>
+                        <div class="java-online" style="width:100%;height:680px" data-java-online="{ 'id': 'g11-33-breitensuche', 'speed': 1000000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true, 'withErrorList': true }">
+                            <script type="text/plain" title="Hauptprogramm.java">
+World world = new World(600, 800);
+Graph graph = new Graph();
+graph.kanteHinzufuegen(0, 1);
+graph.kanteHinzufuegen(2, 1);
+graph.kanteHinzufuegen(1, 3);
+graph.kanteHinzufuegen(0, 3);
+graph.kanteHinzufuegen(2, 4);
+graph.knotenHinzufuegen(); // Knoten 5, ohne Kante
+
+// Aufgabe 4: Aufrufe nacheinander testen
+graph.breitensuche(3, 2);
+// graph.breitensuche(4, 0);
+// graph.breitensuche(0, 5);
+                            </script>
+                            <script type="text/plain" title="Graph.java">
+/**
+ * Ein Graph, gespeichert als Adjazenzmatrix (wie in Station 3.2).
+ * Suche (Strg + F) nach "TODO" und ergänze den Code.
+ */
+public class Graph {
+   Knoten[] knoten;     // knoten[i] ist der Knoten mit der Nummer i
+   boolean[][] adja;    // adja[start][ende] ist true, wenn es eine Kante gibt
+   int maxAnzahl = 20;  // so viele Plätze haben die Felder
+   int anzKnoten = 5;   // so viele Plätze sind belegt
+
+   Graph() {
+      knoten = new Knoten[maxAnzahl];
+      adja = new boolean[maxAnzahl][maxAnzahl];
+      for (int i = 0; i < anzKnoten; i++) {
+         erzeugeKnoten(i);
+      }
+   }
+
+   /**
+    * Breitensuche von startKnoten aus, bis zielKnoten gefunden ist.
+    * Pseudocode und Codefragmente: Blatt 3.3, Aufgabe 3.
+    */
+   void breitensuche(int startKnoten, int zielKnoten) {
+      LinkedList<Integer> besuchteKnoten = new LinkedList<Integer>();
+      LinkedList<Integer> warteschlange = new LinkedList<Integer>();
+
+      // TODO 1: Fragmente für die ersten drei Zeilen des Pseudocodes
+      int aktuellerKnoten = 0; // ersetzen
+
+      // zur Visualisierung: alle Knoten grau
+      for (int i = 0; i < anzKnoten; i++) {
+         knoten[i].setFillColor(Color.gray);
+      }
+
+      // TODO 2: die Wiederholung "solange ..." mit ihrem Inhalt.
+      //         Zur Visualisierung direkt nach der Ausgabe von aktuellerKnoten:
+      //         knoten[aktuellerKnoten].setFillColor(Color.green);
+
+
+      // TODO 3: Endüberprüfung und Ausgabe (Fragment 10)
+
+   }
+
+   // ----- fertige Methoden aus Station 3.2, müssen nicht verändert werden -----
+
+   // Fügt eine ungerichtete Kante zwischen start und ende hinzu.
+   void kanteHinzufuegen(int start, int ende) {
+      if (start < 0 || start >= anzKnoten || ende < 0 || ende >= anzKnoten) {
+         println("Einfügen nicht möglich.");
+      } else {
+         adja[start][ende] = true;
+         adja[ende][start] = true;
+         zeichneKante(start, ende);
+      }
+   }
+
+   // Fügt einen neuen Knoten ohne Kanten hinzu, solange Platz ist.
+   void knotenHinzufuegen() {
+      if (anzKnoten < maxAnzahl) {
+         erzeugeKnoten(anzKnoten);
+         anzKnoten++;
+      } else {
+         println("Einfügen nicht möglich.");
+      }
+   }
+
+   // Gibt die Adjazenzmatrix mit X (Kante) und O (keine Kante) aus.
+   void printAdja() {
+      for (int zeile = 0; zeile < anzKnoten; zeile++) {
+         for (int spalte = 0; spalte < anzKnoten; spalte++) {
+            if (adja[zeile][spalte]) {
+               print("X ");
+            } else {
+               print("O ");
+            }
+         }
+         println();
+      }
+      println();
+   }
+
+   // Gibt alle Nachbarn von Knoten k aus.
+   void nachbarnAusgeben(int k) {
+      print("Nachbarn von " + k + ": ");
+      for (int i = 0; i < anzKnoten; i++) {
+         if (adja[k][i]) {
+            print(i + " ");
+         }
+      }
+      println();
+   }
+
+   // Erzeugt Knoten Nummer i und ordnet ihn an (nur für die Darstellung).
+   void erzeugeKnoten(int i) {
+      knoten[i] = new Knoten();
+      knoten[i].setKnotenname("" + i);
+      knoten[i].moveTo(100 + (i % 3) * 200, 100 + i * 100);
+      new Text(knoten[i].getCenterX() - 8, knoten[i].getCenterY() - 16, 32, "" + i);
+   }
+
+   // Zeichnet eine Kante als halbtransparenten Balken.
+   void zeichneKante(int start, int ende) {
+      double startX = knoten[start].getCenterX();
+      double startY = knoten[start].getCenterY();
+      double endeX = knoten[ende].getCenterX();
+      double endeY = knoten[ende].getCenterY();
+
+      double abstand = Vector2.distance(startX, startY, endeX, endeY);
+      double winkel = new Vector2(endeX - startX, endeY - startY).getAngleDeg();
+
+      Rectangle balken = new Rectangle(startX, startY, 10, abstand);
+      balken.setFillColor(Color.white);
+      balken.setAlpha(0.6);
+      balken.rotate(90 - winkel, startX, startY);
+   }
+}
+                            </script>
+                            <script type="text/plain" title="Knoten.java">
+class Knoten extends Circle {
+   private String knotenname = "Knoten X";
+
+   Knoten() {
+      setFillColor(Color.orange);
+   }
+
+   String getKnotenname() {
+      return knotenname;
+   }
+
+   void setKnotenname(String knotenname) {
+      this.knotenname = knotenname;
+   }
+}
+                            </script>
+                            <script type="text/plain" title="Codefragmente.java">
+/*
+ * Codefragmente für breitensuche (Blatt 3.3, Aufgabe 3).
+ * Kopiere sie an die richtige Stelle. { ... } heißt: Hier kommen weitere Fragmente hinein.
+ *
+ * 1)  warteschlange.add(aktuellerKnoten);
+ *
+ * 2)  int aktuellerKnoten = startKnoten;
+ *
+ * 3)  print(aktuellerKnoten + " ");
+ *
+ * 4)  aktuellerKnoten = warteschlange.poll();
+ *
+ * 5)  for (int i = 0; i < anzKnoten; i++) { ... }
+ *
+ * 6)  while (aktuellerKnoten != zielKnoten && !warteschlange.isEmpty()) { ... }
+ *
+ * 7)  print("Reihenfolge: ");
+ *
+ * 8)  besuchteKnoten.add(aktuellerKnoten);
+ *
+ * 9)  if (adja[aktuellerKnoten][i] && !besuchteKnoten.contains(i) && !warteschlange.contains(i)) {
+ *        warteschlange.addLast(i);
+ *     }
+ *
+ * 10) println();
+ *     if (aktuellerKnoten == zielKnoten) {
+ *        println("Es gibt einen Pfad von Knoten " + startKnoten + " zu Knoten " + zielKnoten);
+ *        new Text(125, 700, 64, "GEFUNDEN!");
+ *     } else {
+ *        println("Knoten konnte nicht gefunden werden");
+ *        new Text(50, 700, 64, "NICHT gefunden!");
+ *     }
+ */
+                            </script>
+                        </div>
+                    </div>
+                    <details class="denk"><summary>Denkanstoß</summary>
+                        <p>Innerhalb der Schleife passiert in jedem Durchlauf dasselbe wie in der Animation: holen, markieren, ausgeben, Nachbarn anstellen. Die Reihenfolge der Zeilen im Pseudocode ist die Reihenfolge im Code.</p>
+                    </details>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-3-3-breitensuche.pdf">📝 Blatt 3.3 · Aufgabe 3</a></p>
+                </div>
+            </section>
+
+            <section id="testen" class="phase problem">
+                <div class="phase-head"><span class="phase-icon">⚠️</span><h2>Testen und Stolperstein<small>Aufgabe 4</small></h2></div>
+                <div class="phase-body">
+                    <ol class="aufgaben">
+                        <li>Sage die Ausgabe für <code>breitensuche(3, 2)</code>, <code>(4, 0)</code> und <code>(0, 5)</code> voraus. Teste dann nacheinander (im Hauptprogramm einkommentieren). Knoten 5 hat keine Kante: Was bedeutet das?</li>
+                        <li>Verschiebe Fragment 4 (<code>poll</code>) ans Ende der Schleife und rufe wieder <code>breitensuche(3, 2)</code> auf.</li>
+                    </ol>
+                    <div class="stolper"><strong>Stolperstein:</strong> Mit <code>poll</code> am Schleifenende gibt das Programm „3 3 0“ aus und findet Knoten 2 nicht, obwohl es einen Weg gibt. Zwei Dinge gehen schief. Finde beide! Tipp: Was steht ganz am Anfang in der Warteschlange? Und was prüft die Schleifenbedingung, nachdem der letzte Knoten herausgeholt wurde?</div>
+                    <div class="tipp"><strong>Bonus:</strong> Erweitere <code>breitensuche</code> so, dass sie auch ausgibt, wie viele Kanten der kürzeste Weg zum Ziel hat. Idee: ein Feld <code>int[] abstand</code>. Ein Nachbar ist immer eine Kante weiter weg als der aktuelle Knoten.</div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-3-3-breitensuche.pdf">📝 Blatt 3.3 · Aufgabe 4</a></p>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🛣️ 3.4 Dijkstra</h4>
+                            <p>Die Breitensuche zählt Kanten. Wenn Kanten unterschiedlich lang sind (Minuten, Kilometer), braucht man statt der Warteschlange eine Auswahl nach der bisher kürzesten Entfernung. Das leistet der Dijkstra-Algorithmus.</p>
+                            <a class="btn btn-primary btn-sm" href="graphen.html#dijkstra">Weiter zu Dijkstra</a>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>🌳 Tiefensuche (Jgst. 12)</h4>
+                            <p>Ersetzt man die Warteschlange durch einen Stapel, geht die Suche erst ganz in die Tiefe, wie der Zurück-Knopf des Browsers.</p>
+                            <a class="btn btn-outline btn-sm" href="../../12/tiefensuche/index.html">Zur Tiefensuche</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="3-2-umsetzung-graph.html">← 3.2 Umsetzung Graph</a>
+                <a class="btn btn-primary" href="graphen.html#dijkstra">Weiter: 3.4 Dijkstra →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-3-3-breitensuche-lsg.pdf">Lösung Blatt 3.3 (PDF)</a></p>
+                    <p>Richtige Reihenfolge der Fragmente: 2, 1, 7, 6 { 4, 8, 3, 5 { 9 } }, 10. Die frühere Fassung (altes Blatt 3-3, Projekt 11-3-3) holte den nächsten Knoten erst am Schleifenende. Dadurch wurde der Startknoten doppelt verarbeitet, und die Schleife endete, bevor der zuletzt geholte Knoten untersucht war. Im Beispiel wurde Knoten 2 nicht gefunden. In der Online-IDE geprüft: korrigierte Fassung „3 0 1 2 / 4 2 1 0 / 0 1 3 2 4 (nicht gefunden)“, alte Fassung „3 3 0 (nicht gefunden)“. Die alte Reihenfolge dient jetzt als Stolperstein (Aufgabe 4b).</p>
+                    <p>Die Animation arbeitet mit dem Feuerwerk-Graphen aus Aufgabe 1. Aufgabe 2 wird so nicht vorweggenommen. Nachbarn werden wie im Java-Projekt in aufsteigender Reihenfolge angestellt.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum &amp; Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>
