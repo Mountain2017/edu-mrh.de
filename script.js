@@ -127,26 +127,41 @@ class SiteManager {
     }
 
     // Setup Navigation
+    // Behandelt alle Sprunglinks der Seite (Seitenleiste, Buttons, Fließtext):
+    //  - Ziel ist eine .content-section (Tab-Modus): Abschnitt einblenden
+    //  - Ziel liegt in einer .content-section: Abschnitt einblenden, dann hinscrollen
+    //  - Seite ohne .content-section (normal scrollend): weich hinscrollen
+    //  - unbekanntes Ziel: Browser-Standard
     setupNavigation() {
-    const sidebarLinks = document.querySelectorAll(`${CONFIG.selectors.sidebarLink}, .js-nav-link`);
-    
-    sidebarLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            const href = link.getAttribute('href');
+        document.addEventListener('click', (e) => {
+            // Seiteneigene Handler (preventDefault) und Öffnen in neuem Tab respektieren
+            if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
 
+            const link = e.target.closest ? e.target.closest('a[href^="#"], a[data-section]:not([href]), .js-nav-link') : null;
+            if (!link) return;
+
+            const href = link.getAttribute('href');
             if (href && !href.startsWith('#')) {
                 return;
             }
 
-            e.preventDefault();
-            
-            const section = link.getAttribute('data-section') || href?.substring(1);
-            if (section) {
-                this.navigateToSection(section);
+            const id = link.getAttribute('data-section') || decodeURIComponent((href || '').substring(1));
+            if (id && this.goToTarget(id, { updateHash: true })) {
+                e.preventDefault();
             }
         });
-    });
-}
+
+        // Zurück/Vor im Browser und von Hand geänderte Sprungmarken
+        window.addEventListener('hashchange', () => {
+            const id = decodeURIComponent(window.location.hash.substring(1));
+            if (id) {
+                this.goToTarget(id, { updateHash: false });
+            } else if (STATE.sections.length && STATE.startSection) {
+                // zurück bis zur Adresse ohne Sprungmarke: Startabschnitt
+                this.navigateToSectionWithoutHash(STATE.startSection);
+            }
+        });
+    }
 
     // Setup Sidebar
     setupSidebar() {
@@ -353,15 +368,37 @@ class SiteManager {
 
     // Handle Initial Navigation
     handleInitialNavigation() {
-        const hash = window.location.hash.substring(1);
-        
-        if (hash && STATE.sections.includes(hash)) {
-            STATE.currentSection = hash;
+        // Platz für die fixierte Navbar, auch bei normalen Sprunglinks des Browsers
+        document.documentElement.style.scrollPaddingTop = `${CONFIG.scrollOffset}px`;
+
+        const hash = decodeURIComponent(window.location.hash.substring(1));
+
+        // Tab-Modus nur, wenn es .content-section-Abschnitte gibt
+        if (STATE.sections.length) {
+            // im HTML vorgewählter Abschnitt, sonst der erste
+            const preset = document.querySelector(`${CONFIG.selectors.contentSection}.active`);
+            const first = preset && preset.id ? preset.id : STATE.sections[0];
+            if (!STATE.sections.includes(STATE.currentSection)) STATE.currentSection = first;
+            STATE.startSection = STATE.currentSection;
+
+            if (hash && STATE.sections.includes(hash)) {
+                STATE.currentSection = hash;
+            } else {
+                // Ziel innerhalb eines Abschnitts
+                const target = hash ? document.getElementById(hash) : null;
+                const inSection = target ? target.closest(CONFIG.selectors.contentSection) : null;
+                if (inSection && inSection.id) STATE.currentSection = inSection.id;
+            }
+
+            this.showSection(STATE.currentSection);
+            this.updateSidebarActive(STATE.currentSection);
+            this.updateProgressBar();
         }
-        
-        this.showSection(STATE.currentSection);
-        this.updateSidebarActive(STATE.currentSection);
-        this.updateProgressBar();
+
+        // Sprungmarke auf ein Element (innerhalb eines Abschnitts oder auf scrollender Seite)
+        if (hash && !STATE.sections.includes(hash) && document.getElementById(hash)) {
+            this.goToTarget(hash, { updateHash: false });
+        }
     }
 
     // ==========================================
@@ -376,7 +413,7 @@ class SiteManager {
 
         // Update URL hash
         if (CONFIG.enableHashNavigation) {
-            window.location.hash = sectionId;
+            this.setHash(sectionId);
         }
 
         // Navigate
@@ -406,6 +443,50 @@ class SiteManager {
 
         // Track section view
         this.trackSectionView(sectionId);
+    }
+
+    // Springt zu einem Abschnitt oder Element. Gibt false zurück, wenn es das Ziel nicht gibt.
+    goToTarget(id, options = {}) {
+        // Tab-Modus: Ziel ist selbst eine .content-section
+        if (STATE.sections.includes(id)) {
+            if (options.updateHash && CONFIG.enableHashNavigation) this.setHash(id);
+            if (options.updateHash || id !== STATE.currentSection) {
+                this.navigateToSectionWithoutHash(id);
+            }
+            return true;
+        }
+
+        const target = document.getElementById(id);
+        if (!target) return false;
+
+        // Ziel liegt in einer (eventuell ausgeblendeten) .content-section
+        const section = target.closest(CONFIG.selectors.contentSection);
+        if (section && section.id && section.id !== STATE.currentSection) {
+            STATE.currentSection = section.id;
+            this.showSection(section.id);
+            this.updateSidebarActive(section.id);
+            this.updateProgressBar();
+        }
+
+        if (options.updateHash && CONFIG.enableHashNavigation) this.setHash(id);
+        this.scrollToElement(id);
+
+        // Seitenleiste markieren, sofern es einen Link genau auf dieses Ziel gibt
+        const hasLink = Array.from(document.querySelectorAll(CONFIG.selectors.sidebarLink)).some(link =>
+            (link.getAttribute('data-section') || link.getAttribute('href')?.substring(1)) === id);
+        if (hasLink) this.updateSidebarActive(id);
+
+        if (STATE.isMobile && options.updateHash) this.closeSidebar();
+        return true;
+    }
+
+    // Sprungmarke setzen, ohne dass der Browser selbst springt oder hashchange auslöst
+    setHash(id) {
+        if (window.history && window.history.pushState) {
+            if (window.location.hash !== `#${id}`) window.history.pushState(null, '', `#${id}`);
+        } else {
+            window.location.hash = id;
+        }
     }
 
     showSection(sectionId) {
