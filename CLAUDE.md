@@ -13,6 +13,10 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
 - Ablageort: `<fach>/<jahrgangsstufe>/<thema>/<thema>.html`. Ordner-/Datei-
   namen klein, ohne Umlaute und Leerzeichen (`verschluesselung`, nicht
   `Verschlüsselung`). Materialien (PDFs, Bilder, Daten) in denselben Ordner.
+- Seitenleisten-Links mit `#abschnitt` brauchen direkt nach `embed/script.js`
+  die Zeile `<script defer src="/sidebar-anker.js"></script>` (in den Vorlagen
+  enthalten). Grund: `embed/script.js` springt nur zu `.content-section`-
+  Abschnitten (Tab-Modus) und schluckt alle anderen `#`-Klicks.
 - Neue Seiten auf der Fachseite (`<fach>/<fach>.html`) als Karte verlinken;
   neue Fächer zusätzlich in `index.html` (Sidebar + info-grid-Karte).
 - Stilistische Referenz sind die **Informatik- und Englisch-Seiten**
