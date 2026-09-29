@@ -1,0 +1,147 @@
+% =====================================================================
+%  Gemeinsame Vorlage der Arbeitsblätter – 1. Formale Sprachen (Q13)
+%  (gleiches Layout wie informatik/13/material/grundwissen/ab-vorlage.tex
+%  und informatik/12/rekursive-datenstrukturen/arbeitsblaetter/ab-vorlage.tex)
+%  Einbinden in jedem Blatt direkt nach \documentclass: \input{ab-vorlage}
+%  Übersetzen mit XeLaTeX, LuaLaTeX, pdfLaTeX oder Tectonic.
+%
+%  Blatt:   tectonic ab-1-2-formale-sprachen.tex
+%  Lösung:  tectonic ab-1-2-formale-sprachen-lsg.tex
+%           (Datei enthält nur: \def\mitloesung{}\input{ab-1-2-formale-sprachen};
+%            füllt alle Lücken rot aus; siehe \lsg, \lsglinien, \lsgoder, lsgbild, \karolsg)
+% =====================================================================
+\usepackage[a4paper,left=16mm,right=16mm,top=23mm,bottom=13mm,headheight=12mm,headsep=3mm,footskip=6mm]{geometry}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{helvet}
+  \usepackage[scaled=0.86]{beramono}
+  \renewcommand{\familydefault}{\sfdefault}
+\else
+  \usepackage{fontspec}
+  \setmainfont{texgyreheros}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,ItalicFont=*-italic,BoldItalicFont=*-bolditalic]
+  \setmonofont{DejaVuSansMono}[Extension=.ttf,UprightFont=*,BoldFont=*-Bold,ItalicFont=*-Oblique,BoldItalicFont=*-BoldOblique,Scale=0.86]
+\fi
+\usepackage[ngerman,shorthands=off]{babel}
+\usepackage{amssymb}
+\usepackage{xcolor,graphicx,tabularx,array,enumitem,fancyhdr,tikz,multicol,calc,etoolbox,pifont}
+\usepackage[most]{tcolorbox}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\usepackage[hidelinks]{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+\setlist{nosep,leftmargin=*}
+
+% ---------- Lösungsschalter ----------
+\newif\ifloesung
+\ifdefined\mitloesung\loesungtrue\fi
+\newcommand{\lsgfarbe}{\color{red!75!black}}
+
+% ---------- Kopf- und Fußzeile (einheitliche Form) ----------
+\newcommand{\lehrkraft}{Hau}
+\newcommand{\themenbereich}{1. Formale Sprachen}
+\newcommand{\abnummer}{}
+\pagestyle{fancy}\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancyhead[L]{\small Klasse 13\\Datum:}
+\fancyhead[C]{\small Themenbereich:\\\themenbereich}
+\fancyhead[R]{\small \lehrkraft\ifloesung\\{\lsgfarbe\bfseries Lösung}\fi}
+\fancyfoot[C]{\scriptsize edu-mrh.de\,·\,Informatik 13\,·\,Blatt \abnummer\ifloesung\ (Lösung)\fi\,·\,Seite \thepage}
+\newcommand{\abtitel}[2]{\renewcommand{\abnummer}{#1}\begin{center}\Large\bfseries #1\quad\underline{#2}\end{center}\vspace{-2mm}}
+
+% ---------- Boxen ----------
+\newenvironment{aufgabe}[2][]{\begin{tcolorbox}[enhanced,breakable,colback=white,colframe=black,boxrule=0.7pt,arc=3mm,left=2mm,right=2mm,top=1mm,bottom=1.2mm,before skip=2mm,after skip=2mm]\textbf{Aufgabe #2)}\ifstrempty{#1}{}{ \textit{#1}}\par\vspace{0.3mm}}{\end{tcolorbox}}
+\newtcolorbox{merke}[1][Merke]{enhanced,breakable,colback=green!5,colframe=green!40!black,boxrule=0.8pt,arc=2mm,left=2mm,right=2mm,top=1mm,bottom=1.2mm,before skip=2mm,after skip=2mm,title={#1},fonttitle=\bfseries,coltitle=white,toptitle=0.3mm,bottomtitle=0.3mm}
+\newtcolorbox{hinweis}{enhanced,breakable,colback=yellow!12,colframe=orange!70!black,boxrule=0.6pt,arc=2mm,left=2mm,right=2mm,top=1mm,bottom=1mm,before skip=2mm,after skip=2mm}
+
+% ---------- Lücken, Linien, Karos ----------
+\newcommand{\luecke}[1][3.5cm]{\rule[-0.5ex]{#1}{0.4pt}}
+\newcommand{\linien}[1]{\par\vspace{1.5mm}\foreach \i in {1,...,#1}{\noindent\rule[0pt]{\linewidth}{0.3pt}\par\vspace{5.5mm}}\vspace{-3mm}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\eps}{$\varepsilon$}
+
+% Lücke mit Lösung: \lsg[Mindestbreite]{Lösungstext}
+\newlength{\lsgbreite}
+\newcommand{\lsg}[2][3.5cm]{\ifloesung\settowidth{\lsgbreite}{\,#2\,}\ifdim\lsgbreite<#1\setlength{\lsgbreite}{#1}\fi\underline{\makebox[\lsgbreite][l]{\lsgfarbe\,#2}}\else\luecke[#1]\fi}
+% Schreiblinien mit Lösung: \lsglinien{Anzahl}{Lösungstext} (gleiche Höhe wie \linien)
+\newcommand{\lsglinien}[2]{\ifloesung\par\vspace{1.5mm}\noindent\begin{minipage}[t][#1\dimexpr 6.9mm\relax][t]{\linewidth}\lsgfarbe #2\end{minipage}\par\vspace{-1.5mm}\else\linien{#1}\fi}
+% Beliebiger Inhalt: \lsgoder{nur in der Lösung}{nur im Blatt}
+\newcommand{\lsgoder}[2]{\ifloesung\leavevmode#1\else#2\fi}
+% Text nur in der Lösung sichtbar, belegt im Blatt aber denselben Platz
+\newcommand{\lsgtext}[1]{\ifloesung{\lsgfarbe#1}\else\phantom{#1}\fi}
+% Ankreuzfeld: \kreuz{1} = angekreuzt (nur in der Lösung), \kreuz{0} = leer
+\newcommand{\kreuz}[1]{\ifloesung\ifnum#1=1 {\lsgfarbe$\boxtimes$}\else$\square$\fi\else$\square$\fi}
+
+% ---------- Syntaxdiagramme (Maße in mm) ----------
+%  Terminal rund (orange), Nichtterminal eckig (grün), Linien mit Pfeilen:
+%  \draw[sdl,->] (0,0) -- ++(6,0) node[nt,anchor=west] (a) {Augen};   (Pfeil endet am Kasten)
+\tikzset{
+  sd/.style={x=1mm,y=1mm,>={Stealth[length=1.6mm,width=1.3mm]},font=\small},
+  sdl/.style={line width=0.55pt,rounded corners=1.2mm},
+  te/.style={draw,rounded corners=2.1mm,minimum height=4.2mm,minimum width=4.2mm,inner sep=1pt,font=\ttfamily\small,fill=orange!18},
+  nt/.style={draw,minimum height=4.2mm,inner sep=1.6pt,font=\small,fill=green!12},
+  sdname/.style={anchor=south west,font=\small\bfseries,inner sep=0pt},
+  punkte/.style={font=\small,inner sep=0pt},
+  % Ableitungsbaum
+  baum/.style={font=\small,edge from parent/.style={draw,line width=0.5pt,-{Stealth[length=1.4mm]}},level distance=8.5mm},
+}
+% Lösungszeichnung: im Blatt unsichtbar, belegt aber denselben Platz
+\ifloesung
+  \tikzset{lsgbild/.style={red!75!black,te/.append style={fill=red!5},nt/.append style={fill=red!5}}}
+\else
+  \tikzset{lsgbild/.style={draw opacity=0,fill opacity=0,text opacity=0}}
+\fi
+% Karofläche, in der Lösung mit roter Zeichnung: \karolsg{Anzahl Karozeilen}{TikZ-Code}
+% Koordinaten der Zeichnung in mm, Ursprung links oben, y nach unten negativ.
+\newcommand{\karolsg}[2]{\par\vspace{1mm}\noindent\begin{tikzpicture}
+  \draw[step=5mm,gray!45,thin] (0,0) grid (\linewidth-1pt,#1*5mm);
+  \useasboundingbox (0,0) rectangle (\linewidth-1pt,#1*5mm);
+  \ifloesung\begin{scope}[sd,shift={(0,#1*5mm)},lsgbild]#2\end{scope}\fi
+\end{tikzpicture}\par}
+
+% ---------- Bausteine für Syntaxdiagramme (innerhalb tikzpicture[sd]) ----------
+%  Jeder Baustein beginnt an einem Punkt (Knoten-Anker oder Koordinate) und
+%  legt die Koordinate <name>-o an, an der es weitergeht.
+% Aneinanderreihung: \sdnext{name}{von}{te|nt}{Text}   (weiter bei name.east)
+\newcommand{\sdnext}[4]{\draw[sdl,->] (#2) -- ++(4,0) node[#3,anchor=west] (#1) {#4};\coordinate (#1-o) at (#1.east);}
+% Option: \sdopt{name}{von}{te|nt}{Text}
+\newcommand{\sdopt}[4]{\path (#2) ++(4,-5.5) node[#3,anchor=west] (#1) {#4};
+  \coordinate (#1-x) at ($(#1.east)+(3.5,0)$); \coordinate (#1-o) at (#1-x |- #2);
+  \draw[sdl,->] (#2) |- (#1.west); \draw[sdl,->] (#1.east) -| (#1-o); \draw[sdl] (#2) -- (#1-o);}
+% Wiederholung, mindestens einmal: \sdwdh{name}{von}{te|nt}{Text}
+\newcommand{\sdwdh}[4]{\draw[sdl,->] (#2) -- ++(6,0) node[#3,anchor=west] (#1) {#4};
+  \coordinate (#1-o) at ($(#1.east)+(4,0)$);
+  \draw[sdl] (#1.east) -- (#1-o); \draw[sdl,->] (#1-o) -- ++(0,-5.5) -| ($(#2)+(2.5,0)$);}
+% Wiederholung, beliebig oft (auch keinmal): \sdwdhn{name}{von}{te|nt}{Text}
+\newcommand{\sdwdhn}[4]{\path (#2) ++(6,-5.5) node[#3,anchor=west] (#1) {#4};
+  \coordinate (#1-x) at ($(#1.east)+(4,0)$); \coordinate (#1-o) at (#1-x |- #2);
+  \draw[sdl] (#2) -- (#1-o); \draw[sdl,->] (#1-o) |- (#1.east); \draw[sdl,->] (#1.west) -| ($(#2)+(2.5,0)$);}
+% Alternative: \sdalt{name}{von}{Breite bis zum Zusammenführen}{Zeilenabstand}{te/a, nt/Ziffer, pk/, ...}
+%  pk/ setzt senkrechte Pünktchen (…) statt eines Zweigs
+\newcommand{\sdalt}[5]{\coordinate (#1-o) at ($(#2)+(#3,0)$);
+  \foreach \typ/\txt [count=\i from 0] in {#5}{%
+    \ifdefstring{\typ}{pk}{\node[punkte] at ($(#2)+(6.1,-\i*#4+0.4)$) {$\vdots$};}{%
+      \ifdefstring{\typ}{te}{\tikzset{sdakt/.style={te}}}{\tikzset{sdakt/.style={nt}}}%
+      \node[sdakt,anchor=west] (#1\i) at ($(#2)+(4,-\i*#4)$) {\txt};
+      \ifnum\i=0\relax \draw[sdl,->] (#2) -- (#1\i.west); \draw[sdl] (#1\i.east) -- (#1-o);
+      \else \draw[sdl,->] (#2) |- (#1\i.west); \draw[sdl,->] (#1\i.east) -| (#1-o);\fi}}}
+% Ende eines Diagramms
+\newcommand{\sdende}[1]{\draw[sdl,->] (#1) -- ++(5,0);}
+
+% ---------- Die Smiley-Grammatik (Blatt 1.3 und 1.4) ----------
+\newcommand{\sdSmileyfolge}{\begin{tikzpicture}[sd,baseline=0mm]
+  \node[sdname] at (0,3.3) {Smileyfolge}; \coordinate (s) at (0,0);
+  \sdwdh{sm}{s}{nt}{Smiley}\sdende{sm-o}\end{tikzpicture}}
+\newcommand{\sdSmiley}{\begin{tikzpicture}[sd,baseline=0mm]
+  \node[sdname] at (0,3.3) {Smiley}; \coordinate (s) at (0,0);
+  \sdnext{au}{s}{nt}{Augen}\sdnext{mi}{au-o}{nt}{Mitte}\sdnext{mu}{mi-o}{nt}{Mund}\sdende{mu-o}\end{tikzpicture}}
+\newcommand{\sdAugen}{\begin{tikzpicture}[sd,baseline=0mm]
+  \node[sdname] at (0,3.3) {Augen}; \coordinate (s) at (0,0);
+  \sdalt{a}{s}{12}{5.5}{te/:, te/;}\sdende{a-o}\end{tikzpicture}}
+\newcommand{\sdMitte}{\begin{tikzpicture}[sd,baseline=0mm]
+  \node[sdname] at (0,3.3) {Mitte}; \coordinate (s) at (0,0);
+  \sdopt{n}{s}{te}{-}\sdende{n-o}\end{tikzpicture}}
+\newcommand{\sdMund}{\begin{tikzpicture}[sd,baseline=0mm]
+  \node[sdname] at (0,3.3) {Mund}; \coordinate (s) at (0,0);
+  \sdalt{m}{s}{12}{5.5}{te/), te/{(}, te/D, te/P, te/*}\sdende{m-o}\end{tikzpicture}}

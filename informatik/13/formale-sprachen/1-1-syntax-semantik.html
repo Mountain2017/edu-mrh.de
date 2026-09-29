@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1.1 Syntax und Semantik | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Formale Sprachen, Informatik 13: Warum natürliche Sprachen mehrdeutig sind, wozu künstliche Sprachen dienen und wie man Syntaxfehler von Semantikfehlern unterscheidet – mit Fehler-Detektiv und Satzbaukasten.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <link rel="stylesheet" href="formale-sprachen.css">
+    <script defer src="formale-sprachen.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🔗</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="../../informatik.html#jahrgang-13" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 1.1</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#einstieg">🤔 Missverständnisse</a></li>
+            <li><a href="#festhalten">📝 Syntax und Semantik</a></li>
+            <li><a href="#detektiv">🔍 Fehler-Detektiv</a></li>
+            <li><a href="#satzbau">🧱 Satzbaukasten</a></li>
+            <li><a href="#grenzfaelle">💡 Grenzfälle</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Formale Sprachen</div>
+            <ul class="sidebar-menu">
+                <li><a href="../../informatik.html#jahrgang-13">Übersicht Klasse 13</a></li>
+                <li><a href="1-1-syntax-semantik.html">1.1 Syntax und Semantik</a></li>
+                <li><a href="1-2-formale-sprachen.html">1.2 Formale Sprachen</a></li>
+                <li><a href="arbeitsblaetter/ab-1-3-syntaxdiagramme.pdf">1.3 Syntaxdiagramme (Blatt)</a></li>
+                <li><a href="arbeitsblaetter/ab-1-4-ebnf.pdf">1.4 EBNF (Blatt)</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero fs-hero">
+                <h1 class="hero-title">1.1 Syntax und Semantik</h1>
+                <p class="hero-subtitle">Formale Sprachen · Informatik 13 · 1 Stunde</p>
+                <span class="fs-kompetenz">Du kannst: erklären, warum man künstliche Sprachen braucht, und Syntaxfehler von Semantikfehlern unterscheiden.</span>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#einstieg">🤔 Einstieg</a><a class="p-note" href="#festhalten">📝 Festhalten</a><a class="p-investigate" href="#detektiv">🔍 Üben</a><a class="p-make" href="#satzbau">🧱 Selbst bauen</a><a class="p-idee" href="#grenzfaelle">💡 Nachdenken</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="einstieg" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🤔</span><h2>Einstieg<small>Was ist hier gemeint?</small></h2></div>
+                <div class="phase-body">
+                    <p>Natürliche Sprachen wie Deutsch, Englisch oder Bairisch sind reich, flexibel und entwickeln sich ständig weiter. Dafür sind sie manchmal <strong>mehrdeutig</strong>. Lies jeden Satz und überlege, wie man ihn verstehen kann. Klappe erst dann die Deutungen auf.</p>
+                    <div class="deut-grid">
+                        <div class="deut">
+                            <blockquote>„Treffen sich zwei Jäger. Beide tot.“</blockquote>
+                            <details><summary>Zwei Deutungen</summary><ul><li><em>treffen</em> = sich begegnen: Zwei Jäger kommen zusammen.</li><li><em>treffen</em> = mit dem Schuss treffen: Sie schießen aufeinander.</li></ul></details>
+                        </div>
+                        <div class="deut">
+                            <blockquote>„Ich sah den Mann mit dem Fernglas.“</blockquote>
+                            <details><summary>Zwei Deutungen</summary><ul><li>Ich habe durch mein Fernglas geschaut.</li><li>Der Mann, den ich sah, hatte ein Fernglas.</li></ul></details>
+                        </div>
+                        <div class="deut">
+                            <blockquote>„Komm, wir essen Opa!“</blockquote>
+                            <details><summary>Was ein Komma ausmacht</summary><ul><li>„Komm, wir essen, Opa!“: eine Einladung an Opa.</li><li>Ohne das zweite Komma wird Opa zum Essen. Ein einziges Zeichen ändert die Bedeutung.</li></ul></details>
+                        </div>
+                        <div class="deut">
+                            <blockquote>„Wir treffen uns an der Bank.“</blockquote>
+                            <details><summary>Zwei Deutungen</summary><ul><li>an der Parkbank</li><li>am Geldinstitut. Erst der Zusammenhang verrät, welche Bank gemeint ist.</li></ul></details>
+                        </div>
+                    </div>
+                    <p>Wo es auf <strong>präzise und knappe</strong> Verständigung ankommt, hat man deshalb <strong>künstliche Sprachen</strong> geschaffen:</p>
+                    <div class="kunst-grid">
+                        <div class="kunst"><span class="probe">2x + 7 = 13</span>Mathematik</div>
+                        <div class="kunst"><span class="probe">if (isKeyDown('w')) {
+   move(0, -5);
+}</span>Java</div>
+                        <div class="kunst">
+                            <svg viewBox="0 0 64 64" role="img" aria-label="Verkehrszeichen eingeschränktes Haltverbot: blauer Kreis mit rotem Rand und einem roten Schrägbalken">
+                                <circle cx="32" cy="32" r="29" fill="#dc2626"/><circle cx="32" cy="32" r="22" fill="#1d4ed8"/>
+                                <line x1="17" y1="17" x2="47" y2="47" stroke="#dc2626" stroke-width="7"/>
+                            </svg>Verkehrszeichen
+                        </div>
+                        <div class="kunst"><span class="probe">DE12 3456 7890
+1234 5678 90</span>IBAN (Kontonummer)</div>
+                        <div class="kunst"><span class="probe">83278 Traunstein</span>Postleitzahl</div>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Wähle zwei der künstlichen Sprachen: Was bedeutet das Beispiel? Wie müsste man es abändern, damit es falsch wird?</li>
+                        <li>Was haben alle künstlichen Sprachen gemeinsam, was unterscheidet sie von Deutsch?</li>
+                    </ol>
+                    <details class="denk"><summary>Denkanstoß zu b)</summary>
+                        <p>Jede künstliche Sprache hat <strong>feste Regeln</strong>, die vorher vereinbart sind. Jede korrekt gebildete Äußerung hat genau <strong>eine</strong> Bedeutung. Sie ist knapp und dient nur einem Zweck: Mit einer IBAN kann man kein Gedicht schreiben. Dafür kann eine Maschine sie prüfen: Eine Bank-Software erkennt eine falsch getippte IBAN sofort.</p>
+                    </details>
+                </div>
+            </section>
+
+            <section id="festhalten" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Form und Bedeutung</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Syntax und Semantik</h4>
+                        <ul>
+                            <li>Die <strong>Syntax</strong> einer Sprache beschreibt die <strong>Regeln, nach denen</strong> Wörter und Sätze gebildet werden: die <em>Form</em>.</li>
+                            <li>Die <strong>Semantik</strong> beschreibt die <strong>Bedeutung</strong> der gebildeten Wörter und Sätze: den <em>Inhalt</em>.</li>
+                        </ul>
+                    </div>
+                    <div class="tab-scroll">
+                        <table class="fs-tab">
+                            <tr><th>Beispiel</th><th>Fehler</th><th>Warum?</th></tr>
+                            <tr><td>„Der spielt Hund dem Ball mit.“</td><td style="color:var(--fs-syntax)"><strong>Syntaxfehler</strong></td><td>Die Wörter stehen in einer Reihenfolge, die die Regeln des Deutschen nicht erlauben.</td></tr>
+                            <tr><td>„Der Hund schreibt morgen eine Matheklausur.“</td><td style="color:var(--fs-semantik)"><strong>Semantikfehler</strong></td><td>Der Satz ist richtig gebaut, aber er ergibt keinen Sinn.</td></tr>
+                        </table>
+                    </div>
+                    <div class="tipp"><strong>Merkhilfe:</strong> Bei einem Syntaxfehler kann man den Satz gar nicht erst sinnvoll lesen. Bei einem Semantikfehler versteht man ihn, stutzt aber: „Das kann nicht stimmen.“ Ein Compiler findet Syntaxfehler, bevor das Programm startet. Semantikfehler findet er meist nicht.</div>
+                </div>
+            </section>
+
+            <section id="detektiv" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Üben<small>Fehler-Detektiv: Stimmt die Form oder nur der Sinn nicht?</small></h2></div>
+                <div class="phase-body">
+                    <p>Ordne jeden Ausdruck ein. Im Heft kreist du Syntaxfehler <strong style="color:var(--fs-syntax)">rot</strong> und Semantikfehler <strong style="color:var(--fs-semantik)">blau</strong> ein. Ein paar Ausdrücke sind auch korrekt.</p>
+                    <div class="werk">
+                        <ul class="detektiv" data-detektiv>
+                            <li data-loesung="syntax" data-gebiet="Mathematik"><span class="ausdruck">2 + * 5 = x</span><span class="erkl-text">Zwei Rechenzeichen direkt hintereinander: Der Term ist falsch gebildet.</span></li>
+                            <li data-loesung="semantik" data-gebiet="Mathematik"><span class="ausdruck">2 + 3 = 8</span><span class="erkl-text">Die Gleichung ist richtig gebildet, aber die Aussage ist falsch.</span></li>
+                            <li data-loesung="syntax" data-gebiet="Chemie"><span class="ausdruck">H₂O)</span><span class="erkl-text">Eine Klammer wird geschlossen, die nie geöffnet wurde.</span></li>
+                            <li data-loesung="semantik" data-gebiet="Chemie"><span class="ausdruck">H₅O</span><span class="erkl-text">Nach den Schreibregeln in Ordnung, aber dieses Molekül gibt es nicht: Sauerstoff bindet nur zwei Wasserstoffatome.</span></li>
+                            <li data-loesung="syntax" data-gebiet="PLZ"><span class="ausdruck">824377</span><span class="erkl-text">Deutsche Postleitzahlen haben genau fünf Ziffern.</span></li>
+                            <li data-loesung="semantik" data-gebiet="PLZ"><span class="ausdruck">99999</span><span class="erkl-text">Fünf Ziffern, die Form stimmt. Diese Postleitzahl ist aber nicht vergeben.</span></li>
+                            <li data-loesung="korrekt" data-gebiet="PLZ"><span class="ausdruck">83278</span><span class="erkl-text">Traunstein: Form und Bedeutung stimmen.</span></li>
+                            <li data-loesung="syntax" data-gebiet="Java"><span class="ausdruck">int alter = 17</span><span class="erkl-text">Das Semikolon am Ende fehlt. Der Compiler meldet einen Fehler, das Programm startet nicht.</span></li>
+                            <li data-loesung="semantik" data-gebiet="Java"><span class="ausdruck">int alter = -317;</span><span class="erkl-text">Gültiger Java-Code, aber ein negatives Alter ergibt keinen Sinn. Der Compiler bemerkt das nicht!</span></li>
+                            <li data-loesung="syntax" data-gebiet="Java"><span class="ausdruck">if (x &gt; 3 { move(0, -5); }</span><span class="erkl-text">Die runde Klammer um die Bedingung wird nie geschlossen.</span></li>
+                            <li data-loesung="semantik" data-gebiet="Datum"><span class="ausdruck">29.02.2026</span><span class="erkl-text">Die Form TT.MM.JJJJ stimmt, aber 2026 ist kein Schaltjahr: Den 29. Februar gibt es nicht.</span></li>
+                            <li data-loesung="syntax" data-gebiet="Datum"><span class="ausdruck">12.2026.03</span><span class="erkl-text">Die Teile stehen in der falschen Reihenfolge: Die Form TT.MM.JJJJ ist verletzt.</span></li>
+                            <li data-loesung="syntax" data-gebiet="Uhrzeit"><span class="ausdruck">14:3O</span><span class="erkl-text">Genau hinsehen: Am Ende steht der Buchstabe O statt der Ziffer 0. Für einen Computer ist das ein anderes Zeichen.</span></li>
+                            <li data-loesung="syntax" data-gebiet="RGB-Farbe"><span class="ausdruck">rgb(255, 128)</span><span class="erkl-text">Ein RGB-Farbwert besteht aus genau drei Zahlen: Der Blauwert fehlt.</span></li>
+                            <li data-loesung="syntax" data-gebiet="Deutsch"><span class="ausdruck satz">Der spielt Hund dem Ball mit.</span><span class="erkl-text">Die Wortstellung verletzt die Regeln des Deutschen.</span></li>
+                            <li data-loesung="semantik" data-gebiet="Deutsch"><span class="ausdruck satz">Der Hund schreibt morgen eine Matheklausur.</span><span class="erkl-text">Richtig gebaut, aber Hunde schreiben keine Klausuren.</span></li>
+                        </ul>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Löse alle Fälle. Begründe bei jedem Fehler in einem Satz, was genau falsch ist.</li>
+                        <li>Welche der Fehler würde ein Computer (Compiler, Formular, Bank-Software) sicher erkennen, welche nicht? Was braucht man für die anderen?</li>
+                        <li>Denk dir für zwei weitere Gebiete (z.&nbsp;B. Telefonnummer, Autokennzeichen, E-Mail-Adresse) je einen Syntax- und einen Semantikfehler aus. Lass deinen Nachbarn raten.</li>
+                    </ol>
+                    <details class="denk"><summary>Denkanstoß zu b)</summary>
+                        <p>Syntaxfehler lassen sich <strong>mechanisch</strong> prüfen: Man vergleicht mit festen Regeln (fünf Ziffern? Semikolon am Ende?). Für Semantikfehler braucht man Wissen über die Welt: eine Liste aller vergebenen Postleitzahlen, einen Kalender, Chemiekenntnisse. Beim negativen Alter hilft nur ein Mensch oder eine zusätzliche Prüfung im Programm.</p>
+                    </details>
+                </div>
+            </section>
+
+            <section id="satzbau" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🧱</span><h2>Selbst bauen<small>Satzbaukasten: Der Rechner prüft die Form, den Sinn prüfst du</small></h2></div>
+                <div class="phase-body">
+                    <p>Der Satzbaukasten kennt nur drei Regeln. Nach ihnen prüft er jeden Satz, ganz ohne zu verstehen, was die Wörter bedeuten. Die verletzte Regel wird markiert.</p>
+                    <div class="werk" data-satzbau>
+                        <h4>Satzbaukasten</h4>
+                        <p class="regel-zeile"><strong>Regeln:</strong>
+                            <span data-regel="Satz">Satz = Subjekt, Verb, Objekt</span>
+                            <span data-regel="Subjekt">Subjekt = „Der“ + männliches Nomen oder „Die“ + weibliches Nomen</span>
+                            <span data-regel="Objekt">Objekt = „den“ + männliches Nomen oder „die“ + weibliches Nomen</span>
+                        </p>
+                        <div class="kacheln" aria-label="Wortvorrat"></div>
+                        <div class="satzzeile" aria-label="Dein Satz" aria-live="polite"></div>
+                        <div class="knopfzeile">
+                            <button type="button" class="knopf" data-zurueck>⌫ letztes Wort</button>
+                            <button type="button" class="knopf" data-leeren>neu anfangen</button>
+                        </div>
+                        <div class="urteil">
+                            <div class="syn"><h5>🤖 Syntax: prüft der Rechner nach den Regeln</h5><div class="inhalt" aria-live="polite"></div></div>
+                            <div class="sem"><h5>🧠 Semantik: entscheidest du</h5><div class="inhalt"></div></div>
+                        </div>
+                        <ul class="ziele">
+                            <li>Baue einen Satz aus mindestens drei Wörtern mit einem <strong>Syntaxfehler</strong>.</li>
+                            <li>Baue einen <strong>syntaktisch korrekten</strong> Satz, der <strong>Unsinn</strong> ist (Semantikfehler).</li>
+                            <li>Baue einen syntaktisch korrekten <strong>und sinnvollen</strong> Satz.</li>
+                        </ul>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Erfülle alle drei Aufträge. Schreibe je einen deiner Sätze ins Heft.</li>
+                        <li>Tausche in einem sinnvollen Satz Subjekt und Objekt. Was sagt der Rechner, was sagst du? (Beispiel: „Der Hund jagt die Katze.“)</li>
+                        <li>Warum kann der Rechner die Syntax prüfen, den Sinn aber nicht? Was müsste man ihm dafür zusätzlich geben?</li>
+                    </ol>
+                    <div class="tipp"><strong>Tipp:</strong> „Die Katze frisst den Knochen.“ ist korrekt gebaut. Ob das Sinn ergibt, darüber kann man streiten. Genau deshalb ist Semantik so schwer zu prüfen: Es gibt keine feste Regel.</div>
+                </div>
+            </section>
+
+            <section id="grenzfaelle" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Grenzfälle: besprecht mündlich</small></h2></div>
+                <div class="phase-body">
+                    <p>Nicht immer ist sofort klar, ob ein Fehler zur Syntax oder zur Semantik gehört. Überlegt zu zweit, dann lest die Hinweise.</p>
+                    <div class="idee"><strong><code>34.07.2026</code>: Syntax oder Semantik?</strong>
+                        <details class="denk"><summary>Hinweis</summary>
+                            <p>Das hängt davon ab, wie genau die Regeln sind. Lautet die Regel nur „zwei Ziffern, Punkt, zwei Ziffern, Punkt, vier Ziffern“, stimmt die Form: Der Fehler ist semantisch (einen 34. gibt es nicht). Schreibt man in die Regeln „der Tag ist 01 bis 31“, wird er zum Syntaxfehler. Beim <code>29.02.2026</code> wird das schwierig: Dafür müssten die Regeln die Schaltjahre kennen. Wie genau man Regeln fasst, lernst du in 1.3 und 1.4.</p>
+                        </details>
+                    </div>
+                    <div class="idee"><strong><code>int alter = "Hans";</code></strong> Der Compiler meldet einen Fehler. Ist es trotzdem ein Syntaxfehler?
+                        <details class="denk"><summary>Hinweis</summary>
+                            <p>Die Form „Datentyp Name = Ausdruck;“ stimmt, und <code>"Hans"</code> ist ein gültiger Ausdruck. Der Fehler ist, dass Typ und Wert nicht zusammenpassen. Informatiker:innen nennen solche Prüfungen, die der Compiler zusätzlich zu den Syntaxregeln macht, <strong>statische Semantik</strong>. Ein Grenzfall also: Die Form ist richtig, aber der Compiler findet den Fehler trotzdem.</p>
+                        </details>
+                    </div>
+                    <div class="idee"><strong>„Treffen sich zwei Jäger.“</strong> Warum darf so etwas in einer Programmiersprache nicht vorkommen?
+                        <details class="denk"><summary>Hinweis</summary>
+                            <p>Ein Rechner kann nicht nachfragen, was gemeint ist. Jedes Programm muss genau <strong>eine</strong> Bedeutung haben, sonst würden zwei Compiler dasselbe Programm verschieden ausführen. Deshalb legt man die Syntax einer künstlichen Sprache <strong>eindeutig und vollständig</strong> fest. Wie das geht, ist das Thema der nächsten Stationen.</p>
+                        </details>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🔤 1.2 Formale Sprachen</h4>
+                            <p>Um Syntax genau festzulegen, klärt man zuerst die Bausteine: Welche Zeichen sind erlaubt (Alphabet)? Was ist ein Wort? Und welche Wörter gehören zur Sprache?</p>
+                            <a class="btn btn-outline btn-sm" href="1-2-formale-sprachen.html">Zur Station 1.2</a>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>🛤️ 1.3 und 1.4 Grammatiken</h4>
+                            <p>Mit Syntaxdiagrammen und der EBNF schreibst du Regeln so genau auf, dass ein Rechner für jedes Wort entscheiden kann, ob es dazugehört: so wie der Satzbaukasten.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="../../informatik.html#jahrgang-13">← Übersicht Klasse 13</a>
+                <a class="btn btn-primary" href="1-2-formale-sprachen.html">Weiter: 1.2 Formale Sprachen →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Hinweise</strong></summary>
+                    <p class="mt-2"><strong>Material:</strong> Die Station setzt Abschnitt 1.1 des Skripts „Inf13 – 1. Formale Sprachen“ um (Jäger-Witz, künstliche Sprachen, Definition, Aufgabe 1). Ein eigenes Arbeitsblatt im neuen Format gibt es für 1.1 noch nicht; die Aufgaben sind so gestellt, dass sie mit Heft auskommen.</p>
+                    <p><strong>Fehler-Detektiv:</strong> Die Beispiele aus dem Skript sind so gewählt oder leicht abgeändert, dass die Einordnung eindeutig ist. Bewusst herausgenommen und in „Grenzfälle“ verschoben:</p>
+                    <div class="tab-scroll">
+                        <table>
+                            <tr><th>Beispiel im Skript</th><th>Problem</th><th>auf der Seite</th></tr>
+                            <tr><td><code>int alter = „Hans“;</code></td><td>Typfehler: Der Compiler meldet ihn, er ist aber streng genommen kein Syntaxfehler (statische Semantik).</td><td>Grenzfall 2; im Detektiv ersetzt durch fehlendes Semikolon</td></tr>
+                            <tr><td><code>34.07.2026</code>, <code>RGB(300, 128, 50)</code></td><td>Einordnung hängt davon ab, wie streng die Regeln sind (Tag ≤ 31, Wert ≤ 255).</td><td>Grenzfall 1; leitet zu 1.3/1.4 über (Uhrzeit-Grammatik auf Blatt 1.4)</td></tr>
+                            <tr><td><code>H₉0</code>, <code>CO³</code></td><td>Einordnung ohne Erklärung der Schreibregeln unklar</td><td>ersetzt durch <code>H₂O)</code> und <code>H₅O</code></td></tr>
+                        </table>
+                    </div>
+                    <p class="mt-2"><strong>Satzbaukasten:</strong> Die Syntaxprüfung arbeitet mit einer kleinen Grammatik (Subjekt – Verb – Objekt, Artikel passend zum Geschlecht). Über den Sinn entscheiden die Schüler:innen bewusst selbst: Die Seite soll zeigen, dass sich Syntax mechanisch prüfen lässt, Semantik aber Weltwissen braucht. Die markierte Regel bei einem Syntaxfehler bereitet die Regeln in 1.3 vor. Nichts wird gespeichert.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum &amp; Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

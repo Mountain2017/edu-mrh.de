@@ -1,0 +1,112 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+% Blatt:   tectonic ab-1-2-formale-sprachen.tex
+% Lösung:  tectonic ab-1-2-formale-sprachen-lsg.tex
+% Progression: Alphabet -> Wort/Länge -> Wortmenge A* (zählen: unendlich) -> Sprache L ⊆ A*
+%              -> Transfer (Alltagssprachen, Syntax vs. Semantik) -> Smileys in Worten (mehrdeutig)
+\newcommand{\zeile}{\rule[-2.2mm]{0pt}{7mm}}
+\newcommand{\hoch}{\rule[-1.6mm]{0pt}{6mm}}
+\begin{document}
+\abtitel{1.2}{Formale Sprachen}
+
+Ob \code{2 + * 5} oder \code{34.07.2026} korrekt gebildet sind, kann ein Computer nur prüfen, wenn \textbf{eindeutig} festgelegt ist, welche \emph{Zeichen} erlaubt sind und welche \emph{Zeichenfolgen} dazugehören.
+
+\begin{merke}[Alphabet, Wort und Länge]
+\begin{itemize}
+\item Ein \textbf{Alphabet} $A$ ist eine \lsg[2.2cm]{endliche}, nichtleere Menge von \lsg[2cm]{Zeichen}.\\[0.5mm]
+$A_1 = \{\code{0}, \code{1}\}$\qquad $A_2 = \{\code{a}, \code{b}, \code{c}, \dots, \code{z}\}$\qquad $A_3 = \{\code{:}, \code{;}, \code{-}, \code{)}, \code{(}, \code{D}, \code{P}, \code{*}\}$
+\item Ein \textbf{Wort} (eine \textbf{Zeichenkette}) über $A$ ist eine endliche Folge von Zeichen aus $A$.\\
+Das \textbf{leere Wort} \eps{} enthält \lsg[2.6cm]{kein Zeichen}.
+\item Die \textbf{Länge} $|w|$ eines Wortes $w$ ist die \lsg[4cm]{Anzahl seiner Zeichen}. Beispiel: $|\code{0110}| = 4$, \ $|\varepsilon| = $ \lsg[0.8cm]{0}.
+\end{itemize}
+\end{merke}
+
+\begin{aufgabe}{1}
+\textbf{a)} Gib je drei Wörter unterschiedlicher Länge an und notiere ihre Länge.\\[1mm]
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|p{1.3cm}|X|X|X|}\hline
+über $A_1$\zeile & $k_1 = \varepsilon$, \quad $|k_1| = 0$ & \lsgoder{\lsgfarbe $k_2 = \code{1}$, \quad $|k_2| = 1$}{} & \lsgoder{\lsgfarbe $k_3 = \code{0110}$, \quad $|k_3| = 4$}{}\\\hline
+über $A_2$\zeile & \lsgoder{\lsgfarbe \code{x}, \quad Länge 1}{} & \lsgoder{\lsgfarbe \code{baum}, \quad Länge 4}{} & \lsgoder{\lsgfarbe \code{informatik}, \quad Länge 10}{}\\\hline
+über $A_3$\zeile & \lsgoder{\lsgfarbe \code{;D}, \quad Länge 2}{} & \lsgoder{\lsgfarbe \code{:-)}, \quad Länge 3}{} & \lsgoder{\lsgfarbe \code{DD:*(}, \quad Länge 5}{}\\\hline
+\end{tabularx}\\[1.2mm]
+\textbf{b)} Ist \code{ab} ein Wort über $A_1$? Ist \code{:-)} ein Wort über $A_2$? \lsg[7.4cm]{Nein, beides nicht: Zeichen fehlen im Alphabet.}\\[1mm]
+\textbf{c)} Es gibt genau ein Wort, das über \emph{jedem} Alphabet gebildet werden kann. Welches? Warum? \\[0.6mm]
+\lsg[\linewidth]{Das leere Wort \eps: Es enthält kein Zeichen, also auch keines, das im Alphabet fehlen könnte.}\\[1mm]
+\textbf{d)} Kreuze an, was richtig ist.\qquad
+\kreuz{0} $\varepsilon \in A_1$\qquad \kreuz{1} $\code{0} \in A_1$\qquad \kreuz{1} \code{000} ist Wort über $A_1$\qquad \kreuz{0} $|\code{:-)}| = 1$
+\end{aufgabe}
+
+\begin{aufgabe}[Wie viele Wörter gibt es?]{2}
+\textbf{a)} Schreibe \emph{alle} Wörter über $A_1$ der Länge 0 bis 3 auf und zähle sie. Zähle dann auch für $A_2$ und $A_3$.\\[1mm]
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|p{2.9cm}|p{0.85cm}|p{1.5cm}|p{2.8cm}|X|p{1.4cm}|}\hline
+\textbf{Länge $n$} & \textbf{0} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{$n$}\\\hline
+Wörter über $A_1$\rule[-6mm]{0pt}{11mm} & \lsgoder{\lsgfarbe \eps}{} & \lsgoder{\lsgfarbe \code{0}, \code{1}}{} & \lsgoder{\lsgfarbe \code{00}, \code{01}, \code{10}, \code{11}}{} & \lsgoder{\lsgfarbe \code{000}, \code{001}, \code{010}, \code{011}, \code{100}, \code{101}, \code{110}, \code{111}}{} & \\\hline
+Anzahl über $A_1$\hoch & \lsgoder{\lsgfarbe 1}{} & \lsgoder{\lsgfarbe 2}{} & \lsgoder{\lsgfarbe 4}{} & \lsgoder{\lsgfarbe 8}{} & \lsgoder{\lsgfarbe $2^n$}{}\\\hline
+Anzahl über $A_2$\hoch & \lsgoder{\lsgfarbe 1}{} & \lsgoder{\lsgfarbe 26}{} & \lsgoder{\lsgfarbe $26^2 = 676$}{} & \lsgoder{\lsgfarbe $26^3 = 17\,576$}{} & \lsgoder{\lsgfarbe $26^n$}{}\\\hline
+Anzahl über $A_3$\hoch & \lsgoder{\lsgfarbe 1}{} & \lsgoder{\lsgfarbe 8}{} & \lsgoder{\lsgfarbe 64}{} & \lsgoder{\lsgfarbe 512}{} & \lsgoder{\lsgfarbe $8^n$}{}\\\hline
+\end{tabularx}\\[1.2mm]
+\textbf{b)} Wie viele Wörter gibt es \emph{insgesamt} über $A_1$? Begründe, obwohl $A_1$ nur zwei Zeichen hat.\\[0.6mm]
+\lsg[\linewidth]{Unendlich viele: Zu jeder Länge $n$ gibt es $2^n$ Wörter, und die Länge ist nicht begrenzt.}
+\end{aufgabe}
+
+\begin{merke}[Wortmenge und formale Sprache]
+\begin{itemize}
+\item Die \textbf{Wortmenge} $A^*$ ist die Menge \lsg[2.6cm]{aller Wörter} über $A$, einschließlich \eps. Obwohl $A$ endlich ist, ist $A^*$ immer \lsg[2.4cm]{unendlich}.\\[0.5mm]
+Beispiel: $A_1^* = \{$\,\lsg[9cm]{\eps, \code{0}, \code{1}, \code{00}, \code{01}, \code{10}, \code{11}, \code{000}, \code{001}, \dots}\,$\}$
+\item Eine \textbf{formale Sprache} $L$ über $A$ ist eine \textbf{eindeutig festgelegte} Menge von Wörtern über $A$, also eine \lsg[2.4cm]{Teilmenge} von $A^*$: $L \subseteq A^*$. Eindeutig heißt: Für \emph{jedes} Wort aus $A^*$ steht fest, ob es zu $L$ gehört oder nicht.
+\end{itemize}
+\end{merke}
+
+\newpage
+\begin{aufgabe}[Sprachen über $A_2$]{3}
+\begin{minipage}[t]{0.585\linewidth}
+\vspace{0pt}
+$L_1$ = alle Wörter aus $A_2^*$ mit Länge kleiner gleich 4\\
+$L_2$ = alle Wörter aus $A_2^*$, die mit \code{b} beginnen\\
+$L_3$ = alle Wörter aus $A_2^*$, die das Teilwort \code{inf} enthalten\\[1mm]
+\textbf{a)} Kreuze an, zu welcher Sprache das Wort gehört.\\[1mm]
+\textbf{b)} Welche der drei Sprachen sind endlich? \lsg[1.8cm]{nur $L_1$}\\[1mm]
+\textbf{c)} Finde ein Wort, das zu $L_1$, $L_2$ \emph{und} $L_3$ gehört:\\[0.6mm] \lsg[3.2cm]{\code{binf}}\ \ Gibt es mehrere? \lsg[2.6cm]{nein, nur \code{binf}}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.39\linewidth}
+\vspace{0pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabularx}{\linewidth}{|X|c|c|c|}\hline
+\textbf{Wort} & $L_1$ & $L_2$ & $L_3$\\\hline
+\code{baum} & \kreuz{1} & \kreuz{1} & \kreuz{0}\\\hline
+\code{informatik} & \kreuz{0} & \kreuz{0} & \kreuz{1}\\\hline
+\eps & \kreuz{1} & \kreuz{0} & \kreuz{0}\\\hline
+\code{inf} & \kreuz{1} & \kreuz{0} & \kreuz{1}\\\hline
+\code{binfo} & \kreuz{0} & \kreuz{1} & \kreuz{1}\\\hline
+\end{tabularx}
+\end{minipage}
+\end{aufgabe}
+
+\begin{aufgabe}[Formale Sprachen im Alltag]{4}
+\textbf{a)} Ergänze die Tabelle.\\[1mm]
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|p{5.3cm}|X|p{2.4cm}|p{4.5cm}|}\hline
+\textbf{Sprache} & \textbf{Alphabet} & \textbf{Wort aus $L$} & \textbf{Wort aus $A^*$, nicht aus $L$}\\\hline
+Postleitzahlen\zeile & \lsgoder{\lsgfarbe \{0, 1, \dots, 9\}}{} & \code{83278} & \lsgoder{\lsgfarbe \code{824377} (6 Ziffern)}{}\\\hline
+Binärzahlen ohne führende Null\zeile & \lsgoder{\lsgfarbe \{0, 1\}}{} & \lsgoder{\lsgfarbe \code{1011}}{} & \lsgoder{\lsgfarbe \code{0011}}{}\\\hline
+Datum (TT.MM.JJJJ)\zeile & \lsgoder{\lsgfarbe \{0, 1, \dots, 9, .\}}{} & \lsgoder{\lsgfarbe \code{29.09.2026}}{} & \lsgoder{\lsgfarbe \code{29..092026}}{}\\\hline
+\end{tabularx}\\[1.2mm]
+\textbf{b)} Die Postleitzahl \code{99999} ist nicht vergeben. Gehört sie trotzdem zur Sprache „alle Wörter aus fünf Ziffern“? Was folgt daraus für Syntax und Semantik?
+\lsglinien{2}{Ja, \code{99999} ist syntaktisch korrekt. Eine formale Sprache legt nur die \textbf{Syntax} fest; ob das Wort auch etwas bedeutet (\textbf{Semantik}), prüft sie nicht.}
+\end{aufgabe}
+
+\begin{aufgabe}[Die Sprache der Smileys]{5}
+Im Chat werden Smileys aus den Zeichen von $A_3$ gebildet. Sie bilden eine Sprache $L_\text{Smiley} \subseteq A_3^*$.\\[1mm]
+\textbf{a)} Kreuze an, welche Wörter du als Smiley erkennst.\\[1mm]
+\kreuz{1} \code{:-)}\qquad \kreuz{1} \code{;D}\qquad \kreuz{1} \code{:-P}\qquad \kreuz{0} \code{)-:}\qquad \kreuz{0} \code{:-}\qquad \kreuz{1} \code{;*}\qquad \kreuz{0} \code{:--)}\qquad \kreuz{0} \code{DP}\qquad \kreuz{1} \code{:(}\\[1mm]
+\textbf{b)} Beschreibe in Worten möglichst genau, welche Wörter aus $A_3^*$ zu $L_\text{Smiley}$ gehören.
+\lsglinien{3}{Ein Smiley beginnt mit Augen (\code{:} oder \code{;}). Danach kann eine Nase \code{-} folgen, höchstens eine. Am Ende steht genau ein Mund: \code{)}, \code{(}, \code{D}, \code{P} oder \code{*}. Sonst folgt nichts.}
+\textbf{c)} Vergleiche mit deinem Nachbarn: Gibt es Wörter, bei denen eure Beschreibungen verschieden entscheiden oder gar nicht entscheiden? Notiere ein Beispiel und woran es liegt.
+\lsglinien{2}{z.\,B. \code{)-:} (gespiegelt?), \code{:--)} (wie viele Nasen?), \code{:-):-)} (mehrere Smileys?). Umgangssprache ist ungenau und mehrdeutig; man übersieht leicht Fälle.}
+\end{aufgabe}
+
+\begin{merke}[Erkenntnis]
+Eine Beschreibung in Umgangssprache legt eine Sprache oft \lsg[2.8cm]{nicht eindeutig} fest. Nötig sind genaue \textbf{Regeln}, nach denen man für jedes Wort entscheiden kann, ob es zur Sprache gehört.
+\end{merke}
+\end{document}

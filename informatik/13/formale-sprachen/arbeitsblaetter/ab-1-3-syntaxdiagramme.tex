@@ -1,0 +1,135 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+% Blatt:   tectonic ab-1-3-syntaxdiagramme.tex
+% Lösung:  tectonic ab-1-3-syntaxdiagramme-lsg.tex
+% Progression: Smiley-Grammatik lesen („abfahren“) -> Bausteine selbst benennen -> Grammatik-Begriffe
+%              -> Ableitungsbaum -> selbst bauen: RGB (nur Aneinanderreihung/Alternative)
+%              -> Kennzeichen (begrenzte Anzahl, keine führende Null) -> rekursive Regel (Palindrome)
+\newcommand{\zeile}{\rule[-1.6mm]{0pt}{6mm}}
+\begin{document}
+\abtitel{1.3}{Syntaxdiagramme}
+
+In 1.2 hast du gemerkt: In Worten lassen sich Smileys nicht eindeutig beschreiben. Die folgenden fünf Diagramme legen dagegen \emph{genau} fest, welche Wörter über $A_3 = \{\code{:}, \code{;}, \code{-}, \code{)}, \code{(}, \code{D}, \code{P}, \code{*}\}$ Smileyfolgen sind.
+
+\vspace{5mm}
+\noindent\sdSmileyfolge\hfill\sdSmiley\hfill\sdAugen\hfill\sdMitte\hfill\sdMund\par\vspace{0.5mm}
+
+\begin{aufgabe}[Diagramme lesen]{1}
+Lies jedes Diagramm wie ein \textbf{Gleisnetz}: Start bei \textbf{Smileyfolge}, folge den Pfeilen, an jeder Weiche darfst du wählen. Ein \textbf{rundes} Feld schreibt sein Zeichen ins Wort. Ein \textbf{eckiges} Feld heißt: Fahre das Diagramm mit diesem Namen ab und kehre dann zurück.\\[1mm]
+\textbf{a)} Kreuze an, welche Wörter gültige Smileyfolgen sind. Begründe bei den ungültigen.\\[0.8mm]
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|p{1.25cm}|c|X|p{1.25cm}|c|X|}\hline
+\code{:-)}\zeile & \kreuz{1} & & \code{:-}\zeile & \kreuz{0} & \lsgoder{\lsgfarbe Mund fehlt}{}\\\hline
+\code{;P:-(}\zeile & \kreuz{1} & & \code{:--D}\zeile & \kreuz{0} & \lsgoder{\lsgfarbe Mitte erlaubt nur eine Nase}{}\\\hline
+\code{;*}\zeile & \kreuz{1} & & \code{-)}\zeile & \kreuz{0} & \lsgoder{\lsgfarbe beginnt nicht mit Augen}{}\\\hline
+\end{tabularx}\\[1.2mm]
+\textbf{b)} Jedes Diagramm zeigt einen von vier Grundbausteinen: \textit{Aneinanderreihung, Alternative, Option, Wiederholung}. Ordne zu und beschreibe, was der Baustein bewirkt.\\[0.8mm]
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|p{2.9cm}|p{3.4cm}|X|}\hline
+\textbf{Diagramm} & \textbf{Baustein} & \textbf{Wirkung}\\\hline
+Smileyfolge\zeile & \lsgoder{\lsgfarbe Wiederholung}{} & \lsgoder{\lsgfarbe Smiley kommt \textbf{mindestens einmal}, beliebig oft}{}\\\hline
+Smiley\zeile & \lsgoder{\lsgfarbe Aneinanderreihung}{} & \lsgoder{\lsgfarbe Augen, Mitte, Mund genau in dieser Reihenfolge}{}\\\hline
+Augen, Mund\zeile & \lsgoder{\lsgfarbe Alternative}{} & \lsgoder{\lsgfarbe \textbf{genau einer} der Zweige wird gewählt}{}\\\hline
+Mitte\zeile & \lsgoder{\lsgfarbe Option}{} & \lsgoder{\lsgfarbe \code{-} kommt \textbf{einmal oder keinmal} vor}{}\\\hline
+\end{tabularx}
+\end{aufgabe}
+
+\begin{merke}[Grammatik und Syntaxdiagramm]
+Eine formale Sprache wird durch eine \textbf{Grammatik} eindeutig festgelegt. Sie besteht aus einem \textbf{Startsymbol} (hier: \lsg[2.6cm]{Smileyfolge}) und \textbf{Regeln}, wie daraus gültige Wörter gebildet werden. Die Regeln enthalten \textbf{Terminale} (\lsg[3.8cm]{Zeichen des Alphabets}, im Diagramm \lsg[1.2cm]{rund}, stehen im Wort) und \textbf{Nichtterminale} (\lsg[3.8cm]{Namen anderer Regeln}, im Diagramm \lsg[1.2cm]{eckig}, stehen nie im Wort). Eine Darstellungsform der Regeln ist das \textbf{Syntaxdiagramm}.
+\end{merke}
+
+\begin{aufgabe}[Ableitungsbaum]{2}
+\begin{minipage}[t]{0.66\linewidth}
+\vspace{0pt}
+\begin{tikzpicture}[sd,baum,level distance=7.5mm,level 1/.style={sibling distance=58mm},level 2/.style={sibling distance=19.5mm}]
+\node[nt] {Smileyfolge}
+  child {node[nt] {Smiley}
+    child {node[nt] {Augen} child {node[te] {:}}}
+    child {node[nt] {Mitte} child {node[te] {-}}}
+    child {node[nt] {Mund} child {node[te] {)}}}}
+  child {node[nt] {Smiley}
+    child[lsgbild] {node[nt] {Augen} child {node[te] {;}}}
+    child[lsgbild] {node[nt] {Mitte} child {node {$\varepsilon$}}}
+    child[lsgbild] {node[nt] {Mund} child {node[te] {D}}}};
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.32\linewidth}
+\vspace{0pt}
+Der \textbf{Ableitungsbaum} zeigt, wie das Wort \code{:-);D} aus dem Startsymbol entsteht.\\[0.5mm]
+\textbf{a)} Vervollständige den Baum.\\[0.5mm]
+\textbf{b)} Lies die Blätter von links nach rechts. Was erhältst du?\\ \lsg[\linewidth]{das Wort \code{:-);D}}\\[0.5mm]
+\textbf{c)} Warum steht unter einer „Mitte“ \eps?\\ \lsg[\linewidth]{Option ohne \code{-} gewählt}
+\end{minipage}\\[1mm]
+Aus dem Startsymbol werden Nichtterminale so lange nach ihren Regeln ersetzt, bis nur noch \lsg[2.4cm]{Terminale} übrig sind: Das Wort wird \textbf{abgeleitet} (produziert). Im Ableitungsbaum steht das Startsymbol in der \lsg[1.6cm]{Wurzel}, die Terminale stehen in den \lsg[1.6cm]{Blättern}.
+\end{aufgabe}
+
+\newpage
+\begin{hinweis}
+\small\textbf{Selbst bauen:} \ding{172} Beispiele zerlegen \ \ding{173} gleiche Teile benennen (je eine Regel) \ \ding{174} Bausteine wählen \ \ding{175} mit gültigen \emph{und} ungültigen Wörtern testen
+\end{hinweis}
+
+\begin{aufgabe}[Selbst bauen: RGB-Farbcodes]{3}
+Je zwei Hex-Ziffern (\code{00} bis \code{FF}) für Rot, Grün, Blau, z.\,B. \code{\#FF0000} (Rot), \code{\#F3BC0D} (Orange).\\[1mm]
+\textbf{a)} Gib das Alphabet an: $A_\text{RGB} = $ \lsg[10.4cm]{\{\#, 0, \dots, 9, A, \dots, F\}}\\[1mm]
+\textbf{b)} Drei Wörter aus $A_\text{RGB}^*$, aber keine Farbcodes: \lsg[9cm]{\code{\#12345} (zu kurz), \code{\#1234567} (zu lang), \code{123456}}\\[1mm]
+\textbf{c)} Zerlege \code{\#F3BC0D} in gleich aufgebaute Teile: \lsg[9.2cm]{\code{\#} | \code{F3} | \code{BC} | \code{0D}: dreimal \textbf{Farbwert} aus zwei \textbf{HexZiffern}}\\[1mm]
+\textbf{d)} Benenne die Teile und zeichne das Syntaxdiagramm. Teste mit den Wörtern aus b).
+\karolsg{6}{
+  \node[sdname] at (2,-5.5) {RGB-Code}; \coordinate (r) at (2,-10);
+  \sdnext{r0}{r}{te}{\#}\sdnext{r1}{r0-o}{nt}{Farbwert}\sdnext{r2}{r1-o}{nt}{Farbwert}\sdnext{r3}{r2-o}{nt}{Farbwert}\sdende{r3-o}
+  \node[sdname] at (2,-18) {Farbwert}; \coordinate (f) at (2,-22.5);
+  \sdnext{f1}{f}{nt}{HexZiffer}\sdnext{f2}{f1-o}{nt}{HexZiffer}\sdende{f2-o}
+  \node[sdname] at (112,-3.5) {HexZiffer}; \coordinate (h) at (112,-7);
+  \sdalt{h}{h}{12}{4.1}{te/0, pk/, te/9, te/A, pk/, te/F}\sdende{h-o}
+}
+\end{aufgabe}
+
+\begin{aufgabe}[Selbst bauen: Autokennzeichen]{4}
+Vereinfacht: \textbf{1 bis 3 Buchstaben} für den Bezirk (\code{M}, \code{TS}, \code{BGL}), ein Bindestrich, \textbf{1 oder 2 Buchstaben}, ein Leerzeichen \code{␣} und eine \textbf{1- bis 4-stellige Zahl ohne führende Null}.\\[1mm]
+\textbf{a)} Korrekt (k), syntaktisch falsch (sy) oder semantisch falsch (se)? Begründe kurz.\\[0.8mm]
+\code{TS-NA 48484} \lsg[3.4cm]{sy: 5 Ziffern}\hfill \code{RO-T 2209} \lsg[1.3cm]{k}\hfill \code{P1-JO 42} \lsg[3.4cm]{sy: Ziffer im Bezirk}\\[1mm]
+\code{IN-FO 13} \lsg[1.3cm]{k}\hfill \code{TOR-TE 3} \lsg[4.2cm]{se: Bezirk TOR gibt es nicht}\hfill \code{ED-DY 007} \lsg[3.4cm]{sy: führende Null}\\[1mm]
+\textbf{b)} Zeichne die Diagramme \textbf{Kennzeichen}, \textbf{Bezirk} und \textbf{Zahl}. Die Alternativen \textit{Buchstabe} (\code{A}…\code{Z}), \textit{Ziffer} (\code{0}…\code{9}) und \textit{ZifferOhneNull} (\code{1}…\code{9}) darfst du als gegeben verwenden.
+\karolsg{9}{
+  \node[sdname] at (2,-4.5) {Kennzeichen}; \coordinate (k) at (2,-8.5);
+  \sdnext{k1}{k}{nt}{Bezirk}\sdnext{k2}{k1-o}{te}{-}\sdnext{k3}{k2-o}{nt}{Buchstabe}\sdopt{k4}{k3-o}{nt}{Buchstabe}\sdnext{k5}{k4-o}{te}{␣}\sdnext{k6}{k5-o}{nt}{Zahl}\sdende{k6-o}
+  \node[sdname] at (2,-19) {Bezirk}; \coordinate (b) at (2,-23);
+  \sdnext{b1}{b}{nt}{Buchstabe}\sdopt{b2}{b1-o}{nt}{Buchstabe}\sdopt{b3}{b2-o}{nt}{Buchstabe}\sdende{b3-o}
+  \node[sdname] at (2,-33) {Zahl}; \coordinate (z) at (2,-37);
+  \sdnext{z1}{z}{nt}{ZifferOhneNull}\sdopt{z2}{z1-o}{nt}{Ziffer}\sdopt{z3}{z2-o}{nt}{Ziffer}\sdopt{z4}{z3-o}{nt}{Ziffer}\sdende{z4-o}
+}
+\textbf{c)} Eine Wiederholung erlaubt \lsg[2.5cm]{beliebig viele}, für „1 bis 3“ nimmt man \lsg[4.6cm]{zwei Optionen hintereinander}.\\[0.8mm] Führende Nullen verhindert man, indem \lsg[7.4cm]{die erste Ziffer eine ZifferOhneNull} ist.
+\end{aufgabe}
+
+\begin{aufgabe}[Rekursive Regeln]{5}
+\begin{minipage}[t]{0.33\linewidth}
+\vspace{0pt}
+\begin{tikzpicture}[sd]
+  \node[sdname] at (0,3.3) {Wort}; \coordinate (s) at (0,0); \coordinate (v) at (4,0);
+  \draw[sdl] (s) -- (v);
+  \path (v) ++(4,-5.5) node[te,anchor=west] (a1) {a};
+  \draw[sdl,->] (v) |- (a1.west);
+  \draw[sdl,->] (a1.east) -- ++(4,0) node[nt,anchor=west] (w1) {Wort};
+  \draw[sdl,->] (w1.east) -- ++(4,0) node[te,anchor=west] (a2) {a};
+  \path (v) ++(4,-11) node[te,anchor=west] (n1) {n};
+  \draw[sdl,->] (v) |- (n1.west);
+  \draw[sdl,->] (n1.east) -- ++(4,0) node[nt,anchor=west] (w2) {Wort};
+  \draw[sdl,->] (w2.east) -- ++(4,0) node[te,anchor=west] (n2) {n};
+  \coordinate (j) at ($(a2.east)+(4,0)$);
+  \draw[sdl,->] (a2.east) -| (j |- v); \draw[sdl,->] (n2.east) -| (j |- v);
+  \draw[sdl] (v) -- (j |- v); \sdende{j |- v}
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.65\linewidth}
+\vspace{0pt}
+Das Diagramm \textbf{Wort} verweist auf sich selbst. Gib an:\\[0.8mm]
+\textbf{a)} Alphabet: \lsg[2cm]{\{a, n\}}\quad \textbf{b)} Wörter: \lsg[4.2cm]{\eps, \code{aa}, \code{anna}, \code{nannan}}\\[1.2mm]
+\textbf{c)} Beschreibe die Sprache: \lsg[6.6cm]{Palindrome gerader Länge}\\[1.2mm]
+\textbf{d)} Warum geht das nicht mit einer Wiederholung?\\[0.6mm] \lsg[\linewidth]{Hinten muss das Gegenstück zu vorne stehen.}
+\end{minipage}
+\end{aufgabe}
+
+\begin{merke}[Rekursive Regeln]
+Eine Regel ist \textbf{rekursiv}, wenn ein Nichtterminal (direkt oder indirekt) \lsg[2.6cm]{auf sich selbst} verweist. Endlich viele Regeln erzeugen so \lsg[2.6cm]{unendlich viele} Wörter; ein Weg \lsg[2.8cm]{ohne Selbstaufruf} beendet die Ableitung.
+\end{merke}
+\end{document}

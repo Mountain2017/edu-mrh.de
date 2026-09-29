@@ -1,0 +1,322 @@
+% =====================================================================
+%  Arbeitsblatt 1.1  --  Syntax und Semantik   (Informatik 13, Grundkurs)
+%  Themenbereich: I) Formale Sprachen
+%
+%  ZWEI VERSIONEN AUS EINER DATEI:
+%    Arbeitsblatt : einfach uebersetzen
+%    Loesung      : \loesungtrue setzen (Zeile unten)  ODER
+%                   pdflatex "\def\loesungan{}\input{ab-1-1-syntax-semantik}"
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+\renewcommand{\themenbereich}{I. Formale Sprachen}
+
+% ---------- Kopf-/Fusszeile an Jgst. 13 anpassen ----------
+\fancyhead[L]{\small Jgst.\ 13 (GA)\\Datum:}
+\fancyfoot[C]{\scriptsize Informatik 13\,·\,Blatt \abnummer\,·\,Seite \thepage}
+
+% ------------------------- Loesungsschalter --------------------------
+\newif\ifloesung
+\loesungfalse                      % <-- \loesungtrue = Loesungsblatt
+\ifdefined\loesungan\loesungtrue\fi
+
+\usepackage{comment}
+\usepackage{amssymb}
+\definecolor{lsgrot}{RGB}{190,30,45}
+
+\ifloesung
+  \includecomment{nurlsg}\excludecomment{nurab}
+\else
+  \excludecomment{nurlsg}\includecomment{nurab}
+\fi
+
+% \lsg[Breite]{Loesungstext} -- Luecke bzw. eingetragene Loesung
+\newlength{\lsgbreite}
+\newcommand{\lsg}[2][3cm]{%
+  \ifloesung
+    \settowidth{\lsgbreite}{\small #2}%
+    \ifdim\lsgbreite<#1\relax\setlength{\lsgbreite}{#1}\fi
+    \underline{\makebox[\lsgbreite][c]{\textcolor{lsgrot}{\small #2}}}%
+  \else
+    \luecke[#1]%
+  \fi}
+
+% \lsgw[Breite]{Loesungstext} -- wie \lsg, aber umbrechend
+\newcommand{\lsgw}[2][3cm]{%
+  \vspace{4mm}
+  \ifloesung{\small\color{lsgrot}#2}\else\luecke[#1]\fi}
+
+% \lsgzeilen{Anzahl Linien}{Loesungstext}
+\newcommand{\lsgzeilen}[2]{%
+  \vspace{6mm}
+  \ifloesung{\small\color{lsgrot}#2\par}\else\linien{#1}\fi}
+
+% ---------- Listing-Umgebung fuer Protokolle / Nicht-Java ----------
+\lstnewenvironment{protokoll}[1][]{\lstset{language={},basicstyle=\ttfamily\small,
+  frame=single,framerule=0.4pt,xleftmargin=2mm,framexleftmargin=1mm,
+  aboveskip=2mm,belowskip=2mm,columns=flexible,#1}}{}
+
+\raggedbottom
+
+\begin{document}
+\abtitel{1.1}{Syntax und Semantik}
+
+\vspace{-2mm}
+\begin{center}\itshape\small
+„Treffen sich zwei Jäger. Beide tot.“
+\end{center}
+\vspace{-2mm}
+
+\begin{aufgabe}{1}
+\textbf{a)} Erklären Sie, worauf der Witz beruht. (mündlich)\\
+\textbf{b)} Der Satz ist grammatikalisch einwandfrei gebaut. Warum wäre er als Anweisung an einen Computer trotzdem unbrauchbar?
+\end{aufgabe}
+\lsgzeilen{1}{a) „treffen“ bedeutet \emph{einander begegnen} oder \emph{mit einem Schuss treffen}. \emph{Eine} Zeichenkette -- \emph{zwei} mögliche Bedeutungen (Mehrdeutigkeit).\par
+b) Die Regeln des Satzbaus sind eingehalten, die Zuordnung Darstellung $\rightarrow$ Bedeutung ist aber nicht eindeutig. Eine Maschine kann sich nicht „für eine Lesart entscheiden“ -- sie braucht genau eine Bedeutung pro Darstellung.}
+
+% =====================================================================
+\vspace{2mm}
+\textbf{1. Bausteine einer Sprache}
+
+Sprache wird aus Bausteinen auf mehreren Ebenen zusammengesetzt -- die \underline{unterste} Ebene trägt dabei noch \underline{keine} Bedeutung:
+
+\vspace{-1mm}
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm,font=\small]
+\node[anchor=west] at (0,1.15) {\ttfamily u\,n\,f\,r\,e\,u\,n\,d\,l\,i\,c\,h};
+\node[anchor=west,gray!60!black,font=\scriptsize] at (5.6,1.15) {einzelne Buchstaben -- \textbf{ohne} eigene Bedeutung};
+\node[anchor=west] at (0,0.58) {\ttfamily un\,|\,freund\,|\,lich};
+\node[anchor=west,gray!60!black,font=\scriptsize] at (5.6,0.58) {kleinste Bausteine \textbf{mit} Bedeutung};
+\node[anchor=west,font=\ttfamily\small] at (0,0) {Der Hund ist unfreundlich.};
+\node[anchor=west,gray!60!black,font=\scriptsize] at (5.6,0) {nach \textbf{Regeln} zu einem Satz zusammengesetzt};
+\end{tikzpicture}
+\end{center}
+\vspace{-1mm}
+
+\begin{aufgabe}{2}
+\textbf{a)} Wodurch unterscheiden sich \code{Hund} und \code{Mund}? Trägt dieser Baustein selbst eine Bedeutung?\\
+\textbf{b)} Zerlegen Sie \code{Unverbesserlichkeit} in die kleinsten bedeutungstragenden Bausteine.\\
+\textbf{c)} Betrachten Sie die Zeile \code{SELECT name FROM Schueler;} Was sind hier die Bausteine \emph{ohne}, was die Bausteine \emph{mit} Bedeutung?
+\end{aufgabe}
+\lsgzeilen{2}{a) Durch \emph{einen} Buchstaben (gesprochen: \emph{einen} Laut). Er unterscheidet die Wörter, hat aber selbst keine Bedeutung.\par
+b) \code{un\,|\,ver\,|\,besser\,|\,lich\,|\,keit} -- z.\,B. \code{un-} = Verneinung, \code{-keit} = macht ein Substantiv daraus.\par
+c) Ohne Bedeutung: die einzelnen Zeichen \code{S}, \code{E}, \code{L}, \ldots{} -- mit Bedeutung: \code{SELECT}, \code{name}, \code{FROM}, \code{Schueler}, \code{;}}
+
+\vspace{0.5mm}
+Die Fachbegriffe beider Welten entsprechen einander:
+
+\begin{center}\footnotesize
+\begin{tabular}{|>{\raggedright\arraybackslash}p{5.4cm}|p{4.1cm}|p{4.1cm}|}\hline
+& \textbf{natürliche Sprache} & \textbf{künstliche Sprache}\\\hline
+Baustein \emph{ohne} eigene Bedeutung & \lsg[3.8cm]{Laut / Buchstabe} & \lsg[3.8cm]{Zeichen (Symbol)}\\\hline
+kleinste Einheit \emph{mit} Bedeutung & \lsg[3.8cm]{Morphem / Wort} & \lsg[3.8cm]{Token}\\\hline
+Regeln zum Zusammensetzen & Grammatik, Satzbau & \lsg[3.8cm]{Syntax}\\\hline
+Bedeutung des Ganzen & Bedeutung & \lsg[3.8cm]{Semantik}\\\hline
+\end{tabular}
+\end{center}
+
+\begin{merke}[Syntax und Semantik]\small
+Die \textbf{Syntax} legt fest, \emph{wie} Zeichen zu erlaubten Zeichenketten zusammengesetzt werden dürfen. Die \textbf{Semantik} legt fest, \emph{welche Bedeutung} einer Zeichenkette zugeordnet wird. Kommunikation gelingt nur, wenn beide Seiten dieselbe Syntax \underline{und} dieselbe Semantik verwenden.
+\vspace{1mm}
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm,font=\scriptsize,
+  kasten/.style={draw,fill=white,rounded corners=1.5pt,minimum height=0.75cm,align=center}]
+\node[kasten,minimum width=1.9cm] (s) at (0,0) {Sender\\\emph{Information}};
+\node[kasten,minimum width=3.6cm] (d) at (4.3,0) {Darstellung\\(Zeichenkette nach \textbf{Syntax})};
+\node[kasten,minimum width=1.9cm] (e) at (8.6,0) {Empfänger\\\emph{Information}};
+\draw[-latex,thick] (s) -- node[above,pos=0.5]{codieren} (d);
+\draw[-latex,thick] (d) -- node[above,pos=0.5]{deuten} (e);
+\node[anchor=north,align=center] at (4.3,-0.6) {gleiche \textbf{Semantik} auf beiden Seiten $\Rightarrow$ gleiche Information};
+\end{tikzpicture}
+\end{center}
+\end{merke}
+
+% =====================================================================
+\newpage
+\textbf{2. Syntaktisch korrekt ist nicht dasselbe wie sinnvoll}
+
+\begin{aufgabe}{3}
+Ordnen Sie die Ausdrücke in die Tabelle ein. Begründen Sie bei (5) und (6) kurz.\\[1mm]
+\begin{minipage}[t]{0.52\linewidth}\vspace{0pt}
+(1) „Der spielt Hund dem Ball mit.“\\
+(2) „Farblose grüne Ideen schlafen wütend.“\\
+(3) \code{RGB(255, 128)}\\
+(4) \code{RGB(300, 128, 50)}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.44\linewidth}\vspace{0pt}
+(5) \code{int alter = "Hans";}\\
+(6) \code{29.02.2026}\\
+(7) \code{2 + * 5 = x}\\
+(8) \code{SELECT * FROM Kleidung}\newline
+\hspace*{6mm}\code{WHERE groesse = "Hose"}
+\end{minipage}
+\end{aufgabe}
+
+\begin{center}\small
+\begin{tabular}{|p{4.3cm}|p{9.6cm}|}\hline
+\textbf{Syntaxfehler}\newline (Regelverstoß beim Bau) & \lsgw[9.3cm]{(1), (3), (7) -- Wortstellung bzw.\ falsche Zahl von Parametern bzw.\ zwei Operatoren hintereinander.}\\[10mm]\hline
+\textbf{Semantikfehler}\newline (korrekt gebaut, aber falsch oder sinnlos) & \lsgw[9.3cm]{(2), (4), (5), (6), (8) -- (5) ist korrekt aufgebaut, aber einer Ganzzahl-Variablen wird ein Text zugewiesen; (6) ist ein korrekt gebautes Datum, aber 2026 ist kein Schaltjahr.}\\[10mm]\hline
+\end{tabular}
+\end{center}
+
+\begin{hinweis}\small
+\textbf{Achtung, teurer Fehler:} Ein Übersetzer (Compiler) prüft im Wesentlichen nur die \textbf{Syntax}. Ein Semantikfehler fällt ihm nicht auf -- das Programm läuft, tut aber etwas Falsches. \emph{Beispiel: Mars Climate Orbiter (1999)} %Zwei Teilsysteme tauschten Zahlenwerte aus -- das eine rechnete in Pfund-Sekunden, das andere erwartete Newton-Sekunden. Syntaktisch einwandfrei, Bedeutung nicht abgesprochen. Die Sonde verglühte in der Marsatmosphäre.
+\end{hinweis}
+
+% =====================================================================
+%\vspace{1mm}
+%\textbf{3. Mehrdeutigkeit: in natürlicher Sprache Alltag, für Maschinen tödlich}
+
+%Menschen erschließen die Bedeutung aus dem \textbf{Kontext} -- auch bei Fehlern („Kann ich mal den Butter?“). Mehrdeutigkeit wird sogar bewusst eingesetzt: im Witz, in der Lyrik oder im Spiritual \emph{Wade in the Water}, dessen Text für zwei Empfängergruppen zwei verschiedene Bedeutungen trug. Eine Maschine hat keinen Kontext.
+
+%\begin{aufgabe}{4}
+%\textbf{a)} Erklären Sie die Mehrdeutigkeit von \code{Wachstube} und des Schildes\newline
+%„Dieses Gebiet wird zur Verhütung von Straftaten durch die Polizei videoüberwacht.“\\
+%\textbf{b)} „Berechne den Wert der Funktion \emph{e hoch x plus 3} an der Stelle 5.“\newline
+%Notieren Sie beide möglichen Terme und ihre Werte. Welches Sprachmittel beseitigt die Mehrdeutigkeit?\\
+%\textbf{c)} Ein Webformular liefert das Datum \code{03/04/2026}. Warum ist das für ein Programm gefährlich? Wie löst die Informatik das Problem?
+%\end{aufgabe}
+%\lsgzeilen{7}{a) \code{Wach-Stube} (Raum der Wache) oder \code{Wachs-Tube} -- die Zerlegung in Bausteine ist nicht eindeutig.\par
+%Beim Schild: „durch die Polizei“ kann sich auf \emph{videoüberwacht} (die Polizei überwacht) oder auf \emph{Straftaten} (Straftaten der Polizei) beziehen -- dieselben Wörter, zwei Satzstrukturen.\par
+%b) $e^{x+3}$ an der Stelle 5 ergibt $e^{8}\approx 2981$; \quad $e^{x}+3$ ergibt $e^{5}+3\approx 151{,}4$.\par
+%Eindeutigkeit durch \textbf{Klammern} und festgelegte Vorrangregeln (Punkt vor Strich usw.).\par
+%c) 3.\,April oder 4.\,März -- je nach deutscher oder US-amerikanischer Lesart; beide Lesarten sind syntaktisch korrekt. Lösung: ein verbindlich festgelegtes Format, z.\,B. ISO\,8601: \code{2026-04-03} (Jahr-Monat-Tag, feste Stellenzahl).}
+
+% =====================================================================
+%\newpage
+\vspace{1em}
+\textbf{3. Maschine spricht mit Maschine: Protokolle}
+
+Damit zwei Programme sich verstehen, muss vorab dreierlei feststehen: welche Zeichenketten erlaubt sind (Syntax), was sie bedeuten (Semantik) und \underline{in welcher Reihenfolge} sie auftreten dürfen. Ein solches Regelwerk heißt \textbf{Protokoll} (hier: SMTP zum Versenden von E-Mails).
+
+\begin{aufgabe}{4}
+Der Dialog enthält drei Fehler. Ordnen Sie jeweils zu: \emph{Syntaxfehler}, \emph{Reihenfolgefehler} oder \emph{Semantikfehler}.
+\end{aufgabe}
+
+\begin{center}\small
+\begin{tabular}{@{}r@{\ \ }p{6.3cm}p{6.3cm}@{}}
+& \textbf{Client} & \textbf{Server}\\[0.5mm]\hline\rule{0pt}{4mm}
+(1) & \code{HELO klient.example.net} & \\
+(2) & & \code{250 OK}\\
+(3) & \code{RCPT TO: <chef@example.com>} & \\
+(4) & & \code{503 Bad sequence of commands}\\
+(5) & \code{MAIL FROM: sender@example.org} & \\
+(6) & & \code{501 Syntax error in parameters}\\
+(7) & \code{MAIL FROM: <sender@example.org>} & \\
+(8) & & \code{250 OK}\\
+(9) & \code{RCPT TO: <chef@exapmle.com>} & \\
+(10) & & \code{250 OK}\\[1mm]\hline
+\end{tabular}
+\end{center}
+
+\lsgzeilen{3}{Zeile (3): \textbf{Reihenfolgefehler} -- der Empfänger darf erst nach \code{MAIL FROM} genannt werden.\par
+Zeile (5): \textbf{Syntaxfehler} -- die Adresse muss in spitzen Klammern stehen.\par
+Zeile (9): \textbf{Semantikfehler} -- \code{exapmle.com} ist syntaktisch eine einwandfreie Adresse, meint aber den falschen Empfänger. Der Server bestätigt mit \code{250 OK}; \underline{diesen Fehler kann die Maschine nicht bemerken.}}
+
+%\begin{aufgabe}{6}
+%Der Server antwortet mit dreistelligen Zahlen, gefolgt von einem englischen Text. Begründen Sie, welcher Teil für die Maschine und welcher für den Menschen gedacht ist.
+%\end{aufgabe}
+%\lsgzeilen{4}{Die Zahl ist die eigentliche Antwort: Sie ist kurz, sprachunabhängig und eindeutig auswertbar (2xx = erfolgreich, 4xx/5xx = Fehler) -- sie bildet selbst eine kleine formale Sprache. Der Klartext dahinter darf sich ändern und richtet sich an Menschen, die den Ablauf lesen.}
+
+\begin{hinweis}\small
+Dass nach \code{HELO} erst \code{MAIL FROM} und dann \code{RCPT TO} kommen muss, ist eine Regel darüber, welche \emph{Folgen} von Zeichenketten gültig sind. Wie man solche Regeln knapp und präzise aufschreibt, ist das Thema der nächsten Kapitel.
+\end{hinweis}
+
+% =====================================================================
+\vspace{1mm}
+\textbf{4. Die Begriffe der Informatik}
+
+\begin{merke}[Formale Sprachen]\small
+Ein \textbf{Alphabet} $A$ ist eine endliche, nichtleere Menge von \textbf{Zeichen} (Symbolen, Token).\\
+Eine \textbf{Zeichenkette} ist eine endliche, eventuell leere Folge von Zeichen aus $A$. Das leere Wort ist $\varepsilon$, die \textbf{Länge} $|k|$ ist die Anzahl der enthaltenen Zeichen.\\
+Die \textbf{Wortmenge} $A^{*}$ ist die Menge \underline{aller} Zeichenketten über $A$.\\
+Eine \textbf{formale Sprache} $L$ ist eine eindeutig festgelegte Teilmenge von $A^{*}$.
+\end{merke}
+
+\begin{minipage}[t]{0.60\linewidth}\vspace{0pt}
+\begin{aufgabe}{5}
+Gegeben ist $A = \{$\code{"sin"}, \code{"cos"}, \code{"sqrt"}, \code{"("}, \code{")"}, \code{"x"}, \code{"+"}$\}$.\\[1mm]
+\textbf{a)} Bestimmen Sie $|k|$ für $k =$ \code{sin(x)}. Warum erhält man über dem Alphabet der einzelnen Buchstaben einen anderen Wert?\\
+\textbf{b)} Welche Zeichenketten lassen sich über $A$ bilden?\newline
+(i) \code{sin cos}\quad (ii) \code{tan(x)}\quad (iii) \code{sqrt(x+x)}\quad (iv) \code{(sin(x))\textasciicircum 2}\\
+\textbf{c)} Wie viele Zeichenketten der Länge 2 gibt es über $A$? Wie viele Elemente hat $A^{*}$?\\
+\textbf{d)} \code{sin cos} liegt in $A^{*}$, ist aber kein gültiger Term. Was folgt daraus für das Verhältnis von $A^{*}$ und der Sprache der korrekten Terme?
+\end{aufgabe}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.36\linewidth}\vspace{0pt}
+\begin{center}
+\begin{tikzpicture}[font=\scriptsize]
+\draw[fill=black!4] (0,0) ellipse (2.6cm and 1.9cm);
+\node at (0,1.45) {$A^{*}$ -- alles Bildbare};
+\draw[fill=black!14] (0,-0.35) ellipse (1.5cm and 1.0cm);
+\node[align=center] at (0,-0.35) {$L$\\ \emph{gültige Terme}};
+\node[gray!60!black] at (1.75,0.45) {\code{sin cos}};
+\end{tikzpicture}
+\end{center}
+\end{minipage}
+
+\lsgzeilen{4}{a) $|k| = 4$, denn \code{sin}, \code{(}, \code{x}, \code{)} sind je \emph{ein} Zeichen des Alphabets. Über dem Buchstaben-Alphabet ist $|k| = 6$. Was als ein Zeichen zählt, legt allein das Alphabet fest.\par
+b) (i) ja \quad (ii) nein (\code{tan} $\notin A$) \quad (iii) ja \quad (iv) nein (\code{\textasciicircum} und \code{2} $\notin A$)\par
+c) $7^{2} = 49$ Zeichenketten der Länge 2; $A^{*}$ enthält unendlich viele Zeichenketten.\par
+d) Die Sprache der korrekten Terme ist eine \emph{echte Teilmenge} von $A^{*}$: Bildbarkeit über dem Alphabet genügt nicht, es braucht zusätzlich Syntaxregeln, die die gültigen Zeichenketten festlegen.}
+
+% =====================================================================
+\vspace{1mm}
+\vspace{2mm}
+\textbf{5. Transfer: Farben als formale Sprache}
+
+\begin{minipage}[t]{0.78\linewidth}\vspace{0pt}
+\begin{aufgabe}{6}
+\textbf{a)} Geben Sie das Alphabet $A_{\text{Hex}}$ an, über dem Farbcodes wie \code{\#9900BB} gebildet werden.\\
+\textbf{b)} Beschreiben Sie Syntax \emph{und} Semantik von \code{\#9900BB}.\\
+\textbf{c)} Nennen Sie zwei Zeichenketten aus $A_{\text{Hex}}^{*}$, die \underline{nicht} zur Sprache der Farbcodes gehören.\\
+\textbf{d)} Begründen Sie, warum führende Nullen geschrieben werden (\code{\#0000FF} statt \code{\#00FF}). (mündlich)
+\end{aufgabe}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.18\linewidth}\vspace{0pt}
+\begin{center}
+\begin{tikzpicture}
+\fill[fill={rgb,255:red,153;green,0;blue,187}] (0,0) rectangle (1.9,1.0);
+\node[anchor=north,font=\scriptsize] at (0.95,-0.1) {\code{\#9900BB}};
+\end{tikzpicture}
+\end{center}
+\end{minipage}
+
+\lsgzeilen{3}{a) $A_{\text{Hex}} = \{$\code{"\#"}, \code{"0"}, \ldots, \code{"9"}, \code{"A"}, \ldots, \code{"F"}$\}$ -- 17 Zeichen.\par
+b) \textbf{Syntax}: ein \code{\#}, gefolgt von genau sechs Hexadezimalziffern. \textbf{Semantik}: je zwei Ziffern geben den Rot-, Grün- und Blauanteil als Zahl von \code{00} bis \code{FF} (0 bis 255) an -- hier R = 153, G = 0, B = 187.\par
+c) z.\,B. \code{\#\#}, \code{9900BB} (ohne \code{\#}), \code{\#9900B} (nur fünf Ziffern) -- bildbar, aber nicht Teil der Sprache.\par
+d) Die Bedeutung hängt hier an der \emph{Position}. Nur bei fester Länge ist die Zerlegung in drei Paare eindeutig; \code{\#00FF} ließe offen, welche Ziffern zu welchem Farbkanal gehören. Feste Stellenzahl sichert die eindeutige Semantik.}
+
+% =====================================================================
+%\vspace{1mm}
+%\begin{aufgabe}[Ausblick]{9}
+%Die Sprache der Farbcodes aus Aufgabe 8 hat endlich viele Elemente -- berechnen Sie, wie viele. Die Sprache der korrekten Terme aus Aufgabe 7 dagegen ist unendlich groß; man kann sie also nicht durch Aufzählen festlegen.\\
+%Überlegen Sie: Wie könnte man eine \emph{unendliche} Sprache trotzdem vollständig und eindeutig beschreiben?
+%\end{aufgabe}
+%\lsgzeilen{4}{$16^{6} = 16\,777\,216$ Farbcodes (sechs Stellen mit je 16 Möglichkeiten).\par
+%Idee: nicht die Zeichenketten aufzählen, sondern \emph{endlich viele Regeln} angeben, nach denen sich jede gültige Zeichenkette Schritt für Schritt aufbauen lässt -- z.\,B. „ein Term ist \code{x}, oder \code{sin(} Term \code{)}, oder Term \code{+} Term“. Weil eine Regel sich selbst wieder verwenden darf, entstehen aus wenigen Regeln unendlich viele gültige Zeichenketten.}
+
+% =====================================================================
+\vspace{1mm}
+\begin{merke}[Zusammenfassung]\small
+\begin{itemize}\itemsep1pt
+\item Sprachen bestehen aus \textbf{Zeichen} (ohne eigene Bedeutung), die zu \textbf{Token} und Zeichenketten zusammengesetzt werden.
+\item Die \textbf{Syntax} regelt den Aufbau, die \textbf{Semantik} die Bedeutung. Syntaktisch korrekt heißt \underline{nicht} sinnvoll.
+\item Natürliche Sprachen dürfen mehrdeutig sein -- Menschen nutzen den Kontext. Künstliche Sprachen werden so gebaut, dass keine Mehrdeutigkeit auftritt.
+\item Eine \textbf{formale Sprache} ist eine eindeutig festgelegte Teilmenge der Wortmenge $A^{*}$ über einem Alphabet $A$.
+\end{itemize}
+\end{merke}
+
+\begin{hinweis}\small
+\textbf{Ausblick:} Bisher haben wir Sprachen beschrieben, indem wir Beispiele aufgezählt haben. Bei unendlich vielen gültigen Zeichenketten geht das nicht mehr. Im nächsten Kapitel erzeugen wir alle gültigen Zeichenketten mit endlich vielen \emph{Regeln} -- und lernen anschließend eine kompakte Notation dafür kennen.
+\end{hinweis}
+
+%\vspace{2mm}
+%\begin{nurab}
+%\textbf{Hausaufgabe:} Buch S.\,12/13, Aufgaben 1, 3 und 8.
+%\end{nurab}
+%\begin{nurlsg}
+%{\small\color{lsgrot}\textbf{Hausaufgabe:} Buch S.\,12/13, Aufgaben 1, 3 und 8 -- ergänzen bzw.\ vertiefen Aufgabe 2, 3 und 7 dieses Blattes.\par}
+%\end{nurlsg}
+
+\end{document}
