@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1.2 Formale Sprachen | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Formale Sprachen, Informatik 13: Alphabet, Wort, Länge, leeres Wort, Wortmenge A* und formale Sprache als Teilmenge – mit Alphabet-Tastatur, Wortmengen-Zähler, Sprach-Prüfer, Mengenbild und Smiley-Regelwerk.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <link rel="stylesheet" href="formale-sprachen.css">
+    <script defer src="formale-sprachen.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🔗</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="../../informatik.html#jahrgang-13" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 1.2</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#tastatur">⌨️ Nur diese Tasten</a></li>
+            <li><a href="#bausteine">📝 Alphabet und Wort</a></li>
+            <li><a href="#zaehlen">🔢 Wie viele Wörter?</a></li>
+            <li><a href="#sprache">📝 Formale Sprache</a></li>
+            <li><a href="#pruefer">🔍 Sprach-Prüfer</a></li>
+            <li><a href="#alltag">✏️ Sprachen im Alltag</a></li>
+            <li><a href="#smileys">🛠️ Smiley-Regelwerk</a></li>
+            <li><a href="#nachdenken">💡 Nachdenken</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Formale Sprachen</div>
+            <ul class="sidebar-menu">
+                <li><a href="../../informatik.html#jahrgang-13">Übersicht Klasse 13</a></li>
+                <li><a href="1-1-syntax-semantik.html">1.1 Syntax und Semantik</a></li>
+                <li><a href="1-2-formale-sprachen.html">1.2 Formale Sprachen</a></li>
+                <li><a href="arbeitsblaetter/ab-1-3-syntaxdiagramme.pdf">1.3 Syntaxdiagramme (Blatt)</a></li>
+                <li><a href="arbeitsblaetter/ab-1-4-ebnf.pdf">1.4 EBNF (Blatt)</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero fs-hero">
+                <h1 class="hero-title">1.2 Formale Sprachen</h1>
+                <p class="hero-subtitle">Formale Sprachen · Informatik 13 · 1–2 Stunden</p>
+                <span class="fs-kompetenz">Du kannst: Alphabet, Wort, Länge, leeres Wort und Wortmenge erklären und entscheiden, ob ein Wort zu einer formalen Sprache gehört.</span>
+                <div class="fs-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-1-2-formale-sprachen.pdf">📝 Arbeitsblatt 1.2 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-1-2-formale-sprachen.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#tastatur">⌨️ Einstieg</a><a class="p-note" href="#bausteine">📝 Festhalten</a><a class="p-investigate" href="#zaehlen">🔢 Entdecken</a><a class="p-note" href="#sprache">📝 Festhalten</a><a class="p-investigate" href="#pruefer">🔍 Üben</a><a class="p-modify" href="#alltag">✏️ Anwenden</a><a class="p-make" href="#smileys">🛠️ Selbst bauen</a><a class="p-idee" href="#nachdenken">💡 Nachdenken</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="tastatur" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">⌨️</span><h2>Einstieg<small>Eine Tastatur mit nur wenigen Tasten</small></h2></div>
+                <div class="phase-body">
+                    <p>In 1.1 hast du gesehen: Um die Syntax einer Sprache festzulegen, braucht man genaue Regeln. Der erste Schritt ist einfach: Man legt fest, welche <strong>Zeichen</strong> überhaupt erlaubt sind. Stell dir eine Tastatur vor, die nur diese Zeichen hat.</p>
+                    <div class="werk" data-tastatur>
+                        <h4>Alphabet-Tastatur</h4>
+                        <div class="knopfzeile" role="group" aria-label="Alphabet wählen">
+                            <button type="button" class="knopf" data-alphabet="A1">A₁ = {0, 1}</button>
+                            <button type="button" class="knopf" data-alphabet="A2">A₂ = {a, b, …, z}</button>
+                            <button type="button" class="knopf" data-alphabet="A3">A₃ = {:, ;, -, ), (, D, P, *}</button>
+                        </div>
+                        <div class="tasten" aria-label="Tasten des Alphabets"></div>
+                        <div class="wortanzeige"><div class="zk" aria-live="polite"></div><span class="laenge"></span></div>
+                        <p class="hinweiszeile"><label>Oder tippe hier eine beliebige Zeichenkette: <input type="text" class="mono" autocomplete="off" spellcheck="false" maxlength="24"></label></p>
+                        <div class="ueber" aria-live="polite"></div>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Schreibe mit jeder Tastatur drei Wörter unterschiedlicher Länge und notiere sie mit ihrer Länge auf dem Blatt.</li>
+                        <li>Kannst du <code>ab</code> mit A₁ schreiben? Und <code>:-)</code> mit A₂? Probiere es im Eingabefeld aus.</li>
+                        <li>Lösche alles. Was zeigt die Anzeige jetzt, und über welchen Alphabeten ist das ein Wort? Erkläre.</li>
+                    </ol>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-2-formale-sprachen.pdf">📝 Blatt 1.2 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="bausteine" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Alphabet, Wort und Länge</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Die Bausteine</h4>
+                        <ul>
+                            <li>Ein <strong>Alphabet</strong> A ist eine <strong>endliche</strong>, nichtleere Menge von <strong>Zeichen</strong>.</li>
+                            <li>Ein <strong>Wort</strong> (eine <strong>Zeichenkette</strong>) über A ist eine endliche Folge von Zeichen aus A.</li>
+                            <li>Das <strong>leere Wort ε</strong> enthält kein Zeichen. Es ist ein Wort über <em>jedem</em> Alphabet, aber kein Zeichen des Alphabets: ε ∉ A.</li>
+                            <li>Die <strong>Länge</strong> |w| ist die Anzahl der Zeichen von w: |<code>0110</code>| = 4, |ε| = 0.</li>
+                        </ul>
+                    </div>
+                    <div class="stolper"><strong>Stolperstein:</strong> Das leere Wort ist nicht dasselbe wie ein Leerzeichen. Ein Leerzeichen ist ein Zeichen (Länge 1) und müsste dazu im Alphabet stehen. ε hat die Länge 0.</div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-2-formale-sprachen.pdf">📝 Blatt 1.2 · Merkkasten und Aufgabe 1b bis d</a></p>
+                </div>
+            </section>
+
+            <section id="zaehlen" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🔢</span><h2>Entdecken<small>Aufgabe 2: Wie viele Wörter gibt es?</small></h2></div>
+                <div class="phase-body">
+                    <p>Schätze zuerst, wie viele Wörter es mit der gewählten Länge gibt. Dann lass alle erzeugen. Die Tabelle füllt sich mit deinen Ergebnissen.</p>
+                    <div class="werk" data-wortmenge>
+                        <h4>Wortmengen-Zähler</h4>
+                        <div class="knopfzeile">
+                            <label>Alphabet
+                                <select data-wm-alphabet>
+                                    <option value="A1">A₁ = {0, 1}</option>
+                                    <option value="ABC">{a, b, c}</option>
+                                    <option value="A3">A₃ (8 Zeichen)</option>
+                                </select></label>
+                            <label>Länge n
+                                <select data-wm-n>
+                                    <option>0</option><option selected>1</option><option>2</option><option>3</option><option>4</option>
+                                </select></label>
+                            <label>Deine Schätzung <input type="number" min="0" data-wm-tipp style="width:6.5rem"></label>
+                            <button type="button" class="knopf voll" data-wm-los>Alle Wörter erzeugen</button>
+                        </div>
+                        <table class="wm-tab"></table>
+                        <p class="wm-rueck" aria-live="polite"></p>
+                        <div class="wm-liste"></div>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Fülle die Tabelle für A₁ von n = 0 bis 3 und übertrage sie aufs Blatt. Wie viele Wörter der Länge 0 gibt es, und welches?</li>
+                        <li>Wie kommst du von der Anzahl für n − 1 auf die für n? Stelle eine Formel für die Anzahl der Wörter der Länge n auf und prüfe sie mit {a, b, c} und A₃.</li>
+                        <li>Wie viele Wörter gibt es <em>insgesamt</em> über A₁, obwohl A₁ nur zwei Zeichen hat?</li>
+                    </ol>
+                    <details class="denk"><summary>Denkanstoß zu b)</summary>
+                        <p>Jedes Wort der Länge n − 1 kann man mit jedem der |A| Zeichen verlängern. Die Anzahl vervielfacht sich also mit jeder Stelle um |A|. Wer nachgerechnet hat, sieht: Für n = 4 über A₃ reicht die Liste schon nicht mehr zum Durchlesen.</p>
+                    </details>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-2-formale-sprachen.pdf">📝 Blatt 1.2 · Aufgabe 2</a></p>
+                </div>
+            </section>
+
+            <section id="sprache" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Wortmenge und formale Sprache</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Wortmenge</h4>
+                        <p>Die <strong>Wortmenge A*</strong> ist die Menge <strong>aller</strong> Wörter über A, einschließlich ε. Obwohl A endlich ist, ist A* immer <strong>unendlich</strong>:<br>
+                        A₁* = {ε, <code>0</code>, <code>1</code>, <code>00</code>, <code>01</code>, <code>10</code>, <code>11</code>, <code>000</code>, …}</p>
+                    </div>
+                    <div class="konzept">
+                        <h4>Formale Sprache</h4>
+                        <p>Eine <strong>formale Sprache</strong> L über A ist eine <strong>eindeutig festgelegte</strong> Menge von Wörtern über A, also eine Teilmenge: <strong>L ⊆ A*</strong>. Eindeutig heißt: Für <em>jedes</em> Wort aus A* steht fest, ob es zu L gehört oder nicht.</p>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-2-formale-sprachen.pdf">📝 Blatt 1.2 · Merkkasten Seite 1</a></p>
+                </div>
+            </section>
+
+            <section id="pruefer" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Üben<small>Aufgabe 3: Drei Sprachen über A₂</small></h2></div>
+                <div class="phase-body">
+                    <p>Über A₂ = {a, …, z} legen wir drei Sprachen fest:</p>
+                    <ul>
+                        <li>L₁ = alle Wörter aus A₂* mit Länge kleiner gleich 4</li>
+                        <li>L₂ = alle Wörter aus A₂*, die mit <code>b</code> beginnen</li>
+                        <li>L₃ = alle Wörter aus A₂*, die das Teilwort <code>inf</code> enthalten</li>
+                    </ul>
+                    <div class="werk" data-sprachpruefer>
+                        <h4>Sprach-Prüfer</h4>
+                        <p><label>Wort über A₂: <input type="text" class="mono" autocomplete="off" spellcheck="false" maxlength="30" aria-describedby="sp-hinweis"></label></p>
+                        <p class="hinweiszeile" id="sp-hinweis">Ein leeres Eingabefeld steht für das leere Wort ε.</p>
+                        <div class="zk"></div>
+                        <p class="sp-meldung" aria-live="polite"></p>
+                        <div class="pruef-grid" aria-live="polite"></div>
+                        <h4>Suchaufträge</h4>
+                        <ul class="ziele">
+                            <li>ein Wort, das <strong>nur</strong> zu L₁ gehört</li>
+                            <li>ein Wort in L₁ und L₂, aber nicht in L₃</li>
+                            <li>ein Wort in L₂ und L₃, aber nicht in L₁</li>
+                            <li>ein Wort, das zu <strong>allen drei</strong> Sprachen gehört</li>
+                            <li>ein Wort, das zu <strong>keiner</strong> der drei gehört</li>
+                            <li>das <strong>kürzeste</strong> Wort überhaupt, das zu L₁ gehört</li>
+                        </ul>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Kreuze auf dem Blatt an, zu welchen Sprachen <code>baum</code>, <code>informatik</code>, ε, <code>inf</code> und <code>binfo</code> gehören. Kontrolliere mit dem Prüfer.</li>
+                        <li>Erfülle alle Suchaufträge. Welcher war am schwierigsten? Gibt es beim Auftrag „alle drei“ mehrere Lösungen?</li>
+                        <li>Welche der drei Sprachen sind endlich, welche unendlich? Begründe.</li>
+                    </ol>
+                    <details class="denk"><summary>Denkanstoß zu c)</summary>
+                        <p>In L₂ und L₃ kann man jedes Wort hinten beliebig verlängern und bleibt in der Sprache. L₁ hat nur Wörter bis zur Länge 4. Mit dem Wortmengen-Zähler kannst du sogar ausrechnen, wie viele es sind: 1 + 26 + 26² + 26³ + 26⁴.</p>
+                    </details>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-2-formale-sprachen.pdf">📝 Blatt 1.2 · Aufgabe 3</a></p>
+                </div>
+            </section>
+
+            <section id="alltag" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">✏️</span><h2>Anwenden<small>Aufgabe 4: Formale Sprachen im Alltag</small></h2></div>
+                <div class="phase-body">
+                    <p>Jede Zeichenkette landet in genau einem von drei Bereichen: Sie gehört zur Sprache L, sie ist zwar ein Wort über dem Alphabet, gehört aber nicht zu L, oder sie enthält Zeichen, die im Alphabet gar nicht vorkommen. Trage Zeichenketten ein und beobachte, wo sie landen.</p>
+                    <div class="werk" data-mengenbild>
+                        <h4>Wo liegt das Wort?</h4>
+                        <div class="knopfzeile">
+                            <label>Sprache
+                                <select>
+                                    <option value="plz">Postleitzahlen</option>
+                                    <option value="bin">Binärzahlen ohne führende Null</option>
+                                    <option value="datum">Datum TT.MM.JJJJ</option>
+                                </select></label>
+                        </div>
+                        <div class="mengen">
+                            <svg viewBox="0 0 660 340" role="img" aria-label="Mengenbild: Die Sprache L liegt in der Wortmenge A*, diese liegt in der Menge aller Zeichenketten. Eingetragene Wörter erscheinen als Punkte im passenden Bereich."></svg>
+                            <div>
+                                <p><label>Zeichenkette: <input type="text" class="mono" autocomplete="off" spellcheck="false" maxlength="16"></label>
+                                    <button type="button" class="knopf voll" data-mb-los>eintragen</button></p>
+                                <p class="hinweiszeile">Beispiele zum Anklicken:</p>
+                                <div class="beispiele"></div>
+                                <p class="mb-info" aria-live="polite"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Ergänze auf dem Blatt für jede Sprache Alphabet, ein Wort aus L und ein Wort aus A*, das nicht zu L gehört. Prüfe deine Wörter im Mengenbild.</li>
+                        <li>Trage <code>99999</code> bei den Postleitzahlen und <code>34.07.2026</code> beim Datum ein. Wo landen sie? Was folgt daraus für Syntax und Semantik?</li>
+                        <li>Findest du für jede Sprache eine Zeichenkette in jedem der drei Bereiche?</li>
+                    </ol>
+                    <details class="denk"><summary>Denkanstoß zu b)</summary>
+                        <p>Beide liegen in L: Die Form stimmt. Dass es die Postleitzahl oder den Tag nicht gibt, ist eine Frage der Bedeutung. Eine formale Sprache legt nur die <strong>Syntax</strong> fest.</p>
+                    </details>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-2-formale-sprachen.pdf">📝 Blatt 1.2 · Aufgabe 4</a></p>
+                </div>
+            </section>
+
+            <section id="smileys" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Selbst bauen<small>Aufgabe 5: Welche Wörter sind Smileys?</small></h2></div>
+                <div class="phase-body">
+                    <p>Die Smileys bilden eine Sprache L<sub>Smiley</sub> ⊆ A₃*. Aber welche Wörter gehören dazu? Entscheide zuerst in der Spalte „Du“ nach Gefühl. Dann stelle links Regeln ein, bis sie genau deine Entscheidungen treffen.</p>
+                    <div class="werk" data-smileyregeln>
+                        <h4>Smiley-Regelwerk</h4>
+                        <div class="regelwerk">
+                            <form>
+                                <fieldset><legend>Augen</legend>
+                                    <label><input type="checkbox" name="augen" value=":" checked> <code>:</code></label>
+                                    <label><input type="checkbox" name="augen" value=";"> <code>;</code></label>
+                                    <label><input type="checkbox" name="augen" value="8"> <code>8</code></label>
+                                    <label><input type="checkbox" name="augen" value="="> <code>=</code></label>
+                                </fieldset>
+                                <fieldset><legend>Nase <code>-</code></legend>
+                                    <label><input type="radio" name="nase" value="keine" checked> keine</label>
+                                    <label><input type="radio" name="nase" value="eine"> höchstens eine</label>
+                                    <label><input type="radio" name="nase" value="viele"> beliebig viele</label>
+                                </fieldset>
+                                <fieldset><legend>Mund</legend>
+                                    <label><input type="checkbox" name="mund" value=")" checked> <code>)</code></label>
+                                    <label><input type="checkbox" name="mund" value="("> <code>(</code></label>
+                                    <label><input type="checkbox" name="mund" value="D"> <code>D</code></label>
+                                    <label><input type="checkbox" name="mund" value="P"> <code>P</code></label>
+                                    <label><input type="checkbox" name="mund" value="*"> <code>*</code></label>
+                                    <label><input type="checkbox" name="mund" value="|"> <code>|</code></label>
+                                </fieldset>
+                                <fieldset><legend>Außerdem</legend>
+                                    <label><input type="checkbox" name="spiegel"> auch gespiegelt (Mund zuerst)</label>
+                                    <label><input type="checkbox" name="folge"> mehrere Smileys hintereinander</label>
+                                </fieldset>
+                                <button type="button" class="knopf" data-sr-blatt>Regeln aus der Lösung von Blatt 1.2</button>
+                            </form>
+                            <div>
+                                <table class="smiley-tab">
+                                    <thead><tr><th>Wort</th><th>Du: Smiley?</th><th>nach den Regeln</th></tr></thead>
+                                    <tbody></tbody>
+                                </table>
+                                <p class="sr-stand punkte" aria-live="polite"></p>
+                                <p><label>Eigenes Wort testen: <input type="text" class="mono" data-sr-eigen autocomplete="off" spellcheck="false" maxlength="16"></label></p>
+                                <p class="sr-eigen" aria-live="polite"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Entscheide für alle Wörter in der Spalte „Du“. Übertrage deine Entscheidung auf das Blatt (5a).</li>
+                        <li>Stelle die Regeln so ein, dass keine Zeile mehr gelb ist. Beschreibe deine Regeln dann in Worten auf dem Blatt (5b).</li>
+                        <li>Vergleiche mit deinem Nachbarn: Habt ihr dieselben Regeln eingestellt? Welche Wörter entscheiden eure Regeln verschieden (5c)?</li>
+                    </ol>
+                    <div class="tipp"><strong>Erkenntnis:</strong> Solange die Regeln nicht feststehen, ist nicht klar, welche Sprache gemeint ist. Jede Einstellung im Regelwerk legt eine <em>andere</em> Sprache fest. Erst genaue Regeln machen eine Sprache eindeutig.</div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-2-formale-sprachen.pdf">📝 Blatt 1.2 · Aufgabe 5 und Erkenntnis</a></p>
+                </div>
+            </section>
+
+            <section id="nachdenken" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Für Schnelle: besprecht mündlich</small></h2></div>
+                <div class="phase-body">
+                    <p>Überlegt zu zweit. Die Hinweise sind zum Nachlesen <em>nach</em> dem Gespräch.</p>
+                    <div class="idee"><strong>Ist die leere Menge { } eine formale Sprache? Und ist { ε } dasselbe?</strong>
+                        <details class="denk"><summary>Hinweis</summary>
+                            <p>Ja, { } ist eine Sprache: eine Teilmenge von A*, zu der kein einziges Wort gehört. { ε } ist etwas anderes: Diese Sprache enthält genau ein Wort, das leere. Im Smiley-Regelwerk erhältst du { }, wenn du alle Augen abwählst.</p>
+                        </details>
+                    </div>
+                    <div class="idee"><strong>Ist das Alphabet A selbst eine Sprache über A? Und A*?</strong>
+                        <details class="denk"><summary>Hinweis</summary>
+                            <p>Beides ja. A enthält genau die Wörter der Länge 1 (jedes Zeichen ist auch ein Wort aus einem Zeichen). A* ist die größte Sprache über A: Sie enthält alle Wörter.</p>
+                        </details>
+                    </div>
+                    <div class="idee"><strong>Warum verlangt man, dass ein Alphabet endlich ist?</strong>
+                        <details class="denk"><summary>Hinweis</summary>
+                            <p>Ein Rechner muss jedes Zeichen darstellen können, z.&nbsp;B. als Binärcode fester Länge. Das geht nur mit endlich vielen Zeichen. Auch Unicode ist riesig, aber endlich.</p>
+                        </details>
+                    </div>
+                    <div class="idee"><strong>Ist Deutsch eine formale Sprache?</strong>
+                        <details class="denk"><summary>Hinweis</summary>
+                            <p>Nein. Es gibt kein vollständiges, eindeutiges Regelwerk, das für jeden Satz entscheidet, ob er dazugehört. Menschen urteilen verschieden, und die Sprache ändert sich ständig. Genau deshalb sind Programmiersprachen formale Sprachen.</p>
+                        </details>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🛤️ 1.3 Syntaxdiagramme</h4>
+                            <p>Das Smiley-Regelwerk hatte nur wenige Schalter. Mit Syntaxdiagrammen kann man beliebige Regeln zeichnen: Augen, dann eine optionale Nase, dann ein Mund. Du liest sie wie ein Gleisnetz.</p>
+                            <a class="btn btn-outline btn-sm" href="arbeitsblaetter/ab-1-3-syntaxdiagramme.pdf">Arbeitsblatt 1.3 (PDF)</a>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>📜 1.4 Die EBNF</h4>
+                            <p>Dieselben Regeln lassen sich auch als Text schreiben, so wie Compiler sie brauchen: <code>Smiley = Augen ["-"] Mund.</code></p>
+                            <a class="btn btn-outline btn-sm" href="arbeitsblaetter/ab-1-4-ebnf.pdf">Arbeitsblatt 1.4 (PDF)</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="1-1-syntax-semantik.html">← 1.1 Syntax und Semantik</a>
+                <a class="btn btn-primary" href="arbeitsblaetter/ab-1-3-syntaxdiagramme.pdf">Weiter: 1.3 Syntaxdiagramme (Blatt) →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-1-2-formale-sprachen-lsg.pdf">Lösung Blatt 1.2 (PDF)</a></p>
+                    <div class="tab-scroll">
+                        <table>
+                            <tr><th>Aufgabe</th><th>Lösung / Hinweis</th></tr>
+                            <tr><td>1c</td><td>ε ist das einzige Wort über jedem Alphabet. Die Tastatur zeigt es beim leeren Wort: alle drei Alphabete ✓.</td></tr>
+                            <tr><td>2</td><td>Anzahl der Wörter der Länge n: |A|ⁿ (A₁: 1, 2, 4, 8; A₃: 1, 8, 64, 512). A* ist unendlich.</td></tr>
+                            <tr><td>3</td><td>Nur L₁ ist endlich (1 + 26 + 676 + 17 576 + 456 976 = 475 255 Wörter). Einziges Wort in allen drei Sprachen: <code>binf</code>. Kürzestes Wort in L₁: ε.</td></tr>
+                            <tr><td>4</td><td>Das Mengenbild unterscheidet drei Bereiche: nicht über A, in A* \ L, in L. <code>99999</code> und <code>34.07.2026</code> liegen in L (Semantikfehler); die Seite weist darauf hin, dass strengere Regeln sie zu Syntaxfehlern machen würden (Verbindung zur Uhrzeit-Grammatik auf Blatt 1.4).</td></tr>
+                            <tr><td>5</td><td>Der Knopf „Regeln aus der Lösung“ stellt die Festlegung von Blatt 1.3 ein: Augen <code>:</code> <code>;</code>, höchstens eine Nase, Mund <code>)</code> <code>(</code> <code>D</code> <code>P</code> <code>*</code>, keine Spiegelung, einzelner Smiley. Andere Einstellungen sind ausdrücklich erlaubt: Die Pointe ist, dass jede Einstellung eine andere, aber eindeutige Sprache ergibt.</td></tr>
+                        </table>
+                    </div>
+                    <p class="mt-2"><strong>Übergang zu 1.3:</strong> Die Regler des Smiley-Regelwerks entsprechen genau den Bausteinen der Syntaxdiagramme (Alternative bei Augen und Mund, Option bzw. Wiederholung bei der Nase, Wiederholung bei „mehrere Smileys“). Das Regelwerk kann aber nur diese eine Sprachfamilie beschreiben; das motiviert eine allgemeine Notation. Alle Werkzeuge laufen im Browser, es wird nichts gespeichert.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum &amp; Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

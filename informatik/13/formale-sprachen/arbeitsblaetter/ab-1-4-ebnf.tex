@@ -1,0 +1,144 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+% Blatt:   tectonic ab-1-4-ebnf.tex
+% Lösung:  tectonic ab-1-4-ebnf-lsg.tex
+% Progression: EBNF-Zeichen aus dem Vergleich mit den bekannten Smiley-Diagrammen erschließen
+%              -> Ableitung als Folge von Regelanwendungen -> Diagramm in EBNF übersetzen (Euro)
+%              -> Regeln lesen, prüfen, ändern (Molkerei) -> selbst bauen (Uhrzeit, Dateiname)
+\newcommand{\zeile}{\rule[-1.8mm]{0pt}{6.4mm}}
+\newcommand{\ab}[1]{$\stackrel{\mbox{\scriptsize #1}}{\Longrightarrow}$}
+\begin{document}
+\abtitel{1.4}{Die EBNF}
+
+Die \textbf{erweiterte Backus-Naur-Form (EBNF)} schreibt Regeln als Text. Die Smiley-Grammatik aus 1.3 in beiden Formen:
+
+\vspace{2mm}
+\noindent\sdSmileyfolge\hfill\sdSmiley\hfill\sdAugen\hfill\sdMitte\hfill\sdMund\par\vspace{-15mm}
+\hspace*{0.5mm}\begin{tabular}{@{}l@{\ \ }l@{}}
+R1 & \code{Smileyfolge = Smiley \{Smiley\}.}\\
+R2 & \code{Smiley = Augen Mitte Mund.}\\
+R3 & \code{Augen = ":" | ";".}\\
+R4 & \code{Mitte = ["-"].}\\
+R5 & \code{Mund = ")" | "(" | "D" | "P" | "*".}
+\end{tabular}
+\vspace{1mm}
+
+
+\begin{merke}[Die EBNF \normalfont(vergleiche jede Regel mit ihrem Diagramm und ergänze)]
+\small\renewcommand{\arraystretch}{1.05}
+\begin{tabularx}{\linewidth}{@{}p{2.1cm}X|p{1.9cm}X@{}}
+\code{Name = … .}\zeile & \lsgoder{\lsgfarbe Regel für ein Nichtterminal; \code{.} = Ende}{} & \code{"D"}\zeile & \lsgoder{\lsgfarbe Terminal (Zeichen des Alphabets)}{}\\\hline
+\code{Mund}\zeile & \lsgoder{\lsgfarbe Nichtterminal (Name einer Regel)}{} & \code{A B}\zeile & \lsgoder{\lsgfarbe Aneinanderreihung: erst A, dann B}{}\\\hline
+\code{A | B}\zeile & \lsgoder{\lsgfarbe Alternative: A oder B}{} & \code{[A]}\zeile & \lsgoder{\lsgfarbe Option: A einmal oder keinmal}{}\\\hline
+\code{\{A\}}\zeile & \lsgoder{\lsgfarbe Wiederholung: A 0-mal oder öfter}{} & \code{(A | B) C}\zeile & Klammern: \code{("a"|"b")"c"} $\to$ \lsg[1.2cm]{\code{ac}, \code{bc}}\\
+\end{tabularx}
+\end{merke}
+
+\begin{aufgabe}[Zeichen der EBNF]{1}
+\textbf{a)} Warum heißt R1 \code{Smiley \{Smiley\}} und nicht nur \code{\{Smiley\}}?\\[0.6mm]
+\lsg[\linewidth]{\code{\{\dots\}} erlaubt auch \emph{keinmal}: Dann wäre \eps{} eine Smileyfolge. Verlangt ist mindestens ein Smiley.}\\[1mm]
+\textbf{b)} Schreibe R4 ohne eckige Klammern: \code{Mitte =} \lsg[3.2cm]{\eps\ \code{| "-".}}
+\end{aufgabe}
+
+\begin{aufgabe}[Ableitung]{2}
+Je Schritt wird \textbf{ein} Nichtterminal durch die rechte Seite seiner Regel ersetzt. Vervollständige für \code{;D:-(}:\\[0.5mm]
+\begin{minipage}[t]{0.47\linewidth}
+\vspace{0pt}
+\renewcommand{\arraystretch}{0.92}
+\begin{tabular}{@{}l@{\ }l@{}}
+& \code{Smileyfolge}\\
+\ab{R1} & \code{Smiley Smiley}\\
+\ab{R2} & \code{Augen Mitte Mund Smiley}\\
+\ab{R3} & \code{";" Mitte Mund Smiley}\\
+\ab{R4} & \code{";" Mund Smiley}\qquad {\small (Mitte $\to$ \eps)}\\
+\ab{R5} & \code{";" "D" Smiley}\\
+\end{tabular}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.5\linewidth}
+\vspace{0pt}
+\vspace{2mm}\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}l@{\ }l@{}}
+\ab{\lsg[0.6cm]{R2}} & \lsg[6.2cm]{\code{";" "D" Augen Mitte Mund}}\\
+\ab{\lsg[0.6cm]{R3}} & \lsg[6.2cm]{\code{";" "D" ":" Mitte Mund}}\\
+\ab{\lsg[0.6cm]{R4}} & \lsg[6.2cm]{\code{";" "D" ":" "-" Mund}}\\
+\ab{\lsg[0.6cm]{R5}} & \lsg[6.2cm]{\code{";" "D" ":" "-" "("}}\\
+\end{tabular}
+\end{minipage}
+\end{aufgabe}
+
+\begin{aufgabe}[Vom Diagramm zur EBNF: Geldbeträge]{3}
+Beträge wie \code{12€}, \code{5,15€}, \code{0,79€}, aber nicht \code{02,99€}. Gegeben: \code{ZifferOhneNull = "1" | … | "9".}\\[0.5mm]
+\begin{tikzpicture}[sd]
+  % Geldbetrag
+  \node[sdname] at (0,3.3) {Geldbetrag}; \coordinate (g) at (0,0);
+  \sdnext{g1}{g}{nt}{Zahl}
+  \path (g1-o) ++(4,-5.5) node[te,anchor=west] (g2) {,};
+  \draw[sdl,->] (g2.east) -- ++(4,0) node[nt,anchor=west] (g3) {Nachkommastellen};
+  \coordinate (g4x) at ($(g3.east)+(3.5,0)$); \coordinate (g4) at (g4x |- g1-o);
+  \draw[sdl,->] (g1-o) |- (g2.west); \draw[sdl,->] (g3.east) -| (g4); \draw[sdl] (g1-o) -- (g4);
+  \sdnext{g5}{g4}{te}{€}\sdende{g5-o}
+  % Zahl
+  \node[sdname] at (0,-11.2) {Zahl}; \coordinate (z) at (0,-14.5);
+  \draw[sdl,->] (z) -- ++(4,0) node[te,anchor=west] (z0) {0};
+  \path (z) ++(4,-5.5) node[nt,anchor=west] (z1) {ZifferOhneNull};
+  \draw[sdl,->] (z) |- (z1.west); \coordinate (z1-o) at (z1.east);
+  \sdwdhn{z2}{z1-o}{nt}{Ziffer}
+  \coordinate (zjx) at ($(z2-o)+(3.5,0)$); \coordinate (zj) at (zjx |- z);
+  \draw[sdl] (z0.east) -- (zj); \draw[sdl,->] (z2-o) -| (zj); \sdende{zj}
+  % Nachkommastellen
+  \node[sdname] at (62,-11.2) {Nachkommastellen}; \coordinate (n) at (62,-14.5);
+  \sdnext{n1}{n}{nt}{Ziffer}\sdnext{n2}{n1-o}{nt}{Ziffer}\sdende{n2-o}
+  % Ziffer
+  \node[sdname] at (120,3.3) {Ziffer}; \coordinate (d) at (120,0);
+  \sdalt{d}{d}{31}{5.5}{te/0, nt/ZifferOhneNull}\sdende{d-o}
+\end{tikzpicture}\\[1mm]
+Gib die Grammatik in EBNF an.\\[0.5mm]
+{\small\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{@{}r@{\ }l@{\quad}r@{\ }l@{}}
+\code{Geldbetrag =} & \lsg[6.9cm]{\code{Zahl ["," Nachkommastellen] "€".}} & \code{Nachkommastellen =} & \lsg[4.1cm]{\code{Ziffer Ziffer.}}\\
+\code{Zahl =} & \lsg[6.9cm]{\code{"0" | ZifferOhneNull \{Ziffer\}.}} & \code{Ziffer =} & \lsg[4.1cm]{\code{"0" | ZifferOhneNull.}}\\
+\end{tabular}}
+\end{aufgabe}
+
+\newpage
+\begin{aufgabe}[Regeln lesen und ändern: Molkereinummern]{4}
+Ein Code auf Milchprodukten gibt die Molkerei an (Leerzeichen nur zur Lesbarkeit):\\[0.5mm]
+\begin{tabular}{@{}l@{\ \ }l@{}}
+R1 & \code{Molkereinummer = "DE" Bundesland Betriebsnummer [Europa].}\\
+R2 & \code{Bundesland = "BB" | "BE" | "BW" | "BY" | … | "HH" | … | "RP" | … | "TH".}\ \ {\small(16 Länder)}\\
+R3 & \code{Betriebsnummer = Ziffer Ziffer Ziffer | Ziffer Ziffer Ziffer Ziffer Ziffer.}\\
+R4 & \code{Europa = "EG" | "EU".}\\
+R5 & \code{Ziffer = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9".}
+\end{tabular}\\[1.5mm]
+\textbf{a)} Gültig? Begründe bei ungültigen Codes.\\[0.8mm]
+\code{DE BY 13049 EG} \lsg[1.6cm]{gültig}\hfill \code{DE HH 2514 EU} \lsg[3cm]{nein: 4 Ziffern}\hfill \code{BY 70123} \lsg[2.8cm]{nein: \code{DE} fehlt}\\[1mm]
+\textbf{b)} Leite \code{DE RP 927} schrittweise ab.
+\lsglinien{2}{\code{Molkereinummer} \ab{R1} \code{"DE" Bundesland Betriebsnummer} \ab{R2} \code{"DE" "RP" Betriebsnummer}\\ \ab{R3} \code{"DE" "RP" Ziffer Ziffer Ziffer} \ab{3$\times$R5} \code{"DE" "RP" "9" "2" "7"}\ \ (ohne \code{Europa})}
+\textbf{c)} In Bayern gibt die erste Ziffer der Betriebsnummer den Regierungsbezirk an: nur \code{1} bis \code{7} (1 Oberbayern, 2 Niederbayern, …). Ändere und ergänze die Regeln.
+\lsglinien{4}{R1 \code{Molkereinummer = "DE" (Bundesland Betriebsnummer | "BY" BetriebsnummerBY) [Europa].}\\
+R2 wie bisher, aber \emph{ohne} \code{"BY"}.\\
+R6 \code{BetriebsnummerBY = Bezirk Ziffer Ziffer | Bezirk Ziffer Ziffer Ziffer Ziffer.}\\
+R7 \code{Bezirk = "1" | "2" | "3" | "4" | "5" | "6" | "7".}}
+\end{aufgabe}
+
+\begin{aufgabe}[Selbst bauen: Uhrzeiten]{5}
+Uhrzeiten haben die Form \code{hh:mm} oder \code{hh:mm:ss}, immer zweistellig, von \code{00:00} bis \code{23:59:59}.\\[1mm]
+\textbf{a)} Drei ungültige Uhrzeiten, die knapp an einer Grenze scheitern: \lsg[5.2cm]{\code{24:00}, \code{19:60}, \code{12:30:75}}\\[1mm]
+\textbf{b)} Gib eine Grammatik in EBNF an. \textit{Tipp:} Welche Ziffern sind an welcher Stelle erlaubt? Die Stunden ab 20 sind ein Sonderfall.
+\lsglinien{4}{\code{Uhrzeit = Stunde ":" Minute [":" Minute].}\quad (Sekunden sind wie Minuten aufgebaut)\\
+\code{Stunde = ("0" | "1") Ziffer | "2" ("0" | "1" | "2" | "3").}\\
+\code{Minute = ("0" | "1" | "2" | "3" | "4" | "5") Ziffer.}\\
+\code{Ziffer = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9".}}
+\end{aufgabe}
+
+\begin{aufgabe}[Selbst bauen: Dateinamen]{6}
+Ein Dateiname beginnt mit einem Buchstaben, danach folgen beliebig viele Buchstaben oder Ziffern, dann genau ein Punkt und eine der Endungen \code{txt}, \code{pdf} oder \code{jpg}.\\[1mm]
+Gib eine Grammatik in EBNF an und teste sie mit \code{brief2.pdf}, \code{2brief.pdf} und \code{brief.png}.
+\lsglinien{2}{\code{Dateiname = Buchstabe \{Buchstabe | Ziffer\} "." ("txt" | "pdf" | "jpg").}\\
+\code{Buchstabe = "a" | … | "z" | "A" | … | "Z".}\qquad \code{Ziffer = "0" | "1" | … | "9".}}
+\end{aufgabe}
+
+\begin{hinweis}
+\small\textbf{Besprecht mündlich:} Welche Regel verhindert in 3) den Betrag \code{02,99€}? Warum reicht es in 4c) nicht, nur R3 zu ändern? Beschreibt \code{Betriebsnummer = Ziffer Ziffer Ziffer [Ziffer Ziffer].} dieselbe Sprache wie R3? Ist \code{"txt"} dasselbe wie \code{"t" "x" "t"}? Warum kann es zu einer Sprache mehrere richtige Grammatiken geben?
+\end{hinweis}
+\end{document}
