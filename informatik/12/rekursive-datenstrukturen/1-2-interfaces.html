@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1.2 Interfaces | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Rekursive Datenstrukturen, Informatik 12: Mit dem Interface DatenElement verwaltet dieselbe Warteschlange Patienten und Taxis. Interface als Vertrag, implements, Trennung von Struktur und Inhalt, Kohäsion und Kopplung.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/include/online-ide-embedded.css">
+    <script type="module" src="https://edu-mrh.de/embed/include/online-ide-embedded.js"></script>
+    <link rel="stylesheet" href="datenstrukturen.css">
+    <script defer src="datenstrukturen.js"></script>
+    <script defer src="ide-coach.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🔗</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="../../informatik.html#jahrgang-12" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 1.2</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#kopie">🚕 Kopieren oder nicht?</a></li>
+            <li><a href="#vertrag">📝 Der Vertrag</a></li>
+            <li><a href="#pruefer">🧩 Vertragsprüfer</a></li>
+            <li><a href="#projekt">✏️ Projekt Taxistand</a></li>
+            <li><a href="#selbst">🛠️ Selbst bauen</a></li>
+            <li><a href="#anders">💡 Es geht auch anders</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Rekursive Datenstrukturen</div>
+            <ul class="sidebar-menu">
+                <li><a href="../../informatik.html#jahrgang-12">Übersicht Klasse 12</a></li>
+                <li><a href="1-1-queue.html">1.1 Warteschlange (Queue)</a></li>
+                <li><a href="1-2-interfaces.html">1.2 Interfaces</a></li>
+                <li><a href="1-3-listen.html">1.3 Listen und Rekursion</a></li>
+                <li><a href="1-4-kompositum.html">1.4 Kompositum</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero rd-hero">
+                <h1 class="hero-title">1.2 Interfaces: ein Vertrag für alle Daten</h1>
+                <p class="hero-subtitle">Rekursive Datenstrukturen · Informatik 12 · 2 Stunden</p>
+                <span class="rd-kompetenz">Du kannst: erklären, was ein Interface als Vertrag festlegt, eine Klasse ein Interface implementieren lassen und Struktur und Inhalt einer Datenstruktur trennen.</span>
+                <div class="rd-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-1-2-interfaces.pdf">📝 Arbeitsblatt 1.2 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-1-2-interfaces.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#kopie">🚕 Einstieg</a><a class="p-note" href="#vertrag">📝 Festhalten</a><a class="p-investigate" href="#pruefer">🧩 Üben</a><a class="p-modify" href="#projekt">✏️ Verändern</a><a class="p-make" href="#selbst">🛠️ Selbst bauen</a><a class="p-idee" href="#anders">💡 Nachdenken</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="kopie" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🚕</span><h2>Einstieg<small>Aufgabe 1: Kopieren oder verallgemeinern?</small></h2></div>
+                <div class="phase-body">
+                    <p>Am Bahnhof warten Taxis in einer Schlange: Wer zuerst ankommt, fährt zuerst. Die Stadt möchte dafür deine <code>Warteschlange</code> aus 1.1 benutzen. Die kann aber nur Patienten verwalten. Die schnellste Idee: alles kopieren und überall <code>Patient</code> durch <code>Taxi</code> ersetzen. So hast du es vielleicht in 1.1 bei „Selbst bauen“ schon gemacht.</p>
+                    <div data-kopievergleich></div>
+                    <ol class="aufgaben">
+                        <li>Markiere die Unterschiede. Was unterscheidet die beiden Fassungen wirklich?</li>
+                        <li>Untersuche im Projekt (unten) die Methoden der Warteschlange: Welche reicht ihre Daten nur weiter, welche ruft eine Methode der Daten auf? Fülle die Tabelle von Aufgabe 1 auf dem Blatt aus.</li>
+                        <li>Was müsste die Warteschlange also mindestens von <em>jedem</em> Datenelement verlangen?</li>
+                    </ol>
+                    <details class="denk"><summary>Denkanstoß zu c)</summary>
+                        <p>Schau in <code>ausgeben()</code>: Das ist die einzige Stelle, an der die Warteschlange etwas von ihren Daten wissen will. Was genau?</p>
+                    </details>
+                    <div class="idee"><strong>Du kennst schon ein Interface:</strong> In 1.1 legte <code>Wartezimmer</code> fest, welche Methoden jede Wartezimmer-Variante haben muss (<code>add</code>, <code>poll</code>, <code>ausgeben</code>). So konnte das Hauptprogramm mit einer Zeile zwischen den Varianten umschalten. Jetzt brauchen wir einen solchen Vertrag für die <em>Daten</em>.</div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-2-interfaces.pdf">📝 Blatt 1.2 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="vertrag" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Merkkasten und Aufgabe 2: Interface als Vertrag</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Interface = Vertrag</h4>
+                        <p>Ein <strong>Interface</strong> legt nur fest, <em>welche</em> Methoden es geben muss: Methodenköpfe ohne Rumpf. Eine Klasse unterschreibt den Vertrag mit <code>implements</code> und muss dann alle Methoden bereitstellen. Ob sie das tut, prüft der Compiler. Weitere Methoden darf sie zusätzlich haben.</p>
+                        <p>Ein Interface ist auch ein <strong>Datentyp</strong>: Eine Variable oder ein Parameter vom Typ <code>DatenElement</code> nimmt Objekte jeder Klasse auf, die den Vertrag erfüllt. Objekte vom Interface selbst gibt es nicht.</p>
+                    </div>
+                    <div class="code-paar">
+                        <div>
+                            <h4>Der Vertrag</h4>
+<pre class="jv"><span class="k">public interface</span> DatenElement {
+   String gibSchluesselwert();
+}</pre>
+                        </div>
+                        <div>
+                            <h4>Im Klassendiagramm</h4>
+                            <p>Interfaces erhalten den Vermerk «interface». Die Beziehung „implementiert“ ist ein <strong>gestrichelter</strong> Pfeil mit leerem Dreieck zum Interface. Vererbung („erbt von“, Klasse 10) hat dieselbe Spitze, aber eine durchgezogene Linie.</p>
+                        </div>
+                    </div>
+                    <div class="konzept">
+                        <h4>Struktur und Inhalt trennen</h4>
+                        <p><code>Warteschlange</code> und <code>Knoten</code> bilden die <strong>Struktur</strong>, <code>Patient</code> und <code>Taxi</code> den <strong>Inhalt</strong>. Jede Klasse hat genau eine Aufgabe (hohe <strong>Kohäsion</strong>). Struktur und Inhalt hängen nur über das Interface zusammen (lose <strong>Kopplung</strong>). Deshalb kann die Warteschlange jedes neue DatenElement aufnehmen, ohne dass du sie anfasst.</p>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Ergänze den Code und den Merkkasten auf Seite 1 des Blatts.</li>
+                        <li>Zeichne das Klassendiagramm (Aufgabe 2): Welche Pfeile sind Assoziationen, welche bedeuten „implementiert“?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 2: Klassendiagramm">
+                        <template data-stufe="Tipp 1"><p>Assoziationen (durchgezogen, mit Namen und Multiplizität) gehen von dem, der ein Attribut hat, zu dem, worauf es verweist: <code>anfang</code> und <code>ende</code> von der Warteschlange zum Knoten, <code>nachfolger</code> vom Knoten zum Knoten, <code>daten</code> vom Knoten zum Interface.</p></template>
+                        <template data-stufe="Tipp 2"><p>Patient und Taxi kennt die Struktur gar nicht: Von Knoten führt <em>kein</em> Pfeil zu Patient oder Taxi. Die beiden zeigen mit je einem gestrichelten Pfeil (leeres Dreieck) auf DatenElement.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-2-interfaces.pdf">📝 Blatt 1.2 · Seite 1</a></p>
+                </div>
+            </section>
+
+            <section id="pruefer" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🧩</span><h2>Üben<small>Vertragsprüfer: Wer erfüllt den Vertrag?</small></h2></div>
+                <div class="phase-body">
+                    <p>Hier siehst du sechs Fassungen der Klasse <code>Taxi</code>. Entscheide jeweils, ob der Compiler sie als <code>DatenElement</code> akzeptiert. Erst danach erfährst du, was die IDE melden würde und warum.</p>
+                    <div data-vertragspruefer></div>
+                    <ol class="aufgaben">
+                        <li>Prüfe alle sechs Klassen. Welche Regeln für Interfaces erkennst du?</li>
+                        <li>Taxi C hat die passende Methode – und wird trotzdem abgelehnt. Erkläre das mit dem Wort <em>Vertrag</em>.</li>
+                        <li>Taxi F: Was lernst du über die Grenzen unserer Online-IDE?</li>
+                    </ol>
+                </div>
+            </section>
+
+            <section id="projekt" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">✏️</span><h2>Verändern<small>Aufgaben 3 bis 5: Projekt Taxistand</small></h2></div>
+                <div class="phase-body">
+                    <p>Das Projekt enthält die Warteschlange aus 1.1, noch nur für Patienten. Baue sie in der Reihenfolge der TODOs um. Die Tabelle auf Seite 2 des Blatts hilft dir dabei.</p>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 3a–d:</strong> Lege den Vertrag fest (3a), lass Patient ihn erfüllen (3b) und stelle Knoten (3c) und Warteschlange (3d) auf <code>DatenElement</code> um. Nach 3c meldet der Compiler einen Fehler in <code>ausgeben()</code>: Lies die Meldung und erkläre sie (3b auf dem Blatt).</li>
+                        <li><strong>Aufgabe 4:</strong> Lass <code>Taxi</code> den Vertrag erfüllen und kommentiere die Taxi-Zeilen im Hauptprogramm ein. Lösche danach testweise <code>gibSchluesselwert()</code> aus Taxi: Was meldet die IDE?</li>
+                        <li><strong>Aufgabe 5:</strong> Probiere die Zeilen aus der Tabelle direkt im Hauptprogramm aus, bevor du ankreuzt.</li>
+                    </ol>
+                    <div class="stolper"><strong>Stolperstein:</strong> Wird nur der <code>Knoten</code> umgestellt, aber noch nicht die <code>Warteschlange</code> (oder umgekehrt), passen die Typen nicht zueinander, und die IDE meldet Fehler an Stellen, die du gar nicht geändert hast. Arbeite die TODOs der Reihe nach ab und lies die Hinweise des Coachs.</div>
+                    <div class="ide-block" id="ide">
+                        <div class="ide-kopf"><h3>Projekt Taxistand</h3></div>
+                        <div class="java-online" style="width:100%;height:680px" data-java-online="{ 'id': 'i12-12-taxistand', 'speed': 1000000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true, 'withErrorList': true, 'jsonFilename': '12-1-2 Taxistand.json', 'enableFileAccess': true, 'enableRunExitStatusAccess': true }">
+                            <script type="text/plain" title="Hauptprogramm.java">
+// Station 1.2: Das Wartezimmer der Praxis und der Taxistand am Bahnhof
+// sollen dieselbe Klasse Warteschlange benutzen.
+
+Warteschlange praxis = new Warteschlange();
+praxis.add(new Patient("Resi", "Grippe"));
+praxis.add(new Patient("Bene", "Kopfweh"));
+println("--- Wartezimmer ---");
+praxis.ausgeben();
+
+// TODO 4 (Aufgabe 4): einkommentieren, sobald Taxi das Interface DatenElement implementiert
+// Warteschlange taxistand = new Warteschlange();
+// taxistand.add(new Taxi(12, "Stefan"));
+// taxistand.add(new Taxi(7, "Aylin"));
+// taxistand.add(new Taxi(3, "Jonas"));
+// println("--- Taxistand ---");
+// taxistand.ausgeben();
+// println("Fahrgast steigt ein bei: " + taxistand.poll().gibSchluesselwert());
+                            </script>
+                            <script type="text/plain" title="DatenElement.java">
+/**
+ * Der Vertrag für alles, was in einer Warteschlange stehen darf.
+ * Ein Interface enthält nur Methodenköpfe, keine Rümpfe.
+ */
+public interface DatenElement {
+   // TODO 3a (Aufgabe 3): Methodenkopf für gibSchluesselwert() eintragen
+
+}
+                            </script>
+                            <script type="text/plain" title="Patient.java">
+/**
+ * Die Daten einer Patientin oder eines Patienten (aus Station 1.1).
+ * TODO 3b (Aufgabe 3): Patient soll das Interface DatenElement implementieren.
+ */
+public class Patient {
+   private String name;
+   private String beschwerden;
+
+   public Patient(String name, String beschwerden) {
+      this.name = name;
+      this.beschwerden = beschwerden;
+   }
+
+   public String getName() {
+      return name;
+   }
+
+   public String getBeschwerden() {
+      return beschwerden;
+   }
+}
+                            </script>
+                            <script type="text/plain" title="Taxi.java">
+/**
+ * Ein Taxi am Taxistand.
+ * TODO 4 (Aufgabe 4): Taxi soll das Interface DatenElement implementieren.
+ * Schlüsselwert eines Taxis: "Taxi " und seine Nummer, z. B. "Taxi 12".
+ */
+public class Taxi {
+   private int nummer;
+   private String fahrer;
+
+   public Taxi(int nummer, String fahrer) {
+      this.nummer = nummer;
+      this.fahrer = fahrer;
+   }
+
+   public int getNummer() {
+      return nummer;
+   }
+
+   public String getFahrer() {
+      return fahrer;
+   }
+}
+                            </script>
+                            <script type="text/plain" title="Knoten.java">
+/**
+ * Ein Knoten der Warteschlange (aus Station 1.1).
+ * TODO 3c (Aufgabe 3): Der Knoten soll beliebige DatenElemente tragen,
+ * nicht nur Patienten. Ersetze dazu jedes "Patient" durch "DatenElement".
+ */
+public class Knoten {
+   private Patient daten;
+   private Knoten nachfolger;
+
+   public Knoten(Patient daten) {
+      this.daten = daten;
+      nachfolger = null;
+   }
+
+   public Patient getDaten() {
+      return daten;
+   }
+
+   public Knoten getNachfolger() {
+      return nachfolger;
+   }
+
+   public void setNachfolger(Knoten nachfolger) {
+      this.nachfolger = nachfolger;
+   }
+}
+                            </script>
+                            <script type="text/plain" title="Warteschlange.java">
+/**
+ * Warteschlange (Queue) aus Station 1.1 – bisher nur für Patienten.
+ * TODO 3d (Aufgabe 3): Die Warteschlange soll beliebige DatenElemente
+ * verwalten. Ersetze jedes "Patient" durch "DatenElement" und passe
+ * ausgeben() an.
+ */
+public class Warteschlange {
+   private Knoten anfang;   // erster Knoten: kommt als Nächstes dran
+   private Knoten ende;     // letzter Knoten: hier wird angehängt
+
+   public Warteschlange() {
+      anfang = null;
+      ende = null;
+   }
+
+   public boolean isEmpty() {
+      return anfang == null;
+   }
+
+   public boolean add(Patient p) {
+      Knoten neu = new Knoten(p);
+      if (isEmpty()) {
+         anfang = neu;
+         ende = neu;
+      } else {
+         ende.setNachfolger(neu);
+         ende = neu;
+      }
+      return true;
+   }
+
+   public Patient poll() {
+      if (isEmpty()) {
+         return null;
+      } else {
+         Patient p = anfang.getDaten();
+         anfang = anfang.getNachfolger();
+         if (anfang == null) {
+            ende = null;
+         }
+         return p;
+      }
+   }
+
+   public Patient peek() {
+      if (isEmpty()) {
+         return null;
+      } else {
+         return anfang.getDaten();
+      }
+   }
+
+   public void ausgeben() {
+      Knoten aktuell = anfang;
+      int platz = 1;
+      while (aktuell != null) {
+         println("  " + platz + ". " + aktuell.getDaten().getName());
+         aktuell = aktuell.getNachfolger();
+         platz++;
+      }
+   }
+}
+                            </script>
+                        </div>
+                        <p class="ide-downloads">💾 Eigenen Stand sichern: Diskettensymbol in der IDE-Leiste („Workspace in Datei speichern“), der Name <code>12-1-2 Taxistand.json</code> ist schon vorgeschlagen. Laden: Ordnersymbol daneben. · <a href="Online-IDE/12-1-2%20Taxistand.json" download>Ausgangsprojekt für online-ide.de</a></p>
+                    </div>
+                    <div class="coach" data-coach="i12-12-taxistand"></div>
+                    <div class="lw" data-loesungsweg="Aufgabe 3: Umbau auf DatenElement">
+                        <template data-stufe="Tipp 1"><p>Im Interface steht nur der Kopf mit Semikolon: Rückgabetyp, Name, leere Klammern. Patient unterschreibt mit <code>implements DatenElement</code> hinter dem Klassennamen und liefert als Schlüsselwert seinen Namen.</p></template>
+                        <template data-stufe="Tipp 2"><p>In Knoten und Warteschlange darf das Wort <code>Patient</code> danach nirgends mehr vorkommen: Attribut, Konstruktor, <code>getDaten</code>, <code>add</code>, <code>poll</code>, <code>peek</code> und die lokale Variable in <code>poll</code>. In <code>ausgeben()</code> ersetzt <code>gibSchluesselwert()</code> den Aufruf <code>getName()</code>.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="c">// DatenElement (3a)</span>
+<span class="k">public interface</span> DatenElement {
+   String gibSchluesselwert();
+}
+
+<span class="c">// Patient (3b)</span>
+<span class="k">public class</span> Patient <span class="k">implements</span> DatenElement {
+   ...
+   <span class="k">public</span> String gibSchluesselwert() {
+      <span class="k">return</span> name;
+   }
+}
+
+<span class="c">// Knoten (3c)</span>
+<span class="k">private</span> DatenElement daten;
+<span class="k">public</span> Knoten(DatenElement daten) { ... }
+<span class="k">public</span> DatenElement getDaten() { ... }
+
+<span class="c">// Warteschlange (3d)</span>
+<span class="k">public boolean</span> add(DatenElement daten) { Knoten neu = <span class="k">new</span> Knoten(daten); ... }
+<span class="k">public</span> DatenElement poll() { ... DatenElement daten = anfang.getDaten(); ... }
+<span class="k">public</span> DatenElement peek() { ... }
+println("  " + platz + ". " + aktuell.getDaten().gibSchluesselwert());</pre></template>
+                    </div>
+                    <div class="lw" data-loesungsweg="Aufgabe 4: Taxi">
+                        <template data-stufe="Tipp"><p>Genau wie bei Patient: <code>implements DatenElement</code> und die Vertragsmethode. Der Schlüsselwert eines Taxis ist <code>"Taxi "</code> und seine Nummer.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="k">public class</span> Taxi <span class="k">implements</span> DatenElement {
+   ...
+   <span class="k">public</span> String gibSchluesselwert() {
+      <span class="k">return</span> "Taxi " + nummer;
+   }
+}</pre></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-2-interfaces.pdf">📝 Blatt 1.2 · Aufgaben 3 bis 5 (Seite 2)</a></p>
+                </div>
+            </section>
+
+            <section id="selbst" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Selbst bauen<small>Für Schnelle: ein dritter Datentyp und die toString-Falle</small></h2></div>
+                <div class="phase-body">
+                    <ol class="aufgaben">
+                        <li><strong>Paketstation:</strong> Pakete werden in der Reihenfolge ihres Eintreffens ausgegeben. Schreibe eine Klasse <code>Paket</code> (Sendungsnummer, Empfänger:in) und lass drei Pakete durch eine <code>Warteschlange</code> laufen. Wie viele Zeilen von <code>Warteschlange</code> und <code>Knoten</code> musstest du dafür ändern?</li>
+                        <li><strong>Gemischte Schlange:</strong> Stelle Patienten und Taxis in <em>dieselbe</em> Warteschlange. Der Compiler erlaubt es. Ist es auch sinnvoll? Wer müsste so etwas verhindern?</li>
+                        <li><strong>Die toString-Falle:</strong> Ändere den Vertrag testweise in <code>String toString();</code>, lösche <code>gibSchluesselwert()</code> aus Taxi und rufe in <code>ausgeben()</code> <code>toString()</code> auf. Was meldet der Compiler, und was gibt das Programm aus? Warum ist das ein schlechter Vertrag?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="a) Paket">
+                        <template data-stufe="Tipp"><p>Gar keine Zeile in Warteschlange und Knoten: Paket muss nur den Vertrag erfüllen. Das ist lose Kopplung.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="k">public class</span> Paket <span class="k">implements</span> DatenElement {
+   <span class="k">private</span> String sendungsnummer;
+   <span class="k">private</span> String empfaenger;
+
+   <span class="k">public</span> Paket(String sendungsnummer, String empfaenger) {
+      <span class="k">this</span>.sendungsnummer = sendungsnummer;
+      <span class="k">this</span>.empfaenger = empfaenger;
+   }
+
+   <span class="k">public</span> String gibSchluesselwert() {
+      <span class="k">return</span> sendungsnummer;
+   }
+}
+
+<span class="c">// im Hauptprogramm</span>
+Warteschlange station = <span class="k">new</span> Warteschlange();
+station.add(<span class="k">new</span> Paket("P-1001", "Lea"));
+station.add(<span class="k">new</span> Paket("P-1002", "Ali"));
+station.ausgeben();</pre></template>
+                    </div>
+                    <div class="lw" data-loesungsweg="c) toString-Falle">
+                        <template data-stufe="Tipp"><p>Jede Klasse erbt von <code>Object</code> bereits eine Methode <code>toString()</code>. Was bedeutet das für einen Vertrag, der genau diese Methode verlangt?</p></template>
+                        <template data-stufe="Erklärung" data-halten><p>Der Compiler meldet <em>nichts</em>: Taxi „erfüllt“ den Vertrag automatisch mit der geerbten <code>toString()</code>. Die Ausgabe zeigt dann nur eine allgemeine Darstellung des Objekts statt eines sinnvollen Schlüsselwerts. Ein guter Vertrag verlangt etwas, das die Klasse bewusst selbst liefern muss, deshalb <code>gibSchluesselwert()</code>.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="anders" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Es geht auch anders: besprecht mündlich, warum</small></h2></div>
+                <div class="phase-body">
+                    <p>Überlegt zu zweit, was jede Variante besser und was sie schlechter macht. Die Hinweise sind zum Nachlesen <em>nach</em> dem Gespräch: Halte dazu den Knopf gedrückt.</p>
+                    <div class="idee"><strong><code>Object</code> statt Interface:</strong> Jede Klasse ist ein <code>Object</code>. Der Knoten könnte also einfach <code>Object daten</code> speichern.
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Speichern ginge, aber <code>ausgeben()</code> könnte <code>gibSchluesselwert()</code> nicht mehr aufrufen: Ein <code>Object</code> kennt diese Methode nicht. Man müsste das Objekt erst umwandeln (casten) und dabei hoffen, dass es passt. Das Interface sichert dagegen schon beim Kompilieren zu, dass jedes Element die Methode hat.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Ein Vertrag mit <code>String toString();</code>:</strong> So stand es in einer älteren Fassung dieses Materials.
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Jede Klasse erbt <code>toString()</code> von <code>Object</code>. Der Vertrag ist also immer erfüllt, auch wenn die Klasse sich gar nicht darum kümmert. Er verspricht nichts. Probiere es in „Selbst bauen c“ aus.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Oberklasse statt Interface:</strong> Patient und Taxi erben von einer Klasse <code>Daten</code>.
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>In Java erbt eine Klasse nur von <em>einer</em> Oberklasse. Erbt <code>Patient</code> schon von <code>Person</code>, ist der Platz belegt. Interfaces kann eine Klasse dagegen beliebig viele implementieren. Außerdem soll <code>Daten</code> hier nichts vererben, sondern nur etwas verlangen. Genau das ist ein Interface.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Zwei Arten von Interfaces:</strong> <code>Wartezimmer</code> (1.1) und <code>DatenElement</code> (1.2).
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p><code>Wartezimmer</code> war ein Vertrag für <em>Strukturen</em>: Jede Variante bietet dieselben Methoden an, das Hauptprogramm kann sie austauschen. <code>DatenElement</code> ist ein Vertrag für <em>Inhalte</em>: Jede Klasse liefert, was die Struktur braucht. Beide entkoppeln: Wer den Vertrag benutzt, muss die konkrete Klasse nicht kennen.</p></template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>📝 1.3 Listen und Rekursion</h4>
+                            <p>Die Taxizentrale braucht mehr als eine Schlange: Taxis melden sich in beliebiger Reihenfolge an und ab. Dafür bauen wir eine Liste, deren Knoten ihre Aufgaben rekursiv weitergeben. Der Vertrag <code>DatenElement</code> wächst dabei um eine Methode, und der Compiler sagt dir, wer nachbessern muss.</p>
+                            <a class="btn btn-primary btn-sm" href="1-3-listen.html">Weiter zu 1.3</a>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>🌳 Später: Binärbäume</h4>
+                            <p>Auch Bäume speichern beliebige DatenElemente. Dort braucht der Vertrag zusätzlich einen Vergleich, damit der Baum sortieren kann.</p>
+                            <a class="btn btn-outline btn-sm" href="../binaerbaeume/binbaum.html">Zu den Binärbäumen</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="1-1-queue.html">← 1.1 Warteschlange</a>
+                <a class="btn btn-primary" href="1-3-listen.html">Weiter: 1.3 Listen →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-1-2-interfaces-lsg.pdf">Lösung Blatt 1.2 (PDF)</a> <a class="btn btn-tex btn-sm" href="Online-IDE/LSG%2012-1-2%20Taxistand.json" download>Lösungsprojekt (JSON)</a> <a class="btn btn-outline btn-sm" href="Online-IDE/12-1-2%20Taxistand.json" download>Ausgangsprojekt (JSON)</a></p>
+                    <p><strong>Idee der Station:</strong> Der Inhalt des Interfaces wird nicht vorgegeben, sondern hergeleitet: Nur <code>ausgeben()</code> braucht etwas von den Daten (Aufgabe 1). Nach dem Umbau von <code>Knoten</code> meldet der Compiler <code>getName()</code> als Fehler. Das macht erfahrbar, dass die Struktur nur benutzen darf, was im Vertrag steht.</p>
+                    <p><strong>Namen mit Blick auf 1.3 bis Binärbaum:</strong> <code>DatenElement.gibSchluesselwert()</code> entspricht dem späteren Binärbaum-Kapitel (dort zusätzlich <code>istGleich</code> und <code>istGroesserAls</code>). In 1.3 kommt <code>istGleich</code> hinzu, sodass der Vertrag sichtbar wächst.</p>
+                    <p><strong>Frühere Fassung:</strong> Dort verlangte das Interface nur <code>String toString()</code>. Da jede Klasse <code>toString()</code> von <code>Object</code> erbt, erzwingt dieser Vertrag nichts. Das ist jetzt Gesprächsanlass (Nachdenken, Selbst bauen c).</p>
+                    <p><strong>Eigenheiten der Online-IDE (geprüft):</strong> Wird ein <code>Patient</code> übergeben, der (noch) kein <code>DatenElement</code> ist, meldet die IDE nur allgemein „Es konnte keine passende Methode … gefunden werden“; der Coach übersetzt das je nach Stand. Eine Methode <code>int gibSchluesselwert()</code> akzeptiert die IDE fälschlich (Ausgabe „undefined“), echtes Java nicht. Strings vergleicht die IDE auch mit <code>==</code> nach Inhalt, anders als Java.</p>
+                    <p><strong>Coach:</strong> Er prüft die TODOs statisch (Vertrag festgelegt, implements, kein <code>Patient</code> mehr in der Struktur) und übersetzt die Compilermeldungen. Das Projekt hat die ID <code>i12-12-taxistand</code>; der Bearbeitungsstand bleibt im Browser.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum &amp; Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

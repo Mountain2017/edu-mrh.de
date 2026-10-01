@@ -13,6 +13,7 @@
     <script type="module" src="https://edu-mrh.de/embed/include/online-ide-embedded.js"></script>
     <link rel="stylesheet" href="datenstrukturen.css">
     <script defer src="datenstrukturen.js"></script>
+    <script defer src="ide-coach.js"></script>
 </head>
 <body>
     <nav class="navbar">
@@ -28,6 +29,7 @@
         <div class="sidebar-header"><h3>Station 1.1</h3></div>
         <ul class="sidebar-menu">
             <li><a href="#praxis">🏥 Wer ist dran?</a></li>
+            <li><a href="#simulator">🪑 Wartezimmer-Simulator</a></li>
             <li><a href="#kette">📝 Die Kette</a></li>
             <li><a href="#werkstatt">🧩 Zeiger-Werkstatt</a></li>
             <li><a href="#projekt">✏️ Projekt Praxis</a></li>
@@ -40,7 +42,9 @@
             <ul class="sidebar-menu">
                 <li><a href="../../informatik.html#jahrgang-12">Übersicht Klasse 12</a></li>
                 <li><a href="1-1-queue.html">1.1 Warteschlange (Queue)</a></li>
-                <li><a href="../rekursion-queue-listen/rekursion.html">1.2–1.4 Interfaces, Listen, Kompositum (bisherige Seite)</a></li>
+                <li><a href="1-2-interfaces.html">1.2 Interfaces</a></li>
+                <li><a href="1-3-listen.html">1.3 Listen und Rekursion</a></li>
+                <li><a href="1-4-kompositum.html">1.4 Kompositum</a></li>
             </ul>
         </div>
     </aside>
@@ -67,13 +71,16 @@
                 <div class="phase-body">
                     <p>In der Breitensuche (Klasse 11) hast du eine fertige Warteschlange benutzt: <code>warteschlange.add(k)</code> stellt hinten an, <code>warteschlange.poll()</code> holt vorne heraus. Heute baust du so eine Warteschlange selbst. Dazu musst du wissen, wie sie innen aussieht.</p>
                     <p>Beispiel Arztpraxis: Patient:innen kommen nacheinander an und werden in der Reihenfolge ihrer Ankunft aufgerufen. Das <a href="#ide">Projekt Praxis</a> verwaltet das Wartezimmer zunächst mit einem Array mit fünf Plätzen, in drei Varianten. Das Hauptprogramm ist immer gleich: Fünf kommen, drei werden aufgerufen, vier neue kommen (darunter Mia), dann werden alle aufgerufen.</p>
+                    <p>Der Simulator spielt genau dieses Hauptprogramm ab und zeigt dabei, was im Array passiert. Die kleinen grauen Nummern verraten, in welcher Reihenfolge die Patient:innen angekommen sind.</p>
+                    <div data-wartezimmer id="simulator"></div>
                     <ol class="aufgaben">
                         <li>Sage vorher: In welcher Reihenfolge müssten die Patient:innen aufgerufen werden?</li>
-                        <li>Starte das Projekt nacheinander mit Variante 1, 2 und 3 (im Hauptprogramm jeweils genau eine Zeile einkommentieren). Notiere auf dem Blatt die Idee jeder Variante und was schiefgeht. Schau dazu auch in die Methoden <code>add</code> und <code>poll</code> der drei Klassen.</li>
+                        <li>Spiele im Simulator Variante 1, 2 und 3 durch. Tippe vor jedem Schritt an, wohin jemand kommt bzw. wer aufgerufen wird. Wo lagst du daneben, und warum?</li>
+                        <li>Starte die drei Varianten auch im Projekt (im Hauptprogramm jeweils genau eine Zeile einkommentieren) und schau in die Methoden <code>add</code> und <code>poll</code> der drei Klassen. Notiere auf dem Blatt die Idee jeder Variante und was schiefgeht.</li>
                         <li>Was passiert bei allen drei Varianten mit Mia?</li>
                     </ol>
                     <p><a class="btn btn-primary btn-sm" href="#ide">▶ Zum Projekt Praxis</a> <a class="ab-verweis" href="arbeitsblaetter/ab-1-1-queue.pdf">📝 Blatt 1.1 · Aufgabe 1</a></p>
-                    <div class="stolper"><strong>Stolperstein:</strong> Variante 2 stürzt ab. Das ist Absicht. Lies die Fehlermeldung genau: Welcher Index wird angesprochen, und wie groß ist das Array?</div>
+                    <div class="stolper"><strong>Stolperstein:</strong> Stürzt eine Variante im Projekt ab, ist das Absicht. Lies die Fehlermeldung genau: Welcher Index wird angesprochen, und wie groß ist das Array?</div>
                 </div>
             </section>
 
@@ -82,7 +89,15 @@
                 <div class="phase-body">
                     <div class="konzept">
                         <h4>Das Problem</h4>
-                        <p>Ein Array hat eine <strong>feste Größe</strong> und belegt schon beim Erzeugen Speicher für alle Plätze. Vergrößern geht nur, indem man ein neues Array erzeugt und alles kopiert. Und damit die Reihenfolge stimmt, müssen beim Herausnehmen alle aufrücken.</p>
+                        <p>Denk an den Simulator zurück und beantworte die Fragen. Damit füllst du den Merkkasten „Probleme mit Arrays“ auf dem Blatt.</p>
+                        <ul>
+                            <li><strong>Mia:</strong> Warum wird sie abgewiesen? Was müsste das Programm tun, damit sie doch noch einen Platz bekommt?</li>
+                            <li><strong>Speicher:</strong> Wie viele Plätze sind reserviert, wenn nur zwei Patient:innen warten?</li>
+                            <li><strong>Variante 3:</strong> Wie viele Verschiebungen kostet ein Aufruf, wenn fünf warten? Und wenn 100 warten würden?</li>
+                        </ul>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Merkkasten zum Vergleichen" data-halten><p>Ein Array hat eine <strong>feste Größe</strong> und belegt schon beim Erzeugen <strong>Speicher</strong> für alle Plätze, auch für leere (<code>null</code>). Zum Vergrößern müsste man <strong>ein neues Array</strong> erzeugen und alles <strong>kopieren</strong>. Damit die Reihenfolge stimmt, müssen beim Herausnehmen alle <strong>aufrücken</strong>.</p></template>
+                        </div>
                     </div>
                     <div class="konzept">
                         <h4>Die Idee: eine Kette aus Knoten</h4>
@@ -91,6 +106,7 @@
                             <li>Die Beziehung „hat Nachfolger“ verbindet Objekte <strong>derselben</strong> Klasse: eine <strong>rekursive Beziehung</strong>. Im Code wird sie zu einem Attribut, dessen Typ die eigene Klasse ist: <code>private Knoten nachfolger;</code></li>
                             <li><code>add</code> hängt hinten an, <code>poll</code> nimmt vorne weg: <strong>FIFO</strong> (First In – First Out).</li>
                         </ul>
+                        <p class="mt-2">Wähle im <a href="#simulator">Simulator</a> „Kette“ und spiele dasselbe Hauptprogramm noch einmal: Was passiert jetzt mit Mia, und wie oft wird verschoben?</p>
                     </div>
                     <ol class="aufgaben">
                         <li>Ergänze den Merkkasten „Probleme mit Arrays“ auf dem Blatt.</li>
@@ -104,7 +120,7 @@
             <section id="werkstatt" class="phase investigate">
                 <div class="phase-head"><span class="phase-icon">🧩</span><h2>Üben<small>Zeiger-Werkstatt: add() und poll() Zeile für Zeile</small></h2></div>
                 <div class="phase-body">
-                    <p>Hier siehst du, was jede Zeile von <code>add</code> und <code>poll</code> mit den Verweisen macht. Die Codezeilen sind dieselben wie auf dem Blatt (Aufgaben 3 und 4). Der gerade geänderte Verweis wird orange. Graue Knoten hat niemand mehr im Blick: Java räumt sie automatisch weg.</p>
+                    <p>Hier siehst du, was jede Zeile von <code>add</code> und <code>poll</code> mit den Verweisen macht. Die Codezeilen sind dieselben wie auf dem Blatt (Aufgaben 3 und 4). Jede Zeile wird erst sichtbar, wenn sie ausgeführt wird: Überlege vorher, was sie tun muss. Der gerade geänderte Verweis wird orange. Graue Knoten hat niemand mehr im Blick: Java räumt sie automatisch weg.</p>
                     <div data-zeigerwerkstatt>
                         <div class="zw-knoepfe">
                             <label for="zw-version"><strong>Version:</strong></label>
@@ -176,10 +192,10 @@
                         <li><strong>Aufgabe 4:</strong> Übertrage <code>poll</code> (TODO 4). Warum muss Schritt ① vor Schritt ② stehen? Was geschieht danach mit dem alten ersten Knoten?</li>
                         <li><strong>Aufgabe 5:</strong> Stelle das Hauptprogramm auf <code>new Warteschlange()</code> um und vergleiche mit Variante 3: Wie oft wird bei <code>poll()</code> verschoben? Wie viele können warten?</li>
                     </ol>
-                    <div class="stolper"><strong>Stolperstein:</strong> In der Vorlage stehen in <code>add</code> und <code>poll</code> noch <code>return false;</code> bzw. <code>return null;</code>. Ersetze die ganze Methode durch die vom Blatt. Bleibt die alte Zeile stehen, meldet die IDE einen Fehler (Code nach <code>return</code> ist nie erreichbar), oder es wird niemand aufgerufen.</div>
+                    <div class="stolper"><strong>Stolperstein:</strong> In der Vorlage stehen in <code>add</code> und <code>poll</code> noch die Platzhalter <code>return false;</code> bzw. <code>return null;</code>. Ersetze die ganze Methode durch die vom Blatt. Die IDE meldet übrig gebliebenen Code nach einem <code>return</code> nicht als Fehler – er wird einfach nie ausgeführt. Bleibt der Platzhalter allein stehen, wird niemand aufgerufen. Der Coach unter dem Projekt weist dich darauf hin.</div>
                     <div class="ide-block" id="ide">
                         <div class="ide-kopf"><h3>Projekt Praxis</h3></div>
-                        <div class="java-online" style="width:100%;height:680px" data-java-online="{ 'id': 'i12-11-praxis', 'speed': 1000000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true, 'withErrorList': true }">
+                        <div class="java-online" style="width:100%;height:680px" data-java-online="{ 'id': 'i12-11-praxis', 'speed': 1000000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true, 'withErrorList': true, 'jsonFilename': '12-1-1 Praxis.json', 'enableFileAccess': true, 'enableRunExitStatusAccess': true }">
                             <script type="text/plain" title="Hauptprogramm.java">
 // Aufgabe 1: Genau eine Zeile einkommentieren, starten, beobachten.
 Wartezimmer wartezimmer = new WartezimmerSuchen(5);           // Variante 1
@@ -474,13 +490,40 @@ public class WartezimmerAufruecken implements Wartezimmer {
 }
                             </script>
                         </div>
+                        <p class="ide-downloads">💾 Eigenen Stand sichern: Diskettensymbol in der IDE-Leiste („Workspace in Datei speichern“), der Name <code>12-1-1 Praxis.json</code> ist schon vorgeschlagen. Laden: Ordnersymbol daneben. · <a href="Online-IDE/12-1-1%20Praxis.json" download>Ausgangsprojekt für online-ide.de</a></p>
                     </div>
-                    <details class="denk"><summary>Denkanstoß zu Aufgabe 3</summary>
-                        <p>Bei einer leeren Schlange ist <code>ende</code> gleich <code>null</code>. Was bedeutet dann <code>ende.setNachfolger(neu)</code>? Probier es in der Zeiger-Werkstatt mit „Fehler: add ohne Sonderfall“ und einer leeren Schlange aus.</p>
-                    </details>
-                    <details class="denk"><summary>Denkanstoß zu Aufgabe 4</summary>
-                        <p>Nach <code>anfang = anfang.getNachfolger();</code> zeigt kein Verweis mehr auf den alten ersten Knoten. Wer sich die Daten vorher nicht in <code>p</code> gemerkt hat, kommt nie mehr an sie heran.</p>
-                    </details>
+                    <div class="coach" data-coach="i12-11-praxis"></div>
+                    <div class="lw" data-loesungsweg="Aufgabe 3: add()">
+                        <template data-stufe="Tipp 1"><p>Bei einer leeren Schlange ist <code>ende</code> gleich <code>null</code>. Was bedeutet dann <code>ende.setNachfolger(neu)</code>? Probier es in der Zeiger-Werkstatt mit „Fehler: add ohne Sonderfall“ und einer leeren Schlange aus.</p></template>
+                        <template data-stufe="Tipp 2"><p>Halte dich an die Bilder auf dem Blatt: Schritt ① erzeugt den Knoten, ② hängt ihn an den bisher letzten Knoten, ③ lässt <code>ende</code> weiterrücken. In der leeren Schlange zeigen <code>anfang</code> und <code>ende</code> beide auf den neuen Knoten.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv">public boolean add(Patient p) {
+   Knoten neu = new Knoten(p);      <span class="c">// ①</span>
+   if (isEmpty()) {                 <span class="c">// Sonderfall: leere Schlange</span>
+      anfang = neu;
+      ende = neu;
+   } else {
+      ende.setNachfolger(neu);      <span class="c">// ②</span>
+      ende = neu;                   <span class="c">// ③</span>
+   }
+   return true;
+}</pre></template>
+                    </div>
+                    <div class="lw" data-loesungsweg="Aufgabe 4: poll()">
+                        <template data-stufe="Tipp 1"><p>Nach <code>anfang = anfang.getNachfolger();</code> zeigt kein Verweis mehr auf den alten ersten Knoten. Wer sich die Daten vorher nicht in <code>p</code> gemerkt hat, kommt nie mehr an sie heran.</p></template>
+                        <template data-stufe="Tipp 2"><p>Ist danach <code>anfang</code> gleich <code>null</code>, war es der letzte Knoten. Dann muss auch <code>ende</code> geleert werden (Schritt ③). Die Zeiger-Werkstatt zeigt mit „Fehler: poll ohne Schritt ③“, was sonst passiert.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv">public Patient poll() {
+   if (isEmpty()) {
+      return null;                        <span class="c">// niemand wartet</span>
+   } else {
+      Patient p = anfang.getDaten();      <span class="c">// ①</span>
+      anfang = anfang.getNachfolger();    <span class="c">// ②</span>
+      if (anfang == null) {               <span class="c">// ③</span>
+         ende = null;
+      }
+      return p;                           <span class="c">// ④</span>
+   }
+}</pre></template>
+                    </div>
                     <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-1-queue.pdf">📝 Blatt 1.1 · Aufgaben 3 bis 5 (Seite 2)</a></p>
                 </div>
             </section>
@@ -494,32 +537,59 @@ public class WartezimmerAufruecken implements Wartezimmer {
                         <li><strong>Taxi-Warteschlange:</strong> Am Taxistand warten Taxis (Kennzeichen, Fahrer:in). Die Kund:innen nehmen immer das Taxi, das am längsten wartet. Baue eine eigene Warteschlange für Taxis. Welche Klassen musst du dafür kopieren, und was änderst du darin?</li>
                     </ol>
                     <div class="tipp"><strong>Tipp:</strong> Bei c) musst du sehr viel kopieren, obwohl sich an <code>add</code> und <code>poll</code> nichts ändert außer dem Datentyp. Merke dir, welche Stellen das sind. Genau darum geht es in 1.2.</div>
+                    <div class="lw" data-loesungsweg="a) peek()">
+                        <template data-stufe="Tipp"><p>Wie <code>poll()</code>, nur dass <code>anfang</code> und <code>ende</code> unverändert bleiben: Sonderfall leere Schlange, sonst die Daten des ersten Knotens zurückgeben.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv">public Patient peek() {
+   if (isEmpty()) {
+      return null;
+   } else {
+      return anfang.getDaten();
+   }
+}</pre></template>
+                    </div>
+                    <div class="lw" data-loesungsweg="b) anzahl()">
+                        <template data-stufe="Tipp"><p>Eine Zählvariable beginnt bei 0. Eine Hilfsvariable <code>aktuell</code> startet bei <code>anfang</code>. Solange <code>aktuell</code> nicht <code>null</code> ist: zählen und weiterrücken.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv">public int anzahl() {
+   int zaehler = 0;
+   Knoten aktuell = anfang;
+   while (aktuell != null) {
+      zaehler++;
+      aktuell = aktuell.getNachfolger();
+   }
+   return zaehler;
+}</pre></template>
+                    </div>
                 </div>
             </section>
 
             <section id="anders" class="phase idee">
                 <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Es geht auch anders: besprecht mündlich, warum</small></h2></div>
                 <div class="phase-body">
-                    <p>Unsere Warteschlange ist nicht die einzig mögliche. Jede der folgenden Varianten funktioniert. Überlegt zu zweit, was sie besser und was sie schlechter macht. Die Hinweise sind zum Nachlesen <em>nach</em> dem Gespräch.</p>
+                    <p>Unsere Warteschlange ist nicht die einzig mögliche. Jede der folgenden Varianten funktioniert. Überlegt zu zweit, was sie besser und was sie schlechter macht. Die Hinweise sind zum Nachlesen <em>nach</em> dem Gespräch: Halte dazu den Knopf gedrückt.</p>
                     <div class="idee"><strong>Nur <code>anfang</code>, kein <code>ende</code>:</strong> Die Warteschlange merkt sich nur den ersten Knoten. Wie findet <code>add</code> dann den letzten?
-                        <details class="denk"><summary>Hinweis</summary>
-                            <p><code>add</code> läuft wie <code>ausgeben()</code> mit einer Hilfsvariable von vorne bis zum Knoten, dessen Nachfolger <code>null</code> ist. Das ist einfacher (ein Attribut weniger, kein Sonderfall bei <code>poll</code>), aber langsamer: Bei 1000 Wartenden muss <code>add</code> 1000 Knoten ablaufen. Mit <code>ende</code> braucht <code>add</code> immer gleich viele Schritte. Die Liste in 1.3 kommt übrigens mit <code>anfang</code> allein aus.</p>
-                        </details>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p><code>add</code> läuft wie <code>ausgeben()</code> mit einer Hilfsvariable von vorne bis zum Knoten, dessen Nachfolger <code>null</code> ist. Das ist einfacher (ein Attribut weniger, kein Sonderfall bei <code>poll</code>), aber langsamer: Bei 1000 Wartenden muss <code>add</code> 1000 Knoten ablaufen. Mit <code>ende</code> braucht <code>add</code> immer gleich viele Schritte. Die Liste in 1.3 kommt übrigens mit <code>anfang</code> allein aus.</p></template>
+                        </div>
                     </div>
                     <div class="idee"><strong><code>poll()</code> gibt den Knoten zurück:</strong> statt <code>Patient poll()</code> also <code>Knoten poll()</code>.
-                        <details class="denk"><summary>Hinweis</summary>
-                            <p>Das Hauptprogramm müsste dann <code>poll().getDaten()</code> schreiben und die Klasse <code>Knoten</code> kennen. Außerdem könnte es über <code>getNachfolger()</code> an der Kette herumpfuschen. Knoten sind ein inneres Bauteil der Warteschlange (Kapselung). Wer sie benutzt, gibt Daten hinein und bekommt Daten heraus, genau wie bei <code>LinkedList</code>.</p>
-                        </details>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Das Hauptprogramm müsste dann <code>poll().getDaten()</code> schreiben und die Klasse <code>Knoten</code> kennen. Außerdem könnte es über <code>getNachfolger()</code> an der Kette herumpfuschen. Knoten sind ein inneres Bauteil der Warteschlange (Kapselung). Wer sie benutzt, gibt Daten hinein und bekommt Daten heraus, genau wie bei <code>LinkedList</code>.</p></template>
+                        </div>
                     </div>
                     <div class="idee"><strong>Ohne Klasse <code>Knoten</code>:</strong> <code>Patient</code> bekommt selbst ein Attribut <code>nachfolger</code>.
-                        <details class="denk"><summary>Hinweis</summary>
-                            <p>Man spart eine Klasse und ein Objekt pro Patient. Dafür vermischt <code>Patient</code> nun Inhalt (Name, Beschwerden) mit Struktur (Reihenfolge). Eine Patientin könnte nicht gleichzeitig in zwei Schlangen stehen, und für Taxis müsste man alles neu schreiben. In 1.2 trennen wir Struktur und Inhalt deshalb noch konsequenter.</p>
-                        </details>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Man spart eine Klasse und ein Objekt pro Patient. Dafür vermischt <code>Patient</code> nun Inhalt (Name, Beschwerden) mit Struktur (Reihenfolge). Eine Patientin könnte nicht gleichzeitig in zwei Schlangen stehen, und für Taxis müsste man alles neu schreiben. In 1.2 trennen wir Struktur und Inhalt deshalb noch konsequenter.</p></template>
+                        </div>
                     </div>
                     <div class="idee"><strong><code>add</code> liefert <code>boolean</code>,</strong> obwohl bei uns immer <code>true</code> herauskommt.
-                        <details class="denk"><summary>Hinweis</summary>
-                            <p>So ist die Methode auch in Java festgelegt (<code>Queue</code>, <code>LinkedList</code>), und so bleibt sie bei der Liste und beim Kompositum. Eine Warteschlange mit Höchstzahl (wie die Array-Varianten) oder eine Liste ohne doppelte Einträge kann <code>false</code> zurückgeben, ohne dass sich der Methodenkopf ändert. Wer die Schlange benutzt, muss dann nichts umschreiben.</p>
-                        </details>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>So ist die Methode auch in Java festgelegt (<code>Queue</code>, <code>LinkedList</code>), und so bleibt sie bei der Liste und beim Kompositum. Eine Warteschlange mit Höchstzahl (wie die Array-Varianten) oder eine Liste ohne doppelte Einträge kann <code>false</code> zurückgeben, ohne dass sich der Methodenkopf ändert. Wer die Schlange benutzt, muss dann nichts umschreiben.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Sind Arrays also schlecht?</strong> Überlegt, wofür ein Array besser geeignet ist als eine Kette.
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Nein, nur für eine Warteschlange ungeschickt. Wer gezielt die Dritte in der Reihe braucht, liest im Array <code>plaetze[2]</code> sofort, egal wie lang es ist. In der Kette muss man dafür vom <code>anfang</code> aus Knoten für Knoten weitergehen. Außerdem braucht ein Array keinen zusätzlichen Verweis pro Element. Steht die Anzahl vorher fest und greift man oft über die Position zu, ist das Array die bessere Wahl. Wird vorne entnommen und hinten angehängt, passt die Kette. Java bietet beides: <code>ArrayList</code> arbeitet innen mit einem Array, <code>LinkedList</code> mit Knoten.</p></template>
+                        </div>
                     </div>
                     <details class="denk"><summary>Für Profis: Kann man Variante 2 reparieren?</summary>
                         <p>Ja: Man merkt sich zusätzlich, wo als Nächstes <em>eingefügt</em> wird, und rechnet beide Nummern mit <code>% plaetze.length</code>, sodass sie am Ende des Arrays wieder bei 0 anfangen. So ein <strong>Ringpuffer</strong> braucht kein Aufrücken. Die feste Größe bleibt aber: Ist er voll, hilft nur ein größeres Array und Umkopieren. Genau so arbeitet Javas <code>ArrayDeque</code>.</p>
@@ -534,12 +604,12 @@ public class WartezimmerAufruecken implements Wartezimmer {
                         <div class="weiter-karte">
                             <h4>🔌 1.2 Interfaces</h4>
                             <p>Deine Warteschlange kann nur Patienten. Für Taxis musstest du alles kopieren. Mit einem Interface <code>DatenElement</code> kann derselbe Knoten beliebige Daten tragen: <code>add(DatenElement daten)</code>, <code>DatenElement poll()</code>. Die Methodenköpfe bleiben sonst gleich.</p>
-                            <a class="btn btn-outline btn-sm" href="../rekursion-queue-listen/rekursion.html">Zur bisherigen Seite (Abschnitt Interfaces)</a>
+                            <a class="btn btn-primary btn-sm" href="1-2-interfaces.html">Weiter zu 1.2</a>
                         </div>
                         <div class="weiter-karte">
                             <h4>📝 1.3 Listen und Rekursion</h4>
                             <p>Eine Liste kann mehr: an beliebiger Stelle einfügen, suchen, entfernen. Statt mit einer Hilfsvariable durch die Kette zu laufen wie in <code>ausgeben()</code>, gibt jeder Knoten den Auftrag an seinen <code>nachfolger</code> weiter: Rekursion.</p>
-                            <a class="btn btn-outline btn-sm" href="../rekursion-queue-listen/rekursion.html">Zur bisherigen Seite (Abschnitt Listen)</a>
+                            <a class="btn btn-outline btn-sm" href="1-3-listen.html">Zu 1.3</a>
                         </div>
                     </div>
                 </div>
@@ -547,7 +617,7 @@ public class WartezimmerAufruecken implements Wartezimmer {
 
             <div class="station-nav">
                 <a class="btn btn-outline" href="../../informatik.html#jahrgang-12">← Übersicht Klasse 12</a>
-                <a class="btn btn-primary" href="../rekursion-queue-listen/rekursion.html">Weiter: 1.2 Interfaces →</a>
+                <a class="btn btn-primary" href="1-2-interfaces.html">Weiter: 1.2 Interfaces →</a>
             </div>
 
             <section class="mt-4 mb-4 lehrkraft">
@@ -564,52 +634,13 @@ public class WartezimmerAufruecken implements Wartezimmer {
                             <tr><td>Warteschlange</td><td>Resi, Bene, Gustav, Leonie, Ludwig, Mia</td><td>Richtig, keine Verschiebungen, Mia passt noch hinein.</td></tr>
                         </table>
                     </div>
-                    <p class="mt-2"><strong>Lösung TODO 3 und 4</strong> (identisch mit dem Blatt):</p>
-<pre class="jv">public boolean add(Patient p) {
-   Knoten neu = new Knoten(p);      <span class="c">// ①</span>
-   if (isEmpty()) {
-      anfang = neu;
-      ende = neu;
-   } else {
-      ende.setNachfolger(neu);      <span class="c">// ②</span>
-      ende = neu;                   <span class="c">// ③</span>
-   }
-   return true;
-}
-
-public Patient poll() {
-   if (isEmpty()) {
-      return null;
-   } else {
-      Patient p = anfang.getDaten();      <span class="c">// ①</span>
-      anfang = anfang.getNachfolger();    <span class="c">// ②</span>
-      if (anfang == null) {               <span class="c">// ③</span>
-         ende = null;
-      }
-      return p;                           <span class="c">// ④</span>
-   }
-}
-
-public Patient peek() {
-   if (isEmpty()) {
-      return null;
-   } else {
-      return anfang.getDaten();
-   }
-}
-
-public int anzahl() {
-   int zaehler = 0;
-   Knoten aktuell = anfang;
-   while (aktuell != null) {
-      zaehler++;
-      aktuell = aktuell.getNachfolger();
-   }
-   return zaehler;
-}</pre>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="Online-IDE/LSG%2012-1-1%20Praxis.json" download>Lösungsprojekt (JSON für online-ide.de)</a> <a class="btn btn-outline btn-sm" href="Online-IDE/12-1-1%20Praxis.json" download>Ausgangsprojekt (JSON)</a></p>
+                    <p>Die Lösungen zu TODO 3 und 4 sowie zu <code>peek()</code> und <code>anzahl()</code> stehen im Lösungsprojekt und im Lösungsblatt. Auf der Seite sind sie nur über die gestuften Hilfen erreichbar (Tipps, Lösung erst nach Gedrückthalten), damit sie nicht im Vorbeischauen lesbar sind.</p>
                     <p><strong>Entscheidungen mit Blick auf 1.2 bis 1.4:</strong> Die Namen <code>Knoten</code>, <code>anfang</code>, <code>ende</code>, <code>nachfolger</code>, <code>getDaten()</code>, <code>setNachfolger(…)</code> sind dieselben wie in den folgenden Stationen. <code>add</code> bekommt die <em>Daten</em> (nicht den Knoten) und liefert <code>boolean</code>, <code>poll</code>/<code>peek</code> liefern die Daten oder <code>null</code>. Das entspricht <code>java.util.Queue</code> bzw. der <code>LinkedList</code> aus der Breitensuche (Klasse 11). In 1.2 wird nur <code>Patient</code> durch <code>DatenElement</code> ersetzt. In 1.3 kommt die Liste mit <code>anfang</code> allein aus, und <code>laenge()</code> bzw. <code>add</code> werden rekursiv im Knoten umgesetzt. Die iterative Methode <code>anzahl()</code> (Selbst bauen b) bietet sich dort als Vergleich an. Beim Kompositum (1.4) liefert <code>add</code> im <em>Knoten</em> ein <code>ListenElement</code> zurück; die öffentliche Methode der Liste bleibt unverändert.</p>
                     <p><strong>Frühere Fassung:</strong> Im alten Projekt (12-1 Queue) nahm <code>PatientQueue.add</code> einen <code>ListElement</code> entgegen und <code>poll</code> gab ihn zurück. Das Hauptprogramm musste Knoten also selbst bauen und auspacken. Außerdem wurde <code>ende</code> beim Leeren nicht zurückgesetzt, und die Array-Variante „MoveUp“ nutzte nur 4 von 5 Plätzen. Die Varianten sind überarbeitet: Jede zeigt jetzt genau ein Problem.</p>
                     <p><strong>Interface <code>Wartezimmer</code>:</strong> Es dient nur dazu, im Hauptprogramm mit einer Zeile zwischen den Varianten umzuschalten, und wird im Unterricht nicht thematisiert (Vorgriff auf 1.2). Das Projekt hat eine eigene ID (<code>i12-11-praxis</code>), der Bearbeitungsstand bleibt im Browser der Schüler:innen.</p>
+                    <p><strong>Coach:</strong> Unter dem Projekt wertet ein Coach Compilerfehler, Abstürze und die Ausgabe aus (über die Zugriffsschnittstelle der Online-IDE, <code>enableFileAccess</code> und <code>enableRunExitStatusAccess</code>). Er merkt sich, welche Varianten schon liefen, und erkennt typische Fehler wie den fehlenden Sonderfall oder vertauschte Schritte. Alles bleibt im Browser.</p>
+                    <p><strong>Wartezimmer-Simulator:</strong> Er übernimmt die Array- und Queue-Visualisierungen der früheren Seite <a href="../rekursion-queue-listen/rekursion.html">Rekursion, Queue und Listen</a>, spielt aber statt freier Eingaben das Hauptprogramm des Projekts ab. Mit „Vorher tippen“ sagen die Schüler:innen jeden Schritt voraus, bevor sie ihn sehen. Die Ankunftsnummern machen das Überholen in Variante 1 sichtbar, ohne es zu benennen: Das Problem formulieren die Schüler:innen auf dem Blatt selbst. In Variante 2 zeigt <code>naechster</code> nach Benes Aufruf auf Platz 5, den es nicht gibt; der Absturz folgt beim nächsten Aufruf. Der Stolperstein nennt die Variante deshalb nicht mehr. Die Regeln der Varianten (wie in den Code-Kommentaren) sind standardmäßig ausgeblendet. Die Vergleichstabelle füllt sich mit den durchgespielten Läufen und passt zu Aufgabe 1 und 5. Der Merkkasten „Probleme mit Arrays“ steht auf der Seite nur als Leitfragen zum Simulator; der vollständige Text erscheint erst nach Gedrückthalten.</p>
                 </details>
             </section>
         </div>

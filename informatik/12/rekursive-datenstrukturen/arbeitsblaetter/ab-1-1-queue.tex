@@ -1,15 +1,11 @@
 \documentclass[11pt,a4paper]{article}
 \input{ab-vorlage}
-\newcommand{\zeile}{\rule[-6mm]{0pt}{9.5mm}}
-% Lösungszeichnung: im Blatt unsichtbar, belegt aber denselben Platz
-\ifloesung\tikzset{lsgbild/.style={red!75!black}}\else\tikzset{lsgbild/.style={opacity=0}}\fi
-\newcommand{\lsgtext}[1]{\ifloesung#1\else\phantom{#1}\fi}
 \begin{document}
 \abtitel{1.1}{Die Warteschlange (Queue)}
 
 In der Arztpraxis wird in der Reihenfolge der Ankunft aufgerufen. Das \textbf{Projekt Praxis} \web{Station 1.1} verwaltet das Wartezimmer zunächst mit einem \textbf{Array}. Jedes Wartezimmer kann \code{add(Patient p)} (hinten anstellen), \code{poll()} (vorne aufrufen) und \code{ausgeben()}.
 
-\begin{aufgabe}[Projekt Praxis]{1}
+\begin{aufgabe}[Projekt Praxis \quad\web{Wartezimmer-Simulator}]{1}
 Starte das Hauptprogramm nacheinander mit Variante 1, 2 und 3. Notiere Idee und Problem.\\[1mm]
 \small\renewcommand{\arraystretch}{1.15}
 \begin{tabularx}{\linewidth}{|p{2.9cm}|X|X|}\hline
@@ -99,21 +95,21 @@ Ein Array hat eine \lsg[2.6cm]{feste Größe} und belegt schon beim Erzeugen \ls
 \node[font=\scriptsize,below=5mm of n.south,align=center] {\code{neu}};
 \end{tikzpicture}\\[1mm]
 \scriptsize\raggedright
-\textcircled{\tiny 1} Neuen Knoten für \code{p} erzeugen.\\
-\textcircled{\tiny 2} Bisher letzter Knoten bekommt \code{neu} als Nachfolger.\\
-\textcircled{\tiny 3} \code{ende} verweist auf den neuen Knoten.
+\nr{1} Neuen Knoten für \code{p} erzeugen.\\
+\nr{2} Bisher letzter Knoten bekommt \code{neu} als Nachfolger.\\
+\nr{3} \code{ende} verweist auf den neuen Knoten.
 \end{minipage}\hfill
 \begin{minipage}[t]{0.51\linewidth}
 \vspace{0pt}
 \begin{java}[basicstyle=\ttfamily\scriptsize]
 public boolean add(Patient p) {
-   Knoten neu = §\lsg[2.4cm]{new Knoten(p)}§;   // §\ding{172}§
+   Knoten neu = §\lsg[2.4cm]{new Knoten(p)}§;   // §\nr{1}§
    if (isEmpty()) {         // Sonderfall
       anfang = §\lsg[1.1cm]{neu}§;
       ende = §\lsg[1.1cm]{neu}§;
    } else {
-      §\lsg[3.4cm]{ende.setNachfolger(neu)}§;     // §\ding{173}§
-      §\lsg[2cm]{ende = neu}§;                    // §\ding{174}§
+      §\lsg[3.4cm]{ende.setNachfolger(neu)}§;     // §\nr{2}§
+      §\lsg[2cm]{ende = neu}§;                    // §\nr{3}§
    }
    return true;
 }
@@ -141,10 +137,10 @@ public boolean add(Patient p) {
 \draw[zeiger,teal!60!black] (an) -- node[schritt,above right=-0.6mm] {2} (b.north west);
 \end{tikzpicture}\\[1mm]
 \scriptsize\raggedright
-\textcircled{\tiny 1} Die Daten des ersten Knotens in \code{p} merken.\\
-\textcircled{\tiny 2} \code{anfang} rückt auf den Nachfolger weiter.\\
-\textcircled{\tiny 3} War das der letzte Knoten, wird auch \code{ende} leer.\\
-\textcircled{\tiny 4} \code{p} zurückgeben.
+\nr{1} Die Daten des ersten Knotens in \code{p} merken.\\
+\nr{2} \code{anfang} rückt auf den Nachfolger weiter.\\
+\nr{3} War das der letzte Knoten, wird auch \code{ende} leer.\\
+\nr{4} \code{p} zurückgeben.
 \end{minipage}\hfill
 \begin{minipage}[t]{0.51\linewidth}
 \vspace{0pt}
@@ -153,12 +149,12 @@ public Patient poll() {
    if (isEmpty()) {
       return §\lsg[1.1cm]{null}§;          // niemand wartet
    } else {
-      Patient p = §\lsg[2.8cm]{anfang.getDaten()}§;      // §\ding{172}§
-      anfang = §\lsg[3.4cm]{anfang.getNachfolger()}§;    // §\ding{173}§
-      if (§\lsg[2.4cm]{anfang == null}§) {               // §\ding{174}§
+      Patient p = §\lsg[2.8cm]{anfang.getDaten()}§;      // §\nr{1}§
+      anfang = §\lsg[3.4cm]{anfang.getNachfolger()}§;    // §\nr{2}§
+      if (§\lsg[2.4cm]{anfang == null}§) {               // §\nr{3}§
          ende = null;
       }
-      return §\lsg[0.8cm]{p}§;                           // §\ding{175}§
+      return §\lsg[0.8cm]{p}§;                           // §\nr{4}§
    }
 }
 \end{java}
