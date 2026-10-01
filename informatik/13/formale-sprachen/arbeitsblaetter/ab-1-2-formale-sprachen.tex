@@ -2,63 +2,45 @@
 \input{ab-vorlage}
 % Blatt:   tectonic ab-1-2-formale-sprachen.tex
 % Lösung:  tectonic ab-1-2-formale-sprachen-lsg.tex
-% Progression: Alphabet -> Wort/Länge -> Wortmenge A* (zählen: unendlich) -> Sprache L ⊆ A*
-%              -> Transfer (Alltagssprachen, Syntax vs. Semantik) -> Smileys in Worten (mehrdeutig)
-\newcommand{\zeile}{\rule[-2.2mm]{0pt}{7mm}}
+% Übungsfassung: Die Begriffe (Alphabet, Wort, Länge, ε, A*, L ⊆ A*) führt Blatt 1.1 ein, hier wird nur geübt.
+% Progression: Begriffe sicher anwenden (ε!) -> Wörter zählen |A|^n, endliche Sprache in unendlichem A*
+%              -> Sprachen durch Eigenschaften festlegen -> Alltag (Syntax, nicht Semantik)
+%              -> Smileys in Worten beschreiben: mehrdeutig -> Regeln nötig (Brücke zu 1.3)
+\newcommand{\zeile}{\rule[-2mm]{0pt}{6.6mm}}
 \newcommand{\hoch}{\rule[-1.6mm]{0pt}{6mm}}
 \begin{document}
-\abtitel{1.2}{Formale Sprachen}
+\abtitel{1.2}{Formale Sprachen -- Übung}
 
-Ob \code{2 + * 5} oder \code{34.07.2026} korrekt gebildet sind, kann ein Computer nur prüfen, wenn \textbf{eindeutig} festgelegt ist, welche \emph{Zeichen} erlaubt sind und welche \emph{Zeichenfolgen} dazugehören.
+Die Begriffe kennst du aus 1.1 (Merkkasten \emph{Formale Sprachen}). Auf diesem Blatt übst du sie mit drei Alphabeten:\\[1mm]
+\centerline{$A_1 = \{\code{0}, \code{1}\}$\qquad $A_2 = \{\code{a}, \code{b}, \code{c}, \dots, \code{z}\}$\qquad $A_3 = \{\code{:}, \code{;}, \code{-}, \code{)}, \code{(}, \code{D}, \code{P}, \code{*}\}$}
 
-\begin{merke}[Alphabet, Wort und Länge]
-\begin{itemize}
-\item Ein \textbf{Alphabet} $A$ ist eine \lsg[2.2cm]{endliche}, nichtleere Menge von \lsg[2cm]{Zeichen}.\\[0.5mm]
-$A_1 = \{\code{0}, \code{1}\}$\qquad $A_2 = \{\code{a}, \code{b}, \code{c}, \dots, \code{z}\}$\qquad $A_3 = \{\code{:}, \code{;}, \code{-}, \code{)}, \code{(}, \code{D}, \code{P}, \code{*}\}$
-\item Ein \textbf{Wort} (eine \textbf{Zeichenkette}) über $A$ ist eine endliche Folge von Zeichen aus $A$.\\
-Das \textbf{leere Wort} \eps{} enthält \lsg[2.6cm]{kein Zeichen}.
-\item Die \textbf{Länge} $|w|$ eines Wortes $w$ ist die \lsg[4cm]{Anzahl seiner Zeichen}. Beispiel: $|\code{0110}| = 4$, \ $|\varepsilon| = $ \lsg[0.8cm]{0}.
-\end{itemize}
-\end{merke}
-
-\begin{aufgabe}{1}
-\textbf{a)} Gib je drei Wörter unterschiedlicher Länge an und notiere ihre Länge.\\[1mm]
-\renewcommand{\arraystretch}{1.1}
-\begin{tabularx}{\linewidth}{|p{1.3cm}|X|X|X|}\hline
-über $A_1$\zeile & $k_1 = \varepsilon$, \quad $|k_1| = 0$ & \lsgoder{\lsgfarbe $k_2 = \code{1}$, \quad $|k_2| = 1$}{} & \lsgoder{\lsgfarbe $k_3 = \code{0110}$, \quad $|k_3| = 4$}{}\\\hline
-über $A_2$\zeile & \lsgoder{\lsgfarbe \code{x}, \quad Länge 1}{} & \lsgoder{\lsgfarbe \code{baum}, \quad Länge 4}{} & \lsgoder{\lsgfarbe \code{informatik}, \quad Länge 10}{}\\\hline
-über $A_3$\zeile & \lsgoder{\lsgfarbe \code{;D}, \quad Länge 2}{} & \lsgoder{\lsgfarbe \code{:-)}, \quad Länge 3}{} & \lsgoder{\lsgfarbe \code{DD:*(}, \quad Länge 5}{}\\\hline
-\end{tabularx}\\[1.2mm]
-\textbf{b)} Ist \code{ab} ein Wort über $A_1$? Ist \code{:-)} ein Wort über $A_2$? \lsg[7.4cm]{Nein, beides nicht: Zeichen fehlen im Alphabet.}\\[1mm]
-\textbf{c)} Es gibt genau ein Wort, das über \emph{jedem} Alphabet gebildet werden kann. Welches? Warum? \\[0.6mm]
-\lsg[\linewidth]{Das leere Wort \eps: Es enthält kein Zeichen, also auch keines, das im Alphabet fehlen könnte.}\\[1mm]
-\textbf{d)} Kreuze an, was richtig ist.\qquad
-\kreuz{0} $\varepsilon \in A_1$\qquad \kreuz{1} $\code{0} \in A_1$\qquad \kreuz{1} \code{000} ist Wort über $A_1$\qquad \kreuz{0} $|\code{:-)}| = 1$
+\begin{aufgabe}[Kurz geprüft]{1}
+\textbf{a)} Kreuze alle richtigen Aussagen an.\\[1mm]
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{@{}X@{\quad}X@{}}
+\kreuz{1} $\code{0} \in A_1$ & \kreuz{0} $\varepsilon \in A_1$\\
+\kreuz{0} \code{ab} ist ein Wort über $A_1$ & \kreuz{1} $\varepsilon \in A_1^*$\\
+\kreuz{0} $A_1^*$ ist endlich, weil $A_1$ endlich ist. & \kreuz{1} \code{:-)} ist ein Wort der Länge 3 über $A_3$.\\
+\kreuz{1} Jedes Zeichen aus $A$ ist auch ein Wort über $A$. & \kreuz{0} Das leere Wort $\varepsilon$ ist ein Leerzeichen.\\
+\end{tabularx}\\[1mm]
+\textbf{b)} Es gibt genau ein Wort, das über \emph{jedem} Alphabet gebildet werden kann. Welches? Warum?\\[0.6mm]
+\lsg[\linewidth]{Das leere Wort \eps: Es enthält kein Zeichen, also auch keines, das im Alphabet fehlen könnte.}
 \end{aufgabe}
 
 \begin{aufgabe}[Wie viele Wörter gibt es?]{2}
-\textbf{a)} Schreibe \emph{alle} Wörter über $A_1$ der Länge 0 bis 3 auf und zähle sie. Zähle dann auch für $A_2$ und $A_3$.\\[1mm]
+\textbf{a)} Schreibe alle Wörter über $A_1$ der Länge 0 bis 3 auf und zähle. Zähle auch für $A_3$ und allgemein.\\[1mm]
 \renewcommand{\arraystretch}{1.1}
-\begin{tabularx}{\linewidth}{|p{2.9cm}|p{0.85cm}|p{1.5cm}|p{2.8cm}|X|p{1.4cm}|}\hline
+\begin{tabularx}{\linewidth}{|p{4.4cm}|p{0.8cm}|p{1.3cm}|p{2.6cm}|X|p{1.1cm}|}\hline
 \textbf{Länge $n$} & \textbf{0} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{$n$}\\\hline
-Wörter über $A_1$\rule[-6mm]{0pt}{11mm} & \lsgoder{\lsgfarbe \eps}{} & \lsgoder{\lsgfarbe \code{0}, \code{1}}{} & \lsgoder{\lsgfarbe \code{00}, \code{01}, \code{10}, \code{11}}{} & \lsgoder{\lsgfarbe \code{000}, \code{001}, \code{010}, \code{011}, \code{100}, \code{101}, \code{110}, \code{111}}{} & \\\hline
+Wörter über $A_1$\rule[-6.5mm]{0pt}{11mm} & \lsgoder{\lsgfarbe \eps}{} & \lsgoder{\lsgfarbe \code{0}, \code{1}}{} & \lsgoder{\lsgfarbe \code{00}, \code{01}, \code{10}, \code{11}}{} & \lsgoder{\lsgfarbe \code{000}, \code{001}, \code{010}, \code{011}, \code{100}, \code{101}, \code{110}, \code{111}}{} & \\\hline
 Anzahl über $A_1$\hoch & \lsgoder{\lsgfarbe 1}{} & \lsgoder{\lsgfarbe 2}{} & \lsgoder{\lsgfarbe 4}{} & \lsgoder{\lsgfarbe 8}{} & \lsgoder{\lsgfarbe $2^n$}{}\\\hline
-Anzahl über $A_2$\hoch & \lsgoder{\lsgfarbe 1}{} & \lsgoder{\lsgfarbe 26}{} & \lsgoder{\lsgfarbe $26^2 = 676$}{} & \lsgoder{\lsgfarbe $26^3 = 17\,576$}{} & \lsgoder{\lsgfarbe $26^n$}{}\\\hline
 Anzahl über $A_3$\hoch & \lsgoder{\lsgfarbe 1}{} & \lsgoder{\lsgfarbe 8}{} & \lsgoder{\lsgfarbe 64}{} & \lsgoder{\lsgfarbe 512}{} & \lsgoder{\lsgfarbe $8^n$}{}\\\hline
+Anzahl bei $k$ Zeichen in $A$\hoch & \lsgoder{\lsgfarbe 1}{} & \lsgoder{\lsgfarbe $k$}{} & \lsgoder{\lsgfarbe $k^2$}{} & \lsgoder{\lsgfarbe $k^3$}{} & \lsgoder{\lsgfarbe $k^n$}{}\\\hline
 \end{tabularx}\\[1.2mm]
-\textbf{b)} Wie viele Wörter gibt es \emph{insgesamt} über $A_1$? Begründe, obwohl $A_1$ nur zwei Zeichen hat.\\[0.6mm]
-\lsg[\linewidth]{Unendlich viele: Zu jeder Länge $n$ gibt es $2^n$ Wörter, und die Länge ist nicht begrenzt.}
+\textbf{b)} Wie viele Farbcodes wie \code{\#9900BB} gibt es (1.1, Aufgabe 6)? Ist diese Sprache endlich oder unendlich?\\[0.6mm]
+\lsg[\linewidth]{$16^6 = 16\,777\,216$ Farbcodes: Die Sprache ist endlich, obwohl $A_\text{Hex}^*$ unendlich ist.}
 \end{aufgabe}
 
-\begin{merke}[Wortmenge und formale Sprache]
-\begin{itemize}
-\item Die \textbf{Wortmenge} $A^*$ ist die Menge \lsg[2.6cm]{aller Wörter} über $A$, einschließlich \eps. Obwohl $A$ endlich ist, ist $A^*$ immer \lsg[2.4cm]{unendlich}.\\[0.5mm]
-Beispiel: $A_1^* = \{$\,\lsg[9cm]{\eps, \code{0}, \code{1}, \code{00}, \code{01}, \code{10}, \code{11}, \code{000}, \code{001}, \dots}\,$\}$
-\item Eine \textbf{formale Sprache} $L$ über $A$ ist eine \textbf{eindeutig festgelegte} Menge von Wörtern über $A$, also eine \lsg[2.4cm]{Teilmenge} von $A^*$: $L \subseteq A^*$. Eindeutig heißt: Für \emph{jedes} Wort aus $A^*$ steht fest, ob es zu $L$ gehört oder nicht.
-\end{itemize}
-\end{merke}
-
-\newpage
 \begin{aufgabe}[Sprachen über $A_2$]{3}
 \begin{minipage}[t]{0.585\linewidth}
 \vspace{0pt}
@@ -83,6 +65,7 @@ $L_3$ = alle Wörter aus $A_2^*$, die das Teilwort \code{inf} enthalten\\[1mm]
 \end{minipage}
 \end{aufgabe}
 
+\newpage
 \begin{aufgabe}[Formale Sprachen im Alltag]{4}
 \textbf{a)} Ergänze die Tabelle.\\[1mm]
 \renewcommand{\arraystretch}{1.1}

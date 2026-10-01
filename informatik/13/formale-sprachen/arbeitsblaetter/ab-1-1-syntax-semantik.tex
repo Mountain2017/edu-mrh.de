@@ -1,0 +1,150 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+% Blatt:   tectonic ab-1-1-syntax-semantik.tex
+% Lösung:  tectonic ab-1-1-syntax-semantik-lsg.tex
+% Grundlage: material/1 Formale Sprache/INF13_1_1_Semantik (so unterrichtet), auf zwei Seiten verdichtet.
+% Progression: Mehrdeutigkeit (Witz) -> Bausteine ohne/mit Bedeutung (Zeichen, Token) -> Syntax und Semantik
+%              -> Syntax- oder Semantikfehler? -> Protokoll: auch die Reihenfolge ist Regel
+%              -> Begriffe Alphabet, Wort, Länge, A*, L ⊆ A* (Terme) -> Transfer: Farbcodes
+% Wird aufgegriffen: Farbcodes (A. 6) in 1.2 A. 2b und 1.3 A. 3, Terme (A. 5) in 1.4 A. 6.
+\newcommand{\abschnitt}[1]{\par\vspace{0.3mm}{\bfseries #1}\par\vspace{-0.8mm}}
+\newcommand{\zeile}{\rule[-1.6mm]{0pt}{5.9mm}}
+\begin{document}
+\abtitel{1.1}{Syntax und Semantik}
+
+\begin{aufgabe}{1}
+\centerline{\itshape „Treffen sich zwei Jäger. Beide tot.“}
+\textbf{a)} Erkläre, worauf der Witz beruht. (mündlich)\\
+\textbf{b)} Der Satz ist korrekt gebaut. Warum wäre er als Anweisung an einen Computer unbrauchbar?\\[0.6mm]
+\lsg[\linewidth]{Eine Zeichenkette, zwei Bedeutungen. Ein Computer kann nicht nachfragen: Er braucht genau eine.}
+\end{aufgabe}
+
+\abschnitt{1. Bausteine einer Sprache}
+Sprache ist aus Bausteinen auf mehreren Ebenen aufgebaut; die \underline{unterste} trägt noch \underline{keine} Bedeutung:\\[0.3mm]
+\hspace*{8mm}{\small\begin{tabular}{@{}l@{\qquad}l@{}}
+\code{u\,n\,f\,r\,e\,u\,n\,d\,l\,i\,c\,h} & einzelne Buchstaben: \textbf{ohne} eigene Bedeutung\\
+\code{un\,|\,freund\,|\,lich} & kleinste Bausteine \textbf{mit} Bedeutung\\
+\code{Der Hund ist unfreundlich.} & nach \textbf{Regeln} zu einem Satz zusammengesetzt
+\end{tabular}}
+
+\begin{aufgabe}{2}
+\textbf{a)} (mündlich) Wodurch unterscheiden sich \code{Hund} und \code{Mund}? Hat dieser Baustein eine Bedeutung?\\[0.6mm]
+\textbf{b)} Zerlege \code{Unverbesserlichkeit} in Bausteine mit Bedeutung: \lsg[5.4cm]{\code{un | ver | besser | lich | keit}}\\[1mm]
+\textbf{c)} Bausteine \emph{ohne} und \emph{mit} Bedeutung in der Zeile \code{SELECT name FROM Schueler;}\\[0.6mm]
+\lsg[\linewidth]{ohne: die einzelnen Zeichen \code{S}, \code{E}, \code{L}, … \qquad mit: \code{SELECT}, \code{name}, \code{FROM}, \code{Schueler}, \code{;}}\\[1mm]
+\textbf{d)} Die Fachbegriffe beider Welten entsprechen einander. Ergänze.\\[0.8mm]
+{\renewcommand{\arraystretch}{1}
+\begin{tabularx}{\linewidth}{|X|p{4.6cm}|p{4.6cm}|}\hline
+& \textbf{natürliche Sprache} & \textbf{künstliche Sprache}\\\hline
+Baustein \emph{ohne} eigene Bedeutung\zeile & \lsg[4.3cm]{Laut / Buchstabe} & \lsg[4.3cm]{Zeichen (Symbol)}\\\hline
+kleinste Einheit \emph{mit} Bedeutung\zeile & \lsg[4.3cm]{Morphem / Wort} & \lsg[4.3cm]{Token}\\\hline
+Regeln zum Zusammensetzen\zeile & Grammatik, Satzbau & \lsg[4.3cm]{Syntax}\\\hline
+Bedeutung des Ganzen\zeile & Bedeutung & \lsg[4.3cm]{Semantik}\\\hline
+\end{tabularx}}
+\end{aufgabe}
+
+\begin{merke}[Syntax und Semantik]
+\begin{minipage}[c]{0.5\linewidth}
+Die \textbf{Syntax} legt fest, \emph{wie} Zeichen zu erlaubten Zeichenketten zusammengesetzt werden. Die \textbf{Semantik} legt fest, \emph{welche Bedeutung} eine Zeichenkette hat.
+\end{minipage}\hfill
+\begin{minipage}[c]{0.49\linewidth}\raggedleft
+\begin{tikzpicture}[x=1cm,y=1cm,font=\scriptsize,
+  kasten/.style={draw,fill=white,rounded corners=1.5pt,minimum height=0.75cm,align=center}]
+\node[kasten] (s) at (0,0) {Sender\\\emph{Information}};
+\node[kasten] (d) at (3.2,0) {Darstellung\\(nach \textbf{Syntax})};
+\node[kasten] (e) at (6.4,0) {Empfänger\\\emph{Information}};
+\draw[-latex,thick] (s) -- node[above]{codieren} (d);
+\draw[-latex,thick] (d) -- node[above]{deuten} (e);
+\end{tikzpicture}
+\end{minipage}\\[0.8mm]
+Verständigung gelingt nur mit gleicher Syntax \underline{und} Semantik auf beiden Seiten. Natürliche Sprachen dürfen mehrdeutig sein, künstliche nicht: Jede gültige Zeichenkette hat genau eine Bedeutung.
+\end{merke}
+
+\abschnitt{2. Syntaktisch korrekt ist nicht dasselbe wie sinnvoll}
+\begin{aufgabe}{3}
+Ordne die Ausdrücke in die Tabelle ein. Begründe bei (5) und (6) kurz.\\[0.5mm]
+{\small\begin{tabular}{@{}l@{\hspace{8mm}}l@{}}
+(1) „Der spielt Hund dem Ball mit.“ & (5) \code{int alter = "Hans";}\\
+(2) „Farblose grüne Ideen schlafen wütend.“ & (6) \code{29.02.2026}\\
+(3) \code{RGB(255, 128)} & (7) \code{2 + * 5 = x}\\
+(4) \code{RGB(300, 128, 50)} & (8) \code{SELECT * FROM Kleidung WHERE groesse = 'Hose'}
+\end{tabular}}\\[1mm]
+\renewcommand{\arraystretch}{1}
+\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{4.1cm}|X|}\hline
+\textbf{Syntaxfehler}\newline{\small Regelverstoß im Aufbau} & \lsgoder{\lsgfarbe (1), (3), (7)}{}\\\hline
+\textbf{Semantikfehler}\newline{\small korrekt gebaut, aber falsch oder sinnlos}\rule[-6mm]{0pt}{6mm} & \lsgoder{\lsgfarbe (2), (4), (5), (6), (8)\newline (5) Aufbau stimmt, aber eine \code{int}-Variable erhält einen Text.\newline (6) Aufbau stimmt, aber 2026 ist kein Schaltjahr.}{}\\\hline
+\end{tabularx}
+\end{aufgabe}
+
+\begin{hinweis}\small
+\textbf{Achtung, teurer Fehler:} Ein Compiler prüft die Syntax, aber kaum Bedeutungsregeln (z.\,B. Datentypen wie bei (5)). Die meisten Semantikfehler bemerkt er nicht: Das Programm läuft, tut aber Falsches (\emph{Mars Climate Orbiter}, 1999).
+\end{hinweis}
+
+\newpage
+\abschnitt{3. Maschine spricht mit Maschine: Protokolle}
+Damit Programme sich verstehen, muss feststehen, welche Zeichenketten erlaubt sind (Syntax), was sie bedeuten (Semantik) und \underline{in welcher Reihenfolge} sie kommen. Ein solches Regelwerk heißt \textbf{Protokoll} (hier: SMTP für E-Mails).
+
+\begin{aufgabe}{4}
+Der Dialog enthält drei Fehler. Trage ein: \emph{kein Fehler}, \emph{Syntax-}, \emph{Reihenfolge-} oder \emph{Semantikfehler}.\\[0.3mm]
+{\small\renewcommand{\arraystretch}{1.12}
+\begin{tabularx}{\linewidth}{@{}r@{\ \ }l@{\ \ }l@{\ \ }X@{}}
+& \textbf{Client sendet} & \textbf{Server antwortet} & \textbf{Fehler}\\\hline
+(1) & \code{HELO klient.example.net} & \code{250 OK} & \lsg[3.4cm]{kein Fehler}\\
+(2) & \code{RCPT TO: <chef@example.com>} & \code{503 Bad sequence of commands} & \lsg[3.4cm]{Reihenfolgefehler}\\
+(3) & \code{MAIL FROM: sender@example.org} & \code{501 Syntax error in parameters} & \lsg[3.4cm]{Syntaxfehler}\\
+(4) & \code{MAIL FROM: <sender@example.org>} & \code{250 OK} & \lsg[3.4cm]{kein Fehler}\\
+(5) & \code{RCPT TO: <chef@exapmle.com>} & \code{250 OK} & \lsg[3.4cm]{Semantikfehler}\\
+\end{tabularx}}\\[1mm]
+Welchen Fehler kann der Server nicht bemerken? Warum nicht?\\[0.6mm]
+\lsg[\linewidth]{(5): \code{exapmle.com} ist korrekt gebaut, meint aber einen anderen Empfänger.}
+\end{aufgabe}
+
+\abschnitt{4. Die Begriffe der Informatik}
+\begin{merke}[Formale Sprachen]
+\begin{itemize}
+\item Ein \textbf{Alphabet} $A$ ist eine \lsg[2cm]{endliche}, nichtleere Menge von \textbf{Zeichen} (Symbolen, Token).
+\item Ein \textbf{Wort} (eine \textbf{Zeichenkette}) über $A$ ist eine endliche Folge von Zeichen aus $A$. Das \textbf{leere Wort} $\varepsilon$ enthält kein Zeichen. Die \textbf{Länge} $|w|$ ist die \lsg[3.8cm]{Anzahl seiner Zeichen}.
+\item Die \textbf{Wortmenge} $A^*$ ist die Menge \lsg[2.4cm]{aller Wörter} über $A$, einschließlich $\varepsilon$.
+\item Eine \textbf{formale Sprache} $L$ ist eine \lsg[3.4cm]{eindeutig festgelegte} \lsg[2.2cm]{Teilmenge} von $A^*$, kurz $L \subseteq A^*$.
+\end{itemize}
+\end{merke}
+
+\begin{aufgabe}{5}
+\begin{minipage}[t]{0.7\linewidth}
+Gegeben ist $A = \{\code{sin}, \code{cos}, \code{sqrt}, \code{(}, \code{)}, \code{x}, \code{+}\}$.\\[0.5mm]
+\textbf{a)} Bestimme $|w|$ für $w = \code{sin(x)}$: \lsg[1.4cm]{$|w| = 4$}\ \ Warum erhält man über dem Alphabet der Buchstaben einen anderen Wert?\\[0.6mm]
+\lsg[\linewidth]{Dort ist $|w| = 6$. Was \emph{ein} Zeichen ist, legt das Alphabet fest.}\\[1mm]
+\textbf{b)} Welche sind Wörter über $A$? {\small(Leerzeichen nur zur Lesbarkeit)}\\[0.5mm]
+\kreuz{1} \code{sin cos}\ \ \kreuz{0} \code{tan(x)}\ \ \kreuz{1} \code{sqrt(x+x)}\ \ \kreuz{0} \code{(sin(x))\textasciicircum 2}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.28\linewidth}\vspace{-3.5mm}\centering
+\begin{tikzpicture}[font=\scriptsize]
+\draw[fill=black!4] (0,0) ellipse (2.25cm and 1.4cm);
+\node at (-1.25,0.62) {$A^*$};
+\draw[fill=black!14] (-0.3,-0.3) ellipse (1.15cm and 0.72cm);
+\node[align=center] at (-0.3,-0.3) {$L$\\ \emph{gültige Terme}};
+\node[gray!60!black] at (1.3,0.55) {\code{sin cos}};
+\end{tikzpicture}
+\end{minipage}\\[1mm]
+\textbf{c)} Anzahl der Wörter der Länge 2 über $A$: \lsg[1.8cm]{$7^2 = 49$}\qquad Anzahl der Wörter in $A^*$: \lsg[2.8cm]{unendlich viele}\\[1mm]
+\textbf{d)} \code{sin cos} liegt in $A^*$, ist aber kein gültiger Term. Was folgt für die Sprache $L$ der Terme?\\[0.6mm]
+\lsg[\linewidth]{$L$ ist eine echte Teilmenge von $A^*$: Man braucht Regeln, die die gültigen Wörter festlegen.}
+\end{aufgabe}
+
+\abschnitt{5. Transfer: Farben als formale Sprache}
+\begin{aufgabe}{6}
+\begin{minipage}[t]{0.84\linewidth}
+\textbf{a)} Alphabet der Farbcodes: \ $A_\text{Hex} = $ \lsg[7cm]{\{\code{\#}, \code{0}, \dots, \code{9}, \code{A}, \dots, \code{F}\}: 17 Zeichen}\\[1mm]
+\textbf{b)} Beschreibe Syntax \emph{und} Semantik von \code{\#9900BB}.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.14\linewidth}\vspace{-3.5mm}\raggedleft
+\begin{tikzpicture}
+\fill[fill={rgb,255:red,153;green,0;blue,187}] (0,0) rectangle (1.7,0.75);
+\node[anchor=north,font=\scriptsize] at (0.85,-0.02) {\code{\#9900BB}};
+\end{tikzpicture}
+\end{minipage}
+\lsglinien{2}{\textbf{Syntax:} ein \code{\#}, dann genau sechs Hex-Ziffern. \textbf{Semantik:} Je zwei Ziffern geben den Rot-, Grün- und Blauanteil an (\code{00} bis \code{FF}, also 0 bis 255), hier R = 153, G = 0, B = 187.}
+\textbf{c)} Zwei Wörter aus $A_\text{Hex}^*$, die \underline{keine} Farbcodes sind: \lsg[7.2cm]{\code{\#\#}, \code{9900BB} (ohne \code{\#}), \code{\#9900B}}\\[1mm]
+\textbf{d)} Warum schreibt man führende Nullen (\code{\#0000FF} statt \code{\#00FF})? (mündlich)
+\end{aufgabe}
+\end{document}
