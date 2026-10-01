@@ -5,8 +5,8 @@
  *     führt add(...) und poll() einer verketteten Warteschlange Zeile für Zeile aus
  *     (Code wie auf Blatt 1.1) und zeichnet nach jedem Schritt alle Verweise neu.
  *   Wartezimmer-Simulator (1.1)  <div data-wartezimmer>
- *     spielt das Hauptprogramm des Projekts Praxis für die drei Array-Varianten
- *     und die Kette ab, mit Vorhersage per Klick.
+ *     spielt das Hauptprogramm des Projekts Praxis für die Array-Varianten
+ *     (dazu 2b: Nummer springt auf 0) und die Kette ab, mit Vorhersage per Klick.
  *   Lösungsweg (alle)            <div data-loesungsweg="…"> mit <template data-stufe>
  *   Kopie-Vergleich (1.2)        <div data-kopievergleich>
  *   Vertragsprüfer (1.2)         <div data-vertragspruefer>
@@ -417,7 +417,7 @@
 })();
 
 /* ==========================================================================
-   Wartezimmer-Simulator (1.1): drei Array-Varianten und die Kette im Vergleich
+   Wartezimmer-Simulator (1.1): Array-Varianten und die Kette im Vergleich
      <div data-wartezimmer></div>
    Spielt das Hauptprogramm des Projekts Praxis Schritt für Schritt ab. Mit
    „Vorher tippen“ klickt man vor jedem Schritt den erwarteten Platz bzw. die
@@ -436,8 +436,11 @@
         { titel: 'Vier neue kommen', schritte: ['Gustav', 'Leonie', 'Ludwig', 'Mia'] },
         { titel: 'Die Ärztin ruft alle auf', schritte: [null, null, null, null, null, null, null] }
     ];
+    // Nur Variante 2b: Erst wenn die Schlange einmal leer war, zeigt sich ihr Fehler.
+    var ZUSATZ = { titel: 'Zusatzrunde (nicht im Projekt): Später kommen Toni und Zoe', schritte: ['Toni', 'Zoe', null, null] };
+    function runden(v) { return v.zusatz ? RUNDEN.concat([ZUSATZ]) : RUNDEN; }
     var ANKUNFT = {};                 // Name -> Nummer in der Reihenfolge der Ankunft
-    RUNDEN.forEach(function (r) {
+    RUNDEN.concat([ZUSATZ]).forEach(function (r) {
         r.schritte.forEach(function (s) { if (s) ANKUNFT[s] = Object.keys(ANKUNFT).length + 1; });
     });
 
@@ -485,6 +488,17 @@
               z.naechster = k + 1;
               return { wer: wer, platz: k, info: 'naechster ist ' + k + ': poll ruft ' + wer + ' auf Platz ' + k + ' auf und zählt naechster auf ' + (k + 1) + ' weiter.' };
           } },
+        { schluessel: 'ring', titel: 'Variante 2b: Nummer springt auf 0', art: 'array', marke: 'naechster', zusatz: true,
+          regel: 'add wie Variante 1. poll ruft den Platz auf, auf den naechster zeigt. Danach zählt naechster weiter und springt nach dem letzten Platz wieder auf 0.',
+          add: function (z, wer) { return VARIANTEN[0].add(z, wer); },
+          poll: function (z) {
+              var k = z.naechster, n = z.plaetze.length;
+              var wer = z.plaetze[k];
+              if (wer === null) return niemand('Auf Platz ' + k + ' (naechster) sitzt niemand:');
+              z.plaetze[k] = null;
+              z.naechster = (k + 1) % n;
+              return { wer: wer, platz: k, info: 'naechster ist ' + k + ': poll ruft ' + wer + ' auf Platz ' + k + ' auf. naechster ' + (k + 1 === n ? 'springt zurück auf 0.' : 'zählt auf ' + (k + 1) + ' weiter.') };
+          } },
         { schluessel: 'aufruecken', titel: 'Variante 3: Aufrücken', art: 'array', marke: 'anzahl',
           regel: 'add schreibt auf Platz anzahl und zählt anzahl um 1 hoch. poll ruft Platz 0 auf, danach rücken alle anderen einen Platz vor.',
           add: function (z, wer) {
@@ -527,10 +541,10 @@
                  letzt: null, tipps: 0, treffer: 0 };
     }
 
-    function naechsterName(z) { return RUNDEN[z.runde].schritte[z.schritt]; }
+    function naechsterName(z, v) { return runden(v)[z.runde].schritte[z.schritt]; }
 
     function schritt(z, v) {
-        var name = naechsterName(z), runde = z.runde, erg;
+        var name = naechsterName(z, v), runde = z.runde, R = runden(v), erg;
         if (name) {
             erg = v.add(z, name);
             erg.name = name;
@@ -542,10 +556,10 @@
         if (erg.absturz) {
             z.absturz = true;
             z.fertig = true;
-        } else if (++z.schritt >= RUNDEN[runde].schritte.length) {
+        } else if (++z.schritt >= R[runde].schritte.length) {
             z.schritt = 0;
             z.runde++;
-            z.fertig = z.runde >= RUNDEN.length;
+            z.fertig = z.runde >= R.length;
         }
         z.letzt = erg;
         return erg;
@@ -615,7 +629,7 @@
 
         // Beim Anhängen an die Kette gibt es nichts zu raten.
         function tippModus() {
-            return tippen.checked && !z.fertig && !(v.art === 'kette' && naechsterName(z));
+            return tippen.checked && !z.fertig && !(v.art === 'kette' && naechsterName(z, v));
         }
 
         function tippText(tipp, art) {
@@ -626,6 +640,10 @@
         function abschluss() {
             ergebnisse[v.schluessel] = {
                 runde4: z.aufgerufen.filter(function (a) { return a.runde === RUNDEN.length - 1; }).map(function (a) { return a.name; }),
+                zusatz: v.zusatz ? {
+                    aufgerufen: z.aufgerufen.filter(function (a) { return a.runde === RUNDEN.length; }).map(function (a) { return a.name; }),
+                    wartend: z.plaetze.filter(function (p) { return p !== null; })
+                } : null,
                 abgewiesen: z.abgewiesen.slice(),
                 verschiebungen: z.verschiebungen,
                 absturz: z.absturz
@@ -690,8 +708,8 @@
 
         function zeichne() {
             var tipp = tippModus();
-            var name = z.fertig ? null : naechsterName(z);
-            box.querySelector('.wz-rundentitel').textContent = z.fertig ? 'Hauptprogramm beendet' : 'Runde ' + (z.runde + 1) + ' von ' + RUNDEN.length + ': ' + RUNDEN[z.runde].titel;
+            var name = z.fertig ? null : naechsterName(z, v), R = runden(v);
+            box.querySelector('.wz-rundentitel').textContent = z.fertig ? 'Hauptprogramm beendet' : 'Runde ' + (z.runde + 1) + ' von ' + R.length + ': ' + R[z.runde].titel;
             var frage = box.querySelector('.wz-frage');
             if (z.fertig) frage.textContent = '';
             else if (name) frage.textContent = name + ' kommt (Nr. ' + ANKUNFT[name] + ').' + (tipp ? ' Auf welchen Platz? Tippe ihn an.' : '');
@@ -837,14 +855,16 @@
                 });
                 tabelle.appendChild(tr);
             }
-            reihe(['Variante', 'Runde 4: aufgerufen (Ankunft)', 'abgewiesen', 'Verschiebungen', 'Absturz'], true);
+            reihe(['Variante', 'Runde 4: aufgerufen (Ankunft)', 'abgewiesen', 'Verschiebungen', 'Besonderheit'], true);
             reihen.forEach(function (va) {
                 var e = ergebnisse[va.schluessel];
                 reihe([va.titel,
                        e.runde4.length ? e.runde4.map(function (n) { return n + ' (' + ANKUNFT[n] + ')'; }).join(', ') : '–',
                        e.abgewiesen.length ? e.abgewiesen.join(', ') : '–',
                        String(e.verschiebungen),
-                       e.absturz ? 'ja' : 'nein']);
+                       e.absturz ? 'Absturz bei plaetze[5]'
+                           : e.zusatz ? 'Zusatzrunde: aufgerufen ' + (e.zusatz.aufgerufen.join(', ') || 'niemand') + '; es warten noch ' + (e.zusatz.wartend.join(', ') || 'niemand')
+                           : '–']);
             });
             huelle.appendChild(tabelle);
             ziel.appendChild(huelle);
