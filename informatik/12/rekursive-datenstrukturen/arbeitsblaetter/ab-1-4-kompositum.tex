@@ -1,0 +1,212 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{1.4}{Das Entwurfsmuster Kompositum}
+
+Die Liste aus 1.3 funktioniert. Aber fast jede Methode muss Sonderfälle abfangen: das Ende der Liste (\code{nachfolger == null}) und die leere Liste (\code{anfang == null}). \web{Station 1.4, Projekt Kompositum}
+
+\begin{aufgabe}[Fallunterscheidungen zählen]{1}
+\textbf{a)} Zähle in deiner Lösung von 1.3 die Abfragen auf \code{null}. \textbf{b)} Stell dir vor, am Ende der Liste stünde statt \code{null} ein echtes Objekt, der \textbf{Abschluss}. Was müsste er bei den einzelnen Methoden antworten?\\[1mm]
+\small\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{|l|c|c|X|}\hline
+\textbf{Methode} & \textbf{\code{== null} in Liste} & \textbf{\code{== null} in Knoten} & \textbf{Antwort des Abschlusses}\\\hline
+\code{laenge()} & \lsgtext{1} & \lsgtext{1} & \lsgtext{0: Ab hier gibt es keinen Knoten mehr.}\\\hline
+\code{enthaelt(d)} & \lsgtext{1} & \lsgtext{1} & \lsgtext{false: Hier ist nichts mehr zu finden.}\\\hline
+\code{add(d)} & \lsgtext{1} & \lsgtext{1} & \lsgtext{Er erzeugt den neuen Knoten (Genaueres in Aufgabe 4).}\\\hline
+\code{entfernen(d)} & \lsgtext{1} & \lsgtext{1} & \lsgtext{Nichts gefunden: Es bleibt, wie es ist.}\\\hline
+\end{tabularx}\\[1mm]
+\normalsize
+Mit Abschluss gibt es nie mehr \code{null}: Die leere Liste besteht nur aus dem Abschluss.
+\end{aufgabe}
+
+\begin{minipage}[t]{0.535\linewidth}
+\vspace{0pt}
+Knoten und Abschluss sollen beide als \code{nachfolger} und als \code{anfang} stehen können. Sie brauchen also einen gemeinsamen Typ:\\[-1mm]
+\begin{java}[basicstyle=\ttfamily\scriptsize]
+public §\lsg[1.6cm]{abstract}§ class ListenElement {
+   public §\lsg[1.6cm]{abstract}§ int laenge();
+   public abstract boolean enthaelt(DatenElement d);
+   public abstract ListenElement add(DatenElement d);
+   public abstract ListenElement entfernen(DatenElement d);
+   ...
+}
+public class Abschluss §\lsg[3.2cm]{extends ListenElement}§ { ... }
+public class Knoten extends ListenElement {
+   private DatenElement daten;
+   private §\lsg[2.6cm]{ListenElement}§ nachfolger;
+   ...
+}
+\end{java}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.445\linewidth}
+\vspace{0pt}
+\begin{merke}[Abstrakte Klasse und Kompositum]
+\small
+\begin{itemize}
+\item Von einer \textbf{abstrakten Klasse} kann man keine \lsg[1.7cm]{Objekte} erzeugen. Ihre abstrakten Methoden haben keinen \lsg[1.6cm]{Rumpf}: Jede Unterklasse muss sie \lsg[2.4cm]{überschreiben}.
+\item Anders als ein Interface darf eine abstrakte Klasse auch \lsg[2.2cm]{Attribute} und fertige Methoden enthalten. Erben kann eine Klasse aber nur von \lsg[1.2cm]{einer} Klasse.
+\item Welche \code{laenge()} läuft, entscheidet das Objekt zur Laufzeit: \lsg[2.2cm]{Polymorphie}.
+\item \textbf{Kompositum}: Statt Fallunterscheidungen gibt es für jeden Fall eine eigene \lsg[1.8cm]{Klasse}.
+\end{itemize}
+\end{merke}
+\end{minipage}
+
+\begin{aufgabe}[Objektdiagramm]{2}
+Zeichne alle Verweise ein: links eine leere Liste, rechts eine Liste mit Taxi 12 und Taxi 7.\\[1mm]
+\begin{tikzpicture}[node distance=8mm]
+\node[qobj] (l1) {\textbf{leer : Liste}\nodepart{second}anfang};
+\node[aobj,right=12mm of l1] (a1) {\textbf{: Abschluss}\nodepart{second}\phantom{x}};
+\node[qobj,right=20mm of a1] (l2) {\textbf{dienst : Liste}\nodepart{second}anfang};
+\node[obj,right=12mm of l2] (k1) {\textbf{k1 : Knoten}\nodepart{second}daten = Taxi 12\\nachfolger};
+\node[obj,right=of k1] (k2) {\textbf{k2 : Knoten}\nodepart{second}daten = Taxi 7\\nachfolger};
+\node[aobj,right=of k2] (a2) {\textbf{: Abschluss}\nodepart{second}\phantom{x}};
+\begin{scope}[lsgbild]
+  \draw[zeiger] (l1.east) -- (a1.west);
+  \draw[zeiger] (l2.east) -- (k1.west);
+  \draw[zeiger] ([yshift=-2.5mm]k1.east) -- ([yshift=-2.5mm]k2.west);
+  \draw[zeiger] ([yshift=-2.5mm]k2.east) -- ([yshift=-2.5mm]k2.east -| a2.west);
+\end{scope}
+\end{tikzpicture}
+\end{aufgabe}
+
+\begin{aufgabe}[Projekt Kompositum, TODO 3a und 3b]{3}
+\begin{minipage}[t]{0.52\linewidth}
+\vspace{0pt}
+\begin{java}[basicstyle=\ttfamily\scriptsize]
+// Knoten
+public int laenge() {
+   return §\lsg[3.6cm]{nachfolger.laenge() + 1}§;
+}
+public boolean enthaelt(DatenElement d) {
+   if (daten.istGleich(d)) {
+      return true;
+   } else {
+      return §\lsg[3.4cm]{nachfolger.enthaelt(d)}§;
+   }
+}
+// Abschluss
+public int laenge() { return §\lsg[0.7cm]{0}§; }
+public boolean enthaelt(DatenElement d) { return §\lsg[1cm]{false}§; }
+\end{java}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.45\linewidth}
+\vspace{0pt}\raggedright
+\textbf{a)} Ergänze und übertrage ins Projekt.\\[1mm]
+\textbf{b)} In \code{Knoten.laenge()} steht keine Abbruchbedingung mehr. Warum endet die Rekursion trotzdem?\\
+\lsg[0.98\linewidth]{Am Ende ruft der letzte Knoten}\\[1mm]
+\lsg[0.98\linewidth]{laenge() des Abschlusses auf. Der ant-}\\[1mm]
+\lsg[0.98\linewidth]{wortet 0 und ruft niemanden mehr auf.}
+\end{minipage}
+\end{aufgabe}
+
+\newpage
+\begin{aufgabe}[Projekt Kompositum, TODO 4a bis 4c]{4}
+Beim Anhängen gibt es ein Problem: Der Abschluss kann den \code{nachfolger} seines Vorgängers nicht ändern. Lösung: Jedes \code{add} gibt zurück, \textbf{was danach an seiner Stelle steht}. Der Aufrufer trägt diese Rückgabe ein.\\[1mm]
+\begin{minipage}[t]{0.44\linewidth}
+\vspace{0pt}
+\begin{tikzpicture}[node distance=6mm]
+\node[obj] (k2) {\textbf{k2}\nodepart{second}Taxi 7};
+\node[aobj,right=14mm of k2] (a) {\textbf{Abschluss}\nodepart{second}\phantom{x}};
+\node[obj,below=7mm of $(k2)!0.5!(a)$] (n) {\textbf{neu}\nodepart{second}Taxi 3};
+\draw[zeiger,gray,densely dashed] (k2) -- (a);
+\draw[gray] ($(k2.east)!0.5!(a.west)+(-1mm,-1mm)$) -- ++(2mm,2mm);
+\draw[zeiger,teal!60!black] (n.east) to[bend right=25] node[schritt,right=0.5mm] {2} (a.south);
+\draw[zeiger,teal!60!black] (k2.south) to[bend right=20] node[schritt,left=0.5mm] {4} (n.west);
+\node[schritt,above=1mm of a] {1};
+\node[schritt,right=1mm of n.south east] {3};
+\end{tikzpicture}\\[1mm]
+\scriptsize
+\nr{1} Der Abschluss erzeugt einen neuen Knoten,\\
+\nr{2} trägt sich selbst als dessen Nachfolger ein\\
+\nr{3} und gibt den neuen Knoten zurück.\\
+\nr{4} k2 trägt die Rückgabe als Nachfolger ein und gibt sich selbst zurück.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.54\linewidth}
+\vspace{0pt}
+\begin{java}[basicstyle=\ttfamily\scriptsize]
+// Abschluss (4a)
+public ListenElement add(DatenElement d) {
+   Knoten neu = §\lsg[2.6cm]{new Knoten(d)}§;     // §\nr{1}§
+   neu.setNachfolger(§\lsg[1.1cm]{this}§);        // §\nr{2}§
+   return §\lsg[1.1cm]{neu}§;                     // §\nr{3}§
+}
+// Knoten (4b)
+public ListenElement add(DatenElement d) {
+   nachfolger = §\lsg[2.8cm]{nachfolger.add(d)}§;  // §\nr{4}§
+   return §\lsg[1.1cm]{this}§;
+}
+// Liste (4c)
+public boolean add(DatenElement d) {
+   anfang = §\lsg[2.4cm]{anfang.add(d)}§;
+   return true;
+}
+\end{java}
+\end{minipage}\\[1mm]
+\textbf{b)} Warum muss auch die Liste das Ergebnis speichern (\code{anfang = ...})? Denke an die leere Liste!\\
+\lsg[\linewidth]{In der leeren Liste ist anfang der Abschluss. Nach add muss anfang auf den neuen Knoten zeigen.}
+\end{aufgabe}
+
+\begin{aufgabe}[Projekt Kompositum, TODO 5]{5}
+\begin{minipage}[t]{0.52\linewidth}
+\vspace{0pt}
+\begin{java}[basicstyle=\ttfamily\scriptsize]
+// Knoten: Rückgabe = wer danach hier steht
+public ListenElement entfernen(DatenElement d) {
+   if (daten.istGleich(d)) {
+      return §\lsg[1.9cm]{nachfolger}§;   // ich werde übersprungen
+   } else {
+      nachfolger = §\lsg[3.4cm]{nachfolger.entfernen(d)}§;
+      return §\lsg[1.1cm]{this}§;
+   }
+}
+// Abschluss
+public ListenElement entfernen(DatenElement d) {
+   return this;
+}
+\end{java}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.45\linewidth}
+\vspace{0pt}\raggedright
+\textbf{a)} Ergänze \code{Knoten.entfernen}. Warum ist \code{Abschluss.entfernen} schon fertig?\\
+\lsg[0.98\linewidth]{Kommt die Suche beim Abschluss an,}\\[1mm]
+\lsg[0.98\linewidth]{gab es d nicht: Alles bleibt, wie es ist.}\\[1.5mm]
+\textbf{b)} Vergleiche mit 1.3. Was fällt weg?\\
+\lsg[0.98\linewidth]{die Vorausschau auf den Nachfolger und}\\[1mm]
+\lsg[0.98\linewidth]{der Sonderfall für den ersten Knoten}
+\end{minipage}
+\end{aufgabe}
+
+\begin{aufgabe}[Klassendiagramm]{6}
+Zeichne das Klassendiagramm (nur Klassennamen) mit \code{Liste}, \code{ListenElement}, \code{Knoten}, \code{Abschluss}, \code{DatenElement} und \code{Taxi}: Assoziationen mit Namen und Multiplizitäten, Vererbung (durchgezogen, leeres Dreieck) und Implementierung (gestrichelt, leeres Dreieck).\\[1mm]
+\begin{tikzpicture}
+\draw[step=5mm,gray!45,thin] (0,0) grid (\linewidth-1pt,4cm);
+\useasboundingbox (0,0) rectangle (\linewidth-1pt,4cm);
+\ifloesung\begin{scope}[lsgbild,font=\scriptsize]
+  \node[draw,fill=white,inner sep=3pt] (L) at (1.6,3.2) {Liste};
+  \node[draw,fill=white,inner sep=3pt,align=center] (E) at (6.2,3.2) {\textit{\guillemotleft abstract\guillemotright}\\ListenElement};
+  \node[draw,fill=white,inner sep=3pt] (K) at (8.6,0.9) {Knoten};
+  \node[draw,fill=white,inner sep=3pt] (A) at (3.9,0.9) {Abschluss};
+  \node[draw,fill=white,inner sep=3pt,align=center] (D) at (12.6,0.9) {\textit{\guillemotleft interface\guillemotright}\\DatenElement};
+  \node[draw,fill=white,inner sep=3pt] (T) at (15.6,3.2) {Taxi};
+  \draw[zeiger] (L) -- node[above] {anfang} node[above,pos=0.85] {1} (E);
+  \coordinate (J) at ($(E.south)+(0,-0.6)$);
+  \draw[thick] (A.north) |- (J);
+  \draw[thick] (K.north) |- (J);
+  \draw[erbt] (J) -- (E.south);
+  \draw[zeiger] (K.north east) to[bend right=40] node[right] {nachfolger\ \ 1} (E.east);
+  \draw[zeiger] (K) -- node[above] {daten} node[above,pos=0.85] {1} (D);
+  \draw[implementiert] (T.south) |- (D.east);
+\end{scope}\fi
+\end{tikzpicture}
+\end{aufgabe}
+
+\begin{hinweis}\small
+\textbf{Es geht auch anders -- besprecht mündlich, warum man es so machen kann:}
+\begin{itemize}
+\item \code{ListenElement} könnte auch ein Interface sein. Was spricht hier dafür, was dagegen?
+\item Jede Liste hat ihren eigenen Abschluss. Würde auch \textbf{ein} gemeinsamer Abschluss für alle Listen reichen?
+\item \code{Knoten.add} gibt \code{this} zurück, obwohl sich an seiner Stelle nichts ändert. Warum trotzdem?
+\end{itemize}
+\end{hinweis}
+
+\end{document}

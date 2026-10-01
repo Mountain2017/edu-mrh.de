@@ -1,0 +1,65 @@
+{
+  "name": "12-1-1 Praxis",
+  "modules": [
+    {
+      "name": "Hauptprogramm",
+      "text": "// Aufgabe 1: Genau eine Zeile einkommentieren, starten, beobachten.\nWartezimmer wartezimmer = new WartezimmerSuchen(5);           // Variante 1\n// Wartezimmer wartezimmer = new WartezimmerNummer(5);        // Variante 2\n// Wartezimmer wartezimmer = new WartezimmerAufruecken(5);    // Variante 3\n// Wartezimmer wartezimmer = new Warteschlange();             // Aufgabe 5\n\nprintln(\"--- Fünf Patienten kommen ---\");\nwartezimmer.add(new Patient(\"Hans\", \"Husten\"));\nwartezimmer.add(new Patient(\"Vroni\", \"Fieber\"));\nwartezimmer.add(new Patient(\"Schorsch\", \"Erkältung\"));\nwartezimmer.add(new Patient(\"Resi\", \"Grippe\"));\nwartezimmer.add(new Patient(\"Bene\", \"Kopfweh\"));\nwartezimmer.ausgeben();\n\nprintln(\"--- Die Ärztin ruft drei auf ---\");\nfor (int i = 0; i < 3; i++) {\n   Patient p = wartezimmer.poll();\n   if (p != null) {\n      println(\"Aufgerufen: \" + p.getName());\n   }\n}\n\nprintln(\"--- Vier neue kommen ---\");\nwartezimmer.add(new Patient(\"Gustav\", \"Rückenweh\"));\nwartezimmer.add(new Patient(\"Leonie\", \"Ausschlag\"));\nwartezimmer.add(new Patient(\"Ludwig\", \"Bauchweh\"));\nwartezimmer.add(new Patient(\"Mia\", \"Halsweh\"));\nwartezimmer.ausgeben();\n\nprintln(\"--- Die Ärztin ruft alle auf ---\");\nfor (int i = 0; i < 7; i++) {\n   Patient p = wartezimmer.poll();\n   if (p != null) {\n      println(\"Aufgerufen: \" + p.getName());\n   }\n}\n",
+      "identical_to_repository_version": false,
+      "repository_file_version": -1,
+      "isFolder": false
+    },
+    {
+      "name": "Warteschlange",
+      "text": "/**\n * Warteschlange (Queue) aus verketteten Knoten.\n * Suche (Strg + F) nach \"TODO\" und ergänze den Code.\n */\npublic class Warteschlange implements Wartezimmer {\n   private Knoten anfang;   // erster Knoten: wird als Nächstes aufgerufen\n   private Knoten ende;     // letzter Knoten: hier wird angehängt\n\n   public Warteschlange() {\n      anfang = null;        // Am Anfang ist die Schlange leer.\n      ende = null;\n   }\n\n   // Gibt true zurück, wenn niemand wartet.\n   public boolean isEmpty() {\n      return anfang == null;\n   }\n\n   // Stellt p hinten an. Gibt true zurück, wenn das geklappt hat.\n   public boolean add(Patient p) {\n      // TODO 3: durch die Methode vom Blatt ersetzen (Aufgabe 3)\n      return false;\n   }\n\n   // Holt den vordersten Patienten heraus und gibt ihn zurück (null, wenn leer).\n   public Patient poll() {\n      // TODO 4: durch die Methode vom Blatt ersetzen (Aufgabe 4)\n      return null;\n   }\n\n   // Gibt den vordersten Patienten zurück, ohne ihn herauszuholen (null, wenn leer).\n   public Patient peek() {\n      // Bonus (Website, Selbst bauen a)\n      return null;\n   }\n\n   // Durchläuft die Kette vom Anfang bis zum Ende und gibt alle Wartenden aus.\n   public void ausgeben() {\n      Knoten aktuell = anfang;\n      int platz = 1;\n      while (aktuell != null) {\n         println(\"  \" + platz + \". \" + aktuell.getDaten().getName());\n         aktuell = aktuell.getNachfolger();\n         platz++;\n      }\n   }\n}\n",
+      "identical_to_repository_version": false,
+      "repository_file_version": -1,
+      "isFolder": false
+    },
+    {
+      "name": "Knoten",
+      "text": "/**\n * Ein Knoten der Warteschlange: kennt seine Daten und seinen Nachfolger.\n * Muss nicht verändert werden.\n */\npublic class Knoten {\n   private Patient daten;\n   private Knoten nachfolger;   // Referenzattribut vom Typ der eigenen Klasse: rekursive Beziehung\n\n   public Knoten(Patient daten) {\n      this.daten = daten;\n      nachfolger = null;        // Ein neuer Knoten hat noch keinen Nachfolger.\n   }\n\n   public Patient getDaten() {\n      return daten;\n   }\n\n   public Knoten getNachfolger() {\n      return nachfolger;\n   }\n\n   public void setNachfolger(Knoten nachfolger) {\n      this.nachfolger = nachfolger;\n   }\n}\n",
+      "identical_to_repository_version": false,
+      "repository_file_version": -1,
+      "isFolder": false
+    },
+    {
+      "name": "Patient",
+      "text": "/**\n * Die Daten einer Patientin oder eines Patienten.\n * Muss nicht verändert werden.\n */\npublic class Patient {\n   private String name;\n   private String beschwerden;\n\n   public Patient(String name, String beschwerden) {\n      this.name = name;\n      this.beschwerden = beschwerden;\n   }\n\n   public String getName() {\n      return name;\n   }\n\n   public String getBeschwerden() {\n      return beschwerden;\n   }\n}\n",
+      "identical_to_repository_version": false,
+      "repository_file_version": -1,
+      "isFolder": false
+    },
+    {
+      "name": "Wartezimmer",
+      "text": "/**\n * Ein Interface legt fest, welche Methoden jede Wartezimmer-Klasse haben muss.\n * So kann das Hauptprogramm alle Varianten gleich benutzen (mehr dazu in 1.2).\n */\npublic interface Wartezimmer {\n   boolean add(Patient p);   // hinten anstellen, true bei Erfolg\n   Patient poll();           // vorne herausholen, null wenn niemand wartet\n   void ausgeben();          // alle Wartenden der Reihe nach ausgeben\n}\n",
+      "identical_to_repository_version": false,
+      "repository_file_version": -1,
+      "isFolder": false
+    },
+    {
+      "name": "WartezimmerSuchen",
+      "text": "/**\n * Variante 1: Array. Neue kommen auf den ersten freien Platz,\n * aufgerufen wird der erste belegte Platz.\n */\npublic class WartezimmerSuchen implements Wartezimmer {\n   private Patient[] plaetze;\n\n   public WartezimmerSuchen(int kapazitaet) {\n      plaetze = new Patient[kapazitaet];\n   }\n\n   public boolean add(Patient p) {\n      for (int i = 0; i < plaetze.length; i++) {\n         if (plaetze[i] == null) {\n            plaetze[i] = p;\n            return true;\n         }\n      }\n      println(\"Kein Platz mehr für \" + p.getName() + \"!\");\n      return false;\n   }\n\n   public Patient poll() {\n      for (int i = 0; i < plaetze.length; i++) {\n         if (plaetze[i] != null) {\n            Patient p = plaetze[i];\n            plaetze[i] = null;\n            return p;\n         }\n      }\n      println(\"Niemand wartet.\");\n      return null;\n   }\n\n   public void ausgeben() {\n      for (int i = 0; i < plaetze.length; i++) {\n         if (plaetze[i] != null) {\n            println(\"  Platz \" + i + \": \" + plaetze[i].getName());\n         } else {\n            println(\"  Platz \" + i + \": -\");\n         }\n      }\n   }\n}\n",
+      "identical_to_repository_version": false,
+      "repository_file_version": -1,
+      "isFolder": false
+    },
+    {
+      "name": "WartezimmerNummer",
+      "text": "/**\n * Variante 2: Array wie Variante 1, aber eine Aufrufnummer\n * merkt sich, welcher Platz als Nächstes dran ist.\n */\npublic class WartezimmerNummer implements Wartezimmer {\n   private Patient[] plaetze;\n   private int naechster = 0;   // Platz, der als Nächstes aufgerufen wird\n\n   public WartezimmerNummer(int kapazitaet) {\n      plaetze = new Patient[kapazitaet];\n   }\n\n   public boolean add(Patient p) {\n      for (int i = 0; i < plaetze.length; i++) {\n         if (plaetze[i] == null) {\n            plaetze[i] = p;\n            return true;\n         }\n      }\n      println(\"Kein Platz mehr für \" + p.getName() + \"!\");\n      return false;\n   }\n\n   public Patient poll() {\n      Patient p = plaetze[naechster];\n      if (p == null) {\n         println(\"Niemand wartet.\");\n         return null;\n      }\n      plaetze[naechster] = null;\n      naechster++;\n      return p;\n   }\n\n   public void ausgeben() {\n      for (int i = 0; i < plaetze.length; i++) {\n         String zeile = \"  Platz \" + i + \": \";\n         if (plaetze[i] != null) {\n            zeile = zeile + plaetze[i].getName();\n         } else {\n            zeile = zeile + \"-\";\n         }\n         if (i == naechster) {\n            zeile = zeile + \"   <- nächster\";\n         }\n         println(zeile);\n      }\n   }\n}\n",
+      "identical_to_repository_version": false,
+      "repository_file_version": -1,
+      "isFolder": false
+    },
+    {
+      "name": "WartezimmerAufruecken",
+      "text": "/**\n * Variante 3: Array. Nach jedem Aufruf rücken alle einen Platz nach vorne.\n */\npublic class WartezimmerAufruecken implements Wartezimmer {\n   private Patient[] plaetze;\n   private int anzahl = 0;      // so viele Plätze sind belegt\n\n   public WartezimmerAufruecken(int kapazitaet) {\n      plaetze = new Patient[kapazitaet];\n   }\n\n   public boolean add(Patient p) {\n      if (anzahl < plaetze.length) {\n         plaetze[anzahl] = p;\n         anzahl++;\n         return true;\n      }\n      println(\"Kein Platz mehr für \" + p.getName() + \"!\");\n      return false;\n   }\n\n   public Patient poll() {\n      if (anzahl == 0) {\n         println(\"Niemand wartet.\");\n         return null;\n      }\n      Patient p = plaetze[0];\n      for (int i = 0; i < anzahl - 1; i++) {   // alle rücken einen Platz auf\n         plaetze[i] = plaetze[i + 1];\n      }\n      anzahl--;\n      plaetze[anzahl] = null;\n      println(\"  (\" + anzahl + \" Mal verschoben)\");\n      return p;\n   }\n\n   public void ausgeben() {\n      for (int i = 0; i < plaetze.length; i++) {\n         if (plaetze[i] != null) {\n            println(\"  Platz \" + i + \": \" + plaetze[i].getName());\n         } else {\n            println(\"  Platz \" + i + \": -\");\n         }\n      }\n   }\n}\n",
+      "identical_to_repository_version": false,
+      "repository_file_version": -1,
+      "isFolder": false
+    }
+  ],
+  "settings": {
+    "libraries": []
+  },
+  "isFolder": false
+}

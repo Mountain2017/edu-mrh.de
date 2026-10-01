@@ -1,0 +1,145 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{1.2}{Interfaces: ein Vertrag für alle Daten}
+
+Am Bahnhof warten Taxis in einer Schlange: Wer zuerst ankommt, fährt zuerst. Die Stadt möchte dafür die \code{Warteschlange} aus 1.1 benutzen. Doch die kann bisher nur Patienten verwalten. Eine Kopie für Taxis (\code{TaxiKnoten}, \code{TaxiWarteschlange}) würde funktionieren, aber jede Verbesserung müsste man dann doppelt einbauen. \web{Station 1.2, Projekt Taxistand}
+
+\begin{aufgabe}[Was muss die Warteschlange über ihre Daten wissen?]{1}
+Untersuche im Projekt die Methoden der Warteschlange. Kreuze an, ob die Methode die Daten nur weiterreicht oder eine Methode der Daten aufruft. Notiere diese gegebenenfalls.\\[1mm]
+\small\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\linewidth}{|l|c|c|X|}\hline
+\textbf{Methode} & \textbf{reicht nur weiter} & \textbf{ruft eine Methode der Daten auf} & \textbf{welche?}\\\hline
+\code{add(Patient p)} & \kreuz{1} & \kreuz{0} & \\\hline
+\code{poll()}, \code{peek()} & \kreuz{1} & \kreuz{0} & \\\hline
+\code{ausgeben()} & \kreuz{0} & \kreuz{1} & \lsgtext{\code{getName()}: der Name zum Ausgeben}\\\hline
+\end{tabularx}\\[1.5mm]
+\normalsize
+\textbf{Folgerung:} Von ihren Daten muss die Warteschlange nur verlangen, dass sie einen \lsg[4.6cm]{Namen (Schlüsselwert) nennen} können. Genau das legen wir in einem Vertrag fest: im \textbf{Interface} \code{DatenElement}.
+\end{aufgabe}
+
+\begin{minipage}[t]{0.47\linewidth}
+\vspace{0pt}
+\begin{java}[basicstyle=\ttfamily\footnotesize]
+public §\lsg[1.9cm]{interface}§ DatenElement {
+   String gibSchluesselwert();
+}
+
+public class Taxi §\lsg[3.2cm]{implements DatenElement}§ {
+   private int nummer;
+   private String fahrer;
+   ...
+   public String gibSchluesselwert() {
+      return §\lsg[2.6cm]{"Taxi " + nummer}§;
+   }
+}
+\end{java}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.505\linewidth}
+\vspace{0pt}
+\begin{merke}[Interface]
+\small
+\begin{itemize}
+\item Ein Interface ist ein \lsg[1.7cm]{Vertrag}. Es legt nur \lsg[2.9cm]{Methodenköpfe} fest, keine Rümpfe.
+\item Eine Klasse, die es implementiert (\code{implements}), muss \lsg[1.3cm]{alle} seine Methoden bereitstellen. Das prüft der \lsg[2cm]{Compiler}.
+\item Ein Interface ist auch ein \lsg[1.9cm]{Datentyp}: Eine Variable vom Typ \code{DatenElement} kann Objekte jeder Klasse aufnehmen, die es implementiert. Objekte vom Interface selbst gibt es \lsg[1.2cm]{nicht}.
+\end{itemize}
+\end{merke}
+\end{minipage}
+
+\begin{aufgabe}[Klassendiagramm]{2}
+\textbf{a)} Zeichne alle Beziehungen ein: Assoziationen mit Namen und Multiplizitäten, dazu \code{implements} als gestrichelten Pfeil mit leerem Dreieck zum Interface.\\
+\textbf{b)} Umrande die Klassen der \textbf{Struktur} blau und die Klassen des \textbf{Inhalts} grün.\\[1mm]
+\begin{tikzpicture}
+\node[klasse,fill=teal!6,anchor=north west] (W) at (0,0)
+  {\textbf{Warteschlange}\nodepart{second}- anfang: Knoten\\- ende: Knoten
+   \nodepart{third}+ add(DatenElement d): boolean\\+ poll(): DatenElement\\+ ausgeben()};
+\node[klasse,fill=orange!8,anchor=north west] (K) at (6.0,0)
+  {\textbf{Knoten}\nodepart{second}- daten: DatenElement\\- nachfolger: Knoten
+   \nodepart{third}+ getDaten(): DatenElement\\+ getNachfolger(): Knoten};
+\node[klasse,fill=green!6,anchor=north,rectangle split parts=2] (D) at (13.1,0)
+  {\textit{\guillemotleft interface\guillemotright}\\\textbf{DatenElement}\nodepart{second}+ gibSchluesselwert(): String};
+\node[klasse,fill=gray!8,anchor=north] (P) at (11.2,-3.0)
+  {\textbf{Patient}\nodepart{second}- name: String
+   \nodepart{third}+ gibSchluesselwert(): String};
+\node[klasse,fill=gray!8,anchor=north] (T) at (15.15,-3.0)
+  {\textbf{Taxi}\nodepart{second}- nummer: int\\- fahrer: String
+   \nodepart{third}+ gibSchluesselwert(): String};
+\begin{scope}[font=\scriptsize]
+  \draw[zeiger,lsgbild] ([yshift=-4mm]W.north east) -- ([yshift=-4mm]W.north east -| K.west)
+     node[pos=0.3,above] {\lsgtext{anfang}} node[pos=0.86,below] {\lsgtext{0..1}};
+  \draw[zeiger,lsgbild] ([yshift=-13mm]W.north east) -- ([yshift=-13mm]W.north east -| K.west)
+     node[pos=0.3,below] {\lsgtext{ende}} node[pos=0.86,above] {\lsgtext{0..1}};
+  \draw[zeiger,lsgbild] ([yshift=-5mm]K.north east) -- ([yshift=-5mm]K.north east -| D.west)
+     node[pos=0.6,below] {\lsgtext{daten}} node[pos=0.88,above] {\lsgtext{1}};
+  \draw[zeiger,lsgbild] ([xshift=-5mm]K.north east) -- ++(0,4mm) -| ([xshift=5mm]K.north west);
+  \node[left] at ($(K.north west)+(4.5mm,3.2mm)$) {\lsgtext{nachfolger\quad 0..1}};
+  \draw[implementiert,lsgbild] ([xshift=10mm]P.north) -- ([xshift=10mm]P.north |- D.south);
+  \draw[implementiert,lsgbild] ([xshift=-9.5mm]T.north) -- ([xshift=-9.5mm]T.north |- D.south);
+  \draw[lsgbild,blue!70!black,thick,rounded corners] ($(W.north west)+(-1.5mm,7.5mm)$) rectangle ($(K.east |- W.south)+(1.5mm,-1.5mm)$);
+  % Inhalt: oben nur um das Interface, unten um Patient und Taxi (unter dem blauen Rahmen)
+  \coordinate (gl) at ($(K.east)+(2.75mm,0)$);
+  \coordinate (gt) at ($(D.north)+(0,2mm)$);
+  \coordinate (gr) at ($(T.east)+(1.5mm,0)$);
+  \coordinate (gb) at ($(T.south)+(0,-1.5mm)$);
+  \coordinate (gp) at ($(P.west)+(-1.5mm,0)$);
+  \coordinate (gm) at ($(W.south)+(0,-3mm)$);
+  \draw[lsgbild,green!45!black,thick,rounded corners] (gl |- gt) -- (gr |- gt) -- (gr |- gb) -- (gp |- gb) -- (gp |- gm) -- (gl |- gm) -- cycle;
+\end{scope}
+\end{tikzpicture}\\[1mm]
+\textbf{c)} Durch die Trennung von Struktur und Inhalt erledigt jede Klasse genau eine Aufgabe (hohe \lsg[2.1cm]{Kohäsion}). Struktur und Inhalt hängen nur über das Interface zusammen (lose \lsg[2.1cm]{Kopplung}). So kann die Warteschlange ohne jede Änderung \lsg[4.5cm]{jedes neue DatenElement} aufnehmen.
+\end{aufgabe}
+
+\newpage
+\begin{aufgabe}[Projekt Taxistand, TODO 3a bis 3d]{3}
+Baue das Projekt so um, dass Warteschlange und Knoten mit jedem \code{DatenElement} arbeiten. Ergänze die Tabelle und übertrage die Änderungen ins Projekt (Reihenfolge wie die TODOs).\\[1mm]
+\small\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{|c|l|X|}\hline
+ & \textbf{bisher} & \textbf{neu}\\\hline
+3a & \code{DatenElement}: (leer) & \lsgtext{\code{String gibSchluesselwert();}}\\\hline
+3b & \code{public class Patient \{} & \lsgtext{\code{public class Patient implements DatenElement \{}}\\
+   & & \lsgtext{\code{+ public String gibSchluesselwert() \{ return name; \}}}\\\hline
+3c & \code{private Patient daten;} & \lsgtext{\code{private DatenElement daten;}} \ (ebenso Konstruktor, \code{getDaten})\\\hline
+3d & \code{public boolean add(Patient p)} & \lsgtext{\code{public boolean add(DatenElement daten)}}\\
+   & \code{public Patient poll()} & \lsgtext{\code{public DatenElement poll()}} \ (ebenso \code{peek})\\
+   & \code{aktuell.getDaten().getName()} & \lsgtext{\code{aktuell.getDaten().gibSchluesselwert()}}\\\hline
+\end{tabularx}\\[1.5mm]
+\normalsize
+\textbf{b)} Nach dem Umbau von \code{Knoten} meldet der Compiler einen Fehler in \code{ausgeben()}. Erkläre!\\
+\lsg[\linewidth]{Ein DatenElement hat nur die Methode gibSchluesselwert(), kein getName().}\\[1mm]
+\lsg[\linewidth]{Die Warteschlange darf nur benutzen, was im Vertrag steht.}
+\end{aufgabe}
+
+\begin{aufgabe}[Projekt Taxistand, TODO 4]{4}
+\textbf{a)} Ergänze den Code von \code{Taxi} oben auf Seite 1, übertrage ihn ins Projekt und kommentiere im Hauptprogramm die Taxi-Zeilen ein.\\
+\textbf{b)} Lösche testweise die Methode \code{gibSchluesselwert()} aus \code{Taxi}. Notiere die Meldung des Compilers und erkläre sie mit dem Wort \textit{Vertrag}.\\
+\lsg[\linewidth]{„Die Klasse Taxi muss noch folgende Methoden des Interfaces DatenElement implementieren: …“}\\[1mm]
+\lsg[\linewidth]{Taxi verspricht mit implements, den Vertrag zu erfüllen, hält ihn aber nicht ein.}
+\end{aufgabe}
+
+\begin{aufgabe}[Datentypen]{5}
+\code{taxistand} ist eine \code{Warteschlange}. Kreuze an, welche Zeilen der Compiler akzeptiert, und begründe kurz.\\[1mm]
+\small\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{|l|c|c|X|}\hline
+\textbf{Zeile} & \textbf{ok} & \textbf{Fehler} & \textbf{Begründung}\\\hline
+\code{DatenElement d = new Taxi(5, "Lea");} & \kreuz{1} & \kreuz{0} & \lsgtext{Taxi implementiert DatenElement.}\\\hline
+\code{DatenElement d = new DatenElement();} & \kreuz{0} & \kreuz{1} & \lsgtext{Von einem Interface gibt es keine Objekte.}\\\hline
+\code{taxistand.add(new Patient("Ali", "Husten"));} & \kreuz{1} & \kreuz{0} & \lsgtext{Auch Patient ist ein DatenElement.}\\\hline
+\code{Taxi t = taxistand.poll();} & \kreuz{0} & \kreuz{1} & \lsgtext{poll() liefert nur ein DatenElement.}\\\hline
+\code{println(taxistand.poll().gibSchluesselwert());} & \kreuz{1} & \kreuz{0} & \lsgtext{Diese Methode steht im Vertrag.}\\\hline
+\code{println(taxistand.poll().getFahrer());} & \kreuz{0} & \kreuz{1} & \lsgtext{getFahrer() steht nicht im Vertrag.}\\\hline
+\end{tabularx}
+\normalsize
+\end{aufgabe}
+
+\begin{hinweis}\small
+\textbf{Es geht auch anders -- besprecht mündlich, warum man es so machen kann:}
+\begin{itemize}
+\item Jede Klasse ist ein \code{Object}. Der Knoten könnte also einfach \code{Object daten} speichern. Was ginge dann in \code{ausgeben()} nicht mehr?
+\item In einer älteren Fassung stand im Vertrag nur \code{String toString();}. Warum erzwingt dieser Vertrag nichts? (Tipp: Was erbt jede Klasse von \code{Object}?)
+\item Statt des Interfaces gäbe es eine Oberklasse \code{Daten}, von der Patient und Taxi erben. Was spricht dagegen, wenn \code{Patient} schon von \code{Person} erbt?
+\item Du kennst schon ein Interface: \code{Wartezimmer} aus 1.1. Was legte es fest -- und wozu?
+\end{itemize}
+\end{hinweis}
+
+\end{document}

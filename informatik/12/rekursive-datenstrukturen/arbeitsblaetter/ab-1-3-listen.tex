@@ -1,0 +1,205 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{1.3}{Listen und Rekursion}
+
+Die Taxizentrale führt eine Liste der Taxis im Dienst. Taxis kommen dazu und melden sich ab -- in beliebiger Reihenfolge. Eine Warteschlange nimmt aber nur vorne heraus. Unsere \textbf{Liste} kennt nur ihren ersten Knoten (\code{anfang}), alles Weitere erledigen die Knoten. \web{Station 1.3, Projekt Taxizentrale}
+
+\begin{aufgabe}[Wie viele stehen hinter dir?]{1}
+\begin{minipage}[t]{0.56\linewidth}
+\vspace{0pt}\raggedright
+Die erste Person in der Mensa-Schlange will wissen, wie viele anstehen. Jede darf nur ihren Hintermann fragen. \textbf{a)} Ergänze die Regel:\\[1mm]
+„Steht hinter mir \lsg[2.1cm]{niemand}, antworte ich \lsg[0.9cm]{1}. Sonst frage ich \lsg[3.2cm]{meinen Hintermann} und antworte mit \lsg[3.9cm]{seiner Antwort + 1}.“
+\end{minipage}\hfill
+\begin{minipage}[t]{0.41\linewidth}
+\vspace{0pt}\raggedright
+\textbf{b)} Spielt es zu fünft durch. Wer antwortet zuerst, wer zuletzt?\\
+\lsg[0.98\linewidth]{zuerst die letzte Person (1),}\\[1mm]
+\lsg[0.98\linewidth]{zuletzt die erste Person (5)}
+\end{minipage}
+\end{aufgabe}
+
+\begin{aufgabe}[Projekt Taxizentrale, TODO 2]{2}
+\textbf{a)} Links zählt \code{anzahl()} aus 1.1 mit einer Wiederholung. Rechts arbeitet jeder Knoten nach der Regel aus Aufgabe 1. Ergänze die Lücken und beschrifte die Kommentare mit \textit{Abbruchbedingung} und \textit{rekursiver Aufruf}.\\[0.5mm]
+\begin{minipage}[t]{0.38\linewidth}
+\vspace{0pt}
+\textit{\small iterativ (Warteschlange, 1.1)}
+\begin{java}[basicstyle=\ttfamily\scriptsize]
+public int anzahl() {
+   int zaehler = 0;
+   Knoten aktuell = anfang;
+   while (aktuell != null) {
+      zaehler++;
+      aktuell = aktuell.getNachfolger();
+   }
+   return zaehler;
+}
+\end{java}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.595\linewidth}
+\vspace{0pt}
+\textit{\small rekursiv (Knoten)}
+\begin{java}[basicstyle=\ttfamily\scriptsize]
+public int laenge() {
+   if (§\lsg[2.6cm]{nachfolger == null}§) {    // §\lsg[2.6cm]{Abbruchbedingung}§
+      return §\lsg[0.6cm]{1}§;
+   } else {
+      return §\lsg[3.4cm]{nachfolger.laenge() + 1}§;  // §\lsg[2.6cm]{rekursiver Aufruf}§
+   }
+}
+\end{java}
+\textit{\small rekursiv (Liste)}
+\begin{java}[basicstyle=\ttfamily\scriptsize]
+public int laenge() {
+   if (anfang == null) { return §\lsg[0.6cm]{0}§; }
+   else { return §\lsg[2.6cm]{anfang.laenge()}§; }
+}
+\end{java}
+\end{minipage}\\[1mm]
+\textbf{b)} Ergänze das Sequenzdiagramm für \code{liste.laenge()} bei drei Knoten: alle Aufrufe (durchgezogen) und alle Rückgaben mit Wert (gestrichelt).\\[0.5mm]
+\begin{tikzpicture}[x=1cm,y=1.2cm]
+\foreach \name/\x/\txt in {hp/0.4/Hauptprogramm, li/3.8/liste : Liste, k1/7.2/k1 : Knoten, k2/10.6/k2 : Knoten, k3/14/k3 : Knoten} {
+  \node[lebenslinie] (\name) at (\x,0) {\txt};
+  \draw[densely dashed,gray] (\name.south) -- (\x,-3.5);
+}
+\node[font=\tiny,gray,right=0pt of k1.south east,anchor=north west] {Taxi 12};
+\node[font=\tiny,gray,right=0pt of k2.south east,anchor=north west] {Taxi 7};
+\node[font=\tiny,gray,right=0pt of k3.south east,anchor=north west] {Taxi 3};
+\draw[aufruf] (0.4,-0.65) -- node[above,font=\scriptsize,inner sep=1pt] {\code{laenge()}} (3.8,-0.65);
+\begin{scope}[lsgbild]
+  \draw[aufruf] (3.8,-1.05) -- node[above,font=\scriptsize,inner sep=1pt] {\lsgtext{\code{laenge()}}} (7.2,-1.05);
+  \draw[aufruf] (7.2,-1.45) -- node[above,font=\scriptsize,inner sep=1pt] {\lsgtext{\code{laenge()}}} (10.6,-1.45);
+  \draw[aufruf] (10.6,-1.85) -- node[above,font=\scriptsize,inner sep=1pt] {\lsgtext{\code{laenge()}}} (14,-1.85);
+  \draw[rueckgabe] (14,-2.3) -- node[above,font=\scriptsize,inner sep=1pt] {\lsgtext{\code{1}}} (10.6,-2.3);
+  \draw[rueckgabe] (10.6,-2.65) -- node[above,font=\scriptsize,inner sep=1pt] {\lsgtext{\code{2}}} (7.2,-2.65);
+  \draw[rueckgabe] (7.2,-3.0) -- node[above,font=\scriptsize,inner sep=1pt] {\lsgtext{\code{3}}} (3.8,-3.0);
+  \draw[rueckgabe] (3.8,-3.35) -- node[above,font=\scriptsize,inner sep=1pt] {\lsgtext{\code{3}}} (0.4,-3.35);
+\end{scope}
+\end{tikzpicture}
+\end{aufgabe}
+
+\begin{merke}[Rekursion]
+Eine Methode heißt \lsg[2.1cm]{rekursiv}, wenn sie sich selbst aufruft -- hier für den Nachfolger. Sie braucht eine \lsg[3.6cm]{Abbruchbedingung}, sonst würde sie sich endlos weiter aufrufen. Die Liste ist eine \textbf{rekursive Datenstruktur}: Ein Knoten mit seinem Rest ist wieder eine Liste. Darum folgen auch die Methoden der Struktur: Jeder Knoten erledigt seinen Teil und gibt den \lsg[2.2cm]{Rest} des Auftrags an seinen \lsg[2.4cm]{Nachfolger} weiter.
+\end{merke}
+
+\newpage
+\begin{aufgabe}[Projekt Taxizentrale, TODO 3]{3}
+\begin{minipage}[t]{0.52\linewidth}
+\vspace{0pt}
+\begin{java}[basicstyle=\ttfamily\scriptsize]
+// Knoten: hängt d ans Ende an
+public boolean add(DatenElement d) {
+   if (§\lsg[2.5cm]{nachfolger == null}§) {
+      nachfolger = §\lsg[2.6cm]{new Knoten(d)}§;
+      return true;
+   } else {
+      return §\lsg[3.2cm]{nachfolger.add(d)}§;
+   }
+}
+// Liste
+public boolean add(DatenElement d) {
+   if (anfang == null) {     // Sonderfall
+      anfang = §\lsg[2.6cm]{new Knoten(d)}§;
+      return true;
+   } else {
+      return §\lsg[2.7cm]{anfang.add(d)}§;
+   }
+}
+\end{java}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.45\linewidth}
+\vspace{0pt}\raggedright
+\textbf{a)} Ergänze \code{add} und übertrage es ins Projekt.\\[1.5mm]
+\textbf{b)} Der letzte Knoten liefert \code{true}. Was geschieht mit diesem Wert auf dem Rückweg?\\
+\lsg[0.98\linewidth]{Jeder Knoten gibt ihn mit return}\\[1mm]
+\lsg[0.98\linewidth]{unverändert weiter bis zur Liste.}\\[1.5mm]
+\textbf{c)} Warum braucht die Liste einen Sonderfall, der Knoten aber nicht?\\
+\lsg[0.98\linewidth]{In der leeren Liste ist anfang null:}\\[1mm]
+\lsg[0.98\linewidth]{Es gibt keinen Knoten, der fragen könnte.}
+\end{minipage}
+\end{aufgabe}
+
+\begin{aufgabe}[Projekt Taxizentrale, TODO 4a bis 4c]{4}
+\begin{minipage}[t]{0.47\linewidth}
+\vspace{0pt}\raggedright
+\textbf{a)} Gleich oder dasselbe? Sage die Ausgabe vorher:\\[-0.5mm]
+\begin{java}[basicstyle=\ttfamily\scriptsize]
+Taxi a = new Taxi(7, "Aylin");
+Taxi b = new Taxi(7, "Aylin");
+println(a == b);
+\end{java}
+\lsg[0.98\linewidth]{false: zwei verschiedene Objekte}\\[1mm]
+\code{==} prüft, ob zwei Verweise auf \lsg[3.2cm]{dasselbe Objekt} zeigen. Für \textbf{inhaltliche} Gleichheit erweitern wir den Vertrag \code{DatenElement} (4a):\\[1mm]
+\code{boolean} \lsg[3.4cm]{istGleich(DatenElement d)}\code{;}\\[1mm]
+\textbf{b)} Danach meldet der Compiler einen Fehler in \code{Taxi}. Warum? Ergänze dort (4b):
+\end{minipage}\hfill
+\begin{minipage}[t]{0.5\linewidth}
+\vspace{0pt}
+\begin{java}[basicstyle=\ttfamily\scriptsize]
+// Taxi (4b)
+public boolean istGleich(DatenElement d) {
+   return §\lsg[4.7cm]{gibSchluesselwert().equals(}§
+          §\lsg[3.6cm]{d.gibSchluesselwert())}§;
+}
+// Knoten (4c): Ist d ab hier enthalten?
+public boolean enthaelt(DatenElement d) {
+   if (§\lsg[2.6cm]{daten.istGleich(d)}§) {
+      return true;
+   } else if (§\lsg[2.4cm]{nachfolger == null}§) {
+      return §\lsg[0.9cm]{false}§;
+   } else {
+      return §\lsg[3.3cm]{nachfolger.enthaelt(d)}§;
+   }
+}
+\end{java}
+\lsg[0.98\linewidth]{b) Taxi erfüllt den erweiterten Vertrag noch nicht.}
+\end{minipage}
+\end{aufgabe}
+
+\begin{aufgabe}[Projekt Taxizentrale, TODO 5]{5}
+\begin{minipage}[t]{0.42\linewidth}
+\vspace{0pt}\raggedright
+Taxi 7 meldet sich ab. Ein Knoten kann sich nicht selbst aushängen: Den Verweis auf ihn hat sein \lsg[2.3cm]{Vorgänger}. Deshalb schaut jeder Knoten auf seinen \textbf{Nachfolger} voraus.\\[1mm]
+\begin{tikzpicture}[node distance=5mm]
+\node[obj] (a) {\textbf{k1}\nodepart{second}Taxi 12};
+\node[obj,right=of a] (b) {\textbf{k2}\nodepart{second}Taxi 7};
+\node[obj,right=of b] (c) {\textbf{k3}\nodepart{second}Taxi 3};
+\draw[zeiger,gray,densely dashed] (a) -- (b);
+\draw[gray] ($(a.east)!0.5!(b.west)+(-1mm,-1mm)$) -- ++(2mm,2mm);
+\draw[zeiger] (b) -- (c);
+\draw[zeiger,teal!60!black] (a.south) to[bend right=35] node[schritt,below=0.5mm] {2} (c.south);
+\node[schritt,above=1mm of b] {1};
+\end{tikzpicture}\\[1mm]
+\scriptsize \nr{1} k1 prüft die Daten seines Nachfolgers.\\
+\nr{2} Passen sie, überspringt k1 ihn.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.55\linewidth}
+\vspace{0pt}
+\begin{java}[basicstyle=\ttfamily\scriptsize]
+// Knoten
+public boolean entfernen(DatenElement d) {
+   if (nachfolger == null) {
+      return false;
+   } else if (§\lsg[4.6cm]{nachfolger.getDaten().istGleich(d)}§) { // §\nr{1}§
+      nachfolger = §\lsg[3.8cm]{nachfolger.getNachfolger()}§; // §\nr{2}§
+      return true;
+   } else {
+      return §\lsg[3.4cm]{nachfolger.entfernen(d)}§;
+   }
+}
+\end{java}
+\small Den ersten Knoten kann niemand überspringen. Sonderfall in \code{Liste.entfernen}:\\[0.5mm]
+\code{if (anfang.getDaten().istGleich(d))}\\ \code{\ \ \ anfang = }\lsg[3.8cm]{anfang.getNachfolger()}\code{;}
+\end{minipage}
+\end{aufgabe}
+
+\begin{hinweis}\small
+\textbf{Es geht auch anders -- besprecht mündlich, warum man es so machen kann:}
+\begin{itemize}
+\item \code{laenge()} ginge auch mit einer Wiederholung wie \code{anzahl()}. Was ist leichter zu lesen, was braucht weniger Speicher?
+\item Die Liste könnte wie die Warteschlange einen Verweis auf das \code{ende} haben. Was würde \code{add} dann sparen?
+\item \code{entfernen} im Knoten könnte statt \code{boolean} den Knoten zurückgeben, der danach an seiner Stelle steht (sich selbst oder seinen Nachfolger). Was müsste der Aufrufer mit der Rückgabe tun?
+\end{itemize}
+\end{hinweis}
+
+\end{document}

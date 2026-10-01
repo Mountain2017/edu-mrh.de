@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1.3 Listen und Rekursion | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Rekursive Datenstrukturen, Informatik 12: Eine verkettete Liste, die nur ihren Anfang kennt. Rekursive Methoden laenge, add, enthaelt und entfernen, Abbruchbedingung, Sequenzdiagramm, gleich oder dasselbe (istGleich).">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/include/online-ide-embedded.css">
+    <script type="module" src="https://edu-mrh.de/embed/include/online-ide-embedded.js"></script>
+    <link rel="stylesheet" href="datenstrukturen.css">
+    <script defer src="datenstrukturen.js"></script>
+    <script defer src="ide-coach.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🔗</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="../../informatik.html#jahrgang-12" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 1.3</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#schlange">🍽️ Wie viele hinter dir?</a></li>
+            <li><a href="#rekursion">📝 Rekursion</a></li>
+            <li><a href="#werkstatt">🧩 Rekursions-Werkstatt</a></li>
+            <li><a href="#projekt">✏️ Projekt Taxizentrale</a></li>
+            <li><a href="#selbst">🛠️ Weitere Listenmethoden</a></li>
+            <li><a href="#anders">💡 Es geht auch anders</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Rekursive Datenstrukturen</div>
+            <ul class="sidebar-menu">
+                <li><a href="../../informatik.html#jahrgang-12">Übersicht Klasse 12</a></li>
+                <li><a href="1-1-queue.html">1.1 Warteschlange (Queue)</a></li>
+                <li><a href="1-2-interfaces.html">1.2 Interfaces</a></li>
+                <li><a href="1-3-listen.html">1.3 Listen und Rekursion</a></li>
+                <li><a href="1-4-kompositum.html">1.4 Kompositum</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero rd-hero">
+                <h1 class="hero-title">1.3 Listen und Rekursion</h1>
+                <p class="hero-subtitle">Rekursive Datenstrukturen · Informatik 12 · 2–3 Stunden</p>
+                <span class="rd-kompetenz">Du kannst: rekursive Methoden einer verketteten Liste lesen und schreiben, Abbruchbedingung und rekursiven Aufruf benennen und den Ablauf in einem Sequenzdiagramm darstellen.</span>
+                <div class="rd-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-1-3-listen.pdf">📝 Arbeitsblatt 1.3 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-1-3-listen.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#schlange">🍽️ Einstieg</a><a class="p-note" href="#rekursion">📝 Festhalten</a><a class="p-investigate" href="#werkstatt">🧩 Üben</a><a class="p-modify" href="#projekt">✏️ Verändern</a><a class="p-make" href="#selbst">🛠️ Selbst bauen</a><a class="p-idee" href="#anders">💡 Nachdenken</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="schlange" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🍽️</span><h2>Einstieg<small>Aufgabe 1: Wie viele stehen hinter dir?</small></h2></div>
+                <div class="phase-body">
+                    <p>Die Taxizentrale führt eine Liste der Taxis im Dienst. Taxis kommen dazu und melden sich wieder ab, in beliebiger Reihenfolge. Die Warteschlange aus 1.1 und 1.2 reicht dafür nicht: Sie nimmt nur vorne heraus. Unsere <strong>Liste</strong> kennt nur ihren ersten Knoten, <code>anfang</code>, nicht einmal das Ende. Wie kann sie dann zum Beispiel zählen, wie viele Taxis im Dienst sind?</p>
+                    <div class="konzept">
+                        <h4>Spielt es durch</h4>
+                        <p>Stellt euch zu fünft in eine Reihe wie in der Mensa. Die erste Person will wissen, wie viele anstehen. Jede Person darf aber nur ihren <strong>Hintermann</strong> fragen und nur ihm antworten. Niemand darf sich umdrehen und zählen.</p>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Wie läuft das Fragen ab? Wer antwortet zuerst, wer zuletzt?</li>
+                        <li>Formuliere die Regel, nach der <em>jede</em> Person antwortet (Aufgabe 1 auf dem Blatt). Was ist anders bei der letzten Person?</li>
+                    </ol>
+                    <details class="denk"><summary>Denkanstoß zu b)</summary>
+                        <p>Alle Personen außer der letzten tun dasselbe: fragen, warten, etwas zur Antwort dazurechnen. Nur die letzte Person kann sofort antworten.</p>
+                    </details>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-3-listen.pdf">📝 Blatt 1.3 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="rekursion" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Aufgabe 2: Rekursion und Sequenzdiagramm</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Rekursion</h4>
+                        <p>Eine Methode heißt <strong>rekursiv</strong>, wenn sie sich selbst aufruft, hier für den nächsten Knoten. Sie besteht aus zwei Teilen:</p>
+                        <ul>
+                            <li>der <strong>Abbruchbedingung</strong>: ein Fall, in dem die Methode sofort antwortet (die letzte Person in der Reihe),</li>
+                            <li>dem <strong>rekursiven Aufruf</strong>: Die Methode gibt den Rest des Auftrags an den Nachfolger weiter und arbeitet mit dessen Antwort weiter.</li>
+                        </ul>
+                        <p>Die Liste ist eine <strong>rekursive Datenstruktur</strong>: Ein Knoten mit allem, was hinter ihm hängt, ist selbst wieder eine Liste. Deshalb passen rekursive Methoden so gut zu ihr.</p>
+                    </div>
+                    <div class="code-paar">
+                        <div>
+                            <h4>Iterativ: anzahl() aus 1.1</h4>
+                            <p>Eine Hilfsvariable <code>aktuell</code> läuft von außen durch die Kette und zählt mit. Die Warteschlange erledigt alles selbst.</p>
+                        </div>
+                        <div>
+                            <h4>Rekursiv: laenge() im Knoten</h4>
+                            <p>Jeder Knoten kennt nur sich und seinen Nachfolger. Er fragt den Nachfolger und rechnet mit dessen Antwort. Wie das im Code aussieht, ergänzt du auf dem Blatt (Aufgabe 2a).</p>
+                        </div>
+                    </div>
+                    <div class="konzept">
+                        <h4>Das Sequenzdiagramm</h4>
+                        <p>Ein UML-Sequenzdiagramm zeigt, welches Objekt wann welches andere aufruft. Oben stehen die Objekte, darunter ihre gestrichelten <strong>Lebenslinien</strong>. Ein <strong>Aufruf</strong> ist ein durchgezogener Pfeil mit dem Methodennamen, eine <strong>Rückgabe</strong> ein gestrichelter Pfeil mit dem Wert. Solange ein Objekt arbeitet oder auf eine Antwort wartet, zeichnet man auf seiner Lebenslinie einen schmalen <strong>Aktivierungsbalken</strong>.</p>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Ergänze <code>laenge()</code> in Knoten und Liste und beschrifte Abbruchbedingung und rekursiven Aufruf (Aufgabe 2a).</li>
+                        <li>Ergänze das Sequenzdiagramm für drei Knoten (Aufgabe 2b). Vergleiche mit deinem Durchspielen aus Aufgabe 1: Wer antwortet zuerst?</li>
+                    </ol>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-3-listen.pdf">📝 Blatt 1.3 · Aufgabe 2 und Merkkasten</a></p>
+                </div>
+            </section>
+
+            <section id="werkstatt" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🧩</span><h2>Üben<small>Rekursions-Werkstatt: Wer fragt wen, wer antwortet was?</small></h2></div>
+                <div class="phase-body">
+                    <p>Die Werkstatt spielt Aufrufe auf einer Liste mit vier Taxis durch und zeichnet dabei das Sequenzdiagramm. Überlege vor jedem Schritt, wer als Nächstes dran ist und was er antwortet. Die Regeln der Objekte kannst du einblenden. Sie stehen absichtlich in Worten da: Die Übersetzung in Java ist deine Aufgabe im Projekt.</p>
+                    <div data-rekursion="null"></div>
+                    <ol class="aufgaben">
+                        <li><code>laenge()</code>: Welche Aufrufe warten gleichzeitig, wenn der letzte Knoten antwortet? Vergleiche mit Aufgabe 1.</li>
+                        <li><code>enthaelt(Taxi 3)</code> und <code>enthaelt(Taxi 99)</code>: Wo endet die Rekursion jeweils, und warum gibt es zwei Abbruchbedingungen?</li>
+                        <li><code>laenge() ohne Abbruchbedingung</code>: Was geht schief, und an welcher Stelle?</li>
+                        <li><code>entfernen(Taxi 7)</code>: Wer ändert welchen Verweis? Warum kann <code>k2</code> sich nicht selbst aushängen?</li>
+                    </ol>
+                </div>
+            </section>
+
+            <section id="projekt" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">✏️</span><h2>Verändern<small>Aufgaben 2 bis 5: Projekt Taxizentrale</small></h2></div>
+                <div class="phase-body">
+                    <p>In <code>Liste</code> und <code>Knoten</code> stehen Platzhalter mit TODO-Nummern passend zum Blatt. <code>ausgeben()</code> im Knoten ist schon fertig, ein erstes Beispiel für Rekursion. Die Datei <code>ListeTest.java</code> enthält einen Selbsttest. Starte ihn nach jedem TODO, der Coach zeigt dir dann, was schon funktioniert.</p>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 2 (TODO 2):</strong> <code>laenge()</code> in Knoten und Liste.</li>
+                        <li><strong>Aufgabe 3 (TODO 3):</strong> <code>add()</code>: Nur der letzte Knoten hängt an, alle anderen geben den Auftrag weiter.</li>
+                        <li><strong>Aufgabe 4 (TODO 4a–c):</strong> Sage zuerst vorher, was <code>println(a == b)</code> für zwei gleiche Taxis ausgibt. Erweitere dann den Vertrag um <code>istGleich</code>. Der Compiler meldet sich daraufhin in <code>Taxi</code>: Warum? Danach <code>enthaelt()</code>.</li>
+                        <li><strong>Aufgabe 5 (TODO 5):</strong> <code>entfernen()</code> mit Vorausschau und dem Sonderfall für den ersten Knoten in der Liste.</li>
+                    </ol>
+                    <div class="stolper"><strong>Gleich oder dasselbe?</strong> <code>==</code> prüft bei Objekten, ob zwei Verweise auf <em>dasselbe</em> Objekt zeigen. Das Hauptprogramm sucht aber mit einem <em>neuen</em> Taxi-Objekt, das nur den gleichen Inhalt hat. Mit <code>==</code> findet <code>enthaelt</code> es nie. Probiere es aus, bevor du <code>istGleich</code> einbaust.</div>
+                    <div class="ide-block" id="ide">
+                        <div class="ide-kopf"><h3>Projekt Taxizentrale</h3></div>
+                        <div class="java-online" style="width:100%;height:700px" data-java-online="{ 'id': 'i12-13-taxizentrale', 'speed': 1000000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true, 'withErrorList': true, 'jsonFilename': '12-1-3 Taxizentrale.json', 'enableFileAccess': true, 'enableRunExitStatusAccess': true }">
+                            <script type="text/plain" title="Hauptprogramm.java">
+// Station 1.3: Die Taxizentrale führt eine Liste der Taxis im Dienst.
+// Taxis kommen dazu und melden sich wieder ab – in beliebiger Reihenfolge.
+
+Liste imDienst = new Liste();
+imDienst.add(new Taxi(12, "Stefan"));
+imDienst.add(new Taxi(7, "Aylin"));
+imDienst.add(new Taxi(3, "Jonas"));
+imDienst.add(new Taxi(21, "Mira"));
+
+println("Im Dienst:");
+imDienst.ausgeben();
+println("Anzahl: " + imDienst.laenge());
+
+// Gleich oder dasselbe? Hier wird ein NEUES Taxi-Objekt mit gleichem Inhalt gesucht.
+println("Ist Taxi 7 im Dienst? " + imDienst.enthaelt(new Taxi(7, "Aylin")));
+
+println("Taxi 7 meldet sich ab.");
+imDienst.entfernen(new Taxi(7, "Aylin"));
+imDienst.ausgeben();
+println("Anzahl: " + imDienst.laenge());
+                            </script>
+                            <script type="text/plain" title="Liste.java">
+/**
+ * Eine Liste kennt nur ihren ersten Knoten (anfang).
+ * Alles Weitere erledigen die Knoten rekursiv.
+ * Suche (Strg + F) nach "TODO".
+ */
+public class Liste {
+   private Knoten anfang;
+
+   public Liste() {
+      anfang = null;
+   }
+
+   public boolean isEmpty() {
+      return anfang == null;
+   }
+
+   public void ausgeben() {
+      if (anfang != null) {
+         anfang.ausgeben();
+      }
+   }
+
+   public int laenge() {
+      // TODO 2 (Aufgabe 2)
+      return 0;
+   }
+
+   public boolean add(DatenElement d) {
+      // TODO 3 (Aufgabe 3)
+      return false;
+   }
+
+   public boolean enthaelt(DatenElement d) {
+      // TODO 4c (Aufgabe 4)
+      return false;
+   }
+
+   public boolean entfernen(DatenElement d) {
+      // TODO 5 (Aufgabe 5)
+      return false;
+   }
+
+   // Hilfsmethode für die Tests: alle Schlüsselwerte, durch Komma getrennt.
+   public String alsText() {
+      if (anfang == null) {
+         return "";
+      } else {
+         return anfang.alsText();
+      }
+   }
+}
+                            </script>
+                            <script type="text/plain" title="Knoten.java">
+/**
+ * Ein Knoten der Liste: kennt seine Daten und seinen Nachfolger.
+ * Die Methoden arbeiten rekursiv: Jeder Knoten erledigt seinen Teil
+ * und gibt den Rest des Auftrags an seinen Nachfolger weiter.
+ * Suche (Strg + F) nach "TODO".
+ */
+public class Knoten {
+   private DatenElement daten;
+   private Knoten nachfolger;
+
+   public Knoten(DatenElement daten) {
+      this.daten = daten;
+      nachfolger = null;
+   }
+
+   public DatenElement getDaten() {
+      return daten;
+   }
+
+   public Knoten getNachfolger() {
+      return nachfolger;
+   }
+
+   public void setNachfolger(Knoten nachfolger) {
+      this.nachfolger = nachfolger;
+   }
+
+   // Beispiel: gibt diesen Knoten und alle folgenden aus.
+   public void ausgeben() {
+      println("  " + daten.gibSchluesselwert());   // eigener Teil
+      if (nachfolger != null) {                     // Abbruchbedingung
+         nachfolger.ausgeben();                     // rekursiver Aufruf: der Rest
+      }
+   }
+
+   // Anzahl der Knoten ab hier (diesen mitgezählt).
+   public int laenge() {
+      // TODO 2 (Aufgabe 2)
+      return 0;
+   }
+
+   // Hängt einen neuen Knoten mit d ans Ende an.
+   public boolean add(DatenElement d) {
+      // TODO 3 (Aufgabe 3)
+      return false;
+   }
+
+   // Ist d ab hier (diesen Knoten mitgerechnet) enthalten?
+   public boolean enthaelt(DatenElement d) {
+      // TODO 4c (Aufgabe 4)
+      return false;
+   }
+
+   // Entfernt den ersten Knoten HINTER diesem, dessen Daten gleich d sind.
+   public boolean entfernen(DatenElement d) {
+      // TODO 5 (Aufgabe 5)
+      return false;
+   }
+
+   // Hilfsmethode für die Tests: alle Schlüsselwerte ab hier, durch Komma getrennt.
+   public String alsText() {
+      if (nachfolger == null) {
+         return daten.gibSchluesselwert();
+      } else {
+         return daten.gibSchluesselwert() + ", " + nachfolger.alsText();
+      }
+   }
+}
+                            </script>
+                            <script type="text/plain" title="DatenElement.java">
+/**
+ * Der Vertrag für alles, was in einer Liste oder Warteschlange stehen darf.
+ */
+public interface DatenElement {
+   String gibSchluesselwert();
+
+   // TODO 4a (Aufgabe 4): Methode istGleich(DatenElement d) in den Vertrag aufnehmen
+}
+                            </script>
+                            <script type="text/plain" title="Taxi.java">
+/**
+ * Ein Taxi der Taxizentrale.
+ * TODO 4b (Aufgabe 4): Sobald istGleich im Vertrag steht, verlangt der
+ * Compiler die Methode auch hier. Zwei Taxis sind gleich, wenn ihre
+ * Schlüsselwerte gleich sind.
+ */
+public class Taxi implements DatenElement {
+   private int nummer;
+   private String fahrer;
+
+   public Taxi(int nummer, String fahrer) {
+      this.nummer = nummer;
+      this.fahrer = fahrer;
+   }
+
+   public int getNummer() {
+      return nummer;
+   }
+
+   public String getFahrer() {
+      return fahrer;
+   }
+
+   public String gibSchluesselwert() {
+      return "Taxi " + nummer;
+   }
+}
+                            </script>
+                            <script type="text/plain" title="ListeTest.java" data-online-ide="{ 'readOnly': true }">
+/**
+ * Selbsttest der Taxizentrale. Bitte nicht verändern!
+ * Starten: Klick auf das kleine Dreieck links neben "@Test"
+ * (ganz oben: alle Tests) oder auf der Website "Tests starten".
+ */
+public class ListeTest {
+
+   private Knoten kette() {
+      // k1 (Taxi 12) -> k2 (Taxi 7) -> k3 (Taxi 3), ohne Liste und ohne add gebaut
+      Knoten k1 = new Knoten(new Taxi(12, "Stefan"));
+      Knoten k2 = new Knoten(new Taxi(7, "Aylin"));
+      Knoten k3 = new Knoten(new Taxi(3, "Jonas"));
+      k1.setNachfolger(k2);
+      k2.setNachfolger(k3);
+      return k1;
+   }
+
+   private Liste dreiTaxis() {
+      Liste l = new Liste();
+      l.add(new Taxi(12, "Stefan"));
+      l.add(new Taxi(7, "Aylin"));
+      l.add(new Taxi(3, "Jonas"));
+      return l;
+   }
+
+   @Test
+   public void laengeKnotenkette() {
+      Assertions.assertEquals(3, kette().laenge(), "Knoten.laenge(): Eine Kette aus drei Knoten muss 3 liefern.");
+   }
+
+   @Test
+   public void laengeLetzterKnoten() {
+      Assertions.assertEquals(1, new Knoten(new Taxi(1, "A")).laenge(), "Knoten.laenge(): Ein einzelner Knoten muss 1 liefern.");
+   }
+
+   @Test
+   public void laengeLeereListe() {
+      Assertions.assertEquals(0, new Liste().laenge(), "Liste.laenge(): Eine leere Liste muss 0 liefern.");
+   }
+
+   @Test
+   public void addInLeereListe() {
+      Liste l = new Liste();
+      Assertions.assertTrue(l.add(new Taxi(12, "Stefan")), "Liste.add() muss true zurückgeben.");
+      Assertions.assertEquals("Taxi 12", l.alsText(), "Nach einem add() muss genau Taxi 12 in der Liste stehen.");
+   }
+
+   @Test
+   public void addHaengtHintenAn() {
+      Assertions.assertEquals("Taxi 12, Taxi 7, Taxi 3", dreiTaxis().alsText(), "add() muss hinten anhängen.");
+   }
+
+   @Test
+   public void laengeNachAdd() {
+      Assertions.assertEquals(3, dreiTaxis().laenge(), "Liste.laenge() nach drei add()-Aufrufen muss 3 sein.");
+   }
+
+   @Test
+   public void enthaeltGleichesTaxi() {
+      Assertions.assertTrue(dreiTaxis().enthaelt(new Taxi(7, "Aylin")), "enthaelt(): Ein neues, aber gleiches Taxi 7 muss gefunden werden.");
+   }
+
+   @Test
+   public void enthaeltNichtVorhanden() {
+      Assertions.assertFalse(dreiTaxis().enthaelt(new Taxi(99, "Zoe")), "enthaelt(): Taxi 99 ist nicht in der Liste.");
+   }
+
+   @Test
+   public void enthaeltLeereListe() {
+      Assertions.assertFalse(new Liste().enthaelt(new Taxi(7, "Aylin")), "enthaelt(): In einer leeren Liste ist nichts enthalten.");
+   }
+
+   @Test
+   public void entfernenMitte() {
+      Liste l = dreiTaxis();
+      Assertions.assertTrue(l.entfernen(new Taxi(7, "Aylin")), "entfernen() muss true liefern, wenn Taxi 7 gefunden wurde.");
+      Assertions.assertEquals("Taxi 12, Taxi 3", l.alsText(), "Nach entfernen(Taxi 7) bleiben Taxi 12 und Taxi 3.");
+   }
+
+   @Test
+   public void entfernenErstes() {
+      Liste l = dreiTaxis();
+      l.entfernen(new Taxi(12, "Stefan"));
+      Assertions.assertEquals("Taxi 7, Taxi 3", l.alsText(), "Das erste Taxi muss sich auch abmelden können.");
+   }
+
+   @Test
+   public void entfernenLetztes() {
+      Liste l = dreiTaxis();
+      l.entfernen(new Taxi(3, "Jonas"));
+      Assertions.assertEquals("Taxi 12, Taxi 7", l.alsText(), "Das letzte Taxi muss sich auch abmelden können.");
+   }
+
+   @Test
+   public void entfernenNichtVorhanden() {
+      Liste l = dreiTaxis();
+      Assertions.assertFalse(l.entfernen(new Taxi(99, "Zoe")), "entfernen() muss false liefern, wenn nichts gefunden wird.");
+      Assertions.assertEquals("Taxi 12, Taxi 7, Taxi 3", l.alsText(), "Die Liste darf sich dann nicht verändern.");
+   }
+}
+                            </script>
+                        </div>
+                        <p class="ide-downloads">💾 Eigenen Stand sichern: Diskettensymbol in der IDE-Leiste („Workspace in Datei speichern“), der Name <code>12-1-3 Taxizentrale.json</code> ist schon vorgeschlagen. Laden: Ordnersymbol daneben. · <a href="Online-IDE/12-1-3%20Taxizentrale.json" download>Ausgangsprojekt für online-ide.de</a></p>
+                    </div>
+                    <div class="coach" data-coach="i12-13-taxizentrale"></div>
+                    <div class="lw" data-loesungsweg="TODO 2: laenge()">
+                        <template data-stufe="Tipp 1"><p>Übersetze die Regel aus Aufgabe 1: „Steht hinter mir niemand, antworte ich 1. Sonst frage ich meinen Hintermann und antworte mit seiner Antwort + 1.“ Der Hintermann ist <code>nachfolger</code>, „niemand“ heißt <code>null</code>.</p></template>
+                        <template data-stufe="Tipp 2"><p>Die Liste selbst ist kein Knoten: Ist sie leer, antwortet sie 0, sonst fragt sie ihren ersten Knoten und gibt dessen Antwort weiter.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="c">// Knoten</span>
+<span class="k">public int</span> laenge() {
+   <span class="k">if</span> (nachfolger == <span class="k">null</span>) {             <span class="c">// Abbruchbedingung</span>
+      <span class="k">return</span> 1;
+   } <span class="k">else</span> {
+      <span class="k">return</span> nachfolger.laenge() + 1;    <span class="c">// rekursiver Aufruf</span>
+   }
+}
+<span class="c">// Liste</span>
+<span class="k">public int</span> laenge() {
+   <span class="k">if</span> (anfang == <span class="k">null</span>) {
+      <span class="k">return</span> 0;
+   } <span class="k">else</span> {
+      <span class="k">return</span> anfang.laenge();
+   }
+}</pre></template>
+                    </div>
+                    <div class="lw" data-loesungsweg="TODO 3: add()">
+                        <template data-stufe="Tipp 1"><p>Woran erkennt ein Knoten, dass er der letzte ist? Nur er hängt den neuen Knoten an. Alle anderen geben denselben Auftrag mit denselben Daten an ihren Nachfolger weiter und reichen dessen Rückgabe zurück.</p></template>
+                        <template data-stufe="Tipp 2"><p>In der leeren Liste gibt es keinen Knoten, der den Auftrag annehmen könnte: Dann wird der neue Knoten zum <code>anfang</code>.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="c">// Knoten</span>
+<span class="k">public boolean</span> add(DatenElement d) {
+   <span class="k">if</span> (nachfolger == <span class="k">null</span>) {             <span class="c">// am Ende angekommen</span>
+      nachfolger = <span class="k">new</span> Knoten(d);
+      <span class="k">return true</span>;
+   } <span class="k">else</span> {
+      <span class="k">return</span> nachfolger.add(d);          <span class="c">// Auftrag weitergeben</span>
+   }
+}
+<span class="c">// Liste</span>
+<span class="k">public boolean</span> add(DatenElement d) {
+   <span class="k">if</span> (anfang == <span class="k">null</span>) {                 <span class="c">// Sonderfall: leere Liste</span>
+      anfang = <span class="k">new</span> Knoten(d);
+      <span class="k">return true</span>;
+   } <span class="k">else</span> {
+      <span class="k">return</span> anfang.add(d);
+   }
+}</pre></template>
+                    </div>
+                    <div class="lw" data-loesungsweg="TODO 4: istGleich und enthaelt()">
+                        <template data-stufe="Tipp 1"><p>Der Vertrag bekommt nur einen Methodenkopf: <code>boolean istGleich(DatenElement d);</code> Zwei Taxis sind gleich, wenn ihre Schlüsselwerte gleich sind. Strings vergleicht man mit <code>equals</code>.</p></template>
+                        <template data-stufe="Tipp 2"><p><code>enthaelt</code> hat zwei Abbruchbedingungen: gefunden (eigene Daten gleich) oder Ende erreicht (kein Nachfolger). Nur wenn beides nicht zutrifft, wird weitergefragt.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="c">// DatenElement (4a)</span>
+<span class="k">boolean</span> istGleich(DatenElement d);
+<span class="c">// Taxi (4b)</span>
+<span class="k">public boolean</span> istGleich(DatenElement d) {
+   <span class="k">return</span> gibSchluesselwert().equals(d.gibSchluesselwert());
+}
+<span class="c">// Knoten (4c)</span>
+<span class="k">public boolean</span> enthaelt(DatenElement d) {
+   <span class="k">if</span> (daten.istGleich(d)) {             <span class="c">// Abbruch 1: gefunden</span>
+      <span class="k">return true</span>;
+   } <span class="k">else if</span> (nachfolger == <span class="k">null</span>) {      <span class="c">// Abbruch 2: Ende erreicht</span>
+      <span class="k">return false</span>;
+   } <span class="k">else</span> {
+      <span class="k">return</span> nachfolger.enthaelt(d);
+   }
+}
+<span class="c">// Liste</span>
+<span class="k">public boolean</span> enthaelt(DatenElement d) {
+   <span class="k">if</span> (anfang == <span class="k">null</span>) { <span class="k">return false</span>; } <span class="k">else</span> { <span class="k">return</span> anfang.enthaelt(d); }
+}</pre></template>
+                    </div>
+                    <div class="lw" data-loesungsweg="TODO 5: entfernen()">
+                        <template data-stufe="Tipp 1"><p>Ein Knoten kann sich nicht selbst aushängen, denn den Verweis auf ihn hat sein Vorgänger. Also schaut jeder Knoten voraus: Trägt mein <em>Nachfolger</em> die gesuchten Daten? Dann überspringe ich ihn.</p></template>
+                        <template data-stufe="Tipp 2"><p>Den ersten Knoten kann niemand überspringen. Die Liste prüft ihn deshalb selbst und lässt bei einem Treffer <code>anfang</code> weiterrücken.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="c">// Knoten</span>
+<span class="k">public boolean</span> entfernen(DatenElement d) {
+   <span class="k">if</span> (nachfolger == <span class="k">null</span>) {
+      <span class="k">return false</span>;
+   } <span class="k">else if</span> (nachfolger.getDaten().istGleich(d)) {   <span class="c">// ①</span>
+      nachfolger = nachfolger.getNachfolger();          <span class="c">// ②</span>
+      <span class="k">return true</span>;
+   } <span class="k">else</span> {
+      <span class="k">return</span> nachfolger.entfernen(d);
+   }
+}
+<span class="c">// Liste</span>
+<span class="k">public boolean</span> entfernen(DatenElement d) {
+   <span class="k">if</span> (anfang == <span class="k">null</span>) {
+      <span class="k">return false</span>;
+   } <span class="k">else if</span> (anfang.getDaten().istGleich(d)) {       <span class="c">// Sonderfall: erster Knoten</span>
+      anfang = anfang.getNachfolger();
+      <span class="k">return true</span>;
+   } <span class="k">else</span> {
+      <span class="k">return</span> anfang.entfernen(d);
+   }
+}</pre></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-3-listen.pdf">📝 Blatt 1.3 · Aufgaben 3 bis 5 (Seite 2)</a></p>
+                </div>
+            </section>
+
+            <section id="selbst" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Selbst bauen<small>Weitere Listenmethoden</small></h2></div>
+                <div class="phase-body">
+                    <p>Listen können noch mehr. Besprecht zu zweit, wie die Methode arbeiten soll, notiert Pseudocode und markiert, wo es schwierig wird. Dann programmieren. Teste jede Methode im Hauptprogramm, die Hilfsmethode <code>alsText()</code> zeigt dir die ganze Liste.</p>
+                    <ol class="aufgaben">
+                        <li><strong>addFirst(d)</strong> in der Liste: vorne einfügen. Brauchst du hier einen Sonderfall für die leere Liste?</li>
+                        <li><strong>removeFirst()</strong>: vorne herausnehmen und die Daten zurückgeben. Was fällt dir auf, wenn du sie mit <code>poll()</code> aus 1.1 vergleichst?</li>
+                        <li><strong>removeLast()</strong>: hinten herausnehmen, rekursiv. Wie weit muss ein Knoten diesmal vorausschauen?</li>
+                        <li><strong>sortiertEinfuegen(d)</strong>: Die Taxis sollen nach ihrer Nummer sortiert stehen. Dafür braucht der Vertrag eine weitere Methode <code>boolean istGroesserAls(DatenElement d)</code>. Diesen Vertragsteil findest du später auch bei den Binärbäumen.</li>
+                        <li><strong>ausgebenRueckwaerts()</strong>: Vertausche in <code>ausgeben()</code> zwei Zeilen. Warum steht die Liste dann rückwärts da?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="a) addFirst und b) removeFirst">
+                        <template data-stufe="Tipp"><p>Der neue Knoten bekommt den bisherigen <code>anfang</code> als Nachfolger und wird selbst zum <code>anfang</code>. Ist die Liste leer, ist der bisherige anfang eben <code>null</code>: kein Sonderfall nötig. <code>removeFirst</code> ist genau <code>poll</code>. Eine Liste mit <code>add</code> hinten und <code>removeFirst</code> vorne <em>ist</em> eine Warteschlange.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="k">public boolean</span> addFirst(DatenElement d) {
+   Knoten neu = <span class="k">new</span> Knoten(d);
+   neu.setNachfolger(anfang);    <span class="c">// klappt auch, wenn anfang null ist</span>
+   anfang = neu;
+   <span class="k">return true</span>;
+}
+
+<span class="k">public</span> DatenElement removeFirst() {
+   <span class="k">if</span> (anfang == <span class="k">null</span>) {
+      <span class="k">return null</span>;
+   } <span class="k">else</span> {
+      DatenElement d = anfang.getDaten();
+      anfang = anfang.getNachfolger();
+      <span class="k">return</span> d;
+   }
+}</pre></template>
+                    </div>
+                    <div class="lw" data-loesungsweg="c) removeLast">
+                        <template data-stufe="Tipp 1"><p>Den letzten Knoten muss sein Vorgänger aushängen. Ein Knoten schaut also zwei Schritte voraus: Hat mein Nachfolger keinen Nachfolger mehr?</p></template>
+                        <template data-stufe="Tipp 2"><p>Die Liste kümmert sich um zwei Sonderfälle: leere Liste (<code>null</code> zurückgeben) und Liste mit nur einem Knoten (dann wird <code>anfang</code> null).</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="c">// Liste</span>
+<span class="k">public</span> DatenElement removeLast() {
+   <span class="k">if</span> (anfang == <span class="k">null</span>) {
+      <span class="k">return null</span>;
+   } <span class="k">else if</span> (anfang.getNachfolger() == <span class="k">null</span>) {   <span class="c">// nur ein Knoten</span>
+      DatenElement d = anfang.getDaten();
+      anfang = <span class="k">null</span>;
+      <span class="k">return</span> d;
+   } <span class="k">else</span> {
+      <span class="k">return</span> anfang.removeLast();
+   }
+}
+<span class="c">// Knoten: Ich habe mindestens einen Nachfolger.</span>
+<span class="k">public</span> DatenElement removeLast() {
+   <span class="k">if</span> (nachfolger.getNachfolger() == <span class="k">null</span>) {   <span class="c">// Nachfolger ist der letzte</span>
+      DatenElement d = nachfolger.getDaten();
+      nachfolger = <span class="k">null</span>;
+      <span class="k">return</span> d;
+   } <span class="k">else</span> {
+      <span class="k">return</span> nachfolger.removeLast();
+   }
+}</pre></template>
+                    </div>
+                    <div class="lw" data-loesungsweg="d) sortiertEinfuegen">
+                        <template data-stufe="Tipp 1"><p>Erweitere den Vertrag um <code>boolean istGroesserAls(DatenElement d);</code>. Taxi vergleicht die Nummern: Dafür muss es das andere DatenElement als <code>Taxi</code> behandeln, ein Cast wie in Klasse 10: <code>Taxi anderes = (Taxi) d;</code></p></template>
+                        <template data-stufe="Tipp 2"><p>Wie beim Entfernen schaut jeder Knoten voraus: Ist mein Nachfolger größer als das Neue (oder gibt es keinen), gehört das Neue direkt hinter mich. Davor fragt die Liste: Ist schon der erste Knoten größer? Dann vorne einfügen.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="c">// Taxi</span>
+<span class="k">public boolean</span> istGroesserAls(DatenElement d) {
+   Taxi anderes = (Taxi) d;
+   <span class="k">return</span> nummer > anderes.getNummer();
+}
+<span class="c">// Liste</span>
+<span class="k">public boolean</span> sortiertEinfuegen(DatenElement d) {
+   <span class="k">if</span> (anfang == <span class="k">null</span> || anfang.getDaten().istGroesserAls(d)) {
+      <span class="k">return</span> addFirst(d);
+   } <span class="k">else</span> {
+      <span class="k">return</span> anfang.sortiertEinfuegen(d);
+   }
+}
+<span class="c">// Knoten: Meine Daten sind kleiner oder gleich d.</span>
+<span class="k">public boolean</span> sortiertEinfuegen(DatenElement d) {
+   <span class="k">if</span> (nachfolger == <span class="k">null</span> || nachfolger.getDaten().istGroesserAls(d)) {
+      Knoten neu = <span class="k">new</span> Knoten(d);
+      neu.setNachfolger(nachfolger);
+      nachfolger = neu;
+      <span class="k">return true</span>;
+   } <span class="k">else</span> {
+      <span class="k">return</span> nachfolger.sortiertEinfuegen(d);
+   }
+}</pre></template>
+                    </div>
+                    <div class="lw" data-loesungsweg="e) ausgebenRueckwaerts">
+                        <template data-stufe="Tipp"><p>Jeder Knoten wartet, bis sein Nachfolger fertig ist. Gibt er sich erst <em>danach</em> aus, kommt der letzte Knoten als Erster an die Reihe – genau wie beim Antworten in der Mensa-Schlange.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="k">public void</span> ausgebenRueckwaerts() {
+   <span class="k">if</span> (nachfolger != <span class="k">null</span>) {
+      nachfolger.ausgebenRueckwaerts();     <span class="c">// erst der Rest …</span>
+   }
+   println("  " + daten.gibSchluesselwert()); <span class="c">// … dann ich</span>
+}</pre></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="anders" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Es geht auch anders: besprecht mündlich, warum</small></h2></div>
+                <div class="phase-body">
+                    <p>Überlegt zu zweit, was jede Variante besser und was sie schlechter macht. Die Hinweise sind zum Nachlesen <em>nach</em> dem Gespräch: Halte dazu den Knopf gedrückt.</p>
+                    <div class="idee"><strong>Iterativ statt rekursiv:</strong> <code>laenge()</code> ginge auch mit einer Wiederholung wie <code>anzahl()</code>.
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Beides liefert dasselbe. Die rekursive Fassung folgt der Struktur (ein Knoten und sein Rest) und ist kurz. Die iterative braucht keine wartenden Aufrufe: Bei sehr langen Listen kann die Rekursion den Speicher für die wartenden Aufrufe (den Aufrufstapel) sprengen. Bei Bäumen (später) ist Rekursion dagegen kaum zu ersetzen.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Ein Verweis auf das Ende:</strong> Die Liste könnte sich wie die Warteschlange auch <code>ende</code> merken.
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p><code>add</code> wäre dann in einem Schritt erledigt statt durch alle Knoten zu laufen. Dafür muss jede Methode, die den letzten Knoten ändern kann (<code>entfernen</code>, <code>removeLast</code>), auch <code>ende</code> richtig pflegen. Das bringt neue Sonderfälle mit sich. Javas <code>LinkedList</code> merkt sich übrigens beide Enden.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Knoten statt boolean zurückgeben:</strong> <code>entfernen</code> im Knoten könnte den Knoten zurückgeben, der danach an seiner Stelle steht: sich selbst oder seinen Nachfolger.
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Dann bräuchte niemand vorauszuschauen: Ein Knoten mit den gesuchten Daten gibt einfach seinen Nachfolger zurück, und der Aufrufer trägt die Rückgabe ein (<code>nachfolger = nachfolger.entfernen(d);</code>). Damit könnte sich ein Knoten praktisch selbst aushängen, auch der erste. Diese Idee wird in 1.4 zum Prinzip.</p></template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🧱 1.4 Das Entwurfsmuster Kompositum</h4>
+                            <p>Zähle in deinem Code die Abfragen auf <code>null</code>: Fast jede Methode braucht welche, für das Ende und für die leere Liste. In 1.4 steht am Ende kein <code>null</code> mehr, sondern ein Objekt, das selbst weiß, wie ein Ende antwortet. Dann verschwinden alle diese Fallunterscheidungen.</p>
+                            <a class="btn btn-primary btn-sm" href="1-4-kompositum.html">Weiter zu 1.4</a>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>☕ Listen in Java</h4>
+                            <p>In der Breitensuche (Klasse 11) hast du <code>LinkedList</code> benutzt: Innen steckt eine verkettete Liste wie deine, mit <code>add</code>, <code>addFirst</code>, <code>removeFirst</code>, <code>removeLast</code>, <code>contains</code> und <code>size</code>.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="1-2-interfaces.html">← 1.2 Interfaces</a>
+                <a class="btn btn-primary" href="1-4-kompositum.html">Weiter: 1.4 Kompositum →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-1-3-listen-lsg.pdf">Lösung Blatt 1.3 (PDF)</a> <a class="btn btn-tex btn-sm" href="Online-IDE/LSG%2012-1-3%20Taxizentrale.json" download>Lösungsprojekt (JSON)</a> <a class="btn btn-outline btn-sm" href="Online-IDE/12-1-3%20Taxizentrale.json" download>Ausgangsprojekt (JSON)</a></p>
+                    <p><strong>Aufbau:</strong> Einstieg ohne Computer (Mensa-Schlange) → Regel in Worten → Code (Aufgabe 2) → Sequenzdiagramm. Die Rekursions-Werkstatt zeigt Regeln in Worten statt Java-Code, damit die Übersetzung in Code Aufgabe der Schüler:innen bleibt. Erwartete Ausgabe des Hauptprogramms (Lösung): Taxi 12, 7, 3, 21 · Anzahl 4 · true · nach dem Abmelden Taxi 12, 3, 21 · Anzahl 3.</p>
+                    <p><strong>Selbsttest:</strong> <code>ListeTest.java</code> (schreibgeschützt) enthält 13 JUnit-Tests in vier Gruppen passend zu TODO 2 bis 5. Tests zu <code>laenge</code> bauen die Kette ohne <code>add</code>, damit TODO 2 einzeln prüfbar ist. Hinweis: Drei Tests bestehen schon mit den Platzhaltern (leere Liste, „nicht enthalten“). Der Coach hakt einen Schritt deshalb erst ab, wenn alle Tests der Gruppe grün sind.</p>
+                    <p><strong>entfernen mit Vorausschau:</strong> Bewusst so gewählt, weil es zeigt, dass ein Knoten sich nicht selbst aushängen kann und die Liste einen Sonderfall braucht. Genau das löst in 1.4 das Rückgabe-Muster. Die Rückgabe-Variante ist hier als mündlicher Impuls vorbereitet.</p>
+                    <p><strong>Gleich oder dasselbe:</strong> <code>==</code> auf Taxi-Objekten liefert in der Online-IDE wie in Java <code>false</code>. Achtung: Strings vergleicht die Online-IDE auch mit <code>==</code> nach Inhalt, anders als Java. Deshalb steht in <code>istGleich</code> trotzdem <code>equals</code>. Außerdem wertet die IDE bei <code>a + b</code> den rechten Teil zuerst aus (Java: links zuerst). Bei Ausdrücken mit Seiteneffekten wie <code>l.removeFirst() + l.alsText()</code> weicht die Ausgabe deshalb von Java ab. Die Projekte vermeiden solche Ausdrücke.</p>
+                    <p><strong>Weitere Listenmethoden</strong> entsprechen dem früheren Blatt 1-3-1. Die dortigen Lösungen hatten Fehler (<code>addHead</code> rief <code>removeTail</code> auf, <code>removeTail</code> prüfte nicht auf <code>null</code>). Die hier hinterlegten Lösungen sind in der Online-IDE geprüft.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum &amp; Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

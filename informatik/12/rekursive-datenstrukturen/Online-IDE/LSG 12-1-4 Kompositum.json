@@ -1,0 +1,65 @@
+{
+  "name": "LSG 12-1-4 Kompositum",
+  "modules": [
+    {
+      "name": "Hauptprogramm",
+      "text": "// Station 1.4: Dieselbe Taxizentrale – jetzt als Kompositum.\n// Die Liste endet nicht mehr mit null, sondern mit einem Abschluss-Objekt.\n\nListe imDienst = new Liste();\nprintln(\"Leere Liste, Länge: \" + imDienst.laenge());\n\nimDienst.add(new Taxi(12, \"Stefan\"));\nimDienst.add(new Taxi(7, \"Aylin\"));\nimDienst.add(new Taxi(3, \"Jonas\"));\nimDienst.add(new Taxi(21, \"Mira\"));\n\nprintln(\"Im Dienst:\");\nimDienst.ausgeben();\nprintln(\"Anzahl: \" + imDienst.laenge());\nprintln(\"Ist Taxi 7 im Dienst? \" + imDienst.enthaelt(new Taxi(7, \"Aylin\")));\n\nprintln(\"Taxi 12 und Taxi 21 melden sich ab.\");\nimDienst.entfernen(new Taxi(12, \"Stefan\"));\nimDienst.entfernen(new Taxi(21, \"Mira\"));\nimDienst.ausgeben();\nprintln(\"Anzahl: \" + imDienst.laenge());\n",
+      "identical_to_repository_version": false,
+      "repository_file_version": -1,
+      "isFolder": false
+    },
+    {
+      "name": "Liste",
+      "text": "/**\n * Die Liste als Kompositum: anfang ist nie null. In der leeren Liste\n * zeigt anfang auf den Abschluss.\n */\npublic class Liste {\n   private ListenElement anfang;\n\n   public Liste() {\n      anfang = new Abschluss();\n   }\n\n   public boolean isEmpty() {\n      return anfang.laenge() == 0;\n   }\n\n   public int laenge() {\n      return anfang.laenge();\n   }\n\n   public boolean enthaelt(DatenElement d) {\n      return anfang.enthaelt(d);\n   }\n\n   public boolean add(DatenElement d) {\n      anfang = anfang.add(d);     // auch der Anfang kann sich ändern (leere Liste!)\n      return true;\n   }\n\n   public boolean entfernen(DatenElement d) {\n      if (enthaelt(d)) {\n         anfang = anfang.entfernen(d);\n         return true;\n      } else {\n         return false;\n      }\n   }\n\n   public void ausgeben() {\n      anfang.ausgeben();\n   }\n\n   // Hilfsmethode für die Tests\n   public String alsText() {\n      return anfang.alsText();\n   }\n}\n",
+      "identical_to_repository_version": false,
+      "repository_file_version": -1,
+      "isFolder": false
+    },
+    {
+      "name": "ListenElement",
+      "text": "/**\n * Gemeinsamer Typ von Knoten und Abschluss (Entwurfsmuster Kompositum).\n * Abstrakte Klasse: Von ihr selbst gibt es keine Objekte. Jede Unterklasse\n * muss alle abstrakten Methoden auf ihre eigene Weise umsetzen.\n */\npublic abstract class ListenElement {\n\n   // Anzahl der Knoten ab hier\n   public abstract int laenge();\n\n   // Ist d ab hier enthalten?\n   public abstract boolean enthaelt(DatenElement d);\n\n   // Hängt d am Ende an. Rückgabe: das Element, das jetzt an dieser Stelle steht.\n   public abstract ListenElement add(DatenElement d);\n\n   // Entfernt den ersten Knoten mit d. Rückgabe: das Element, das jetzt an dieser Stelle steht.\n   public abstract ListenElement entfernen(DatenElement d);\n\n   public abstract void ausgeben();\n\n   public abstract String alsText();\n}\n",
+      "identical_to_repository_version": false,
+      "repository_file_version": -1,
+      "isFolder": false
+    },
+    {
+      "name": "Knoten",
+      "text": "/**\n * Ein Knoten der Liste. Sein Nachfolger ist ein ListenElement:\n * entweder ein weiterer Knoten oder der Abschluss – niemals null.\n */\npublic class Knoten extends ListenElement {\n   private DatenElement daten;\n   private ListenElement nachfolger;\n\n   public Knoten(DatenElement daten) {\n      this.daten = daten;\n   }\n\n   public DatenElement getDaten() {\n      return daten;\n   }\n\n   public ListenElement getNachfolger() {\n      return nachfolger;\n   }\n\n   public void setNachfolger(ListenElement nachfolger) {\n      this.nachfolger = nachfolger;\n   }\n\n   public int laenge() {\n      return nachfolger.laenge() + 1;      // kein if: der Abschluss antwortet mit 0\n   }\n\n   public boolean enthaelt(DatenElement d) {\n      if (daten.istGleich(d)) {\n         return true;\n      } else {\n         return nachfolger.enthaelt(d);    // der Abschluss antwortet mit false\n      }\n   }\n\n   public ListenElement add(DatenElement d) {\n      nachfolger = nachfolger.add(d);      // Rest erweitern und neuen Rest eintragen\n      return this;                         // an meiner Stelle stehe weiterhin ich\n   }\n\n   public ListenElement entfernen(DatenElement d) {\n      if (daten.istGleich(d)) {\n         return nachfolger;                // ich werde übersprungen\n      } else {\n         nachfolger = nachfolger.entfernen(d);\n         return this;\n      }\n   }\n\n   // Beispiel: kein if mehr nötig – der Abschluss gibt einfach nichts aus.\n   public void ausgeben() {\n      println(\"  \" + daten.gibSchluesselwert());\n      nachfolger.ausgeben();\n   }\n\n   // Hilfsmethode für die Tests: alle Schlüsselwerte ab hier, durch Komma getrennt.\n   public String alsText() {\n      String rest = nachfolger.alsText();\n      if (rest.equals(\"\")) {\n         return daten.gibSchluesselwert();\n      } else {\n         return daten.gibSchluesselwert() + \", \" + rest;\n      }\n   }\n}\n",
+      "identical_to_repository_version": false,
+      "repository_file_version": -1,
+      "isFolder": false
+    },
+    {
+      "name": "Abschluss",
+      "text": "/**\n * Der Abschluss steht immer am Ende der Liste – auch in der leeren Liste.\n * Er hat weder Daten noch einen Nachfolger.\n */\npublic class Abschluss extends ListenElement {\n\n   public int laenge() {\n      return 0;                      // ab hier gibt es keine Knoten mehr\n   }\n\n   public boolean enthaelt(DatenElement d) {\n      return false;                  // hier ist nichts mehr zu finden\n   }\n\n   public ListenElement add(DatenElement d) {\n      Knoten neu = new Knoten(d);    // ① neuen Knoten erzeugen\n      neu.setNachfolger(this);       // ② der Abschluss bleibt am Ende\n      return neu;                    // ③ der neue Knoten steht jetzt hier\n   }\n\n   public ListenElement entfernen(DatenElement d) {\n      return this;                   // nichts gefunden: der Abschluss bleibt\n   }\n\n   public void ausgeben() {\n      // Am Ende gibt es nichts mehr auszugeben.\n   }\n\n   public String alsText() {\n      return \"\";\n   }\n}\n",
+      "identical_to_repository_version": false,
+      "repository_file_version": -1,
+      "isFolder": false
+    },
+    {
+      "name": "DatenElement",
+      "text": "/**\n * Der Vertrag für alles, was in einer Liste oder Warteschlange stehen darf.\n */\npublic interface DatenElement {\n   String gibSchluesselwert();\n\n   boolean istGleich(DatenElement d);   // inhaltlich gleich (nicht: dasselbe Objekt)\n}\n",
+      "identical_to_repository_version": false,
+      "repository_file_version": -1,
+      "isFolder": false
+    },
+    {
+      "name": "Taxi",
+      "text": "/**\n * Ein Taxi der Taxizentrale.\n */\npublic class Taxi implements DatenElement {\n   private int nummer;\n   private String fahrer;\n\n   public Taxi(int nummer, String fahrer) {\n      this.nummer = nummer;\n      this.fahrer = fahrer;\n   }\n\n   public int getNummer() {\n      return nummer;\n   }\n\n   public String getFahrer() {\n      return fahrer;\n   }\n\n   public String gibSchluesselwert() {\n      return \"Taxi \" + nummer;\n   }\n\n   public boolean istGleich(DatenElement d) {\n      return gibSchluesselwert().equals(d.gibSchluesselwert());\n   }\n}\n",
+      "identical_to_repository_version": false,
+      "repository_file_version": -1,
+      "isFolder": false
+    },
+    {
+      "name": "ListeTest",
+      "text": "/**\n * Selbsttest der Kompositum-Liste. Bitte nicht verändern!\n * Starten: Klick auf das kleine Dreieck links neben \"@Test\"\n * (ganz oben: alle Tests) oder auf der Website \"Tests starten\".\n */\npublic class ListeTest {\n\n   private Knoten kette() {\n      // k1 (Taxi 12) -> k2 (Taxi 7) -> k3 (Taxi 3) -> Abschluss, ohne add gebaut\n      Knoten k1 = new Knoten(new Taxi(12, \"Stefan\"));\n      Knoten k2 = new Knoten(new Taxi(7, \"Aylin\"));\n      Knoten k3 = new Knoten(new Taxi(3, \"Jonas\"));\n      k1.setNachfolger(k2);\n      k2.setNachfolger(k3);\n      k3.setNachfolger(new Abschluss());\n      return k1;\n   }\n\n   private Liste dreiTaxis() {\n      Liste l = new Liste();\n      l.add(new Taxi(12, \"Stefan\"));\n      l.add(new Taxi(7, \"Aylin\"));\n      l.add(new Taxi(3, \"Jonas\"));\n      return l;\n   }\n\n   @Test\n   public void laengeAbschluss() {\n      Assertions.assertEquals(0, new Abschluss().laenge(), \"Abschluss.laenge(): Ab dem Abschluss gibt es keine Knoten mehr.\");\n   }\n\n   @Test\n   public void laengeKnotenkette() {\n      Assertions.assertEquals(3, kette().laenge(), \"Knoten.laenge(): Drei Knoten vor dem Abschluss ergeben 3.\");\n   }\n\n   @Test\n   public void enthaeltAbschluss() {\n      Assertions.assertFalse(new Abschluss().enthaelt(new Taxi(7, \"Aylin\")), \"Abschluss.enthaelt(): Im Abschluss ist nichts enthalten.\");\n   }\n\n   @Test\n   public void enthaeltKnotenkette() {\n      Assertions.assertTrue(kette().enthaelt(new Taxi(3, \"Jonas\")), \"Knoten.enthaelt(): Taxi 3 steht im letzten Knoten und muss gefunden werden.\");\n      Assertions.assertFalse(kette().enthaelt(new Taxi(99, \"Zoe\")), \"Knoten.enthaelt(): Taxi 99 gibt es nicht.\");\n   }\n\n   @Test\n   public void addAbschlussLiefertNeuenKnoten() {\n      ListenElement e = new Abschluss().add(new Taxi(12, \"Stefan\"));\n      Assertions.assertTrue(e instanceof Knoten, \"Abschluss.add() muss einen neuen Knoten zurückgeben.\");\n      Assertions.assertEquals(\"Taxi 12\", e.alsText(), \"Der neue Knoten muss Taxi 12 tragen und vor dem Abschluss stehen.\");\n   }\n\n   @Test\n   public void addKnotenLiefertSichSelbst() {\n      Knoten k = kette();\n      ListenElement e = k.add(new Taxi(21, \"Mira\"));\n      Assertions.assertTrue(e == k, \"Knoten.add() muss sich selbst (this) zurückgeben.\");\n      Assertions.assertEquals(\"Taxi 12, Taxi 7, Taxi 3, Taxi 21\", k.alsText(), \"Knoten.add() muss hinten anhängen.\");\n   }\n\n   @Test\n   public void addListe() {\n      Assertions.assertEquals(\"Taxi 12, Taxi 7, Taxi 3\", dreiTaxis().alsText(), \"Liste.add(): Die Taxis müssen in der Reihenfolge des Hinzufügens stehen.\");\n   }\n\n   @Test\n   public void entfernenMitte() {\n      Liste l = dreiTaxis();\n      Assertions.assertTrue(l.entfernen(new Taxi(7, \"Aylin\")), \"entfernen() muss true liefern, wenn Taxi 7 gefunden wurde.\");\n      Assertions.assertEquals(\"Taxi 12, Taxi 3\", l.alsText(), \"Nach entfernen(Taxi 7) bleiben Taxi 12 und Taxi 3.\");\n   }\n\n   @Test\n   public void entfernenErstes() {\n      Liste l = dreiTaxis();\n      l.entfernen(new Taxi(12, \"Stefan\"));\n      Assertions.assertEquals(\"Taxi 7, Taxi 3\", l.alsText(), \"Auch der erste Knoten muss entfernt werden können.\");\n   }\n\n   @Test\n   public void entfernenLetztes() {\n      Liste l = dreiTaxis();\n      l.entfernen(new Taxi(3, \"Jonas\"));\n      Assertions.assertEquals(\"Taxi 12, Taxi 7\", l.alsText(), \"Auch der letzte Knoten muss entfernt werden können.\");\n   }\n\n   @Test\n   public void entfernenNichtVorhanden() {\n      Liste l = dreiTaxis();\n      Assertions.assertFalse(l.entfernen(new Taxi(99, \"Zoe\")), \"entfernen() muss false liefern, wenn nichts gefunden wird.\");\n      Assertions.assertEquals(\"Taxi 12, Taxi 7, Taxi 3\", l.alsText(), \"Die Liste darf sich dann nicht verändern.\");\n   }\n}\n",
+      "identical_to_repository_version": false,
+      "repository_file_version": -1,
+      "isFolder": false
+    }
+  ],
+  "settings": {
+    "libraries": []
+  },
+  "isFolder": false
+}

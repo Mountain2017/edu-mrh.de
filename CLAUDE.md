@@ -57,6 +57,22 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
 - Code und Arbeitsblatt müssen zusammenpassen: TODO-Nummern und
   Kommentare verweisen auf die Aufgabennummern des Blatts, Methodennamen
   und Code-Ausschnitte sind auf Blatt und in der IDE identisch.
+- **Workspaces als Dateien** (Vorbild `informatik/12/rekursive-datenstrukturen/`):
+  je Station `Online-IDE/<jg>-<kap>-<nr> <Name>.json` (Ausgangsstand) und
+  `Online-IDE/LSG <jg>-<kap>-<nr> <Name>.json` (Lösung), Format wie der Export
+  der IDE. In der Einbettung `'jsonFilename': '<jg>-<kap>-<nr> <Name>.json'`
+  setzen, damit „Workspace in Datei speichern“ denselben Namen liefert. Wird
+  Code in der Seite geändert, auch die JSON-Dateien anpassen.
+- **Coach** (dynamische Hinweise aus Fehlerliste und Testergebnissen):
+  Einbettung mit `'enableFileAccess': true, 'enableRunExitStatusAccess': true`,
+  darunter `<div class="coach" data-coach="<IDE-id>"></div>` und
+  `ide-coach.js` im Themenordner; Regeln je IDE-id in `REGELN`. Tests als
+  JUnit-Klasse (`@Test`, `Assertions.…`, Datei `readOnly`).
+- Eigenheiten der Online-IDE (nicht darauf bauen, ggf. im Lehrkräfte-Bereich
+  erwähnen): `==` vergleicht Strings nach Inhalt; ein falscher Rückgabetyp
+  beim Implementieren einer Interface-Methode (`int` statt `String`) und
+  unerreichbarer Code werden nicht gemeldet; bei `a + b` wird `b` zuerst
+  ausgewertet.
 
 ## Arbeitsblätter
 
@@ -68,7 +84,9 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
   Wird ein Thema „nach dem neuen Format überarbeitet“, ist genau das gemeint.
 - LaTeX-Quelle + PDF nebeneinander, gemeinsame `ab-vorlage.tex` je Themenordner
   (Lösungsschalter `\mitloesung`, Befehle `\lsg`, `\lsglinien`, `\lsgoder`;
-  Übersetzen siehe Kopf der Vorlage, z. B. mit `xelatex`).
+  Übersetzen siehe Kopf der Vorlage, z. B. mit `xelatex`). Die Lösungsfassung
+  ist eine Einzeiler-Datei `ab-<nr>-<thema>-lsg.tex` mit
+  `\def\mitloesung{}\input{ab-<nr>-<thema>}`.
 - **Immer höchstens 2 Seiten** pro Blatt, auch die Lösungsfassung. Nach dem
   Übersetzen die Seitenzahl beider PDFs prüfen. Lösungseinträge dürfen das
   Layout nicht verschieben (Platz im Blatt gleich groß reservieren).
@@ -88,6 +106,13 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
 - Gibt es mehrere sinnvolle Implementierungen, kurz darauf hinweisen und als
   **mündlichen** Impuls stellen (warum könnte man es so machen?), ohne
   Schreibplatz auf dem Blatt; Hinweise zum Nachlesen gehören auf die Website.
+- Website und Blatt bilden ein Tandem: Die Seite erklärt und stellt Werkzeuge
+  bereit, ersetzt aber weder Blatt noch Unterricht. **Lösungen nie offen
+  lesbar** auf die Seite: gestuft über `<div class="lw" data-loesungsweg="…">`
+  mit `<template data-stufe="Tipp 1">…` und zuletzt
+  `<template data-stufe="Lösung" data-halten>` (erscheint erst nach 1,5 s
+  Gedrückthalten; `datenstrukturen.js`). Volle Lösungen für Lehrkräfte als
+  LSG-PDF/-JSON im Lehrkräfte-Bereich.
 
 ## Sprache & Inhalt
 
