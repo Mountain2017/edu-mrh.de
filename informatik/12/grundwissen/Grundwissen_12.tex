@@ -1,0 +1,530 @@
+% =====================================================================
+%  Grundwissen Klasse 12  --  Informatik
+%  Aufbau analog zu ab-0-grundwissen.tex (Grundwissen 6 bis 9)
+%
+%  ZWEI VERSIONEN AUS EINER DATEI:
+%    Arbeitsblatt : einfach uebersetzen
+%    Loesung      : \loesungtrue setzen (Zeile unten)  ODER
+%                   pdflatex "\def\loesungan{}\input{ab-0-grundwissen-12}"
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+\renewcommand{\themenbereich}{Grundwissen 6 bis 11}
+% schmalere Raender, damit Blatt und Loesung auf 4 Seiten passen
+\newgeometry{left=14mm,right=14mm,top=21mm,bottom=12mm,headheight=11mm,headsep=3mm,footskip=5mm}
+\setlength{\headwidth}{\textwidth}
+
+% ------------------------- Loesungsschalter --------------------------
+\newif\ifloesung
+\loesungfalse                      % <-- \loesungtrue  = Loesungsblatt
+\ifdefined\loesungan\loesungtrue\fi
+
+\makeatletter
+\@ifpackageloaded{xcolor}{}{\usepackage{xcolor}}
+\makeatother
+\usepackage{comment}
+\definecolor{lsgrot}{RGB}{190,30,45}
+
+% Bloecke, die nur in einer der beiden Versionen erscheinen
+% (verbatim-sicher, daher auch fuer die java-Umgebung geeignet)
+\ifloesung
+  \includecomment{nurlsg}\excludecomment{nurab}
+\else
+  \excludecomment{nurlsg}\includecomment{nurab}
+\fi
+
+\newlength{\spaceParagraph}
+\setlength{\spaceParagraph}{0.5cm}
+% \lsg[Breite]{Loesungstext} -- Luecke bzw. eingetragene Loesung
+% (waechst mit, falls die Loesung breiter als die Luecke ist)
+\newlength{\lsgbreite}
+\newcommand{\lsg}[2][3cm]{%
+  \ifloesung
+    \settowidth{\lsgbreite}{\small #2}%
+    \ifdim\lsgbreite<#1\relax\setlength{\lsgbreite}{#1}\fi
+    \underline{\makebox[\lsgbreite][c]{\textcolor{lsgrot}{\small #2}}}%
+  \else
+    \luecke[#1]%
+  \fi}
+
+% Aufgabenbox wie in ab-vorlage, aber nicht umbrechbar: breakable-Boxen
+% in Minipages werden sonst am Seitenende gestreckt bzw. zerteilt
+\renewenvironment{aufgabe}[2][]{\begin{tcolorbox}[enhanced,colback=white,colframe=black,boxrule=0.7pt,arc=3mm,left=2mm,right=2mm,top=1.5mm,bottom=1.5mm,before skip=2.5mm,after skip=2.5mm]\textbf{Aufgabe #2)}\ifstrempty{#1}{}{ \textit{#1}}\par\vspace{0.6mm}}{\end{tcolorbox}}
+
+% \lsgw[Breite]{Loesungstext} -- wie \lsg, aber umbrechend
+% (fuer p-Spalten in Tabellen und lange Antworten)
+\newcommand{\lsgw}[2][3cm]{%
+  \ifloesung\leavevmode{\small\color{lsgrot}#2}\else\luecke[#1]\fi}
+
+% Alle folgenden Felder sind in Blatt und Loesung gleich hoch,
+% damit beide Fassungen identisch umbrechen.
+\newlength{\zeilenabstand}
+\setlength{\zeilenabstand}{6.5mm}
+
+% \lsgzeilen{Anzahl Linien}{Loesungstext}
+\newcommand{\lsgzeilen}[2]{\par\vspace{1mm}\noindent
+  \begin{minipage}[t][#1\zeilenabstand][t]{\linewidth}
+  \ifloesung{\small\color{lsgrot}#2\par}%
+  \else\vspace{0pt}\begin{tikzpicture}\path (0,0);
+    \foreach \i in {1,...,#1}{\draw[line width=0.3pt] (0,-\i*\zeilenabstand) -- (\linewidth,-\i*\zeilenabstand);}
+  \end{tikzpicture}\fi
+  \end{minipage}\par}
+
+% \lsgplatz{Hoehe}{Loesungstext} -- nur in der Loesung sichtbar
+\newcommand{\lsgplatz}[2]{\par\noindent
+  \begin{minipage}[t][#1][t]{\linewidth}\ifloesung{\small\color{lsgrot}#2\par}\fi\end{minipage}\par}
+
+% Feld fester Hoehe; darin nurab (z.B. \codelinien) und nurlsg (Listing)
+\newenvironment{lsgfeld}[1]{\par\noindent\begin{minipage}[t][#1][t]{\linewidth}\vspace{0pt}}{\end{minipage}\par}
+
+% \codelinien{Anzahl} -- gerahmtes Feld mit Schreiblinien fuer Code
+\newcommand{\codelinien}[1]{\begin{tikzpicture}
+  \draw[line width=0.4pt] (0,0) rectangle (\linewidth-0.4pt,-#1*5mm-2mm);
+  \foreach \i in {1,...,#1}{\draw[gray!60,line width=0.3pt] (2mm,-\i*5mm) -- (\linewidth-2mm,-\i*5mm);}
+\end{tikzpicture}}
+
+\begin{document}
+\abtitel{0}{Grundwissen}
+
+% =====================================================================
+\textbf{0.1 Objektorientierte Modellierung -- Klassen und Objekte}\par\nopagebreak
+
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm,font=\small]
+\node[anchor=north west] (kk) at (0,0) {\klassenkarte{Dreieck}{seitenlaenge\\farbe}{setzeFarbe(neu)}};
+\node[anchor=south west] at (0,0.15) {\lsg[5cm]{Klassenkarte}};
+\node[anchor=north west,draw,rounded corners=3mm,inner sep=0pt] (ok) at (8.5,0) {\begin{tabular}{l}\rule{0pt}{4mm}\textbf{form1: Dreieck}\\[1mm]\hline\rule{0pt}{4mm}seitenlaenge = 20\\farbe = "blau"\\[1mm]\end{tabular}};
+\node[anchor=south west] at (8.5,0.15) {\lsg[5cm]{Objektkarte}};
+% Klammern Klassenkarte
+\draw[decorate,decoration={brace,amplitude=4pt}] ([xshift=2pt]kk.north east) -- ([xshift=2pt]kk.north east|-{(0,-0.55)}) node[midway,right=6pt] {\lsg[3cm]{Klassenname}};
+\draw[decorate,decoration={brace,amplitude=4pt}] ([xshift=2pt]kk.north east|-{(0,-0.65)}) -- ([xshift=2pt]kk.north east|-{(0,-1.55)}) node[midway,right=6pt] {\lsg[3cm]{Attribute}};
+\draw[decorate,decoration={brace,amplitude=4pt}] ([xshift=2pt]kk.north east|-{(0,-1.65)}) -- ([xshift=2pt]kk.south east) node[midway,right=6pt] {\lsg[3cm]{Methoden}};
+% Klammern Objektkarte
+\draw[decorate,decoration={brace,amplitude=4pt}] ([xshift=2pt]ok.north east) -- ([xshift=2pt]ok.north east|-{(0,-0.6)}) node[midway,right=6pt] {\lsg[3cm]{Objektname: Klasse}};
+\draw[decorate,decoration={brace,amplitude=4pt}] ([xshift=2pt]ok.north east|-{(0,-0.7)}) -- ([xshift=2pt]ok.south east) node[midway,right=6pt] {\lsg[3cm]{Attributwerte}};
+\end{tikzpicture}
+\end{center}
+
+\begin{merke}[Objektorientierung]\small
+Objektorientierung beschreibt das Lösen von Problemstellungen durch Analyse der beteiligten \textbf{Objekte} und deren Zusammenspiel. Eine \textbf{Klasse} ist der Bauplan, ein \textbf{Objekt} eine konkrete Ausprägung (Instanz) dieser Klasse.
+\end{merke}
+
+\vspace{\spaceParagraph/2}
+\textbf{0.1.1 Punktnotation für Attribute und Methodenaufrufe}\par\nopagebreak
+
+\begin{minipage}[t]{0.46\linewidth}
+\vspace{0pt}
+\begin{java}
+Objektname.Methode(Parameter);
+Objektname.Attribut = Attributwert;
+\end{java}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.50\linewidth}
+\vspace{0pt}
+\begin{java}
+tisch1.breite = 50;
+tisch1.verschieben(10,10);
+tisch1.loeschen();
+karol.schritt();
+\end{java}
+\end{minipage}
+
+\vspace{2mm}
+\textbf{0.1.2 Beziehungen und Klassendiagramme}\par\nopagebreak
+
+Objekte können \textbf{Referenzen} auf andere Objekte enthalten (\textbf{Referenzattribute}). Dabei wird die referenzierte Klasse zum \textbf{Datentyp}:
+
+\begin{minipage}[t]{0.52\linewidth}
+\vspace{4pt}
+\begin{java}
+public class Haus {
+   private String strassenname;
+   private int grundflaeche;
+   private Person eigentuemer;
+   ...
+}
+\end{java}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.44\linewidth}
+\vspace{0pt}
+\begin{aufgabe}{1}
+\textbf{a)} Zeichne das zugehörige \textbf{Klassendiagramm} (ohne \code{String} und \code{int}).\\
+\textbf{b)} Nenne fünf weitere Datentypen.
+\end{aufgabe}
+\lsgzeilen{4}{b) \code{int}, \code{double}, \code{float}, \code{char}, \code{boolean}, \code{long}, \code{String}\par
+a) Klassen \code{Haus} und \code{Person}, verbunden durch eine gerichtete Beziehung
+\code{eigentuemer} (Kardinalität 1).}
+\end{minipage}
+
+\vspace{\spaceParagraph/2}
+\textbf{0.1.3 Kommunikation zwischen Objekten}\par\nopagebreak
+
+Objekte kommunizieren, indem sie 1) öffentliche Attributwerte eines anderen Objekts lesen bzw.\ verändern oder 2) öffentliche Methoden eines anderen Objekts aufrufen. Attribute sollten nicht öffentlich sein (\textbf{Datenkapselung}) -- stattdessen \textbf{Getter}- und \textbf{Setter}-Methoden verwenden.
+
+\vspace{1mm}
+\textbf{Zugriffsrechte}\quad\small
+\begin{tabular}{|c|l|p{8.4cm}|}\hline
+\lsg[0.8cm]{+} & \lsg[2cm]{public} & Öffentlicher Zugriff, jeder kann schreiben und lesen.\\\hline
+\lsg[0.8cm]{--} & \lsg[2cm]{private} & \lsgw[8cm]{Zugriff nur innerhalb der eigenen Klasse.}\\\hline
+\lsg[0.8cm]{\#} & \lsg[2cm]{protected} & \lsgw[8cm]{Zugriff in der eigenen Klasse und in allen Unterklassen.}\\\hline
+\end{tabular}\normalsize
+
+% =====================================================================
+\vspace{\spaceParagraph}
+\textbf{0.2 Bausteine von Algorithmen -- Struktogramme}\par\nopagebreak
+
+\begin{minipage}[t]{0.47\linewidth}
+\textbf{Anweisung}\\[1mm]
+\begin{tikzpicture}[x=1cm,y=1cm,font=\ttfamily\small]\draw (0,0) rectangle (4,0.7); \node[anchor=west] at (0.15,0.35) {schritt()};\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.47\linewidth}
+\textbf{Sequenz}\\[1mm]
+\begin{tikzpicture}[x=1cm,y=1cm,font=\ttfamily\small]
+\draw (0,0) rectangle (4.5,2.1); \draw (0,0.7) -- (4.5,0.7); \draw (0,1.4) -- (4.5,1.4);
+\node[anchor=west] at (0.15,1.75) {linksDrehen()}; \node[anchor=west] at (0.15,1.05) {schritt()}; \node[anchor=west] at (0.15,0.35) {aufheben()};
+\end{tikzpicture}
+\end{minipage}
+
+\vspace{2mm}
+\textbf{Die bedingte Anweisung}\par\nopagebreak
+
+\begin{minipage}[t]{0.47\linewidth}
+\textit{einseitig}\\[1mm]
+\begin{tikzpicture}[x=1cm,y=1cm,font=\small]
+\draw (0,0) rectangle (5.5,2.2); \draw (0,2.2) -- (2.75,1.2) -- (5.5,2.2); \draw (0,1.2) -- (5.5,1.2); \draw (2.75,0) -- (2.75,1.2); \draw (2.75,1.2) -- (5.5,0);
+\node at (2.75,1.85) {\ttfamily\itshape istZiegel()}; \node at (0.6,1.4) {wahr}; \node at (4.9,1.4) {falsch};
+\node at (1.35,0.6) {\ttfamily\small aufheben()};
+\end{tikzpicture}\\[1mm]
+\textbf{Java:}
+\begin{java}
+if (istZiegel()) {
+   aufheben();
+   schritt();
+}
+\end{java}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.47\linewidth}
+\textit{zweiseitig}\\[1mm]
+\begin{tikzpicture}[x=1cm,y=1cm,font=\small]
+\draw (0,0) rectangle (5.5,2.2); \draw (0,2.2) -- (2.75,1.2) -- (5.5,2.2); \draw (0,1.2) -- (5.5,1.2); \draw (2.75,0) -- (2.75,1.2);
+\node at (2.75,1.85) {\ttfamily\itshape istWand()}; \node at (0.6,1.4) {wahr}; \node at (4.9,1.4) {falsch};
+\node at (1.35,0.6) {\ttfamily\small linksDrehen()}; \node at (4.1,0.6) {\ttfamily\small schritt()};
+\end{tikzpicture}\\[1mm]
+\textbf{Java:}
+\begin{lsgfeld}{28mm}
+\begin{nurab}
+\vspace{1mm}\codelinien{5}
+\end{nurab}
+\begin{nurlsg}
+\begin{java}
+if (istWand()) {
+   linksDrehen();
+} else {
+   schritt();
+}
+\end{java}
+\end{nurlsg}
+\end{lsgfeld}
+\end{minipage}
+
+\textbf{Die Wiederholung}
+
+\begin{minipage}[t]{0.47\linewidth}
+\textit{bedingte Wiederholung}\\[1mm]
+\begin{tikzpicture}[x=1cm,y=1cm,font=\small]
+\draw (0,0) rectangle (5.5,1.9); \draw (0.7,0) -- (0.7,1.3) -- (5.5,1.3);
+\node[anchor=west] at (0.15,1.6) {Wiederhole solange {\ttfamily\itshape !istWand()}};
+\node[anchor=west] at (0.9,0.85) {\ttfamily\small hinlegen()};
+\node[anchor=west] at (0.9,0.4) {\ttfamily\small schritt()};
+\end{tikzpicture}\\[1mm]
+\textbf{Java:}
+\begin{lsgfeld}{23mm}
+\begin{nurab}
+\vspace{1mm}\codelinien{4}
+\end{nurab}
+\begin{nurlsg}
+\begin{java}
+while (!istWand()) {
+   hinlegen();
+   schritt();
+}
+\end{java}
+\end{nurlsg}
+\end{lsgfeld}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.47\linewidth}
+\textit{Wiederholung mit fester Anzahl}\\[1mm]
+\begin{tikzpicture}[x=1cm,y=1cm,font=\small]
+\draw (0,0) rectangle (5.5,1.9); \draw (0.7,0) -- (0.7,1.3) -- (5.5,1.3);
+\node[anchor=west] at (0.15,1.6) {Wiederhole \lsg[2.4cm]{5 mal}};
+\node[anchor=west] at (0.9,0.85) {\ttfamily\small hinlegen()};
+\node[anchor=west] at (0.9,0.4) {\ttfamily\small schritt()};
+\end{tikzpicture}\\[1mm]
+\textbf{Java:}
+\begin{java}
+for (int i = 0; i < 5; i++) {
+   hinlegen();
+   schritt();
+}
+\end{java}
+\end{minipage}
+
+% =====================================================================
+\vspace{\spaceParagraph/2}
+\textbf{0.3 Feld (Array)}\par\nopagebreak
+
+\begin{itemize}\itemsep0pt\parskip0pt
+\item Zusammenfassung mehrerer Variablen oder Objekte \underline{der gleichen Klasse} in einer zusammenhängenden Folge \underline{fester Länge}.
+\item Die einzelnen Feldelemente sind durchnummeriert; diese Nummern nennt man \textbf{Index}. Zugriff über Indizes -- \underline{die Nummerierung beginnt bei 0}.
+\end{itemize}
+
+\begin{minipage}[t]{0.42\linewidth}
+\vspace{0pt}
+\begin{java}
+int zahl[];
+zahl = new int[1000];
+zahl[2] = 10;
+\end{java}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.25\linewidth}
+\vspace{0pt}\small
+\lsg[2.8cm]{Deklaration}\\[2mm]
+\lsg[2.8cm]{Initialisierung}\\[2mm]
+\lsg[2.8cm]{Wertzuweisung}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.29\linewidth}
+\vspace{0pt}\small
+\underline{Hinweis}: Instanziierung bedeutet die Erzeugung eines neuen Objekts (Aufruf des Konstruktors).
+\end{minipage}
+
+% =====================================================================
+\vspace{\spaceParagraph}
+\textbf{0.4 Das E-V-A-Prinzip}\par\nopagebreak
+
+\begin{minipage}[t]{0.58\linewidth}
+\vspace{0pt}
+\begin{java}
+public void bmi(float gewicht, float groesse)
+{
+   float bmi = gewicht/(groesse*groesse);
+   System.out.println("BMI " + bmi);
+}
+\end{java}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.38\linewidth}
+\vspace{0pt}
+\begin{tikzpicture}[x=1cm,y=1cm,font=\small]
+\draw (0,2.3) rectangle (5,2.95); \node at (2.5,2.625) {\lsg[3.2cm]{Eingabe}};
+\draw[-latex,thick] (2.5,2.3) -- (2.5,1.95);
+\draw (2.5,1.475) ellipse (2.5cm and 0.475cm); \node at (2.5,1.475) {\lsg[3.2cm]{Verarbeitung}};
+\draw[-latex,thick] (2.5,1.0) -- (2.5,0.65);
+\draw (0,0) rectangle (5,0.65); \node at (2.5,0.325) {\lsg[3.2cm]{Ausgabe}};
+\end{tikzpicture}
+\end{minipage}
+
+\lsgplatz{5mm}{Eingabe: Parameter \code{gewicht} und \code{groesse} -- Verarbeitung: Berechnung von \code{bmi} --
+Ausgabe: \code{System.out.println(...)}}
+
+% =====================================================================
+\vspace{\spaceParagraph/2}
+\textbf{0.5 Vererbung, Polymorphismus und @Override}\par\nopagebreak
+
+Klassen können voneinander \textbf{erben}. Attribute und Methoden der Oberklasse sind dann auch in Unterklassen verfügbar. \underline{Wichtig}: Eine Klasse kann in Java immer nur von \underline{einer} Klasse erben (keine Mehrfachvererbung). Eine hierarchische Vererbung ist jedoch möglich.
+
+\begin{minipage}[t]{0.46\linewidth}
+\vspace{0pt}
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm,font=\small]
+\node[anchor=north west,draw,rounded corners=3mm,inner sep=0pt] at (0,0) {\begin{tabular}{l}\rule{0pt}{4mm}\textbf{person1: Person}\\[1mm]\hline\rule{0pt}{4mm}alter = 17\\name = "Mia"\\[1mm]\end{tabular}};
+\node[anchor=north west,draw,rounded corners=3mm,inner sep=0pt] at (4.3,0) {\begin{tabular}{l}\rule{0pt}{4mm}\textbf{person2: Schueler}\\[1mm]\hline\rule{0pt}{4mm}alter = 16\\name = "Tim"\\klasse = "11c"\\[1mm]\end{tabular}};
+\end{tikzpicture}
+\end{center}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.50\linewidth}
+\vspace{0pt}
+\begin{java}
+public class Schueler extends Person {
+   String klasse;
+   public Schueler(int _alter,
+         String _name, String _klasse) {
+      super(_alter, _name);
+      klasse = _klasse;
+   }
+}
+\end{java}
+\end{minipage}
+
+\vspace{2mm}
+\small
+\begin{tabular}{|l|p{12.2cm}|}\hline
+\code{super} & Aufruf des Konstruktors (bzw.\ einer Methode) der Oberklasse.\\\hline
+\code{extends} & Gibt die Oberklasse an, nach der die Unterklasse erstellt wird.\\\hline
+\code{@Override} & \lsgw[11.8cm]{Kennzeichnet eine Methode, die eine geerbte Methode der Oberklasse überschreibt.}\\\hline
+Polymorphismus & \lsgw[11.8cm]{Gleicher Methodenaufruf, unterschiedliches Verhalten je nach Objektklasse.}\\\hline
+\end{tabular}\normalsize
+
+% =====================================================================
+\vspace{\spaceParagraph}
+\textbf{0.6 Datenbanken}\par\nopagebreak
+
+\begin{merke}\small
+Datenbanken dienen der Speicherung und Verwaltung strukturierter Daten. Die einzelnen Datensätze (\lsg[3cm]{Zeilen}) umfassen dabei mehrere Attributwerte (Spalten $\rightarrow$ \lsg[2.8cm]{Attribute}) eines Objekts und werden in \textbf{Tabellen} gespeichert. Um einen Datensatz eindeutig zu identifizieren, benötigt man einen \lsg[3.6cm]{Primärschlüssel}, welcher aus einem oder mehreren Attributen besteht. Um Beziehungen zwischen Tabellen innerhalb einer Datenbank umzusetzen, werden \lsg[3.6cm]{Fremdschlüssel} benötigt.
+\end{merke}
+
+\vspace{\spaceParagraph/2}
+\textbf{0.6.1 SQL -- }\lsg[7cm]{Structured Query Language}\par\nopagebreak
+
+\small\begin{tabular}{@{}l l l@{}}
+\code{SELECT [DISTINCT]} & \code{<Attribut1>, <Attribut2>, ...} & $\leftarrow$ \lsg[5cm]{Spaltenauswahl}\\
+\code{FROM} & \code{<Tabellenname>} & $\leftarrow$ \lsg[5cm]{Quelltabelle(n)}\\
+\code{WHERE} & \code{<Bedingung>} & $\leftarrow$ \lsg[5cm]{Zeilenauswahl / Filter}\\
+\code{ORDER BY} & \code{<Attribut> [ASC | DESC]} & $\leftarrow$ \lsg[5cm]{Sortierung}\\
+\end{tabular}\normalsize
+
+\begin{aufgabe}{2}
+Erstelle eine Abfrage auf der Tabelle \code{Schueler}, die alle Nachnamen, Vornamen und Geburtstage der Schüler der Klasse 9a ausgibt, welche im Oktober Geburtstag haben. \textit{Bonus}: Sortiere aufsteigend nach den Geburtstagen.
+\end{aufgabe}
+\begin{lsgfeld}{27mm}
+\begin{nurab}
+\codelinien{5}
+\end{nurab}
+\begin{nurlsg}
+\begin{java}[aboveskip=0pt]
+SELECT nachname, vorname, geburtstag
+FROM Schueler
+WHERE klasse = '9a' AND geburtstag LIKE '____-10-__'
+ORDER BY geburtstag ASC;
+\end{java}
+{\small\color{lsgrot}Alternativ (SQLite): \code{strftime('\%m', geburtstag) = '10'}\par}
+\end{nurlsg}
+\end{lsgfeld}
+
+% =====================================================================
+\vspace{\spaceParagraph/2}
+\textbf{0.7 Graphen}\par\nopagebreak
+
+\ldots\ bestehen aus \lsg[4cm]{Knoten} und \lsg[4cm]{Kanten}.
+
+\vspace{1mm}
+\textbf{a)} \lsg[3cm]{Pfad}: Folge von Knoten, wobei aufeinanderfolgende Knoten mit Kanten verbunden sind und keine Kante doppelt abgelaufen wird.
+
+\textbf{b)} Zyklus: \lsg[11cm]{Pfad, bei dem Start- und Endknoten identisch sind.}\\
+\hspace*{5mm}$\rightarrow$ zyklischer oder azyklischer (zyklenfreier) Graph
+
+\textbf{c)} \lsg[3.4cm]{gerichteter} Graph: Kanten können entweder nur in eine (Darstellung als Pfeil) oder in beide Richtungen (Darstellung als Strich) durchlaufen werden.
+
+\textbf{d)} Gewichteter / ungewichteter Graph: \lsg[8.4cm]{Kanten tragen Werte, z.\,B. Entfernungen oder Kosten.}
+
+\textbf{e)} Länge eines Pfades: \lsg[9.6cm]{Anzahl der Kanten bzw. Summe der Kantengewichte.}
+
+% =====================================================================
+\vspace{\spaceParagraph}
+\textbf{0.8 Client-Server-Modell}\par\nopagebreak
+
+\begin{minipage}[t]{0.40\linewidth}
+\vspace{0pt}
+\begin{center}
+\begin{tikzpicture}[x=1cm,y=1cm,font=\scriptsize,
+  geraet/.style={draw,rounded corners=1pt,minimum width=1.05cm,minimum height=0.6cm}]
+\node[geraet] (c1) at (2.6,2.6) {Client};
+\node[geraet] (c2) at (0.3,1.3) {Client};
+\node[geraet] (c3) at (4.9,1.3) {Client};
+\node[geraet] (c4) at (2.6,0) {Client};
+\node[geraet,fill=black!10] (s) at (2.6,1.3) {\textbf{Server}};
+\foreach \c in {c1,c2,c3,c4}{
+  \draw[-latex,red!70!black]   (\c) to[bend left=14] (s);
+  \draw[-latex,green!45!black] (s)  to[bend left=14] (\c);
+}
+\node[red!70!black,anchor=west] at (-0.3,0) {Anfrage};
+\node[green!45!black,anchor=east] at (5.5,0) {Antwort};
+\end{tikzpicture}
+\end{center}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.56\linewidth}
+\vspace{0pt}
+\begin{aufgabe}{3}
+Analysiere die Grafik hinsichtlich ihrer Grapheneigenschaften und recherchiere, welche Protokolle und Adressen zur Kommunikation zwischen den Endpoints nötig sind.
+\end{aufgabe}
+\lsgzeilen{2}{Gerichteter, ungewichteter, zyklenfreier Graph (Stern\-topologie); der Server ist der zentrale Knoten.}
+\end{minipage}
+
+Beispiele für Protokolle: \lsg[11cm]{HTTP/HTTPS, FTP, SMTP, IMAP/POP3, DNS, TCP/IP}
+
+Die Adressierung von Geräten erfolgt über die \lsg[2.4cm]{IP-Adresse} und auf Hardwareseite über die \lsg[2.4cm]{MAC-Adresse}.
+
+% =====================================================================
+\vspace{\spaceParagraph/2}
+\textbf{0.9 Codierung und Verschlüsselung}\par\nopagebreak
+
+\begin{aufgabe}{4}
+\textbf{a)} Erkläre zwei verschiedene Verfahren zur Darstellung der gleichen Information mit einer passenden Grafik und vergleiche dein Vorgehen mit deinem Nachbarn.\\
+\textbf{b)} Verschlüssele eine deiner Informationsdarstellungen und tausche sie mit einer Person im Kurs aus (nicht in Armreichweite), ohne aufzustehen.\\
+\textbf{c)} Erkläre die Anforderungen an Verschlüsselungsverfahren und gehe dabei auf die zwei grundlegend unterschiedlichen Typen ein.
+\end{aufgabe}
+
+\lsgzeilen{5}{a) z.\,B. Dezimal- und Binärdarstellung derselben Zahl, ASCII-Code für Text, RGB-/Hex-Code für Farben:
+gleiche Information, unterschiedliche Codierung.\par
+c) Anforderungen: Die Sicherheit darf nur vom Schlüssel abhängen, nicht vom Verfahren (Kerckhoffs-Prinzip);
+großer Schlüsselraum (kein Ausprobieren); keine erkennbaren Muster/Häufigkeiten im Geheimtext;
+effiziente Ver- und Entschlüsselung; sichere Schlüsselübergabe.
+Typen: \textbf{symmetrisch} -- ein gemeinsamer Schlüssel zum Ver- und Entschlüsseln (z.\,B. Cäsar, AES),
+Problem der Schlüsselübergabe. \textbf{Asymmetrisch} -- öffentlicher Schlüssel zum Verschlüsseln,
+privater Schlüssel zum Entschlüsseln (z.\,B. RSA), löst das Schlüsselübergabeproblem.}
+
+% =====================================================================
+\vspace{\spaceParagraph/2}
+\textbf{0.10 Arten von Künstlicher Intelligenz und Maschinellem Lernen}\par\nopagebreak
+
+\begin{minipage}[t]{0.46\linewidth}
+\vspace{0pt}
+\begin{center}
+\begin{tikzpicture}[font=\tiny]
+\draw (0,0) ellipse (2.6cm and 1.6cm); \node at (0,1.3) {Informatik};
+\draw[fill=black!8] (0,-0.3) ellipse (2.15cm and 1.3cm); \node at (0,0.7) {Data Science};
+\draw[fill=black!16] (0,-0.6) ellipse (1.7cm and 1.0cm); \node at (0,0.1) {Künstliche Intelligenz};
+\draw[fill=black!26] (0,-0.9) ellipse (1.25cm and 0.7cm); \node at (0,-0.48) {Maschinelles Lernen};
+\draw[fill=black!45] (0,-1.15) ellipse (0.8cm and 0.45cm); \node[white,align=center,inner sep=0pt] at (0,-1.15) {Deep\\Learning};
+\end{tikzpicture}
+\end{center}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.50\linewidth}
+\vspace{0pt}
+\textbf{a)} Grenze \textit{schwache} und \textit{starke} KI voneinander ab.
+\lsgzeilen{4}{\textbf{Schwache KI}: auf eine spezifische Aufgabe beschränkt, kein Selbstbewusstsein
+(z.\,B. Sprachassistenten, Empfehlungssysteme) -- existiert heute.
+\textbf{Starke KI}: könnte jede menschliche Aufgabe bewältigen, mit echtem Verständnis -- bisher hypothetisch.}
+\end{minipage}
+
+\vspace{1mm}
+\begin{minipage}[t]{0.46\linewidth}
+\vspace{0pt}
+\textbf{b)} Beschrifte das künstliche Neuron.\\[1mm]
+\begin{tikzpicture}[x=1cm,y=1cm,font=\scriptsize]
+\node (x1) at (0,1.0) {$x_1$};
+\node (x2) at (0,0) {$x_2$};
+\node[draw,circle,minimum size=1.1cm] (n) at (2.6,0.5) {$\Sigma\,|\,f$};
+\node (y) at (5.0,0.5) {Ausgabe};
+\draw[-latex] (x1) -- node[above,pos=0.55] {$w_1$} (n);
+\draw[-latex] (x2) -- node[below,pos=0.55] {$w_2$} (n);
+\draw[-latex] (n) -- (y);
+\draw[-latex] (2.6,-0.45) node[right] {$b$} -- (n);
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.50\linewidth}
+\vspace{0pt}
+\lsgzeilen{4}{$x_1, x_2$ = Eingabewerte, $w_1, w_2$ = Gewichte, $b$ = Schwellenwert/Bias.
+Das Neuron bildet die gewichtete Summe $\sum w_i x_i + b$ und wendet darauf eine
+Aktivierungsfunktion $f$ an; das Ergebnis ist die Ausgabe. Lernen bedeutet Anpassen der Gewichte.}
+\end{minipage}
+
+\vspace{1mm}
+\textbf{c)} Grenze kurz die drei Arten Maschinellen Lernens voneinander ab.
+
+\lsgzeilen{4}{\textbf{Überwachtes Lernen (Supervised Learning)}: Training mit gelabelten Beispieldaten (Eingabe + gewünschte Ausgabe),
+z.\,B. Klassifikation von Bildern. --
+\textbf{Unüberwachtes Lernen (Unsupervised Learning)}: nur Eingabedaten ohne Label; das System erkennt selbst Strukturen
+und Muster, z.\,B. Clustering von Kundengruppen. --
+\textbf{Verstärkendes Lernen (Reinforcement Learning)}: Lernen durch Belohnung und Bestrafung
+in einer Umgebung, z.\,B. Spiel- oder Steuerungsstrategien.}
+
+\end{document}
