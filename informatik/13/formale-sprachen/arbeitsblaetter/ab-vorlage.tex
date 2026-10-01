@@ -47,7 +47,7 @@
 \fancyhead[L]{\small Klasse 13\\Datum:}
 \fancyhead[C]{\small Themenbereich:\\\themenbereich}
 \fancyhead[R]{\small \lehrkraft\ifloesung\\{\lsgfarbe\bfseries Lösung}\fi}
-\fancyfoot[C]{\scriptsize edu-mrh.de\,·\,Informatik 13\,·\,Blatt \abnummer\ifloesung\ (Lösung)\fi\,·\,Seite \thepage}
+\fancyfoot[C]{\scriptsize Informatik 13 gA\,·\,Blatt \abnummer\ifloesung\ (Lösung)\fi\,·\,Seite \thepage}
 \newcommand{\abtitel}[2]{\renewcommand{\abnummer}{#1}\begin{center}\Large\bfseries #1\quad\underline{#2}\end{center}\vspace{-2mm}}
 
 % ---------- Boxen ----------
@@ -62,16 +62,20 @@
 \newcommand{\eps}{$\varepsilon$}
 
 % Lücke mit Lösung: \lsg[Mindestbreite]{Lösungstext}
+%  Die Lösung steht (ohne eigene Höhe/Tiefe) auf derselben Linie wie im Blatt: Das Layout verschiebt sich nicht,
+%  solange der Text nicht breiter als die Mindestbreite ist.
 \newlength{\lsgbreite}
-\newcommand{\lsg}[2][3.5cm]{\ifloesung\settowidth{\lsgbreite}{\,#2\,}\ifdim\lsgbreite<#1\setlength{\lsgbreite}{#1}\fi\underline{\makebox[\lsgbreite][l]{\lsgfarbe\,#2}}\else\luecke[#1]\fi}
-% Schreiblinien mit Lösung: \lsglinien{Anzahl}{Lösungstext} (gleiche Höhe wie \linien)
-\newcommand{\lsglinien}[2]{\ifloesung\par\vspace{1.5mm}\noindent\begin{minipage}[t][#1\dimexpr 6.9mm\relax][t]{\linewidth}\lsgfarbe #2\end{minipage}\par\vspace{-1.5mm}\else\linien{#1}\fi}
+\newcommand{\lsg}[2][3.5cm]{\leavevmode\ifloesung\settowidth{\lsgbreite}{\,#2\,}\ifdim\lsgbreite<#1\setlength{\lsgbreite}{#1}\fi\rlap{\smash{\raisebox{0.8pt}{\makebox[\lsgbreite][l]{\lsgfarbe\,#2}}}}\luecke[\lsgbreite]\else\luecke[#1]\fi}
+% Schreiblinien mit Lösung: \lsglinien{Anzahl}{Lösungstext} (gleiche Höhe wie \linien:
+%  je Linie \baselineskip + 5,5 mm + \parskip, ausgemessen)
+\newlength{\lsglinienhoehe}
+\newcommand{\lsglinien}[2]{\ifloesung\par\vspace{1.5mm}\setlength{\lsglinienhoehe}{\dimexpr #1\dimexpr\baselineskip+5.5mm+\parskip\relax-16.25pt\relax}\noindent\begin{minipage}[t][\lsglinienhoehe][t]{\linewidth}\lsgfarbe #2\end{minipage}\par\vspace{-1.5mm}\else\linien{#1}\fi}
 % Beliebiger Inhalt: \lsgoder{nur in der Lösung}{nur im Blatt}
 \newcommand{\lsgoder}[2]{\ifloesung\leavevmode#1\else#2\fi}
 % Text nur in der Lösung sichtbar, belegt im Blatt aber denselben Platz
 \newcommand{\lsgtext}[1]{\ifloesung{\lsgfarbe#1}\else\phantom{#1}\fi}
 % Ankreuzfeld: \kreuz{1} = angekreuzt (nur in der Lösung), \kreuz{0} = leer
-\newcommand{\kreuz}[1]{\ifloesung\ifnum#1=1 {\lsgfarbe$\boxtimes$}\else$\square$\fi\else$\square$\fi}
+\newcommand{\kreuz}[1]{\leavevmode\ifloesung\ifnum#1=1 {\lsgfarbe$\boxtimes$}\else$\square$\fi\else$\square$\fi}
 
 % ---------- Syntaxdiagramme (Maße in mm) ----------
 %  Terminal rund (orange), Nichtterminal eckig (grün), Linien mit Pfeilen:

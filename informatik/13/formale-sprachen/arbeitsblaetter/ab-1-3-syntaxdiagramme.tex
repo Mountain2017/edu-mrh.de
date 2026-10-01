@@ -3,8 +3,9 @@
 % Blatt:   tectonic ab-1-3-syntaxdiagramme.tex
 % Lösung:  tectonic ab-1-3-syntaxdiagramme-lsg.tex
 % Progression: Smiley-Grammatik lesen („abfahren“) -> Bausteine selbst benennen -> Grammatik-Begriffe
-%              -> Ableitungsbaum -> selbst bauen: RGB (nur Aneinanderreihung/Alternative)
-%              -> Kennzeichen (begrenzte Anzahl, keine führende Null) -> rekursive Regel (Palindrome)
+%              -> Ableitungsbaum -> selbst bauen: RGB (Fortsetzung von 1.1 A. 6; Aneinanderreihung,
+%              Alternative ganzer Folgen bei der CSS-Kurzform) -> Kennzeichen (begrenzte Anzahl,
+%              keine führende Null) -> rekursive Regel (Palindrome; in EBNF: Terme auf 1.4)
 \newcommand{\zeile}{\rule[-1.6mm]{0pt}{6mm}}
 \begin{document}
 \abtitel{1.3}{Syntaxdiagramme}
@@ -65,19 +66,29 @@ Aus dem Startsymbol werden Nichtterminale so lange nach ihren Regeln ersetzt, bi
 
 \newpage
 \begin{hinweis}
-\small\textbf{Selbst bauen:} \ding{172} Beispiele zerlegen \ \ding{173} gleiche Teile benennen (je eine Regel) \ \ding{174} Bausteine wählen \ \ding{175} mit gültigen \emph{und} ungültigen Wörtern testen
+\small\textbf{Selbst bauen:} \ding{172} Beispiele zerlegen \ \ding{173} gleiche Teile benennen (je eine Regel) \ \ding{174} Bausteine wählen \ \ding{175} testen
 \end{hinweis}
 
 \begin{aufgabe}[Selbst bauen: RGB-Farbcodes]{3}
-Je zwei Hex-Ziffern (\code{00} bis \code{FF}) für Rot, Grün, Blau, z.\,B. \code{\#FF0000} (Rot), \code{\#F3BC0D} (Orange).\\[1mm]
-\textbf{a)} Gib das Alphabet an: $A_\text{RGB} = $ \lsg[10.4cm]{\{\#, 0, \dots, 9, A, \dots, F\}}\\[1mm]
-\textbf{b)} Drei Wörter aus $A_\text{RGB}^*$, aber keine Farbcodes: \lsg[9cm]{\code{\#12345} (zu kurz), \code{\#1234567} (zu lang), \code{123456}}\\[1mm]
-\textbf{c)} Zerlege \code{\#F3BC0D} in gleich aufgebaute Teile: \lsg[9.2cm]{\code{\#} | \code{F3} | \code{BC} | \code{0D}: dreimal \textbf{Farbwert} aus zwei \textbf{HexZiffern}}\\[1mm]
-\textbf{d)} Benenne die Teile und zeichne das Syntaxdiagramm. Teste mit den Wörtern aus b).
+\textbf{a)} Die Farbcodes kennst du aus 1.1 (Aufgabe 6). Zerlege \code{\#F3BC0D} in gleich aufgebaute Teile und benenne sie.\\[0.6mm]
+\lsg[\linewidth]{\code{\#} | \code{F3} | \code{BC} | \code{0D}: dreimal \textbf{Farbwert} aus zwei \textbf{HexZiffern}}\\[1mm]
+\textbf{b)} Zeichne die Diagramme \textbf{RGB-Code}, \textbf{Farbwert} und \textbf{HexZiffer}. Teste mit \code{\#9900BB}, \code{\#9900B}, \code{9900BB}.\\[1mm]
+\textbf{c)} CSS erlaubt auch die Kurzform \code{\#F3B} (gemeint ist \code{\#FF33BB}). Erweitere \textbf{RGB-Code} um diese Form.\\[0.6mm]
+\textbf{d)} (mündlich) Was haben \code{\#F3B} und \code{\#FF33BB} gemeinsam, was nicht?
 \karolsg{6}{
-  \node[sdname] at (2,-5.5) {RGB-Code}; \coordinate (r) at (2,-10);
-  \sdnext{r0}{r}{te}{\#}\sdnext{r1}{r0-o}{nt}{Farbwert}\sdnext{r2}{r1-o}{nt}{Farbwert}\sdnext{r3}{r2-o}{nt}{Farbwert}\sdende{r3-o}
-  \node[sdname] at (2,-18) {Farbwert}; \coordinate (f) at (2,-22.5);
+  \node[sdname] at (2,-4) {RGB-Code}; \coordinate (r) at (2,-8.5);
+  \sdnext{r0}{r}{te}{\#}
+  \coordinate (rv) at ($(r0-o)+(2.5,0)$); \draw[sdl] (r0-o) -- (rv);
+  \draw[sdl,->] (rv) -- ++(4,0) node[nt,anchor=west] (r1) {Farbwert};
+  \draw[sdl,->] (r1.east) -- ++(4,0) node[nt,anchor=west] (r2) {Farbwert};
+  \draw[sdl,->] (r2.east) -- ++(4,0) node[nt,anchor=west] (r3) {Farbwert};
+  \path (rv) ++(4,-6) node[nt,anchor=west] (k1) {HexZiffer};
+  \draw[sdl,->] (rv) |- (k1.west);
+  \draw[sdl,->] (k1.east) -- ++(4,0) node[nt,anchor=west] (k2) {HexZiffer};
+  \draw[sdl,->] (k2.east) -- ++(4,0) node[nt,anchor=west] (k3) {HexZiffer};
+  \coordinate (rj) at ($(k3.east)+(3.5,0)$);
+  \draw[sdl] (r3.east) -- (rj |- rv); \draw[sdl,->] (k3.east) -| (rj |- rv); \sdende{rj |- rv}
+  \node[sdname] at (2,-20) {Farbwert}; \coordinate (f) at (2,-24.5);
   \sdnext{f1}{f}{nt}{HexZiffer}\sdnext{f2}{f1-o}{nt}{HexZiffer}\sdende{f2-o}
   \node[sdname] at (112,-3.5) {HexZiffer}; \coordinate (h) at (112,-7);
   \sdalt{h}{h}{12}{4.1}{te/0, pk/, te/9, te/A, pk/, te/F}\sdende{h-o}
