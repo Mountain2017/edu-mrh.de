@@ -1,0 +1,249 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+% Blatt:   tectonic ab-1-5-endliche-automaten.tex
+% Lösung:  tectonic ab-1-5-endliche-automaten-lsg.tex
+% Grundlage: Schulbuch Kap. 1.4 „Gültige Zeichenketten erkennen: endliche Automaten“ (S. 26–29).
+% Progression: ganz einfache Sprache (Lachen) als Automat, Wörter verfolgen, Vermutung zur Akzeptanz
+%              -> Bestandteile; jeder Pfeil ist eine Regel, alle Regeln = Übergangstabelle
+%              -> Funktionsweise bildlich als Maschine (Lesekopf, RZK) an ganzen Zahlen -> Ablauf in vier Regeln
+%              -> Bausteine Syntaxdiagramm/EBNF -> Automat (Zustand = Stelle im Gleisnetz)
+%              -> selbst bauen: Smileys (1.3/1.4) -> Eigenschaften am Beispiel: vollständig/Fangzustand
+%              (Übergangstabelle der ganzen Zahlen), nichtdeterministisch (ungerade Binärzahlen), nur Syntax
+\newcommand{\zeile}{\rule[-1.7mm]{0pt}{5.8mm}}
+\tikzset{
+  aut/.style={x=1mm,y=1mm,>={Stealth[length=1.5mm,width=1.2mm]},font=\small,line width=0.55pt},
+  zst/.style={circle,draw,line width=0.6pt,fill=blue!7,minimum size=6.4mm,inner sep=0pt,font=\small},
+  ezst/.style={zst,double,double distance=0.9pt},
+  kzst/.style={zst,minimum size=5.2mm,font=\scriptsize},
+  kezst/.style={kzst,double,double distance=0.8pt},
+  ue/.style={font=\ttfamily\small,inner sep=0.8pt},
+}
+% Startpfeil an einen Zustand: \startpfeil{Name}
+\newcommand{\startpfeil}[1]{\draw[<-] (#1.west) -- ++(-8,0) node[pos=0.55,above=-0.3mm,font=\scriptsize]{Start};}
+% Maschine: \maschine{Zeichen}{Position des Lesekopfs}{Zustand}{0: Zustand steht da, 1: nur in der Lösung}
+\newcommand{\maschine}[4]{\begin{tikzpicture}[x=1mm,y=1mm,baseline={(0,1.2)}]
+  \foreach \zch [count=\i] in {#1} {%
+    \ifnum\i<#2\relax\def\bandfarbe{black!14}\else\ifnum\i=#2\relax\def\bandfarbe{orange!45}\else\def\bandfarbe{white}\fi\fi
+    \node[draw,fill=\bandfarbe,minimum size=3.4mm,inner sep=0pt,font=\ttfamily\scriptsize] at ({(\i-2)*3.4},11) {\zch};}
+  \fill ({(#2-2)*3.4-1.1},7.7) -- ({(#2-2)*3.4+1.1},7.7) -- ({(#2-2)*3.4},9.1) -- cycle;
+  \node[draw,rounded corners=1.2pt,fill=black!5,minimum width=14mm,minimum height=10.6mm] at (0,1.6) {};
+  \node[font=\tiny] at (0,5.3) {Aktuell:};
+  \ifnum#4=1\relax\node[kzst,lsgbild,fill=red!6] at (0,0.6) {#3};\else\node[kzst] at (0,0.6) {#3};\fi
+\end{tikzpicture}}
+% Pfeil zwischen zwei Maschinen: \liest{Zeichen}
+\newcommand{\liest}[1]{\,\tikz[baseline=-0.6ex]{\draw[->,>={Stealth[length=1.4mm,width=1.1mm]},line width=0.5pt] (0,0) -- node[above,font=\ttfamily\scriptsize,inner sep=1pt]{#1} (6mm,0);}\,}
+\begin{document}
+\abtitel{1.5}{Endliche Automaten}
+
+Eine Grammatik \emph{erzeugt} Wörter. Ein \textbf{endlicher Automat} \emph{prüft}, ob eine Eingabe dazugehört.
+
+\begin{aufgabe}[Einstieg: Lachen im Chat]{1}
+\begin{minipage}[t]{0.62\linewidth}
+Chat-Lachen \code{ha}, \code{haha}, \dots{} ist die Sprache $L$ über \mbox{$A = \{\code{h}, \code{a}\}$}:\\
+\hspace*{4mm}\code{Lachen = "h" "a" \{"h" "a"\}.}\\
+Der Automat rechts \emph{prüft} Eingaben: Er beginnt bei \textbf{Start} und folgt für jedes Zeichen dem passenden Pfeil.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.36\linewidth}\vspace{-0.5mm}\raggedleft
+\begin{tikzpicture}[aut]
+\node[zst] (Z0) at (0,0) {Z0};
+\node[zst] (Z1) at (20,0) {Z1};
+\node[ezst] (Z2) at (40,0) {Z2};
+\startpfeil{Z0}
+\draw[->] (Z0) -- node[above,ue]{h} (Z1);
+\draw[->] (Z1) to[bend left=30] node[above,ue]{a} (Z2);
+\draw[->] (Z2) to[bend left=30] node[below,ue]{h} (Z1);
+\end{tikzpicture}
+\end{minipage}\\[0.8mm]
+\textbf{a)} Verfolge die Eingaben mit dem Finger. Notiere die Zustände. Gehört die Eingabe zu $L$?\\[0.6mm]
+{\renewcommand{\arraystretch}{1}
+\begin{tabularx}{\linewidth}{|p{1.1cm}|X|p{0.95cm}||p{1.1cm}|X|p{0.95cm}|}\hline
+\textbf{Wort} & \textbf{Zustände} & \textbf{in $L$?} & \textbf{Wort} & \textbf{Zustände} & \textbf{in $L$?}\\\hline
+\code{ha}\zeile & Z0, Z1, Z2 & ja & \code{haa}\zeile & \lsgoder{\lsgfarbe Z0, Z1, Z2, kein Pfeil}{} & \lsgoder{\lsgfarbe nein}{}\\\hline
+\code{haha}\zeile & \lsgoder{\lsgfarbe Z0, Z1, Z2, Z1, Z2}{} & \lsgoder{\lsgfarbe ja}{} & \code{aha}\zeile & \lsgoder{\lsgfarbe Z0, kein Pfeil}{} & \lsgoder{\lsgfarbe nein}{}\\\hline
+\code{hah}\zeile & \lsgoder{\lsgfarbe Z0, Z1, Z2, Z1}{} & \lsgoder{\lsgfarbe nein}{} & \eps\zeile & \lsgoder{\lsgfarbe Z0}{} & \lsgoder{\lsgfarbe nein}{}\\\hline
+\end{tabularx}}\\[1mm]
+\textbf{b)} Vermutung: Woran erkennt man am Ende, ob eine Eingabe zu $L$ gehört?\\[0.6mm]
+\lsg[\linewidth]{Die Eingabe ist ganz gelesen und der Automat steht in einem Endzustand (doppelter Kreis).}
+\end{aufgabe}
+
+\begin{merke}[Endlicher Automat]
+\begin{minipage}[t]{0.75\linewidth}
+Ein \textbf{endlicher} (\textbf{erkennender}) \textbf{Automat} prüft, ob eine Zeichenkette zu einer Sprache gehört. Er hat ein \textbf{Eingabealphabet}, \lsg[2.3cm]{endlich viele} \textbf{Zustände} (Kreise) mit genau einem \textbf{Startzustand} und mindestens einem \textbf{Endzustand} (\lsg[2.7cm]{doppelter Kreis}) und \textbf{Zustandsübergänge} (Pfeile). Jeder Pfeil ist eine einfache \textbf{Regel}: \emph{In Z0 wird \code{h} gelesen $\Rightarrow$ wechsle nach} \lsg[1cm]{Z1}. Die Zeichnung heißt \textbf{Zustandsübergangsdiagramm}, alle Regeln zusammen sind die \textbf{Übergangstabelle}.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.23\linewidth}\vspace{0.5mm}\centering
+{\renewcommand{\arraystretch}{1}
+\begin{tabular}{|c|>{\centering\arraybackslash}p{8mm}|>{\centering\arraybackslash}p{8mm}|}\hline
+& \code{h} & \code{a}\\\hline
+Z0\zeile & Z1 & --\\\hline
+Z1\zeile & \lsgoder{\lsgfarbe --}{} & \lsgoder{\lsgfarbe Z2}{}\\\hline
+Z2\zeile & \lsgoder{\lsgfarbe Z1}{} & \lsgoder{\lsgfarbe --}{}\\\hline
+\end{tabular}}\\[0.6mm]
+{\scriptsize -- : kein Übergang}
+\end{minipage}
+\end{merke}
+
+\begin{aufgabe}[Der Automat als Maschine: ganze Zahlen]{2}
+\begin{minipage}[t]{0.44\linewidth}
+Ein Compiler prüft, ob in \code{x = 12-} rechts eine \textbf{ganze Zahl} steht. Der Automat erkennt ganze Zahlen ohne führende Nullen über \mbox{$A = \{\code{-}, \code{0}, \dots, \code{9}\}$}.\\[0.5mm]
+Als \textbf{Maschine} gedacht: Ein \textbf{Lesekopf} $\blacktriangle$ liest Zeichen für Zeichen (gelesen grau, aktuell orange). Ungelesene Zeichen bilden die \textbf{Restzeichenkette (RZK)}.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.54\linewidth}\vspace{-1mm}\raggedleft
+\begin{tikzpicture}[aut]
+\node[zst] (Z0) at (0,0) {Z0};
+\node[zst] (Z1) at (21,0) {Z1};
+\node[ezst] (Z2) at (51,0) {Z2};
+\node[ezst] (Z3) at (0,-16) {Z3};
+\startpfeil{Z0}
+\draw[->] (Z0) -- node[above,ue]{-} (Z1);
+\draw[->] (Z1) -- node[above,ue]{1, …, 9} (Z2);
+\draw[->] (Z0) to[bend left=30] node[above,ue]{1, …, 9} (Z2);
+\draw[->] (Z2) to[out=25,in=-25,looseness=6] node[right,ue]{0, …, 9} (Z2);
+\draw[->] (Z0) -- node[right,ue]{0} (Z3);
+\begin{scope}[lsgbild]
+\node[zst,fill=red!6] (ZF) at (51,-16) {ZF};
+\draw[->] (Z1) -- node[below left=-0.6mm,ue]{-, 0} (ZF);
+\draw[->] (Z2) -- node[right,ue]{-} (ZF);
+\draw[->] (Z3) -- node[below,ue]{-, 0, …, 9} (ZF);
+\draw[->] (ZF) to[out=25,in=-25,looseness=6] node[right,ue]{-, 0, …, 9} (ZF);
+\end{scope}
+\end{tikzpicture}
+\end{minipage}\\[0.5mm]
+\textbf{a)} Ergänze die Anzeigen der Maschine für die Eingabe \code{-12}. Ergebnis: \lsg[2.6cm]{akzeptiert}\\[0.5mm]
+\hspace*{6mm}\maschine{-,1,2}{1}{Z0}{0}\liest{-}\maschine{-,1,2}{2}{Z1}{1}\liest{1}\maschine{-,1,2}{3}{Z2}{1}\liest{2}\maschine{-,1,2}{4}{Z2}{1}\quad{\small\begin{tabular}[c]{@{}l@{}}RZK leer und\\ Endzustand erreicht\end{tabular}}\\[1mm]
+\textbf{b)} Gib die Zustandsfolgen an. Wird die Eingabe akzeptiert? Begründe bei Ablehnung.\\[0.6mm]
+{\renewcommand{\arraystretch}{1}\small
+\begin{tabularx}{\linewidth}{|l|X|X|X|}\hline
+\textbf{Eingabe} & \code{-} & \code{12-} & \code{007}\\\hline
+\textbf{Zustände}\zeile & \lsgoder{\lsgfarbe Z0, Z1}{} & \lsgoder{\lsgfarbe Z0, Z2, Z2}{} & \lsgoder{\lsgfarbe Z0, Z3}{}\\\hline
+\textbf{Ergebnis}\zeile & \lsgoder{\lsgfarbe nein: Z1 ist kein Endzustand}{} & \lsgoder{\lsgfarbe nein: Abbruch in Z2}{} & \lsgoder{\lsgfarbe nein: Abbruch in Z3}{}\\\hline
+\end{tabularx}}
+\end{aufgabe}
+
+\begin{merke}[So arbeitet jeder Automat: vier einfache Regeln]
+\begin{minipage}[t]{0.485\linewidth}\raggedright
+\ding{172} Start im \lsg[2.6cm]{Startzustand} beim ersten Zeichen.\\[0.4mm]
+\ding{173} Passender Pfeil: Wechsel in den Folgezustand. Kein passender Pfeil: \lsg[2cm]{Abbruch}, abgelehnt.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.485\linewidth}\raggedright
+\ding{174} Jeder Übergang verkürzt die RZK um \lsg[2.3cm]{ein Zeichen}.\\[0.4mm]
+\ding{175} \textbf{Akzeptiert}, wenn die RZK \lsg[1.4cm]{leer} ist \underline{und} der Automat in einem \lsg[2.3cm]{Endzustand} steht.
+\end{minipage}
+\end{merke}
+
+\newpage
+\begin{aufgabe}[Bausteine übersetzen: vom Syntaxdiagramm zum Automaten]{3}
+Im Syntaxdiagramm stehen die Zeichen in Kästchen, im Automaten an Pfeilen; ein \textbf{Zustand} ist eine Stelle im Gleisnetz. Zeichne die Automaten für Option und Wiederholung, ergänze die Regeln.\\[0.6mm]
+{\renewcommand{\arraystretch}{1}
+\begin{tabularx}{\linewidth}{@{}*{4}{>{\centering\arraybackslash}X}@{}}
+\textbf{Aneinanderreihung} & \textbf{Alternative} & \textbf{Option} & \textbf{Wiederholung}\\
+\code{"a" "b"} & \code{"a" | "b"} & \code{["a"] "b"} & \code{"a" \{"b"\}}\\[0.6mm]
+\begin{tikzpicture}[sd,baseline=0mm]\coordinate (s) at (0,0);
+  \sdnext{p}{s}{te}{a}\sdnext{q}{p-o}{te}{b}\sdende{q-o}\end{tikzpicture} &
+\begin{tikzpicture}[sd,baseline=0mm]\coordinate (s) at (0,0);
+  \sdalt{x}{s}{12}{5.5}{te/a, te/b}\sdende{x-o}\end{tikzpicture} &
+\begin{tikzpicture}[sd,baseline=0mm]\coordinate (s) at (0,0);
+  \sdopt{p}{s}{te}{a}\sdnext{q}{p-o}{te}{b}\sdende{q-o}\end{tikzpicture} &
+\begin{tikzpicture}[sd,baseline=0mm]\coordinate (s) at (0,0);
+  \sdnext{p}{s}{te}{a}\sdwdhn{q}{p-o}{te}{b}\sdende{q-o}\end{tikzpicture}\\[2.5mm]
+\begin{tikzpicture}[aut,baseline=0mm]
+  \node[kzst] (a) at (0,0) {Z0}; \node[kzst] (b) at (13,0) {Z1}; \node[kezst] (c) at (26,0) {Z2};
+  \draw[<-] (a.west) -- ++(-4,0);
+  \draw[->] (a) -- node[above,ue]{a} (b); \draw[->] (b) -- node[above,ue]{b} (c);
+\end{tikzpicture} &
+\begin{tikzpicture}[aut,baseline=0mm]
+  \node[kzst] (a) at (0,0) {Z0}; \node[kezst] (b) at (17,0) {Z1};
+  \draw[<-] (a.west) -- ++(-4,0);
+  \draw[->] (a) -- node[above,ue]{a, b} (b);
+\end{tikzpicture} &
+\begin{tikzpicture}[aut,baseline=0mm]
+  \node[kzst] (a) at (0,0) {Z0}; \node[kzst] (b) at (13,0) {Z1}; \node[kezst] (c) at (26,0) {Z2};
+  \draw[<-] (a.west) -- ++(-4,0);
+  \begin{scope}[lsgbild]
+  \draw[->] (a) -- node[above,ue]{a} (b); \draw[->] (b) -- node[above,ue]{b} (c);
+  \draw[->] (a) to[bend right=32] node[below,ue]{b} (c);
+  \end{scope}
+\end{tikzpicture} &
+\begin{tikzpicture}[aut,baseline=0mm]
+  \node[kzst] (a) at (0,0) {Z0}; \node[kezst] (b) at (17,0) {Z1};
+  \draw[<-] (a.west) -- ++(-4,0);
+  \begin{scope}[lsgbild]
+  \draw[->] (a) -- node[above,ue]{a} (b);
+  \draw[->] (b) to[out=60,in=120,looseness=7] node[above,ue]{b} (b);
+  \end{scope}
+\end{tikzpicture}\\[3.5mm]
+\small Pfeile \lsg[2cm]{hintereinander} & \small \lsg[1.6cm]{ein Pfeil}, alle Zeichen & \small Extrapfeil \lsg[1.9cm]{überspringt} & \small \lsg[1.6cm]{Schleife} am Zustand\\
+\end{tabularx}}
+\end{aufgabe}
+
+\begin{aufgabe}[Selbst bauen: Smileys]{4}
+\textbf{a)} Übersetze die Smiley-Grammatik aus 1.4 in einen Automaten. Im Automaten stehen nur Zeichen:\\[0.3mm]
+\hspace*{4mm}\begin{tabular}{@{}l@{\qquad}l@{}}
+\code{Smiley = Augen Mitte Mund.} & \code{Mitte = ["-"].}\\
+\code{Augen = ":" | ";".} & \code{Mund = ")" | "(" | "D" | "P" | "*".}
+\end{tabular}
+\karolsg{4}{
+  \node[zst] (S0) at (16,-10.5) {Z0}; \node[zst] (S1) at (46,-10.5) {Z1}; \node[zst] (S2) at (76,-10.5) {Z2}; \node[ezst] (S3) at (122,-10.5) {Z3};
+  \draw[<-,line width=0.55pt] (S0.west) -- ++(-8,0) node[pos=0.55,above=-0.3mm,font=\scriptsize]{Start};
+  \draw[->,line width=0.55pt] (S0) -- node[above,ue]{:, ;} (S1);
+  \draw[->,line width=0.55pt] (S1) -- node[above,ue]{-} (S2);
+  \draw[->,line width=0.55pt] (S2) -- node[above,ue,pos=0.42]{), (, D, P, *} (S3);
+  \draw[->,line width=0.55pt] (S1) to[bend right=15] node[below,ue]{), (, D, P, *} (S3);
+  \draw[->,line width=0.55pt,dashed] (S3) to[bend right=16] node[above=0.2mm,ue]{:, ;} (S1);
+}
+\textbf{b)} Teste: \code{:-)} \lsg[3.4cm]{Z0, Z1, Z2, Z3 \ding{51}}\quad \code{;D} \lsg[2.8cm]{Z0, Z1, Z3 \ding{51}}\quad \code{:--)} \lsg[4.6cm]{Z0, Z1, Z2, Abbruch \ding{55}}\\[1mm]
+\textbf{c)} Für \code{Smileyfolge = Smiley \{Smiley\}.} fehlt ein Pfeil. Ergänze ihn gestrichelt.
+\end{aufgabe}
+
+\begin{aufgabe}[Vollständige Automaten: der Fangzustand]{5}
+\begin{minipage}[t]{0.36\linewidth}\vspace{0pt}
+{\renewcommand{\arraystretch}{1}
+\begin{tabular}{|c|*{3}{>{\centering\arraybackslash}p{1.1cm}|}}\hline
+& \code{-} & \code{0} & \code{1}–\code{9}\\\hline
+Z0\zeile & Z1 & Z3 & Z2\\\hline
+Z1\zeile & \lsgoder{\lsgfarbe ZF}{} & \lsgoder{\lsgfarbe ZF}{} & \lsgoder{\lsgfarbe Z2}{}\\\hline
+Z2\zeile & \lsgoder{\lsgfarbe ZF}{} & \lsgoder{\lsgfarbe Z2}{} & \lsgoder{\lsgfarbe Z2}{}\\\hline
+Z3\zeile & \lsgoder{\lsgfarbe ZF}{} & \lsgoder{\lsgfarbe ZF}{} & \lsgoder{\lsgfarbe ZF}{}\\\hline
+ZF\zeile & \lsgoder{\lsgfarbe ZF}{} & \lsgoder{\lsgfarbe ZF}{} & \lsgoder{\lsgfarbe ZF}{}\\\hline
+\end{tabular}}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.61\linewidth}\vspace{0pt}
+\textbf{a)} Trage die Regeln aus Aufgabe 2 ein (leeres Feld: Abbruch).\\[0.6mm]
+\textbf{b)} Ein \textbf{Fangzustand} ZF fängt alle Abbrüche auf: Trage ZF in die leeren Felder ein, fülle seine Zeile, zeichne ZF ins Diagramm von Aufgabe 2.\\[0.6mm]
+\textbf{c)} Wie endet \code{12-} jetzt? \lsg[5.9cm]{in ZF ohne Abbruch: abgelehnt}\\[1mm]
+\textbf{d)} Welcher Zustand hat keinen Pfeil nach ZF? \lsg[1.8cm]{Z0}\\[0.6mm]
+\textbf{e)} (mündlich) Endet eine Ablehnung jetzt immer in ZF?
+\end{minipage}
+\end{aufgabe}
+
+\begin{aufgabe}[Nichtdeterministische Automaten: ungerade Binärzahlen]{6}
+\begin{minipage}[t]{0.36\linewidth}\vspace{0pt}
+Erkennt ungerade Binärzahlen ohne führende Nullen: \code{1}, \code{11}, \code{101}, \dots\\[0.5mm]
+\centering
+\begin{tikzpicture}[aut]
+\node[zst] (B0) at (0,0) {Z0};
+\node[zst] (B1) at (20,0) {Z1};
+\node[ezst] (B2) at (40,0) {Z2};
+\startpfeil{B0}
+\draw[->] (B0) -- node[above,ue]{1} (B1);
+\draw[->] (B1) to[out=60,in=120,looseness=7] node[above,ue]{0, 1} (B1);
+\draw[->] (B1) -- node[above,ue]{1} (B2);
+\draw[->] (B0) to[bend right=35] node[below,ue]{1} (B2);
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.61\linewidth}\vspace{0pt}
+\textbf{a)} Was ist neu? \lsg[6.6cm]{Z0 und Z1 haben für \code{1} je zwei Pfeile.}\\[1mm]
+\textbf{b)} Für \code{11} gibt es drei Wege. Gib sie an und entscheide.\\[0.6mm]
+{\renewcommand{\arraystretch}{1}
+\begin{tabularx}{\linewidth}{|p{2.2cm}|X|}\hline
+\lsgoder{\lsgfarbe Z0, Z2}{}\zeile & \lsgoder{\lsgfarbe abgelehnt: RZK nicht leer}{}\\\hline
+\lsgoder{\lsgfarbe Z0, Z1, Z1}{}\zeile & \lsgoder{\lsgfarbe abgelehnt: kein Endzustand}{}\\\hline
+\lsgoder{\lsgfarbe Z0, Z1, Z2}{}\zeile & \lsgoder{\lsgfarbe RZK leer und Endzustand}{}\\\hline
+\end{tabularx}}\\[1mm]
+\textbf{c)} Wird \code{11} akzeptiert? \lsg[5.8cm]{ja: Ein erfolgreicher Weg genügt.}
+\end{minipage}
+\end{aufgabe}
+
+\begin{merke}[Eigenschaften von Automaten]
+\textbf{deterministisch}: in jedem Zustand für jedes Zeichen \lsg[2.6cm]{höchstens ein} Übergang. \textbf{nichtdeterministisch}: \lsg[2cm]{mehrere} Übergänge für ein Zeichen möglich; akzeptiert, wenn \lsg[3cm]{mindestens ein Weg} bei leerer RZK in einem Endzustand endet. \textbf{vollständig}: in jedem Zustand für jedes Zeichen \lsg[2.6cm]{mindestens ein} Übergang (kein leeres Feld). Fehlende Übergänge führen in einen \textbf{Fangzustand}: kein Endzustand, wird \lsg[2.4cm]{nie verlassen}. Ein Automat prüft nur die \lsg[1.6cm]{Syntax}, nicht ob es \code{TOR-TE 3} (1.3) gibt.
+\end{merke}
+\end{document}
