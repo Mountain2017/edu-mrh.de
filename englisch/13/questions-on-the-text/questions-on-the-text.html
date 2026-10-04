@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questions on the Text | English – edu-mrh.de</title>
+    <meta name="description" content="Work-alongside course for Q13: analysing factual texts with the S3.2 routine – preparation, comprehension, analysis, evaluation, checking – plus a writing coach.">
+
+    <!-- Gemeinsames Framework – NICHT entfernen -->
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <!-- PDF-Export der eigenen Antwort (selbst gehostet) -->
+    <script defer src="https://edu-mrh.de/embed/jspdf/4.2.1/jspdf.umd.min.js"></script>
+    <!-- Seitenlogik: Lösungswege, Selbsttest, Formulare, Writing Coach -->
+    <script defer src="questions-on-the-text.js"></script>
+
+    <style>
+        /* ============================================================
+           Questions on the Text – page styling on top of the framework
+           Step colours: 1 Preparation = blue · 2 Writing = violet · 3 Checking = green
+           ============================================================ */
+        :root {
+            --qt-1: #2563eb;  --qt-1-light: #eff6ff;
+            --qt-2: #7c3aed;  --qt-2-light: #f5f3ff;
+            --qt-3: #059669;  --qt-3-light: #ecfdf5;
+            --qt-warn: #b45309; --qt-warn-light: #fffbeb;
+            --qt-line: #e2e8f0;
+        }
+
+        .tag-chip {
+            display: inline-block; background: var(--secondary-color); color: var(--white);
+            padding: .3rem .9rem; border-radius: var(--radius-xl); font-size: .85rem; font-weight: 600;
+            margin-bottom: var(--spacing-md);
+        }
+        .time-chip {
+            display: inline-flex; align-items: center; gap: .4rem; background: var(--gray-lighter);
+            color: var(--dark); padding: .35rem 1rem; border-radius: var(--radius-full);
+            font-weight: 600; font-size: .9rem; margin: .25rem .4rem .25rem 0;
+        }
+        .read-time { font-size: .85rem; color: var(--gray); font-weight: 500; margin-left: .5rem; }
+        .lead { font-size: 1.08rem; color: var(--dark-light); max-width: 52rem; }
+
+        /* Two rounds on the start page */
+        .rounds { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0 1.5rem; }
+        .round { border-radius: var(--radius-md); padding: 1.1rem 1.25rem; border: 2px solid var(--qt-line); background: #fff; }
+        .round.r1 { border-color: var(--qt-1); background: var(--qt-1-light); }
+        .round.r2 { border-color: var(--qt-2); background: var(--qt-2-light); }
+        .round h3 { margin: 0 0 .3rem; font-size: 1.1rem; }
+        .round p { margin: 0; color: var(--dark-light); }
+        @media (max-width: 760px) { .rounds { grid-template-columns: 1fr; } }
+
+        /* Step list (start page) */
+        .step-list { list-style: none; padding-left: 0; margin: 0; }
+        .step-list li { display: flex; gap: 1rem; align-items: flex-start; margin: 0 0 1rem 0; }
+        .step-list .num {
+            flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%; color: #fff;
+            display: flex; align-items: center; justify-content: center; font-weight: 700;
+        }
+        .step-list .n0 { background: var(--gray); } .step-list .n1 { background: var(--qt-1); }
+        .step-list .n2 { background: var(--qt-2); } .step-list .n3 { background: var(--qt-3); }
+        .step-list .nc { background: var(--dark); }
+        .step-list strong { display: block; } .step-list span.d { color: var(--gray); font-size: .95rem; }
+
+        /* Step headers keep the colour of their step */
+        .chapter-header.s1 .chapter-number { background: var(--qt-1); }
+        .chapter-header.s2 .chapter-number { background: var(--qt-2); }
+        .chapter-header.s3 .chapter-number { background: var(--qt-3); }
+        .chapter-header.s0 .chapter-number { background: var(--gray); }
+        .chapter-header.sc .chapter-number { background: var(--dark); }
+
+        /* Level cards (I / II / III) */
+        .levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1rem 0; }
+        .level { background: #fff; border-radius: var(--radius-md); padding: 1rem 1.1rem; box-shadow: 0 4px 10px rgba(0,0,0,.06); border-top: 5px solid var(--qt-1); }
+        .level.l2 { border-top-color: var(--qt-2); } .level.l3 { border-top-color: var(--qt-3); }
+        .level h4 { margin: 0 0 .2rem; } .level .q { color: var(--gray); font-style: italic; margin-bottom: .5rem; }
+        .level .ops { font-weight: 600; color: var(--dark-light); margin-bottom: .4rem; font-size: .95rem; }
+        .level ul { margin: 0 0 0 1.1rem; font-size: .95rem; } .level li { margin-bottom: .2rem; }
+        @media (max-width: 900px) { .levels { grid-template-columns: 1fr; } }
+
+        /* Sub-step cards */
+        .moves { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: .9rem; margin: 1rem 0; }
+        .move { background: #fff; border: 1px solid var(--qt-line); border-radius: var(--radius-md); padding: .9rem 1rem; }
+        .move .lbl { display: inline-block; width: 26px; height: 26px; border-radius: 50%; background: var(--qt-1); color: #fff; text-align: center; line-height: 26px; font-weight: 700; margin-right: .4rem; font-size: .85rem; }
+        .move.v .lbl { background: var(--qt-2); }
+        .move h4 { display: inline; font-size: 1rem; } .move p { margin: .45rem 0 0; font-size: .95rem; color: var(--dark-light); }
+
+        /* Fold-out extras */
+        details.extra { border: 1px solid var(--qt-line); border-radius: var(--radius); background: #fff; margin: .6rem 0; }
+        details.extra > summary { cursor: pointer; padding: .65rem 1rem; font-weight: 600; color: var(--dark-light); list-style: none; }
+        details.extra > summary::-webkit-details-marker { display: none; }
+        details.extra > summary::before { content: '＋'; display: inline-block; width: 1.4rem; color: var(--secondary-color); font-weight: 700; }
+        details.extra[open] > summary::before { content: '－'; }
+        details.extra > .extra-body { padding: 0 1rem .9rem 2.4rem; }
+        details.extra .tipkind { font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--secondary-color); margin-right: .4rem; }
+
+        /* Formula / builder */
+        .formula { background: var(--qt-2-light); border-left: 5px solid var(--qt-2); border-radius: 0 var(--radius) var(--radius) 0; padding: .9rem 1.1rem; font-size: 1.05rem; margin: 1rem 0; }
+        .formula b { color: var(--qt-2); }
+        .builder { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: .6rem .9rem; }
+        .field label { display: block; font-size: .82rem; font-weight: 600; color: var(--gray); margin-bottom: .15rem; }
+        .field input, .field select, .field textarea {
+            width: 100%; padding: .5rem .65rem; border: 1px solid var(--gray-light); border-radius: var(--radius-sm);
+            font: inherit; font-size: .95rem; background: #fff; color: var(--dark);
+        }
+        .field textarea { min-height: 70px; resize: vertical; }
+        .builder-out { margin-top: .9rem; background: #fff; border: 2px dashed var(--qt-2); border-radius: var(--radius); padding: .8rem 1rem; font-size: 1.02rem; min-height: 3rem; }
+        .row-btns { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .7rem; }
+
+        /* Chains (Claim -> Evidence -> Effect etc.) */
+        .chain { display: flex; flex-wrap: wrap; align-items: stretch; gap: .5rem; margin: 1rem 0; }
+        .chain .link { flex: 1 1 150px; background: var(--qt-2-light); border-radius: var(--radius); padding: .7rem .9rem; text-align: center; }
+        .chain .link.alt { background: var(--qt-1-light); }
+        .chain .link.end { background: var(--qt-3-light); }
+        .chain .link strong { display: block; } .chain .link span { font-size: .88rem; color: var(--gray); }
+        .chain .arrow { align-self: center; color: var(--qt-2); font-weight: 700; font-size: 1.3rem; }
+        @media (max-width: 640px) { .chain .arrow { display: none; } }
+
+        .look-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: .8rem; margin: 1rem 0; }
+        .look { background: #fff; border: 1px solid var(--qt-line); border-radius: var(--radius); padding: .8rem 1rem; }
+        .look h4 { margin: 0 0 .35rem; font-size: 1rem; color: var(--qt-2); } .look ul { margin: 0 0 0 1.05rem; font-size: .93rem; }
+
+        /* Round-1 box: our model text in class */
+        .inclass { border: 2px solid var(--qt-1); background: var(--qt-1-light); border-radius: var(--radius-md); padding: 1rem 1.2rem; margin: 1.4rem 0; }
+        .inclass .badge-row { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .4rem; }
+        .inclass h3 { margin: .2rem 0 .5rem; }
+        .task-q { background: #fff; border-radius: var(--radius); padding: .7rem 1rem; font-weight: 600; margin: .5rem 0; border-left: 4px solid var(--qt-2); }
+
+        /* Staged help: tips step by step, model answer only by press-and-hold (as in Informatik 12) */
+        .lw { border: 1px dashed #94a3b8; border-radius: 10px; background: #f8fafc; padding: .7rem 1rem; margin: .8rem 0; }
+        .lw-kopf { font-weight: 700; color: #334155; margin-bottom: .3rem; }
+        .lw-stufe { background: #fff; border-radius: 8px; padding: .6rem .8rem; margin: .4rem 0; border-left: 4px solid var(--qt-1); }
+        .lw-stufe.lw-loesung { border-left-color: var(--qt-3); }
+        .lw-stufe p:last-child, .lw-stufe ul:last-child { margin-bottom: 0; }
+        .lw-marke { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--gray); margin-bottom: .2rem; }
+        .lw-knoepfe { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .3rem; }
+        .lw-knopf { position: relative; overflow: hidden; border: 2px solid var(--qt-1); background: #fff; color: var(--qt-1); border-radius: 999px; padding: .3rem .9rem; font-weight: 600; font-size: .88rem; cursor: pointer; font-family: inherit; user-select: none; -webkit-user-select: none; touch-action: none; }
+        .lw-knopf.lw-halten { border-color: var(--qt-3); color: #166534; }
+        .lw-knopf.lw-weg { border-color: #94a3b8; color: #475569; }
+        .lw-knopf:focus-visible { outline: 3px solid var(--qt-2); outline-offset: 2px; }
+        .lw-fortschritt { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: rgba(5,150,105,.18); }
+        .lw-text { position: relative; }
+        .model { line-height: 1.7; }
+        .model .c-tag { font-size: .72rem; font-weight: 700; padding: .05rem .35rem; border-radius: 4px; color: #fff; margin-right: .25rem; vertical-align: 1px; }
+        .model .t-c { background: var(--qt-1); } .model .t-e { background: var(--qt-2); } .model .t-f { background: var(--qt-3); }
+
+        /* Self-check quiz */
+        .quiz-item { display: grid; grid-template-columns: 1fr 140px; gap: .8rem; align-items: center; padding: .55rem .8rem; border-radius: var(--radius); background: #fff; border: 1px solid var(--qt-line); margin-bottom: .45rem; }
+        .quiz-item.correct { border-color: var(--qt-3); background: var(--qt-3-light); }
+        .quiz-item.incorrect { border-color: #ef4444; background: #fef2f2; }
+        .quiz-item select { padding: .35rem; border-radius: var(--radius-sm); border: 1px solid var(--gray-light); font: inherit; }
+        .quiz-feedback { margin-top: .5rem; font-weight: 600; min-height: 1.5rem; }
+        @media (max-width: 600px) { .quiz-item { grid-template-columns: 1fr; } }
+
+        /* Checklist */
+        .checklist { list-style: none; margin: 0; padding: 0; }
+        .checklist li { display: flex; gap: .7rem; align-items: flex-start; padding: .55rem .7rem; border-bottom: 1px solid var(--qt-line); }
+        .checklist input { margin-top: .3rem; width: 1.1rem; height: 1.1rem; accent-color: var(--qt-3); flex-shrink: 0; }
+        .checklist .why { display: block; color: var(--gray); font-size: .88rem; }
+        .check-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+        @media (max-width: 820px) { .check-cols { grid-template-columns: 1fr; } }
+
+        /* ===== Writing coach ===== */
+        .coach-top { display: grid; grid-template-columns: 1.3fr 1fr; gap: .8rem; margin-bottom: .8rem; }
+        @media (max-width: 760px) { .coach-top { grid-template-columns: 1fr; } }
+        .coach-question { background: #fff; border-left: 5px solid var(--qt-2); border-radius: 0 var(--radius) var(--radius) 0; padding: .7rem 1rem; margin-bottom: .9rem; box-shadow: 0 2px 6px rgba(0,0,0,.05); }
+        .coach-question .meta { font-size: .82rem; color: var(--gray); margin-bottom: .2rem; }
+        .coach-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 1rem; align-items: start; }
+        @media (max-width: 1100px) { .coach-grid { grid-template-columns: 1fr; } }
+        .editor-wrap { background: #fff; border: 1px solid var(--gray-light); border-radius: var(--radius-md); overflow: hidden; }
+        .editor-wrap textarea {
+            width: 100%; min-height: 440px; border: 0; padding: 1rem 1.1rem; font: inherit; font-size: 1rem; line-height: 1.75;
+            resize: vertical; color: var(--dark); outline: none; display: block;
+        }
+        .editor-bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; padding: .5rem .9rem; background: var(--gray-lighter); font-size: .85rem; color: var(--gray); }
+        .coach-panel { position: sticky; top: calc(var(--navbar-height, 70px) + 12px); max-height: calc(100vh - 110px); overflow-y: auto; }
+        @media (max-width: 1100px) { .coach-panel { position: static; max-height: none; } }
+        .cp-card { background: #fff; border: 1px solid var(--qt-line); border-radius: var(--radius-md); padding: .8rem 1rem; margin-bottom: .8rem; }
+        .cp-card h4 { margin: 0 0 .45rem; font-size: .98rem; }
+        .cp-step { display: flex; gap: .35rem; flex-wrap: wrap; margin-bottom: .55rem; }
+        .cp-step span { font-size: .78rem; padding: .2rem .6rem; border-radius: 999px; background: var(--gray-lighter); color: var(--gray); font-weight: 600; }
+        .cp-step span.on { background: var(--qt-2); color: #fff; }
+        .cp-where { font-size: .85rem; color: var(--gray); margin-bottom: .35rem; }
+        .cp-list { list-style: none; margin: 0; padding: 0; font-size: .92rem; }
+        .cp-list li { padding: .28rem 0 .28rem 1.6rem; position: relative; border-bottom: 1px dashed var(--qt-line); }
+        .cp-list li:last-child { border-bottom: 0; }
+        .cp-list li::before { position: absolute; left: 0; top: .26rem; font-weight: 700; width: 1.2rem; text-align: center; }
+        .cp-list li.ok::before { content: '✓'; color: var(--qt-3); }
+        .cp-list li.todo::before { content: '○'; color: var(--gray); }
+        .cp-list li.warn::before { content: '!'; color: var(--qt-warn); }
+        .cp-list li.q::before { content: '?'; color: var(--qt-2); }
+        .cp-list li small { display: block; color: var(--gray); }
+        .chips { display: flex; flex-wrap: wrap; gap: .35rem; }
+        .chip-btn { border: 1px solid var(--qt-2); color: var(--qt-2); background: #fff; border-radius: 999px; padding: .18rem .65rem; font-size: .82rem; cursor: pointer; font-family: inherit; }
+        .chip-btn:hover { background: var(--qt-2); color: #fff; }
+        .meter { height: 8px; background: var(--gray-lighter); border-radius: 99px; overflow: hidden; margin: .3rem 0 .1rem; }
+        .meter > div { height: 100%; background: var(--qt-3); width: 0; transition: width .3s; }
+        .save-state { font-size: .82rem; }
+        .help-toggle { display: flex; align-items: center; gap: .45rem; font-size: .9rem; color: var(--dark-light); }
+
+        /* Text cards */
+        .text-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1rem; }
+        .text-card > .badge { align-self: flex-start; }
+        @media (max-width: 480px) { .text-cards { grid-template-columns: 1fr; } }
+        .text-card { background: #fff; border-radius: var(--radius-md); box-shadow: 0 4px 10px rgba(0,0,0,.07); padding: 1.1rem 1.2rem; border-top: 5px solid var(--qt-2); display: flex; flex-direction: column; }
+        .text-card.model-t { border-top-color: var(--qt-1); }
+        .text-card .src { font-size: .85rem; color: var(--gray); margin-bottom: .4rem; }
+        .text-card h3 { font-size: 1.08rem; margin: .1rem 0 .3rem; }
+        .text-card ol { margin: .4rem 0 .6rem 1.2rem; font-size: .93rem; } .text-card ol li { margin-bottom: .35rem; }
+        .text-card .lvl { font-size: .72rem; font-weight: 700; color: #fff; background: var(--gray); border-radius: 4px; padding: .02rem .35rem; margin-right: .25rem; }
+        .text-card .grow { flex-grow: 1; }
+
+        /* Toolbox tables */
+        .tool-table { width: 100%; border-collapse: collapse; font-size: .94rem; background: #fff; }
+        .tool-table th, .tool-table td { border-bottom: 1px solid var(--qt-line); padding: .45rem .6rem; text-align: left; vertical-align: top; }
+        .tool-table th { background: var(--gray-lighter); }
+        .phrase-group h4 { margin: .9rem 0 .3rem; color: var(--qt-2); font-size: 1rem; }
+        .phrase-group p { margin: 0; color: var(--dark-light); }
+        .ext-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: .8rem; }
+        .ext-link { display: block; background: #fff; border: 1px solid var(--qt-line); border-radius: var(--radius); padding: .8rem 1rem; text-decoration: none; color: inherit; }
+        .ext-link:hover { border-color: var(--qt-2); }
+        .ext-link strong { color: var(--qt-2); } .ext-link span { display: block; font-size: .88rem; color: var(--gray); }
+
+        .teacher { border: 2px dashed var(--gray-light); border-radius: var(--radius-md); padding: 1rem 1.2rem; background: #fafafa; }
+        .muted { color: var(--gray); }
+        .small { font-size: .9rem; }
+        .sidebar-menu a { padding-top: .6rem; padding-bottom: .6rem; }
+        #step1 .builder { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+        kbd { background: var(--gray-lighter); border-radius: 4px; padding: 0 .3rem; font-size: .85rem; }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+     PFLICHT-KOPFZEILE: Übersicht + Impressum
+     ============================================================ -->
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-brand">
+            <span class="icon"><a href="https://edu-mrh.de/">📘</a></span>
+            <span>edu-mrh Englisch</span>
+        </div>
+        <div class="nav-links">
+            <a href="../../englisch.html#jahrgang-13" class="btn btn-outline">Übersicht</a>
+            <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+        </div>
+    </div>
+</nav>
+
+<div class="main-content">
+    <div class="container">
+
+        <!-- ======================================================
+             START
+             ====================================================== -->
+        <section id="start" class="content-section active">
+            <div class="hero">
+                <span class="tag-chip">📝 English · Q13 · Skills S3.2</span>
+                <h1 class="hero-title">Questions on the Text</h1>
+                <p class="hero-subtitle">Analysing factual texts — one routine for every text</p>
+                <p class="hero-description">
+                    This page walks you through the routine from your book's skills page <em>S3.2 Analysing non-fictional texts</em>.
+                    The input is short. Most of the time you write: first together on Sarah Baxter's article about
+                    Virtual Helsinki, then on your own with a text you choose.
+                </p>
+                <div class="hero-actions">
+                    <span class="time-chip">⏱️ about 8 minutes of reading in total</span>
+                    <span class="time-chip">✍️ the rest is your own writing</span>
+                </div>
+            </div>
+
+            <div class="rounds">
+                <div class="round r1">
+                    <h3>Round 1 · Together</h3>
+                    <p>Model text: <strong>Sarah Baxter, “Helsinki's huge VR gig and the potential of virtual tourism”</strong> (book p.&nbsp;230).
+                    We develop each step in class. Full help on this page: tips, guiding questions, model answers.</p>
+                </div>
+                <div class="round r2">
+                    <h3>Round 2 · On your own</h3>
+                    <p>Choose <strong>text A, B or C</strong> and apply the same routine. Lighter help: the coach checks your writing,
+                    but you find the content yourself.</p>
+                </div>
+            </div>
+
+            <div class="chapter-header s0">
+                <span class="chapter-number">Routine</span>
+                <h2>Four steps</h2>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <ul class="step-list">
+                        <li><div class="num n0">0</div><div><strong>Know the task</strong><span class="d">What the operator in each question wants from you (1 min)</span></div></li>
+                        <li><div class="num n1">1</div><div><strong>Preparation</strong><span class="d">Skim, find the purpose, understand and mark (2 min)</span></div></li>
+                        <li><div class="num n2">2</div><div><strong>Writing</strong><span class="d">Introductory sentence, comprehension, analysis, evaluation (4 min)</span></div></li>
+                        <li><div class="num n3">3</div><div><strong>Editing and checking</strong><span class="d">The final check before you hand in (1 min)</span></div></li>
+                        <li><div class="num nc">✍</div><div><strong>Writing coach</strong><span class="d">Your workspace: write your answers, get hints for the step you are on, save them as PDF</span></div></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-box mt-3">
+                <h3>📎 You need</h3>
+                <p>Your book (pp.&nbsp;230–235 and S3.1/S3.2 on pp.&nbsp;295–296), <strong>Worksheet&nbsp;2 “Questions on the text”</strong> and the vocabulary lists.
+                Everything you type here stays in your browser — nothing is sent anywhere.</p>
+            </div>
+
+            <div class="navigation-buttons">
+                <span></span>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('task')">Start with step 0 →</button>
+            </div>
+        </section>
+
+        <!-- ======================================================
+             STEP 0 – KNOW THE TASK
+             ====================================================== -->
+        <section id="task" class="content-section">
+            <div class="chapter-header s0">
+                <span class="chapter-number">Step 0</span>
+                <h2>Know the task <span class="read-time">⏱️ 1 min</span></h2>
+            </div>
+            <p class="lead">In the exam you get a factual text of about two pages, questions on it, and a writing task.
+            Every question starts with an <strong>operator</strong>. It tells you exactly what to do — and what not to do.</p>
+
+            <div class="levels">
+                <div class="level">
+                    <h4>I · Comprehension</h4>
+                    <div class="q">What does the text say?</div>
+                    <div class="ops">describe · outline · sum up · state · point out</div>
+                    <ul>
+                        <li>relevant content in your <strong>own words</strong></li>
+                        <li>line references</li>
+                        <li>no stylistic analysis, no opinion</li>
+                    </ul>
+                </div>
+                <div class="level l2">
+                    <h4>II · Analysis</h4>
+                    <div class="q">How does it say it — and why?</div>
+                    <div class="ops">analyse · examine · explain · characterise · compare</div>
+                    <ul>
+                        <li>structure, language, style, tone</li>
+                        <li>how they <strong>support the message</strong></li>
+                        <li>quotes as evidence; no retelling, no opinion</li>
+                    </ul>
+                </div>
+                <div class="level l3">
+                    <h4>III · Evaluation</h4>
+                    <div class="q">What do you think — and why?</div>
+                    <div class="ops">comment · discuss · assess · evaluate</div>
+                    <ul>
+                        <li>a <strong>justified</strong> position</li>
+                        <li>arguments and examples</li>
+                        <li>separate from the facts</li>
+                    </ul>
+                </div>
+            </div>
+
+            <details class="extra">
+                <summary><span class="tipkind">Extra</span>All operators and what they want</summary>
+                <div class="extra-body">
+                    <table class="tool-table">
+                        <tr><th>Operator</th><th>Level</th><th>What you do</th></tr>
+                        <tr><td>describe</td><td>I</td><td>give a detailed account of what something is, does or looks like</td></tr>
+                        <tr><td>outline</td><td>I</td><td>give the main features or the general structure; leave out details</td></tr>
+                        <tr><td>sum up / summarise</td><td>I</td><td>give the main points in a condensed form</td></tr>
+                        <tr><td>state / point out</td><td>I</td><td>present information clearly and briefly</td></tr>
+                        <tr><td>explain</td><td>II</td><td>make clear why or how something is the way it is, giving reasons</td></tr>
+                        <tr><td>analyse / examine</td><td>II</td><td>look closely at certain aspects (structure, language, style) and show how they work and what effect they have</td></tr>
+                        <tr><td>characterise</td><td>II</td><td>describe and analyse a person's qualities or a situation's character</td></tr>
+                        <tr><td>compare</td><td>II</td><td>point out similarities and differences according to criteria</td></tr>
+                        <tr><td>comment</td><td>III</td><td>give your opinion and support it with arguments and examples</td></tr>
+                        <tr><td>discuss</td><td>III</td><td>weigh arguments for and against, then come to a justified conclusion</td></tr>
+                        <tr><td>assess / evaluate</td><td>III</td><td>judge the value, quality or validity of something on the basis of criteria</td></tr>
+                    </table>
+                </div>
+            </details>
+
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h3 class="mb-2">Quick check: which level? <span class="read-time">all from your book</span></h3>
+                    <div id="levelQuiz">
+                        <div class="quiz-item" data-correct="I"><span>Outline the author's VR experience as described in the text.</span>
+                            <select aria-label="Level"><option value="">choose …</option><option>I</option><option>II</option><option>III</option></select></div>
+                        <div class="quiz-item" data-correct="II"><span>Examine Baxter's language.</span>
+                            <select aria-label="Level"><option value="">choose …</option><option>I</option><option>II</option><option>III</option></select></div>
+                        <div class="quiz-item" data-correct="I"><span>Sum up the changes which this kind of technology might bring about.</span>
+                            <select aria-label="Level"><option value="">choose …</option><option>I</option><option>II</option><option>III</option></select></div>
+                        <div class="quiz-item" data-correct="III"><span>Discuss in which ways virtual reality can have a positive effect on people's lives.</span>
+                            <select aria-label="Level"><option value="">choose …</option><option>I</option><option>II</option><option>III</option></select></div>
+                        <div class="quiz-item" data-correct="II"><span>Explain the author's use of quotations in the text.</span>
+                            <select aria-label="Level"><option value="">choose …</option><option>I</option><option>II</option><option>III</option></select></div>
+                    </div>
+                    <button class="btn btn-primary btn-sm mt-2" type="button" id="levelQuizCheck">Check</button>
+                    <div class="quiz-feedback" id="levelQuizFeedback" aria-live="polite"></div>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('start')">← Start</button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('step1')">Step 1: Preparation →</button>
+            </div>
+        </section>
+
+        <!-- ======================================================
+             STEP 1 – PREPARATION
+             ====================================================== -->
+        <section id="step1" class="content-section">
+            <div class="chapter-header s1">
+                <span class="chapter-number">Step 1</span>
+                <h2>Preparation <span class="read-time">⏱️ 2 min</span></h2>
+            </div>
+            <p class="lead">Before you write a single sentence, find out what you are dealing with. Four moves:</p>
+
+            <div class="moves">
+                <div class="move"><span class="lbl">a</span><h4>Read the questions first</h4>
+                    <p>Mark the operators. Now you know what to look for while reading.</p></div>
+                <div class="move"><span class="lbl">b</span><h4>Skim</h4>
+                    <p>Headline, lead, first and last paragraph: what is the topic, what are the main arguments?</p></div>
+                <div class="move"><span class="lbl">c</span><h4>Find out the purpose</h4>
+                    <p>Text type and its typical features, source, author, date, target group: why was this written, and for whom?</p></div>
+                <div class="move"><span class="lbl">d</span><h4>Understand</h4>
+                    <p>Read again closely. Mark key words and sum up each section in the margin in 3–6 words.</p></div>
+            </div>
+
+            <details class="extra">
+                <summary><span class="tipkind">Tip</span>Which text type is it? S3.1 in a nutshell</summary>
+                <div class="extra-body">
+                    <table class="tool-table">
+                        <tr><th>Text type</th><th>Purpose</th><th>Typical structure</th><th>Typical language</th></tr>
+                        <tr><td>broadsheet / serious online article</td><td>neutrally informing the public</td><td>headline, lead with the key point, body: wh-questions, then details</td><td>objective, neutral; dates, figures, expert quotes; different viewpoints</td></tr>
+                        <tr><td>tabloid article</td><td>informing in an exaggerated manner</td><td>sensational headline, exciting lead, short and simple body</td><td>emotive, colloquial; mixes fact and opinion; heroes, victims, villains</td></tr>
+                        <tr><td>feature article</td><td>telling “the story behind” people, places or events</td><td>often a personal or scenic opening, then background and viewpoints</td><td>neutral background information, vivid description, quotes</td></tr>
+                        <tr><td>comment, leader, editorial</td><td>influencing the reader's opinion</td><td>outline of the issue, pros and cons, “logical” conclusion</td><td>clear, concise; praise or criticism; contrast, rhetorical questions</td></tr>
+                        <tr><td>speech</td><td>informing and/or influencing an audience</td><td>opening example or question, logical order of arguments, conclusion with a call for action</td><td>addressee-oriented; key words repeated; rhetorical devices</td></tr>
+                    </table>
+                </div>
+            </details>
+            <details class="extra">
+                <summary><span class="tipkind">Tip</span>A marking system that saves time in the exam</summary>
+                <div class="extra-body">
+                    <ul>
+                        <li>Number the sections ①②③ — you will need them for <em>structure</em>.</li>
+                        <li>Underline facts, use a wavy line for opinions and evaluations, box stylistic devices.</li>
+                        <li>Write 3–6 words per section in the margin. These notes become the skeleton of your answers.</li>
+                        <li>Don't highlight whole paragraphs: if everything is marked, nothing is.</li>
+                    </ul>
+                </div>
+            </details>
+            <details class="extra">
+                <summary><span class="tipkind">Tip</span>Why source and target group matter</summary>
+                <div class="extra-body">
+                    <p>The source tells you who the author writes for. That explains many style choices: an author who explains technical terms
+                    expects readers without expert knowledge; a speaker who says “we” wants listeners to share a responsibility.
+                    In your analysis, “because the target group is …” is often the missing link between a device and its effect.</p>
+                </div>
+            </details>
+
+            <div class="inclass">
+                <div class="badge-row"><span class="badge badge-primary">Round 1 · in class</span><span class="badge badge-secondary">Baxter, book p. 230</span></div>
+                <h3>Your preparation card</h3>
+                <p class="small">Fill it in while you read. It is saved in this browser.</p>
+                <div class="builder" data-store="qott-prep-baxter">
+                    <div class="field"><label for="prepTopic">Topic</label><input id="prepTopic" data-key="topic"></div>
+                    <div class="field"><label for="prepType">Text type</label><input id="prepType" data-key="type"></div>
+                    <div class="field"><label for="prepSource">Source, date, context</label><input id="prepSource" data-key="source"></div>
+                    <div class="field"><label for="prepTarget">Target group</label><input id="prepTarget" data-key="target"></div>
+                    <div class="field"><label for="prepPurpose">Purpose</label><input id="prepPurpose" data-key="purpose"></div>
+                    <div class="field" style="grid-column: 1 / -1;"><label for="prepSections">Sections (one per line: lines + 3–6 words)</label>
+                        <textarea id="prepSections" data-key="sections" rows="5" placeholder="ll. 1–15: …"></textarea></div>
+                </div>
+                <div class="lw" data-loesungsweg="Baxter: preparation">
+                    <template data-stufe="Tip 1">
+                        <p>Clues for the text type: the author tells her own experience in the first person (“I found myself …”, l.&nbsp;4),
+                        she gives background facts and figures and she quotes officials and an academic. Which type combines a personal
+                        story with background information?</p>
+                    </template>
+                    <template data-stufe="Tip 2">
+                        <p>The paragraphs change their focus at ll.&nbsp;16, 25, 36 and 54. What is each of these five sections about?</p>
+                    </template>
+                    <template data-stufe="Our version" data-halten>
+                        <ul>
+                            <li><strong>Topic:</strong> a virtual concert in Helsinki during the Covid-19 lockdown and the future of virtual tourism</li>
+                            <li><strong>Text type:</strong> online feature article that starts with a personal report</li>
+                            <li><strong>Source, date:</strong> <em>The Guardian</em> online, 2020 — written during the lockdown</li>
+                            <li><strong>Target group:</strong> general, travel-interested readers, not technology experts</li>
+                            <li><strong>Purpose:</strong> to inform about VR tourism and Helsinki's plans — and to entertain</li>
+                            <li><strong>Sections:</strong> ll.&nbsp;1–15 the author's own virtual gig · ll.&nbsp;16–24 what Virtual Helsinki is and why ·
+                                ll.&nbsp;25–35 the lockdown concert in figures · ll.&nbsp;36–53 meaning for travel: sustainability, plans, no replacement ·
+                                ll.&nbsp;54–66 virtual tourism worldwide and an expert's outlook</li>
+                        </ul>
+                    </template>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('task')">← Step 0</button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('intro-sentence')">Step 2a: Introductory sentence →</button>
+            </div>
+        </section>
+
+        <!-- ======================================================
+             STEP 2a – INTRODUCTORY SENTENCE
+             ====================================================== -->
+        <section id="intro-sentence" class="content-section">
+            <div class="chapter-header s2">
+                <span class="chapter-number">Step 2a</span>
+                <h2>Writing: the introductory sentence <span class="read-time">⏱️ 1 min</span></h2>
+            </div>
+            <p class="lead">Your first answer opens with one sentence that tells the reader which text you are writing about and what it does.</p>
+
+            <div class="formula">
+                In the <b>[text type]</b> “<b>[title]</b>”, published in <b>[source]</b> in/on <b>[date]</b>,
+                <b>[author]</b> <b>[reporting verb]</b> <b>[topic / main intention]</b>.
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="mb-2">Sentence builder</h3>
+                    <div class="builder" id="introBuilder">
+                        <div class="field"><label for="ibType">Text type</label>
+                            <select id="ibType">
+                                <option>article</option><option>feature article</option><option>online article</option>
+                                <option>opinion piece</option><option>comment</option><option>essay</option>
+                                <option>editorial</option><option>speech</option><option>report</option>
+                            </select></div>
+                        <div class="field"><label for="ibTitle">Title</label><input id="ibTitle" placeholder="Helsinki's huge VR gig …"></div>
+                        <div class="field"><label for="ibSource">Source</label><input id="ibSource" placeholder="The Guardian online"></div>
+                        <div class="field"><label for="ibDate">Date</label><input id="ibDate" placeholder="2020"></div>
+                        <div class="field"><label for="ibAuthor">Author</label><input id="ibAuthor" placeholder="Sarah Baxter"></div>
+                        <div class="field"><label for="ibVerb">Reporting verb</label>
+                            <select id="ibVerb">
+                                <option>reports on</option><option>describes</option><option>explores</option><option>discusses</option>
+                                <option>presents</option><option>argues that</option><option>warns that</option><option>criticises</option>
+                                <option>claims that</option><option>calls for</option>
+                            </select></div>
+                        <div class="field" style="grid-column: 1 / -1;"><label for="ibTopic">Topic / main intention</label><input id="ibTopic" placeholder="a virtual concert in Helsinki and …"></div>
+                    </div>
+                    <div class="builder-out" id="ibOut" aria-live="polite"></div>
+                    <div class="row-btns">
+                        <button class="btn btn-outline btn-sm" type="button" id="ibCopy">Copy</button>
+                        <button class="btn btn-primary btn-sm" type="button" id="ibToCoach">Put it into the writing coach</button>
+                    </div>
+                </div>
+            </div>
+
+            <details class="extra">
+                <summary><span class="tipkind">Tip</span>Five slips to avoid</summary>
+                <div class="extra-body">
+                    <ul>
+                        <li><em>“In this text it is about …”</em> — use a precise reporting verb instead.</li>
+                        <li>Title without quotation marks.</li>
+                        <li>Past tense (<em>“Baxter described”</em>) — talk about texts in the present tense.</li>
+                        <li>An opinion in the introduction (<em>“… a very interesting article”</em>).</li>
+                        <li>A whole summary squeezed into one sentence. One topic, one intention — that's it.</li>
+                    </ul>
+                </div>
+            </details>
+            <details class="extra">
+                <summary><span class="tipkind">Extra</span>Later answers start differently</summary>
+                <div class="extra-body">
+                    <p>Only your first answer needs the full introductory sentence. Every later answer opens with a <strong>topic sentence that
+                    picks up the question</strong>, e.g. <em>“Baxter's language reflects her respect for Helsinki's achievements in several ways.”</em></p>
+                </div>
+            </details>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('step1')">← Step 1</button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('comprehension')">Step 2b: Comprehension →</button>
+            </div>
+        </section>
+
+        <!-- ======================================================
+             STEP 2b – COMPREHENSION
+             ====================================================== -->
+        <section id="comprehension" class="content-section">
+            <div class="chapter-header s2">
+                <span class="chapter-number">Step 2b</span>
+                <h2>Writing: comprehension answers <span class="read-time">⏱️ 1 min</span></h2>
+            </div>
+            <p class="lead">Level I asks <em>what</em> the text says. Your reader should understand the content without having read the text.</p>
+
+            <div class="moves">
+                <div class="move v"><span class="lbl">1</span><h4>Only what is asked</h4><p>The operator and the question decide what goes in. Order it logically, not necessarily like the text.</p></div>
+                <div class="move v"><span class="lbl">2</span><h4>Own words</h4><p>Paraphrase. Quote only key terms the author coined.</p></div>
+                <div class="move v"><span class="lbl">3</span><h4>Line references</h4><p>Back up each point: (cf. l.&nbsp;5) or (cf. ll.&nbsp;16–18).</p></div>
+                <div class="move v"><span class="lbl">4</span><h4>Present tense, neutral</h4><p>“Baxter states …”. No stylistic devices, no opinion.</p></div>
+            </div>
+
+            <div class="chain">
+                <div class="link alt"><strong>Text</strong><span>“Development of Virtual Helsinki's gig platform was accelerated” (ll.&nbsp;27–28)</span></div>
+                <div class="arrow">→</div>
+                <div class="link"><strong>Your words</strong><span>The city sped up the work on its concert platform (cf. ll.&nbsp;27–28).</span></div>
+            </div>
+
+            <details class="extra">
+                <summary><span class="tipkind">Tip</span>Four ways to put things into your own words</summary>
+                <div class="extra-body">
+                    <ul>
+                        <li><strong>Change the word class:</strong> <em>development was accelerated</em> → <em>they developed it faster</em>.</li>
+                        <li><strong>Use synonyms:</strong> <em>to spur</em> → <em>to trigger</em>; <em>feasible</em> → <em>possible</em>.</li>
+                        <li><strong>Generalise lists:</strong> <em>art exhibitions, shopping experiences, “re-lived” historical events</em> → <em>cultural and commercial content</em>.</li>
+                        <li><strong>Rebuild the sentence:</strong> start with a different element, make passive active.</li>
+                    </ul>
+                </div>
+            </details>
+            <details class="extra">
+                <summary><span class="tipkind">Tip</span>How long should it be?</summary>
+                <div class="extra-body">
+                    <p>As long as the question needs. For a describe/outline question on a two-page text, 120–200 words are usually enough.
+                    Long answers are not better answers — precise ones are.</p>
+                </div>
+            </details>
+
+            <div class="inclass">
+                <div class="badge-row"><span class="badge badge-primary">Round 1 · in class</span><span class="badge badge-secondary">book task 2a</span></div>
+                <div class="task-q">Describe what Virtual Helsinki is and what it offers to its users.</div>
+                <div class="row-btns">
+                    <button class="btn btn-primary btn-sm" type="button" data-coach-open="baxter:q1">Write it in the coach</button>
+                </div>
+                <div class="lw" data-loesungsweg="Baxter, question 1">
+                    <template data-stufe="Tip 1">
+                        <p>The information is spread over three places: ll.&nbsp;16–24, ll.&nbsp;25–35 and ll.&nbsp;44–53.</p>
+                    </template>
+                    <template data-stufe="Tip 2">
+                        <p>A logical order: what it is → how it was built → what users can do now → what is planned → what it is <em>not</em> meant to do.</p>
+                    </template>
+                    <template data-stufe="Model answer" data-halten>
+                        <p class="model">In her feature article “Helsinki's huge VR gig and the potential of virtual tourism”, published in <em>The Guardian</em> online in 2020,
+                        Sarah Baxter reports on a virtual concert in Helsinki and explores what virtual tourism could mean for the future of travel.
+                        Virtual Helsinki is the digital twin of the Finnish capital. Launched in late 2018, it was built with 3D modelling from open city data
+                        as well as drawings and images (cf. ll.&nbsp;16–18). It lets users explore the city's key landmarks as they wish and claims to be one of
+                        the most realistic VR experiences in the world (cf. ll.&nbsp;18–19). During the Covid-19 lockdown, it also hosted a live concert which
+                        people could attend as avatars and interact with the band (cf. ll.&nbsp;25–29). In future, the platform is to offer art exhibitions,
+                        shopping and “re-lived” historical events and to become multi-user, so that visitors can socialise in the virtual city (cf. ll.&nbsp;44–47).
+                        However, it is not meant to replace real visits but to add an alternative way of experiencing Helsinki (cf. ll.&nbsp;49–50).</p>
+                    </template>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('intro-sentence')">← Step 2a</button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('analysis')">Step 2c: Analysis →</button>
+            </div>
+        </section>
+
+        <!-- ======================================================
+             STEP 2c – ANALYSIS
+             ====================================================== -->
+        <section id="analysis" class="content-section">
+            <div class="chapter-header s2">
+                <span class="chapter-number">Step 2c</span>
+                <h2>Writing: analysis answers <span class="read-time">⏱️ 2 min</span></h2>
+            </div>
+            <p class="lead">Level II asks <em>how</em> the text works. Look at each section and show how its structure, language, register,
+            style and tone support the message — always with evidence from the text.</p>
+
+            <div class="chain">
+                <div class="link alt"><strong>Thesis</strong><span>answer the question in one sentence</span></div>
+                <div class="arrow">→</div>
+                <div class="link"><strong>Body</strong><span>one paragraph per aspect or section, built like this ↓</span></div>
+                <div class="arrow">→</div>
+                <div class="link end"><strong>Conclusion</strong><span>how style supports the message, in short</span></div>
+            </div>
+            <div class="chain">
+                <div class="link"><strong>Claim</strong><span>what the author does</span></div>
+                <div class="arrow">→</div>
+                <div class="link"><strong>Evidence</strong><span>quote with line reference</span></div>
+                <div class="arrow">→</div>
+                <div class="link end"><strong>Effect</strong><span>why? what does it do to the reader?</span></div>
+            </div>
+
+            <div class="look-grid">
+                <div class="look"><h4>Structure</h4><ul><li>How does it begin and end?</li><li>Where does the focus shift?</li><li>Question → answer, problem → solution?</li></ul></div>
+                <div class="look"><h4>Language &amp; register</h4><ul><li>Formal, informal, technical?</li><li>Positive or negative word choice?</li></ul></div>
+                <div class="look"><h4>Style</h4><ul><li>Stylistic devices, sentence length</li><li>Figures, examples, quotes</li></ul></div>
+                <div class="look"><h4>Tone</h4><ul><li>Enthusiastic, sceptical, ironic, urgent …?</li><li>Does it change?</li></ul></div>
+            </div>
+
+            <details class="extra">
+                <summary><span class="tipkind">Tip</span>Don't just list devices</summary>
+                <div class="extra-body">
+                    <p><em>“There is a metaphor in l.&nbsp;12 and a rhetorical question in l.&nbsp;30.”</em> earns almost nothing.
+                    Name the device, quote it — and explain what it does <strong>in this text, for this reader, for this message</strong>.
+                    Three well-explained points beat ten listed ones.</p>
+                </div>
+            </details>
+            <details class="extra">
+                <summary><span class="tipkind">Tip</span>Effect verbs you will need</summary>
+                <div class="extra-body">
+                    <p>emphasises · underlines · highlights · conveys · evokes · creates the impression that · makes the reader feel / realise ·
+                    involves the reader · appeals to · lends credibility to · makes … accessible / vivid · draws attention to · reinforces</p>
+                </div>
+            </details>
+            <details class="extra">
+                <summary><span class="tipkind">Tip</span>Order your paragraphs: by aspect or by section?</summary>
+                <div class="extra-body">
+                    <p>If the question names aspects (e.g. <em>respect</em>, <em>knowledge gap</em>, <em>quotations</em>), follow them — one paragraph each.
+                    If it asks generally about “stylistic devices”, go through the text section by section and group devices by their function.</p>
+                </div>
+            </details>
+
+            <div class="inclass">
+                <div class="badge-row"><span class="badge badge-primary">Round 1 · in class</span><span class="badge badge-secondary">book task 3</span></div>
+                <div class="task-q">Examine Baxter's language. Explain where she expresses respect for Helsinki's achievements and how she bridges the
+                    knowledge gap for technically less experienced readers. Explain the author's use of quotations in the text.</div>
+                <div class="row-btns">
+                    <button class="btn btn-primary btn-sm" type="button" data-coach-open="baxter:q2">Write it in the coach</button>
+                </div>
+                <div class="lw" data-loesungsweg="Baxter, question 2">
+                    <template data-stufe="Tip 1: where to look">
+                        <ul>
+                            <li><strong>Respect:</strong> ll.&nbsp;11–15, ll.&nbsp;29–32, l.&nbsp;37</li>
+                            <li><strong>Knowledge gap:</strong> the opening scene (ll.&nbsp;4–15), l.&nbsp;16, ll.&nbsp;55–58 — and look at dashes and brackets</li>
+                            <li><strong>Quotations:</strong> who speaks (Aalto, Rusama, Jung)? What is their role? Where is the last word?</li>
+                        </ul>
+                    </template>
+                    <template data-stufe="Tip 2: questions to ask">
+                        <ul>
+                            <li>How does Baxter make her praise sound believable, not like an advertisement?</li>
+                            <li>What does she do right after using a term a non-expert might not know?</li>
+                            <li>Why does she let the officials speak for themselves — and why does an academic end the article?</li>
+                        </ul>
+                    </template>
+                    <template data-stufe="Model paragraph" data-halten>
+                        <p class="model"><span class="c-tag t-c">C</span>Baxter expresses respect for Helsinki's achievements through appreciative vocabulary.
+                        <span class="c-tag t-e">E</span>Although she admits that the gig lacked “the buzz of being at a ‘proper’ concert” (ll.&nbsp;11–12), she stresses that
+                        “technically, it was impressive” (ll.&nbsp;12–13) and praises a “world of meticulously rendered make-believe” (ll.&nbsp;14–15).
+                        <span class="c-tag t-f">E</span>Because she first concedes a weakness, her praise sounds balanced and credible, so readers are more likely to share her
+                        positive view of the city's innovation. She underlines the success with impressive figures (cf. ll.&nbsp;30–32) and a short,
+                        emphatic sentence: “It worked.” (l.&nbsp;30).</p>
+                    </template>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('comprehension')">← Step 2b</button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('evaluation')">Step 2d: Evaluation →</button>
+            </div>
+        </section>
+
+        <!-- ======================================================
+             STEP 2d – EVALUATION (short, lower priority for now)
+             ====================================================== -->
+        <section id="evaluation" class="content-section">
+            <div class="chapter-header s2">
+                <span class="chapter-number">Step 2d</span>
+                <h2>Writing: evaluation answers <span class="read-time">⏱️ 1 min</span></h2>
+            </div>
+            <p class="lead">Level III asks for <em>your</em> judgement. It counts only if it is justified — and clearly separate from what the text says.</p>
+
+            <div class="chain">
+                <div class="link alt"><strong>Lead-in</strong><span>pick up the quote or issue, state your position</span></div>
+                <div class="arrow">→</div>
+                <div class="link"><strong>Arguments</strong><span>each with an example — from the text, the news, your life</span></div>
+                <div class="arrow">→</div>
+                <div class="link"><strong>The other side</strong><span>a fair counterargument and your reply</span></div>
+                <div class="arrow">→</div>
+                <div class="link end"><strong>Conclusion</strong><span>justified, not just repeated</span></div>
+            </div>
+
+            <details class="extra">
+                <summary><span class="tipkind">Tip</span>Phrases for your position</summary>
+                <div class="extra-body">
+                    <p>From my point of view, … · I am convinced that … · It could be argued that …, but … · Admittedly, … However, … ·
+                    This is illustrated by … · Weighing up both sides, I come to the conclusion that …</p>
+                </div>
+            </details>
+
+            <div class="inclass">
+                <div class="badge-row"><span class="badge badge-primary">Round 1 · optional</span><span class="badge badge-secondary">book task 5</span></div>
+                <div class="task-q">The author quotes Dr Timothy Jung, who states that after the lockdowns “people will be more open for virtual experience as an
+                    alternative way of socialising and enjoying life” (ll.&nbsp;64–66). Starting with the quote, discuss in which ways virtual reality can
+                    have a positive effect on people's lives.</div>
+                <div class="row-btns">
+                    <button class="btn btn-primary btn-sm" type="button" data-coach-open="baxter:q3">Write it in the coach</button>
+                </div>
+                <div class="lw" data-loesungsweg="Baxter, question 3">
+                    <template data-stufe="Tip: ideas to start from">
+                        <ul>
+                            <li>Access: people who cannot travel because of illness, disability, cost or distance</li>
+                            <li>Sustainability: visiting “without racking up carbon emissions” (l.&nbsp;38)</li>
+                            <li>Learning: history and far-away places made vivid (cf. ll.&nbsp;55–58)</li>
+                            <li>The other side: isolation, screen time, data — and is a virtual visit really a visit?</li>
+                        </ul>
+                    </template>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('analysis')">← Step 2c</button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('step3')">Step 3: Checking →</button>
+            </div>
+        </section>
+
+        <!-- ======================================================
+             STEP 3 – EDITING AND CHECKING
+             ====================================================== -->
+        <section id="step3" class="content-section">
+            <div class="chapter-header s3">
+                <span class="chapter-number">Step 3</span>
+                <h2>Editing and checking <span class="read-time">⏱️ 1 min</span></h2>
+            </div>
+            <p class="lead">Plan five minutes for this in the exam. Go through your answer once for content, once for language.</p>
+
+            <div class="check-cols" id="finalChecklist" data-store="qott-checklist">
+                <div class="card"><div class="card-body">
+                    <h3 class="mb-2">Content</h3>
+                    <ul class="checklist">
+                        <li><input type="checkbox" id="ck1" data-key="ck1"><label for="ck1">I did exactly what the operator asks — no more, no less.<span class="why">A summary where an analysis is asked for scores (almost) nothing.</span></label></li>
+                        <li><input type="checkbox" id="ck2" data-key="ck2"><label for="ck2">Every statement is backed by a line reference.</label></li>
+                        <li><input type="checkbox" id="ck3" data-key="ck3"><label for="ck3">Quotes are exact and marked “…”; omissions are marked […].</label></li>
+                        <li><input type="checkbox" id="ck4" data-key="ck4"><label for="ck4">I separate facts from my interpretation.<span class="why">“Baxter calls it a digital twin” (fact) vs. “this makes it sound alive” (interpretation).</span></label></li>
+                        <li><input type="checkbox" id="ck5" data-key="ck5"><label for="ck5">My opinion appears only where asked (level III).</label></li>
+                    </ul>
+                </div></div>
+                <div class="card"><div class="card-body">
+                    <h3 class="mb-2">Language</h3>
+                    <ul class="checklist">
+                        <li><input type="checkbox" id="ck6" data-key="ck6"><label for="ck6">Present tense to describe the text.</label></li>
+                        <li><input type="checkbox" id="ck7" data-key="ck7"><label for="ck7">No contractions, no “I think” in I and II.</label></li>
+                        <li><input type="checkbox" id="ck8" data-key="ck8"><label for="ck8">Linking words show my line of thought.<span class="why">furthermore · however · consequently · for instance · all in all</span></label></li>
+                        <li><input type="checkbox" id="ck9" data-key="ck9"><label for="ck9">Precise verbs and adjectives instead of <em>says, good, bad, a lot</em>.</label></li>
+                        <li><input type="checkbox" id="ck10" data-key="ck10"><label for="ck10">No repetition: varied words and sentence starts.</label></li>
+                    </ul>
+                </div></div>
+            </div>
+            <div class="row-btns"><button class="btn btn-outline btn-sm" type="button" id="checklistReset">Untick all</button></div>
+
+            <div class="example-box success mt-3">
+                <h3>👥 Peer check in class</h3>
+                <div class="example-content">
+                    <ol>
+                        <li>Swap answers with your partner.</li>
+                        <li>Go through the checklist above — tick only what is really true.</li>
+                        <li>Mark the one sentence that would profit most from a rewrite.</li>
+                        <li>Give two stars and a wish. Then rewrite your marked sentence.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="navigation-buttons">
+                <button class="btn btn-outline" onclick="siteManager.navigateToSection('evaluation')">← Step 2d</button>
+                <button class="btn btn-primary" onclick="siteManager.navigateToSection('coach')">Writing coach →</button>
+            </div>
+        </section>
+
+        <!-- ======================================================
+             WRITING COACH
+             ====================================================== -->
+        <section id="coach" class="content-section">
+            <div class="chapter-header sc">
+                <span class="chapter-number">✍</span>
+                <h2>Writing coach</h2>
+            </div>
+            <p class="lead">Choose your text and question, then write. The coach shows guiding questions for the paragraph you are working on
+            and checks your writing as you go. Leave an empty line between paragraphs.</p>
+
+            <div class="coach-top">
+                <div class="field"><label for="coachText">Text</label>
+                    <select id="coachText"></select></div>
+                <div class="field"><label for="coachQ">Question</label>
+                    <select id="coachQ"></select></div>
+            </div>
+            <div class="coach-question" id="coachQuestion" aria-live="polite"></div>
+
+            <div class="coach-grid">
+                <div>
+                    <div class="editor-wrap">
+                        <textarea id="coachEditor" spellcheck="true" lang="en" aria-label="Your answer"
+                                  placeholder="Start writing your answer here …"></textarea>
+                        <div class="editor-bar">
+                            <span id="coachStats">0 words · 0 paragraphs</span>
+                            <span class="save-state" id="coachSave">saved in this browser</span>
+                        </div>
+                    </div>
+                    <div class="row-btns">
+                        <div class="field" style="min-width: 220px;"><label for="coachName">Your name (for the PDF)</label><input id="coachName"></div>
+                    </div>
+                    <div class="row-btns">
+                        <button class="btn btn-primary btn-sm" type="button" id="coachPdf">Save as PDF</button>
+                        <button class="btn btn-outline btn-sm" type="button" id="coachTxt">Download as text</button>
+                        <button class="btn btn-outline btn-sm" type="button" id="coachCopy">Copy</button>
+                        <button class="btn btn-outline btn-sm" type="button" id="coachClear">Clear this answer</button>
+                    </div>
+                </div>
+
+                <aside class="coach-panel" aria-live="polite">
+                    <div class="cp-card">
+                        <div class="cp-step" id="cpSteps"></div>
+                        <div class="cp-where" id="cpWhere"></div>
+                        <h4 id="cpStepTitle">Guiding questions</h4>
+                        <ul class="cp-list" id="cpGuide"></ul>
+                    </div>
+                    <div class="cp-card">
+                        <h4>This paragraph</h4>
+                        <ul class="cp-list" id="cpPara"></ul>
+                    </div>
+                    <div class="cp-card">
+                        <h4>Phrases for this step <span class="muted small">click to insert</span></h4>
+                        <div class="chips" id="cpPhrases"></div>
+                    </div>
+                    <div class="cp-card" id="cpContentCard">
+                        <h4>Content <span class="muted small" id="cpContentCount"></span></h4>
+                        <div class="meter"><div id="cpMeter"></div></div>
+                        <ul class="cp-list" id="cpContent"></ul>
+                    </div>
+                    <div class="cp-card">
+                        <h4>Whole answer</h4>
+                        <ul class="cp-list" id="cpWhole"></ul>
+                    </div>
+                    <div class="cp-card" id="cpPointersCard">
+                        <h4>Stuck?</h4>
+                        <div class="lw" id="cpPointers"></div>
+                    </div>
+                </aside>
+            </div>
+
+            <details class="extra mt-3">
+                <summary><span class="tipkind">How it works</span>What the coach can and cannot do</summary>
+                <div class="extra-body">
+                    <p>The coach looks for patterns: line references, quotation marks, linking words, informal words, contractions, tense, repetition.
+                    It does not understand your ideas and it can be wrong — treat every hint as a question to yourself, not a mark.
+                    Your teacher's feedback is what counts.</p>
+                </div>
+            </details>
+        </section>
+
+        <!-- ======================================================
+             THE TEXTS
+             ====================================================== -->
+        <section id="texts" class="content-section">
+            <div class="chapter-header s0">
+                <span class="chapter-number">Texts</span>
+                <h2>The texts and their questions</h2>
+            </div>
+            <p class="lead">Round 1 uses the model text. In round 2 you choose <strong>one</strong> of the texts A–C — each is a real text from a named source,
+            each a different text type.</p>
+
+            <div class="text-cards" id="textCards"><!-- built from the TEXTS data in questions-on-the-text.js --></div>
+
+            <details class="extra mt-3">
+                <summary><span class="tipkind">Note</span>Line references for text B</summary>
+                <div class="extra-body">
+                    <p>Text B is read from your printout of the original article. If your copy has no line numbers, refer to paragraphs instead: (cf. para.&nbsp;3).
+                    The coach accepts both.</p>
+                </div>
+            </details>
+        </section>
+
+        <!-- ======================================================
+             TOOLBOX
+             ====================================================== -->
+        <section id="toolbox" class="content-section">
+            <div class="chapter-header s0">
+                <span class="chapter-number">Toolbox</span>
+                <h2>Phrases, devices, tools</h2>
+            </div>
+
+            <div class="card"><div class="card-body phrase-group">
+                <h3>Useful phrases <span class="read-time">S3.2</span></h3>
+                <h4>Giving information on the text</h4>
+                <p>The (article) was written by … and published (online) in (source) on (date). · It shows / deals with / provides insight into …</p>
+                <h4>Talking about the structure</h4>
+                <p>In the first paragraph, the author presents … · In the next section, the reader's attention is drawn to … · The next paragraphs provide more
+                details on / examples of … · Thus, the author illustrates … · The author supports his/her views with strong/valid arguments. ·
+                The author's line of argumentation starts off with … and culminates in …</p>
+                <h4>Talking about language and style</h4>
+                <p>The author strictly separates / often mixes fact and opinion. · The repetition of … / The use of words such as … emphasises / underlines … ·
+                The quote / The detailed description of … evokes … / makes the reader feel …</p>
+                <h4>Summing up / conclusion</h4>
+                <p>All in all, the author gives an unbiased / a rather biased account of the situation. · The text presents all facts in a clear and objective /
+                a very subjective way. · The author convincingly shows / proves … · This enables the reader to draw their own conclusions.</p>
+                <h4>Reporting verbs instead of <em>says</em></h4>
+                <p>states · claims · argues · points out · explains · emphasises · stresses · criticises · warns · suggests · concedes · admits · concludes</p>
+                <h4>Describing tone and register</h4>
+                <p>neutral · matter-of-fact · objective / subjective · formal / informal / colloquial · enthusiastic · appreciative · sceptical · critical ·
+                ironic · humorous · emotive · alarming · urgent · optimistic</p>
+                <h4>Linking words</h4>
+                <p><strong>adding</strong> furthermore, moreover, in addition · <strong>contrast</strong> however, nevertheless, in contrast, whereas ·
+                <strong>cause/effect</strong> therefore, thus, consequently, as a result · <strong>example</strong> for instance, to illustrate this ·
+                <strong>concluding</strong> all in all, to sum up, on the whole</p>
+            </div></div>
+
+            <div class="card mt-3"><div class="card-body">
+                <h3 class="mb-2">Stylistic devices in factual texts — and what they can do</h3>
+                <table class="tool-table">
+                    <tr><th>Device</th><th>Example</th><th>Typical effect</th></tr>
+                    <tr><td>personal anecdote, first person</td><td>“I found myself at a gig …”</td><td>makes the topic concrete and relatable</td></tr>
+                    <tr><td>expert quotes, statistics</td><td>“says Dr Timothy Jung …”, “460,000 computers”</td><td>authority, credibility</td></tr>
+                    <tr><td>rhetorical question</td><td>“will the city have made actually visiting it feel unnecessary?” (Baxter)</td><td>involves the reader, guides the argument</td></tr>
+                    <tr><td>enumeration, rule of three (tricolon)</td><td>“faster, cheaper and greener”</td><td>stresses scope, sounds complete and memorable</td></tr>
+                    <tr><td>repetition, anaphora</td><td>“We need … We need … We need …”</td><td>emphasises a key idea, creates rhythm</td></tr>
+                    <tr><td>contrast, antithesis, parallelism</td><td>“big enough to …, small enough …” (Baxter)</td><td>sharpens a point, highlights differences</td></tr>
+                    <tr><td>metaphor, comparison</td><td>“the physical capital's digital twin” (Baxter)</td><td>makes abstract ideas vivid</td></tr>
+                    <tr><td>hyperbole, emotive language</td><td>“a disaster of epic proportions”</td><td>arouses feelings, creates urgency</td></tr>
+                    <tr><td>direct address, imperative, inclusive <em>we</em></td><td>“Picture this: …”, “we can scan the mountains of Switzerland” (Baxter)</td><td>closeness, shared responsibility</td></tr>
+                    <tr><td>colloquial words</td><td>“weren't my personal jam”</td><td>informal, light tone; reaches a wide audience</td></tr>
+                    <tr><td>short sentence after long ones</td><td>“It worked.”</td><td>emphasis, a punchline</td></tr>
+                    <tr><td>irony, understatement</td><td>“Just another day in lockdown.” (Baxter)</td><td>criticises indirectly, entertains</td></tr>
+                </table>
+            </div></div>
+
+            <div class="card mt-3"><div class="card-body">
+                <h3 class="mb-2">Quoting correctly</h3>
+                <ul>
+                    <li><strong>Integrate</strong> quotes into your own sentence: Baxter calls the platform the city's “digital twin” (l.&nbsp;16).</li>
+                    <li><strong>Line references:</strong> (l.&nbsp;5) · (ll.&nbsp;5–7) · paraphrase: (cf. l.&nbsp;5)</li>
+                    <li><strong>Omissions</strong> […]; <strong>your own changes</strong> in square brackets: “[t]he role of VR will increase”.</li>
+                    <li>A quote never stands alone — always explain it.</li>
+                </ul>
+            </div></div>
+
+            <div class="mt-3">
+                <h3 class="mb-2">Tools for finding the right word <span class="read-time">external sites, open in a new tab</span></h3>
+                <div class="ext-links">
+                    <a class="ext-link" href="https://www.phrasebank.manchester.ac.uk/" target="_blank" rel="noopener">
+                        <strong>Academic Phrasebank ↗</strong><span>University of Manchester: phrases for describing, comparing, criticising, concluding</span></a>
+                    <a class="ext-link" href="https://www.oxfordlearnersdictionaries.com/" target="_blank" rel="noopener">
+                        <strong>Oxford Learner's Dictionaries ↗</strong><span>meanings, example sentences and word families</span></a>
+                    <a class="ext-link" href="https://www.powerthesaurus.org/" target="_blank" rel="noopener">
+                        <strong>Power Thesaurus ↗</strong><span>synonyms when you notice repetition — check the meaning before you use one</span></a>
+                    <a class="ext-link" href="https://www.linguee.de/deutsch-englisch" target="_blank" rel="noopener">
+                        <strong>Linguee ↗</strong><span>German ↔ English in real contexts — see how a phrase is actually used</span></a>
+                </div>
+                <p class="small muted mt-2">These are not part of edu-mrh.de. They are linked, not embedded, so nothing loads from them unless you click.</p>
+            </div>
+        </section>
+
+        <!-- ======================================================
+             MATERIALS
+             ====================================================== -->
+        <section id="materials" class="content-section">
+            <div class="chapter-header s0">
+                <span class="chapter-number">PDF</span>
+                <h2>Materials</h2>
+            </div>
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">🧭</div>
+                    <h3>Worksheet 2 · Questions on the text</h3>
+                    <p>The scaffold on two pages: steps, operators, answer patterns, phrases, checklist.</p>
+                    <div class="mt-2"><a class="btn btn-primary" href="arbeitsblaetter/ab-2-questions-on-the-text.pdf" target="_blank">Open PDF</a></div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">🔭</div>
+                    <h3>Worksheet 1 · Technologies that change society</h3>
+                    <p>The Spot-on-facts content at a glance and the Kolloquium Carousel — your basis for the oral exam.</p>
+                    <div class="mt-2"><a class="btn btn-primary" href="arbeitsblaetter/ab-1-technologies.pdf" target="_blank">Open PDF</a></div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">🎙️</div>
+                    <h3>Text C · Guterres speech</h3>
+                    <p>Line-numbered text sheet (abridged) of the UN Secretary-General's speech on AI, 18 July 2023.</p>
+                    <div class="mt-2"><a class="btn btn-primary" href="arbeitsblaetter/text-c-guterres.pdf" target="_blank">Open PDF</a></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================
+             LEHRKRÄFTE-BEREICH
+             ====================================================== -->
+        <section id="teacher" class="content-section">
+            <div class="chapter-header s0">
+                <span class="chapter-number">👩‍🏫</span>
+                <h2>For teachers</h2>
+            </div>
+            <div class="teacher">
+                <h3>Sequence (4 lessons)</h3>
+                <ol>
+                    <li><strong>60 min:</strong> Worksheet 1 (Spot on facts) + Kolloquium Carousel. Homework: read Baxter (pp.&nbsp;230–231).</li>
+                    <li><strong>45 min:</strong> Step 0 and Step 1 on Baxter, introductory sentence, question 1 written in the coach, compared with the model.</li>
+                    <li><strong>90 min:</strong> Step 2c on Baxter (question 2): one C-E-E paragraph together, the rest alone; peer check with Step 3; choose text A/B/C, Step 1 on it.</li>
+                    <li><strong>45 min:</strong> Questions 1–2 on the chosen text in the coach (light help); PDF handed in.</li>
+                </ol>
+                <h3 class="mt-3">Notes</h3>
+                <ul>
+                    <li>Model answers on this page appear only after press-and-hold, so they cannot be skimmed. The full teacher version of Worksheet 2 with all
+                        gaps filled: <a href="arbeitsblaetter/ab-2-questions-on-the-text-lsg.pdf" target="_blank">ab-2-questions-on-the-text-lsg.pdf</a>.</li>
+                    <li>Text B (Undark, 2024) is not reproduced here; print it from the link and, if possible, add line numbers. Otherwise students cite paragraphs.</li>
+                    <li>Text C is abridged from the UN press release SG/SM/21880; omissions are marked […].</li>
+                    <li>The coach is pattern-based (regular expressions): it gives prompts, not grades. Content detection runs only for the model text.</li>
+                    <li>All input is kept in <code>localStorage</code> (keys start with <code>qott-</code>); nothing is sent to a server. PDF export uses the self-hosted jsPDF.</li>
+                    <li>The phrasing tools are links, not iframes: embedding would load third-party content (DSGVO), and most of them refuse embedding anyway.</li>
+                </ul>
+            </div>
+        </section>
+
+    </div>
+</div>
+
+<!-- Sidebar Navigation -->
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <h3>Questions on the Text</h3>
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Close sidebar">✕</button>
+    </div>
+    <nav class="sidebar-menu">
+        <ul>
+            <li><a href="#start" data-section="start" class="active"><span class="icon">🏠</span> Start</a></li>
+            <li class="sidebar-section-title">The routine</li>
+            <li><a href="#task" data-section="task"><span class="icon">0️⃣</span> Know the task</a></li>
+            <li><a href="#step1" data-section="step1"><span class="icon">1️⃣</span> Preparation</a></li>
+            <li><a href="#intro-sentence" data-section="intro-sentence"><span class="icon">2️⃣</span> Intro sentence</a></li>
+            <li><a href="#comprehension" data-section="comprehension"><span class="icon">📖</span> Comprehension</a></li>
+            <li><a href="#analysis" data-section="analysis"><span class="icon">🔍</span> Analysis</a></li>
+            <li><a href="#evaluation" data-section="evaluation"><span class="icon">⚖️</span> Evaluation</a></li>
+            <li><a href="#step3" data-section="step3"><span class="icon">3️⃣</span> Checking</a></li>
+            <li class="sidebar-section-title">Work</li>
+            <li><a href="#coach" data-section="coach"><span class="icon">✍️</span> Writing coach</a></li>
+            <li><a href="#texts" data-section="texts"><span class="icon">📰</span> Texts &amp; questions</a></li>
+            <li><a href="#toolbox" data-section="toolbox"><span class="icon">🧰</span> Toolbox</a></li>
+            <li><a href="#materials" data-section="materials"><span class="icon">📄</span> Materials</a></li>
+            <li class="sidebar-section-title">Teachers</li>
+            <li><a href="#teacher" data-section="teacher"><span class="icon">👩‍🏫</span> For teachers</a></li>
+        </ul>
+    </nav>
+</aside>
+
+<!-- Mobile Menu Button -->
+<button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2026 <a href="https://edu-mrh.de/">edu-mrh.de</a> | Fachbereich Englisch | Jahrgangsstufe 13 |
+        <a href="https://edu-mrh.de/contribute.html#impressum">Impressum &amp; Datenschutz</a></p>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+% ============================================================
+% ab-vorlage.tex – gemeinsame Vorlage der Arbeitsblätter
+% englisch/13/questions-on-the-text/arbeitsblaetter/
+% Übersetzen mit:  xelatex <datei>.tex   (zweimal, wegen Seitenzahlen)
+% Lösungsfassung:  Einzeiler-Datei <datei>-lsg.tex mit
+%                  \def\mitloesung{}\input{<datei>}
+% Schriften: Carlito (Fließtext), Poppins (Überschriften), TeX Gyre Pagella (Texte)
+% ============================================================
+\documentclass[10pt,a4paper]{article}
+\usepackage[a4paper,top=12mm,bottom=13mm,left=14mm,right=14mm,headsep=4mm,headheight=12pt,footskip=7mm]{geometry}
+\usepackage{fontspec}
+\setmainfont{Carlito}
+\newfontfamily\headfont{Poppins}[UprightFont=* Medium, BoldFont=* Medium]
+\newfontfamily\headlight{Poppins Light}
+\newfontfamily\lorafont{TeX Gyre Pagella}
+\usepackage{xcolor}
+\definecolor{prim}{HTML}{2563EB}
+\definecolor{primdark}{HTML}{1E3A8A}
+\definecolor{sec}{HTML}{7C3AED}
+\definecolor{primtint}{HTML}{EFF6FF}
+\definecolor{sectint}{HTML}{F5F3FF}
+\definecolor{ink}{HTML}{1E293B}
+\definecolor{muted}{HTML}{64748B}
+\definecolor{rule}{HTML}{CBD5E1}
+\definecolor{good}{HTML}{059669}
+\definecolor{goodtint}{HTML}{ECFDF5}
+\definecolor{warn}{HTML}{B45309}
+\definecolor{warntint}{HTML}{FFFBEB}
+\definecolor{bad}{HTML}{B91C1C}
+\definecolor{badtint}{HTML}{FEF2F2}
+\color{ink}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{positioning,calc,arrows.meta,shapes.misc}
+\usepackage{enumitem}
+\setlist{nosep,leftmargin=1.1em,topsep=1pt}
+\setlist[itemize]{label=\textcolor{prim}{\small\textbullet}}
+\usepackage{tabularx,array,booktabs,colortbl}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{amssymb}
+\usepackage{microtype}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\linespread{1.02}
+
+% ---------- Kopf- und Fußzeile ----------
+\newcommand{\wskopf}{English · Q13 · Science and Technology}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyhead[L]{\footnotesize\headlight\textcolor{muted}{\wskopf}}
+\fancyhead[R]{\footnotesize\headlight\textcolor{muted}{Name: \rule{38mm}{0.3pt}\quad Date: \rule{18mm}{0.3pt}}}
+\fancyfoot[L]{\scriptsize\textcolor{muted}{edu-mrh.de/englisch/13/questions-on-the-text}}
+\fancyfoot[R]{\scriptsize\textcolor{muted}{\thepage\,/\,\pageref*{LastPage}}}
+
+% ---------- Titel ----------
+% \wstitel{Kürzel}{Titel}{Untertitel}
+\newcommand{\wstitel}[3]{%
+  \begin{tcolorbox}[enhanced,colback=prim,colframe=prim,arc=2mm,boxrule=0pt,
+     left=4mm,right=4mm,top=2.2mm,bottom=2.2mm,
+     interior style={left color=primdark,right color=sec}]
+    \color{white}{\headlight\footnotesize #1}\\[0.3mm]
+    {\headfont\LARGE #2}\\[0.6mm]
+    {\small #3}
+  \end{tcolorbox}\vspace{1mm}}
+
+% ---------- Boxen ----------
+% \begin{wsbox}{Nummer}{Überschrift} ... \end{wsbox}
+\newtcolorbox{wsbox}[3][]{enhanced,breakable,colback=white,colframe=rule,boxrule=0.5pt,arc=1.5mm,
+  left=2.5mm,right=2.5mm,top=1.3mm,bottom=1.3mm,
+  title={\headfont\normalsize\textcolor{white}{\colorbox{prim}{\,#2\,}}\;\textcolor{ink}{#3}},
+  coltitle=ink,colbacktitle=white,attach title to upper={\par\vspace{0.6mm}},before skip=1.4mm,after skip=1.4mm,#1}
+\newtcolorbox{tintbox}[1][]{enhanced,colback=primtint,colframe=primtint,boxrule=0pt,arc=1.2mm,
+  left=2mm,right=2mm,top=1.2mm,bottom=1.2mm,#1}
+\newtcolorbox{secbox}[1][]{enhanced,colback=sectint,colframe=sectint,boxrule=0pt,arc=1.2mm,
+  left=2mm,right=2mm,top=1.2mm,bottom=1.2mm,#1}
+\newtcolorbox{goodbox}[1][]{enhanced,colback=goodtint,colframe=goodtint,boxrule=0pt,arc=1.2mm,
+  left=2mm,right=2mm,top=1.2mm,bottom=1.2mm,#1}
+\newtcolorbox{warnbox}[1][]{enhanced,colback=warntint,colframe=warntint,boxrule=0pt,arc=1.2mm,
+  left=2mm,right=2mm,top=1.2mm,bottom=1.2mm,#1}
+\newtcolorbox{badbox}[1][]{enhanced,colback=badtint,colframe=badtint,boxrule=0pt,arc=1.2mm,
+  left=2mm,right=2mm,top=1.2mm,bottom=1.2mm,#1}
+
+\newcommand{\kl}[1]{{\headfont\small\textcolor{prim}{#1}}}      % kleine Zwischenüberschrift
+\newcommand{\klsec}[1]{{\headfont\small\textcolor{sec}{#1}}}
+\newcommand{\plus}{\textcolor{good}{\textbf{+}}\ }
+\newcommand{\minus}{\textcolor{bad}{\textbf{–}}\ }
+\newcommand{\pfeil}{\textcolor{prim}{$\rightarrow$}\ }
+\newcommand{\linie}[1][\linewidth]{\rule{#1}{0.3pt}}
+% ---------- Lösungsschalter ----------
+% \lsg[Breite]{Text}        Lücke mit Unterstrich; Lösung erscheint nur mit \mitloesung
+% \lsglinien{n}{Text}       n Schreiblinien; Lösung wird auf die Linien geschrieben
+% Beide reservieren in beiden Fassungen exakt denselben Platz.
+\newif\ifloesung
+\ifdefined\mitloesung \loesungtrue \else \loesungfalse \fi
+\newcommand{\lsgstil}{\color{sec}\itshape}
+\newcommand{\lsg}[2][30mm]{%
+  \makebox[#1][l]{\rlap{\raisebox{-0.8mm}{\textcolor{rule}{\rule{#1}{0.4pt}}}}%
+  \ifloesung{\lsgstil\small #2}\fi}}
+\newlength{\lsgzeile}\setlength{\lsgzeile}{6mm}
+\newcommand{\lsglinien}[2]{%
+  \par\noindent
+  \begin{tikzpicture}[x=1mm,y=1mm]
+    \pgfmathsetmacro{\hoehe}{#1*6}
+    \path[use as bounding box] (0,0.5) rectangle (\linewidth,-\hoehe);
+    \foreach \i in {1,...,#1} {\draw[rule,line width=0.4pt] (0,-\i*6) -- (\linewidth,-\i*6);}
+    \ifloesung
+      \node[anchor=north west,inner sep=0pt,text width=\linewidth,align=left,
+            font=\lsgstil\small] at (0,-2.3) {\setlength{\baselineskip}{\lsgzeile}#2\par};
+    \fi
+  \end{tikzpicture}\par}
+\newcommand{\schreiblinien}[1]{\lsglinien{#1}{}}
