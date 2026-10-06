@@ -6,21 +6,21 @@
 \begin{aufgabe}[Projekt Breakout]{1}
 \textbf{a)} Spiel starten und versuchen zu gewinnen.\quad \textbf{b)} Nur im Hauptprogramm schummeln (Website, TODO 1.1--1.4).\\
 \textbf{c)} Was fällt dir in den anderen Klassen auf? Wodurch wird das Schummeln möglich?
-\linien{1}
+\lsglinien{2}{Alle Attribute und Methoden sind \code{public}. Das Hauptprogramm kann z.\,B. \code{meinSpiel.leben} oder die Geschwindigkeit des Schlägers direkt überschreiben.}
 Mein Vorschlag, wie eine Klasse ihre Daten schützen könnte:
-\linien{1}
+\lsglinien{2}{Attribute nur innerhalb der eigenen Klasse veränderbar machen. Andere Klassen dürfen nur über Methoden der Klasse etwas ändern (z.\,B. \code{punkteErhoehen()}), die das prüfen können.}
 \end{aufgabe}
 
 \begin{merke}[Alles öffentlich?]
-Mittels \luecke[5cm] können Zugriffsrechte gesetzt werden, sodass Teile des Programms nicht mehr von außen sichtbar sind. Daher nennt man diese auch \luecke[4cm].
+{\lueckentext Mittels \lsg[5cm]{Zugriffsmodifikatoren} können Zugriffsrechte gesetzt werden, sodass Teile des Programms nicht mehr von außen sichtbar sind. Daher nennt man diese auch \lsg[4.5cm]{Sichtbarkeitsmodifikatoren}.\par}
 
-\begin{tabularx}{\linewidth}{|l|X|X|X|}\hline
+\begin{tabularx}{\linewidth}{|l|*{3}{>{\RaggedRight\arraybackslash}X|}}\hline
 \textbf{Zugriffsmodifikator} & \textbf{Zugriff innerhalb der Klasse} & \textbf{Zugriff von außen / anderen Klassen} & \textbf{Beschreibung}\\\hline
-\code{public} & \rule{0pt}{8mm} & & Jeder kann lesen, schreiben und aufrufen.\\\hline
-\rule{0pt}{10mm} & & & \\\hline
+\rule[-6mm]{0pt}{12mm}\code{public} & \lsgtext{ja} & \lsgtext{ja} & Jeder kann lesen, schreiben und aufrufen.\\\hline
+\rule[-6mm]{0pt}{12mm}\lsgtext{\code{private}} & \lsgtext{ja} & \lsgtext{nein} & \lsgtext{Nur die eigene Klasse kann lesen, schreiben und aufrufen.}\\\hline
 \end{tabularx}
 
-Da die Daten so in ihrer Klasse abgekapselt werden, spricht man von \luecke[4.5cm].
+{\lueckentext Da die Daten so in ihrer Klasse abgekapselt werden, spricht man von \lsg[5cm]{Datenkapselung}.\par}
 
 \textbf{Best Practice} (Zugriffsrechte möglichst restriktiv):
 \begin{itemize}
@@ -31,17 +31,22 @@ Da die Daten so in ihrer Klasse abgekapselt werden, spricht man von \luecke[4.5c
 \end{itemize}
 \end{merke}
 
-\begin{aufgabe}[Projekt Breakout]{1}
-\textbf{d)} Ändere das Zugriffsrecht des Konstruktors von \code{Spiel} in \code{private}. Beschreibe das Verhalten:
-\linien{1}
-Warum ist ein Setter mit Prüfung (wie \code{setzeGroesse}) nur sinnvoll, wenn das Attribut privat ist?
-\linien{1}
+\newpage
+\begin{aufgabe}[Projekt Breakout: Absichern]{2}
+\textbf{a)} Setze in \code{Spiel} alle Attribute auf \code{private}. Welche Zeilen im Hauptprogramm markiert der Compiler jetzt? Welche Tricks gehen noch?
+\lsglinien{2}{Alle Zeilen, die direkt auf Attribute von \code{meinSpiel} zugreifen (z.\,B. \code{meinSpiel.leben = …}). Es geht nur noch, was öffentliche Methoden erlauben.}
+\textbf{b)} \code{Schlaeger}, \code{Ball} und \code{Block} absichern: Website.\\
+\textbf{c)} Ändere das Zugriffsrecht des Konstruktors von \code{Spiel} in \code{private}. Beschreibe das Verhalten:
+\lsglinien{1}{\code{new Spiel()} im Hauptprogramm ist ein Fehler: Von außen kann kein Spiel mehr erzeugt werden.}
+\textbf{d)} Warum ist ein Setter mit Prüfung (wie \code{setzeGroesse}) nur sinnvoll, wenn das Attribut privat ist?
+\lsglinien{2}{Ist \code{groesse} öffentlich, kann jede Klasse es direkt setzen und die Prüfung umgehen. Nur bei \code{private} führt der einzige Weg über den Setter.}
 \end{aufgabe}
 
-\begin{aufgabe}{2}
+\begin{aufgabe}[Sichtbarkeit in der Klassenkarte]{3}
 \textbf{a)} Öffne in der IDE die Ansicht „Klassen“. Ändere Zugriffsrechte und beobachte die Klassenkarten.\\
-\textbf{b)} Übertrage die Klassenkarte zu \code{Block} vor und nach deinen Änderungen.
-In der Klassenkarte werden Sichtbarkeiten mit \luecke[1cm] für \luecke[2.5cm] oder \luecke[1cm] für \luecke[2.5cm] vor Attributen und Methoden gekennzeichnet.
+\textbf{b)} Übertrage die Klassenkarte zu \code{Block} vor und nach deinen Änderungen.\\
+{\lueckentext In der Klassenkarte werden Sichtbarkeiten mit \lsg[1.5cm]{+} für \lsg[3cm]{\code{public}} oder \lsg[1.5cm]{$-$} für \lsg[3cm]{\code{private}} vor Attributen und Methoden gekennzeichnet.\par}
 \end{aufgabe}
-\kariert{6}
+\begin{minipage}[t]{0.48\linewidth}\vspace{0pt}vorher:\\[1mm]\lsgkarobox{8cm}{6cm}{\node[anchor=north west,font=\scriptsize] at (3mm,-3mm) {\lsgkarte{Block}{+ farbe : String\\+ meinBall : Ball\\+ meinSpiel : Spiel}{+ Block(farbe, x, y, ball, spiel)\\+ act()}};}\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}\vspace{0pt}nachher:\\[1mm]\lsgkarobox{8cm}{6cm}{\node[anchor=north west,font=\scriptsize] at (3mm,-3mm) {\lsgkarte{Block}{$-$ farbe : String\\$-$ meinBall : Ball\\$-$ meinSpiel : Spiel}{+ Block(farbe, x, y, ball, spiel)\\+ act()}};}\end{minipage}
 \end{document}

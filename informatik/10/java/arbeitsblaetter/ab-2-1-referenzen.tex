@@ -3,57 +3,62 @@
 \begin{document}
 \abtitel{2.1}{Objektbeziehungen -- Klassen als Datentypen}
 
+{\lueckentext
 Verschiedene Objekte eines Systems können miteinander kommunizieren:
 \begin{itemize}
-\item Ein Objekt \luecke[12cm]
-\item Ein Objekt \luecke[12cm]
+\item Ein Objekt\lsgrest{ruft eine Methode eines anderen Objekts auf.}
+\item Ein Objekt\lsgrest{liest oder verändert Attributwerte eines anderen Objekts.}
 \end{itemize}
-Dafür müssen sie einander jedoch „kennen“.
+Dafür müssen sie einander jedoch „kennen“.\par}
 
 \begin{aufgabe}[Projekt Flaggen]{1}
 \textbf{a)} Zeichne ein Objektdiagramm (alle Objekte beim Start, Pfeile: wer kennt wen?) und ein Klassendiagramm zu \code{Flagge} und \code{Rechteck}.\quad \textbf{b)}, \textbf{c)} und Bonus auf der Website.
 \end{aufgabe}
 Objektdiagramm:
-\kariert{9}
+\lsgkariert{8}{\begin{scope}[font=\scriptsize]
+\node[objekt] (f) at (10mm,-5mm) {\lsgobjekt{f1 : Flagge}{oben = \textbullet\\mitte = \textbullet\\unten = null}};
+\node[objekt] (o) at (70mm,-2.5mm) {\lsgobjekt{oben : Rechteck}{x = 150, y = 150\\breite = 600, höhe = 100}};
+\node[objekt] (m) at (70mm,-21mm) {\lsgobjekt{mitte : Rechteck}{x = 150, y = 250\\breite = 600, höhe = 100}};
+\node[anchor=west,align=left] at (115mm,-20mm) {\code{unten} wird erst in TODO 1\\erzeugt (bis dahin \code{null}).};
+\draw[-{Stealth}] (f.east) ++(0,3mm) -- (o.west); \draw[-{Stealth}] (f.east) -- (m.west);
+\end{scope}}
 Klassendiagramm:
-\kariert{6}
+\lsgkariert{6}{\begin{scope}[font=\scriptsize,every node/.style={anchor=north west,inner sep=0pt}]
+\node (fl) at (10mm,-2mm) {\lsgkarte{Flagge}{oben, mitte, unten}{Flagge(land)\\zeichneDeutschlandFlagge()}};
+\node (re) at (100mm,-2mm) {\lsgkarte{Rechteck}{\rule{0pt}{2mm}}{Rechteck(x, y, breite, hoehe)\\farbeSetzen(farbe)\\groesseSetzen(breite, hoehe)\\verschiebenNach(x, y)}};
+\end{scope}
+\draw (fl.east) -- (re.west) node[midway,above,font=\scriptsize] {oben, mitte, unten $>$} node[near end,below,font=\scriptsize] {3};}
 
-\begin{merke}[Referenzattribute]
-Die Attribute der Klasse \code{Flagge} sind Objekte einer anderen Klasse (hier \code{Rechteck}). Als Datentyp haben sie ihre Klasse. Der Wert des Attributs ist eine \luecke (Verweis auf den Speicherplatz) auf das enthaltene Objekt. Deshalb nennt man solche Attribute auch \luecke.
+\begin{merke}[Referenzattribute]\lueckentext
+Die Attribute der Klasse \code{Flagge} sind Objekte einer anderen Klasse (hier \code{Rechteck}). Als Datentyp haben sie ihre Klasse. Der Wert des Attributs ist eine \lsg{Referenz} (Verweis auf den Speicherplatz) auf das enthaltene Objekt. Deshalb nennt man solche Attribute auch \lsg{Referenzattribute}.
 \end{merke}
 
-\newpage
-\begin{minipage}[t]{0.5\linewidth}
-\begin{java}
+\begin{minipage}[t]{0.54\linewidth}
+\begin{java}[escapeinside={(*}{*)}]
 class Flagge
 {
-   Rechteck oben;
+   Rechteck oben;                          (*\nr{1}*)
    ...
-
-   Flagge()
-   {
-      oben = new Rechteck(10, 10, 150, 30);
-      ...
-   }
-
    void zeichneDeutschlandFlagge()
    {
-      oben.farbeSetzen("schwarz");
+      oben = new Rechteck(150, 150, 600, 100); (*\nr{2}*)
+      ...
+      oben.farbeSetzen("black");          (*\nr{3}*)
    }
 }
 \end{java}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.46\linewidth}
-\vspace{4mm}
-\luecke[3.2cm] des Referenzattributs\\
-$\rightarrow$ Datentyp ist \luecke[3.5cm]\\[9mm]
-\luecke[3.2cm] des Objekts\\
-$\rightarrow$ mit dem Operator \luecke[2cm]\\[9mm]
-\luecke[3.2cm] einer Methode des Objekts\\
-$\rightarrow$ mit \luecke[5cm]
+\begin{minipage}[t]{0.43\linewidth}
+\vspace{2mm}\lueckentext
+\nr{1} \lsg[3.5cm]{Deklaration} des Referenzattributs\\
+$\rightarrow$ Datentyp ist \lsg[3.5cm]{die Klasse \code{Rechteck}}\\[2mm]
+\nr{2} \lsg[3.5cm]{Erzeugung} des Objekts\\
+$\rightarrow$ mit dem Operator \lsg[3cm]{\code{new}}\\[2mm]
+\nr{3} \lsg[3.5cm]{Aufruf} einer Methode\\
+$\rightarrow$ mit\lsgrest{Punktnotation \code{oben.methode()}}
 \end{minipage}
 
-\vspace{2mm}
+\newpage
 \textbf{Beispiel: So sieht es im Speicher aus}\quad {\small (\code{f1} ist die Flagge, \code{oben} ihr erstes Rechteck)}
 
 \begin{center}\small
@@ -62,15 +67,15 @@ $\rightarrow$ mit \luecke[5cm]
  & \ldots & \ldots & \\\cline{2-3}
 \code{f1} $\rightarrow$ & 10000 & \ldots & \\\cline{2-3}
  & \ldots & \ldots & \\\cline{2-3}
- & 10100 & \textbf{10800} & \code{oben}\quad (Referenz!)\\\cline{2-3}
+ & 10100 & \textbf{10800} & \code{oben}\quad (Referenz!)\quad \nr{1}\\\cline{2-3}
  & \ldots & \ldots & \\\cline{2-3}
-\code{oben} $\rightarrow$ & 10800 & \ldots & \\\cline{2-3}
- & 10820 & schwarz & \code{farbe}\\\cline{2-3}
+\code{oben} $\rightarrow$ & 10800 & \ldots & hier legt \code{new} das Rechteck an \nr{2}\\\cline{2-3}
+ & 10820 & black & \code{farbe}\quad (gesetzt mit \code{farbeSetzen}) \nr{3}\\\cline{2-3}
  & \ldots & \ldots & \\\cline{2-3}
 \end{tabular}
 \end{center}
 Was steht in Zelle 10100, und was passiert bei \code{f1.oben.farbeSetzen("blue")}?
-\linien{1}
+\lsglinien{2}{In 10100 steht 10800, die Adresse des Rechtecks \code{oben} (ein Verweis). Java folgt den Verweisen \code{f1} $\rightarrow$ \code{oben} und färbt dieses Rechteck blau.}
 
 \begin{aufgabe}[Projekt Autofahrer]{2}
 Implementiere die Klassen \code{Auto} und \code{Fahrer} gemäß Klassendiagramm. Der Fahrer erzeugt sein Auto selbst im Konstruktor.
@@ -86,5 +91,18 @@ Implementiere die Klassen \code{Auto} und \code{Fahrer} gemäß Klassendiagramm.
 \begin{aufgabe}[Projekt Sterne fangen]{3}
 Skizziere, welches Objekt welches andere Objekt kennen muss, und wer diese Verweise beim Erzeugen weitergibt (Pfeile mit Beschriftung). Notiere in einem Satz, was \code{this} in \code{new Leben(1, this)} bedeutet.
 \end{aufgabe}
-\kariert{5}
+\lsgkariert{10}{\begin{scope}[font=\scriptsize]
+\node[objekt] (sp) at (65mm,-3mm) {\lsgobjekt{spiel : Spiel}{spieler, stern\\leben1, leben2, leben3\\anzahlLeben}};
+\node[objekt] (pl) at (5mm,-32mm) {\lsgobjekt{: Spieler}{\rule{0pt}{1mm}}};
+\node[objekt] (st) at (40mm,-32mm) {\lsgobjekt{: Stern}{spiel}};
+\node[objekt] (l1) at (80mm,-32mm) {\lsgobjekt{leben1 : Leben}{nummer = 1, spiel}};
+\node[objekt] (l2) at (120mm,-32mm) {\lsgobjekt{leben2 : Leben}{nummer = 2, spiel}};
+\draw[-{Stealth}] ([xshift=-8mm]sp.south) -- (pl.north) node[midway,left] {erzeugt, kennt};
+\draw[-{Stealth}] ([xshift=-4mm]sp.south) -- (st.north);
+\draw[-{Stealth}] (sp.south) -- (l1.north); \draw[-{Stealth}] ([xshift=6mm]sp.south) -- (l2.north) node[midway,right] {\dots};
+\draw[-{Stealth},dashed] (st.north east) to[bend right=15] node[midway,below right] {\code{new Stern(this)}} ([xshift=-2mm,yshift=-4mm]sp.south west);
+\draw[-{Stealth},dashed] (l1.north east) to[bend right=25] node[pos=0.4,right] {\code{new Leben(1, this)}} ([yshift=-6mm]sp.east);
+\end{scope}}
+\code{this} bedeutet:\lsgrest{das aktuelle Objekt, also das Spiel selbst.}
+\lsglinien{1}{Das Spiel gibt dem Herz (und dem Stern) einen Verweis auf sich mit, damit sie es kennen.}
 \end{document}

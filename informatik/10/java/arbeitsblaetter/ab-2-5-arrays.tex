@@ -6,12 +6,16 @@
 \begin{aufgabe}[Projekt Zufallszahlen]{1}
 \textbf{a)} Ergänze die Attribute \code{zahl1} bis \code{zahl3}.\quad \textbf{b)} Weise ihnen im Konstruktor Werte von 1 bis 6 zu.\\
 \textbf{c)} Und bei 100 Zahlen? Skizziere, wie ein Speicher aussehen müsste, in dem du „die i-te Zahl“ ansprechen kannst:
-\linien{2}
+\lsgkariert{4}{\begin{scope}[font=\scriptsize]
+\foreach \v [count=\i from 0] in {5,2,6,1,4} {\draw (10mm+\i*10mm,-7mm) rectangle ++(10mm,-7mm); \node at (15mm+\i*10mm,-10.5mm) {\v}; \node at (15mm+\i*10mm,-4.5mm) {\i};}
+\node at (65mm,-10.5mm) {\dots}; \draw (70mm,-7mm) rectangle ++(10mm,-7mm); \node at (75mm,-10.5mm) {3}; \node at (75mm,-4.5mm) {99};
+\node[anchor=west] at (2mm,-4.5mm) {i:}; \node[anchor=west,align=left] at (85mm,-9mm) {ein Name für alle 100 Zahlen,\\Zugriff über die Nummer (Index)};
+\end{scope}}
 \end{aufgabe}
 
 \begin{minipage}[t]{0.7\linewidth}
-\begin{merke}[Felder]
-Felder (engl. \luecke[2.5cm]) dienen der Speicherung einer \luecke[2.5cm] \luecke[2.5cm] von Werten \luecke[4cm], die über einen Index (Positionszahl) adressiert werden können.
+\begin{merke}[Felder]\lueckentext
+Felder (engl. \lsg[3cm]{Arrays}) dienen der Speicherung einer \lsg[3cm]{festen} \lsg[3cm]{Anzahl} von Werten \lsg[4.5cm]{gleichen Datentyps}, die über einen Index (Positionszahl) adressiert werden können.
 
 Dadurch kann z.\,B. mit einer Wiederholung auf alle Elemente zugegriffen werden, ohne jedes einzeln zu behandeln.
 \end{merke}
@@ -30,29 +34,25 @@ Index i & \code{textFeld[i]}\\\hline
 \begin{aufgabe}{2}
 Übertrage den Code in das Projekt (TODO 2) und beschreibe die Funktion der Zeilen.
 \end{aufgabe}
-\begin{java}
+\begin{javaluecke}
 class Zufallszahlen {
-   private int[] zahlenFeld;              // ________________________________________
-
+   private int[] zahlenFeld;              // (*\lsg[7.5cm]{Deklaration: Feld für int-Werte}*)
    Zufallszahlen() {
-      zahlenFeld = new int[8];            // ________________________________________
-      zahlenFeld[0] = 5;                  // ________________________________________
-      zahlenFeld[7] = Random.randint(1, 6); // ______________________________________
-   }                                      // ________________________________________
+      zahlenFeld = new int[8];            // (*\lsg[7.5cm]{Erzeugung: 8 Zellen, alle mit 0 belegt}*)
+      zahlenFeld[0] = 5;                  // (*\lsg[7.5cm]{erste Zelle (Index 0) bekommt 5}*)
+      zahlenFeld[7] = Random.randint(1, 6); // (*\lsg[7.1cm]{letzte Zelle bekommt Zufallszahl 1--6}*)
+   }
 }
-\end{java}
+\end{javaluecke}
 
 \begin{minipage}[t]{0.7\linewidth}
-\begin{merke}
+\begin{merke}\lueckentext
 \begin{itemize}
-\item Felder beginnen ihren Index immer bei \luecke[1.2cm].
-\item Die Größe eines Feldes liefert \code{<Feldname>.length}. Hier also: \luecke[3.5cm]. Das Array ist \luecke[1cm] Zellen groß.
-\item Was passiert bei \code{zahlenFeld[8]}? \luecke[4.5cm]
+\item Felder beginnen ihren Index immer bei \lsg[1.5cm]{0}.
+\item Die Größe eines Feldes liefert \code{<Feldname>.length}. Hier also: \lsg[4cm]{\code{zahlenFeld.length}}. Das Array ist \lsg[1.5cm]{8} Zellen groß.
+\item Was passiert bei \code{zahlenFeld[8]}?\lsgrest{Laufzeitfehler (Index zu groß)}
 \end{itemize}
 \end{merke}
-Fülle die Tabelle und erkläre, warum wir \code{zahlenFeld[7]} verwenden müssen, um auf die letzte Zelle zuzugreifen.
-\linien{2}
-Auf die letzte Zelle eines beliebig großen Feldes greift man also mit \luecke[5cm] zu.
 \end{minipage}\hfill
 \begin{minipage}[t]{0.27\linewidth}
 \vspace{3mm}
@@ -60,25 +60,30 @@ Auf die letzte Zelle eines beliebig großen Feldes greift man also mit \luecke[5
 Index i & \code{zahlenFeld[i]}\\\hline
 0 & 5\\\hline
 1 & 0\\\hline
-2 & \\\hline
-\rule{0pt}{4.5mm} & \\\hline
-\rule{0pt}{4.5mm} & \\\hline
-\rule{0pt}{4.5mm} & \\\hline
-\rule{0pt}{4.5mm} & \\\hline
-\rule{0pt}{4.5mm} & \\\hline
+\rule[-1.2mm]{0pt}{5.2mm}2 & \lsgtext{0}\\\hline
+\rule[-1.2mm]{0pt}{5.2mm}\lsgtext{3} & \lsgtext{0}\\\hline
+\rule[-1.2mm]{0pt}{5.2mm}\lsgtext{4} & \lsgtext{0}\\\hline
+\rule[-1.2mm]{0pt}{5.2mm}\lsgtext{5} & \lsgtext{0}\\\hline
+\rule[-1.2mm]{0pt}{5.2mm}\lsgtext{6} & \lsgtext{0}\\\hline
+\rule[-1.2mm]{0pt}{5.2mm}\lsgtext{7} & \lsgtext{1 bis 6}\\\hline
 \end{tabular}
 \end{minipage}
 
 \newpage
+Fülle die Tabelle auf Seite 1. Warum ist \code{zahlenFeld[7]} die letzte Zelle?
+\lsglinien{2}{Der Index beginnt bei 0. Bei 8 Zellen laufen die Indizes von 0 bis 7, der letzte ist also 8 $-$ 1 = 7.}
+{\lueckentext Letzte Zelle bei beliebiger Feldgröße:\lsgrest{\code{zahlenFeld[zahlenFeld.length - 1]}}}
+
 \begin{aufgabe}{3}
 \textbf{a)} Weise allen Zellen zufällige Werte zu (Wiederholung mit fester Anzahl).\quad
 \textbf{b)} 100 Zellen, jede mit der Summe zweier Würfel.\\
-Was änderst du an der Schleife aus a), damit sie bei jeder Feldgröße stimmt?\\ \luecke[9cm]
+Was änderst du an der Schleife aus a), damit sie bei jeder Feldgröße stimmt?
+\lsglinien{1}{Bedingung \code{i < zahlenFeld.length} statt einer festen Zahl.}
 \end{aufgabe}
 
 \textbf{1:n-Beziehung als Sammlung umsetzen -- Arrays mit Referenzen}
 
-\begin{center}
+{\centering
 \begin{tikzpicture}[x=1cm,y=1cm]
 \node[draw,fill=cyan!15,minimum height=6mm] (m) at (0,0) {Mannschaft};
 \node[draw,fill=cyan!15,minimum height=6mm] (s) at (5,0) {Spieler};
@@ -89,11 +94,11 @@ Was änderst du an der Schleife aus a), damit sie bei jeder Feldgröße stimmt?\
   \draw[-{Stealth}] (z\i.south) -- (o\i.north);
 }
 \end{tikzpicture}
-\end{center}
-Auch Referenzen können in Arrays verwaltet werden. Dabei verweist jede Zelle auf ein \luecke[2.5cm] der anderen \luecke[2.5cm], hier: \luecke[2.5cm].
+\par}
+{\lueckentext Auch Referenzen können in Arrays verwaltet werden. Dabei verweist jede Zelle auf ein \lsg[3.5cm]{Objekt} der anderen \lsg[3.5cm]{Klasse}, hier: \lsg[3.5cm]{\code{Spieler}}.\par}
 
 \begin{hinweis}
-\textbf{Beachte:} Alle Elemente eines Feldes müssen denselben \luecke[3cm] besitzen, dieser kann aber beliebig gewählt werden: auch \code{boolean}, \code{String}, \code{Rectangle}, \ldots
+\lueckentext\textbf{Beachte:} Alle Elemente eines Feldes müssen denselben \lsg[3.5cm]{Datentyp} besitzen, dieser kann aber beliebig gewählt werden: auch \code{boolean}, \code{String}, \code{Rectangle}, \ldots
 \end{hinweis}
 
 \begin{merke}[Syntaxübersicht]\small
@@ -108,29 +113,26 @@ lesen: \code{int eineZahl = zahlenFeld[0];}\hfill schreiben: \code{zahlenFeld[0]
 Methode aufrufen: \code{kreisFeld[0].tuEtwas();}\hfill Attribut: \code{kreisFeld[0].xPosition = 100;}
 \end{merke}
 
-\begin{minipage}[t]{0.62\linewidth}
-\begin{merke}[Mehrdimensionale Arrays]
-Arrays können mehrere Dimensionen haben und so eine \luecke[3cm] aufspannen.\\
-Deklaration und Erzeugung: \luecke[5cm]\\
-Zugriff auf Spalte x, Zeile y: \luecke[3cm]
+\begin{minipage}[t]{0.74\linewidth}
+\begin{merke}[Mehrdimensionale Arrays]\lueckentext
+Arrays können mehrere Dimensionen haben und so eine \lsg[3.5cm]{Tabelle (Raster)} aufspannen.\\
+Deklaration und Erzeugung:\lsgrest{\code{Rectangle[][] fuellung}}
+\lsgrest{\code{fuellung = new Rectangle[5][5];}}
+Zugriff auf Spalte x, Zeile y:\lsgrest{\code{fuellung[x][y]}}
 \end{merke}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.34\linewidth}
-\vspace{2mm}
-\begin{tikzpicture}[x=6mm,y=6mm]
-\fill[gray!60] (-0.4,-0.4) rectangle (5.4,5.4);
-\foreach \x in {0,...,4} \foreach \y in {0,...,4} {
-  \pgfmathsetmacro{\r}{int(random(0,100))}\pgfmathsetmacro{\g}{int(random(0,100))}\pgfmathsetmacro{\b}{int(random(0,100))}
-  \fill[red!\r!green!\g!blue!\b] (\x,\y) rectangle (\x+0.95,\y+0.95);
-}
-\fill[white] (1,3) rectangle (1.95,3.95); \fill[white] (3,3) rectangle (3.95,3.95);
-\fill[white] (1,1) rectangle (1.95,1.95); \fill[white] (2,0) rectangle (2.95,0.95); \fill[white] (3,1) rectangle (3.95,1.95);
+\begin{minipage}[t]{0.23\linewidth}
+\vspace{1mm}\centering
+\begin{tikzpicture}[x=6mm,y=6mm,font=\scriptsize]
+\ifloesung\fill[red!25] \foreach \x/\y in {1/1,3/1,1/3,2/4,3/3} {(\x,-\y) rectangle (\x+1,-\y-1)};\fi
+\draw[step=6mm] (0,0) grid (5,-5);
+\foreach \i in {0,...,4} {\node at (\i+0.5,0.4) {\i}; \node at (-0.4,-\i-0.5) {\i};}
+\node at (2.5,1.05) {\code{x} $\rightarrow$}; \node[rotate=-90] at (-1.05,-2.5) {\code{y} $\rightarrow$};
 \end{tikzpicture}
 \end{minipage}
 
 \begin{aufgabe}[Projekt Mosaik]{4}
 \textbf{a)} TODO 1 und 2 in \code{Mosaik1}: zweidimensionales Array passender Größe erzeugen und in \code{neuesMosaik()} füllen.\\
-\textbf{b)} Im Hauptprogramm auf \code{Mosaik2} wechseln und TODO 3 bis 5 bearbeiten (Smiley).\\
-Welche Zellen \code{fuellung[x][y]} hast du für den Smiley gefärbt?\\ \luecke[9cm]
+\textbf{b)} Auf \code{Mosaik2} wechseln, TODO 3--5 (Smiley). Markiere die Smiley-Zellen \code{fuellung[x][y]} im Raster oben.\lsgtext{\ (z.\,B. [1][1], [3][1], [1][3], [2][4], [3][3])}
 \end{aufgabe}
 \end{document}
