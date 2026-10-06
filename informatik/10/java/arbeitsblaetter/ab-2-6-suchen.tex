@@ -15,33 +15,49 @@ Im Rahmen des Schul-Fußballturniers sollen Statistiken erstellt werden. Janina 
 \end{tikzpicture}
 \end{center}
 
-Beschreibe in Worten, wie mithilfe der \code{spielerliste} berechnet werden kann, wie viele Tore die Mannschaft insgesamt geschossen hat.
-\linien{2}
+Beschreibe in Worten (noch kein Java), wie mithilfe der \code{spielerliste} berechnet werden kann, wie viele Tore die Mannschaft insgesamt geschossen hat. Die Nummern findest du später im Code wieder.
+
+{\lueckentext
+\nr{1} Vorher:\lsgrest{eine Hilfsvariable \code{summe} mit 0 anlegen}
+\nr{2} Wiederhole für\lsgrest{jeden Spieler der \code{spielerliste} (Index 0 bis Länge $-$ 1)}
+\nr{3} In jedem Durchlauf:\lsgrest{die Tore dieses Spielers zu \code{summe} addieren}
+\nr{4} Am Ende:\lsgrest{\code{summe} zurückgeben}\par}
 Überlegt zu zweit: Welche weiteren Tor-Statistiken könnten aus der \code{spielerliste} erstellt werden?
-\linien{1}
+\lsglinien{2}{z.\,B. beste Torschützin / bester Torschütze, Tore pro Spielminute, Durchschnitt pro Spieler, Anzahl der Spieler ohne Tor}
 
 \begin{aufgabe}[Projekt Tore]{1}
-\textbf{a)} Ergänze in \code{Mannschaft} die Methode \code{gibToreGesamt()} und gib das Ergebnis im Hauptprogramm aus. Warum geht \code{spielerliste[i].tore} nicht, und was nimmst du stattdessen? \luecke[5cm]
+\textbf{a)} Ergänze in \code{Mannschaft} die Methode \code{gibToreGesamt()} und gib das Ergebnis im Hauptprogramm aus. Warum geht \code{spielerliste[i].tore} nicht, und was nimmst du stattdessen?
+\lsglinien{1}{\code{tore} ist \code{private} (Station 2.4). Stattdessen den Getter: \code{spielerliste[i].gibTore()}}
 \end{aufgabe}
 
-\begin{merke}[Bedingungen an Elemente im Array stellen]
-Die Kombination von \luecke[4.5cm] und \luecke[4.5cm] kann genutzt werden, um Bedingungen an die Elemente eines Arrays zu stellen: Eine Anweisung wird nur ausgeführt, wenn die Bedingung für das aktuelle Element erfüllt ist. So lassen sich etwa nur die bisher torlosen Spieler ausgeben.
+\begin{merke}[Bedingungen an Elemente im Array stellen]\lueckentext
+Die Kombination von \lsg[4.5cm]{Wiederholung (Schleife)} und \lsg[4.5cm]{bedingter Anweisung} kann genutzt werden, um Bedingungen an die Elemente eines Arrays zu stellen: Eine Anweisung wird nur ausgeführt, wenn die Bedingung für das aktuelle Element erfüllt ist. So lassen sich etwa nur die bisher torlosen Spieler ausgeben.
 \end{merke}
 
 \begin{aufgabe}[Projekt Tore]{1}
 \textbf{b)} Fülle die Lücken und übertrage den Code ins Hauptprogramm (TODO 2).
 \end{aufgabe}
-\begin{java}
-for (int i = ____ ; i < ______________________________ ; i____ ) {
-   if (spielerliste[i].______________________ == 0) {
-      println( ________________________________ );
+\begin{javaluecke}
+for (int i = (*\lsg[1.5cm]{0}*); i < (*\lsg[5cm]{spielerliste.length}*); i(*\lsg[1.5cm]{++}*)) {
+   if (spielerliste[i].(*\lsg[4.5cm]{gibTore()}*) == 0) {
+      println((*\lsg[6cm]{spielerliste[i]}*));
    }
 }
-\end{java}
+\end{javaluecke}
 
+\newpage
 \begin{aufgabe}[Projekt Sportarten]{2}
 \textbf{a)} Ergänze in \code{Spieler} die Methode \code{ersetzeSportartTennis()} und teste sie im Hauptprogramm.\\
-\textbf{b)} Ergänze \code{spieltSportart(String sportart)} mit sinnvollem Rückgabetyp: \luecke[2cm]. Zeichne zuerst das Struktogramm:
+\textbf{b)} Ergänze \code{spieltSportart(String sportart)} mit sinnvollem Rückgabetyp: \lsg[3cm]{\code{boolean}}. Zeichne zuerst das Struktogramm:
 \end{aufgabe}
-\kariert{6}
+\lsgkariert{18}{\begin{scope}[shift={(10mm,-12mm)},font=\small]
+\node[anchor=south west] at (0,1mm) {\code{boolean spieltSportart(String sportart)}};
+\draw (0,0) rectangle (130mm,-62mm);
+\draw (0,-8mm) -- (130mm,-8mm); \node[anchor=west] at (2mm,-4mm) {\code{ergebnis = false}};
+\draw (8mm,-54mm) -- (8mm,-16mm) -- (130mm,-16mm); \node[anchor=west] at (2mm,-12mm) {Wiederhole für \code{i} von 0 bis \code{sportarten.length - 1}};
+\draw (8mm,-16mm) -- (69mm,-30mm) -- (130mm,-16mm); \draw (8mm,-30mm) -- (130mm,-30mm); \draw (69mm,-30mm) -- (69mm,-54mm);
+\node at (69mm,-21mm) {\code{sportarten[i].equals(sportart)}}; \node at (13mm,-27.5mm) {wahr}; \node at (125mm,-27.5mm) {falsch};
+\node at (38.5mm,-42mm) {\code{ergebnis = true}}; \draw (69mm,-30mm) -- (130mm,-54mm);
+\draw (0,-54mm) -- (130mm,-54mm); \node[anchor=west] at (2mm,-58mm) {gib \code{ergebnis} zurück};
+\end{scope}}
 \end{document}

@@ -92,6 +92,39 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
   Layout nicht verschieben (Platz im Blatt gleich groß reservieren).
 - Kein Ausblick auf Folgethemen auf dem Blatt (der gehört auf die Website).
   Gedrängte Aufgaben/Grafiken sind ok.
+- **Antwortplatz** (Referenz-Makros: `informatik/10/java/arbeitsblaetter/ab-vorlage.tex`,
+  bei anderen Vorlagen dorthin übernehmen):
+  - Schreiblinien einheitlich **8 mm** Abstand, erste Linie eine volle
+    Zeilenhöhe unter der Frage (`\linien{n}`), nie Linien direkt am Text.
+  - **Karopapier sauber**: 5-mm-Raster nur aus ganzen Kästchen, mittig
+    (`\kariert{n}` rundet auf ganze Kästchen ab, `\karobox{b}{h}` rundet);
+    Beschriftung oben bündig daneben, nicht schwebend.
+  - **Lückentexte**: Lücken lang genug für Handschrift (Fachbegriff mind.
+    3,5 cm, Standard 4,5 cm, Zahl/Zeichen 1,5 cm, längere Ausdrücke/Code
+    `\restzeile` bis Zeilenende). Absätze und Kästen mit Lücken mit
+    `\lueckentext` (Zeilenabstand 1,5, Flattersatz), damit über jeder Lücke
+    Schreibraum ist und der Blocksatz nicht zerreißt. Code-Lücken im Listing
+    `javaluecke` mit `(*\luecke[…]*)`, nie Unterstrich-Ketten.
+  - Tabellenzellen zum Ausfüllen mit `\schreibzeile` (8 mm hoch); Java-Code
+    schreiben im `\linienfeld{n}` (eine Linie je erwarteter Codezeile).
+  - **Nur wo nötig**: kein Platz für Aufgaben, die in der IDE oder auf der
+    Website erledigt werden; Skizzen/Diagramme → Karo, Text → Linien
+    (Zahl der Linien = erwartete Antwortlänge), Kurzantworten → Lücke,
+    Datentypen u. Ä. direkt in die Klassenkarte (eigene Spalte).
+    Antwortplatz steht direkt bei der Aufgabe, nie durch Seitenumbruch
+    getrennt (sonst `\newpage` vor die Aufgabe).
+  - Prüfen: PDF rendern (`gs -sDEVICE=png16m -r75 …`) und ansehen; keine
+    „Overfull \hbox“-Warnungen im Log.
+  - Lösungsfassung: zu jedem Makro gibt es eine `\lsg…`-Variante, die genau
+    denselben Platz belegt (`\lsg[Breite]{…}`, `\lsgrest{…}`, `\lsglinien{n}{…}`,
+    `\lsgfeld{n}{Code}`, `\lsgkariert{n}{TikZ}`, `\lsgkarobox{b}{h}{TikZ}`,
+    `\lsgtext{…}` für Tabellenzellen, `\lsgkarte`/`\lsgobjekt` für Klassen-
+    und Objektkarten). Schrittnummern ①②③ mit `\nr{1}` (auch im Listing über
+    `escapeinside`).
+- **Rohmaterial der Lehrkraft** (`Material_*`, `material/`, Lösungen aus dem
+  Unterricht) nie versionieren: steht in `.gitignore`, weil jeder Push alles
+  Versionierte öffentlich deployt. Arbeitsnotizen ebenfalls nicht
+  (`vorschlaege-*.md`).
 
 ## Didaktik bei Programmierthemen
 
@@ -126,3 +159,48 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
 
 `python3 -m http.server 8000` im Repo-Root und die Seite im Browser
 ansehen (Desktop- und Mobilbreite). Es gibt keine Tests und keinen Linter.
+
+## Inhaltsindex
+
+Wo was liegt (Stand 2026-10). `→ AB` = LaTeX-Arbeitsblätter in `arbeitsblaetter/`.
+
+**Gerüst**: `index.html` (Startseite), `style.css`, `script.js`, `controls.js`,
+`sidebar-anker.js`, `mobileMenu.js`, `baseScript.js`, `templates/`,
+`contribute.html`, `Online-IDE API-Documentation.txt`, `.github/workflows/`
+(FTPS-Deploy aller versionierten Dateien inkl. `.md`, Online-IDE, SQL-IDE, Snap!).
+
+**Informatik** (`informatik/informatik.html`)
+- 9: `9/online-ide-intro.html`
+- 10 Datenbanken: `10/datenbanken/` (redundanzen_datenmodellierung, join,
+  mehrere_tabellen, uebung)
+- 10 Java/OOP (neues Format, → AB `ab-0` bis `ab-2-7`): `10/java/java.html`
+  (Übersicht) mit Stationen 2.0 Wiederholung OOP, 2.0.1 Kontrollstrukturen,
+  2.0.2 Vererbung, 2.1 Referenzen, 2.2 Typumwandlung, 2.3 Polymorphie,
+  2.4 Zugriffsrechte, 2.5 Arrays, 2.6 Suchen, 2.7 Sortieren (Bubblesort);
+  `ab-0-grundwissen` = Grundwissen 6–9; Lösungen `ab-…-lsg.pdf`, verlinkt im
+  Lehrkräfte-Bereich von `java.html`. `Material_Java/` = Rohmaterial der
+  Lehrkraft (nur lokal, `.gitignore`).
+- 11 Algorithmik mit Snap!: `11/algorithmik/` (Stationen 0–6, HTML-Arbeitsblätter
+  in `arbeitsblaetter/*.html`, `snap-ide.html`)
+- 11 Graphen (neues Format, → AB): `11/graphen/` (3.1 Grundbegriffe,
+  3.2 Umsetzung, 3.3 Breitensuche; Graph-Abenteuer `haenselundgretel/`)
+- 11 sonst: `11/codierung/zahlensysteme.html`, `11/ki/perzeptron.html`,
+  `11/kommunikation_in_netzwerken/` (netzwerke, filius, Übungen),
+  `11/verschluesselung/` (rsa, rsa2, rsa-old)
+- 12 Rekursive Datenstrukturen (neues Format, → AB): `12/rekursive-datenstrukturen/`
+  (1.1 Queue, 1.2 Interfaces, 1.3 Listen, 1.4 Kompositum; `material/` Rohmaterial, nur lokal);
+  älter: `12/rekursion-queue-listen/`
+- 12 sonst: `12/binaerbaeume/`, `12/tiefensuche/`, `12/nebenlaeufigkeit/`
+- 13 Formale Sprachen (neues Format, → AB): `13/formale-sprachen/`
+  (1.1 Syntax und Semantik, 1.2 Formale Sprachen, AB bis 1.5); `13/material/` Rohmaterial, nur lokal
+
+**Englisch** (`englisch/englisch.html`): 5 `wordcraft`; 12 `uk/`
+(uk-and-writing, north-south-divide), `media/narrative_lens`,
+`immigration-social-structures-identity/`, `global issues/`; 13
+`questions-on-the-text/` (→ AB, eigene Vorlage)
+
+**Weitere Fächer**: `mathe/` (12: Exponential-/ln-Funktion, Umkehrfunktion),
+`physik/` (10 Berlinfahrt-Lernpfad, 11 Federpendel + Protokoll, 12 Lorentzkraft),
+`franzoesisch/` (8 Québec), `Latein/` (Cicero), `psychologie/` (Grawe),
+`Stadtrallye/` (Triest). Von keiner Seite verlinkt: `nutrition/` (de/en),
+`finanzen/` (Pflegevorsorge-Rechner), `dnd/`

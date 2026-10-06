@@ -5,48 +5,71 @@
 
 \begin{aufgabe}[Das gallische Dorf]{0}
 In einem gallischen Dorf leben Druiden, Barden, Hinkelsteinverkäufer und ein Häuptling. Alle Dorfbewohner haben einen Namen und Muskelkraft, die sie durch das Trinken eines Zaubertranks verzehnfachen können. Außerdem können sie Fische werfen. Nur Druiden können einen Zaubertrank brauen, Barden können singen und nur ein Häuptling kann seine Schildträger rufen. Hinkelsteinverkäufer haben hingegen ein Vermögen. Außerdem gibt es verschiedene Tiere, die Laute von sich geben können. Hunde haben zusätzlich einen Namen, während Wildschweine weglaufen können.\\
-\textbf{a)} Zeichne ein Klassendiagramm, das diese Situation modelliert.\quad \textbf{b)} Implementiere \code{Dorfbewohner} und \code{Barde} auf der Website.
+\textbf{a)} Zeichne ein Klassendiagramm, das diese Situation modelliert.\quad \textbf{b)} Programmieren: Website.
 \end{aufgabe}
-\kariert{14}
+\lsgkariert{11}{\begin{scope}[font=\scriptsize,every node/.style={anchor=north west,inner sep=0pt}]
+\node (db) at (35mm,-3mm) {\lsgkarte{Dorfbewohner}{name\\muskelkraft}{zaubertrankTrinken()\\fischeWerfen()}};
+\node (dr) at (3mm,-31mm) {\lsgkarte{Druide}{\rule{0pt}{2mm}}{zaubertrankBrauen()}};
+\node (ba) at (33mm,-31mm) {\lsgkarte{Barde}{\rule{0pt}{2mm}}{singen()}};
+\node (hp) at (51mm,-31mm) {\lsgkarte{Häuptling}{\rule{0pt}{2mm}}{schildtraegerRufen()}};
+\node (hv) at (82mm,-31mm) {\lsgkarte{Hinkelsteinverkäufer}{vermoegen}{\rule{0pt}{2mm}}};
+\node (ti) at (132mm,-3mm) {\lsgkarte{Tier}{\rule{0pt}{2mm}}{lautGeben()}};
+\node (hu) at (118mm,-31mm) {\lsgkarte{Hund}{name}{\rule{0pt}{2mm}}};
+\node (ws) at (140mm,-31mm) {\lsgkarte{Wildschwein}{\rule{0pt}{2mm}}{weglaufen()}};
+\end{scope}
+\begin{scope}[-{Triangle[open,length=2.5mm]}]
+\foreach \k in {dr,ba,hp,hv} \draw (\k.north) -- (db.south);
+\foreach \k in {hu,ws} \draw (\k.north) -- (ti.south);
+\end{scope}}
 
 \vspace{1mm}
 Fehlermeldung beim ersten \code{new Barde(...)} und ihre Lösung:
-\linien{2}
+\lsglinien{2}{Barde hat keinen passenden Konstruktor (Konstruktoren werden nicht vererbt). Lösung: eigener Konstruktor \code{Barde(String nameNeu, int muskelkraftNeu) \{ super(nameNeu, muskelkraftNeu); \}}}
 
 \begin{aufgabe}{1}
-Zeichne ein vereinfachtes Klassendiagramm (nur Klassennamen) zu: \code{Tier}, \code{Wirbeltiere}, \code{WirbelloseTiere}, \code{Fische}, \code{Amphibien}, \code{Saeugetiere}, \code{Voegel}, \code{Reptilien}, \code{Insekten}, \code{Spinnen}.
+\RaggedRight Zeichne ein vereinfachtes Klassendiagramm (nur Klassennamen) zu: \code{Tier}, \code{Wirbeltiere}, \code{WirbelloseTiere}, \code{Fische}, \code{Amphibien}, \code{Saeugetiere}, \code{Voegel}, \code{Reptilien}, \code{Insekten}, \code{Spinnen}.
 \end{aufgabe}
-\kariert{7}
+\lsgkariert{5}{\begin{scope}[font=\scriptsize,every node/.style={draw,inner sep=1.5pt}]
+\node (t) at (60mm,-3.5mm) {Tier};
+\node (w) at (40mm,-12.5mm) {Wirbeltiere}; \node (l) at (120mm,-12.5mm) {WirbelloseTiere};
+\foreach \n/\x in {Fische/8,Amphibien/30,Saeugetiere/54,Voegel/76,Reptilien/96} \node (\n) at (\x mm,-21.5mm) {\n};
+\node (i) at (112mm,-21.5mm) {Insekten}; \node (sp) at (134mm,-21.5mm) {Spinnen};
+\end{scope}
+\begin{scope}[-{Triangle[open,length=1.8mm]},line width=0.6pt]
+\draw (w) -- (t); \draw (l) -- (t);
+\foreach \n in {Fische,Amphibien,Saeugetiere,Voegel,Reptilien} \draw (\n) -- (w);
+\draw (i) -- (l); \draw (sp) -- (l);
+\end{scope}}
 
-\newpage
-\begin{merke}[Vererbungshierarchie, Ober- und Unterklassen]
-Bei der Vererbung gibt es Unter- und Oberklassen. Eine \luecke besitzt automatisch alle Attribute und Methoden der \luecke. Es werden zwei Richtungen unterschieden: Wird eine Unterklasse erstellt, so spricht man von einer \luecke der Oberklasse. Umgekehrt ist die Oberklasse eine \luecke der Unterklasse.
+\begin{merke}[Vererbungshierarchie, Ober- und Unterklassen]\lueckentext
+Bei der Vererbung gibt es Unter- und Oberklassen. Eine \lsg{Unterklasse} besitzt automatisch alle Attribute und Methoden der \lsg{Oberklasse}. Es werden zwei Richtungen unterschieden: Wird eine Unterklasse erstellt, so spricht man von einer \lsg{Spezialisierung} der Oberklasse. Umgekehrt ist die Oberklasse eine \lsg{Generalisierung} der Unterklasse.
 
-Ist eine Unterklasse gleichzeitig Oberklasse einer weiteren Klasse, spricht man von \textbf{mehrstufiger Vererbung}; es entsteht eine \luecke.
-
-Konstruktoren werden \luecke[2.5cm] vererbt. Die Unterklasse ruft den Konstruktor der Oberklasse mit \luecke[2.5cm] auf.
+Ist eine Unterklasse gleichzeitig Oberklasse einer weiteren Klasse, spricht man von \textbf{mehrstufiger Vererbung}; es entsteht eine \lsg[5cm]{Vererbungshierarchie}.
 \end{merke}
 
-\begin{merke}[Vererbung und Überschreiben]
-Definiert man eine Methode in der Unterklasse erneut (gleicher Name, gleiche Parameter, gleicher Rückgabetyp), so wird die ursprüngliche Methode \luecke. Sie hat in der Unterklasse eine \textbf{andere} Funktionsweise.
+\newpage
+\begin{merke}[Vererbung und Überschreiben]\lueckentext
+Konstruktoren werden \lsg[3.5cm]{nicht} vererbt. Die Unterklasse ruft den Konstruktor der Oberklasse mit \lsg[4cm]{\code{super(…)}} auf.
 
-Die Annotation \code{@Override} vor der Methode sagt dem Compiler: Diese Methode überschreibt eine gleichnamige Methode der Oberklasse. Gibt es diese nicht (z.\,B. Tippfehler), meldet der Compiler einen \luecke[2.5cm]. Ohne \code{@Override} entsteht stattdessen stillschweigend \luecke[4cm].
+Definiert man eine Methode in der Unterklasse erneut (gleicher Name, gleiche Parameter, gleicher Rückgabetyp), so wird die ursprüngliche Methode \lsg{überschrieben}. Sie hat in der Unterklasse eine \textbf{andere} Funktionsweise.
+
+Die Annotation \code{@Override} vor der Methode sagt dem Compiler: Diese Methode überschreibt eine gleichnamige Methode der Oberklasse. Gibt es diese nicht (z.\,B. Tippfehler), meldet der Compiler einen \lsg[3.5cm]{Fehler}. Ohne \code{@Override} entsteht stattdessen stillschweigend \lsg[6cm]{eine neue, zusätzliche Methode}.
 \end{merke}
 
 \begin{aufgabe}[Projekt Aquarium]{2}
 \textbf{a)} Nenne die Attribute (mit Datentyp), die die Klasse \code{Fisch} bereitstellt.
-\linien{2}
+\lsglinien{2}{\code{String art}, \code{boolean tarnung} (Startwert \code{false}), \code{int geschwindigkeit}}
 \textbf{b)} Beschreibe den Konstruktor von \code{Fisch}: Parameter und Wirkung.
-\linien{2}
+\lsglinien{2}{\code{Fisch(String art, int x, int y)}: setzt Position und Bild mit \code{super(x, y, …)}, speichert die Art, wählt eine zufällige Geschwindigkeit 1--4 und vergrößert das Bild.}
 \textbf{c)}--\textbf{e)} auf der Website. Attribute deiner Klasse \code{Hai} mit Datentyp und Startwert:
-\linien{1}
+\lsglinien{1}{\code{int alter = 1;}\quad \code{boolean hungrig = true;}}
 \end{aufgabe}
 
 \begin{aufgabe}[Fehlersuche]{3}
-Im folgenden Code haben sich Fehler eingeschlichen. Markiere sie, gib die Art des Fehlers an (Syntax, Datentyp, Logik) und schreibe die Korrektur daneben.
+Im folgenden Code haben sich Fehler eingeschlichen. Markiere sie im Code, gib in der Tabelle die Art des Fehlers an (Syntax, Datentyp, Logik) und schreibe die Korrektur daneben.
 \end{aufgabe}
 \begin{minipage}[t]{0.5\linewidth}
-\begin{java}
+\begin{java}[numbers=left,numberstyle=\scriptsize\color{gray!70!black},numbersep=4pt,xleftmargin=5mm]
 class Katze
 {
    String name;
@@ -56,13 +79,20 @@ class Katze
    public Katze(String nameN, int alterN)
    {
       name = "Minka";
-      alter = alterN;
+      alter = alterN
       geschlecht = "weiblich";
    }
 }
 \end{java}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.46\linewidth}
-\vspace{0pt}\linien{7}
+\vspace{0pt}\renewcommand{\arraystretch}{1}
+\begin{tabularx}{\linewidth}{|c|p{1.7cm}|X|}\hline
+\footnotesize Zeile & \footnotesize Art & \footnotesize Korrektur\\\hline
+\schreibzeile\lsgtext{4} & \lsgtext{Datentyp} & \lsgtext{\code{int alter;}}\\\hline
+\schreibzeile\lsgtext{9} & \lsgtext{Logik} & \lsgtext{\code{name = nameN;}}\\\hline
+\schreibzeile\lsgtext{10} & \lsgtext{Syntax} & \lsgtext{\code{;} am Zeilenende}\\\hline
+\schreibzeile\lsgtext{11} & \lsgtext{Datentyp} & \lsgtext{\code{geschlecht = false;}}\\\hline
+\end{tabularx}
 \end{minipage}
 \end{document}
