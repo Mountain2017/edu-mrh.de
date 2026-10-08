@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Question and Thesis | W-Seminar English 12 – edu-mrh.de</title>
+    <meta name="description" content="W-Seminar 'Time' (English, Year 12): what makes a good research question and thesis statement, how they work together, how to draw the line – with worked examples, strategies and a builder for your own options.">
+
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <script defer src="research-question.js"></script>
+
+    <style>
+        @font-face { font-family: 'Fraunces'; font-weight: 600; font-style: normal; font-display: swap;
+            src: url('fonts/fraunces-latin-600-normal.woff2') format('woff2'); }
+        @font-face { font-family: 'Fraunces'; font-weight: 400; font-style: italic; font-display: swap;
+            src: url('fonts/fraunces-latin-400-italic.woff2') format('woff2'); }
+        @font-face { font-family: 'Inter'; font-weight: 400; font-style: normal; font-display: swap;
+            src: url('fonts/inter-latin-400-normal.woff2') format('woff2'); }
+        @font-face { font-family: 'Inter'; font-weight: 600; font-style: normal; font-display: swap;
+            src: url('fonts/inter-latin-600-normal.woff2') format('woff2'); }
+
+        :root {
+            --dusk: #171a3f; --dusk-2: #232867; --paper: #f6f7fb; --ink: #1c1e33; --ink-soft: #4a4e69;
+            --line: #dfe2ee; --brass: #d9ab2f; --q: #2563eb; --th: #7c3aed; --ok: #059669; --warn: #b45309; --bad: #b91c1c;
+            --lit: #b83280; --phys: #2563eb; --cs: #0f8f84; --psy: #c26a06; --lang: #7c3aed;
+            --serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+            --sans: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+        body { background: var(--paper); color: var(--ink); font-family: var(--sans); }
+        .main-content { padding-top: 0; }
+        .t-wrap { max-width: 1120px; margin: 0 auto; padding: 0 2rem; }
+        .t h1, .t h2, .t h3 { font-family: var(--serif); font-weight: 600; color: inherit; letter-spacing: -0.01em; }
+        .t h2 { font-size: 2.44rem; line-height: 1.1; margin: 0 0 .75rem; }
+        .t h3 { font-size: 1.25rem; line-height: 1.25; margin: 0 0 .5rem; }
+        .t p { line-height: 1.65; }
+        .t .lead { font-size: 1.15rem; color: var(--ink-soft); max-width: 64ch; }
+        .small { font-size: .85rem; color: var(--ink-soft); }
+
+        /* ---------- Hero: the lens ---------- */
+        .hero-q { background: radial-gradient(120% 140% at 85% 30%, var(--dusk-2) 0%, var(--dusk) 60%); color: #eef0ff; padding: 4.5rem 0 3.5rem; overflow: hidden; }
+        .hero-q .kicker { font-size: .95rem; color: #b9bde8; margin-bottom: .75rem; }
+        .hero-q h1 { font-size: clamp(3rem, 7vw, 5.6rem); line-height: .95; margin: 0 0 1.25rem; letter-spacing: -0.03em; }
+        .hero-q .lead { color: #cfd2f5; }
+        .lens { margin-top: 2.5rem; display: grid; grid-template-columns: 9.5rem 1fr; gap: .2rem 1.5rem; align-items: baseline; max-width: 60rem; }
+        .lens dt { font-size: .9rem; color: #8f94c7; text-align: right; transition: color .5s; }
+        .lens dd { margin: 0; font-family: var(--serif); color: #6f74a8; transition: color .5s, font-size .5s, opacity .5s; font-size: 1.05rem; line-height: 1.35; padding: .35rem 0; }
+        .lens .on dt, .lens dt.on { color: var(--brass); }
+        .lens dd.on { color: #fff; font-size: 1.5rem; }
+        .lens dd.done { color: #b9bde8; }
+        .lens-ctrl { margin-top: 1.25rem; display: flex; gap: .5rem; flex-wrap: wrap; }
+
+        /* ---------- Sections ---------- */
+        .sec { padding: 4.5rem 0 3.5rem; border-top: 1px solid var(--line); }
+        .sec .t-wrap { border-left: 6px solid var(--c, var(--q)); padding-left: 2rem; }
+        .cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2rem; margin-top: 1.5rem; align-items: start; }
+        .panel { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 1.25rem; }
+        .panel + .panel { margin-top: 1rem; }
+        .panel h3 { color: var(--c, var(--q)); }
+        .tint-q { background: #eff6ff; border-color: #dbe7fd; }
+        .tint-th { background: #f5f3ff; border-color: #e7e1fd; }
+
+        .t button.pill { font: 600 .9rem var(--sans); border: 1.5px solid var(--c, var(--q)); color: var(--c, var(--q)); background: #fff; border-radius: 99px; padding: .4rem .9rem; cursor: pointer; transition: background .15s, color .15s; }
+        .t button.pill[aria-pressed="true"], .t button.pill:hover { background: var(--c, var(--q)); color: #fff; }
+        .t button.pill:disabled { opacity: .45; cursor: default; background: #fff; color: var(--c, var(--q)); }
+        .t button.pill:focus-visible, .t input:focus-visible, .t textarea:focus-visible, .t summary:focus-visible { outline: 3px solid var(--brass); outline-offset: 2px; }
+        .hero-q button.pill { --c: var(--brass); background: transparent; color: var(--brass); }
+        .hero-q button.pill:hover { background: var(--brass); color: var(--dusk); }
+        .pills { display: flex; flex-wrap: wrap; gap: .45rem; margin: .5rem 0 1rem; }
+
+        /* pair diagram */
+        .pair { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: stretch; margin-top: 1.5rem; }
+        .pair .box { border-radius: 14px; padding: 1.2rem 1.25rem; }
+        .pair .box h3 { margin-bottom: .35rem; }
+        .pair .q { background: #eff6ff; } .pair .q h3 { color: var(--q); }
+        .pair .th { background: #f5f3ff; } .pair .th h3 { color: var(--th); }
+        .pair .mid { display: grid; place-items: center; text-align: center; font-size: .85rem; color: var(--ink-soft); max-width: 11rem; }
+        .pair .mid svg { width: 100%; height: auto; }
+        .ex-q, .ex-th { font-family: var(--serif); font-size: 1.12rem; line-height: 1.4; margin: .5rem 0 0; transition: opacity .35s; }
+        .ex-q { color: #1e3a8a; } .ex-th { color: #4c1d95; }
+        .ex-data { margin-top: 1rem; font-size: .95rem; color: var(--ink-soft); transition: opacity .35s; }
+        .fade { opacity: 0; }
+        .stages { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.5rem; }
+        .stage { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 1rem; }
+        .stage b { display: block; font-family: var(--serif); font-size: 1.05rem; margin-bottom: .25rem; }
+
+        /* markers */
+        .markers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.5rem; }
+        .marker { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 1.1rem 1.15rem; }
+        .marker h3 { color: var(--q); font-size: 1.15rem; }
+        .marker .ask { font-weight: 600; margin: .25rem 0 .5rem; }
+        .marker .vs { font-size: .9rem; display: grid; gap: .3rem; }
+        .marker .vs span::before { font-weight: 600; margin-right: .35rem; }
+        .marker .vs .w::before { content: '–'; color: var(--bad); }
+        .marker .vs .s::before { content: '+'; color: var(--ok); }
+        .tipbox { margin-top: 1.25rem; background: #fffbeb; border-radius: 12px; padding: .9rem 1.1rem; font-size: .95rem; }
+
+        /* quiz */
+        .quiz { margin-top: 2rem; }
+        .quiz-q { font-family: var(--serif); font-size: 1.35rem; line-height: 1.35; min-height: 2.7em; margin: .5rem 0 1rem; }
+        .quiz-fb { border-radius: 12px; padding: .9rem 1.1rem; margin-top: .5rem; display: none; }
+        .quiz-fb.show { display: block; animation: drop .35s ease; }
+        .quiz-fb.ok { background: #ecfdf5; } .quiz-fb.no { background: #fef2f2; }
+        .quiz-fb .better { font-family: var(--serif); margin-top: .4rem; }
+        @keyframes drop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+        .quiz-progress { display: flex; gap: .3rem; margin-top: 1rem; }
+        .quiz-progress i { width: 26px; height: 6px; border-radius: 3px; background: var(--line); }
+        .quiz-progress i.right { background: var(--ok); } .quiz-progress i.wrong { background: #f0a4a4; } .quiz-progress i.cur { background: var(--q); }
+
+        /* ladder */
+        .ladder-wrap { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 2rem; margin-top: 1rem; }
+        .rungs { list-style: none; margin: 0; padding: 0; position: relative; }
+        .rungs::before { content: ''; position: absolute; left: 15px; top: 10px; bottom: 10px; width: 2px; background: var(--line); }
+        .rung { position: relative; padding: .55rem 0 .55rem 3rem; opacity: .35; transition: opacity .45s; }
+        .rung.seen { opacity: .75; }
+        .rung.cur { opacity: 1; }
+        .rung .dot { position: absolute; left: 6px; top: .8rem; width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 3px solid var(--line); transition: border-color .4s, background .4s; }
+        .rung.seen .dot, .rung.cur .dot { border-color: var(--c, var(--q)); }
+        .rung.cur .dot { background: var(--c, var(--q)); }
+        .rung .lab { font-size: .85rem; font-weight: 600; color: var(--c, var(--q)); }
+        .rung .txt { font-family: var(--serif); font-size: 1.1rem; line-height: 1.35; }
+        .why { align-self: start; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 1.2rem; position: sticky; top: 80px; }
+        .why h3 { color: var(--c, var(--q)); }
+        .why-body { min-height: 9rem; }
+
+        /* thesis builder steps */
+        .strength { display: grid; gap: .75rem; margin-top: 1rem; }
+        .strength .st { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: .9rem 1.1rem; display: grid; grid-template-columns: 6.5rem 1fr; gap: 1rem; align-items: start; }
+        .strength .st b { font-size: .85rem; }
+        .strength .st .s-txt { font-family: var(--serif); font-size: 1.08rem; }
+        .strength .st .s-why { font-size: .9rem; color: var(--ink-soft); margin-top: .3rem; }
+        .strength .st.hidden { display: none; }
+        .lv-1 b { color: var(--bad); } .lv-2 b { color: var(--warn); } .lv-3 b { color: var(--ok); }
+
+        /* scope zoom */
+        .zoom { margin-top: 1.5rem; }
+        .zoom input[type=range] { width: 100%; accent-color: var(--c); }
+        .zoom-topic { font-family: var(--serif); font-size: 1.6rem; line-height: 1.3; min-height: 2.8em; margin: .75rem 0; transition: opacity .25s; }
+        .gauge { position: relative; height: 16px; border-radius: 8px; background: linear-gradient(90deg, #fecaca 0%, #fde68a 30%, #bbf7d0 55%, #bbf7d0 75%, #fde68a 100%); margin: 1.4rem 0 .4rem; }
+        .gauge .needle { position: absolute; top: -8px; width: 4px; height: 32px; background: var(--ink); border-radius: 2px; transition: left .5s cubic-bezier(.6,.05,.25,1); }
+        .gauge-labels { display: flex; justify-content: space-between; font-size: .78rem; color: var(--ink-soft); }
+        .zoom-verdict { font-weight: 600; margin-top: .8rem; }
+        .inout { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+        .inout ul { margin: .3rem 0 0; padding-left: 1.1rem; }
+        .inout .in { background: #ecfdf5; border-radius: 12px; padding: .9rem 1rem; }
+        .inout .out { background: #fef2f2; border-radius: 12px; padding: .9rem 1rem; }
+        .inout h3 { font-size: 1.05rem; }
+        .delim { margin-top: 1rem; font-family: var(--serif); font-size: 1.08rem; background: #fff; border: 1px dashed var(--c); border-radius: 12px; padding: .9rem 1.1rem; }
+        .axes { display: grid; grid-template-columns: repeat(5, 1fr); gap: .75rem; margin-top: 1.5rem; }
+        .axes div { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: .85rem; font-size: .9rem; }
+        .axes b { display: block; font-family: var(--serif); font-size: 1.05rem; color: var(--c); margin-bottom: .2rem; }
+
+        /* data table */
+        .dtab { width: 100%; border-collapse: collapse; margin-top: 1.25rem; background: #fff; border-radius: 12px; overflow: hidden; font-size: .95rem; }
+        .dtab th, .dtab td { text-align: left; padding: .7rem .9rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+        .dtab th { background: #f1f3fa; font-weight: 600; color: var(--ink); }
+        .dtab td { color: var(--ink); }
+        .dtab td:first-child { font-family: var(--serif); }
+
+        /* workshop steps */
+        .steps { counter-reset: st; display: grid; gap: .6rem; margin-top: 1.5rem; }
+        .steps details { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: .2rem 1.1rem; }
+        .steps details[open] { border-color: var(--c); }
+        .steps summary { cursor: pointer; list-style: none; display: grid; grid-template-columns: 2.4rem 1fr auto; gap: .75rem; align-items: center; padding: .7rem 0; }
+        .steps summary::-webkit-details-marker { display: none; }
+        .steps summary .n { font-family: var(--serif); font-size: 1.5rem; font-weight: 600; color: var(--c); }
+        .steps summary .h { font-weight: 600; }
+        .steps summary .m { font-size: .82rem; color: var(--ink-soft); white-space: nowrap; }
+        .steps .body { padding: 0 0 1rem 3.15rem; }
+        .steps .body ul { margin: .3rem 0; padding-left: 1.1rem; }
+        .steps .body li { margin: .2rem 0; }
+        .steps .ws { display: inline-block; font-size: .78rem; font-weight: 600; color: var(--c); border: 1px solid var(--c); border-radius: 99px; padding: 0 .5rem; margin-left: .3rem; }
+        .timer { display: flex; align-items: center; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; }
+        .timer .clock { font-family: var(--serif); font-size: 2rem; font-variant-numeric: tabular-nums; min-width: 5ch; }
+
+        /* builder */
+        .builder { background: var(--dusk); color: #eef0ff; padding: 4.5rem 0; }
+        .builder h2 { color: #fff; }
+        .builder .lead { color: #cfd2f5; }
+        .opt-tabs { display: flex; gap: .5rem; margin: 1.5rem 0 1rem; flex-wrap: wrap; }
+        .builder button.pill { --c: var(--brass); background: transparent; color: var(--brass); }
+        .builder button.pill[aria-pressed="true"], .builder button.pill:hover { background: var(--brass); color: var(--dusk); }
+        .bgrid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: 1.5rem; }
+        .field { margin-bottom: 1rem; }
+        .field label { display: block; font-weight: 600; font-size: .92rem; margin-bottom: .3rem; color: #fff; }
+        .field .hint { font-size: .8rem; color: #aeb3e3; margin-bottom: .35rem; }
+        .field textarea, .field input { width: 100%; box-sizing: border-box; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.22); border-radius: 10px; color: #fff; font: 1rem var(--sans); padding: .6rem .75rem; resize: vertical; }
+        .field textarea::placeholder, .field input::placeholder { color: #8f94c7; }
+        .two { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .coach { align-self: start; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.16); border-radius: 14px; padding: 1.1rem 1.2rem; position: sticky; top: 80px; }
+        .coach h3 { color: var(--brass); font-size: 1.15rem; }
+        .coach ul { list-style: none; padding: 0; margin: .5rem 0 0; display: grid; gap: .55rem; }
+        .coach li { font-size: .92rem; line-height: 1.45; padding-left: 1.5rem; position: relative; }
+        .coach li::before { position: absolute; left: 0; top: 0; font-weight: 600; }
+        .coach li.g::before { content: '✓'; color: #6ee7a8; }
+        .coach li.h::before { content: '?'; color: var(--brass); }
+        .coach .preview { margin-top: 1rem; border-top: 1px solid rgba(255,255,255,.16); padding-top: .9rem; font-family: var(--serif); font-size: 1.02rem; line-height: 1.45; }
+        .coach .preview span { display: block; font-family: var(--sans); font-size: .78rem; color: #aeb3e3; margin-top: .6rem; }
+        .b-actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .5rem; }
+        .saved { font-size: .82rem; color: #9ee6b8; min-height: 1.2em; }
+
+        .dl { padding: 4rem 0 5rem; }
+        .dl-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.25rem; }
+        .dl-list a { display: block; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 1.1rem 1.2rem; color: var(--ink); text-decoration: none; }
+        .dl-list a:hover, .dl-list a:focus-visible { border-color: var(--th); outline: none; }
+        .dl-list b { font-family: var(--serif); font-size: 1.15rem; display: block; margin-bottom: .2rem; }
+        .dl-list span { font-size: .88rem; color: var(--ink-soft); }
+
+        @media (max-width: 1024px) {
+            .cols, .ladder-wrap, .bgrid { grid-template-columns: 1fr; }
+            .markers { grid-template-columns: 1fr 1fr; }
+            .axes { grid-template-columns: 1fr 1fr; }
+            .dl-list { grid-template-columns: 1fr; }
+            .why, .coach { position: static; }
+        }
+        @media (max-width: 640px) {
+            .t-wrap { padding: 0 1rem; }
+            .sec .t-wrap { padding-left: 1rem; border-left-width: 4px; }
+            .t h2 { font-size: 1.95rem; }
+            .lens { grid-template-columns: 1fr; }
+            .lens dt { text-align: left; }
+            .pair { grid-template-columns: 1fr; }
+            .pair .mid { max-width: none; }
+            .pair .mid svg { transform: rotate(90deg); max-width: 80px; margin: 0 auto; }
+            .markers, .stages, .inout, .axes, .two { grid-template-columns: 1fr; }
+            .strength .st { grid-template-columns: 1fr; gap: .3rem; }
+            .steps .body { padding-left: 0; }
+            .dtab { font-size: .85rem; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .lens dd, .lens dt, .rung, .gauge .needle, .ex-q, .ex-th, .ex-data, .zoom-topic { transition: none; }
+            .quiz-fb.show { animation: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="icon"><a href="https://edu-mrh.de/">🇬🇧</a></span>
+                <span>edu-mrh English</span>
+            </div>
+            <div class="nav-links">
+                <a href="w-seminar-time.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content t">
+
+        <!-- ============================ HERO ============================ -->
+        <header class="hero-q" id="start">
+            <div class="t-wrap">
+                <p class="kicker">W-Seminar English, Year 12 · Time</p>
+                <h1>Ask a question<br>you can answer.</h1>
+                <p class="lead">A topic is a place. A research question is a path through it – and your thesis is where you expect the path to lead. Here is how to get from one to the other, step by step.</p>
+                <dl class="lens" id="lens" aria-live="polite">
+                    <dt>Topic</dt><dd>Time perception</dd>
+                    <dt>Focus</dt><dd>Waiting – and what we hear while we wait</dd>
+                    <dt>Research question</dt><dd>How does the tempo of background music influence how long Year 12 students think a wait lasted?</dd>
+                    <dt>Delimitation</dt><dd>One 3-minute wait · fast vs slow music · students at our school</dd>
+                    <dt>Working thesis</dt><dd>Students who wait with fast music judge a three-minute wait as shorter than students who wait with slow music.</dd>
+                </dl>
+                <div class="lens-ctrl"><button class="pill" id="lens-replay">Play again</button></div>
+            </div>
+        </header>
+
+        <!-- ======================= QUESTION + THESIS ======================= -->
+        <section class="sec" id="pair" style="--c: var(--th)">
+            <div class="t-wrap">
+                <h2>A question and its answer</h2>
+                <p class="lead">Your research question and your thesis statement are a pair. The question says what you want to find out. The thesis says what you think the answer is – and your sources and your own data put it to the test.</p>
+
+                <div class="pair">
+                    <div class="box q">
+                        <h3>Research question</h3>
+                        <p class="small">Open. Focused. Points to what you will investigate.</p>
+                        <p class="ex-q" id="pair-q"></p>
+                    </div>
+                    <div class="mid">
+                        <svg viewBox="0 0 160 60" aria-hidden="true">
+                            <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#7c3aed"/></marker></defs>
+                            <path d="M8 30 H150" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#ah)"/>
+                            <path d="M140 46 C110 62 50 62 20 46" fill="none" stroke="#b9bde8" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#ah)"/>
+                        </svg>
+                        <span>sources + your own data<br><em>revise if needed</em></span>
+                    </div>
+                    <div class="box th">
+                        <h3>Thesis statement</h3>
+                        <p class="small">A claim. Specific. Your data could prove it wrong.</p>
+                        <p class="ex-th" id="pair-th"></p>
+                    </div>
+                </div>
+                <p class="ex-data" id="pair-data"></p>
+                <div class="pills" id="pair-tabs" role="group" aria-label="Example pairs"></div>
+
+                <div class="stages">
+                    <div class="stage"><b>Now: working thesis</b>Your best guess, based on first reading. For an experiment or survey it is your <em>hypothesis</em>. It may change – that is normal.</div>
+                    <div class="stage"><b>By the end of 12/1</b>Your research question is fixed, your working thesis is precise enough to plan how you collect data.</div>
+                    <div class="stage"><b>In the final paper</b>The question opens your introduction. The thesis – now backed by your results – appears in the introduction and returns in the conclusion.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ MARKERS ============================ -->
+        <section class="sec" id="markers" style="--c: var(--q)">
+            <div class="t-wrap">
+                <h2>Six markers of a good research question</h2>
+                <p class="lead">Check every draft question against these six. A question rarely passes all of them at the first try – that is what drafting is for.</p>
+                <div class="markers">
+                    <div class="marker"><h3>Focused</h3><p class="ask">Who or what exactly? Where, when?</p><div class="vs"><span class="w">How does time affect people?</span><span class="s">How does a deadline change how Year 12 students plan a project?</span></div></div>
+                    <div class="marker"><h3>Open</h3><p class="ask">Can't be answered by one search, a yes or a no – and doesn't already assume the answer.</p><div class="vs"><span class="w">What is time dilation?</span><span class="s">How accurately do time-travel films show time dilation?</span></div></div>
+                    <div class="marker"><h3>Researchable</h3><p class="ask">Are there sources, theories or studies to build on?</p><div class="vs"><span class="w">What did Shakespeare think about clocks?</span><span class="s">How does Shakespeare use clock imagery in his sonnets?</span></div></div>
+                    <div class="marker"><h3>Testable</h3><p class="ask">Can you collect your own data: survey, experiment, measurement, systematic text analysis?</p><div class="vs"><span class="w">Will we ever travel back in time?</span><span class="s">Which kinds of time travel do Year 12 students find believable – and why?</span></div></div>
+                    <div class="marker"><h3>Feasible</h3><p class="ask">Does it fit 10–15 pages, the time until November 2027, your access and ethics?</p><div class="vs"><span class="w">How do all 20th-century novels use flashbacks?</span><span class="s">How do two time-loop novels use repeated scenes?</span></div></div>
+                    <div class="marker"><h3>Relevant</h3><p class="ask">So what? Would someone learn something from the answer – and is it about time?</p><div class="vs"><span class="w">Which phone brand do students prefer?</span><span class="s">Does checking your phone change how long homework feels?</span></div></div>
+                </div>
+                <div class="tipbox"><b>Question words matter.</b> “How …”, “To what extent …”, “In what ways …” and “Why …” open a question up. A yes/no question (“Does …”) can work for an experiment – but then the interesting part is <em>how much</em> and <em>why</em>, so say so: “To what extent does …”.</div>
+
+                <div class="panel quiz" id="quiz">
+                    <h3>Spot the problem</h3>
+                    <p class="small">Which marker does this question miss most? Some questions are fine.</p>
+                    <p class="quiz-q" id="quiz-q"></p>
+                    <div class="pills" id="quiz-opts" role="group" aria-label="Answer options"></div>
+                    <div class="quiz-fb" id="quiz-fb" aria-live="polite"></div>
+                    <div class="pills"><button class="pill" id="quiz-next" disabled>Next question</button></div>
+                    <div class="quiz-progress" id="quiz-progress" aria-hidden="true"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ LADDER ============================ -->
+        <section class="sec" id="ladder" style="--c: var(--cs)">
+            <div class="t-wrap">
+                <h2>Sharpen it, step by step</h2>
+                <p class="lead">Four worked examples from different dimensions of time. Walk through each one and watch what changes from step to step – and why.</p>
+                <div class="pills" id="tracks" role="group" aria-label="Worked examples"></div>
+                <div class="ladder-wrap">
+                    <ol class="rungs" id="rungs"></ol>
+                    <div class="why" aria-live="polite">
+                        <h3 id="why-h"></h3>
+                        <div class="why-body"><p id="why-p"></p></div>
+                        <div class="pills"><button class="pill" id="rung-prev">Back</button><button class="pill" id="rung-next">Next step</button></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ THESIS ============================ -->
+        <section class="sec" id="thesis" style="--c: var(--th)">
+            <div class="t-wrap">
+                <h2>What makes a thesis statement</h2>
+                <p class="lead">A thesis statement is not a topic and not a fact. It is a claim that answers your question – one that someone could reasonably disagree with and that your evidence could prove wrong.</p>
+                <div class="cols">
+                    <div class="panel tint-th">
+                        <h3>Five markers</h3>
+                        <ul>
+                            <li><b>Answers</b> your research question directly.</li>
+                            <li><b>Arguable</b> – not a fact everyone accepts, not a matter of taste.</li>
+                            <li><b>Specific</b> – names the group, the material, the direction of the effect.</li>
+                            <li><b>Testable</b> – you can say which result would prove it wrong.</li>
+                            <li><b>Short</b> – one or two sentences.</li>
+                        </ul>
+                        <p class="small">Phrase it as a claim: no question mark, no “I think” – the paper itself is your argument.</p>
+                    </div>
+                    <div>
+                        <div class="panel">
+                            <h3>Watch a thesis grow</h3>
+                            <p class="small">Question: How do time-loop films use repetition?</p>
+                            <div class="strength" id="strength">
+                                <div class="st lv-1"><b>Weak</b><div><div class="s-txt">Time loops are an interesting topic in many films.</div><div class="s-why">A topic plus a taste. Nobody can disagree, nothing can be tested.</div></div></div>
+                                <div class="st lv-2 hidden"><b>Better</b><div><div class="s-txt">Time-loop films use repetition to show how characters develop.</div><div class="s-why">Now it's a claim – but which films? Develop how? Hard to prove wrong.</div></div></div>
+                                <div class="st lv-3 hidden"><b>Strong</b><div><div class="s-txt">In <em>Groundhog Day</em> and <em>Palm Springs</em>, each new loop changes the hero's behaviour more than the events around him – the repetition works as moral training, not as a puzzle.</div><div class="s-why">Specific material, a clear direction, and testable: compare what changes from loop to loop – behaviour or events.</div></div></div>
+                            </div>
+                            <div class="pills"><button class="pill" id="grow">Make it stronger</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ SCOPE ============================ -->
+        <section class="sec" id="scope" style="--c: var(--psy)">
+            <div class="t-wrap">
+                <h2>Draw the line</h2>
+                <p class="lead">Ten to fifteen pages are less than you think. A good paper goes deep on one thing rather than skimming across ten. Zoom in until your question fits – and then write down what you leave out on purpose.</p>
+
+                <div class="panel zoom">
+                    <h3>Zoom in</h3>
+                    <label for="zoom" class="small">From topic to question</label>
+                    <input type="range" id="zoom" min="0" max="4" step="1" value="0">
+                    <p class="zoom-topic" id="zoom-topic" aria-live="polite"></p>
+                    <div class="gauge" aria-hidden="true"><div class="needle" id="needle"></div></div>
+                    <div class="gauge-labels"><span>a library</span><span>a book</span><span>10–15 pages</span><span>a paragraph</span></div>
+                    <p class="zoom-verdict" id="zoom-verdict"></p>
+                </div>
+
+                <div class="axes">
+                    <div><b>Material</b>Which texts, films, devices, data sets?</div>
+                    <div><b>People</b>Which age group, which school, how many?</div>
+                    <div><b>Time span</b>Which years, which period, how long?</div>
+                    <div><b>Aspect</b>Which part of the phenomenon – and which not?</div>
+                    <div><b>Method</b>What will you do – and what not?</div>
+                </div>
+
+                <div class="inout">
+                    <div class="in"><h3>In</h3><ul><li><em>Before I Fall</em> (Oliver) and <em>Opposite of Always</em> (Reynolds)</li><li>repeated scenes: first and last loop</li><li>what changes: events, dialogue, perspective</li></ul></div>
+                    <div class="out"><h3>Out – on purpose</h3><ul><li>the film adaptations</li><li>the physics of time loops</li><li>other YA novels (only mentioned in the outlook)</li></ul></div>
+                </div>
+                <p class="delim">“This paper focuses on two YA time-loop novels and compares their repeated scenes. It does not discuss the film versions or the physics of time travel.”</p>
+                <p class="small">This delimitation sentence goes into your introduction. It shows that you made a choice – not that you forgot something.</p>
+            </div>
+        </section>
+
+        <!-- ============================ DATA ============================ -->
+        <section class="sec" id="data" style="--c: var(--ok)">
+            <div class="t-wrap">
+                <h2>Leave room for your own data</h2>
+                <p class="lead">Every Seminararbeit puts something to the test. So when you choose your question, ask right away: what could I measure, count, compare or ask? We'll work on surveys and experiments next session – for now, just make sure your question allows them.</p>
+                <table class="dtab">
+                    <thead><tr><th>If your question asks …</th><th>you could …</th><th>for example</th></tr></thead>
+                    <tbody>
+                        <tr><td>how people perceive or judge something</td><td>run a survey or interviews</td><td>How long does a school year feel in Year 5 and Year 12?</td></tr>
+                        <tr><td>whether one thing changes another</td><td>run an experiment with two conditions</td><td>fast vs slow music during a 3-minute wait</td></tr>
+                        <tr><td>how texts or films work</td><td>do a systematic text analysis: count, categorise, compare</td><td>repeated scenes in two time-loop novels</td></tr>
+                        <tr><td>how language is used</td><td>build a small corpus and count</td><td>“will” vs “going to” in song lyrics 1970 vs 2020</td></tr>
+                        <tr><td>how devices or systems behave</td><td>take a series of measurements</td><td>clock drift of 30 devices over three weeks</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ============================ WORKSHOP ============================ -->
+        <section class="sec" id="workshop" style="--c: var(--lit)">
+            <div class="t-wrap">
+                <h2>Work phase: your way to 1–3 options</h2>
+                <p class="lead">You won't have your final question today – and you don't need it yet. Aim for one to three promising options you can explore further until the end of 12/1. Follow the steps; each opens with a strategy.</p>
+
+                <div class="timer panel">
+                    <div><div class="small">Timer for the current step</div><div class="clock" id="clock">10:00</div></div>
+                    <div class="pills" style="margin:0"><button class="pill" data-min="5">5 min</button><button class="pill" data-min="8">8 min</button><button class="pill" data-min="10">10 min</button><button class="pill" id="clock-go">Start</button></div>
+                </div>
+
+                <div class="steps">
+                    <details open><summary><span class="n">1</span><span class="h">Pick a spark</span><span class="m">2 min</span></summary><div class="body">
+                        <p>Choose one or two dimensions that made you curious – your exit ticket from last session, a seed on the <a href="w-seminar-time.html">Dimensions of time</a> page or something from everyday life.</p>
+                        <ul><li><b>Strategy: the itch test.</b> Which question would you still want answered if there were no grade? Start there.</li></ul>
+                    </div></details>
+                    <details><summary><span class="n">2</span><span class="h">Read to orient</span><span class="m">10 min</span></summary><div class="body">
+                        <p>Read one or two overview texts – an encyclopedia article, a textbook chapter, a good introduction. Don't take notes on everything. Collect: <span class="ws">W4 box 5</span></p>
+                        <ul><li><b>five keywords</b> (in English – you'll search with them),</li><li><b>two names</b> (researchers, authors, key works),</li><li><b>one debate</b> – where do people disagree? That is where good questions live.</li></ul>
+                        <p class="small">Wikipedia is fine for orientation: scroll down to its references and save the useful ones in Zotero. Then try Google Scholar with your keywords.</p>
+                    </div></details>
+                    <details><summary><span class="n">3</span><span class="h">Question storm</span><span class="m">5 min</span></summary><div class="body">
+                        <p>Write at least ten questions about your spark. <span class="ws">W4 box 6</span></p>
+                        <ul><li>Write every question down – no judging, no discussing, no answering.</li><li>Turn statements into questions (“Music changes waiting” → “How does music change waiting?”).</li><li>Use all question words: who, what, when, where, why, how, to what extent.</li></ul>
+                        <p class="small">These rules come from the Question Formulation Technique (Right Question Institute).</p>
+                    </div></details>
+                    <details><summary><span class="n">4</span><span class="h">Sort and sharpen</span><span class="m">8 min</span></summary><div class="body">
+                        <ul>
+                            <li>Mark each question <b>O</b> (open) or <b>C</b> (closed). Turn two closed ones into open ones – and one open one into a closed one. What changes?</li>
+                            <li>Star your best three.</li>
+                            <li><b>Zoom in:</b> add who, what, where, when until the question fits 10–15 pages.</li>
+                            <li><b>Zoom out:</b> if a question is tiny, ask what bigger question it belongs to.</li>
+                            <li>Check them against the <a href="#markers">six markers</a>.</li>
+                        </ul>
+                    </div></details>
+                    <details><summary><span class="n">5</span><span class="h">Check the data</span><span class="m">5 min</span></summary><div class="body">
+                        <p>For each of your starred questions: what could you measure, count, compare or ask? Who or what would you need – and can you get it? <span class="ws">W4 box 7</span></p>
+                        <ul><li><b>Strategy: start from the data.</b> If you're stuck, turn it around: “I could easily survey 60 students about …” – which question would that answer?</li></ul>
+                    </div></details>
+                    <details><summary><span class="n">6</span><span class="h">Draw the line</span><span class="m">5 min</span></summary><div class="body">
+                        <p>For your strongest option, list what is <b>in</b> and what is <b>out</b> – material, people, time span, aspect, method. Then write one delimitation sentence. <span class="ws">W4 box 8</span></p>
+                    </div></details>
+                    <details><summary><span class="n">7</span><span class="h">Write a working thesis</span><span class="m">3 min</span></summary><div class="body">
+                        <p>“I expect that … because …” – then cut “I expect that” and you have a working thesis. Check it against the <a href="#thesis">five thesis markers</a>. Then enter your options in the <a href="#builder">builder below</a>.</p>
+                    </div></details>
+                    <details><summary><span class="n">8</span><span class="h">Partner check</span><span class="m">10 min</span></summary><div class="body">
+                        <p>Explain your best option to a partner in one minute. The partner asks: <span class="ws">W4 box 9</span></p>
+                        <ul><li>So what – who would want to know the answer?</li><li>What exactly would you collect – and from whom?</li><li>Which result would prove your thesis wrong?</li><li>Too big, too small – or just right for 10–15 pages?</li></ul>
+                    </div></details>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ BUILDER ============================ -->
+        <section class="builder" id="builder">
+            <div class="t-wrap">
+                <h2>Build your options</h2>
+                <p class="lead">Keep up to three options here and refine them as you read. The coach gives hints, not grades. Everything stays in this browser – download a copy for your research log.</p>
+                <div class="opt-tabs" id="opt-tabs" role="group" aria-label="Options"></div>
+                <div class="bgrid">
+                    <div>
+                        <div class="field"><label for="f-topic">Topic and focus</label><div class="hint">e.g. time perception → waiting and music</div><input id="f-topic" type="text" placeholder="Topic → focus"></div>
+                        <div class="field"><label for="f-q">Research question</label><div class="hint">How / To what extent / In what ways … ?</div><textarea id="f-q" rows="3" placeholder="To what extent …?"></textarea></div>
+                        <div class="field"><label for="f-th">Working thesis</label><div class="hint">a claim your data could prove wrong</div><textarea id="f-th" rows="3" placeholder="I expect that … because … (then cut “I expect that”)"></textarea></div>
+                        <div class="field"><label for="f-data">My own data</label><div class="hint">what will you measure, count, compare or ask – and from whom?</div><textarea id="f-data" rows="2" placeholder="e.g. experiment with two groups of 20 students …"></textarea></div>
+                        <div class="two">
+                            <div class="field"><label for="f-in">In</label><textarea id="f-in" rows="3" placeholder="material, people, time span …"></textarea></div>
+                            <div class="field"><label for="f-out">Out – on purpose</label><textarea id="f-out" rows="3" placeholder="what you leave out"></textarea></div>
+                        </div>
+                        <div class="field"><label for="f-src">First sources</label><textarea id="f-src" rows="2" placeholder="author, title – save them in Zotero too"></textarea></div>
+                        <div class="b-actions">
+                            <button class="pill" id="b-download">Download my options (.txt)</button>
+                            <button class="pill" id="b-clear">Clear this option</button>
+                        </div>
+                        <p class="saved" id="saved" aria-live="polite"></p>
+                    </div>
+                    <aside class="coach" aria-live="polite">
+                        <h3>Coach</h3>
+                        <ul id="coach"></ul>
+                        <div class="preview" id="preview"></div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ MATERIALS ============================ -->
+        <section class="dl" id="materials">
+            <div class="t-wrap">
+                <h2>Materials</h2>
+                <div class="dl-list">
+                    <a href="arbeitsblaetter/ws-w4-research-question.pdf"><b>W4: Research question and thesis</b><span>Markers, practice, work phase</span></a>
+                    <a href="arbeitsblaetter/ws-w2-research-and-writing.pdf"><b>W2: Research and writing guide</b><span>Sources, MLA, structure, data</span></a>
+                    <a href="w-seminar-time.html"><b>Dimensions of time</b><span>Back to the topic overview and its seeds</span></a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum & Datenschutz</a> | <a href="https://edu-mrh.de/">Startseite</a></p>
+        </div>
+    </footer>
+
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+        <span></span><span></span><span></span>
+    </button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Research question</h3>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Close sidebar">✕</button>
+        </div>
+        <nav class="sidebar-menu">
+            <ul>
+                <li><a href="#start">Start</a></li>
+                <li><a href="#pair">Question and thesis</a></li>
+                <li><a href="#markers">Six markers</a></li>
+                <li><a href="#ladder">Step by step</a></li>
+                <li><a href="#thesis">Thesis statement</a></li>
+                <li><a href="#scope">Draw the line</a></li>
+                <li><a href="#data">Room for data</a></li>
+                <li><a href="#workshop">Work phase</a></li>
+                <li><a href="#builder">Build your options</a></li>
+                <li><a href="#materials">Materials</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+</body>
+</html>
