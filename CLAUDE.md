@@ -205,7 +205,8 @@ Wo was liegt (Stand 2026-10). `→ AB` = LaTeX-Arbeitsblätter in `arbeitsblaett
 **Englisch** (`englisch/englisch.html`): 5 `wordcraft`; 12 `uk/`
 (uk-and-writing, north-south-divide), `media/narrative_lens`,
 `immigration-social-structures-identity/`, `global issues/`,
-`w-seminar-time/` (W-Seminar „Time“, → AB `ws-w1` bis `ws-w3`, eigene Vorlage); 13
+`w-seminar-time/` (W-Seminar „Time“: `w-seminar-time.html` Dimensionen,
+`research-question.html` Forschungsfrage/These; → AB `ws-w1` bis `ws-w4`, eigene Vorlage); 13
 `questions-on-the-text/` (→ AB, eigene Vorlage)
 
 **Weitere Fächer**: `mathe/` (12: Exponential-/ln-Funktion, Umkehrfunktion),
