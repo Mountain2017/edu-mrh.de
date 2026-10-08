@@ -8,6 +8,8 @@
  *        <div data-sprachpruefer>  L1, L2, L3 über a–z mit Suchaufträgen
  *        <div data-mengenbild>     L ⊆ A* ⊆ alle Zeichenketten als Mengenbild
  *        <div data-smileyregeln>   Erst die Regeln legen die Sprache der Smileys fest
+ *   alle <div class="lw" data-loesungsweg="…">  Tipps stufenweise, Lösung nur durch Gedrückthalten
+ *   (Werkzeuge zu 1.3 und 1.4: grammatik.js, zu 1.5: automaten.js)
  *
  * Keine Abhängigkeiten, keine Daten verlassen den Browser, nichts wird gespeichert.
  */
@@ -541,5 +543,118 @@
         document.querySelectorAll('[data-sprachpruefer]').forEach(sprachpruefer);
         document.querySelectorAll('[data-mengenbild]').forEach(mengenbild);
         document.querySelectorAll('[data-smileyregeln]').forEach(smileyregeln);
+    });
+})();
+
+/* ==========================================================================
+   Lösungsweg (alle Stationen): Tipps stufenweise, Lösung nur durch Gedrückthalten
+     <div class="lw" data-loesungsweg="Aufgabe 3: RGB-Code">
+       <template data-stufe="Tipp 1">…</template>
+       <template data-stufe="Lösung" data-halten>…</template>
+     </div>
+   Der Inhalt steht in <template>: nicht sichtbar, nicht über die Suche zu finden.
+   Nach dem Einblenden meldet das Ereignis „fs-eingeblendet“ den neuen Inhalt,
+   damit z. B. grammatik.js darin Syntaxdiagramme zeichnen kann.
+   (Wie datenstrukturen.js in Informatik 12.)
+   ========================================================================== */
+(function () {
+    'use strict';
+
+    var HALTEZEIT = 1500;
+
+    function loesungsweg(box) {
+        var titel = box.getAttribute('data-loesungsweg') || '';
+        var stufen = Array.prototype.slice.call(box.querySelectorAll('template[data-stufe]'));
+        if (!stufen.length) return;
+        var kopf = document.createElement('div');
+        kopf.className = 'lw-kopf';
+        kopf.textContent = '💡 Hilfe' + (titel ? ': ' + titel : '');
+        var inhalt = document.createElement('div');
+        inhalt.className = 'lw-inhalt';
+        var knoepfe = document.createElement('div');
+        knoepfe.className = 'lw-knoepfe';
+        box.appendChild(kopf);
+        box.appendChild(inhalt);
+        box.appendChild(knoepfe);
+        var stand = 0;
+
+        function zeigeStufe(i) {
+            var t = stufen[i];
+            var teil = document.createElement('div');
+            teil.className = 'lw-stufe' + (t.hasAttribute('data-halten') ? ' lw-loesung' : '');
+            var marke = document.createElement('div');
+            marke.className = 'lw-marke';
+            marke.textContent = t.getAttribute('data-stufe');
+            teil.appendChild(marke);
+            teil.appendChild(document.importNode(t.content, true));
+            inhalt.appendChild(teil);
+            document.dispatchEvent(new CustomEvent('fs-eingeblendet', { detail: teil }));
+            stand = i + 1;
+            baueKnoepfe();
+        }
+
+        function zuruecksetzen() {
+            inhalt.textContent = '';
+            stand = 0;
+            baueKnoepfe();
+        }
+
+        function baueKnoepfe() {
+            knoepfe.textContent = '';
+            if (stand < stufen.length) {
+                var t = stufen[stand];
+                var k = document.createElement('button');
+                k.type = 'button';
+                if (t.hasAttribute('data-halten')) {
+                    k.className = 'lw-knopf lw-halten';
+                    k.innerHTML = '<span class="lw-fortschritt"></span><span class="lw-text"></span>';
+                    k.querySelector('.lw-text').textContent = t.getAttribute('data-stufe') + ' zeigen: gedrückt halten';
+                    k.setAttribute('aria-label', t.getAttribute('data-stufe') + ' zeigen (Taste oder Maus ' + (HALTEZEIT / 1000) + ' Sekunden gedrückt halten)');
+                    haltenAktivieren(k, function () { zeigeStufe(stand); });
+                } else {
+                    k.className = 'lw-knopf';
+                    k.textContent = t.getAttribute('data-stufe') + ' zeigen';
+                    k.addEventListener('click', function () { zeigeStufe(stand); });
+                }
+                knoepfe.appendChild(k);
+            }
+            if (stand > 0) {
+                var weg = document.createElement('button');
+                weg.type = 'button';
+                weg.className = 'lw-knopf lw-weg';
+                weg.textContent = 'wieder ausblenden';
+                weg.addEventListener('click', zuruecksetzen);
+                knoepfe.appendChild(weg);
+            }
+        }
+
+        baueKnoepfe();
+    }
+
+    function haltenAktivieren(knopf, fertig) {
+        var timer = null, balken = knopf.querySelector('.lw-fortschritt');
+        function start(e) {
+            if (timer) return;
+            if (e && e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+            if (e && e.type === 'keydown') e.preventDefault();
+            balken.style.transition = 'width ' + HALTEZEIT + 'ms linear';
+            balken.style.width = '100%';
+            timer = setTimeout(function () { timer = null; fertig(); }, HALTEZEIT);
+        }
+        function stopp() {
+            if (!timer) return;
+            clearTimeout(timer);
+            timer = null;
+            balken.style.transition = 'width .2s';
+            balken.style.width = '0';
+        }
+        knopf.addEventListener('pointerdown', start);
+        knopf.addEventListener('keydown', start);
+        ['pointerup', 'pointerleave', 'pointercancel', 'keyup', 'blur'].forEach(function (t) { knopf.addEventListener(t, stopp); });
+        knopf.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('[data-loesungsweg]').forEach(loesungsweg);
     });
 })();

@@ -72,7 +72,11 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
   erwähnen): `==` vergleicht Strings nach Inhalt; ein falscher Rückgabetyp
   beim Implementieren einer Interface-Methode (`int` statt `String`) und
   unerreichbarer Code werden nicht gemeldet; bei `a + b` wird `b` zuerst
-  ausgewertet.
+  ausgewertet. Grafik/Ausgabe: `println()` ohne Argument gibt „undefined“ aus
+  (`println("")`); `Text.moveTo` setzt die linke obere Ecke (Kreise, Polygone:
+  die Mitte); ein offenes `Polygon(false, …)` mit transparenter Füllung zeichnet
+  keine Linie (Kurven aus `Line`-Stücken bauen); Zugriff auf ein `null`-Array
+  meldet „Interner Fehler … null“.
 
 ## Arbeitsblätter
 
@@ -192,7 +196,11 @@ Wo was liegt (Stand 2026-10). `→ AB` = LaTeX-Arbeitsblätter in `arbeitsblaett
   älter: `12/rekursion-queue-listen/`
 - 12 sonst: `12/binaerbaeume/`, `12/tiefensuche/`, `12/nebenlaeufigkeit/`
 - 13 Formale Sprachen (neues Format, → AB): `13/formale-sprachen/`
-  (1.1 Syntax und Semantik, 1.2 Formale Sprachen, AB bis 1.5); `13/material/` Rohmaterial, nur lokal
+  (1.1 Syntax und Semantik, 1.2 Formale Sprachen, 1.3 Syntaxdiagramme, 1.4 EBNF,
+  1.5 Endliche Automaten mit Java-Projekt `Online-IDE/13-1-5 Automat.json` + Coach);
+  Werkzeuge: `formale-sprachen.js` (1.1/1.2, Lösungsweg), `grammatik.js` (EBNF-Parser,
+  Syntaxdiagramme, Gleisnetz-Fahrt, Baukasten, Werkstatt), `automaten.js` (Simulator,
+  Automaten-Baukasten); `13/material/` Rohmaterial, nur lokal
 
 **Englisch** (`englisch/englisch.html`): 5 `wordcraft`; 12 `uk/`
 (uk-and-writing, north-south-divide), `media/narrative_lens`,

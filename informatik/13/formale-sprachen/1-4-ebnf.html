@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1.4 Die EBNF | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Die erweiterte Backus-Naur-Form (EBNF), Informatik 13: Regeln als Text, Ableitung Schritt für Schritt, Übersetzen zwischen EBNF und Syntaxdiagramm, rekursive Regeln – mit EBNF-Spiegel, Ableitungs-Spiel und Grammatik-Werkstatt.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="formale-sprachen.css">
+    <script defer src="formale-sprachen.js"></script>
+    <script defer src="grammatik.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🔗</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="../../informatik.html#jahrgang-13" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 1.4</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#spiegel">🪞 Text und Diagramm</a></li>
+            <li><a href="#ableitung">🧩 Ableitung</a></li>
+            <li><a href="#geld">✏️ Geldbeträge</a></li>
+            <li><a href="#molkerei">✏️ Molkereinummern</a></li>
+            <li><a href="#uhrzeit">🛠️ Uhrzeiten</a></li>
+            <li><a href="#terme">🔁 Terme und Rekursion</a></li>
+            <li><a href="#eigene">🧪 Eigene Sprache</a></li>
+            <li><a href="#nachdenken">💡 Nachdenken</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Formale Sprachen</div>
+            <ul class="sidebar-menu">
+                <li><a href="../../informatik.html#jahrgang-13">Übersicht Klasse 13</a></li>
+                <li><a href="1-1-syntax-semantik.html">1.1 Syntax und Semantik</a></li>
+                <li><a href="1-2-formale-sprachen.html">1.2 Formale Sprachen</a></li>
+                <li><a href="1-3-syntaxdiagramme.html">1.3 Syntaxdiagramme</a></li>
+                <li><a href="1-4-ebnf.html">1.4 Die EBNF</a></li>
+                <li><a href="1-5-endliche-automaten.html">1.5 Endliche Automaten</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero fs-hero">
+                <h1 class="hero-title">1.4 Die EBNF</h1>
+                <p class="hero-subtitle">Formale Sprachen · Informatik 13 · 2 Stunden</p>
+                <span class="fs-kompetenz">Du kannst: Grammatiken in EBNF lesen und schreiben, zwischen EBNF und Syntaxdiagramm übersetzen, Wörter schrittweise ableiten und rekursive Regeln einsetzen.</span>
+                <div class="fs-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-1-4-ebnf.pdf">📝 Arbeitsblatt 1.4 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-1-4-ebnf.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#spiegel">🪞 Einstieg</a><a class="p-investigate" href="#ableitung">🧩 Üben</a><a class="p-modify" href="#geld">✏️ Übersetzen</a><a class="p-modify" href="#molkerei">✏️ Verändern</a><a class="p-make" href="#uhrzeit">🛠️ Selbst bauen</a><a class="p-investigate" href="#terme">🔁 Rekursion</a><a class="p-make" href="#eigene">🧪 Eigene Sprache</a><a class="p-idee" href="#nachdenken">💡 Nachdenken</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="spiegel" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🪞</span><h2>Einstieg<small>Merkkasten und Aufgabe 1: Dieselbe Grammatik zweimal</small></h2></div>
+                <div class="phase-body">
+                    <p>Ein Compiler kann keine Bilder lesen. Die <strong>erweiterte Backus-Naur-Form (EBNF)</strong> schreibt dieselben Regeln deshalb als Text. Links stehen die Smiley-Regeln aus 1.3 als Text, rechts als Diagramm. Fahre mit der Maus über einen Teil (oder tippe ihn an): Das Gegenstück leuchtet auf. Ein zweites Antippen löst die Markierung wieder.</p>
+                    <div class="werk" data-ebnf-spiegel>
+                        <h4>EBNF-Spiegel: Smileyfolgen</h4>
+                    </div>
+                    <ol class="aufgaben">
+                        <li><strong>Merkkasten:</strong> Suche zu jedem Zeichen der EBNF (<code>=</code> und <code>.</code>, die Anführungszeichen, <code>|</code>, <code>[ ]</code>, <code>{ }</code>, Namen ohne Anführungszeichen, zwei Teile hintereinander) das Gegenstück im Diagramm. Ergänze dann die Bedeutung im Merkkasten auf dem Blatt.</li>
+                        <li><strong>Aufgabe 1a:</strong> Fahre über <code>{Smiley}</code> in R1 und danach über das erste <code>Smiley</code>. Warum steht in R1 nicht nur <code>{Smiley}</code>?</li>
+                        <li><strong>Aufgabe 1b:</strong> Schreibe R4 ohne eckige Klammern. Vergleiche mit dem Diagramm: Welche zwei Wege gibt es durch Mitte?</li>
+                    </ol>
+                    <div class="konzept">
+                        <h4>Merkkasten „Die EBNF“ zum Vergleichen</h4>
+                        <p>Erst selbst ausfüllen, dann vergleichen.</p>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Merkkasten" data-halten>
+                                <div class="tab-scroll"><table class="fs-tab">
+                                    <tr><td><code>Name = … .</code></td><td>Regel für ein Nichtterminal; <code>.</code> beendet die Regel</td><td><code>"D"</code></td><td>Terminal (Zeichen des Alphabets)</td></tr>
+                                    <tr><td><code>Mund</code></td><td>Nichtterminal (Name einer Regel)</td><td><code>A B</code></td><td>Aneinanderreihung: erst A, dann B</td></tr>
+                                    <tr><td><code>A | B</code></td><td>Alternative: A oder B</td><td><code>[A]</code></td><td>Option: A einmal oder keinmal</td></tr>
+                                    <tr><td><code>{A}</code></td><td>Wiederholung: A 0-mal oder öfter</td><td><code>(A | B) C</code></td><td>Klammern: <code>("a"|"b")"c"</code> → <code>ac</code>, <code>bc</code></td></tr>
+                                </table></div>
+                                <p>1a: <code>{…}</code> erlaubt auch keinmal, dann wäre ε eine Smileyfolge. Verlangt ist mindestens ein Smiley. 1b: <code>Mitte = ε | "-".</code></p>
+                            </template>
+                        </div>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-4-ebnf.pdf">📝 Blatt 1.4 · Merkkasten und Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="ableitung" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🧩</span><h2>Üben<small>Aufgabe 2: Schritt für Schritt ableiten</small></h2></div>
+                <div class="phase-body">
+                    <p>Bei einer <strong>Ableitung</strong> wird je Schritt <em>ein</em> Nichtterminal durch die rechte Seite seiner Regel ersetzt. Bei <code>|</code>, <code>[ ]</code> und <code>{ }</code> entscheidest du dabei, welcher Weg genommen wird. Klicke in der letzten Zeile auf ein Nichtterminal und wähle, wodurch es ersetzt werden soll.</p>
+                    <div class="werk" data-ableitung data-ziel=";D:-(">
+                        <h4>Ableitungs-Spiel</h4>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Vervollständige zuerst die Ableitung von <code>;D:-(</code> auf dem Blatt. Spiele sie dann nach. Das Spiel meldet sofort, wenn das Zielwort nicht mehr entstehen kann.</li>
+                        <li>Leite <code>:P;-*</code> ab, einmal immer das am weitesten links stehende Nichtterminal zuerst, einmal in anderer Reihenfolge. Was ändert sich, was bleibt gleich?</li>
+                        <li>Wie viele Schritte braucht die Ableitung einer Smileyfolge aus <em>n</em> Smileys? Wovon hängt die Zahl <em>nicht</em> ab?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="c) Anzahl der Schritte">
+                        <template data-stufe="Tipp"><p>Zähle für einen und für zwei Smileys. Welche Regeln werden pro Smiley angewendet, welche nur einmal? Spielt es eine Rolle, ob der Smiley eine Nase hat?</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-4-ebnf.pdf">📝 Blatt 1.4 · Aufgabe 2</a></p>
+                </div>
+            </section>
+
+            <section id="geld" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">✏️</span><h2>Übersetzen<small>Aufgabe 3: Vom Diagramm zur EBNF</small></h2></div>
+                <div class="phase-body">
+                    <p>In der <strong>Grammatik-Werkstatt</strong> schreibst du Regeln in EBNF. Sie zeichnet deine Regeln sofort als Syntaxdiagramm, testet Wörter und zeigt bei abgelehnten Wörtern die Fehlerstelle, so wie ein Compiler. Für Bereiche darfst du <code>"1" | … | "9"</code> schreiben. Dein Text bleibt in diesem Browser gespeichert.</p>
+                    <div class="werk" data-werkstatt="geld">
+                        <h4>Grammatik-Werkstatt: Geldbeträge</h4>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Übersetze die vier Diagramme vom Blatt in EBNF. Vergleiche das gezeichnete Diagramm mit dem auf dem Blatt: Sieht es gleich aus?</li>
+                        <li>Bring den Prüfstand auf grün. Trage dann deine Regeln auf dem Blatt ein.</li>
+                        <li>Teste <code>02,99€</code>. An welcher Stelle meldet die Werkstatt den Fehler, und welche Regel ist dafür verantwortlich?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 3: Geldbeträge">
+                        <template data-stufe="Tipp 1"><p>Jedes Diagramm wird eine Regel <code>Name = … .</code> Der Umweg unter der Zahl im Diagramm Geldbetrag ist eine Option, die Schleife bei Zahl eine Wiederholung, die Weiche bei Ziffer eine Alternative.</p></template>
+                        <template data-stufe="Tipp 2"><p>In Zahl gibt es zwei Wege: oben nur die <code>0</code>, unten eine Ziffer ohne Null, auf die beliebig viele Ziffern folgen dürfen.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv">Geldbetrag = Zahl ["," Nachkommastellen] "€".
+Zahl = "0" | ZifferOhneNull {Ziffer}.
+Nachkommastellen = Ziffer Ziffer.
+Ziffer = "0" | ZifferOhneNull.</pre><p>Bei <code>02,99€</code> passt <code>0</code> als Zahl, danach erlaubt Geldbetrag nur „,“ oder „€“: Der obere Weg von Zahl lässt nach der Null nichts mehr zu.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-4-ebnf.pdf">📝 Blatt 1.4 · Aufgabe 3</a></p>
+                </div>
+            </section>
+
+            <section id="molkerei" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">✏️</span><h2>Verändern<small>Aufgabe 4: Regeln lesen und ändern – Molkereinummern</small></h2></div>
+                <div class="phase-body">
+                    <p>Die Regeln R1 bis R5 vom Blatt stehen schon in der Werkstatt. Leerzeichen im Testwort dienen nur der Lesbarkeit und werden ignoriert.</p>
+                    <div class="werk" data-werkstatt="molkerei">
+                        <h4>Grammatik-Werkstatt: Molkereinummern</h4>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Entscheide auf dem Blatt, welche Codes gültig sind (4a), und teste sie dann.</li>
+                        <li>Leite <code>DE RP 927</code> auf dem Blatt schrittweise ab (4b). Zum Kontrollieren: Teste das Wort und lass dir den Ableitungsbaum zeigen. Jedes Nichtterminal im Baum ist ein Schritt deiner Ableitung.</li>
+                        <li>Ändere die Regeln für Bayern (4c), bis der Prüfstand stimmt. Achte darauf, dass die anderen Bundesländer weiter funktionieren.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 4c: Bayern">
+                        <template data-stufe="Tipp 1"><p>Nur für <code>BY</code> gelten andere Betriebsnummern. Die Regel, die <code>BY</code> mit seiner Betriebsnummer verknüpft, muss also wissen, welches Land gewählt wurde. Welche Regel kennt beides?</p></template>
+                        <template data-stufe="Tipp 2"><p>Nimm <code>"BY"</code> aus Bundesland heraus und gib R1 nach <code>"DE"</code> zwei Wege: ein anderes Bundesland mit normaler Betriebsnummer oder <code>"BY"</code> mit einer neuen Regel BetriebsnummerBY.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv">Molkereinummer = "DE" (Bundesland Betriebsnummer | "BY" BetriebsnummerBY) [Europa].
+Bundesland = "BB" | "BE" | "BW" | "HB" | … (wie bisher, aber ohne "BY").
+BetriebsnummerBY = Bezirk Ziffer Ziffer | Bezirk Ziffer Ziffer Ziffer Ziffer.
+Bezirk = "1" | "2" | "3" | "4" | "5" | "6" | "7".</pre><p>R3 allein zu ändern reicht nicht: Betriebsnummer weiß nicht, welches Bundesland davor gewählt wurde.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-4-ebnf.pdf">📝 Blatt 1.4 · Aufgabe 4 (Seite 2)</a></p>
+                </div>
+            </section>
+
+            <section id="uhrzeit" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Selbst bauen<small>Aufgabe 5: Uhrzeiten</small></h2></div>
+                <div class="phase-body">
+                    <p>Uhrzeiten haben die Form <code>hh:mm</code> oder <code>hh:mm:ss</code>, immer zweistellig, von <code>00:00</code> bis <code>23:59:59</code>.</p>
+                    <div class="werk" data-werkstatt="uhrzeit">
+                        <h4>Grammatik-Werkstatt: Uhrzeiten</h4>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Finde auf dem Blatt drei ungültige Uhrzeiten, die knapp an einer Grenze scheitern (5a).</li>
+                        <li>Schreibe die Grammatik (5b), bis der Prüfstand stimmt. Teste auch deine drei Uhrzeiten aus a).</li>
+                        <li>Lass dir Beispielwörter erzeugen. Erzeugt deine Grammatik etwas, das keine Uhrzeit ist? Dann ist sie zu großzügig, auch wenn der Prüfstand grün ist.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 5: Uhrzeiten">
+                        <template data-stufe="Tipp 1"><p>Welche Ziffern sind an der ersten Stelle der Minute erlaubt, welche an der zweiten? Sekunden sind genauso aufgebaut wie Minuten: Du kannst dieselbe Regel zweimal benutzen.</p></template>
+                        <template data-stufe="Tipp 2"><p>Die Stunden sind der Sonderfall: Beginnt die Stunde mit <code>0</code> oder <code>1</code>, darf jede Ziffer folgen. Beginnt sie mit <code>2</code>, nur <code>0</code> bis <code>3</code>. Das sind zwei Alternativen.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv">Uhrzeit = Stunde ":" Minute [":" Minute].
+Stunde = ("0" | "1") Ziffer | "2" ("0" | "1" | "2" | "3").
+Minute = ("0" | "1" | "2" | "3" | "4" | "5") Ziffer.
+Ziffer = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9".</pre></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-4-ebnf.pdf">📝 Blatt 1.4 · Aufgabe 5</a></p>
+                </div>
+            </section>
+
+            <section id="terme" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🔁</span><h2>Rekursion<small>Aufgabe 6: Die Terme aus 1.1</small></h2></div>
+                <div class="phase-body">
+                    <p>In 1.1 war <code>sin cos</code> kein gültiger Term. Diese Grammatik legt die Terme fest. Im Diagramm siehst du, wo eine Regel auf eine andere verweist.</p>
+                    <div class="werk" data-werkstatt="terme">
+                        <h4>Grammatik-Werkstatt: Terme</h4>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Entscheide auf dem Blatt, welche Wörter gültig sind (6a). Teste sie dann und lies bei den ungültigen die Fehlerstelle.</li>
+                        <li>Teste <code>cos(sin(x))+x</code> und lass dir den Ableitungsbaum zeigen. Wo taucht <em>Term</em> im Baum ein zweites Mal auf? Welche Regeln verweisen also über einen Umweg auf sich selbst (6b)?</li>
+                        <li>Besprecht zu zweit (6c): Warum kommt man hier ohne Rekursion nicht aus?</li>
+                        <li>Ändere R2 so, dass auch <code>(x+x)</code> gültig ist (6d). Der Prüfstand zeigt, ob du dabei nicht zu viel erlaubt hast.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 6">
+                        <template data-stufe="Tipp zu c)"><p>Erinnere dich an 1.3, Aufgabe 5d. Was muss nach jeder öffnenden Klammer irgendwann kommen? Kann eine Wiederholung „mitzählen“, wie viele Klammern noch offen sind?</p></template>
+                        <template data-stufe="Lösung zu d)" data-halten><pre class="jv">Summand = "x" | [Funktion] "(" Term ")".</pre></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-4-ebnf.pdf">📝 Blatt 1.4 · Aufgabe 6</a></p>
+                </div>
+            </section>
+
+            <section id="eigene" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🧪</span><h2>Eigene Sprache<small>Für Schnelle: eine Sprache selbst festlegen</small></h2></div>
+                <div class="phase-body">
+                    <p>Lege eine eigene Sprache fest. Tausche danach mit deinem Nachbarn: Wer findet ein Wort, das die Grammatik des anderen falsch entscheidet? Hast du in 1.3 Diagramme im Baukasten gebaut, kannst du sie hier als EBNF laden und weiterbearbeiten.</p>
+                    <ul>
+                        <li>Hashtags: <code>#</code>, dann Buchstaben und Ziffern, aber nicht nur Ziffern</li>
+                        <li>vereinfachte E-Mail-Adressen: <code>name.nachname@schule.de</code></li>
+                        <li>korrekt geklammerte Ausdrücke: <code>()</code>, <code>(()())</code>, aber nicht <code>)(</code></li>
+                        <li>Kommazahlen mit Exponent wie in Java: <code>1.5e-3</code>, <code>42</code>, <code>0.25</code></li>
+                    </ul>
+                    <div class="werk" data-werkstatt="frei">
+                        <h4>Grammatik-Werkstatt: frei</h4>
+                    </div>
+                </div>
+            </section>
+
+            <section id="nachdenken" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Besprecht mündlich (Kasten unten auf dem Blatt)</small></h2></div>
+                <div class="phase-body">
+                    <p>Überlegt zu zweit. Die Hinweise sind zum Nachlesen <em>nach</em> dem Gespräch: Halte dazu den Knopf gedrückt.</p>
+                    <div class="idee"><strong>Mit deiner Grammatik ist <code>24:00</code> ein Syntaxfehler. Ginge das auch für <code>29.02.2026</code> aus 1.1?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Im Prinzip ja. Monate mit 30 oder 31 Tagen lassen sich leicht unterscheiden. Ob es den 29.02. gibt, hängt vom Jahr ab, das erst <em>hinter</em> dem Tag steht: Man bräuchte für den 29.02. einen eigenen Zweig, der nur Schaltjahre zulässt (durch 4 teilbar, bei <code>00</code> am Ende nur jedes vierte Jahrhundert). Das geht, wird aber lang und unübersichtlich. In der Praxis prüft man solche Fälle deshalb nach der Syntaxprüfung, als Teil der Semantik.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Ist <code>"sin"</code> ein Zeichen oder drei?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>In unserer Grammatik ist es eine Abkürzung für drei Zeichen <code>s</code>, <code>i</code>, <code>n</code>, deshalb meldet die Werkstatt bei <code>si</code> „zu früh zu Ende“. Ein Compiler fasst solche Zeichenfolgen aber zuerst zu einem Baustein (Token) zusammen und prüft dann die Grammatik über diesen Bausteinen. Dann wäre <code>sin</code> ein einziges Zeichen des Alphabets.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Warum gibt es zu einer Sprache mehrere richtige Grammatiken?</strong> Vergleicht eure Lösungen zu den Uhrzeiten.
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Eine Grammatik ist eine Bauanleitung. Wie man die Regeln aufteilt und benennt, ist frei, solange am Ende genau dieselben Wörter herauskommen. Ob zwei Grammatiken wirklich dieselbe Sprache festlegen, ist übrigens im Allgemeinen nicht einmal von einem Computer entscheidbar. Der Prüfstand testet deshalb nur Stichproben.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Warum reicht es in 4c nicht, nur R3 zu ändern?</strong> Und welche Regel verhindert in Aufgabe 3 <code>02,99€</code>?
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>R3 (Betriebsnummer) „sieht“ nicht, welches Bundesland davor gewählt wurde; jede Regel kennt nur ihren eigenen Teil. Die Unterscheidung muss deshalb in der Regel stehen, die beides enthält: R1. Bei den Geldbeträgen verhindert die Regel Zahl die führende Null: Der Weg mit <code>0</code> endet sofort, der andere beginnt mit ZifferOhneNull.</p></template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🤖 1.5 Endliche Automaten</h4>
+                            <p>Die Werkstatt hat geprüft, ob ein Wort zur Grammatik passt. Wie macht ein Programm so etwas Schritt für Schritt? Ein endlicher Automat liest das Wort Zeichen für Zeichen und merkt sich nur, an welcher Stelle im „Gleisnetz“ er gerade ist.</p>
+                            <a class="btn btn-primary btn-sm" href="1-5-endliche-automaten.html">Weiter zu 1.5</a>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>⚙️ Grammatiken in der Praxis</h4>
+                            <p>Die Syntax von Java ist in einer Grammatik festgelegt, die der EBNF sehr ähnlich ist. Programme wie Parser-Generatoren bauen aus so einer Grammatik automatisch den Teil des Compilers, der deine Syntaxfehler findet.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="1-3-syntaxdiagramme.html">← 1.3 Syntaxdiagramme</a>
+                <a class="btn btn-primary" href="1-5-endliche-automaten.html">Weiter: 1.5 Endliche Automaten →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-1-4-ebnf-lsg.pdf">Lösung Blatt 1.4 (PDF)</a></p>
+                    <div class="tab-scroll">
+                        <table>
+                            <tr><th>Aufgabe</th><th>Lösung / Hinweis</th></tr>
+                            <tr><td>1</td><td><code>{…}</code> erlaubt auch keinmal, dann wäre ε eine Smileyfolge. <code>Mitte = ε | "-".</code></td></tr>
+                            <tr><td>2</td><td>R2 <code>";" "D" Augen Mitte Mund</code>, R3 <code>";" "D" ":" Mitte Mund</code>, R4 <code>";" "D" ":" "-" Mund</code>, R5 <code>";" "D" ":" "-" "("</code>. Eine Smileyfolge aus n Smileys braucht 1 + 4n Schritte, unabhängig von Nase und Reihenfolge.</td></tr>
+                            <tr><td>3</td><td><code>Geldbetrag = Zahl ["," Nachkommastellen] "€".</code> <code>Zahl = "0" | ZifferOhneNull {Ziffer}.</code> <code>Nachkommastellen = Ziffer Ziffer.</code> <code>Ziffer = "0" | ZifferOhneNull.</code></td></tr>
+                            <tr><td>4</td><td>a) gültig; nein (4 Ziffern); nein (<code>DE</code> fehlt). b) R1, R2, R3, 3 × R5, ohne Europa. c) R1 mit Alternative <code>Bundesland Betriebsnummer | "BY" BetriebsnummerBY</code>, <code>"BY"</code> aus R2 entfernen, R6/R7 neu.</td></tr>
+                            <tr><td>5</td><td>a) z. B. <code>24:00</code>, <code>19:60</code>, <code>12:30:75</code>. b) siehe Lösungsblatt; Sekunden über eine zweite Verwendung von Minute.</td></tr>
+                            <tr><td>6</td><td>a) ja, ja, nein (Summand fehlt), nein (<code>(</code> ohne Funktion). b) R1 und R2 über Term → Summand → Term. d) <code>Summand = "x" | [Funktion] "(" Term ")".</code></td></tr>
+                        </table>
+                    </div>
+                    <p class="mt-2"><strong>EBNF-Spiegel:</strong> Text und Diagramm derselben Smiley-Grammatik (wie auf dem Blatt) heben sich gegenseitig hervor. Bedeutungen werden bewusst nicht angezeigt: Die Schüler:innen erschließen den Merkkasten aus dem Vergleich. <code>Smiley {Smiley}</code> erscheint im Diagramm als Schleife (wie in 1.3), deshalb leuchtet beim Überfahren von <code>{Smiley}</code> die ganze Schleife.</p>
+                    <p><strong>Ableitungs-Spiel:</strong> Die Schüler:innen wählen selbst, welches Nichtterminal ersetzt wird und wodurch (bei Wiederholungen bis zu vier Durchläufe). Mit Zielwort meldet das Spiel, sobald es nicht mehr erreichbar ist.</p>
+                    <p><strong>Grammatik-Werkstatt:</strong> Ein Parser für EBNF (auch <code>"0" | … | "9"</code>, deutsche Anführungszeichen, Regelnummern R1 …) mit verständlichen Fehlermeldungen, Live-Syntaxdiagramm, Testfeld mit Fehlerstelle und „Möglich wäre hier: …“ (wie ein Compiler), Ableitungsbaum auf Wunsch, Zufallswörtern und Prüfstand. Die Prüfstände verwenden andere Wörter als die Teilaufgaben auf dem Blatt. Der Text bleibt im Browser (localStorage), „Auftrag zurücksetzen“ stellt den Ausgangstext wieder her. Die freie Werkstatt kann die Diagramme aus dem Baukasten in 1.3 als EBNF laden.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum &amp; Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

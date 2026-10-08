@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1.5 Endliche Automaten | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Endliche Automaten, Informatik 13: Zustände, Übergänge, Start- und Endzustand, Übergangstabelle, Lesekopf und RZK, Fangzustand, Nichtdeterminismus – mit Automaten-Simulator, Automaten-Baukasten und Java-Projekt mit animierter Darstellung.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/include/online-ide-embedded.css">
+    <script type="module" src="https://edu-mrh.de/embed/include/online-ide-embedded.js"></script>
+    <link rel="stylesheet" href="formale-sprachen.css">
+    <script defer src="formale-sprachen.js"></script>
+    <script defer src="grammatik.js"></script>
+    <script defer src="automaten.js"></script>
+    <script defer src="ide-coach.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🔗</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="../../informatik.html#jahrgang-13" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 1.5</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#lachen">😂 Lachen im Chat</a></li>
+            <li><a href="#automat">📝 Endlicher Automat</a></li>
+            <li><a href="#maschine">⚙️ Die Maschine</a></li>
+            <li><a href="#bausteine">🧱 Bausteine übersetzen</a></li>
+            <li><a href="#smiley">🛠️ Smiley-Automat</a></li>
+            <li><a href="#fang">🪤 Fangzustand</a></li>
+            <li><a href="#nea">🔀 Nichtdeterminismus</a></li>
+            <li><a href="#projekt">☕ Projekt Automat</a></li>
+            <li><a href="#erweitern">🛠️ Projekt erweitern</a></li>
+            <li><a href="#nachdenken">💡 Nachdenken</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Formale Sprachen</div>
+            <ul class="sidebar-menu">
+                <li><a href="../../informatik.html#jahrgang-13">Übersicht Klasse 13</a></li>
+                <li><a href="1-1-syntax-semantik.html">1.1 Syntax und Semantik</a></li>
+                <li><a href="1-2-formale-sprachen.html">1.2 Formale Sprachen</a></li>
+                <li><a href="1-3-syntaxdiagramme.html">1.3 Syntaxdiagramme</a></li>
+                <li><a href="1-4-ebnf.html">1.4 Die EBNF</a></li>
+                <li><a href="1-5-endliche-automaten.html">1.5 Endliche Automaten</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero fs-hero">
+                <h1 class="hero-title">1.5 Endliche Automaten</h1>
+                <p class="hero-subtitle">Formale Sprachen · Informatik 13 · 2 Stunden + Projekt (1–2 Stunden)</p>
+                <span class="fs-kompetenz">Du kannst: mit einem endlichen Automaten prüfen, ob ein Wort zu einer Sprache gehört, Automaten aus Grammatiken entwickeln, Fangzustand und Nichtdeterminismus erklären und einen Automaten als Übergangstabelle in Java umsetzen.</span>
+                <div class="fs-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-1-5-endliche-automaten.pdf">📝 Arbeitsblatt 1.5 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-1-5-endliche-automaten.tex">LaTeX-Quelle</a>
+                    <a class="btn btn-outline" href="#projekt">☕ zum Java-Projekt</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#lachen">😂 Einstieg</a><a class="p-note" href="#automat">📝 Festhalten</a><a class="p-investigate" href="#maschine">⚙️ Üben</a><a class="p-modify" href="#bausteine">🧱 Übersetzen</a><a class="p-make" href="#smiley">🛠️ Selbst bauen</a><a class="p-investigate" href="#fang">🪤 Fangzustand</a><a class="p-investigate" href="#nea">🔀 Nichtdeterminismus</a><a class="p-modify" href="#projekt">☕ Programmieren</a><a class="p-make" href="#erweitern">🛠️ Erweitern</a><a class="p-idee" href="#nachdenken">💡 Nachdenken</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="lachen" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">😂</span><h2>Einstieg<small>Aufgabe 1: Lachen im Chat</small></h2></div>
+                <div class="phase-body">
+                    <p>Eine Grammatik <em>erzeugt</em> Wörter. Ein <strong>endlicher Automat</strong> <em>prüft</em>, ob eine Eingabe dazugehört. Chat-Lachen <code>ha</code>, <code>haha</code>, … ist die Sprache L über A = {<code>h</code>, <code>a</code>} mit <code>Lachen = "h" "a" {"h" "a"}.</code> Der Automat unten beginnt bei <strong>Start</strong> und folgt für jedes Zeichen dem passenden Pfeil.</p>
+                    <div class="werk" data-automat-sim="lachen" data-tabelle="entdecken">
+                        <h4>Automaten-Simulator: Lachen</h4>
+                    </div>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 1a:</strong> Verfolge im Modus „Selbst verfolgen“ die Eingaben aus der Tabelle auf dem Blatt: Klicke jeweils den Zustand an, in den der Automat wechselt. Am Ende entscheidest du, ob die Eingabe zu L gehört. Trage Zustände und Ergebnis auf dem Blatt ein.</li>
+                        <li><strong>Aufgabe 1b:</strong> Vergleiche, in welchem Zustand die Eingaben enden, die zu L gehören, und wie dieser Zustand gezeichnet ist. Formuliere deine Vermutung.</li>
+                        <li>Unter dem Automaten füllt sich eine Übergangstabelle mit dem, was du beobachtet hast. Was bedeutet ein Feld mit „–“? Welche Felder sind nach allen sechs Eingaben noch offen?</li>
+                    </ol>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-5-endliche-automaten.pdf">📝 Blatt 1.5 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="automat" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Merkkasten „Endlicher Automat“</small></h2></div>
+                <div class="phase-body">
+                    <p>Ergänze den Merkkasten auf dem Blatt. Leitfragen: Wie viele Zustände hat ein Automat? Wie erkennt man Start- und Endzustand? Was sagt ein einzelner Pfeil aus, was die ganze Tabelle?</p>
+                    <div class="konzept">
+                        <h4>Merkkasten zum Vergleichen</h4>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Merkkasten" data-halten>
+                                <p>Ein <strong>endlicher (erkennender) Automat</strong> prüft, ob eine Zeichenkette zu einer Sprache gehört. Er hat ein <strong>Eingabealphabet</strong>, endlich viele <strong>Zustände</strong> (Kreise) mit genau einem <strong>Startzustand</strong> und mindestens einem <strong>Endzustand</strong> (doppelter Kreis) und <strong>Zustandsübergänge</strong> (Pfeile). Jeder Pfeil ist eine einfache Regel: <em>In Z0 wird h gelesen ⇒ wechsle nach Z1.</em> Die Zeichnung heißt <strong>Zustandsübergangsdiagramm</strong>, alle Regeln zusammen sind die <strong>Übergangstabelle</strong>.</p>
+                                <div class="tab-scroll"><table class="au-tab"><tr><th></th><th>h</th><th>a</th></tr><tr><th>Z0</th><td>Z1</td><td>–</td></tr><tr><th>Z1</th><td>–</td><td>Z2</td></tr><tr><th>Z2</th><td>Z1</td><td>–</td></tr></table></div>
+                                <p>1b: Die Eingabe ist ganz gelesen und der Automat steht in einem Endzustand (doppelter Kreis).</p>
+                            </template>
+                        </div>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-5-endliche-automaten.pdf">📝 Blatt 1.5 · Merkkasten „Endlicher Automat“</a></p>
+                </div>
+            </section>
+
+            <section id="maschine" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">⚙️</span><h2>Üben<small>Aufgabe 2: Der Automat als Maschine – ganze Zahlen</small></h2></div>
+                <div class="phase-body">
+                    <p>Ein Compiler prüft, ob in <code>x = 12-</code> rechts eine <strong>ganze Zahl</strong> steht. Der Automat erkennt ganze Zahlen ohne führende Nullen über A = {<code>-</code>, <code>0</code>, …, <code>9</code>}. Als <strong>Maschine</strong> gedacht: Ein <strong>Lesekopf</strong> ▲ liest Zeichen für Zeichen (gelesen grau, aktuell orange). Die noch ungelesenen Zeichen bilden die <strong>Restzeichenkette (RZK)</strong>. Die Anzeige „Aktuell“ zeigt den Zustand.</p>
+                    <div class="werk" data-automat-sim="zahlen" data-modus="zeigen">
+                        <h4>Automaten-Simulator: Ganze Zahlen</h4>
+                    </div>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 2a:</strong> Ergänze zuerst die Anzeigen der Maschine für <code>-12</code> auf dem Blatt. Spiele die Eingabe dann mit „Schritt ▶“ ab und vergleiche nach jedem Schritt Band, RZK und Anzeige.</li>
+                        <li><strong>Aufgabe 2b:</strong> Verfolge <code>-</code>, <code>12-</code> und <code>007</code> selbst (Modus „Selbst verfolgen“). Notiere die Zustandsfolgen und begründe bei einer Ablehnung.</li>
+                        <li><code>12-</code> kommt bis Z2, und Z2 ist ein Endzustand. Trotzdem wird die Eingabe abgelehnt. Warum? Und warum wird <code>-</code> abgelehnt, obwohl es keinen Abbruch gibt?</li>
+                    </ol>
+                    <div class="konzept">
+                        <h4>So arbeitet jeder Automat: vier einfache Regeln</h4>
+                        <p>Ergänze den Merkkasten auf dem Blatt: ① Wo beginnt der Automat? ② Was passiert mit und ohne passenden Pfeil? ③ Was macht jeder Übergang mit der RZK? ④ Wann wird akzeptiert?</p>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Merkkasten" data-halten>
+                                <p>① Start im <strong>Startzustand</strong> beim ersten Zeichen. ② Passender Pfeil: Wechsel in den Folgezustand. Kein passender Pfeil: <strong>Abbruch</strong>, abgelehnt. ③ Jeder Übergang verkürzt die RZK um <strong>ein Zeichen</strong>. ④ <strong>Akzeptiert</strong>, wenn die RZK <strong>leer</strong> ist <u>und</u> der Automat in einem <strong>Endzustand</strong> steht.</p>
+                                <p>2b: <code>-</code>: Z0, Z1, nein, Z1 ist kein Endzustand · <code>12-</code>: Z0, Z2, Z2, nein, Abbruch in Z2 · <code>007</code>: Z0, Z3, nein, Abbruch in Z3.</p>
+                            </template>
+                        </div>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-5-endliche-automaten.pdf">📝 Blatt 1.5 · Aufgabe 2 und Merkkasten „vier Regeln“</a></p>
+                </div>
+            </section>
+
+            <section id="bausteine" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">🧱</span><h2>Übersetzen<small>Aufgabe 3: Vom Syntaxdiagramm zum Automaten</small></h2></div>
+                <div class="phase-body">
+                    <p>Im Syntaxdiagramm stehen die Zeichen in Feldern, im Automaten an Pfeilen. Ein <strong>Zustand</strong> ist eine <strong>Stelle im Gleisnetz</strong>: vor, zwischen oder nach den Feldern. Aneinanderreihung und Alternative sind auf dem Blatt schon übersetzt. Zeichne Option und Wiederholung zuerst auf dem Blatt, dann baue sie hier nach.</p>
+                    <div class="sd-satz" data-diagramm>Option = ["a"] "b".
+Wiederholung = "a" {"b"}.</div>
+                    <p class="hinweiszeile">So baust du: „◯ Zustand setzen“ und in die Fläche klicken · „→ Pfeil ziehen“: erst den Start-, dann den Zielzustand anklicken, Zeichen eintippen · einen Zustand anklicken (✋), um ihn zum Endzustand zu machen. „▶ abspielen“ zeigt, wie dein Automat ein Wort liest, „✓ Prüfen“ testet ihn.</p>
+                    <div class="werk" data-automat-bau="option">
+                        <h4>Automaten-Baukasten: Option</h4>
+                    </div>
+                    <div class="werk" data-automat-bau="wiederholung">
+                        <h4>Automaten-Baukasten: Wiederholung</h4>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Zeichne die Automaten für Option und Wiederholung auf dem Blatt in die vorgegebenen Zustände.</li>
+                        <li>Baue sie in den beiden Baukästen nach, bis „✓ Prüfen“ kein Gegenbeispiel mehr findet.</li>
+                        <li>Ergänze die Regeln unter der Tabelle auf dem Blatt: Was wird aus einer Aneinanderreihung, einer Alternative, einer Option, einer Wiederholung?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 3">
+                        <template data-stufe="Tipp Option"><p>Bei <code>["a"] "b"</code> gibt es zwei Wege durch das Gleisnetz: mit <code>a</code> und ohne. Ohne <code>a</code> springt man von der Stelle vor <code>a</code> direkt zum Feld <code>b</code>. Welcher Pfeil muss also zusätzlich von Z0 ausgehen?</p></template>
+                        <template data-stufe="Tipp Wiederholung"><p>Nach einem <code>b</code> steht der Zug wieder an derselben Stelle wie davor: Er darf noch ein <code>b</code> lesen oder aufhören. Ein Pfeil, der am selben Zustand beginnt und endet, heißt Schleife.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>Option:</p><div data-automat-bild="option"></div><p>Wiederholung:</p><div data-automat-bild="wiederholung"></div><p>Aneinanderreihung: Pfeile hintereinander · Alternative: ein Pfeil mit allen Zeichen · Option: ein Extrapfeil überspringt · Wiederholung: Schleife am Zustand.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-5-endliche-automaten.pdf">📝 Blatt 1.5 · Aufgabe 3 (Seite 2)</a></p>
+                </div>
+            </section>
+
+            <section id="smiley" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Selbst bauen<small>Aufgabe 4: Der Smiley-Automat</small></h2></div>
+                <div class="phase-body">
+                    <p>Übersetze die Smiley-Grammatik aus 1.4 in einen Automaten. Im Automaten stehen nur noch Zeichen, keine Nichtterminale:</p>
+<pre class="jv">Smiley = Augen Mitte Mund.
+Augen = ":" | ";".
+Mitte = ["-"].
+Mund = ")" | "(" | "D" | "P" | "*".</pre>
+                    <div class="werk" data-automat-bau="smiley">
+                        <h4>Automaten-Baukasten: Smileys</h4>
+                    </div>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 4a:</strong> Baue den Automaten, bis „✓ Prüfen“ kein Gegenbeispiel mehr findet. Übertrage ihn dann ins Karokästchenfeld auf dem Blatt.</li>
+                        <li><strong>Aufgabe 4b:</strong> Teste <code>:-)</code>, <code>;D</code> und <code>:--)</code> und notiere die Zustandsfolgen.</li>
+                        <li><strong>Aufgabe 4c:</strong> Für <code>Smileyfolge = Smiley {Smiley}.</code> fehlt genau ein Pfeil. Kreuze „Prüfstand für 4c“ an und ergänze ihn. Zeichne ihn auf dem Blatt gestrichelt.</li>
+                        <li>Bewahre deinen Automaten auf: Im Projekt unten kannst du ihn mit „☕ als Java-Code“ übernehmen.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 4">
+                        <template data-stufe="Tipp 1"><p>Wie viele Stellen hat das Gleisnetz eines Smileys? Vor den Augen, zwischen Augen und Mitte, zwischen Mitte und Mund, nach dem Mund: Jede Stelle wird ein Zustand.</p></template>
+                        <template data-stufe="Tipp 2"><p>Mitte ist eine Option: Wie in Aufgabe 3 überspringt ein Extrapfeil das <code>-</code>. Er trägt die Zeichen, die nach der übersprungenen Nase kommen dürfen.</p></template>
+                        <template data-stufe="Tipp zu c)"><p>Nach einem fertigen Smiley darf ein neuer beginnen. Der neue Smiley beginnt mit Augen. Wo im Automaten stehst du nach dem Mund, und wo landest du nach den Augen eines Smileys?</p></template>
+                        <template data-stufe="Lösung" data-halten><div data-automat-bild="smiley" data-mit-tabelle></div><p>Der obere Pfeil Z3 → Z1 (<code>:</code>, <code>;</code>) ist der Pfeil aus 4c. 4b: <code>:-)</code> Z0, Z1, Z2, Z3 ✓ · <code>;D</code> Z0, Z1, Z3 ✓ · <code>:--)</code> Z0, Z1, Z2, Abbruch ✗.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-5-endliche-automaten.pdf">📝 Blatt 1.5 · Aufgabe 4</a></p>
+                </div>
+            </section>
+
+            <section id="fang" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🪤</span><h2>Üben<small>Aufgabe 5: Vollständige Automaten und der Fangzustand</small></h2></div>
+                <div class="phase-body">
+                    <p>Bisher bricht der Automat ab, wenn es keinen passenden Pfeil gibt. Ein <strong>Fangzustand</strong> ZF fängt stattdessen alle Abbrüche auf. Im Baukasten steht der Zahlen-Automat aus Aufgabe 2.</p>
+                    <div class="werk" data-automat-bau="zahlen" data-tabelle-versteckt>
+                        <h4>Automaten-Baukasten: Ganze Zahlen mit Fangzustand</h4>
+                    </div>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 5a:</strong> Trage die Regeln des Automaten in die Übergangstabelle auf dem Blatt ein. Erst danach: „Tabelle zeigen“ zum Vergleichen.</li>
+                        <li><strong>Aufgabe 5b:</strong> Ergänze einen Zustand ZF (Zustand setzen, dann anklicken und umbenennen) und alle fehlenden Pfeile, bis die Eigenschaft „vollständig“ erfüllt ist und „✓ Prüfen“ kein Gegenbeispiel findet. Vergiss die Zeile von ZF selbst nicht.</li>
+                        <li><strong>Aufgabe 5c, d:</strong> Spiele <code>12-</code> ab. Wie endet die Eingabe jetzt? Welcher Zustand hat keinen Pfeil nach ZF?</li>
+                        <li><strong>Aufgabe 5e</strong> (mündlich): Endet eine Ablehnung jetzt immer in ZF? Probiere <code>-</code> und das leere Wort.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 5">
+                        <template data-stufe="Tipp"><p>In der Tabelle siehst du jedes leere Feld (–). Jedes davon braucht einen Pfeil nach ZF. Mehrere Zeichen passen auf einen Pfeil: <code>-, 0</code> oder <code>0-9</code>. Und aus ZF kommt man nie wieder heraus.</p></template>
+                        <template data-stufe="Lösung" data-halten><div data-automat-bild="zahlen" data-mit-tabelle></div><p>5c: <code>12-</code> endet ohne Abbruch in ZF und wird abgelehnt. 5d: Z0 hat keinen Pfeil nach ZF. 5e: Nein: <code>-</code> endet in Z1, das leere Wort in Z0, beides keine Endzustände.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-5-endliche-automaten.pdf">📝 Blatt 1.5 · Aufgabe 5</a></p>
+                </div>
+            </section>
+
+            <section id="nea" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🔀</span><h2>Entdecken<small>Aufgabe 6: Nichtdeterministische Automaten – ungerade Binärzahlen</small></h2></div>
+                <div class="phase-body">
+                    <p>Dieser Automat soll ungerade Binärzahlen ohne führende Nullen erkennen: <code>1</code>, <code>11</code>, <code>101</code>, … Schau dir die Pfeile mit <code>1</code> genau an.</p>
+                    <div class="werk" data-automat-sim="binaer">
+                        <h4>Automaten-Simulator: Ungerade Binärzahlen</h4>
+                    </div>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 6a:</strong> Was ist neu an diesem Automaten?</li>
+                        <li><strong>Aufgabe 6b:</strong> Verfolge <code>11</code> im Modus „Selbst verfolgen“: Bei jeder Wahl nimmst du einen möglichen Weg. Starte so oft neu, bis du alle Wege gefunden hast. Trage sie auf dem Blatt ein.</li>
+                        <li><strong>Aufgabe 6c:</strong> Wird <code>11</code> akzeptiert? Formuliere eine Regel, wann ein solcher Automat ein Wort akzeptiert.</li>
+                        <li>Schalte auf „Vorführen“: Jetzt werden alle Wege gleichzeitig verfolgt. Welche Zustände leuchten nach <code>1</code>, nach <code>10</code>, nach <code>101</code>? Warum wird <code>10</code> abgelehnt?</li>
+                    </ol>
+                    <div class="konzept">
+                        <h4>Merkkasten „Eigenschaften von Automaten“ zum Vergleichen</h4>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Merkkasten" data-halten><p><strong>deterministisch</strong>: in jedem Zustand für jedes Zeichen höchstens ein Übergang. <strong>nichtdeterministisch</strong>: mehrere Übergänge für ein Zeichen möglich; akzeptiert, wenn mindestens ein Weg bei leerer RZK in einem Endzustand endet. <strong>vollständig</strong>: in jedem Zustand für jedes Zeichen mindestens ein Übergang (kein leeres Feld). Fehlende Übergänge führen in einen <strong>Fangzustand</strong>: kein Endzustand, wird nie verlassen. Ein Automat prüft nur die Syntax, nicht ob es <code>TOR-TE 3</code> (1.3) gibt.</p>
+                            <p>6b: Z0, Z2, Abbruch (RZK nicht leer) · Z0, Z1, Z1 (kein Endzustand) · Z0, Z1, Z2 (RZK leer und Endzustand). 6c: ja, ein erfolgreicher Weg genügt.</p></template>
+                        </div>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-5-endliche-automaten.pdf">📝 Blatt 1.5 · Aufgabe 6 und Merkkasten „Eigenschaften“</a></p>
+                </div>
+            </section>
+
+            <section id="projekt" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">☕</span><h2>Programmieren<small>Projekt Automat: die Übergangstabelle in Java (P1 bis P4)</small></h2></div>
+                <div class="phase-body">
+                    <p>Ein Programm speichert einen Automaten am einfachsten als <strong>Übergangstabelle</strong>: ein zweidimensionales Array <code>int[][] tabelle</code>, so wie die Adjazenzmatrix in der 11. Klasse (<a href="../../11/graphen/3-2-umsetzung-graph.html">Graphen 3.2</a>). Jede Zeile gehört zu einem Zustand, jede Spalte zu einem Zeichen des Alphabets, im Feld steht die Nummer des Folgezustands. Die Klasse <code>Automatenbild</code> zeichnet den Automaten und lässt beim Prüfen eines Worts den Lesekopf wandern und die Pfeile aufleuchten.</p>
+                    <div class="code-paar">
+                        <div>
+                            <h4>Vom Alphabet zur Spalte</h4>
+<pre class="jv">String alphabet = "ha";
+alphabet.indexOf('h')   <span class="c">// 0: Spalte von h</span>
+alphabet.indexOf('a')   <span class="c">// 1: Spalte von a</span>
+alphabet.indexOf('x')   <span class="c">// -1: nicht im Alphabet</span>
+
+tabelle[2][0]           <span class="c">// Folgezustand von Z2 mit h</span>
+                        <span class="c">// -1: kein Übergang</span></pre>
+                        </div>
+                        <div>
+                            <h4>Schritte von pruefe(wort)</h4>
+<pre class="jv">① Start im Startzustand Z0.
+③ Für jedes Zeichen des Worts (Lesekopf i):
+   ② Folgezustand bestimmen.
+      Kein passender Pfeil (-1):
+      Abbruch, abgelehnt.
+④ RZK leer: akzeptiert, wenn der aktuelle
+   Zustand ein Endzustand ist.</pre>
+                        </div>
+                    </div>
+                    <ol class="aufgaben">
+                        <li><strong>P1:</strong> Starte das Projekt unverändert. Was meldet die IDE (Fehler-Reiter, Zeile in <code>Automat.java</code>)? Erzeuge im Konstruktor die beiden Arrays und setze jedes Feld der Tabelle auf -1 (TODO 1).</li>
+                        <li><strong>P2:</strong> Ergänze <code>uebergangHinzufuegen</code> (TODO 2). Danach zeichnet das Bild alle Pfeile, und <code>tabelleAusgeben()</code> zeigt in der Konsole die Tabelle. Vergleiche sie mit dem Merkkasten.</li>
+                        <li><strong>P3:</strong> Ergänze <code>folgezustand</code> (TODO 3): Es liest ein Feld der Tabelle, ohne bei fremden Zeichen abzustürzen.</li>
+                        <li><strong>P4:</strong> Ergänze <code>pruefe</code> nach den vier Regeln (TODO 4). Sage vorher voraus, was bei den vier Eingaben im Hauptprogramm herauskommt, und vergleiche mit Aufgabe 1a.</li>
+                    </ol>
+                    <div class="stolper"><strong>Stolperstein:</strong> Warum -1 und nicht einfach 0 für „kein Übergang“? Ein neues <code>int</code>-Array ist mit 0 gefüllt, und 0 ist die Nummer von Z0. Und: <code>'h'</code> (einfache Anführungszeichen) ist ein <code>char</code>, also <em>ein</em> Zeichen, <code>"h"</code> ein <code>String</code>.</div>
+                    <div class="ide-block" id="ide">
+                        <div class="ide-kopf"><h3>Projekt Automat</h3></div>
+                        <div class="java-online" style="width:100%;height:720px" data-java-online="{ 'id': 'i13-15-automat', 'speed': 1000000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true, 'withErrorList': true, 'jsonFilename': '13-1-5 Automat.json', 'enableFileAccess': true, 'enableRunExitStatusAccess': true }">
+<script type="text/plain" title="Hauptprogramm.java">
+World welt = new World(800, 500);
+welt.setBackgroundColor("#ffffff");
+
+// P1: Der Lach-Automat aus Aufgabe 1 (Blatt 1.5)
+Automat lachen = new Automat(3, "ha");      // Zustände Z0, Z1, Z2; Alphabet {h, a}
+lachen.uebergangHinzufuegen(0, 'h', 1);
+lachen.uebergangHinzufuegen(1, 'a', 2);
+lachen.uebergangHinzufuegen(2, 'h', 1);
+lachen.setEndzustand(2);
+Automatenbild bild = new Automatenbild(lachen);
+lachen.tabelleAusgeben();
+
+// P4: Eingaben prüfen (die Liste darfst du ändern)
+String[] eingaben = {"ha", "haha", "hah", "aha"};
+for (int i = 0; i < eingaben.length; i++) {
+   boolean ok = lachen.pruefe(eingaben[i]);
+   println(eingaben[i] + ": " + ok);
+}
+
+// Selbst bauen (Website): eigene Automaten hier anlegen, z. B. die ganzen Zahlen aus Aufgabe 2.
+// Tipp: Erst den Automaten fertig bauen, dann new Automatenbild(…) aufrufen.
+</script>
+<script type="text/plain" title="Automat.java">
+/**
+ * Ein endlicher (deterministischer) Automat, gespeichert als Übergangstabelle.
+ * Der Startzustand ist immer Z0.
+ * Suche (Strg + F) nach "TODO" und ergänze den Code.
+ */
+public class Automat {
+   private String alphabet;        // Eingabealphabet, z. B. "ha": Spalte 0 steht für 'h', Spalte 1 für 'a'
+   private int anzahlZustaende;    // Zustände Z0, Z1, Z2, …
+   private int[][] tabelle;        // tabelle[zustand][spalte] = Folgezustand, -1 = kein Übergang
+   private boolean[] endzustand;   // endzustand[z] ist true, wenn Zz ein Endzustand ist
+   private Automatenbild bild;     // Anzeige; null, wenn ohne Bild (z. B. in den Tests)
+
+   public Automat(int anzahlZustaende, String alphabet) {
+      this.anzahlZustaende = anzahlZustaende;
+      this.alphabet = alphabet;
+      // TODO 1 (P1): tabelle und endzustand erzeugen.
+      //              Danach alle Felder der Tabelle auf -1 setzen: Am Anfang gibt es keinen Übergang.
+
+   }
+
+   // TODO 2 (P2): Die Regel „In Zvon wird zeichen gelesen => wechsle nach Znach“ in die Tabelle eintragen.
+   //              Steht das Zeichen nicht im Alphabet, wird nichts eingetragen, sondern eine Meldung ausgegeben.
+   public void uebergangHinzufuegen(int von, char zeichen, int nach) {
+
+   }
+
+   // TODO 3 (P3): Folgezustand aus der Tabelle lesen.
+   //              -1, wenn es keinen Übergang gibt oder das Zeichen nicht im Alphabet steht.
+   public int folgezustand(int zustand, char zeichen) {
+      return -1;
+   }
+
+   // TODO 4 (P4): Prüft, ob wort zur Sprache gehört (die vier Regeln von Blatt 1.5).
+   public boolean pruefe(String wort) {
+      zeigeStart(wort);
+      // ① Start im Startzustand Z0
+
+      // ③ Zeichen für Zeichen lesen: Lesekopf i, das Zeichen ist wort.charAt(i)
+      //    ② Folgezustand bestimmen und anzeigen: zeigeSchritt(zustand, neu, i);
+      //       Kein passender Pfeil (-1): Abbruch, abgelehnt.
+
+      // ④ Akzeptiert, wenn die RZK leer ist und der Automat in einem Endzustand steht.
+      //    Vor jedem return das Ergebnis anzeigen: zeigeErgebnis(true); bzw. zeigeErgebnis(false);
+      return false;
+   }
+
+   // ---------- Selbst bauen (Website) ----------
+
+   // TODO 5: Jedes Zeichen von zeichen als eigenen Übergang eintragen,
+   //         z. B. uebergaengeHinzufuegen(0, "123456789", 2);
+   public void uebergaengeHinzufuegen(int von, String zeichen, int nach) {
+
+   }
+
+   // TODO 6: true, wenn es in jedem Zustand für jedes Zeichen einen Übergang gibt (vollständig)
+   public boolean istVollstaendig() {
+      return false;
+   }
+
+   // TODO 7: Jedes leere Feld der Tabelle führt danach in den Fangzustand fang.
+   public void vervollstaendigen(int fang) {
+
+   }
+
+   // ---------- Ab hier muss nichts verändert werden ----------
+
+   // Macht Zz zum Endzustand.
+   public void setEndzustand(int z) {
+      endzustand[z] = true;
+   }
+
+   public boolean istEndzustand(int z) {
+      return endzustand[z];
+   }
+
+   public int getAnzahlZustaende() {
+      return anzahlZustaende;
+   }
+
+   public String getAlphabet() {
+      return alphabet;
+   }
+
+   // Inhalt eines Felds der Tabelle (für Bild und Tests)
+   public int getEintrag(int zustand, int spalte) {
+      return tabelle[zustand][spalte];
+   }
+
+   // Gibt die Übergangstabelle aus wie auf Blatt 1.5 (– = kein Übergang, (E) = Endzustand).
+   public void tabelleAusgeben() {
+      String kopf = "     ";
+      for (int s = 0; s < alphabet.length(); s++) {
+         kopf = kopf + "  " + alphabet.charAt(s) + " ";
+      }
+      println(kopf);
+      for (int z = 0; z < anzahlZustaende; z++) {
+         String zeile = "Z" + z;
+         if (endzustand[z]) {
+            zeile = zeile + "(E)";
+         } else {
+            zeile = zeile + "   ";
+         }
+         for (int s = 0; s < alphabet.length(); s++) {
+            if (tabelle[z][s] == -1) {
+               zeile = zeile + "  – ";
+            } else {
+               zeile = zeile + " Z" + tabelle[z][s] + " ";
+            }
+         }
+         println(zeile);
+      }
+      println("");
+   }
+
+   public void setBild(Automatenbild bild) {
+      this.bild = bild;
+   }
+
+   private void zeigeStart(String wort) {
+      if (bild != null) {
+         bild.zeigeStart(wort);
+      }
+   }
+
+   private void zeigeSchritt(int alt, int neu, int i) {
+      if (bild != null) {
+         bild.zeigeSchritt(alt, neu, i);
+      }
+   }
+
+   private void zeigeErgebnis(boolean akzeptiert) {
+      if (bild != null) {
+         bild.zeigeErgebnis(akzeptiert);
+      }
+   }
+}
+</script>
+<script type="text/plain" title="Automatenbild.java">
+/**
+ * Zeichnet einen Automaten als Zustandsübergangsdiagramm und zeigt, wie er ein Wort liest:
+ * Der Lesekopf wandert über das Eingabeband, Pfeile und Zustände leuchten auf.
+ * Erst den Automaten fertig bauen, dann das Bild erzeugen.
+ * Muss nicht verändert werden.
+ */
+public class Automatenbild {
+   private Automat automat;
+   private int n;                   // Anzahl der Zustände
+   private double[] x;              // Mittelpunkte der Zustände
+   private double[] y;
+   private Circle[] kreise;
+   private Circle[] innen;          // innerer Kreis der Endzustände (sonst null)
+   private Pfeil[][] pfeile;        // pfeile[von][nach], null = kein Pfeil
+   private Rectangle[] felder;      // Eingabeband
+   private Text[] zeichen;
+   private Polygon lesekopf;
+   private Text rzk;
+   private Text meldung;
+   private Pfeil leuchtend;         // zuletzt benutzter Pfeil
+   private int aktuell;             // aktueller Zustand
+   private boolean abgebrochen;
+   private String wort = "";
+   private int pause = 600;         // Millisekunden pro Schritt
+   private double r = 24;           // Radius eines Zustands
+
+   public Automatenbild(Automat automat) {
+      World.clear();
+      this.automat = automat;
+      automat.setBild(this);
+      n = automat.getAnzahlZustaende();
+      x = new double[n];
+      y = new double[n];
+      double abstand = 150;
+      if (n > 1) {
+         abstand = Math.min(150, 620.0 / (n - 1));
+      }
+      for (int i = 0; i < n; i++) {
+         x[i] = 400 - abstand * (n - 1) / 2 + i * abstand;
+         y[i] = 300;
+      }
+      zeichnePfeile();
+      zeichneZustaende();
+      felder = new Rectangle[0];
+      zeichen = new Text[0];
+      meldung = new Text(400, 470, 24, "");
+      rzk = new Text(40, 128, 20, "");
+      rzk.setFillColor("#334155");
+   }
+
+   // Langsamer oder schneller abspielen (Millisekunden pro Schritt)
+   public void setPause(int millisekunden) {
+      pause = millisekunden;
+   }
+
+   // ---------- Diagramm zeichnen ----------
+
+   private void zeichneZustaende() {
+      kreise = new Circle[n];
+      innen = new Circle[n];
+      for (int i = 0; i < n; i++) {
+         kreise[i] = new Circle(x[i], y[i], r);
+         kreise[i].setBorderColor("#0369a1");
+         kreise[i].setBorderWidth(2);
+         if (automat.istEndzustand(i)) {
+            innen[i] = new Circle(x[i], y[i], r - 6);
+            innen[i].setBorderColor("#0369a1");
+            innen[i].setBorderWidth(2);
+         }
+         Text name = new Text(x[i], y[i], 20, "Z" + i);
+         name.setFillColor("#0c4a6e");
+         zentriere(name, x[i], y[i]);
+         faerbe(i, "#e0f2fe");
+      }
+      // Startpfeil an Z0
+      Line start = new Line(x[0] - r - 46, y[0], x[0] - r - 2, y[0]);
+      start.setBorderColor("#334155");
+      start.setBorderWidth(2);
+      double[] ecken = {x[0] - r, y[0], x[0] - r - 12, y[0] - 6, x[0] - r - 12, y[0] + 6};
+      Polygon spitze = new Polygon(true, ecken);
+      spitze.setFillColor("#334155");
+      spitze.setBorderWidth(0);
+      Text t = new Text(x[0] - r - 50, y[0] - 26, 16, "Start");
+      t.setFillColor("#475569");
+   }
+
+   private void faerbe(int z, String farbe) {
+      kreise[z].setFillColor(farbe);
+      if (innen[z] != null) {
+         innen[z].setFillColor(farbe);
+      }
+   }
+
+   private void zeichnePfeile() {
+      pfeile = new Pfeil[n][n];
+      for (int von = 0; von < n; von++) {
+         for (int nach = 0; nach < n; nach++) {
+            String text = beschriftung(von, nach);
+            if (!text.equals("")) {
+               if (von == nach) {
+                  pfeile[von][nach] = schleife(von, text);
+               } else {
+                  pfeile[von][nach] = bogen(von, nach, text);
+               }
+            }
+         }
+      }
+      for (int von = 0; von < n; von++) {
+         for (int nach = 0; nach < n; nach++) {
+            if (pfeile[von][nach] != null) {
+               pfeile[von][nach].beschriftungNachVorne();
+            }
+         }
+      }
+   }
+
+   // Alle Zeichen, mit denen man von "von" nach "nach" kommt, z. B. "h" oder "1–9"
+   private String beschriftung(int von, int nach) {
+      String alphabet = automat.getAlphabet();
+      String text = "";
+      int s = 0;
+      while (s < alphabet.length()) {
+         if (automat.getEintrag(von, s) == nach) {
+            int ende = s;
+            while (ende + 1 < alphabet.length() && automat.getEintrag(von, ende + 1) == nach
+                   && Character.isLetterOrDigit(alphabet.charAt(ende)) && Character.isLetterOrDigit(alphabet.charAt(ende + 1))) {
+               ende++;
+            }
+            if (!text.equals("")) {
+               text = text + ", ";
+            }
+            if (ende - s >= 2) {
+               text = text + alphabet.charAt(s) + "–" + alphabet.charAt(ende);
+            } else {
+               for (int k = s; k <= ende; k++) {
+                  if (k > s) {
+                     text = text + ", ";
+                  }
+                  text = text + alphabet.charAt(k);
+               }
+            }
+            s = ende + 1;
+         } else {
+            s++;
+         }
+      }
+      return text;
+   }
+
+   // Pfeil zwischen zwei Zuständen: vorwärts oben herum, rückwärts unten herum
+   private Pfeil bogen(int von, int nach, String text) {
+      int weite = Math.abs(nach - von);
+      boolean gegenrichtung = !beschriftung(nach, von).equals("");
+      double hoehe = 0;
+      if (weite == 1 && gegenrichtung) {
+         hoehe = 22;
+      } else if (weite > 1) {
+         hoehe = Math.min(150, 65 + 25 * (weite - 1));   // über Zustände (und ihre Schleifen) hinweg
+      }
+      if (nach < von) {
+         hoehe = -hoehe;
+      }
+      double kx = (x[von] + x[nach]) / 2;      // Kontrollpunkt der Kurve
+      double ky = y[von] - 2 * hoehe;
+      double[] a = randpunkt(von, kx, ky);
+      double[] b = randpunkt(nach, kx, ky);
+      int stuecke = 16;
+      double[] punkte = new double[2 * (stuecke + 1)];
+      for (int k = 0; k <= stuecke; k++) {
+         double t = 1.0 * k / stuecke;
+         punkte[2 * k] = (1 - t) * (1 - t) * a[0] + 2 * (1 - t) * t * kx + t * t * b[0];
+         punkte[2 * k + 1] = (1 - t) * (1 - t) * a[1] + 2 * (1 - t) * t * ky + t * t * b[1];
+      }
+      double tx = punkte[stuecke];
+      double ty = punkte[stuecke + 1] - 16;
+      if (hoehe < 0) {
+         ty = punkte[stuecke + 1] + 16;
+      }
+      return new Pfeil(punkte, text, tx, ty);
+   }
+
+   // Punkt auf dem Rand von Zustand z in Richtung (zx, zy)
+   private double[] randpunkt(int z, double zx, double zy) {
+      double dx = zx - x[z];
+      double dy = zy - y[z];
+      double l = Math.sqrt(dx * dx + dy * dy);
+      double[] p = {x[z] + r * dx / l, y[z] + r * dy / l};
+      return p;
+   }
+
+   // Schleife oben am Zustand
+   private Pfeil schleife(int z, String text) {
+      double mx = x[z];
+      double my = y[z] - r - 12;
+      int stuecke = 16;
+      double[] punkte = new double[2 * (stuecke + 1)];
+      for (int k = 0; k <= stuecke; k++) {
+         double winkel = Math.toRadians(140 + 260.0 * k / stuecke);
+         punkte[2 * k] = mx + 18 * Math.cos(winkel);
+         punkte[2 * k + 1] = my + 18 * Math.sin(winkel);
+      }
+      return new Pfeil(punkte, text, mx, my - 32);
+   }
+
+   // ---------- Ablauf zeigen ----------
+
+   // Eingabeband neu aufbauen, Lesekopf auf das erste Zeichen, Startzustand leuchtet
+   public void zeigeStart(String wort) {
+      this.wort = wort;
+      for (int i = 0; i < felder.length; i++) {
+         felder[i].destroy();
+         zeichen[i].destroy();
+      }
+      if (lesekopf != null) {
+         lesekopf.destroy();
+      }
+      if (leuchtend != null) {
+         leuchtend.leuchten(false);
+         leuchtend = null;
+      }
+      for (int z = 0; z < n; z++) {
+         faerbe(z, "#e0f2fe");
+      }
+      felder = new Rectangle[wort.length()];
+      zeichen = new Text[wort.length()];
+      double breite = Math.min(40, 720.0 / Math.max(1, wort.length()));
+      for (int i = 0; i < wort.length(); i++) {
+         felder[i] = new Rectangle(40 + i * breite, 40, breite, 40);
+         felder[i].setFillColor("#ffffff");
+         felder[i].setBorderColor("#475569");
+         felder[i].setBorderWidth(2);
+         zeichen[i] = new Text(0, 0, 22, "" + wort.charAt(i));
+         zeichen[i].setFillColor("#0f172a");
+         zentriere(zeichen[i], 40 + i * breite + breite / 2, 60);
+      }
+      double[] ecken = {40 + breite / 2, 84, 40 + breite / 2 - 8, 98, 40 + breite / 2 + 8, 98};
+      lesekopf = new Polygon(true, ecken);
+      lesekopf.setFillColor("#0f172a");
+      lesekopf.setBorderWidth(0);
+      if (wort.length() == 0) {
+         lesekopf.setVisible(false);
+         zeichen = new Text[0];
+      } else {
+         felder[0].setFillColor("#fdba74");
+      }
+      aktuell = 0;
+      abgebrochen = false;
+      faerbe(0, "#fde047");
+      zeigeRZK(0);
+      meldung.setText("Eingabe: " + wort);
+      if (wort.length() == 0) {
+         meldung.setText("Eingabe: ε (leeres Wort)");
+      }
+      meldung.setFillColor("#334155");
+      zentriere(meldung, 400, 470);
+      SystemTools.pause(pause);
+   }
+
+   // Ein Schritt: Zeichen i wird gelesen, der Automat wechselt von alt nach neu (-1: kein Pfeil)
+   public void zeigeSchritt(int alt, int neu, int i) {
+      if (i < 0 || i >= wort.length()) {
+         return;
+      }
+      if (leuchtend != null) {
+         leuchtend.leuchten(false);
+      }
+      felder[i].setFillColor("#fdba74");
+      setzeLesekopf(i);
+      if (neu < 0 || neu >= n || pfeile[alt][neu] == null) {
+         felder[i].setFillColor("#fecdd3");
+         faerbe(alt, "#fecdd3");
+         abgebrochen = true;
+         meldung.setText("Abbruch: In Z" + alt + " gibt es keinen Pfeil für " + wort.charAt(i));
+         meldung.setFillColor("#be123c");
+         zentriere(meldung, 400, 470);
+         SystemTools.pause(pause);
+         return;
+      }
+      leuchtend = pfeile[alt][neu];
+      leuchtend.leuchten(true);
+      fahre(leuchtend.getPunkte());
+      faerbe(alt, "#e0f2fe");
+      faerbe(neu, "#fde047");
+      aktuell = neu;
+      felder[i].setFillColor("#e2e8f0");
+      if (i + 1 < wort.length()) {
+         felder[i + 1].setFillColor("#fdba74");
+         setzeLesekopf(i + 1);
+      } else {
+         lesekopf.setVisible(false);
+      }
+      zeigeRZK(i + 1);
+      SystemTools.pause(pause);
+   }
+
+   // Ergebnis anzeigen: akzeptiert oder abgelehnt
+   public void zeigeErgebnis(boolean akzeptiert) {
+      if (akzeptiert) {
+         meldung.setText("akzeptiert: RZK leer und Z" + aktuell + " ist Endzustand");
+         meldung.setFillColor("#15803d");
+         faerbe(aktuell, "#86efac");
+      } else if (abgebrochen) {
+         meldung.setText(meldung.getText() + " – abgelehnt");
+      } else {
+         meldung.setText("abgelehnt: Z" + aktuell + " ist kein Endzustand");
+         meldung.setFillColor("#be123c");
+      }
+      zentriere(meldung, 400, 470);
+      SystemTools.pause(2 * pause);
+   }
+
+   // Text mittig auf (mx, my) setzen (moveTo setzt bei Texten die linke obere Ecke)
+   private void zentriere(Text t, double mx, double my) {
+      t.moveTo(mx - t.getWidth() / 2, my - t.getHeight() / 2);
+   }
+
+   // Lesekopf unter Feld i schieben
+   private void setzeLesekopf(int i) {
+      double breite = felder[i].getWidth();
+      lesekopf.moveTo(40 + i * breite + breite / 2, 91);
+   }
+
+   private void zeigeRZK(int ab) {
+      if (ab >= wort.length()) {
+         rzk.setText("RZK: leer");
+      } else {
+         rzk.setText("RZK: " + wort.substring(ab));
+      }
+   }
+
+   // Ein Punkt fährt den Pfeil entlang
+   private void fahre(double[] punkte) {
+      Circle punkt = new Circle(punkte[0], punkte[1], 8);
+      punkt.setFillColor("#ea580c");
+      punkt.setBorderColor("#ffffff");
+      for (int k = 2; k < punkte.length; k = k + 2) {
+         punkt.moveTo(punkte[k], punkte[k + 1]);
+         SystemTools.pause(pause / 25);
+      }
+      punkt.destroy();
+   }
+}
+</script>
+<script type="text/plain" title="Pfeil.java">
+/**
+ * Ein Pfeil im Zustandsübergangsdiagramm: Linie (aus kurzen Stücken), Spitze und Beschriftung.
+ * Muss nicht verändert werden.
+ */
+public class Pfeil {
+   private Line[] striche;
+   private Polygon spitze;
+   private Text text;
+   private Rectangle grund;     // weißer Hintergrund der Beschriftung
+   private double[] punkte;     // x0, y0, x1, y1, … entlang des Pfeils
+
+   public Pfeil(double[] punkte, String beschriftung, double textX, double textY) {
+      this.punkte = punkte;
+      int n = punkte.length;
+      striche = new Line[n / 2 - 1];
+      for (int k = 0; k < striche.length; k++) {
+         striche[k] = new Line(punkte[2 * k], punkte[2 * k + 1], punkte[2 * k + 2], punkte[2 * k + 3]);
+      }
+      double ex = punkte[n - 2];
+      double ey = punkte[n - 1];
+      double dx = ex - punkte[n - 4];
+      double dy = ey - punkte[n - 3];
+      double laenge = Math.sqrt(dx * dx + dy * dy);
+      dx = dx / laenge;
+      dy = dy / laenge;
+      double[] ecken = {ex, ey, ex - 13 * dx + 6 * dy, ey - 13 * dy - 6 * dx, ex - 13 * dx - 6 * dy, ey - 13 * dy + 6 * dx};
+      spitze = new Polygon(true, ecken);
+      spitze.setBorderWidth(0);
+      text = new Text(textX, textY, 20, beschriftung);
+      double b = text.getWidth() + 8;
+      double h = text.getHeight();
+      grund = new Rectangle(textX - b / 2, textY - h / 2, b, h);
+      grund.setFillColor("#ffffff");
+      grund.setBorderWidth(0);
+      text.moveTo(textX - text.getWidth() / 2, textY - h / 2);
+      text.bringToFront();
+      leuchten(false);
+   }
+
+   // Pfeil hervorheben (an = true) oder normal zeichnen
+   public void leuchten(boolean an) {
+      String farbe = "#334155";
+      double breite = 2;
+      if (an) {
+         farbe = "#ea580c";
+         breite = 5;
+      }
+      for (int k = 0; k < striche.length; k++) {
+         striche[k].setBorderColor(farbe);
+         striche[k].setBorderWidth(breite);
+      }
+      spitze.setFillColor(farbe);
+      if (an) {
+         text.setFillColor("#c2410c");
+      } else {
+         text.setFillColor("#0f172a");
+      }
+   }
+
+   // Beschriftung über alle Linien legen
+   public void beschriftungNachVorne() {
+      grund.bringToFront();
+      text.bringToFront();
+   }
+
+   public double[] getPunkte() {
+      return punkte;
+   }
+}
+</script>
+<script type="text/plain" title="AutomatTest.java" data-online-ide="{ 'readOnly': true }">
+/**
+ * Selbsttest des Projekts Automat. Bitte nicht verändern!
+ * Starten: Klick auf das kleine Dreieck links neben "@Test"
+ * (ganz oben: alle Tests) oder auf der Website "Tests starten".
+ */
+public class AutomatTest {
+
+   // der Lach-Automat aus Aufgabe 1, ohne Bild
+   private Automat lachen() {
+      Automat a = new Automat(3, "ha");
+      a.uebergangHinzufuegen(0, 'h', 1);
+      a.uebergangHinzufuegen(1, 'a', 2);
+      a.uebergangHinzufuegen(2, 'h', 1);
+      a.setEndzustand(2);
+      return a;
+   }
+
+   @Test
+   public void tabelleAnfangsLeer() {
+      Automat a = new Automat(3, "ha");
+      for (int z = 0; z < 3; z++) {
+         for (int s = 0; s < 2; s++) {
+            Assertions.assertEquals(-1, a.getEintrag(z, s), "TODO 1: In einem neuen Automaten muss jedes Feld der Tabelle -1 sein (Zeile " + z + ", Spalte " + s + ").");
+         }
+      }
+   }
+
+   @Test
+   public void endzustandSetzen() {
+      Automat a = new Automat(3, "ha");
+      a.setEndzustand(2);
+      Assertions.assertTrue(a.istEndzustand(2), "TODO 1: Nach setEndzustand(2) muss Z2 ein Endzustand sein.");
+      Assertions.assertFalse(a.istEndzustand(0), "TODO 1: Z0 ist kein Endzustand.");
+   }
+
+   @Test
+   public void uebergangEintragen() {
+      Automat a = lachen();
+      Assertions.assertEquals(1, a.getEintrag(0, 0), "TODO 2: (Z0, h) muss nach Z1 führen.");
+      Assertions.assertEquals(2, a.getEintrag(1, 1), "TODO 2: (Z1, a) muss nach Z2 führen.");
+      Assertions.assertEquals(-1, a.getEintrag(0, 1), "TODO 2: (Z0, a) hat keinen Übergang und muss -1 bleiben.");
+   }
+
+   @Test
+   public void fremdesZeichenEintragen() {
+      Automat a = new Automat(2, "ab");
+      a.uebergangHinzufuegen(0, 'x', 1);
+      Assertions.assertEquals(-1, a.getEintrag(0, 0), "TODO 2: Ein Zeichen, das nicht im Alphabet steht, darf nichts eintragen.");
+      Assertions.assertEquals(-1, a.getEintrag(0, 1), "TODO 2: Ein Zeichen, das nicht im Alphabet steht, darf nichts eintragen.");
+   }
+
+   @Test
+   public void folgezustandLesen() {
+      Automat a = lachen();
+      Assertions.assertEquals(1, a.folgezustand(0, 'h'), "TODO 3: Von Z0 mit h geht es nach Z1.");
+      Assertions.assertEquals(1, a.folgezustand(2, 'h'), "TODO 3: Von Z2 mit h geht es nach Z1.");
+      Assertions.assertEquals(-1, a.folgezustand(0, 'a'), "TODO 3: Von Z0 mit a gibt es keinen Übergang: -1.");
+   }
+
+   @Test
+   public void folgezustandFremdesZeichen() {
+      Assertions.assertEquals(-1, lachen().folgezustand(0, 'x'), "TODO 3: x steht nicht im Alphabet: -1 (und kein Absturz).");
+   }
+
+   @Test
+   public void pruefeAkzeptiert() {
+      Automat a = lachen();
+      Assertions.assertTrue(a.pruefe("ha"), "TODO 4: ha muss akzeptiert werden.");
+      Assertions.assertTrue(a.pruefe("hahaha"), "TODO 4: hahaha muss akzeptiert werden.");
+   }
+
+   @Test
+   public void pruefeKeinEndzustand() {
+      Assertions.assertFalse(lachen().pruefe("hah"), "TODO 4: hah endet in Z1, das ist kein Endzustand.");
+   }
+
+   @Test
+   public void pruefeAbbruch() {
+      Automat a = lachen();
+      Assertions.assertFalse(a.pruefe("aha"), "TODO 4: aha bricht in Z0 ab (kein Pfeil für a).");
+      Assertions.assertFalse(a.pruefe("haa"), "TODO 4: haa bricht in Z2 ab (kein Pfeil für a).");
+      Assertions.assertFalse(a.pruefe("hax"), "TODO 4: x steht nicht im Alphabet: abgelehnt, ohne Absturz.");
+   }
+
+   @Test
+   public void pruefeLeeresWort() {
+      Assertions.assertFalse(lachen().pruefe(""), "TODO 4: Das leere Wort endet in Z0, kein Endzustand.");
+      Automat b = new Automat(1, "a");
+      b.setEndzustand(0);
+      Assertions.assertTrue(b.pruefe(""), "TODO 4: Ist Z0 ein Endzustand, wird das leere Wort akzeptiert.");
+   }
+
+   @Test
+   public void mehrereUebergaenge() {
+      Automat a = new Automat(3, "-0123456789");
+      a.uebergaengeHinzufuegen(0, "123456789", 2);
+      Assertions.assertEquals(2, a.folgezustand(0, '1'), "TODO 5: (Z0, 1) muss nach Z2 führen.");
+      Assertions.assertEquals(2, a.folgezustand(0, '9'), "TODO 5: (Z0, 9) muss nach Z2 führen.");
+      Assertions.assertEquals(-1, a.folgezustand(0, '0'), "TODO 5: (Z0, 0) steht nicht in \"123456789\" und muss -1 bleiben.");
+   }
+
+   @Test
+   public void vollstaendigErkennen() {
+      Automat a = lachen();
+      Assertions.assertFalse(a.istVollstaendig(), "TODO 6: Im Lach-Automaten fehlen Übergänge, er ist nicht vollständig.");
+      Automat b = new Automat(1, "ab");
+      b.uebergangHinzufuegen(0, 'a', 0);
+      b.uebergangHinzufuegen(0, 'b', 0);
+      Assertions.assertTrue(b.istVollstaendig(), "TODO 6: Hier gibt es für jedes Zeichen einen Übergang: vollständig.");
+   }
+
+   @Test
+   public void fangzustandErgaenzen() {
+      Automat a = new Automat(4, "ha");
+      a.uebergangHinzufuegen(0, 'h', 1);
+      a.uebergangHinzufuegen(1, 'a', 2);
+      a.uebergangHinzufuegen(2, 'h', 1);
+      a.setEndzustand(2);
+      a.vervollstaendigen(3);
+      Assertions.assertEquals(3, a.folgezustand(0, 'a'), "TODO 7: Das leere Feld (Z0, a) muss nach ZF = Z3 führen.");
+      Assertions.assertEquals(1, a.folgezustand(0, 'h'), "TODO 7: Vorhandene Übergänge dürfen sich nicht ändern.");
+      Assertions.assertEquals(3, a.folgezustand(3, 'h'), "TODO 7: Auch der Fangzustand selbst führt in sich zurück.");
+      Assertions.assertTrue(a.istVollstaendig(), "TODO 7: Danach ist der Automat vollständig.");
+      Assertions.assertFalse(a.pruefe("haa"), "TODO 7: haa endet jetzt im Fangzustand und wird abgelehnt.");
+   }
+}
+</script>
+</div>
+                        <p class="ide-downloads">💾 Eigenen Stand sichern: Diskettensymbol in der IDE-Leiste („Workspace in Datei speichern“), der Name <code>13-1-5 Automat.json</code> ist schon vorgeschlagen. Laden: Ordnersymbol daneben. · <a href="Online-IDE/13-1-5%20Automat.json" download>Ausgangsprojekt für online-ide.de</a></p>
+                    </div>
+                    <div class="coach" data-coach="i13-15-automat"></div>
+                    <div class="lw" data-loesungsweg="TODO 1: Tabelle anlegen">
+                        <template data-stufe="Tipp"><p>Die Tabelle hat <code>anzahlZustaende</code> Zeilen und <code>alphabet.length()</code> Spalten. Zum Füllen brauchst du zwei geschachtelte Schleifen wie beim Mosaik in der 10. Klasse oder bei <code>printAdja()</code> in der 11.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv">tabelle = new int[anzahlZustaende][alphabet.length()];
+endzustand = new boolean[anzahlZustaende];
+for (int z = 0; z &lt; anzahlZustaende; z++) {
+   for (int s = 0; s &lt; alphabet.length(); s++) {
+      tabelle[z][s] = -1;
+   }
+}</pre></template>
+                    </div>
+                    <div class="lw" data-loesungsweg="TODO 2 und 3: Eintragen und Lesen">
+                        <template data-stufe="Tipp"><p>Erst die Spalte bestimmen: <code>int spalte = alphabet.indexOf(zeichen);</code> Ist sie -1, steht das Zeichen nicht im Alphabet. Sonst ist <code>tabelle[von][spalte]</code> das Feld der Regel.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv">public void uebergangHinzufuegen(int von, char zeichen, int nach) {
+   int spalte = alphabet.indexOf(zeichen);
+   if (spalte == -1) {
+      println("Das Zeichen " + zeichen + " steht nicht im Alphabet " + alphabet + ".");
+   } else {
+      tabelle[von][spalte] = nach;
+   }
+}
+
+public int folgezustand(int zustand, char zeichen) {
+   int spalte = alphabet.indexOf(zeichen);
+   if (spalte == -1) {
+      return -1;
+   }
+   return tabelle[zustand][spalte];
+}</pre></template>
+                    </div>
+                    <div class="lw" data-loesungsweg="TODO 4: pruefe()">
+                        <template data-stufe="Tipp 1"><p>Eine Variable <code>zustand</code> merkt sich, wo der Automat gerade steht (①). Eine <code>for</code>-Schleife mit <code>i</code> von 0 bis <code>wort.length() - 1</code> ist der Lesekopf (③). Das Zeichen unter dem Lesekopf ist <code>wort.charAt(i)</code>.</p></template>
+                        <template data-stufe="Tipp 2"><p>In der Schleife: Folgezustand in einer neuen Variable <code>neu</code> bestimmen und anzeigen (<code>zeigeSchritt(zustand, neu, i);</code>). Ist <code>neu</code> -1, Ergebnis anzeigen und <code>false</code> zurückgeben. Sonst <code>zustand = neu;</code>. Nach der Schleife entscheidet <code>endzustand[zustand]</code> (④).</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv">public boolean pruefe(String wort) {
+   zeigeStart(wort);
+   int zustand = 0;                                       <span class="c">// ①</span>
+   for (int i = 0; i &lt; wort.length(); i++) {              <span class="c">// ③</span>
+      int neu = folgezustand(zustand, wort.charAt(i));    <span class="c">// ②</span>
+      zeigeSchritt(zustand, neu, i);
+      if (neu == -1) {                                    <span class="c">// ② kein passender Pfeil</span>
+         zeigeErgebnis(false);
+         return false;
+      }
+      zustand = neu;
+   }
+   zeigeErgebnis(endzustand[zustand]);                    <span class="c">// ④</span>
+   return endzustand[zustand];
+}</pre></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="erweitern" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Selbst bauen<small>Projekt erweitern: eigene Automaten, Fangzustand (TODO 5 bis 7)</small></h2></div>
+                <div class="phase-body">
+                    <ol class="aufgaben">
+                        <li><strong>Ganze Zahlen:</strong> Ergänze <code>uebergaengeHinzufuegen(von, zeichen, nach)</code> (TODO 5), damit du nicht jede Ziffer einzeln eintragen musst. Baue dann im Hauptprogramm den Zahlen-Automaten aus Aufgabe 2 und teste <code>-12</code>, <code>-</code>, <code>12-</code>, <code>007</code>.</li>
+                        <li><strong>Smileys:</strong> Übernimm deinen Automaten aus Aufgabe 4: Im Baukasten auf „☕ als Java-Code“ klicken, kopieren und ins Hauptprogramm einfügen.</li>
+                        <li><strong>Fangzustand:</strong> Ergänze <code>istVollstaendig()</code> (TODO 6) und <code>vervollstaendigen(fang)</code> (TODO 7). Lege den Zahlen-Automaten mit einem Zustand mehr an, rufe <code>vervollstaendigen(4)</code> auf und vergleiche die Ausgabe von <code>tabelleAusgeben()</code> mit deiner Tabelle zu Aufgabe 5. Achte im Bild darauf, wo <code>12-</code> jetzt endet.</li>
+                        <li><strong>Knobeln:</strong> Baue im Knobel-Baukasten unten einen Automaten, prüfe ihn dort und lass ihn dann im Projekt laufen.</li>
+                    </ol>
+                    <div class="werk" data-automat-bau="knobel">
+                        <h4>Automaten-Baukasten: Knobelaufgaben</h4>
+                    </div>
+                    <div class="tipp"><strong>Tipp:</strong> Erst den Automaten fertig bauen (alle Übergänge, Endzustände, <code>vervollstaendigen</code>), dann <code>new Automatenbild(…)</code> aufrufen: Das Bild zeichnet, was zu diesem Zeitpunkt in der Tabelle steht. Mit <code>bild.setPause(200);</code> läuft die Animation schneller.</div>
+                    <div class="lw" data-loesungsweg="TODO 5 bis 7">
+                        <template data-stufe="Tipp"><p>TODO 5: Schleife über alle Zeichen des Strings, für jedes <code>uebergangHinzufuegen</code> aufrufen. TODO 6 und 7: wieder zwei geschachtelte Schleifen über die ganze Tabelle wie in TODO 1; ein einziges -1 genügt für „nicht vollständig“.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv">public void uebergaengeHinzufuegen(int von, String zeichen, int nach) {
+   for (int i = 0; i &lt; zeichen.length(); i++) {
+      uebergangHinzufuegen(von, zeichen.charAt(i), nach);
+   }
+}
+
+public boolean istVollstaendig() {
+   for (int z = 0; z &lt; anzahlZustaende; z++) {
+      for (int s = 0; s &lt; alphabet.length(); s++) {
+         if (tabelle[z][s] == -1) {
+            return false;
+         }
+      }
+   }
+   return true;
+}
+
+public void vervollstaendigen(int fang) {
+   for (int z = 0; z &lt; anzahlZustaende; z++) {
+      for (int s = 0; s &lt; alphabet.length(); s++) {
+         if (tabelle[z][s] == -1) {
+            tabelle[z][s] = fang;
+         }
+      }
+   }
+}</pre>
+<pre class="jv"><span class="c">// Ganze Zahlen mit Fangzustand Z4</span>
+Automat zahlen = new Automat(5, "-0123456789");
+zahlen.uebergangHinzufuegen(0, '-', 1);
+zahlen.uebergaengeHinzufuegen(0, "123456789", 2);
+zahlen.uebergangHinzufuegen(0, '0', 3);
+zahlen.uebergaengeHinzufuegen(1, "123456789", 2);
+zahlen.uebergaengeHinzufuegen(2, "0123456789", 2);
+zahlen.setEndzustand(2);
+zahlen.setEndzustand(3);
+zahlen.vervollstaendigen(4);
+Automatenbild bild2 = new Automatenbild(zahlen);</pre></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="nachdenken" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Besprecht mündlich</small></h2></div>
+                <div class="phase-body">
+                    <p>Überlegt zu zweit. Die Hinweise sind zum Nachlesen <em>nach</em> dem Gespräch: Halte dazu den Knopf gedrückt.</p>
+                    <div class="idee"><strong>Warum kann die Tabelle im Projekt keinen nichtdeterministischen Automaten speichern? Was müsste man ändern?</strong> Probiere den Java-Export mit einem nichtdeterministischen Automaten.
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>In jedem Feld steht genau eine Zahl, also höchstens ein Folgezustand. Für mehrere bräuchte jedes Feld eine Menge von Zuständen, z. B. ein <code>boolean[]</code> oder eine Liste, und <code>pruefe</code> müsste sich alle aktuellen Zustände gleichzeitig merken, so wie der Simulator im Modus „Vorführen“.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Gibt es zu jedem nichtdeterministischen Automaten einen deterministischen, der dieselbe Sprache erkennt?</strong> Schau dir an, welche Zustandsmengen beim Vorführen der Binärzahlen auftreten.
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Ja. Jede Menge, die beim gleichzeitigen Verfolgen aller Wege auftreten kann, wird ein Zustand des neuen Automaten: {Z0}, {Z1, Z2}, {Z1}. Endzustände sind die Mengen, die einen alten Endzustand enthalten. Weil es nur endlich viele Mengen gibt, bleibt der Automat endlich (Potenzmengenkonstruktion). Probiere es im Knobel-Baukasten: „Ungerade Binärzahlen, aber deterministisch“.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Kann ein endlicher Automat die Palindrome aus 1.3 (Aufgabe 5) oder korrekt geklammerte Terme aus 1.4 erkennen?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Nein. Ein endlicher Automat merkt sich nur seinen Zustand, also eine von endlich vielen Möglichkeiten. Um zu prüfen, ob hinten das Gegenstück zu vorne steht oder alle Klammern geschlossen werden, müsste er sich beliebig viel merken. Genau dafür brauchte es in der Grammatik die Rekursion. Mit einem zusätzlichen Stapelspeicher (Kellerautomat) geht es.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Warum reichen bei den Kennzeichen aus 1.3 endlich viele Zustände, obwohl es Millionen Kennzeichen gibt?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Der Automat merkt sich nicht das Kennzeichen, sondern nur, an welcher Stelle im Gleisnetz er gerade ist: „zwei Buchstaben des Bezirks gelesen“, „Bindestrich gelesen“ … Diese Stellen sind endlich viele, egal welche Buchstaben es waren. Ein Pfeil mit <code>A–Z</code> deckt alle Buchstaben auf einmal ab.</p></template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🔍 Reguläre Ausdrücke</h4>
+                            <p>Die Sprachen, die ein endlicher Automat erkennt, lassen sich auch als kurze Muster schreiben. Probiere im Hauptprogramm: <code>println("-12".matches("0|-?[1-9][0-9]*"));</code> Dahinter arbeitet ein Automat.</p>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>⚙️ Automaten im Compiler</h4>
+                            <p>Ein Compiler zerlegt deinen Java-Code zuerst mit Automaten in Bausteine: Zahlen, Namen, <code>if</code>, <code>{</code> … Erst danach prüft er mit der Grammatik, ob die Bausteine richtig zusammengesetzt sind, und meldet sonst einen Syntaxfehler.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="1-4-ebnf.html">← 1.4 Die EBNF</a>
+                <a class="btn btn-primary" href="../../informatik.html#jahrgang-13">Übersicht Klasse 13 →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-1-5-endliche-automaten-lsg.pdf">Lösung Blatt 1.5 (PDF)</a>
+                        <a class="btn btn-tex btn-sm" href="Online-IDE/LSG%2013-1-5%20Automat.json" download>Lösungsprojekt (JSON für online-ide.de)</a>
+                        <a class="btn btn-outline btn-sm" href="Online-IDE/13-1-5%20Automat.json" download>Ausgangsprojekt (JSON)</a></p>
+                    <div class="tab-scroll">
+                        <table>
+                            <tr><th>Aufgabe</th><th>Lösung / Hinweis</th></tr>
+                            <tr><td>1</td><td><code>haha</code>: Z0, Z1, Z2, Z1, Z2 ja · <code>hah</code>: Z0, Z1, Z2, Z1 nein · <code>haa</code>: Z0, Z1, Z2, kein Pfeil, nein · <code>aha</code>: Z0, kein Pfeil, nein · ε: Z0, nein. 1b: Eingabe ganz gelesen und Endzustand.</td></tr>
+                            <tr><td>2</td><td>a) Z0, Z1, Z2, Z2, akzeptiert. b) <code>-</code>: Z0, Z1, Z1 kein Endzustand · <code>12-</code>: Z0, Z2, Z2, Abbruch in Z2 · <code>007</code>: Z0, Z3, Abbruch in Z3.</td></tr>
+                            <tr><td>3</td><td>Option: Z0 –a→ Z1 –b→ Z2 und Z0 –b→ Z2. Wiederholung: Z0 –a→ Z1, Schleife b an Z1.</td></tr>
+                            <tr><td>4</td><td>Z0 –:,;→ Z1 –-→ Z2 –Mund→ Z3, Z1 –Mund→ Z3; 4c: Z3 –:,;→ Z1.</td></tr>
+                            <tr><td>5</td><td>Tabelle siehe Lösungsblatt; leere Felder nach ZF, ZF-Zeile ganz ZF. <code>12-</code> endet in ZF; Z0 hat keinen Pfeil nach ZF; eine Ablehnung kann auch in Z0 oder Z1 enden.</td></tr>
+                            <tr><td>6</td><td>Z0 und Z1 haben für <code>1</code> je zwei Pfeile. Wege für <code>11</code>: Z0, Z2 (Abbruch, RZK nicht leer); Z0, Z1, Z1 (kein Endzustand); Z0, Z1, Z2 (akzeptiert). Ein erfolgreicher Weg genügt.</td></tr>
+                        </table>
+                    </div>
+                    <p class="mt-2"><strong>Simulator:</strong> Im Modus „Selbst verfolgen“ klicken die Schüler:innen den Folgezustand bzw. „kein passender Pfeil“ selbst an und entscheiden am Ende, ob akzeptiert wird; die Seite gibt nur Rückmeldung, die Begründung (Endzustand) bleibt Aufgabe 1b. Die Ergebnistabelle füllt sich nur mit richtig verfolgten Eingaben, die Übergangstabelle (Aufgabe 1) nur mit beobachteten Übergängen. Bei den Binärzahlen zählt die Seite gefundene Wege; „Vorführen“ zeigt alle Wege gleichzeitig als Zustandsmengen (Vorbereitung auf die Potenzmengenkonstruktion im Nachdenken-Teil).</p>
+                    <p><strong>Automaten-Baukasten:</strong> Zustände setzen, verschieben, Pfeile ziehen (mehrere Zeichen pro Pfeil, Bereiche wie <code>0-9</code>). Übergangstabelle und Eigenschaften (deterministisch, vollständig) laufen live mit; bei Aufgabe 5 ist die Tabelle zunächst ausgeblendet, damit 5a nicht vorweggenommen wird. „✓ Prüfen“ testet Stichproben und vergleicht anschließend <em>alle</em> Wörter bis zu einer festen Länge mit der gesuchten Sprache und nennt Gegenbeispiele. „☕ als Java-Code“ erzeugt Aufrufe für das Projekt (nur für deterministische Automaten, sonst ein Denkanstoß). Alles bleibt im Browser (localStorage).</p>
+                    <p><strong>Projekt Automat</strong> (ID <code>i13-15-automat</code>, Aufbau wie das Graphen-Projekt in Klasse 11): <code>Automat</code> speichert die Übergangstabelle <code>int[][] tabelle</code> (−1 = kein Übergang) und <code>boolean[] endzustand</code>, Startzustand ist immer Z0. TODO 1 bis 4 (P1 bis P4) folgen den vier Regeln des Blatts (① bis ④ stehen als Kommentare in <code>pruefe</code>), TODO 5 bis 7 sind Erweiterungen. <code>Automatenbild</code> und <code>Pfeil</code> müssen nicht verändert werden: Das Bild liest die Tabelle über <code>getEintrag</code>, ordnet die Zustände in einer Reihe an (Vorwärtspfeile oben, Rückwärtspfeile unten, Schleifen oben) und zeigt beim Prüfen Band, Lesekopf, RZK, den aufleuchtenden Pfeil mit einem wandernden Punkt und das Ergebnis. In den Tests gibt es kein Bild (<code>bild == null</code>), deshalb laufen sie ohne Pausen. <code>AutomatTest</code> (13 JUnit-Tests, schreibgeschützt) und der Coach unter der IDE zeigen den Fortschritt je TODO. Beim ersten Start bricht das Programm in <code>setEndzustand</code> ab, weil <code>endzustand</code> noch <code>null</code> ist; die IDE meldet das als „Interner Fehler … null“, der Coach übersetzt es.</p>
+                    <p><strong>Ein Arbeitsblatt zum Projekt gibt es (noch) nicht:</strong> Blatt 1.5 ist mit den Aufgaben 1 bis 6 voll. Die Projektaufgaben P1 bis P4 beziehen sich auf die Merkkästen des Blatts (Übergangstabelle, vier Regeln).</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum &amp; Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>
