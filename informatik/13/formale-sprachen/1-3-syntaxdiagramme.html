@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1.3 Syntaxdiagramme | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Syntaxdiagramme, Informatik 13: Grammatik, Startsymbol, Terminale und Nichtterminale, Ableitungsbaum, rekursive Regeln – mit Gleisnetz-Fahrt zum Wörter-Erzeugen und Diagramm-Baukasten mit Prüfstand.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="formale-sprachen.css">
+    <script defer src="formale-sprachen.js"></script>
+    <script defer src="grammatik.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🔗</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="../../informatik.html#jahrgang-13" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 1.3</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#gleisnetz">🚂 Gleisnetz-Fahrt</a></li>
+            <li><a href="#grammatik">📝 Grammatik</a></li>
+            <li><a href="#baum">🌳 Ableitungsbaum</a></li>
+            <li><a href="#rgb">🛠️ RGB-Farbcodes</a></li>
+            <li><a href="#kennzeichen">🛠️ Autokennzeichen</a></li>
+            <li><a href="#rekursion">🔁 Rekursive Regeln</a></li>
+            <li><a href="#nachdenken">💡 Nachdenken</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Formale Sprachen</div>
+            <ul class="sidebar-menu">
+                <li><a href="../../informatik.html#jahrgang-13">Übersicht Klasse 13</a></li>
+                <li><a href="1-1-syntax-semantik.html">1.1 Syntax und Semantik</a></li>
+                <li><a href="1-2-formale-sprachen.html">1.2 Formale Sprachen</a></li>
+                <li><a href="1-3-syntaxdiagramme.html">1.3 Syntaxdiagramme</a></li>
+                <li><a href="1-4-ebnf.html">1.4 Die EBNF</a></li>
+                <li><a href="1-5-endliche-automaten.html">1.5 Endliche Automaten</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero fs-hero">
+                <h1 class="hero-title">1.3 Syntaxdiagramme</h1>
+                <p class="hero-subtitle">Formale Sprachen · Informatik 13 · 2 Stunden</p>
+                <span class="fs-kompetenz">Du kannst: Syntaxdiagramme lesen, damit Wörter ableiten und Ableitungsbäume zeichnen sowie eigene Diagramme aus Aneinanderreihung, Alternative, Option, Wiederholung und Rekursion bauen.</span>
+                <div class="fs-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-1-3-syntaxdiagramme.pdf">📝 Arbeitsblatt 1.3 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-1-3-syntaxdiagramme.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#gleisnetz">🚂 Einstieg</a><a class="p-note" href="#grammatik">📝 Festhalten</a><a class="p-investigate" href="#baum">🌳 Üben</a><a class="p-make" href="#rgb">🛠️ Selbst bauen</a><a class="p-make" href="#kennzeichen">🛠️ Selbst bauen</a><a class="p-modify" href="#rekursion">🔁 Rekursion</a><a class="p-idee" href="#nachdenken">💡 Nachdenken</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="gleisnetz" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🚂</span><h2>Einstieg<small>Aufgabe 1: Mit dem Zug durchs Gleisnetz</small></h2></div>
+                <div class="phase-body">
+                    <p>Im Smiley-Regelwerk aus 1.2 gab es nur ein paar Schalter. Die fünf Diagramme unten legen dagegen genau fest, welche Wörter über A₃ = {<code>:</code>, <code>;</code>, <code>-</code>, <code>)</code>, <code>(</code>, <code>D</code>, <code>P</code>, <code>*</code>} Smileyfolgen sind. Lies sie wie ein <strong>Gleisnetz</strong>: Der Zug startet links bei <strong>Smileyfolge</strong> und folgt den Pfeilen. An jeder Weiche darfst du wählen.</p>
+                    <ul>
+                        <li>Ein <strong>rundes</strong> Feld schreibt sein Zeichen ins Wort.</li>
+                        <li>Ein <strong>eckiges</strong> Feld heißt: Fahre das Diagramm mit diesem Namen ab und kehre danach hierher zurück.</li>
+                    </ul>
+                    <div class="werk" data-gleisnetz="smiley">
+                        <h4>Gleisnetz-Fahrt: Smileyfolgen</h4>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Fahre drei verschiedene Smileyfolgen. Beobachte die Zeile „Du fährst gerade in“: Was passiert, wenn der Zug auf ein eckiges Feld trifft, und wann kommt er zurück?</li>
+                        <li><strong>Aufgabe 1a:</strong> Kreuze zuerst auf dem Blatt an, welche Wörter gültig sind. Prüfe dann jedes Wort: Trage es als Zielwort ein und versuche, es zu fahren. Wo bleibt der Zug bei den ungültigen Wörtern stecken? Das ist deine Begründung.</li>
+                        <li>Erledige die Fahraufträge unter dem Gleisnetz.</li>
+                        <li><strong>Aufgabe 1b:</strong> Jedes Diagramm zeigt einen von vier Grundbausteinen. Was bewirkt die Weiche bei <em>Augen</em>, was der Umweg bei <em>Mitte</em>, was die Schleife bei <em>Smileyfolge</em>? Ordne auf dem Blatt zu.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 1a: Wo bleibt der Zug stecken?">
+                        <template data-stufe="Tipp"><p>Fahre das ungültige Wort, so weit es geht. An der Stelle, an der es nicht weitergeht, leuchten die Felder, zwischen denen du wählen darfst. Welches Zeichen bräuchtest du dort, und warum ist es nicht dabei? Kann der Zug vielleicht das Diagramm verlassen, obwohl das Wort noch nicht fertig ist – oder fehlt am Ende noch etwas?</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-3-syntaxdiagramme.pdf">📝 Blatt 1.3 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="grammatik" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Grammatik und Syntaxdiagramm</small></h2></div>
+                <div class="phase-body">
+                    <p>Ergänze den Merkkasten auf dem Blatt. Diese Fragen helfen dir:</p>
+                    <ul>
+                        <li>Bei welchem Diagramm beginnt jede Fahrt?</li>
+                        <li>Welche Felder hinterlassen etwas im Wort, welche nie? Welche Form haben sie?</li>
+                        <li>Was steht in den runden Feldern, was in den eckigen?</li>
+                    </ul>
+                    <div class="konzept">
+                        <h4>Merkkasten zum Vergleichen</h4>
+                        <p>Erst selbst ausfüllen, dann vergleichen.</p>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Merkkasten" data-halten>
+                                <p>Eine formale Sprache wird durch eine <strong>Grammatik</strong> eindeutig festgelegt. Sie besteht aus einem <strong>Startsymbol</strong> (hier: Smileyfolge) und <strong>Regeln</strong>, wie daraus gültige Wörter gebildet werden. Die Regeln enthalten <strong>Terminale</strong> (Zeichen des Alphabets, im Diagramm rund, stehen im Wort) und <strong>Nichtterminale</strong> (Namen anderer Regeln, im Diagramm eckig, stehen nie im Wort). Eine Darstellungsform der Regeln ist das <strong>Syntaxdiagramm</strong>.</p>
+                                <p><strong>Grundbausteine (Aufgabe 1b):</strong> Smiley: Aneinanderreihung (Augen, Mitte, Mund genau in dieser Reihenfolge) · Augen, Mund: Alternative (genau ein Zweig) · Mitte: Option (<code>-</code> einmal oder keinmal) · Smileyfolge: Wiederholung (Smiley mindestens einmal, beliebig oft).</p>
+                            </template>
+                        </div>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-3-syntaxdiagramme.pdf">📝 Blatt 1.3 · Merkkasten „Grammatik und Syntaxdiagramm“</a></p>
+                </div>
+            </section>
+
+            <section id="baum" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🌳</span><h2>Üben<small>Aufgabe 2: Der Ableitungsbaum wächst mit</small></h2></div>
+                <div class="phase-body">
+                    <p>Bei jeder Fahrt entsteht nebenbei ein Baum. Fährt der Zug in ein eckiges Feld, bekommt das Diagramm, in dem er gerade ist, ein neues Kind. Schreibt ein rundes Feld ein Zeichen, hängt das Zeichen unten an. Noch offene Nichtterminale sind gestrichelt.</p>
+                    <div class="werk" data-gleisnetz="smiley" data-baum>
+                        <h4>Gleisnetz-Fahrt mit Ableitungsbaum</h4>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Vervollständige zuerst den Baum auf dem Blatt (2a). Fahre dann <code>:-);D</code> und vergleiche.</li>
+                        <li>Lies die Blätter deines Baums von links nach rechts (2b). Was fällt dir auf?</li>
+                        <li>Fahre <code>;D</code>. Was hängt unter <em>Mitte</em>, und warum (2c)?</li>
+                        <li>Fahre ein Wort aus drei Smileys. Wie viele Blätter hat der Baum, wie viele Nichtterminale? Ergänze dann den Merksatz unter Aufgabe 2.</li>
+                    </ol>
+                    <div class="stolper"><strong>Stolperstein:</strong> Ein Nichtterminal ganz unten im Baum heißt: Hier ist die Fahrt noch nicht fertig. Ein fertiger Ableitungsbaum hat nur Zeichen oder ε ganz unten.</div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-3-syntaxdiagramme.pdf">📝 Blatt 1.3 · Aufgabe 2</a></p>
+                </div>
+            </section>
+
+            <section id="rgb" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Selbst bauen<small>Aufgabe 3: RGB-Farbcodes</small></h2></div>
+                <div class="phase-body">
+                    <div class="tipp"><strong>So gehst du vor:</strong> ① Beispiele zerlegen ② gleiche Teile benennen, je Teil eine Regel ③ Bausteine wählen ④ testen.</div>
+                    <p>Im <strong>Diagramm-Baukasten</strong> klickst du Syntaxdiagramme zusammen, statt sie zu zeichnen: Klicke auf ein Feld (am Anfang: „＋ leer“), tippe oben ein, was in das neue Feld soll, wähle rund oder eckig und dann <em>＋ dahinter</em>, <em>⑂ als Alternative</em> usw. Eine Option oder Schleife legst du um das ausgewählte Feld. Mit <em>⬚ Auswahl erweitern</em> wählst du einen ganzen Baustein aus. Der Prüfstand testet dein Diagramm mit Stichproben.</p>
+                    <div class="werk" data-baukasten="rgb">
+                        <h4>Diagramm-Baukasten: RGB-Code</h4>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Zerlege <code>#F3BC0D</code> auf dem Blatt in gleich aufgebaute Teile und benenne sie (3a).</li>
+                        <li>Baue die Diagramme <strong>RGB-Code</strong>, <strong>Farbwert</strong> und <strong>HexZiffer</strong>, bis der erste Prüfstand ganz grün ist. Zeichne sie dann auf das Blatt (3b).</li>
+                        <li>Erweitere RGB-Code um die Kurzform <code>#F3B</code>, bis auch der zweite Prüfstand stimmt (3c).</li>
+                        <li>Besprecht zu zweit: Was haben <code>#F3B</code> und <code>#FF33BB</code> gemeinsam, was nicht (3d)?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 3: RGB-Code">
+                        <template data-stufe="Tipp 1"><p>Was kommt in <code>#F3BC0D</code> dreimal gleich aufgebaut vor? Für jede Art von Teil legst du mit „＋ neue Regel“ ein eigenes Diagramm an und setzt es im Startdiagramm als eckiges Feld ein.</p></template>
+                        <template data-stufe="Tipp 2"><p>Eine Hexadezimalziffer ist eine Alternative aus 16 Zeichen. Damit du nicht 16 Felder einzeln anlegen musst: Wähle „Zeichenbereich“ und tippe <code>0-9 A-F</code>.</p></template>
+                        <template data-stufe="Tipp zu c)"><p>Jetzt gibt es zwei mögliche Wege durch RGB-Code. Klicke ein Feld in RGB-Code an und markiere mit „⬚ Auswahl erweitern“ die ganze Folge. „⑂ als Alternative“ legt darunter einen zweiten Zweig an. Was muss auf dem zweiten Zweig stehen? (Auf dem Blatt geht es auch kürzer: erst das <code>#</code>, dann die Weiche.)</p></template>
+                        <template data-stufe="Lösung" data-halten><div data-diagramm>RGB-Code = "#" (Farbwert Farbwert Farbwert | HexZiffer HexZiffer HexZiffer).
+Farbwert = HexZiffer HexZiffer.
+HexZiffer = "0" | … | "9" | "A" | … | "F".</div><p>Ohne die Kurzform fehlt der untere Zweig. 3d: Beide sind gültige Wörter und bezeichnen dieselbe Farbe (gleiche Semantik), sind aber verschiedene Wörter (verschiedene Syntax).</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-3-syntaxdiagramme.pdf">📝 Blatt 1.3 · Aufgabe 3 (Seite 2)</a></p>
+                </div>
+            </section>
+
+            <section id="kennzeichen" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Selbst bauen<small>Aufgabe 4: Autokennzeichen</small></h2></div>
+                <div class="phase-body">
+                    <p>Vereinfacht: <strong>1 bis 3 Buchstaben</strong> für den Bezirk, ein Bindestrich, <strong>1 oder 2 Buchstaben</strong>, ein Leerzeichen und eine <strong>1- bis 4-stellige Zahl ohne führende Null</strong>. <em>Buchstabe</em>, <em>Ziffer</em> und <em>ZifferOhneNull</em> sind schon gegeben.</p>
+                    <div class="werk" data-baukasten="kennzeichen">
+                        <h4>Diagramm-Baukasten: Kennzeichen</h4>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Entscheide auf dem Blatt bei den sechs Kennzeichen: korrekt, syntaktisch oder semantisch falsch (4a). Teste sie, sobald dein Diagramm steht. Bei einem Kennzeichen widerspricht der Baukasten dir vielleicht. Wer hat recht?</li>
+                        <li>Baue <strong>Kennzeichen</strong>, <strong>Bezirk</strong> und <strong>Zahl</strong>, bis der Prüfstand stimmt (4b).</li>
+                        <li>Probiere für den Bezirk zuerst eine Schleife. Welche Wörter lässt der Prüfstand dann zu Unrecht durch? Wie kommst du auf „höchstens 3“? Ergänze danach den Lückentext 4c.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 4: Kennzeichen">
+                        <template data-stufe="Tipp 1"><p>Das Leerzeichen ist ein ganz normales rundes Feld: Tippe die Leertaste oder <code>␣</code>. Der Bindestrich ebenso.</p></template>
+                        <template data-stufe="Tipp 2"><p>Eine Schleife erlaubt beliebig viele Wiederholungen. Für „1 bis 3 Buchstaben“ kommt ein Buchstabe sicher, die anderen dürfen fehlen. Und eine führende Null verhinderst du, indem du dir genau überlegst, welche Ziffer an der <em>ersten</em> Stelle stehen darf.</p></template>
+                        <template data-stufe="Lösung" data-halten><div data-diagramm>Kennzeichen = Bezirk "-" Buchstabe [Buchstabe] " " Zahl.
+Bezirk = Buchstabe [Buchstabe] [Buchstabe].
+Zahl = ZifferOhneNull [Ziffer] [Ziffer] [Ziffer].</div><p>4a: <code>TOR-TE 3</code> ist syntaktisch korrekt: Ein Diagramm prüft nur die Form, nicht ob es den Bezirk gibt (Semantikfehler).</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-3-syntaxdiagramme.pdf">📝 Blatt 1.3 · Aufgabe 4</a></p>
+                </div>
+            </section>
+
+            <section id="rekursion" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">🔁</span><h2>Entdecken<small>Aufgabe 5: Ein Diagramm, das sich selbst enthält</small></h2></div>
+                <div class="phase-body">
+                    <p>Das Diagramm <strong>Wort</strong> enthält ein eckiges Feld <em>Wort</em>. Fahr hinein: Jedes Mal beginnt dasselbe Diagramm noch einmal von vorne. Der alte Durchlauf wartet (lila markiert), bis der neue fertig ist, und fährt erst dann weiter. Die Zeile „Du fährst gerade in“ zeigt, wie viele Durchläufe gerade offen sind.</p>
+                    <div class="werk" data-gleisnetz="wort">
+                        <h4>Gleisnetz-Fahrt: Wort</h4>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Gib auf dem Blatt das Alphabet und vier Wörter an (5a, 5b). Fahre sie zur Kontrolle.</li>
+                        <li>Beschreibe die Sprache in Worten (5c). Tipp: Lies deine Wörter auch einmal von hinten.</li>
+                        <li>Warum geht das nicht mit einer Wiederholung (5d)? Fahre <code>anna</code> und beobachte genau, wann das zweite <code>n</code> geschrieben wird.</li>
+                        <li>Erledige die Fahraufträge. Ergänze dann den Merkkasten „Rekursive Regeln“.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 5d">
+                        <template data-stufe="Tipp"><p>Eine Wiederholung „vergisst“, was in den Runden davor passiert ist: Jede Runde wählt frei. Beim Diagramm Wort merkt sich jeder offene Durchlauf, mit welchem Zeichen er begonnen hat, und schreibt genau dieses Zeichen, wenn er zurückkehrt. Wie viele Durchläufe warten bei <code>nannan</code> gleichzeitig?</p></template>
+                    </div>
+                    <div class="konzept">
+                        <h4>Merkkasten „Rekursive Regeln“ zum Vergleichen</h4>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Merkkasten" data-halten><p>Eine Regel ist <strong>rekursiv</strong>, wenn ein Nichtterminal (direkt oder indirekt) auf sich selbst verweist. Endlich viele Regeln erzeugen so unendlich viele Wörter; ein Weg ohne Selbstaufruf beendet die Ableitung.</p></template>
+                        </div>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-3-syntaxdiagramme.pdf">📝 Blatt 1.3 · Aufgabe 5 und Merkkasten</a></p>
+                </div>
+            </section>
+
+            <section id="nachdenken" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Für Schnelle: besprecht mündlich</small></h2></div>
+                <div class="phase-body">
+                    <p>Überlegt zu zweit. Die Hinweise sind zum Nachlesen <em>nach</em> dem Gespräch: Halte dazu den Knopf gedrückt.</p>
+                    <div class="idee"><strong>Kann man die fünf Smiley-Diagramme zu einem einzigen zusammenzeichnen? Und das Diagramm Wort ohne das eckige Feld?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Bei den Smileys ja: Man ersetzt jedes eckige Feld durch sein Diagramm, das Ergebnis ist nur unübersichtlicher. Beim Diagramm Wort geht das nicht: Beim Einsetzen taucht wieder ein Feld Wort auf, und so weiter ohne Ende. Rekursion braucht einen Namen, auf den man verweisen kann.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Ist <code>:-) :-)</code> (mit Leerzeichen) eine Smileyfolge?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Nein. Das Leerzeichen gehört nicht zu A₃, also ist die Zeichenkette nicht einmal ein Wort über A₃. Wer Leerzeichen erlauben will, muss das Alphabet und die Grammatik ändern, z. B. ein rundes Feld <code>␣</code> auf dem Rückweg der Schleife.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Können zwei verschiedene Diagramme dieselbe Sprache festlegen?</strong> Denkt an das Diagramm Mitte.
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Ja. Mitte könnte auch eine Alternative mit einem leeren Zweig sein, oder man baut Augen, Mitte und Mund direkt in Smiley ein. Zu einer Sprache gibt es viele Grammatiken. Eindeutig ist die Sprache, nicht die Grammatik.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Welche Bausteine dürfen nicht vorkommen, wenn die Sprache endlich sein soll?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Schleifen (Wiederholungen) und Rekursion. Mit Aneinanderreihung, Alternative und Option allein gibt es nur endlich viele Wege durch das Gleisnetz, also nur endlich viele Wörter. Beispiel: das Kennzeichen-Diagramm.</p></template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>📜 1.4 Die EBNF</h4>
+                            <p>Ein Compiler kann keine Bilder lesen. Dieselben Regeln lassen sich als Text schreiben: <code>Smiley = Augen Mitte Mund.</code> Deine Diagramme aus dem Baukasten kannst du dort als Text weiterbearbeiten.</p>
+                            <a class="btn btn-primary btn-sm" href="1-4-ebnf.html">Weiter zu 1.4</a>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>🤖 1.5 Endliche Automaten</h4>
+                            <p>Eine Grammatik <em>erzeugt</em> Wörter. Wer prüfen will, ob ein Wort dazugehört, baut eine Maschine, die das Wort Zeichen für Zeichen liest – ähnlich wie dein Zug, nur rückwärts gedacht.</p>
+                            <a class="btn btn-outline btn-sm" href="1-5-endliche-automaten.html">Zu 1.5</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="1-2-formale-sprachen.html">← 1.2 Formale Sprachen</a>
+                <a class="btn btn-primary" href="1-4-ebnf.html">Weiter: 1.4 Die EBNF →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-1-3-syntaxdiagramme-lsg.pdf">Lösung Blatt 1.3 (PDF)</a></p>
+                    <div class="tab-scroll">
+                        <table>
+                            <tr><th>Aufgabe</th><th>Lösung / Hinweis</th></tr>
+                            <tr><td>1</td><td>Gültig: <code>:-)</code>, <code>;P:-(</code>, <code>;*</code>. Ungültig: <code>:-</code> (Mund fehlt: Der Zug steht in Mund, das Wort ist aber zu Ende), <code>:--D</code> (Mitte erlaubt nur eine Nase), <code>-)</code> (beginnt nicht mit Augen). 1b: Smileyfolge Wiederholung (mind. einmal), Smiley Aneinanderreihung, Augen/Mund Alternative, Mitte Option.</td></tr>
+                            <tr><td>2</td><td>Zweiter Smiley: Augen <code>;</code>, Mitte ε, Mund <code>D</code>. Die Blätter ergeben das Wort; ε, weil die Option ohne <code>-</code> gewählt wurde. Merksatz: Terminale, Wurzel, Blättern.</td></tr>
+                            <tr><td>3</td><td>RGB-Code = <code>#</code> Farbwert Farbwert Farbwert, Farbwert = HexZiffer HexZiffer, HexZiffer = Alternative 0–9, A–F; Kurzform als zweiter Zweig mit drei HexZiffern (Alternative ganzer Folgen). 3d: gleiche Bedeutung, verschiedene Wörter.</td></tr>
+                            <tr><td>4</td><td>sy: <code>TS-NA 48484</code>, <code>P1-JO 42</code>, <code>ED-DY 007</code>; se: <code>TOR-TE 3</code>; k: <code>RO-T 2209</code>, <code>IN-FO 13</code>. Bezirk und Zahl mit hintereinandergeschalteten Optionen, erste Stelle ZifferOhneNull.</td></tr>
+                            <tr><td>5</td><td>Alphabet {a, n}; ε, <code>aa</code>, <code>anna</code>, <code>nannan</code>; Palindrome gerader Länge. Eine Wiederholung kann nicht erzwingen, dass hinten das Gegenstück zu vorne steht.</td></tr>
+                        </table>
+                    </div>
+                    <p class="mt-2"><strong>Gleisnetz-Fahrt:</strong> Die Schüler:innen erzeugen Wörter, indem sie an jeder Weiche selbst wählen; die Seite prüft keine Wörter von sich aus. Mit einem Zielwort sehen sie, ab wann ihre Fahrt nicht mehr passt; ungültige Wörter lassen sich schlicht nicht fahren. Der Stapel der offenen Diagramme („Du fährst gerade in“) macht den Unterschied zwischen eckigen und runden Feldern und später die Rekursion sichtbar. Der Ableitungsbaum wird nur auf Wunsch mitgezeichnet (Abschnitt Üben: von Anfang an).</p>
+                    <p><strong>Diagramm-Baukasten:</strong> Diagramme werden aus den vier Bausteinen zusammengeklickt; ein Prüfstand mit Stichproben (nicht den Wörtern vom Blatt) meldet abweichende Entscheidungen, ein Testfeld zeigt bei abgelehnten Wörtern die Fehlerstelle wie ein Compiler („bis … passt alles, dann ist … nicht erlaubt“). Die Lösungen stehen nur in den gestuften Hilfen (Lösung erst nach Gedrückthalten). Die Diagramme bleiben im Browser (localStorage) und lassen sich in 1.4 in der freien Werkstatt als EBNF laden. Unter „Als Text (EBNF, kommt in 1.4)“ steht die Textform, standardmäßig eingeklappt.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum &amp; Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>
