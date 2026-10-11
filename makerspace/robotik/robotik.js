@@ -1665,7 +1665,7 @@
         }).join('');
         var erfolge = ERFOLGE.filter(function (e) { return t.erfolge && t.erfolge[e.id]; }).map(function (e) { return '<span class="p-erfolg">' + e.icon + ' ' + esc(e.name) + '</span>'; }).join(' ');
         var verbinden = '<div class="konzept p-karte"><div class="k-kopf"><span class="k-icon">🔌</span><div><span class="k-label">Spickzettel</span><h3>Hub verbinden</h3></div></div><div class="k-inhalt">' +
-            '<ol class="p-liste"><li>Chrome/Edge: <b>spike.legoeducation.com</b> (oder SPIKE-App) → <b>SPIKE Prime</b></li><li><b>Neues Projekt</b> → <b>Wortblöcke</b> → Name mit Teamname</li>' +
+            '<ol class="p-liste"><li>Chrome/Edge: <b>spike.legoeducation.com</b> (oder SPIKE-App) → <b>SPIKE Prime</b></li><li><b>Neues Projekt</b> → <b>Textblöcke</b> → Name mit Teamname</li>' +
             '<li>Kabel: groß in den Rechner, klein in den Hub · Hub einschalten (Mitteltaste)</li><li>Hub-Symbol oben links → <b>USB</b> → „LEGO Hub“ wählen → <b>Verbinden</b></li>' +
             '<li>▶ Start · ■ Stopp · Ausschalten: Mitteltaste gedrückt halten</li></ol></div></div>';
         var farben = '<div class="konzept p-karte"><div class="k-kopf"><span class="k-icon">🎨</span><div><span class="k-label">Spickzettel</span><h3>Blockfarben</h3></div></div><div class="k-inhalt"><div class="sb-legende">' +
