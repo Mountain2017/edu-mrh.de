@@ -202,6 +202,13 @@ Wo was liegt (Stand 2026-10). `→ AB` = LaTeX-Arbeitsblätter in `arbeitsblaett
   Syntaxdiagramme, Gleisnetz-Fahrt, Baukasten, Werkstatt), `automaten.js` (Simulator,
   Automaten-Baukasten); `13/material/` Rohmaterial, nur lokal
 
+**Makerspace** (`makerspace/makerspace.html`, Wahlkurs Unterstufe, Stationen je 3 Wochen;
+nur Robotik online): `makerspace/robotik/` LEGO SPIKE Prime – `robotik.html` (Team,
+Lernpfad, Akku, Abzeichen, Spickzettel, Lehrkräfte-Werkzeuge mit PIN), Starter
+`starter-1-hallo-hub`, `starter-2-fahrschule`, `starter-3-sensoren`, Maker `maker-tresor`,
+`maker-roboter-show`, `maker-linienfolger`, `innovator`; Logik `robotik.js` (Markup-Doku im
+Kopf, Lösungen als Hash in `data-loesung`, Hash-Werkzeug im Lehrkräfte-Bereich), `robotik.css`
+
 **Englisch** (`englisch/englisch.html`): 5 `wordcraft`; 12 `uk/`
 (uk-and-writing, north-south-divide), `media/narrative_lens`,
 `immigration-social-structures-identity/`, `global issues/`,
