@@ -540,7 +540,7 @@
             sternSvg += '<polygon transform="translate(' + x + ',8)" points="0,-9 2.6,-2.8 9,-2.6 4,1.6 5.6,8 0,4.4 -5.6,8 -4,1.6 -9,-2.6 -2.6,-2.8" fill="' +
                 (voll ? '#facc15' : 'rgba(255,255,255,.0)') + '" stroke="' + (voll ? '#a16207' : 'rgba(100,116,139,.35)') + '" stroke-width="1.2"/>';
         }
-        return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 140" width="240" height="280" role="img" aria-label="Abzeichen ' + esc(a.name) + '">' +
+        return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -8 120 148" width="240" height="296" role="img" aria-label="Abzeichen ' + esc(a.name) + '">' +
             '<defs><linearGradient id="' + gid + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + c1 + '"/><stop offset="1" stop-color="' + c2 + '"/></linearGradient></defs>' +
             '<path d="M38 96 L28 136 L44 128 L52 140 L58 100 Z" fill="' + c2 + '" opacity=".9"/><path d="M82 96 L92 136 L76 128 L68 140 L62 100 Z" fill="' + c2 + '" opacity=".9"/>' +
             '<g transform="translate(0,6)">' + form + '</g>' +
@@ -572,8 +572,8 @@
         var img = new Image();
         var url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
         img.onload = function () {
-            var c = document.createElement('canvas'); c.width = 480; c.height = 560;
-            var ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0, 480, 560);
+            var c = document.createElement('canvas'); c.width = 480; c.height = 592;
+            var ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0, 480, 592);
             URL.revokeObjectURL(url);
             c.toBlob(function (b) { if (b) datei(name, b); else datei(name.replace(/png$/, 'svg'), svg, 'image/svg+xml'); });
         };
