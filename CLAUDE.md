@@ -187,7 +187,8 @@ Wo was liegt (Stand 2026-10). `→ AB` = LaTeX-Arbeitsblätter in `arbeitsblaett
 - 11 Algorithmik mit Snap!: `11/algorithmik/` (Stationen 0–6, HTML-Arbeitsblätter
   in `arbeitsblaetter/*.html`, `snap-ide.html`)
 - 11 Graphen (neues Format, → AB): `11/graphen/` (3.1 Grundbegriffe,
-  3.2 Umsetzung, 3.3 Breitensuche; Graph-Abenteuer `haenselundgretel/`)
+  3.2 Umsetzung, 3.3 Breitensuche, 3.4 Dijkstra; Graph-Abenteuer `haenselundgretel/`);
+  Werkzeuge in `graphen.js` (u. a. Dijkstra-Vorführung/Trainer `data-dj`, Lösungsweg)
 - 11 sonst: `11/codierung/zahlensysteme.html`, `11/ki/perzeptron.html`,
   `11/kommunikation_in_netzwerken/` (netzwerke, filius, Übungen),
   `11/verschluesselung/` (rsa, rsa2, rsa-old)

@@ -70,6 +70,25 @@
 % Beliebiger Inhalt: \lsgoder{nur in der Lösung}{nur im Blatt}
 \newcommand{\lsgoder}[2]{\ifloesung\leavevmode#1\else#2\fi}
 
+% ---------- Ergänzung (aus informatik/10/java/arbeitsblaetter/ab-vorlage.tex) ----------
+% Bestehende Makros oben bleiben unverändert, damit ältere Blätter gleich aussehen.
+%  \restzeile / \lsgrest{Text}   Lücke bis zum Zeilenende
+%  \lsgtext{Text}                nur in der Lösung sichtbar (z. B. Tabellenzellen)
+%  \lueckentext                  größerer Zeilenabstand, Flattersatz für Absätze mit Lücken
+%  \schreibzeile                 Strut für Tabellenzellen zum Ausfüllen (8 mm hoch)
+%  \alt{9}, \neu{7}              überschriebener alter Wert / neuer Wert (Dijkstra-Tabellen)
+\usepackage{colortbl,xspace}
+\usepackage[normalem]{ulem}
+\newcommand{\lsgrest}[1]{\leavevmode\unskip\hspace{1.5mm}\ifloesung\rlap{\raisebox{0.8pt}{\lsgfarbe\,#1}}\fi\leaders\hbox{\rule[-0.6ex]{0.5pt}{0.4pt}}\hfill\null\par}
+\newcommand{\restzeile}{\lsgrest{}}
+\newcommand{\lsgtext}[1]{\ifloesung\leavevmode{\lsgfarbe#1}\fi}
+\newcommand{\lueckentext}{\linespread{1.5}\selectfont\raggedright}
+\newcommand{\schreibzeile}{\rule[-2.8mm]{0pt}{8mm}}
+\newcommand{\alt}[1]{\leavevmode{\color{blue!60!black}\sout{#1}}}
+\newcommand{\neu}[1]{\leavevmode{\color{green!50!black}\bfseries #1}}
+\colorlet{djaktuell}{orange!40}
+\colorlet{djfertig}{blue!22}
+
 % ---------- Graphen zeichnen ----------
 \tikzset{
   knoten/.style={draw,rounded corners=3pt,fill=orange!12,minimum height=6mm,inner sep=3pt,font=\small},

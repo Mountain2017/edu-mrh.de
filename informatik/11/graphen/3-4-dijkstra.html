@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3.4 Dijkstra-Algorithmus | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Graphen, Informatik 11 (NTG): kürzeste Wege mit dem Dijkstra-Algorithmus – Freibad-Einstieg, Schritt-für-Schritt-Vorführung passend zu Blatt 3.4, Trainer zum Selbstrechnen, Grenzen des Verfahrens und weitere Übungsaufgaben.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="graphen.css">
+    <script defer src="graphen.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🕸️</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="graphen.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 3.4</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#freibad">🏊 Ab ins Freibad</a></li>
+            <li><a href="#schritte">🧩 Schritt für Schritt</a></li>
+            <li><a href="#algorithmus">📝 Der Algorithmus</a></li>
+            <li><a href="#paketdienst">✏️ Paketdienst</a></li>
+            <li><a href="#grenzen">⚠️ Grenzen</a></li>
+            <li><a href="#training">🏋️ Weitere Übungen</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Graphen</div>
+            <ul class="sidebar-menu">
+                <li><a href="graphen.html">Übersicht</a></li>
+                <li><a href="3-1-grundbegriffe.html">3.1 Grundbegriffe</a></li>
+                <li><a href="3-2-umsetzung-graph.html">3.2 Umsetzung Graph</a></li>
+                <li><a href="3-3-breitensuche.html">3.3 Breitensuche</a></li>
+                <li><a href="3-4-dijkstra.html">3.4 Dijkstra</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero gr-hero">
+                <h1 class="hero-title">3.4 Der Dijkstra-Algorithmus</h1>
+                <p class="hero-subtitle">Graphen · Informatik 11 (NTG) · 2 Stunden</p>
+                <span class="gr-kompetenz">Du kannst: in einem gewichteten Graphen mit dem Dijkstra-Algorithmus die kürzesten Wege bestimmen, den Ablauf in einer Tabelle festhalten und sagen, wann das Verfahren nicht funktioniert.</span>
+                <div class="gr-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-3-4-dijkstra.pdf">📝 Arbeitsblatt 3.4 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-3-4-dijkstra.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#freibad">🏊 Einstieg</a><a class="p-investigate" href="#schritte">🧩 Schritt für Schritt</a><a class="p-note" href="#algorithmus">📝 Festhalten</a><a class="p-modify" href="#paketdienst">✏️ Anwenden</a><a class="p-problem" href="#grenzen">⚠️ Grenzen</a><a class="p-make" href="#training">🏋️ Üben</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="freibad" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🏊</span><h2>Einstieg<small>Aufgabe 1: Ab ins Freibad</small></h2></div>
+                <div class="phase-body">
+                    <p>Felix will mit seinen Freunden ins Freibad gehen. Einige von ihnen sind bereits da. Bei der Breitensuche (3.3) hat jede Kante gleich viel gezählt. Jetzt stehen Kilometer an den Wegen: Der Weg mit den wenigsten Kanten ist nicht unbedingt der kürzeste.</p>
+                    <p>Probiere Routen aus: Klicke Ort für Ort an, bis du am Freibad bist.</p>
+                    <div data-route></div>
+                    <ol class="aufgaben">
+                        <li>Bestimme die kürzeste Weglänge vom Haus zum Freibad. Trage Weg und Länge auf dem Blatt ein.</li>
+                        <li>Am Samstag muss Felix zuvor noch in den Wald, um seinem Opa zu helfen. Wie lang ist sein Weg jetzt? Was fällt dir auf?</li>
+                        <li><strong>Zum Nachdenken (mündlich):</strong> Woher weißt du sicher, dass es keinen kürzeren Weg gibt? Bei fünf Orten kann man noch alle Wege ausprobieren. Wie wäre das bei allen Orten in Deutschland?</li>
+                    </ol>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-3-4-dijkstra.pdf">📝 Blatt 3.4 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="schritte" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🧩</span><h2>Schritt für Schritt<small>Aufgabe 2: Die Tabelle</small></h2></div>
+                <div class="phase-body">
+                    <p>Statt alle Wege auszuprobieren, geht man <strong>systematisch</strong> vor. Dazu bekommen die Orte Buchstaben (H, K, W, E, F) und jeder Knoten eine <strong>Pfadlänge</strong>: die Länge des kürzesten Weges von H, den man bisher kennt. Am Anfang kennt man nur H selbst (0). Alle anderen stehen auf ∞.</p>
+                    <div class="konzept">
+                        <h4>So liest du Bild und Tabelle (wie auf dem Blatt)</h4>
+                        <p>🟧 <strong>Orange</strong> ist der aktuell besuchte Knoten. Nur über seine <strong>direkten</strong> Kanten (dick) darfst du Pfadlängen updaten: Pfadlänge des orangen Knotens + Kantengewicht. Ist das kleiner als der bisherige Wert, streichst du den alten durch (<s>9</s> <b style="color:#15803d">7</b>).<br>
+                        🟦 <strong>Blau</strong> sind fertige Knoten. Ihre Pfadlänge ändert sich nicht mehr.<br>
+                        Jede Tabellenzeile ist ein Schritt. In jedem Schritt wird genau ein neuer Knoten orange.</p>
+                    </div>
+                    <p>Klicke dich mit <strong>Weiter ▶</strong> durch Schritt 1 und 2. Sie stehen auch auf dem Blatt. Ab Schritt 3 bist du dran. Mit <strong>✍️ Selbst rechnen</strong> kontrollierst du deine Tabelle Zeile für Zeile.</p>
+                    <div data-dj="freibad" data-dj-modus="beide"></div>
+                    <ol class="aufgaben">
+                        <li>Vergleiche Schritt 1 und 2 mit dem Blatt. Warum steht bei W in Schritt 2 eine 7 statt der 9? Über welchen Weg kommt man auf 7?</li>
+                        <li><strong>Blatt, Aufgabe 2:</strong> Fülle die Tabellen für Schritt 3 bis 5 aus. Färbe in Schritt 4 und 5 die Kopfzeile selbst ein (orange bzw. blau).</li>
+                        <li>Kontrolliere mit <strong>✍️ Selbst rechnen</strong>. Am Ende fragt dich der Trainer nach dem kürzesten Weg von H nach F.</li>
+                    </ol>
+                    <details class="denk"><summary>Denkanstoß: Warum ist in Schritt 3 W dran und nicht E?</summary>
+                        <p>Nach Schritt 2 haben W (7), E (14) und F (17) eine Pfadlänge. Könnte E später noch kürzer als 14 werden? Und W kürzer als 7? Überlege, welche Kanten dafür noch übrig wären.</p>
+                    </details>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-3-4-dijkstra.pdf">📝 Blatt 3.4 · Aufgabe 2</a></p>
+                </div>
+            </section>
+
+            <section id="algorithmus" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Aufgabe 3: Der Algorithmus</small></h2></div>
+                <div class="phase-body">
+                    <p>Du hast den Algorithmus von Hand ausgeführt. Jetzt wird er aufgeschrieben. Bringe die Karten in eine sinnvolle Reihenfolge: Klicke sie nacheinander an. Ein Klick auf einen belegten Platz nimmt die Karte wieder heraus. Die Buchstaben ergeben ein Lösungswort.</p>
+                    <div data-reihenfolge="WORLD">
+                        <div class="karten">
+                            <button type="button" class="karte" data-b="R"><span class="kr-b">R</span>Alle anderen Knoten erhalten die Pfadlänge „unendlich“ (∞).</button>
+                            <button type="button" class="karte" data-b="W"><span class="kr-b">W</span>Wähle einen beliebigen Startknoten.</button>
+                            <button type="button" class="karte" data-b="L"><span class="kr-b">L</span>Wähle unter den noch nicht fertigen Knoten den mit der kleinsten Pfadlänge (orange). Aktualisiere für jeden seiner nicht fertigen Nachbarknoten die Pfadlänge, wenn sich über ihn eine kleinere ergibt.</button>
+                            <button type="button" class="karte" data-b="D"><span class="kr-b">D</span>Markiere den Knoten als fertig (blau). Wiederhole die letzten beiden Schritte, bis alle Knoten fertig sind bzw. der gewünschte Knoten fertig ist.</button>
+                            <button type="button" class="karte" data-b="O"><span class="kr-b">O</span>Der Startknoten erhält die Pfadlänge 0.</button>
+                        </div>
+                        <template data-erfolg>
+                            <div class="konzept">
+                                <h4>Der Dijkstra-Algorithmus</h4>
+                                <ol class="algo">
+                                    <li><span class="karte-b">W</span>Wähle einen Startknoten.</li>
+                                    <li><span class="karte-b">O</span>Der Startknoten erhält die Pfadlänge 0.</li>
+                                    <li><span class="karte-b">R</span>Alle anderen Knoten erhalten die Pfadlänge ∞.</li>
+                                    <li><span class="karte-b">L</span>Der noch nicht fertige Knoten mit der kleinsten Pfadlänge wird besucht (orange). Für jeden nicht fertigen Nachbarn: Ist Pfadlänge + Kantengewicht kleiner als seine bisherige Pfadlänge, wird sie ersetzt.</li>
+                                    <li><span class="karte-b">D</span>Der besuchte Knoten ist fertig (blau). Wiederhole L und D, bis alle (erreichbaren) Knoten fertig sind oder das Ziel fertig ist.</li>
+                                </ol>
+                                <p class="mt-2">Der Algorithmus stammt von <strong>Edsger W. Dijkstra</strong> (1959). Er ist <em>gierig</em> (engl. <em>greedy</em>): In jedem Schritt nimmt er den Knoten, der gerade am nächsten liegt, und legt dessen Länge endgültig fest.</p>
+                            </div>
+                        </template>
+                    </div>
+                    <details class="denk"><summary>Denkanstoß (mündlich): Warum darf man einen blauen Knoten nie mehr verändern?</summary>
+                        <p>Ein Knoten wird blau, wenn er unter allen nicht fertigen Knoten die kleinste Pfadlänge hat. Jeder andere Weg zu ihm müsste über einen nicht fertigen Knoten führen. Der ist aber schon mindestens genauso weit weg. Welche Voraussetzung an die Kantengewichte steckt in diesem Argument? (Das wird in Aufgabe 4b wichtig.)</p>
+                    </details>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-3-4-dijkstra.pdf">📝 Blatt 3.4 · Aufgabe 3</a></p>
+                </div>
+            </section>
+
+            <section id="paketdienst" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">✏️</span><h2>Anwenden<small>Aufgabe 4a: Paketdienst</small></h2></div>
+                <div class="phase-body">
+                    <p>Ein Transportunternehmen muss seine Pakete möglichst schnell ausliefern. Ermittle auf dem Blatt mit dem Dijkstra-Algorithmus die kürzeste Verbindung zwischen Frankfurt und München und gib die Besuchsreihenfolge an. Die Tabelle hat diesmal eine Zeile pro Schritt. Färbe in jeder Zeile den orangen und die blauen Knoten.</p>
+                    <p>Erst rechnen, dann kontrollieren: Für diesen Graphen gibt es keine Vorführung, nur den Trainer.</p>
+                    <div data-dj="deutschland" data-dj-modus="rechnen"></div>
+                    <div class="lw" data-loesungsweg="Aufgabe 4a">
+                        <template data-stufe="Tipp 1"><p>Von Frankfurt aus sind nur Mannheim (85) und Würzburg (119) direkt erreichbar. Alle anderen Städte bleiben in Zeile 1 bei ∞.</p></template>
+                        <template data-stufe="Tipp 2"><p>Nach Würzburg haben Erfurt, Augsburg und Nürnberg eine Pfadlänge. Achte auf München: Es wird zuerst über Nürnberg erreicht. Prüfe, ob es über Augsburg kürzer geht. Karlsruhe → Augsburg lohnt sich übrigens nicht.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>Besuchsreihenfolge: Frankfurt, Mannheim, Würzburg, Karlsruhe, Nürnberg, Augsburg, Erfurt, München.<br>München bekommt über Nürnberg zuerst 398 und dann über Augsburg 349.<br>Kürzeste Strecke: <strong>Frankfurt – Würzburg – Augsburg – München, 349 km</strong>.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-3-4-dijkstra.pdf">📝 Blatt 3.4 · Aufgabe 4a</a></p>
+                </div>
+            </section>
+
+            <section id="grenzen" class="phase problem">
+                <div class="phase-head"><span class="phase-icon">⚠️</span><h2>Grenzen des Algorithmus<small>Aufgabe 4b: Wann funktioniert Dijkstra?</small></h2></div>
+                <div class="phase-body">
+                    <p>Auf dem Blatt sollst du recherchieren, ob der Algorithmus bei diesen Eigenschaften ausführbar ist. Hier kannst du es auch ausprobieren. Wähle oben einen Graphen und klicke dich durch.</p>
+                    <div data-dj="einbahn,negativ,insel" data-dj-modus="zeigen"></div>
+                    <ol class="aufgaben">
+                        <li><strong>(i) Gerichteter Graph – „Einbahnstraßen“:</strong> Welche Kanten darf der Algorithmus bei einem orangen Knoten benutzen? Was würde passieren, wenn man von Z aus startet?</li>
+                        <li><strong>(ii) Negative Kantengewichte – „Negative Kante“:</strong> Welche Pfadlänge liefert der Algorithmus für C? Welcher Weg ist wirklich der kürzeste? An welcher Stelle geht es schief?</li>
+                        <li><strong>(iii) Nicht zusammenhängend – „Zwei Inseln“:</strong> Was steht am Ende bei D und E? Bricht der Algorithmus ab oder endet er normal?</li>
+                    </ol>
+                    <div class="stolper"><strong>Stolperstein:</strong> Bei der negativen Kante liefert der Algorithmus ein Ergebnis, ohne zu „merken“, dass es falsch ist. Genau das macht den Fehler gefährlich. Das Argument aus dem Denkanstoß bei Aufgabe 3 gilt nur, wenn ein Weg durch eine zusätzliche Kante nie kürzer werden kann.</div>
+                    <div class="lw" data-loesungsweg="Aufgabe 4b">
+                        <template data-stufe="Tipp"><p>Achte bei (ii) auf den Moment, in dem D orange wird: Welche Farbe hat C da schon?</p></template>
+                        <template data-stufe="Lösung" data-halten><p>(i) Ja. Kanten werden nur in Pfeilrichtung benutzt. Von Z aus ist kein anderer Knoten erreichbar, alle behalten ∞.<br>(ii) Nein. C ist schon fertig (Länge 2), bevor die Kante D → C (−3) geprüft wird. Der wirklich kürzeste Weg A → D → C hat die Länge 1. (Für negative Gewichte gibt es andere Verfahren, z. B. den Bellman-Ford-Algorithmus.)<br>(iii) Ja. Der Algorithmus endet, wenn kein erreichbarer Knoten mehr übrig ist. Nicht erreichbare Knoten behalten die Pfadlänge ∞.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-3-4-dijkstra.pdf">📝 Blatt 3.4 · Aufgabe 4b</a></p>
+                </div>
+            </section>
+
+            <section id="training" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🏋️</span><h2>Weitere Übungen<small>Zum Üben und Vertiefen</small></h2></div>
+                <div class="phase-body">
+                    <p>Hier kannst du so lange üben, wie du willst. Notiere zuerst auf Papier eine Tabelle wie auf dem Blatt (eine Zeile pro Schritt). Trage dann jede Zeile in den Trainer ein und prüfe sie.</p>
+
+                    <div class="uebung">
+                        <h3>Übung 1–3: Der Trainer</h3>
+                        <ol class="aufgaben">
+                            <li><strong>Radtour:</strong> Bestimme die kürzesten Wege von A zu allen Orten und den Weg von A nach F. Wie oft ändert sich die Pfadlänge von D?</li>
+                            <li><strong>Einbahnstraßen:</strong> Rechne von S aus. Achte darauf, dass Kanten nur in Pfeilrichtung zählen.</li>
+                            <li><strong>Zufallsgraph:</strong> Jedes Mal ein neuer Graph. Schaffst du drei hintereinander ohne Fehlversuch?</li>
+                        </ol>
+                        <div data-dj="rad,einbahn,zufall" data-dj-modus="rechnen"></div>
+                        <p class="dj-klein">Gibt es einen Gleichstand (zwei Knoten mit derselben kleinsten Pfadlänge), darfst du einen davon wählen. Auf dem Blatt nimmt man der Einfachheit halber den, der in der Tabelle weiter links steht.</p>
+                    </div>
+
+                    <div class="uebung">
+                        <h3>Übung 4: Den Weg ablesen</h3>
+                        <p>Die Tabelle sagt nur, <em>wie lang</em> der kürzeste Weg ist. Um den Weg selbst zu kennen, merkt man sich bei jeder Aktualisierung den <strong>Vorgänger</strong>: den orangen Knoten, über den die neue Pfadlänge zustande kam. Hier ist das Endergebnis für einen Stadtplan mit Start S:</p>
+                        <div class="tab-scroll">
+                            <table class="gr-tab">
+                                <thead><tr><th scope="col">Knoten</th><th scope="col">S</th><th scope="col">T</th><th scope="col">U</th><th scope="col">V</th><th scope="col">W</th><th scope="col">X</th></tr></thead>
+                                <tbody>
+                                    <tr><th scope="row">Pfadlänge</th><td>0</td><td>4</td><td>6</td><td>3</td><td>7</td><td>9</td></tr>
+                                    <tr><th scope="row">Vorgänger</th><td>–</td><td>S</td><td>T</td><td>S</td><td>V</td><td>U</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <ol class="aufgaben">
+                            <li>Gib den kürzesten Weg von S nach X und von S nach W an.</li>
+                            <li>Warum reicht es, sich für jeden Knoten nur <em>einen</em> Vorgänger zu merken?</li>
+                            <li>Zeichne alle Kanten „Vorgänger → Knoten“ ein. Was für ein Graph entsteht? (Tipp: Erinnere dich an den Besuchsbaum aus 3.3.)</li>
+                        </ol>
+                        <div class="lw" data-loesungsweg="Übung 4">
+                            <template data-stufe="Tipp"><p>Lies rückwärts: X hat den Vorgänger U, U hat den Vorgänger T …</p></template>
+                            <template data-stufe="Lösung" data-halten><p>a) S – T – U – X (9) und S – V – W (7).<br>b) Ein kürzester Weg zu X besteht aus einem kürzesten Weg zum Vorgänger plus der letzten Kante. Den Rest liefert der Vorgänger des Vorgängers usw.<br>c) Ein Baum mit Wurzel S (ein „Kürzeste-Wege-Baum“): Jeder Knoten außer S hat genau einen Vorgänger, es gibt keinen Zyklus.</p></template>
+                        </div>
+                    </div>
+
+                    <div class="uebung">
+                        <h3>Übung 5: Bergauf zur Kirche</h3>
+                        <p>Zurück zum Freibad-Graphen aus Aufgabe 2. Felix fährt jetzt mit dem Rad. Die Kirche liegt auf einem Hügel, deshalb braucht er auf allen Wegen von und zur Kirche doppelt so lange. Die Gewichte sind jetzt Minuten: H–K 4, W–K 10, K–E 24, K–F 30, alle anderen wie bisher (H–W 9, W–E 5, E–F 3).</p>
+                        <ol class="aufgaben">
+                            <li>Führe den Dijkstra-Algorithmus von H aus mit einer Tabelle auf Papier durch.</li>
+                            <li>Welcher Weg ist jetzt der schnellste? Vergleiche mit Aufgabe 1: Was ändert sich, wenn die Gewichte etwas anderes bedeuten?</li>
+                        </ol>
+                        <div class="lw" data-loesungsweg="Übung 5">
+                            <template data-stufe="Tipp"><p>Schritt 1: K bekommt 4, W bekommt 9. Schritt 2 (K orange): Über K wäre W bei 4 + 10 = 14. Ist das besser als 9?</p></template>
+                            <template data-stufe="Lösung" data-halten><p>Reihenfolge H, K, W, E, F. Endwerte: H 0, K 4, W 9, E 14 (K bot erst 28), F 17 (K bot erst 34).<br>Schnellster Weg: H – W – E – F mit 17 Minuten. Der Umweg über die Kirche lohnt sich nicht mehr. Der Algorithmus bleibt gleich, nur die Bedeutung der Gewichte ändert sich.</p></template>
+                        </div>
+                    </div>
+
+                    <div class="uebung">
+                        <h3>Übung 6: Selbst einen Graphen bauen</h3>
+                        <ol class="aufgaben">
+                            <li>Zeichne einen Graphen mit vier Knoten, in dem die direkte Kante von A nach D <em>nicht</em> der kürzeste Weg von A nach D ist.</li>
+                            <li>Zeichne einen Graphen, in dem der Dijkstra-Algorithmus eine Pfadlänge zweimal verbessert. Tauscht eure Graphen aus und rechnet gegenseitig.</li>
+                        </ol>
+                        <div class="lw" data-loesungsweg="Übung 6">
+                            <template data-stufe="Beispiel" data-halten><p>a) A–D mit 10, dazu A–B 2, B–C 2, C–D 2: Über B und C sind es nur 6.<br>b) A–D 10, A–B 1, B–D 7, A–C 2, C–D 3: D bekommt zuerst 10 (über A), dann 8 (über B), dann 5 (über C).</p></template>
+                        </div>
+                    </div>
+
+                    <div class="uebung">
+                        <h3>Übung 7: Zum Nachdenken (mündlich)</h3>
+                        <ol class="aufgaben">
+                            <li>In einem Graphen haben alle Kanten das Gewicht 1. Welcher Algorithmus aus 3.3 liefert dann dieselben Pfadlängen? Warum?</li>
+                            <li>Ein Navi sucht nur den Weg von München nach Hamburg. Warum darf es aufhören, sobald Hamburg blau ist, obwohl noch viele Orte nicht fertig sind?</li>
+                            <li>Ein Graph hat 1000 Knoten. Wie oft muss man ungefähr „den kleinsten noch nicht fertigen Knoten suchen“? Warum wird das bei großen Graphen aufwändig?</li>
+                        </ol>
+                        <div class="lw" data-loesungsweg="Übung 7">
+                            <template data-stufe="Tipps"><p>a) Wenn jede Kante 1 zählt, ist die Pfadlänge die Zahl der Kanten. Welche Knoten werden dann zuerst blau?<br>b) Denke daran, was „blau“ bedeutet.<br>c) Pro Schritt wird ein Knoten fertig. Wie viele Knoten muss man in jedem Schritt vergleichen?</p></template>
+                            <template data-stufe="Lösung" data-halten><p>a) Die Breitensuche. Die Knoten werden schichtweise fertig: erst alle mit Pfadlänge 1, dann alle mit 2 usw.<br>b) Ein blauer Knoten hat seine endgültige Pfadlänge. Spätere Schritte können sie nicht mehr verbessern.<br>c) 1000 Schritte, in jedem werden bis zu 1000 Knoten verglichen: etwa 1000 · 1000 = 1 Million Vergleiche. Navis verwenden deshalb geschicktere Datenstrukturen (Prioritätswarteschlange) und Schätzungen (A*-Algorithmus).</p></template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🧭 Navis und A*</h4>
+                            <p>Dijkstra breitet sich wie ein Kreis in alle Richtungen aus. Der A*-Algorithmus schätzt zusätzlich die Luftlinie zum Ziel und sucht deshalb zuerst in die richtige Richtung. So arbeiten Routenplaner und Spiele.</p>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>💻 Für Profis: Dijkstra in Java</h4>
+                            <p>Mit der Adjazenzmatrix aus 3.2 geht es auch im Programm. Statt <code>boolean[][]</code> brauchst du <code>int[][]</code> für die Gewichte, dazu <code>int[] pfadlaenge</code> und <code>boolean[] fertig</code>. Die Karten W, O, R, L, D aus Aufgabe 3 sind dein Pseudocode.</p>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>🌳 Tiefensuche (Jgst. 12)</h4>
+                            <p>Ersetzt man bei der Breitensuche die Warteschlange durch einen Stapel, geht die Suche erst ganz in die Tiefe.</p>
+                            <a class="btn btn-outline btn-sm" href="../../12/tiefensuche/index.html">Zur Tiefensuche</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="3-3-breitensuche.html">← 3.3 Breitensuche</a>
+                <a class="btn btn-primary" href="graphen.html#zusammenfassung">Zur Zusammenfassung →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-3-4-dijkstra-lsg.pdf">Lösung Blatt 3.4 (PDF)</a>
+                        <a class="btn btn-outline btn-sm" href="3-4 Dijkstra.pdf">Altes Blatt 3-4 (PDF)</a></p>
+                    <p><strong>Aufbau wie im bisherigen Blatt 3-4:</strong> A0 Freibad wird Aufgabe 1, A1 Tabellen Schritt 1 bis 5 wird Aufgabe 2, A2 Karten „Hello WORLD“ wird Aufgabe 3, A3 Paketdienst wird Aufgabe 4. Graphen, Zahlen und Farben (orange aktuell, blau fertig) sind unverändert. Schritt 1 und 2 sind vorgegeben, die Kopfzeilen von Schritt 4 und 5 färben die Schüler:innen selbst ein.</p>
+                    <table>
+                        <thead><tr><th>Änderung</th><th>Grund</th></tr></thead>
+                        <tbody>
+                            <tr><td>Karte L enthält jetzt auch „wähle den nicht fertigen Knoten mit der kleinsten Pfadlänge“, Karte D „markiere als fertig, wiederhole“.</td><td>Auf den alten Karten fehlte die Auswahlregel, also der Kern des Algorithmus. Das Lösungswort bleibt WORLD.</td></tr>
+                            <tr><td>Bilder je Schritt zeigen die dicken Kanten, die geprüft werden.</td><td>Veranschaulicht „nur direkte Kanten vom aktuellen Knoten“.</td></tr>
+                            <tr><td>Aufgabe 4 hat 8 statt 9 Zeilen, eine pro Schritt.</td><td>Wie in Aufgabe 2. Die alte 9. Zeile (alles blau) brachte nichts Neues.</td></tr>
+                            <tr><td>Lösung 4: Tabellenkopf „ausgehend von Frankfurt“ (alt: München). Lösung 4b(i): gerichtete Graphen gehen ohne Zusatzbedingung (alt: „muss stark zusammenhängend sein“).</td><td>Fehler in der alten Lösung. Nicht erreichbare Knoten behalten einfach ∞, siehe (iii).</td></tr>
+                        </tbody>
+                    </table>
+                    <p class="mt-2"><strong>Website:</strong> Die Vorführung des Freibad-Graphen stoppt nach Schritt 2 (wie auf dem Blatt vorgegeben). Schritt 3 bis 5 und der Paketdienst sind nur über den Trainer „Selbst rechnen“ prüfbar: Er meldet richtig/falsch je Zelle, zeigt aber keine Werte. Lösungen zu 4a/4b und zu den Übungen stehen gestuft hinter Tipps und erscheinen erst nach 1,5 s Gedrückthalten. Bei Gleichstand akzeptiert der Trainer jeden Knoten mit kleinster Pfadlänge. Die Vorführung nimmt dann den weiter links stehenden.</p>
+                    <p><strong>Grenzen (4b):</strong> Die Vorführungen „Einbahnstraßen“, „Negative Kante“ (Gegenbeispiel aus der alten Lösung: A → B 1, B → C 1, A → D 4, D → C −3) und „Zwei Inseln“ machen (i) bis (iii) sichtbar. Bei der negativen Kante wird der Moment hervorgehoben, in dem ein schon fertiger Knoten verbessert werden müsste.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum &amp; Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>
