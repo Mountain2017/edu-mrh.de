@@ -74,11 +74,12 @@
 
                 <div class="info-box" style="margin-bottom: 1.5rem;">
                     <h3>🧭 Neu: Stationen mit Arbeitsblatt</h3>
-                    <p>Die ersten drei Kapitel gibt es als eigene Stationen mit Hänsel-und-Gretel-Spiel, interaktiven Graphen, Java-Projekten und Arbeitsblättern (PDF, auch mit Lösung):</p>
+                    <p>Alle vier Kapitel gibt es als eigene Stationen mit Hänsel-und-Gretel-Spiel, interaktiven Graphen, Java-Projekten, Dijkstra-Trainer und Arbeitsblättern (PDF, auch mit Lösung):</p>
                     <p>
                         <a href="3-1-grundbegriffe.html" class="btn btn-primary">3.1 Grundbegriffe</a>
                         <a href="3-2-umsetzung-graph.html" class="btn btn-primary">3.2 Umsetzung Graph</a>
                         <a href="3-3-breitensuche.html" class="btn btn-primary">3.3 Breitensuche</a>
+                        <a href="3-4-dijkstra.html" class="btn btn-primary">3.4 Dijkstra</a>
                     </p>
                 </div>
 
@@ -680,12 +681,17 @@ class Knoten extends Sprite {
                     <h2>Der Dijkstra-Algorithmus</h2>
                 </div>
 
+                <div class="info-box">
+                    <p>💡 Dieses Kapitel gibt es ausführlicher als <strong>Station 3.4</strong>, mit Schritt-für-Schritt-Vorführung passend zum Blatt, Trainer zum Selbstrechnen und weiteren Übungsaufgaben.
+                    <a href="3-4-dijkstra.html" class="btn btn-primary">Zur Station 3.4 →</a></p>
+                </div>
+
                 <div class="pdf-download-box">
                     <div class="pdf-icon">📄</div>
                     <div class="pdf-content">
                         <h3>Arbeitsblatt herunterladen</h3>
                         <p>Arbeitsblatt mit Aufgaben:</p>
-                        <a href="3-4 Dijkstra.pdf" target="_blank" class="btn btn-secondary" download>
+                        <a href="arbeitsblaetter/ab-3-4-dijkstra.pdf" target="_blank" class="btn btn-secondary" download>
                             📥 PDF herunterladen
                         </a>
                     </div>
@@ -715,7 +721,7 @@ class Knoten extends Sprite {
                     </p>
                     <div class="highlight">
                         <p>• Frankfurt → Würzburg → Nürnberg → München: 398 km</p>
-                        <p>• Frankfurt → Mannheim → Karlsruhe → Augsburg → München: 420 km</p>
+                        <p>• Frankfurt → Mannheim → Karlsruhe → Augsburg → München: 465 km</p>
                         <p>• Frankfurt → Würzburg → Augsburg → München: 349 km ✓ (kürzeste Route!)</p>
                     </div>
                     <p class="mt-2">
@@ -762,23 +768,12 @@ class Knoten extends Sprite {
                 </div>
 
                 <div class="task-box">
-                    <h4>📝 Aufgabe 7: Dijkstra von Hand durchführen</h4>
+                    <h4>📝 Dijkstra von Hand durchführen</h4>
                     <p>
-                        Gegeben ist ein Straßennetz zwischen deutschen Städten. 
-                        Führe den Dijkstra-Algorithmus von Frankfurt aus durch.
+                        Das Straßennetz zwischen deutschen Städten ist Aufgabe 4 auf Blatt 3.4.
+                        In Station 3.4 kannst du deine Tabelle mit dem Trainer Zeile für Zeile kontrollieren.
                     </p>
-                    <ol>
-                        <li>Erstelle eine Tabelle mit allen Städten als Spalten.</li>
-                        <li>Trage in jeder Zeile die aktuellen Pfadlängen ein.</li>
-                        <li>Markiere in jeder Zeile den aktuell besuchten Knoten.</li>
-                        <li>Bestimme die kürzeste Route von Frankfurt nach München.</li>
-                        <li>Wie lang ist diese Route?</li>
-                    </ol>
-                    
-                    <div class="highlight mt-2">
-                        <strong>Gegeben:</strong> Frankfurt, Mannheim (85 km), Würzburg (119 km), 
-                        Karlsruhe, Erfurt, Nürnberg, Augsburg, München
-                    </div>
+                    <p><a href="3-4-dijkstra.html#paketdienst" class="btn btn-primary">Zum Paketdienst in Station 3.4 →</a></p>
                 </div>
 
                 <div class="strategy-grid">
@@ -789,7 +784,7 @@ class Knoten extends Sprite {
                         <ul>
                             <li>Gewichteten Graphen mit nicht-negativen Gewichten</li>
                             <li>Gerichteten und ungerichteten Graphen</li>
-                            <li>Stark zusammenhängenden Graphen</li>
+                            <li>Nicht zusammenhängenden Graphen (unerreichbare Knoten behalten ∞)</li>
                         </ul>
                     </div>
 
@@ -797,7 +792,6 @@ class Knoten extends Sprite {
                         <h4>❌ Funktioniert NICHT bei:</h4>
                         <ul>
                             <li>Negativen Kantengewichten (führt zu falschen Ergebnissen!)</li>
-                            <li>Nicht zusammenhängenden Graphen (unerreichbare Knoten bleiben bei ∞)</li>
                         </ul>
                     </div>
 
@@ -838,29 +832,12 @@ class Knoten extends Sprite {
                     </ul>
                 </div>
 
-                <div class="solution-box hidden" id="solution-dijkstra">
-                    <h4>💡 Lösungshinweise zu Aufgabe 7</h4>
-                    <p><strong>Kürzeste Route Frankfurt → München:</strong></p>
-                    <ul>
-                        <li>Frankfurt → Würzburg (119 km)</li>
-                        <li>Würzburg → Nürnberg (109 km)</li>
-                        <li>Nürnberg → München (121 km)</li>
-                        <li><strong>Gesamt: 349 km</strong></li>
-                    </ul>
-                    <p class="mt-2"><strong>Besuchsreihenfolge:</strong></p>
-                    <p>Frankfurt → Mannheim → Würzburg → Karlsruhe → Nürnberg → Augsburg → München → Erfurt</p>
-                </div>
-
-                 <button class="btn btn-outline" onclick="toggleSolution('solution-dijkstra')">
-                    💡 Lösung anzeigen
-                </button>
-
                 <div class="pdf-download-box hidden" id="pdf-dijkstra">
                     <div class="pdf-icon">📄</div>
                     <div class="pdf-content">
                         <h3>Lösungen herunterladen</h3>
                         <p>Vollständige Musterlösung mit Tabellen und Erklärungen:</p>
-                        <a href="3-4 LSG Dijkstra.pdf" class="btn btn-secondary" download>
+                        <a href="arbeitsblaetter/ab-3-4-dijkstra-lsg.pdf" class="btn btn-secondary" download>
                             📥 PDF herunterladen
                         </a>
                     </div>

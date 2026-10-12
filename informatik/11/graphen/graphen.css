@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Graphen (Informatik 11, NTG) – Styling der Stationsseiten 3.1 und 3.2
+   Graphen (Informatik 11, NTG) – Styling der Stationsseiten 3.1 bis 3.4
    Ergänzt embed/style.css; Grundgerüst wie informatik/10/java/java.css.
    ========================================================================== */
 :root {
@@ -112,6 +112,7 @@ pre.jv .k { color: #93c5fd; font-weight: 600; }
 .gr-tab { width: 100%; border-collapse: collapse; margin: .5rem 0 1rem; font-size: .95rem; }
 .gr-tab th, .gr-tab td { border: 1px solid #e5e7eb; padding: .45rem .7rem; text-align: left; vertical-align: top; }
 .gr-tab th { background: #f3f4f6; }
+.gr-tab thead, .dj-tab thead { color: #0f172a; }
 .tab-scroll { overflow-x: auto; }
 
 /* Navigation zwischen Stationen */
@@ -191,6 +192,112 @@ pre.jv .k { color: #93c5fd; font-weight: 600; }
 .bfs-text p:last-child { margin-bottom: 0; }
 .werkstatt-knoepfe select { border: 2px solid var(--gr-primary); border-radius: 8px; padding: .25rem .5rem; font-weight: 600; }
 
+/* ---------- Dijkstra (3.4) – Farben wie auf Blatt 3.4 ---------- */
+:root { --dj-aktuell: #fdba74; --dj-aktuell-rand: #c2410c; --dj-fertig: #bfdbfe; --dj-fertig-rand: #1d4ed8; --dj-weg: #16a34a; --dj-jetzt: #7c3aed; }
+.dj-haupt { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 1.2rem; align-items: start; }
+.dj-kopf { margin-bottom: .6rem; }
+.dj-modi { display: inline-flex; gap: .45rem; flex-wrap: wrap; }
+.werkstatt-knoepfe button:disabled { opacity: .45; cursor: not-allowed; }
+.dj .graph-svg .knoten circle, .dj .graph-svg .knoten rect,
+.route .graph-svg .knoten rect { fill: #fff; stroke: #475569; stroke-width: 2; }
+.graph-svg .knoten.dj-aktuell circle, .graph-svg .knoten.dj-aktuell rect { fill: var(--dj-aktuell) !important; stroke: var(--dj-aktuell-rand) !important; stroke-width: 4 !important; }
+.graph-svg .knoten.dj-fertig circle, .graph-svg .knoten.dj-fertig rect { fill: var(--dj-fertig) !important; stroke: var(--dj-fertig-rand) !important; }
+.route .graph-svg .knoten.hl rect { fill: #fed7aa !important; stroke: #c2410c !important; }
+.graph-svg .knoten.dj-klickbar { cursor: pointer; }
+.graph-svg .knoten.dj-klickbar circle, .graph-svg .knoten.dj-klickbar rect { stroke: var(--dj-jetzt) !important; stroke-width: 3 !important; stroke-dasharray: 6 4; }
+.graph-svg .knoten.dj-klickbar:hover circle, .graph-svg .knoten.dj-klickbar:hover rect { fill: #ede9fe !important; }
+.graph-svg .kante.dj-pruef { stroke: #ea580c; stroke-width: 7; }
+.graph-svg .kante.dj-jetzt { stroke: var(--dj-jetzt); stroke-width: 8; }
+.graph-svg .kante.dj-weg { stroke: var(--dj-weg); stroke-width: 8; }
+.graph-svg .dj-wert { font-size: 17px; font-weight: 700; fill: #1d4ed8; paint-order: stroke; stroke: #fff; stroke-width: 5px; }
+.graph-svg .dj-wert .alt { fill: #64748b; font-weight: 600; }
+.graph-svg .dj-strich { stroke: #475569; stroke-width: 2; }
+.graph-svg .dj-wert .neu { fill: #15803d; }
+.dj-text { background: #f8fafc; border-radius: 10px; padding: .9rem 1.1rem; min-height: 9rem; }
+.dj-text p { margin: 0 0 .5rem; }
+.dj-text p:last-child { margin-bottom: 0; }
+.dj-schritt { font-weight: 700; color: var(--gr-primary-dark); text-transform: uppercase; letter-spacing: .04em; font-size: .85rem; }
+.dj-warn { color: var(--ph-problem); font-weight: 600; }
+.dj-ok { color: #15803d; font-weight: 700; }
+.dj-klein { font-size: .88rem; color: var(--gray); }
+.karte-b { display: inline-block; min-width: 1.6em; padding: 0 .3em; border-radius: 5px; background: #1e293b; color: #fff; text-align: center; font-size: .85em; }
+.dj-steuer { margin-top: .7rem; }
+.dj-zaehler { font-size: .85rem; color: var(--gray); margin-left: auto; }
+.dj-frage { font-weight: 700; font-size: .92rem; color: #334155; }
+.dj-weg-eingabe { display: flex !important; flex: 1 1 100%; }
+.dj-weg-eingabe input { flex: 1; min-width: 0; border: 2px solid var(--gr-primary); border-radius: 8px; padding: .3rem .5rem; font: inherit; }
+.dj-legende { display: flex; flex-wrap: wrap; gap: .3rem .9rem; font-size: .82rem; color: var(--gray); margin: .4rem 0 0; }
+.dj-legende span::before { content: ""; display: inline-block; width: .9rem; height: .9rem; margin-right: .3rem; vertical-align: -2px; border: 2px solid; border-radius: 50%; }
+.dj-legende .l-akt::before { background: var(--dj-aktuell); border-color: var(--dj-aktuell-rand); }
+.dj-legende .l-fer::before { background: var(--dj-fertig); border-color: var(--dj-fertig-rand); }
+.dj-legende .l-off::before { background: #fff; border-color: #475569; }
+.dj-legende .l-pruef::before { border-radius: 2px; height: 0; border-width: 3px 0 0; border-color: #ea580c; width: 1.2rem; vertical-align: 3px; }
+.dj-legende .l-weg::before { border-radius: 2px; height: 0; border-width: 3px 0 0; border-color: var(--dj-weg); width: 1.2rem; vertical-align: 3px; }
+.dj-tabelle { margin-top: 1rem; }
+.dj-tab { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: .95rem; }
+.dj-tab caption { caption-side: top; text-align: left; font-weight: 700; color: #334155; padding-bottom: .3rem; }
+.dj-tab th, .dj-tab td { border: 1px solid #94a3b8; padding: .35rem .5rem; text-align: center; min-width: 3rem; color: #0f172a; }
+.dj-tab tbody tr:hover { background: transparent; }
+.dj-tab thead th { background: #f1f5f9; color: #0f172a; }
+.dj-tab tbody th { background: #f8fafc; font-weight: 600; color: #475569; width: 4.2rem; }
+.dj-tab td.dj-a { background: var(--dj-aktuell); }
+.dj-tab td.dj-f { background: var(--dj-fertig); }
+.dj-tab s { color: #64748b; }
+.dj-tab .neu { color: #15803d; }
+.dj-tab .dj-leer { color: var(--gray); font-style: italic; }
+.dj-tab input { width: 4.2rem; max-width: 100%; border: 2px solid #94a3b8; border-radius: 6px; padding: .2rem .3rem; text-align: center; font: inherit; }
+.dj-tab input:focus { outline: 3px solid var(--ph-modify); outline-offset: 1px; }
+.dj-tab input.ok { border-color: #16a34a; background: #f0fdf4; }
+.dj-tab input.falsch { border-color: var(--ph-problem); background: #fff1f2; }
+.dj-tab tr.dj-eingabe th { color: var(--gr-primary-dark); }
+.route-versuche { font-size: .9rem; margin-top: .6rem; }
+.route-versuche ul { margin: .2rem 0 0 1.1rem; padding: 0; }
+.route-versuche p { margin: 0; }
+
+/* Kartenrätsel (Aufgabe 3) */
+.karten { display: flex; flex-wrap: wrap; gap: .7rem; margin: .4rem 0 1rem; align-items: flex-start; }
+.karten .karte {
+    flex: 1 1 190px; max-width: 320px; text-align: left; background: #fff; border: 2px solid #334155; border-radius: 10px;
+    padding: .6rem .8rem; font: inherit; font-size: .93rem; line-height: 1.45; cursor: pointer; box-shadow: 0 2px 0 #cbd5e1;
+}
+.karten .karte:hover { background: #f8fafc; }
+.karten .karte:focus-visible { outline: 3px solid var(--ph-modify); outline-offset: 2px; }
+.karten .karte:disabled { opacity: .35; cursor: default; }
+.karten .karte .kr-b, .kr-platz .kr-b { display: inline-block; font-weight: 800; font-size: 1.15rem; margin-right: .35rem; font-family: var(--font-family-mono, monospace); }
+.kr-reihe { list-style: none; display: flex; gap: .5rem; padding: 0; margin: .3rem 0 .8rem; flex-wrap: wrap; }
+.kr-platz {
+    display: inline-flex; align-items: center; justify-content: center; width: 3rem; height: 3rem; border: 2px dashed #94a3b8;
+    border-radius: 10px; color: #94a3b8; font-weight: 600; background: #fff; font: inherit;
+}
+.kr-platz.voll { border-style: solid; border-color: #334155; color: #0f172a; cursor: pointer; }
+.kr-platz.voll .kr-b { margin: 0; }
+.kr-meldung { font-weight: 600; min-height: 1.5em; margin: .5rem 0; }
+.kr-meldung.ok { color: #15803d; }
+.kr-meldung.falsch { color: var(--ph-problem); }
+.algo { list-style: none; padding: 0; margin: .5rem 0 0; counter-reset: algo; }
+.algo li { position: relative; padding: .35rem 0 .35rem 2.6rem; }
+.algo li .karte-b { position: absolute; left: 0; top: .4rem; }
+
+/* Übungsaufgaben */
+.uebung { border: 1px solid #e2e8f0; border-radius: 10px; padding: .9rem 1.1rem; margin: 1rem 0; background: #fff; }
+.uebung h3 { font-size: 1.05rem; margin: 0 0 .4rem; color: var(--gr-primary-dark); }
+.uebung .gr-tab { max-width: 520px; }
+
+/* Lösungsweg (wie Datenstrukturen 12) */
+.lw { border: 1px dashed #94a3b8; border-radius: 10px; background: #f8fafc; padding: .7rem 1rem; margin: .8rem 0; }
+.lw-kopf { font-weight: 700; color: #334155; margin-bottom: .3rem; }
+.lw-stufe { background: #fff; border-radius: 8px; padding: .6rem .8rem; margin: .4rem 0; border-left: 4px solid var(--ph-idee); }
+.lw-stufe.lw-loesung { border-left-color: var(--ph-note); }
+.lw-stufe p:last-child { margin-bottom: 0; }
+.lw-marke { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--gray); margin-bottom: .2rem; }
+.lw-knoepfe { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .3rem; }
+.lw-knopf { position: relative; overflow: hidden; border: 2px solid var(--ph-idee); background: #fff; color: var(--ph-idee); border-radius: 999px; padding: .3rem .9rem; font-weight: 600; font-size: .88rem; cursor: pointer; font-family: inherit; user-select: none; -webkit-user-select: none; touch-action: none; }
+.lw-knopf.lw-halten { border-color: var(--ph-note); color: #166534; }
+.lw-knopf.lw-weg { border-color: #94a3b8; color: #475569; }
+.lw-knopf:focus-visible { outline: 3px solid var(--ph-modify); outline-offset: 2px; }
+.lw-fortschritt { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: #bbf7d0; z-index: 0; }
+.lw-text { position: relative; z-index: 1; }
+
 /* Übergangs-Karten (Ausblick) */
 .weiter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-top: 1rem; }
 .weiter-karte { border-radius: 12px; padding: 1rem 1.2rem; background: #f8fafc; border-top: 5px solid var(--gr-primary); }
@@ -198,7 +305,7 @@ pre.jv .k { color: #93c5fd; font-weight: 600; }
 .weiter-karte p { font-size: .95rem; margin-bottom: .4rem; }
 
 @media (max-width: 900px) {
-    .werkstatt, .bfs { grid-template-columns: 1fr; }
+    .werkstatt, .bfs, .dj-haupt { grid-template-columns: 1fr; }
 }
 @media (max-width: 768px) {
     .gr-hero .hero-title { font-size: 1.7rem; }
@@ -208,4 +315,13 @@ pre.jv .k { color: #93c5fd; font-weight: 600; }
     .spiel-rahmen { min-height: 460px; height: 78vh; }
     .matrix th { width: 2.2rem; }
     .matrix td button { width: 2.2rem; }
+    .dj-tab { font-size: .85rem; }
+    .dj-tab th, .dj-tab td { padding: .3rem .25rem; min-width: 2.4rem; }
+    .dj-tab input { width: 3rem; }
+    .karten .karte { max-width: none; }
+}
+@media (max-width: 600px) {
+    .dj .graph-svg text, .route .graph-svg text { font-size: 20px; }
+    .dj .graph-svg .gewicht, .route .graph-svg .gewicht { font-size: 19px; }
+    .dj .graph-svg .dj-wert { font-size: 23px; }
 }
