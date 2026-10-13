@@ -1,0 +1,112 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcommand{\kopfzelle}[1]{\cellcolor{blue!8}\textbf{#1}}
+% Schlüssel-Symbol
+\newcommand{\schluessel}[1][black]{\tikz[baseline=-0.6ex,#1,line width=0.9pt]{\draw (0,0) circle (0.11); \draw (0.11,0) -- (0.5,0); \draw (0.38,0) -- (0.38,-0.1) (0.46,0) -- (0.46,-0.1);}}
+\begin{document}
+\abtitel{5.1}{Grundlagen der Verschlüsselung}
+
+\begin{aufgabe}[Die Skytale]{1}
+\begin{minipage}[t]{0.58\linewidth}
+\vspace{0pt}
+Die Spartaner wickelten vor 2500 Jahren einen Lederstreifen um einen Stab (die \textbf{Skytale}) und schrieben ihre Nachricht der Länge nach darauf. Abgewickelt sieht der Streifen wie Buchstabensalat aus. Nur wer einen gleich dicken Stab hat, kann die Nachricht lesen.\\[1mm]
+Abgefangener Streifen: \quad\texttt{\large TKLHEIEIECSXAAX}\\[1mm]
+Um den Stab passen genau \textbf{3} Buchstaben. Schreibe den Streifen \textbf{spaltenweise} (von oben nach unten) in das Raster und lies \textbf{zeilenweise}.\par
+{\lueckentext Klartext: \lsg[6cm]{THE CAKE IS A LIE}\par}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.38\linewidth}
+\vspace{2mm}\centering
+\begin{tikzpicture}[x=7mm,y=7mm]
+  \draw[gray!70] (0,0) grid (5,3);
+  \draw[line width=0.7pt] (0,0) rectangle (5,3);
+  \node[font=\small,anchor=east] at (-0.1,2.5) {Zeile 1};
+  \node[font=\small,anchor=east] at (-0.1,1.5) {Zeile 2};
+  \node[font=\small,anchor=east] at (-0.1,0.5) {Zeile 3};
+  \node[font=\ttfamily] at (0.5,2.5) {T}; \node[font=\ttfamily] at (0.5,1.5) {K}; \node[font=\ttfamily] at (0.5,0.5) {L};
+  \draw[-{Stealth},blue!60!black,thick] (0.5,3.75) -- (0.5,3.15);
+  \ifloesung
+  \foreach \z [count=\r] in {{T,H,E,C,A},{K,E,I,S,A},{L,I,E,X,X}} {
+    \foreach \b [count=\s] in \z {\ifnum\s>1 \node[font=\ttfamily,text=red!75!black] at (\s-0.5,3.5-\r) {\b};\fi}
+  }
+  \fi
+\end{tikzpicture}\\[1mm]
+{\small (X = Füllzeichen)}
+\end{minipage}
+\end{aufgabe}
+
+\begin{minipage}[t]{0.63\linewidth}
+\vspace{0pt}
+Helga ist bei einer Recherche zu \textbf{Verschlüsselungen} auf einen Forumseintrag gestoßen. Die Antwort wurde mit dem \textbf{ROT13-Verfahren} verschlüsselt: Jeder Buchstabe des Alphabets wird um 13 Stellen weitergeschoben (nach Z geht es bei A weiter).
+\end{minipage}\hfill
+\begin{minipage}[t]{0.33\linewidth}
+\vspace{0pt}
+\begin{tcolorbox}[colback=yellow!15,colframe=orange!60,boxrule=0.5pt,arc=1mm,left=1.5mm,right=1.5mm,top=1mm,bottom=1mm]
+\small\itshape Wem wird die Entschlüsselung der Vigenère-Chiffre im 19.\,Jahrhundert zugeschrieben?\\[0.5mm]
+\upshape Antwort: \texttt{\bfseries PUNEYRF ONOONTR}
+\end{tcolorbox}
+\end{minipage}
+
+\begin{aufgabe}[ROT13]{2}
+\textbf{a)} Ergänze die Tabelle: Unter jedem Buchstaben steht der Buchstabe, der 13 Stellen weiter liegt. Entschlüssle dann Helgas Antwort.\par\vspace{1.5mm}
+{\setlength{\tabcolsep}{0pt}\renewcommand{\arraystretch}{1.25}\small
+\begin{tabularx}{\linewidth}{|*{26}{C|}}\hline
+A&B&C&D&E&F&G&H&I&J&K&L&M&N&O&P&Q&R&S&T&U&V&W&X&Y&Z\\\hline
+\schreibzeile\lsgtext{N}&\lsgtext{O}&\lsgtext{P}&\lsgtext{Q}&\lsgtext{R}&\lsgtext{S}&\lsgtext{T}&\lsgtext{U}&\lsgtext{V}&\lsgtext{W}&\lsgtext{X}&\lsgtext{Y}&\lsgtext{Z}&\lsgtext{A}&\lsgtext{B}&\lsgtext{C}&\lsgtext{D}&\lsgtext{E}&\lsgtext{F}&\lsgtext{G}&\lsgtext{H}&\lsgtext{I}&\lsgtext{J}&\lsgtext{K}&\lsgtext{L}&\lsgtext{M}\\\hline
+\end{tabularx}}\par\vspace{1mm}
+{\lueckentext Klartext: \lsg[6cm]{CHARLES BABBAGE}\\
+\textbf{b)} Öffne das Projekt \texttt{11-5-1 Verschluesselung} (Website) und erklärt euch gegenseitig, wie die Methoden \texttt{rotiere} und \texttt{rot13} arbeiten. Ergänze:\\
+Der Computer rechnet mit dem ASCII-Code: \texttt{'A'} hat den Code 65, \texttt{'Z'} den Code \lsg[1.5cm]{90}. In \nr{2} wird die Verschiebung zum Code addiert. Ist das Ergebnis größer als 90, werden in \nr{3} \lsg[1.5cm]{26} abgezogen. In \texttt{rot13} geht eine \lsg[2.5cm]{for-Schleife} den Text Zeichen für Zeichen durch, verschiebt jedes Zeichen um \lsg[1.5cm]{13} und hängt es hinten an den Geheimtext an.\\
+\textbf{c)} Verschlüssle den Geheimtext noch einmal mit ROT13. Warum entsteht wieder der Klartext?\par}
+\lsglinien{1}{13 + 13 = 26 Stellen: einmal ganz um das Alphabet herum. Ver- und Entschlüsseln sind gleich.}
+\end{aufgabe}
+
+\newpage
+\textbf{Grundprinzip der Verschlüsselung}\par\vspace{1mm}
+\begin{minipage}[c]{0.5\linewidth}
+\centering
+\begin{tikzpicture}[font=\small,
+  txt/.style={draw,ellipse,minimum width=16mm,minimum height=7mm,inner sep=1pt}]
+  \node[txt,fill=green!15] (k1) at (0,0) {Klartext};
+  \node[txt,fill=orange!20] (g) at (3.05,0) {Geheimtext};
+  \node[txt,fill=green!15] (k2) at (6.1,0) {Klartext};
+  \draw[-{Stealth},thick] (k1.north east) to[bend left=40] node[above,align=center,font=\scriptsize] {\scalebox{1.6}{\schluessel}\\Verschlüsselung} (g.north west);
+  \draw[-{Stealth},thick] (g.north east) to[bend left=40] node[above,align=center,font=\scriptsize] {\scalebox{1.6}{\schluessel}\\Entschlüsselung} (k2.north west);
+  \draw[red!70!black] (-0.8,-0.6) -- (-0.8,-0.75) -- (2.1,-0.75) -- (2.1,-0.6); \node[red!70!black,font=\scriptsize] at (0.65,-1) {Sender};
+  \draw[violet] (4.0,-0.6) -- (4.0,-0.75) -- (6.9,-0.75) -- (6.9,-0.6); \node[violet,font=\scriptsize] at (5.45,-1) {Empfänger};
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[c]{0.47\linewidth}
+{\lueckentext Im Gegensatz zur Codierung (Kapitel 4: Regeln öffentlich) wird bei der \lsg[3.8cm]{Verschlüsselung} eine Nachricht (\textbf{Klartext}) in unlesbare Daten (\textbf{Geheimtext}) umgewandelt, sodass sie vor Unbefugten geschützt ist. Nur wer zusätzlich den \lsg[3cm]{Schlüssel} kennt, kann den Geheimtext wieder entschlüsseln.\par}
+\end{minipage}
+
+\medskip
+\textbf{Sicherheitsziele einer Verschlüsselung}\par
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+\textbf{Vertraulichkeit:} & Eine Nachricht kann nur von Befugten gelesen werden.\\
+\textbf{Integrität:} & Eine Nachricht kann nicht unbemerkt verändert werden.\\
+\textbf{Authentizität:} & Eine Nachricht kann nicht unter falschem Namen verschickt werden.\\
+\textbf{Verbindlichkeit:} & Der Absender kann später nicht bestreiten, die Nachricht verfasst zu haben.\\
+\end{tabularx}
+
+\begin{aufgabe}[Welches Ziel ist in Gefahr?]{3}
+{\lueckentext
+\nr{1} Im Schul-WLAN liest jemand deine Chatnachrichten mit: \lsgrest{Vertraulichkeit}
+\nr{2} Bei einer Online-Überweisung werden unterwegs aus 10\,€ plötzlich 100\,€: \lsgrest{Integrität}
+\nr{3} Eine E-Mail sieht aus, als käme sie von deiner Bank, stammt aber von Betrügern: \lsgrest{Authentizität}
+\nr{4} Jemand bestellt online und behauptet später, er habe nie bestellt: \lsgrest{Verbindlichkeit}
+\par}
+\end{aufgabe}
+
+\textbf{Ein Schlüssel oder ein Schlüsselpaar?}\par
+{\lueckentext Man unterscheidet vor allem zwei Arten von Verfahren:\\
+\lsg[3.8cm]{Symmetrische} Verschlüsselung: Derselbe Schlüssel wird zum Ver- und Entschlüsseln benutzt.\\
+\lsg[3.8cm]{Asymmetrische} Verschlüsselung: Es gibt ein \textbf{Schlüsselpaar}. Mit dem einen Schlüssel kann man nur verschlüsseln, mit dem anderen nur entschlüsseln.\par}
+
+\begin{aufgabe}[The Mystery of Cryptocastle]{4}
+Öffne das Spiel (Link auf der Website), gehe zu Abschnitt \textbf{1} und löse die Aufgaben bis zu der Truhe, in der sich der Code \texttt{\bfseries GOVTGYZTTMZKCYE} befindet. Den Code knackst du in Station 5.2.
+\end{aufgabe}
+
+\vfill
+\web{Station 5.1 Grundlagen: Skytale, Chiffrierscheibe, Code-Animation zu rot13}
+\end{document}

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5.1 Grundlagen der Verschlüsselung | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Verschlüsselung, Informatik 11 (NTG): Skytale, ROT13 mit Chiffrierscheibe und Code-Animation, Grundprinzip und Sicherheitsziele, symmetrisch und asymmetrisch – passend zu Arbeitsblatt 5.1.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/include/online-ide-embedded.css">
+    <script type="module" src="https://edu-mrh.de/embed/include/online-ide-embedded.js"></script>
+    <link rel="stylesheet" href="verschluesselung.css">
+    <script defer src="verschluesselung.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🔐</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="verschluesselung.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 5.1</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#skytale">📜 Die Skytale</a></li>
+            <li><a href="#rot13">🔍 ROT13</a></li>
+            <li><a href="#code">💻 ROT13 im Code</a></li>
+            <li><a href="#prinzip">📝 Grundprinzip</a></li>
+            <li><a href="#ziele">🛡️ Sicherheitsziele</a></li>
+            <li><a href="#burg">🏰 Cryptocastle</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Verschlüsselung</div>
+            <ul class="sidebar-menu">
+                <li><a href="verschluesselung.html">Übersicht</a></li>
+                <li><a href="5-1-grundlagen.html">5.1 Grundlagen</a></li>
+                <li><a href="5-2-symmetrisch.html">5.2 Symmetrisch</a></li>
+                <li><a href="5-3-asymmetrisch.html">5.3 Asymmetrisch (RSA)</a></li>
+                <li><a href="5-4-signatur.html">5.4 Digitale Signatur</a></li>
+                <li><a href="5-5-sicherheit.html">5.5 Sicherheit</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero vs-hero">
+                <h1 class="hero-title">5.1 Grundlagen der Verschlüsselung</h1>
+                <p class="hero-subtitle">Verschlüsselung · Informatik 11 (NTG) · 2 Stunden</p>
+                <span class="vs-kompetenz">Du kannst: einfache Verfahren (Skytale, ROT13) anwenden, ihre Umsetzung in Java erklären, Codierung und Verschlüsselung unterscheiden und die vier Sicherheitsziele nennen.</span>
+                <div class="vs-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-5-1-grundlagen.pdf">📝 Arbeitsblatt 5.1 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-5-1-grundlagen.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#skytale">📜 Einstieg</a><a class="p-investigate" href="#rot13">🔍 ROT13</a><a class="p-run" href="#code">💻 Code</a><a class="p-note" href="#prinzip">📝 Festhalten</a><a class="p-modify" href="#ziele">🛡️ Anwenden</a><a class="p-make" href="#burg">🏰 Spiel</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="skytale" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">📜</span><h2>Einstieg<small>Aufgabe 1: Die Skytale</small></h2></div>
+                <div class="phase-body">
+                    <p>Die Spartaner wickelten vor rund 2500 Jahren einen Lederstreifen um einen Stab und schrieben ihre Nachricht der Länge nach darauf. Abgewickelt sieht der Streifen aus wie Buchstabensalat. Ein Bote hat diesen Streifen dabei: <code>TKLHEIEIECSXAAX</code>.</p>
+                    <div data-skytale></div>
+                    <ol class="aufgaben">
+                        <li>Wickle den Streifen um verschieden dicke Stäbe (2 bis 6 Buchstaben Umfang). Bei welchem Umfang entsteht ein lesbarer Text? Trage ihn auf dem Blatt ein.</li>
+                        <li>Wechsle zu „Nachricht schreiben“ und verschlüssle eine eigene Nachricht. Lass deinen Nachbarn sie entschlüsseln.</li>
+                        <li><strong>Zum Nachdenken (mündlich):</strong> Was braucht der Empfänger, um die Nachricht zu lesen? Was ist hier das Geheimnis?</li>
+                    </ol>
+                    <div class="tipp"><strong>Basteln statt klicken:</strong> Wickle einen schmalen Papierstreifen schräg um einen Bleistift, schreibe der Länge nach und wickle ab. Passt dein Text noch auf einen dickeren Stift?</div>
+                    <div class="lw" data-loesungsweg="Aufgabe 1">
+                        <template data-stufe="Tipp"><p>Schreibe den Streifen spaltenweise in ein Raster mit 3 Zeilen: T, K, L in die erste Spalte, H, E, I in die zweite …</p></template>
+                        <template data-stufe="Lösung" data-halten><p>Umfang 3: THECA / KEISA / LIEXX → <strong>THE CAKE IS A LIE</strong> (X sind Füllzeichen). Das Geheimnis ist die Dicke des Stabs: Sie ist der <strong>Schlüssel</strong>.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-5-1-grundlagen.pdf">📝 Blatt 5.1 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="rot13" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Untersuchen<small>Aufgabe 2a: ROT13</small></h2></div>
+                <div class="phase-body">
+                    <p>Helga ist bei einer Recherche zu Verschlüsselungen auf einen Forumseintrag gestoßen: „Wem wird die Entschlüsselung der Vigenère-Chiffre im 19. Jahrhundert zugeschrieben?“ Die Antwort wurde mit dem <strong>ROT13-Verfahren</strong> verschlüsselt: Jeder Buchstabe wird um 13 Stellen weitergeschoben, nach Z geht es bei A weiter.</p>
+                    <p class="vs-mono" style="font-size:1.3rem;text-align:center"><strong>PUNEYRF ONOONTR</strong></p>
+                    <ol class="aufgaben">
+                        <li>Fülle auf dem Blatt die Tabelle aus (unter jedem Buchstaben der, der 13 Stellen weiter liegt) und entschlüssle die Antwort.</li>
+                        <li>Kontrolliere mit der Chiffrierscheibe. Gehe Buchstabe für Buchstabe durch.</li>
+                    </ol>
+                    <div data-scheibe data-k="13" data-text="HALLO"></div>
+                    <details class="denk"><summary>Denkanstoß: Warum ausgerechnet 13?</summary>
+                        <p>Stelle die Scheibe auf 13 und verschlüssle „HALLO“. Tippe das Ergebnis dann noch einmal ein. Was fällt dir auf? Würde das mit k = 3 auch funktionieren?</p>
+                    </details>
+                    <div class="lw" data-loesungsweg="Aufgabe 2a">
+                        <template data-stufe="Lösung" data-halten><p>Tabelle: A→N, B→O, …, M→Z, N→A, …, Z→M. Klartext: <strong>CHARLES BABBAGE</strong> (englischer Mathematiker, entschlüsselte die Vigenère-Chiffre um 1854).</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-5-1-grundlagen.pdf">📝 Blatt 5.1 · Aufgabe 2a</a></p>
+                </div>
+            </section>
+
+            <section id="code" class="phase run">
+                <div class="phase-head"><span class="phase-icon">💻</span><h2>ROT13 im Code<small>Aufgabe 2b und 2c: Projekt 11-5-1 Verschluesselung</small></h2></div>
+                <div class="phase-body">
+                    <p>Wie bringt man einem Computer ROT13 bei? Er rechnet nicht mit Buchstaben, sondern mit ihren Nummern im <strong>ASCII-Code</strong> (A = 65, B = 66, …, Z = 90). Die Animation zeigt Schritt für Schritt, was die beiden Methoden aus dem Projekt tun. Die Nummern ①–⑥ und ⓪–④ stehen genauso als Kommentare im Code.</p>
+                    <div data-tracer data-text="HALLO ZEBRA"></div>
+                    <ol class="aufgaben">
+                        <li>Klicke dich mit <strong>Schritt ▶</strong> durch „HALLO ZEBRA“. Was passiert beim Z anders als beim H? Was beim Leerzeichen?</li>
+                        <li><strong>Blatt, Aufgabe 2b:</strong> Öffne unten das Projekt. Erklärt euch gegenseitig <code>rotiere</code> und <code>rot13</code> und ergänzt den Lückentext. Starte das Programm: Es entschlüsselt Helgas Antwort.</li>
+                        <li><strong>Blatt, Aufgabe 2c:</strong> Verschlüssle den Geheimtext noch einmal mit ROT13 (im Hauptprogramm <code>sv.rot13(sv.rot13("PUNEYRF ONOONTR"))</code>). Warum entsteht wieder der Klartext?</li>
+                    </ol>
+                    <div class="ide-block" id="ide">
+                        <div class="ide-kopf"><h3>Projekt 11-5-1 Verschluesselung</h3></div>
+<!-- IDE-START verschluesselung -->
+<div class="java-online" style="width:100%;height:700px" data-java-online="{ 'id': 'i11-51-verschluesselung', 'speed': 1000000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true, 'withErrorList': true, 'jsonFilename': '11-5-1 Verschluesselung.json', 'enableFileAccess': true, 'enableRunExitStatusAccess': true }">
+<script type="text/plain" title="Hauptprogramm.java">
+Symverschluesselung sv = new Symverschluesselung();
+
+// Blatt 5.1, Aufgabe 2: Helgas Forumseintrag mit ROT13 entschlüsseln
+println(sv.rot13("PUNEYRF ONOONTR"));
+
+// Blatt 5.2, Aufgabe 1: Caesar (liefert erst nach TODO 1 und 2 etwas)
+String geheim = sv.caesar("Veni vidi vici", 3);
+println("Verschlüsselt: " + geheim);
+println("Entschlüsselt: " + sv.caesarEnt(geheim, 3));
+
+// Selbst bauen (TODO 3 und 4): Vigenère
+// println(sv.vigenere("KAFFEE", "ELF"));
+// println(sv.vigenereEnt("GOVTGYZTTMZKCYE", "????"));   // Schlüsselwort aus Cryptocastle
+</script>
+<script type="text/plain" title="Symverschluesselung.java">
+/**
+ * Symmetrische Verschlüsselung: ROT13, Caesar und Vigenère (Stationen 5.1 und 5.2).
+ * Verschlüsselt werden nur die Großbuchstaben A bis Z, alle anderen Zeichen
+ * (z. B. Leerzeichen) bleiben, wie sie sind.
+ * Suche (Strg + F) nach "TODO" und ergänze den Code.
+ */
+public class Symverschluesselung {
+
+   /**
+    * Verschiebt einen Großbuchstaben um rotationUm Stellen im Alphabet.
+    * Nach Z geht es wieder bei A weiter.
+    * Beispiele: rotiere('B', 3) liefert 'E', rotiere('Y', 3) liefert 'B'.
+    */
+   public char rotiere(char buchstabe, int rotationUm) {
+      if (buchstabe < 'A' || buchstabe > 'Z') {   // ⓪ kein Großbuchstabe (z. B. Leerzeichen)?
+         return buchstabe;                         //    dann unverändert zurückgeben
+      }
+      rotationUm = rotationUm % 26;               // ① 26 Schritte sind einmal ganz herum
+      int code = (int) buchstabe + rotationUm;    // ② ASCII-Code + Verschiebung, z. B. 'Y' (89) + 3 = 92
+      if (code > 90) {                            // ③ hinter 'Z' (Code 90) gelandet?
+         code = code - 26;                        //    dann vorne weiterzählen: 92 - 26 = 66 ('B')
+      }
+      return (char) code;                         // ④ Zahl wieder als Zeichen zurückgeben
+   }
+
+   /**
+    * ROT13: Jeder Buchstabe wird um 13 Stellen verschoben (Blatt 5.1, Aufgabe 2).
+    * Beispiel: rot13("HALLO") liefert "UNYYB".
+    */
+   public String rot13(String klartext) {
+      klartext = klartext.toUpperCase();                 // ① alles in Großbuchstaben
+      String geheimtext = "";                            // ② der Geheimtext ist zuerst leer
+      for (int i = 0; i < klartext.length(); i++) {      // ③ Zeichen für Zeichen (i = 0, 1, 2, ...)
+         char zeichen = klartext.charAt(i);              // ④ das Zeichen an Position i holen
+         geheimtext = geheimtext + rotiere(zeichen, 13); // ⑤ verschieben und hinten anhängen
+      }
+      return geheimtext;                                 // ⑥ fertigen Geheimtext zurückgeben
+   }
+
+   /**
+    * TODO 1 (Blatt 5.2, Aufgabe 1): Caesar-Verschlüsselung mit beliebigem Schlüssel.
+    * Beispiel: caesar("HALLO", 3) liefert "KDOOR".
+    * Tipp: Vergleiche mit rot13. Was ist dort fest, was soll hier veränderbar sein?
+    */
+   public String caesar(String klartext, int schluessel) {
+      return "";
+   }
+
+   /**
+    * TODO 2 (Blatt 5.2, Aufgabe 1): Caesar-Entschlüsselung.
+    * Beispiel: caesarEnt("KDOOR", 3) liefert "HALLO".
+    * Tipp: rotiere kann nur vorwärts. Um 3 zurück ist dasselbe wie um 23 vor.
+    */
+   public String caesarEnt(String geheimtext, int schluessel) {
+      return "";
+   }
+
+   // ---------- Selbst bauen (Website): Vigenère ----------
+
+   /**
+    * Wie weit verschiebt ein Schlüsselbuchstabe? 'A' = 0, 'B' = 1, ..., 'Z' = 25
+    */
+   public int verschiebung(char schluesselbuchstabe) {
+      return (int) schluesselbuchstabe - 65;
+   }
+
+   /**
+    * TODO 3: Vigenère-Verschlüsselung. Das Zeichen an Position i wird um den
+    * Schlüsselbuchstaben an Position i % schluessel.length() verschoben
+    * (so wiederholt sich das Schlüsselwort: ELFELFELF...).
+    * Beispiel: vigenere("KAFFEE", "ELF") liefert "OLKJPJ".
+    */
+   public String vigenere(String klartext, String schluessel) {
+      return "";
+   }
+
+   /**
+    * TODO 4: Vigenère-Entschlüsselung.
+    * Beispiel: vigenereEnt("OLKJPJ", "ELF") liefert "KAFFEE".
+    */
+   public String vigenereEnt(String geheimtext, String schluessel) {
+      return "";
+   }
+}
+</script>
+<script type="text/plain" title="SymverschluesselungTest.java" data-online-ide="{ 'readOnly': true }">
+/**
+ * Selbsttest des Projekts. Bitte nicht verändern!
+ * Starten: Klick auf das kleine Dreieck links neben "@Test"
+ * (ganz oben: alle Tests) oder auf der Website "Tests starten".
+ */
+public class SymverschluesselungTest {
+
+   @Test
+   public void rot13Beispiel() {
+      Symverschluesselung sv = new Symverschluesselung();
+      Assertions.assertEquals("UNYYB", sv.rot13("HALLO"), "rot13(\"HALLO\") muss UNYYB liefern.");
+   }
+
+   @Test
+   public void caesarEinfach() {
+      Symverschluesselung sv = new Symverschluesselung();
+      Assertions.assertEquals("KDOOR", sv.caesar("HALLO", 3), "TODO 1: caesar(\"HALLO\", 3) muss KDOOR liefern.");
+   }
+
+   @Test
+   public void caesarUeberZ() {
+      Symverschluesselung sv = new Symverschluesselung();
+      Assertions.assertEquals("ABC", sv.caesar("XYZ", 3), "TODO 1: caesar(\"XYZ\", 3) muss ABC liefern (nach Z geht es bei A weiter).");
+   }
+
+   @Test
+   public void caesarKleinUndLeer() {
+      Symverschluesselung sv = new Symverschluesselung();
+      Assertions.assertEquals("IBMMP XFMU", sv.caesar("Hallo Welt", 1), "TODO 1: caesar(\"Hallo Welt\", 1) muss IBMMP XFMU liefern.");
+   }
+
+   @Test
+   public void caesarEntEinfach() {
+      Symverschluesselung sv = new Symverschluesselung();
+      Assertions.assertEquals("HALLO", sv.caesarEnt("KDOOR", 3), "TODO 2: caesarEnt(\"KDOOR\", 3) muss HALLO liefern.");
+   }
+
+   @Test
+   public void caesarHinUndZurueck() {
+      Symverschluesselung sv = new Symverschluesselung();
+      for (int k = 0; k < 30; k++) {
+         Assertions.assertEquals("ZEBRA", sv.caesarEnt(sv.caesar("ZEBRA", k), k), "TODO 2: Mit Schlüssel " + k + " kommt beim Entschlüsseln nicht wieder ZEBRA heraus.");
+      }
+   }
+
+   @Test
+   public void vigenereBeispiel() {
+      Symverschluesselung sv = new Symverschluesselung();
+      Assertions.assertEquals("OLKJPJ", sv.vigenere("KAFFEE", "ELF"), "TODO 3: vigenere(\"KAFFEE\", \"ELF\") muss OLKJPJ liefern.");
+   }
+
+   @Test
+   public void vigenereEntBeispiel() {
+      Symverschluesselung sv = new Symverschluesselung();
+      Assertions.assertEquals("KAFFEE", sv.vigenereEnt("OLKJPJ", "ELF"), "TODO 4: vigenereEnt(\"OLKJPJ\", \"ELF\") muss KAFFEE liefern.");
+   }
+}
+</script>
+</div>
+<!-- IDE-ENDE verschluesselung -->
+                        <p class="ide-downloads">💾 Dein Stand bleibt im Browser und ist in Station 5.2 wieder da (dort ergänzt du Caesar). Sichern: Diskettensymbol in der IDE-Leiste, der Name <code>11-5-1 Verschluesselung.json</code> ist schon vorgeschlagen. · <a href="Online-IDE/11-5-1%20Verschluesselung.json" download>Ausgangsprojekt für online-ide.de</a></p>
+                    </div>
+                    <div class="lw" data-loesungsweg="Aufgabe 2b und 2c">
+                        <template data-stufe="Tipp"><p>Schau in der Animation auf die Variable <code>code</code> beim Buchstaben Z.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>b) 'Z' hat den Code <strong>90</strong>; ist der neue Code größer als 90, werden <strong>26</strong> abgezogen; eine <strong>for-Schleife</strong> geht den Text durch, jedes Zeichen wird um <strong>13</strong> verschoben und hinten angehängt.<br>c) 13 + 13 = 26 Stellen: einmal ganz um das Alphabet herum. Bei ROT13 sind Ver- und Entschlüsseln dasselbe.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-5-1-grundlagen.pdf">📝 Blatt 5.1 · Aufgabe 2b, 2c</a></p>
+                </div>
+            </section>
+
+            <section id="prinzip" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Grundprinzip der Verschlüsselung</small></h2></div>
+                <div class="phase-body">
+                    <p>Erinnerst du dich an 4.2? Bei einer <strong>Codierung</strong> sind die Regeln öffentlich: Jeder mit der Morsetabelle kann Morsecode lesen. Bei der Skytale und bei ROT13 ist das anders.</p>
+                    <div class="konzept">
+                        <h4>Verschlüsselung</h4>
+                        <p>Bei der <strong>Verschlüsselung</strong> wird eine Nachricht (<strong>Klartext</strong>) in unlesbare Daten (<strong>Geheimtext</strong>) umgewandelt, sodass sie vor Unbefugten geschützt ist. Nur wer zusätzlich den <strong>Schlüssel</strong> kennt, kann den Geheimtext wieder entschlüsseln.<br>
+                        Man unterscheidet <strong>symmetrische</strong> Verfahren (derselbe Schlüssel zum Ver- und Entschlüsseln) und <strong>asymmetrische</strong> Verfahren (ein <strong>Schlüsselpaar</strong>: einer nur zum Verschlüsseln, der andere nur zum Entschlüsseln).</p>
+                    </div>
+                    <details class="denk"><summary>Denkanstoß (mündlich): Ist ROT13 überhaupt eine Verschlüsselung?</summary>
+                        <p>Bei ROT13 ist die 13 fest und allgemein bekannt. Gibt es dann noch einen geheimen Schlüssel? Im Internet wird ROT13 eher benutzt, um Spoiler zu verstecken, als um etwas geheim zu halten. Was müsste man ändern, damit es ein echter Schlüssel wird? (Antwort in 5.2.)</p>
+                    </details>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-5-1-grundlagen.pdf">📝 Blatt 5.1 · Grundprinzip, Schlüssel oder Schlüsselpaar</a></p>
+                </div>
+            </section>
+
+            <section id="ziele" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">🛡️</span><h2>Anwenden<small>Aufgabe 3: Sicherheitsziele</small></h2></div>
+                <div class="phase-body">
+                    <p>Bei jeder Kommunikation im Netz möchte man vier Ziele erreichen:</p>
+                    <table class="vs-tabelle">
+                        <tbody>
+                            <tr><th scope="row">Vertraulichkeit</th><td>Eine Nachricht kann nur von Befugten gelesen werden.</td></tr>
+                            <tr><th scope="row">Integrität</th><td>Eine Nachricht kann nicht unbemerkt verändert werden.</td></tr>
+                            <tr><th scope="row">Authentizität</th><td>Eine Nachricht kann nicht unter falschem Namen verschickt werden.</td></tr>
+                            <tr><th scope="row">Verbindlichkeit</th><td>Der Absender kann später nicht bestreiten, die Nachricht verfasst zu haben.</td></tr>
+                        </tbody>
+                    </table>
+                    <ol class="aufgaben">
+                        <li><strong>Blatt, Aufgabe 3:</strong> Ordne den vier Situationen das Ziel zu, das in Gefahr ist.</li>
+                        <li><strong>Zum Nachdenken (mündlich):</strong> Welches der Ziele erreicht die Skytale? Welche nicht?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 3">
+                        <template data-stufe="Lösung" data-halten><p>① Vertraulichkeit · ② Integrität · ③ Authentizität · ④ Verbindlichkeit. Die Skytale schützt (ein wenig) die Vertraulichkeit. Ob jemand den Streifen ausgetauscht hat oder wer ihn geschrieben hat, sieht man nicht. Dafür braucht es mehr (5.4).</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-5-1-grundlagen.pdf">📝 Blatt 5.1 · Aufgabe 3</a></p>
+                </div>
+            </section>
+
+            <section id="burg" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🏰</span><h2>The Mystery of Cryptocastle<small>Aufgabe 4: Abschnitt 1</small></h2></div>
+                <div class="phase-body">
+                    <p>Gehe im Spiel zu Abschnitt <strong>1</strong> und löse die Aufgaben bis zu der Truhe, in der sich der Code <code>GOVTGYZTTMZKCYE</code> befindet. Merke dir dabei alles, was nach einem Schlüsselwort aussieht. Den Code knackst du in 5.2.</p>
+                    <p><a class="btn btn-primary" href="https://view.genial.ly/647f2a04bc62140019e744a0/interactive-content-the-mystery-of-cryptocastle" target="_blank" rel="noopener">Spiel öffnen (externe Seite, genial.ly)</a></p>
+                    <p class="vs-klein">Hinweis: Das Spiel liegt bei einem externen Anbieter. Beim Öffnen gelten dessen Datenschutzbestimmungen.</p>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🔑 Caesar: ROT13 mit echtem Schlüssel</h4>
+                            <p>Statt immer um 13 verschiebt man um eine geheime Zahl k. Das programmierst du in 5.2 selbst, im selben Projekt.</p>
+                            <a class="btn btn-outline btn-sm" href="5-2-symmetrisch.html">Zu 5.2 Symmetrische Verschlüsselung</a>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>🗂️ Transposition und Substitution</h4>
+                            <p>Die Skytale vertauscht nur die Reihenfolge der Buchstaben, ROT13 ersetzt jeden Buchstaben durch einen anderen. Diese zwei Grundideen stecken in fast allen klassischen Verfahren.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="verschluesselung.html">← Übersicht Verschlüsselung</a>
+                <a class="btn btn-primary" href="5-2-symmetrisch.html">5.2 Symmetrische Verschlüsselung →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-5-1-grundlagen-lsg.pdf">Lösung Blatt 5.1 (PDF)</a>
+                        <a class="btn btn-tex btn-sm" href="Online-IDE/LSG%2011-5-1%20Verschluesselung.json" download>Lösung 11-5-1 (JSON für online-ide.de)</a></p>
+                    <p><strong>Aufbau:</strong> Seite 1 des bisherigen Blatts „5-1 und 5-2“ ist jetzt Blatt 5.1, Seite 2 ist Blatt 5.2 (mit Vigenère-Quadrat).</p>
+                    <table>
+                        <thead><tr><th>Änderung</th><th>Grund</th></tr></thead>
+                        <tbody>
+                            <tr><td>Neu: Aufgabe 1 Skytale („The cake is a lie“, Umfang 3) als Einstieg, auf der Seite als Animation.</td><td>Stand bisher nur in der Lösung als Bastel-Einstieg; Transposition wird in 5.2 als Begriff gebraucht.</td></tr>
+                            <tr><td>Aufgabe 0a „Tabelle in Word“ → Alphabet-Tabelle direkt auf dem Blatt, Kontrolle mit der Chiffrierscheibe.</td><td>Spart Medienwechsel; die Tabelle ist gleich die Lösungshilfe.</td></tr>
+                            <tr><td>Aufgabe 0b: Lückentext zu <code>rotiere</code>/<code>rot13</code> mit Schrittnummern ①–⑥ wie im Code, dazu c) „zweimal ROT13“.</td><td>Logik → Code sichtbar machen; die Code-Animation zeigt dieselben Schritte.</td></tr>
+                            <tr><td>Neu: Aufgabe 3 „Welches Ziel ist in Gefahr?“ (vier Alltagssituationen).</td><td>Die vier Sicherheitsziele werden angewendet statt nur abgeschrieben.</td></tr>
+                            <tr><td>Grundprinzip mit Rückbezug auf Kapitel 4 („Im Gegensatz zur Codierung …“).</td><td>Übergang Codierung → Verschlüsselung.</td></tr>
+                            <tr><td>Projekt 11-5-1 neu erstellt (im Material fehlte die Ausgangsdatei): <code>rotiere</code> lässt Nicht-Großbuchstaben (Leerzeichen) unverändert, <code>rot13</code> vorgegeben und kommentiert, TODO 1/2 Caesar, TODO 3/4 Vigenère, JUnit-Tests und Coach.</td><td>Mit dem alten <code>rotiere</code> wurde z. B. das Leerzeichen zu „-“ verschoben; Helgas Antwort enthält ein Leerzeichen.</td></tr>
+                        </tbody>
+                    </table>
+                    <p class="mt-2"><strong>Website:</strong> Das IDE-Projekt ist in 5.1 und 5.2 mit derselben ID eingebettet (gewollt: Der Stand aus 5.1 ist in 5.2 wieder da). Die Code-Animation zeigt nur den vorgegebenen Code (<code>rot13</code>, <code>rotiere</code>), nicht die Lösung zu Caesar.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum &amp; Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

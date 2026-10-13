@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4.3 Daten codieren | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Codierung, Informatik 11 (NTG): Morsecode, Barcode EAN-13/GTIN mit Zeichensätzen A, B, C, Prüfziffer und Paritätsbits (Zaubertrick, optional mit Java-Projekt) – passend zu Arbeitsblatt 4.3.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/include/online-ide-embedded.css">
+    <script type="module" src="https://edu-mrh.de/embed/include/online-ide-embedded.js"></script>
+    <link rel="stylesheet" href="codierung.css">
+    <script defer src="codierung.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">📦</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="codierung.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 4.3</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#morse">📻 Morsecode</a></li>
+            <li><a href="#barcode">🔍 Der Barcode</a></li>
+            <li><a href="#pruefziffer">✏️ Die Prüfziffer</a></li>
+            <li><a href="#zaubertrick">🎩 Zaubertrick (optional)</a></li>
+            <li><a href="#merke">📝 Festhalten</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Codierung</div>
+            <ul class="sidebar-menu">
+                <li><a href="codierung.html">Übersicht</a></li>
+                <li><a href="4-1-zahlensysteme.html">4.1 Zahlensysteme</a></li>
+                <li><a href="4-2-bilder.html">4.2 Bilder codieren</a></li>
+                <li><a href="4-3-daten.html">4.3 Daten codieren</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero cd-hero">
+                <h1 class="hero-title">4.3 Daten codieren</h1>
+                <p class="hero-subtitle">Codierung · Informatik 11 (NTG) · 2 Stunden</p>
+                <span class="cd-kompetenz">Du kannst: Morsecode und Barcodes nach ihren Regeln codieren und decodieren, eine Prüfziffer berechnen und erklären, wie Prüfbits Fehler erkennen und sogar korrigieren.</span>
+                <div class="cd-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-4-3-daten.pdf">📝 Arbeitsblatt 4.3 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-4-3-daten.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#morse">📻 Einstieg</a><a class="p-investigate" href="#barcode">🔍 Barcode</a><a class="p-modify" href="#pruefziffer">✏️ Prüfziffer</a><a class="p-make" href="#zaubertrick">🎩 Zaubertrick</a><a class="p-note" href="#merke">📝 Festhalten</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="morse" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">📻</span><h2>Einstieg<small>Aufgabe 1: Morsecode</small></h2></div>
+                <div class="phase-body">
+                    <p>Lange bevor es Bildschirme gab, wurden Nachrichten über Kabel und Funk verschickt: nur mit kurzen und langen Signalen. Der bekannteste Code dafür ist der Morsecode. Hör ihn dir an.</p>
+                    <div data-morse></div>
+                    <ol class="aufgaben">
+                        <li>Recherchiere den Aufbau und die Verwendung des Morsecodes (Blatt, a).</li>
+                        <li>Codiere „Live long and prosper“ auf dem Blatt (b). Trenne Buchstaben mit einem Leerzeichen und Wörter mit /. Prüfe dann oben.</li>
+                        <li>Decodiere die Nachricht von Blatt c) und prüfe oben.</li>
+                        <li><strong>Zum Nachdenken (mündlich):</strong> E hat den kürzesten Code (·), Q einen langen (– – · –). Warum ist das geschickt? (Diese Idee begegnet dir in Kapitel 5 als Angriff wieder.)</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 1">
+                        <template data-stufe="Lösung" data-halten><p>a) Jeder Buchstabe ist eine Folge aus kurzen und langen Signalen; Pausen trennen Buchstaben und Wörter. Telegrafie, Funk, Seefahrt (SOS).<br>b) .-.. .. ...- . / .-.. --- -. --. / .- -. -.. / .--. .-. --- ... .--. . .-.<br>c) MAY THE FORCE BE WITH YOU<br>Häufige Buchstaben bekommen kurze Codes, so werden Nachrichten insgesamt kürzer.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-4-3-daten.pdf">📝 Blatt 4.3 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="barcode" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Untersuchen<small>Aufgabe 2: Der Barcode EAN-13</small></h2></div>
+                <div class="phase-body">
+                    <p>Auf fast jeder Packung steht ein Strichcode mit 13 Ziffern, die <strong>GTIN</strong> (früher EAN). Jede Ziffer belegt 7 gleich breite <strong>Module</strong> (hell oder dunkel). Dafür gibt es drei Tabellen A, B und C (auf dem Blatt). Untersuche, wann welche benutzt wird.</p>
+                    <div data-ean></div>
+                    <ol class="aufgaben">
+                        <li>In welchem Zeichensatz stehen die Ziffern von Block 1 und von Block 2?</li>
+                        <li>Verändere die vorderste Ziffer (Knopf „Erste Ziffer +1“). Was ändert sich, was nicht?</li>
+                        <li>Ermittle die fehlenden Kombinationen in der Tabelle auf dem Blatt.</li>
+                        <li>Beim Rätsel-Barcode auf dem Blatt fehlt die erste Ziffer. Unter Block 1 steht u (ungerade Anzahl dunkler Module) bzw. g (gerade). Bestimme die erste Ziffer.</li>
+                    </ol>
+                    <details class="denk"><summary>Zum Nachlesen: Wozu die Tabellen A, B und C?</summary>
+                        <p>Codes aus A haben eine <em>ungerade</em> Anzahl dunkler Module, Codes aus B und C eine <em>gerade</em>. Die erste Ziffer bekommt keine eigenen Striche: Sie wird im Wechsel von A und B in Block 1 „versteckt“. So passen 13 Ziffern in 12 Strichgruppen. Außerdem erkennt der Scanner an der Parität, ob er den Code von links oder von rechts gelesen hat (Block 2 aus C ist von hinten gelesen wie A).</p>
+                    </details>
+                    <div class="lw" data-loesungsweg="Aufgabe 2">
+                        <template data-stufe="Tipp"><p>Ändere nur die erste Ziffer und beobachte die Buchstaben unter Block 1. Für d): u = A, g = B.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) Block 1: Mischung aus A und B (hier ABBABA), Block 2: immer C.<br>b) Nur Block 1 ändert sich. Die erste Ziffer hat keine eigenen Striche, sie legt die A/B-Kombination von Block 1 fest.<br>c) 1: AABABB, 2: AABBAB, 5: ABBAAB, 9: ABBABA.<br>d) u u g g g u = AABBBA → erste Ziffer 3.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-4-3-daten.pdf">📝 Blatt 4.3 · Aufgabe 2</a></p>
+                </div>
+            </section>
+
+            <section id="pruefziffer" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">✏️</span><h2>Anwenden<small>Aufgabe 3: Die Prüfziffer</small></h2></div>
+                <div class="phase-body">
+                    <p>Ein Kratzer auf der Packung, und der Scanner liest eine 3 statt einer 8. Damit die Kasse das merkt, ist die letzte Ziffer eine <strong>Prüfziffer</strong>:</p>
+                    <div class="konzept">
+                        <h4>Prüfverfahren der GTIN</h4>
+                        <p>Die 13 Ziffern werden abwechselnd mit <strong>1 und 3</strong> multipliziert und addiert. Die Prüfziffer ist so gewählt, dass diese Summe <strong>durch 10 teilbar</strong> ist.<br>
+                        Beispiel 978366138011<u>7</u>: 9·1 + 7·3 + 8·1 + 3·3 + 6·1 + 6·3 + 1·1 + 3·3 + 8·1 + 0·3 + 1·1 + 1·3 + 7·1 = 100 ✓</p>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Berechne auf dem Blatt die Prüfziffer für 4 006381 33393 ?</li>
+                        <li>Arbeitet zu zweit: Erstellt mit dem Barcode-Werkzeug oben je drei GTINs (🎲 und ⚡), zwei richtige und eine falsche. Der Partner findet <strong>von Hand</strong> heraus, welche falsch ist.</li>
+                        <li>Allein üben: Der Prüfziffer-Detektiv unten stellt dir immer neue Rätsel.</li>
+                    </ol>
+                    <div data-gtin-raten></div>
+                    <details class="denk"><summary>Zum Nachdenken (mündlich): Merkt die Prüfziffer jeden Fehler?</summary>
+                        <p>Probiere im Barcode-Werkzeug aus: Ändere eine einzelne Ziffer. Vertausche dann zwei benachbarte Ziffern, z. B. …38… zu …83…. Und was passiert, wenn du 1 und 6 vertauschst? Woran liegt das? (Tipp: 1·1 + 6·3 = 19 und 6·1 + 1·3 = 9 unterscheiden sich um 10.)</p>
+                    </details>
+                    <div class="lw" data-loesungsweg="Aufgabe 3a">
+                        <template data-stufe="Tipp"><p>Gewichte 1, 3, 1, 3, … für die ersten zwölf Ziffern. Dann fehlt bis zur nächsten Zehnerzahl genau die Prüfziffer.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>4·1 + 0·3 + 0·1 + 6·3 + 3·1 + 8·3 + 1·1 + 3·3 + 3·1 + 3·3 + 9·1 + 3·3 = 89, bis 90 fehlt <strong>1</strong>. GTIN: 4006381333931.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-4-3-daten.pdf">📝 Blatt 4.3 · Aufgabe 3</a></p>
+                </div>
+            </section>
+
+            <section id="zaubertrick" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🎩</span><h2>Optional: Der Zaubertrick<small>Fehler finden und sogar korrigieren</small></h2></div>
+                <div class="phase-body">
+                    <p>Eine Prüfziffer verrät nur, <em>dass</em> etwas falsch ist. Mit einem Trick findet man sogar heraus, <em>wo</em>. Probiert ihn zu zweit aus, zuerst hier auf der Seite oder mit dem Java-Projekt:</p>
+                    <ol class="aufgaben">
+                        <li>Dein Partner legt ein beliebiges Muster aus roten und blauen Feldern an (5 × 5), ohne dass du hinsiehst.</li>
+                        <li>Sag ihm, dass du „nach Belieben“ noch eine Reihe und eine Spalte anfügst. <strong>Wichtig:</strong> Färbe die neuen Felder so, dass in <strong>allen Zeilen und Spalten</strong> die Anzahl roter Felder <strong>gerade</strong> ist.</li>
+                        <li>Augen zu! Dein Partner dreht <strong>genau ein</strong> Feld um.</li>
+                        <li>Augen auf: Zeige auf das veränderte Feld. Wie hast du es gefunden?</li>
+                    </ol>
+                    <div data-zaubertrick></div>
+                    <div class="ide-block">
+                        <div class="ide-kopf"><h3>Projekt Zaubertrick (Java, optional)</h3></div>
+                        <p>Starte das Programm: Ein 5 × 5-Feld erscheint, ein Klick dreht ein Feld um. „Los“ fügt die Prüfbits an. <strong>Für Profis:</strong> Ergänze in <code>Tabelle.java</code> TODO 1 und 2 (rote Felder je Zeile bzw. Spalte zählen). Dann findet „Prüfen“ das veränderte Feld selbst.</p>
+<!-- IDE-START zaubertrick -->
+<div class="java-online" style="width:100%;height:640px" data-java-online="{ 'id': 'i11-43-zaubertrick', 'speed': 1000000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true, 'withErrorList': true, 'jsonFilename': '11-4-3 Zaubertrick.json' }">
+<script type="text/plain" title="Hauptprogramm.java">
+// Der Zaubertrick (optional zu Station 4.3). Spielregeln auf der Website.
+World world = new World(500, 500);
+world.setBackgroundColor("#ffffff");
+Tabelle tabelle = new Tabelle();
+</script>
+<script type="text/plain" title="Tabelle.java">
+/**
+ * Ein 5 x 5-Raster aus Feldern: rot steht für 1, blau für 0. Ein Klick dreht ein Feld um.
+ * „Los“ fügt rechts eine Spalte und unten eine Zeile mit Prüfbits an.
+ * „Prüfen“ lässt den Computer den Fehler suchen (erst nach TODO 1 und 2).
+ */
+public class Tabelle {
+   Rechteck[][] felder;          // felder[zeile][spalte]; Zeile 5 und Spalte 5 sind die Prüfbits
+   Knopf losKnopf;
+   Knopf pruefKnopf;
+   boolean pruefbitsDa = false;
+
+   Tabelle() {
+      felder = new Rechteck[6][6];
+      for (int zeile = 0; zeile < 5; zeile++) {
+         for (int spalte = 0; spalte < 5; spalte++) {
+            felder[zeile][spalte] = neuesFeld(zeile, spalte);
+         }
+      }
+      losKnopf = new Knopf(50, 435, 28, "Los", this);
+   }
+
+   /** Erzeugt das Feld an dieser Stelle. Prüfbits stehen etwas abgesetzt. */
+   Rechteck neuesFeld(int zeile, int spalte) {
+      double x = 50 + spalte * 60;
+      double y = 50 + zeile * 60;
+      if (spalte == 5) {
+         x = x + 10;
+      }
+      if (zeile == 5) {
+         y = y + 10;
+      }
+      return new Rechteck(x, y, 50);
+   }
+
+   /** Wird von einem Knopf aufgerufen. */
+   void knopfGedrueckt(Knopf knopf) {
+      if (knopf == losKnopf && !pruefbitsDa) {
+         pruefbitsAnfuegen();
+      } else if (knopf == pruefKnopf) {
+         fehlerSuchen();
+      }
+   }
+
+   /** Rechte Spalte und untere Zeile mit Prüfbits anfügen (zuerst alle blau = 0). */
+   void pruefbitsAnfuegen() {
+      for (int zeile = 0; zeile < 6; zeile++) {
+         felder[zeile][5] = neuesFeld(zeile, 5);
+      }
+      for (int spalte = 0; spalte < 5; spalte++) {      // das Eckfeld [5][5] gibt es schon
+         felder[5][spalte] = neuesFeld(5, spalte);
+      }
+      pruefbitsDa = true;
+      losKnopf.setVisible(false);
+      pruefKnopf = new Knopf(50, 435, 28, "Prüfen", this);
+      println("Färbe die Prüfbits so, dass jede Zeile und jede Spalte eine GERADE Anzahl roter Felder hat.");
+   }
+
+   // ---------- Profi: Der Computer als Zauberer ----------
+
+   /**
+    * TODO 1: Wie viele rote Felder hat diese Zeile (alle 6 Felder, mit Prüfbit)?
+    * Ein Feld f ist rot, wenn f.rot den Wert true hat.
+    */
+   int roteInZeile(int zeile) {
+      return 0;
+   }
+
+   /**
+    * TODO 2: Wie viele rote Felder hat diese Spalte (alle 6 Felder, mit Prüfbit)?
+    */
+   int roteInSpalte(int spalte) {
+      return 0;
+   }
+
+   /**
+    * Sucht die Zeile und die Spalte mit ungerader Anzahl roter Felder.
+    * Dort, wo sie sich kreuzen, liegt das veränderte Feld.
+    */
+   void fehlerSuchen() {
+      int fehlerZeile = -1;
+      int fehlerSpalte = -1;
+      for (int i = 0; i < 6; i++) {
+         if (roteInZeile(i) % 2 == 1) {
+            fehlerZeile = i;
+         }
+         if (roteInSpalte(i) % 2 == 1) {
+            fehlerSpalte = i;
+         }
+      }
+      if (fehlerZeile == -1 && fehlerSpalte == -1) {
+         println("Alle Zeilen und Spalten sind gerade: kein Fehler gefunden.");
+      } else if (fehlerZeile != -1 && fehlerSpalte != -1) {
+         felder[fehlerZeile][fehlerSpalte].markieren();
+         println("Verändert wurde das Feld in Zeile " + (fehlerZeile + 1) + ", Spalte " + (fehlerSpalte + 1) + ".");
+      } else {
+         println("Seltsam: Nur eine Zeile oder nur eine Spalte ist ungerade. Wurde mehr als ein Feld verändert?");
+      }
+   }
+}
+</script>
+<script type="text/plain" title="Rechteck.java">
+/**
+ * Ein Feld des Rasters: rot (1) oder blau (0). Ein Klick dreht es um.
+ */
+public class Rechteck extends Rectangle {
+   boolean rot = false;
+
+   Rechteck(double x, double y, double seitenLaenge) {
+      super(x, y, seitenLaenge, seitenLaenge);
+      setFillColor(Color.blue);
+   }
+
+   public void onMouseDown(double x, double y, int key) {
+      if (key == 0) {
+         umdrehen();
+      }
+   }
+
+   void umdrehen() {
+      rot = !rot;
+      if (rot) {
+         setFillColor(Color.red);
+      } else {
+         setFillColor(Color.blue);
+      }
+   }
+
+   void markieren() {
+      setBorderColor(Color.yellow);
+      setBorderWidth(6);
+   }
+}
+</script>
+<script type="text/plain" title="Knopf.java">
+/**
+ * Ein Knopf, der beim Klick der Tabelle Bescheid gibt.
+ */
+public class Knopf extends Button {
+   Tabelle tabelle;
+
+   Knopf(double x, double y, double fontsize, String text, Tabelle tabelle) {
+      super(x, y, fontsize, text);
+      this.tabelle = tabelle;
+   }
+
+   public void onMouseDown(double x, double y, int key) {
+      if (key == 0) {
+         tabelle.knopfGedrueckt(this);
+      }
+   }
+}
+</script>
+</div>
+<!-- IDE-ENDE zaubertrick -->
+                        <p class="ide-downloads">💾 Eigenen Stand sichern: Diskettensymbol in der IDE-Leiste („Workspace in Datei speichern“), der Name <code>11-4-3 Zaubertrick.json</code> ist schon vorgeschlagen. · <a href="Online-IDE/11-4-3%20Zaubertrick.json" download>Ausgangsprojekt für online-ide.de</a></p>
+                    </div>
+                    <div class="lw" data-loesungsweg="Zaubertrick (Blatt, optionaler Kasten)">
+                        <template data-stufe="Tipp"><p>Zähle in jeder Zeile und Spalte die roten Felder. Nur eine Zeile und nur eine Spalte sind ungerade.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) Prüfbits: Zeile 1 rot, Zeilen 2 bis 5 blau; untere Zeile: Spalte 1, 3, 5 rot, 2 und 4 blau, Eckfeld rot.<br>b) Zeile 3, Spalte 2.<br>c) Die ungerade Zeile und die ungerade Spalte kreuzen sich genau im veränderten Feld. Man weiß also, welches Bit falsch ist, und kann es zurückdrehen.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-4-3-daten.pdf">📝 Blatt 4.3 · Optional: Zaubertrick</a></p>
+                </div>
+            </section>
+
+            <section id="merke" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Prüfziffern und Prüfbits</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Prüfziffern und Prüfbits</h4>
+                        <p>Man ergänzt Daten um zusätzliche Zeichen, die aus den Daten selbst <strong>berechnet</strong> werden. Passen Daten und Prüfziffer nicht zusammen, ist ein Fehler passiert. So lassen sich Übertragungs- und Lesefehler <strong>erkennen</strong>, mit geschickt angeordneten Prüfbits sogar <strong>korrigieren</strong>. Die Regeln sind öffentlich: Es bleibt eine <strong>Codierung</strong>.</p>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-4-3-daten.pdf">📝 Blatt 4.3 · Merke</a></p>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🔐 Und wenn die Regeln geheim sind?</h4>
+                            <p>Morsecode, Barcode und RGB kann jeder lesen, der die Tabelle kennt. Soll eine Nachricht nur für bestimmte Personen lesbar sein, braucht man eine geheime Zutat: einen <strong>Schlüssel</strong>. Das ist Verschlüsselung.</p>
+                            <a class="btn btn-outline btn-sm" href="../verschluesselung/5-1-grundlagen.html">Zu 5.1 Grundlagen der Verschlüsselung</a>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>▦ QR-Codes</h4>
+                            <p>QR-Codes enthalten so viele Prüfbits, dass sie auch dann noch lesbar sind, wenn bis zu 30 % der Fläche verdeckt sind. Deshalb kann man ein Logo in die Mitte drucken.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="4-2-bilder.html">← 4.2 Bilder codieren</a>
+                <a class="btn btn-primary" href="../verschluesselung/verschluesselung.html">Weiter mit Verschlüsselung →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-4-3-daten-lsg.pdf">Lösung Blatt 4.3 (PDF)</a>
+                        <a class="btn btn-tex btn-sm" href="Online-IDE/LSG%2011-4-3%20Zaubertrick.json" download>Lösung Zaubertrick (JSON für online-ide.de)</a></p>
+                    <p><strong>Aufbau:</strong> Seite 2 des bisherigen Blatts 4-2 (Barcode A2, Prüfziffer A3, Morsecode A4) in neuer Reihenfolge Morse → Barcode → Prüfziffer, ergänzt um den Zaubertrick (bisher „4-1 Magie“, IDE-Projekt 11-4-1 Magic) als optionalen Einstieg in fehlerkorrigierende Codes.</p>
+                    <table>
+                        <thead><tr><th>Änderung</th><th>Grund</th></tr></thead>
+                        <tbody>
+                            <tr><td>Morsecode steht am Anfang.</td><td>Einfachster Code (eine Tabelle, variable Länge), danach Barcode mit Zusatzregeln und schließlich Prüfziffer und Prüfbits: steigende Komplexität. Der Impuls „E ist kurz“ bereitet die Häufigkeitsanalyse in 5.5 vor.</td></tr>
+                            <tr><td>Rechenbeispiel der Prüfsumme korrigiert: Summe für 9783661380117 ist <strong>100</strong> (altes Blatt: 120).</td><td>Fehler im alten Blatt; beide Zahlen sind durch 10 teilbar, aber 120 stimmt nicht.</td></tr>
+                            <tr><td>Neu: Aufgabe 2d (erste Ziffer aus u/g-Muster bestimmen) und 3a (Prüfziffer berechnen).</td><td>Die Abbildungen im alten Blatt („uugggu“, AAB) werden zur Aufgabe; 3a sichert das Verfahren, bevor die Partneraufgabe folgt.</td></tr>
+                            <tr><td>Barcode-Werkzeug auf der Seite ersetzt den C.C.Buchner-Clip T38011-08 (der Clip kann weiter genutzt werden).</td><td>Zeichensätze werden farbig angezeigt, GTINs lassen sich erzeugen und verfälschen (Aufgabe 3b).</td></tr>
+                            <tr><td>IDE-Projekt „11-4-1 Magic“ überarbeitet zu <code>11-4-3 Zaubertrick</code>: Prüfbits ohne Doppelfeld in der Ecke, Knopf nur einmal wirksam, Farbe über boolean <code>rot</code> statt Farbvergleich; optionale TODOs 1/2 lassen „Prüfen“ das veränderte Feld finden.</td><td>Im alten Projekt wurde beim Klick auf „Los“ das Array neu angelegt und das Eckfeld doppelt erzeugt (ein Klick auf die Ecke drehte zwei Felder um).</td></tr>
+                        </tbody>
+                    </table>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum &amp; Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

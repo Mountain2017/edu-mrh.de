@@ -1,0 +1,37 @@
+{
+ "name": "LSG 11-4-3 Zaubertrick",
+ "modules": [
+  {
+   "name": "Hauptprogramm",
+   "text": "// Der Zaubertrick (optional zu Station 4.3). Spielregeln auf der Website.\nWorld world = new World(500, 500);\nworld.setBackgroundColor(\"#ffffff\");\nTabelle tabelle = new Tabelle();\n",
+   "identical_to_repository_version": false,
+   "repository_file_version": -1,
+   "isFolder": false
+  },
+  {
+   "name": "Tabelle",
+   "text": "/**\n * Ein 5 x 5-Raster aus Feldern: rot steht für 1, blau für 0. Ein Klick dreht ein Feld um.\n * „Los“ fügt rechts eine Spalte und unten eine Zeile mit Prüfbits an.\n * „Prüfen“ lässt den Computer den Fehler suchen (erst nach TODO 1 und 2).\n */\npublic class Tabelle {\n   Rechteck[][] felder;          // felder[zeile][spalte]; Zeile 5 und Spalte 5 sind die Prüfbits\n   Knopf losKnopf;\n   Knopf pruefKnopf;\n   boolean pruefbitsDa = false;\n\n   Tabelle() {\n      felder = new Rechteck[6][6];\n      for (int zeile = 0; zeile < 5; zeile++) {\n         for (int spalte = 0; spalte < 5; spalte++) {\n            felder[zeile][spalte] = neuesFeld(zeile, spalte);\n         }\n      }\n      losKnopf = new Knopf(50, 435, 28, \"Los\", this);\n   }\n\n   /** Erzeugt das Feld an dieser Stelle. Prüfbits stehen etwas abgesetzt. */\n   Rechteck neuesFeld(int zeile, int spalte) {\n      double x = 50 + spalte * 60;\n      double y = 50 + zeile * 60;\n      if (spalte == 5) {\n         x = x + 10;\n      }\n      if (zeile == 5) {\n         y = y + 10;\n      }\n      return new Rechteck(x, y, 50);\n   }\n\n   /** Wird von einem Knopf aufgerufen. */\n   void knopfGedrueckt(Knopf knopf) {\n      if (knopf == losKnopf && !pruefbitsDa) {\n         pruefbitsAnfuegen();\n      } else if (knopf == pruefKnopf) {\n         fehlerSuchen();\n      }\n   }\n\n   /** Rechte Spalte und untere Zeile mit Prüfbits anfügen (zuerst alle blau = 0). */\n   void pruefbitsAnfuegen() {\n      for (int zeile = 0; zeile < 6; zeile++) {\n         felder[zeile][5] = neuesFeld(zeile, 5);\n      }\n      for (int spalte = 0; spalte < 5; spalte++) {      // das Eckfeld [5][5] gibt es schon\n         felder[5][spalte] = neuesFeld(5, spalte);\n      }\n      pruefbitsDa = true;\n      losKnopf.setVisible(false);\n      pruefKnopf = new Knopf(50, 435, 28, \"Prüfen\", this);\n      println(\"Färbe die Prüfbits so, dass jede Zeile und jede Spalte eine GERADE Anzahl roter Felder hat.\");\n   }\n\n   // ---------- Profi: Der Computer als Zauberer ----------\n\n   /**\n    * TODO 1: Wie viele rote Felder hat diese Zeile (alle 6 Felder, mit Prüfbit)?\n    * Ein Feld f ist rot, wenn f.rot den Wert true hat.\n    */\n   int roteInZeile(int zeile) {\n      int anzahl = 0;\n      for (int spalte = 0; spalte < 6; spalte++) {\n         if (felder[zeile][spalte].rot) {\n            anzahl++;\n         }\n      }\n      return anzahl;\n   }\n\n   /**\n    * TODO 2: Wie viele rote Felder hat diese Spalte (alle 6 Felder, mit Prüfbit)?\n    */\n   int roteInSpalte(int spalte) {\n      int anzahl = 0;\n      for (int zeile = 0; zeile < 6; zeile++) {\n         if (felder[zeile][spalte].rot) {\n            anzahl++;\n         }\n      }\n      return anzahl;\n   }\n\n   /**\n    * Sucht die Zeile und die Spalte mit ungerader Anzahl roter Felder.\n    * Dort, wo sie sich kreuzen, liegt das veränderte Feld.\n    */\n   void fehlerSuchen() {\n      int fehlerZeile = -1;\n      int fehlerSpalte = -1;\n      for (int i = 0; i < 6; i++) {\n         if (roteInZeile(i) % 2 == 1) {\n            fehlerZeile = i;\n         }\n         if (roteInSpalte(i) % 2 == 1) {\n            fehlerSpalte = i;\n         }\n      }\n      if (fehlerZeile == -1 && fehlerSpalte == -1) {\n         println(\"Alle Zeilen und Spalten sind gerade: kein Fehler gefunden.\");\n      } else if (fehlerZeile != -1 && fehlerSpalte != -1) {\n         felder[fehlerZeile][fehlerSpalte].markieren();\n         println(\"Verändert wurde das Feld in Zeile \" + (fehlerZeile + 1) + \", Spalte \" + (fehlerSpalte + 1) + \".\");\n      } else {\n         println(\"Seltsam: Nur eine Zeile oder nur eine Spalte ist ungerade. Wurde mehr als ein Feld verändert?\");\n      }\n   }\n}\n",
+   "identical_to_repository_version": false,
+   "repository_file_version": -1,
+   "isFolder": false
+  },
+  {
+   "name": "Rechteck",
+   "text": "/**\n * Ein Feld des Rasters: rot (1) oder blau (0). Ein Klick dreht es um.\n */\npublic class Rechteck extends Rectangle {\n   boolean rot = false;\n\n   Rechteck(double x, double y, double seitenLaenge) {\n      super(x, y, seitenLaenge, seitenLaenge);\n      setFillColor(Color.blue);\n   }\n\n   public void onMouseDown(double x, double y, int key) {\n      if (key == 0) {\n         umdrehen();\n      }\n   }\n\n   void umdrehen() {\n      rot = !rot;\n      if (rot) {\n         setFillColor(Color.red);\n      } else {\n         setFillColor(Color.blue);\n      }\n   }\n\n   void markieren() {\n      setBorderColor(Color.yellow);\n      setBorderWidth(6);\n   }\n}\n",
+   "identical_to_repository_version": false,
+   "repository_file_version": -1,
+   "isFolder": false
+  },
+  {
+   "name": "Knopf",
+   "text": "/**\n * Ein Knopf, der beim Klick der Tabelle Bescheid gibt.\n */\npublic class Knopf extends Button {\n   Tabelle tabelle;\n\n   Knopf(double x, double y, double fontsize, String text, Tabelle tabelle) {\n      super(x, y, fontsize, text);\n      this.tabelle = tabelle;\n   }\n\n   public void onMouseDown(double x, double y, int key) {\n      if (key == 0) {\n         tabelle.knopfGedrueckt(this);\n      }\n   }\n}\n",
+   "identical_to_repository_version": false,
+   "repository_file_version": -1,
+   "isFolder": false
+  }
+ ],
+ "settings": {
+  "libraries": []
+ },
+ "isFolder": false
+}

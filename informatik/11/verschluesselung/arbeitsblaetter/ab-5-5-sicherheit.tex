@@ -1,0 +1,64 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcommand{\kopfzelle}[1]{\cellcolor{blue!8}\textbf{#1}}
+\begin{document}
+\abtitel{5.5}{Sicherheit von Verschlüsselungen}
+
+\textbf{Wann ist ein Verfahren sicher?}\par
+{\lueckentext Ein Verfahren gilt als sicher, wenn eines der folgenden Kriterien erfüllt ist:\\
+\nr{1} Die Kosten zum Knacken sind \lsgrest{höher als der Wert der Daten.}
+\nr{2} Das Knacken dauert \lsgrest{länger, als die Daten von Bedeutung sind.}
+\nr{3} Man bräuchte mehr \lsg[3.5cm]{Geheimtext}, als \lsg[3.5cm]{vorhanden} ist, es gibt also zu wenige Testdaten.\par}
+
+\medskip
+\textbf{Angriffsmethoden}\par
+{\lueckentext
+\lsg[4cm]{Brute-Force-Angriff}: \lsgrest{Alle möglichen Schlüssel werden durchprobiert.}
+\lsg[4cm]{Häufigkeitsanalyse}: Man zählt, wie oft jedes Zeichen im Geheimtext vorkommt, und vergleicht mit der Häufigkeit der Buchstaben in der Sprache (im Deutschen ist E mit etwa 17\,\% am häufigsten).\par}
+
+\begin{aufgabe}[Häufigkeitsanalyse]{1}
+Knacke die Geheimnachricht. Sie wurde \textbf{monoalphabetisch} verschlüsselt, die Leerzeichen sind geblieben.\par\vspace{1mm}
+\centerline{\texttt{WBX TGMPHKM TNY WBX YKTZX GTVA WXF EXUXG WXF}}
+\centerline{\texttt{NGBOXKLNF NGW WXF ZTGSXG KXLM ETNMXM SPXBNGWOBXKSBZ}}\par\vspace{1mm}
+{\lueckentext\textbf{a)} Zähle mit der Häufigkeitsanalyse (Website). Der häufigste Buchstabe ist \lsg[1.2cm]{X} (\lsg[1.2cm]{14}-mal). Er steht vermutlich für \lsg[1.2cm]{E}.\\
+\textbf{b)} Ersetze Schritt für Schritt weitere Buchstaben (Website: Ersetzen-Werkzeug). Tipp: Häufige kurze Wörter wie DIE, DER, UND helfen. Klartext:\par}
+\lsglinien{2}{DIE ANTWORT AUF DIE FRAGE NACH DEM LEBEN DEM\\ UNIVERSUM UND DEM GANZEN REST LAUTET ZWEIUNDVIERZIG}
+{\lueckentext\textbf{c)} Was fällt dir an der Ersetzung auf? \lsgrest{Alle um 7 verschoben: Caesar (Schlüssel 19)}\par}
+\end{aufgabe}
+
+\newpage
+\begin{aufgabe}[Brute Force mit dem Computer]{2}
+Öffne das Projekt \texttt{11-5-5 BruteForce} (Website). Die Methode \texttt{caesarBruteForce} soll alle Caesar-Schlüssel ausprobieren und nur die Versuche ausgeben, die nach deutschem Text aussehen (\texttt{DER}, \texttt{DIE} oder \texttt{DAS} kommt vor).\par\vspace{1mm}
+{\lueckentext\textbf{a)} Plane die Schritte, sie stehen genauso als Kommentare im Code:\\
+\nr{1} Wiederhole für jeden Schlüssel von \lsg[1.2cm]{1} bis \lsg[1.2cm]{25}:\\
+\nr{2}\quad entschlüssle den Geheimtext mit der Methode \lsg[3.5cm]{\texttt{caesarEnt}}\\
+\nr{3}\quad prüfe mit \lsg[4.5cm]{\texttt{enthaeltArtikel}}, ob DER, DIE oder DAS vorkommt. \texttt{indexOf} liefert dabei \lsg[1.5cm]{\texttt{-1}}, wenn ein Wort nicht vorkommt.\\
+\nr{4}\quad wenn ja: gib Schlüssel und Klartext aus.\\
+\textbf{b)} Programmiere TODO 1 und 2. Ergebnis: Schlüssel \lsg[1.2cm]{14}, Klartext beginnt mit \lsg[6cm]{VERSCHLUESSELUNGEN FUNKTIONIEREN}\par}
+\end{aufgabe}
+
+\begin{aufgabe}[Wie lange dauert Brute Force?]{3}
+Ein Computer schafft eine Milliarde ($10^9$) Versuche pro Sekunde. Ergänze die Tabelle (1 Jahr $\approx 3{,}15\cdot 10^7$ s).\par\vspace{1mm}
+{\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\linewidth}{|l|C|C|}\hline
+\kopfzelle{Verfahren} & \kopfzelle{Anzahl der Schlüssel} & \kopfzelle{Zeit für alle Versuche}\\\hline
+Caesar & 25 & \schreibzeile\lsgtext{$2{,}5\cdot 10^{-8}$ Sekunden}\\\hline
+Vigenère, Schlüsselwort mit 5 Buchstaben & \schreibzeile\lsgtext{$26^5 = 11\,881\,376$} & \lsgtext{ca. 0,012 Sekunden}\\\hline
+Vigenère, Schlüsselwort mit 12 Buchstaben & \schreibzeile\lsgtext{$26^{12} \approx 9{,}5\cdot 10^{16}$} & \lsgtext{ca. 3 Jahre}\\\hline
+AES (heutiger Standard), 128 Bit & $2^{128} \approx 3{,}4\cdot 10^{38}$ & \schreibzeile\lsgtext{ca. $10^{22}$ Jahre}\\\hline
+\end{tabularx}}\par\vspace{1mm}
+\textit{Zum Nachdenken (mündlich):} Welches Sicherheitskriterium von oben erfüllt AES? Und warum hilft Brute Force beim One-Time-Pad überhaupt nicht?
+\end{aufgabe}
+
+\begin{aufgabe}[RSA knacken?]{4}
+{\lueckentext Du hast den Geheimtext \textbf{42} abgefangen. Er wurde mit RSA und dem öffentlichen Schlüssel $(n, e) = (65, 11)$ verschlüsselt.\\
+\textbf{a)} Zerlege $n$ in Primfaktoren: $65 =$ \lsg[2cm]{$5\cdot 13$}. Dann ist $f = (p-1)(q-1) =$ \lsg[1.5cm]{48}, und aus $d\cdot e \bmod f = 1$ folgt $d =$ \lsg[1.5cm]{35}.\\
+Klartext: $m = 42^{d} \bmod 65 =$ \lsg[1.5cm]{48}, das ist in der ASCII-Tabelle das Zeichen \lsg[1.5cm]{„0“ (Null)}.\\
+\textbf{b)} Begründe, warum die Primfaktorzerlegung erst für sehr große Zahlen eine \textbf{Einwegfunktion} ist.\par}
+\lsglinien{2}{Kleine Zahlen zerlegt man durch Ausprobieren sofort. Für Zahlen mit Hunderten Stellen kennt man kein schnelles Verfahren: Multiplizieren geht leicht, Zerlegen dauert Jahrmillionen.}
+\end{aufgabe}
+
+\vfill
+\web{Station 5.5 Sicherheit: Häufigkeitsanalyse mit Ersetzen-Werkzeug, Brute-Force-Animation, Faktorisier-Stoppuhr}
+\end{document}

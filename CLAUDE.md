@@ -189,9 +189,18 @@ Wo was liegt (Stand 2026-10). `→ AB` = LaTeX-Arbeitsblätter in `arbeitsblaett
 - 11 Graphen (neues Format, → AB): `11/graphen/` (3.1 Grundbegriffe,
   3.2 Umsetzung, 3.3 Breitensuche, 3.4 Dijkstra; Graph-Abenteuer `haenselundgretel/`);
   Werkzeuge in `graphen.js` (u. a. Dijkstra-Vorführung/Trainer `data-dj`, Lösungsweg)
-- 11 sonst: `11/codierung/zahlensysteme.html`, `11/ki/perzeptron.html`,
-  `11/kommunikation_in_netzwerken/` (netzwerke, filius, Übungen),
-  `11/verschluesselung/` (rsa, rsa2, rsa-old)
+- 11 Codierung (neues Format, → AB): `11/codierung/codierung.html` (Übersicht) mit
+  4.1 Zahlensysteme, 4.2 Bilder codieren, 4.3 Daten codieren (Morse, EAN-13, Prüfziffer,
+  optional Zaubertrick `Online-IDE/11-4-3 Zaubertrick.json`); Trainer `zahlensysteme.html`;
+  Werkzeuge in `codierung.js`; `material/` Rohmaterial, nur lokal
+- 11 Verschlüsselung (neues Format, → AB außer 5.3): `11/verschluesselung/verschluesselung.html`
+  mit 5.1 Grundlagen, 5.2 Symmetrisch (Projekt `11-5-1 Verschluesselung` + Coach, auch in 5.1
+  eingebettet, gleiche ID), 5.3 Asymmetrisch/RSA (Arbeitsauftrag ohne Blatt), 5.4 Digitale
+  Signatur, 5.5 Sicherheit (Projekt `11-5-5 BruteForce` + Coach); Werkzeuge in
+  `verschluesselung.js`, Coach-Regeln in `ide-coach.js`; RSA-Labor `rsa.html` (älter: rsa2,
+  rsa-old); `material/` Rohmaterial, nur lokal. IDE-Quellen für Seite und JSON stammen aus
+  einem Generator: nach Codeänderungen Seite und beide JSON-Dateien anpassen
+- 11 sonst: `11/ki/perzeptron.html`, `11/kommunikation_in_netzwerken/` (netzwerke, filius, Übungen)
 - 12 Rekursive Datenstrukturen (neues Format, → AB): `12/rekursive-datenstrukturen/`
   (1.1 Queue, 1.2 Interfaces, 1.3 Listen, 1.4 Kompositum; `material/` Rohmaterial, nur lokal);
   älter: `12/rekursion-queue-listen/`
