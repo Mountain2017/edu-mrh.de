@@ -1,0 +1,30 @@
+{
+ "name": "11-5-5 BruteForce",
+ "modules": [
+  {
+   "name": "Hauptprogramm",
+   "text": "Bruteforce bf = new Bruteforce();\n\n// Blatt 5.5, Aufgabe 2: Welcher Caesar-Schlüssel steckt dahinter?\nString geheim = \"JSFGQVZISGGSZIBUSBTIBYHWCBWSFSBCFRSBHZWQVWADZSASBHWSFHSGHOFYSYFMDHCGMGHSASGWBRSWBSRSFKSBWUSBRWBUSOITRWSAOBGWQVJSFZOGGSBYOBB\";\nbf.caesarBruteForce(geheim);\n\n// Profi (TODO 3 und 4): Häufigkeitsanalyse automatisch, Text aus Aufgabe 1\n// String text = \"WBX TGMPHKM TNY WBX YKTZX GTVA WXF EXUXG WXF NGBOXKLNF NGW WXF ZTGSXG KXLM ETNMXM SPXBNGWOBXKSBZ\";\n// int k = bf.schaetzeSchluessel(text);\n// println(\"Geschätzter Schlüssel: \" + k);\n// println(bf.caesarEnt(text, k));\n",
+   "identical_to_repository_version": false,
+   "repository_file_version": -1,
+   "isFolder": false
+  },
+  {
+   "name": "Bruteforce",
+   "text": "/**\n * Brute-Force-Angriff auf die Caesar-Verschlüsselung (Station 5.5).\n * rotiere und caesarEnt kennst du aus Projekt 11-5-1.\n * Suche (Strg + F) nach \"TODO\" und ergänze den Code.\n */\npublic class Bruteforce {\n\n   /**\n    * Verschiebt einen Großbuchstaben um rotationUm Stellen (nach Z geht es bei A weiter).\n    */\n   public char rotiere(char buchstabe, int rotationUm) {\n      if (buchstabe < 'A' || buchstabe > 'Z') {   // ⓪ kein Großbuchstabe: unverändert\n         return buchstabe;\n      }\n      rotationUm = rotationUm % 26;               // ① 26 Schritte sind einmal ganz herum\n      int code = (int) buchstabe + rotationUm;    // ② ASCII-Code + Verschiebung\n      if (code > 90) {                            // ③ hinter 'Z' (90)? vorne weiterzählen\n         code = code - 26;\n      }\n      return (char) code;                         // ④ wieder als Zeichen\n   }\n\n   /**\n    * Caesar-Entschlüsselung: um schluessel zurück = um 26 - schluessel vor.\n    */\n   public String caesarEnt(String geheimtext, int schluessel) {\n      geheimtext = geheimtext.toUpperCase();\n      String klartext = \"\";\n      schluessel = schluessel % 26;\n      for (int i = 0; i < geheimtext.length(); i++) {\n         klartext = klartext + rotiere(geheimtext.charAt(i), 26 - schluessel);\n      }\n      return klartext;\n   }\n\n   /**\n    * TODO 1: Liefert true, wenn im Text eines der Wörter DER, DIE oder DAS vorkommt.\n    * text.indexOf(wort) liefert die Position, an der wort zum ersten Mal vorkommt\n    * (gezählt ab 0), oder -1, wenn wort gar nicht vorkommt.\n    * Beispiele: \"HALLO\".indexOf(\"LL\") liefert 2, \"HALLO\".indexOf(\"K\") liefert -1.\n    */\n   public boolean enthaeltArtikel(String text) {\n      return false;\n   }\n\n   /**\n    * TODO 2: Brute-Force-Angriff. Probiert alle Schlüssel aus und gibt nur die Versuche aus,\n    * die nach deutschem Text aussehen. Die Schritte stehen auf Blatt 5.5, Aufgabe 2a.\n    */\n   public void caesarBruteForce(String geheimtext) {\n      // ① für jeden Schlüssel von 1 bis 25:\n      //    ② den Geheimtext mit diesem Schlüssel entschlüsseln (caesarEnt)\n      //    ③ prüfen, ob der Versuch deutsch aussieht (enthaeltArtikel)\n      //    ④ wenn ja: Schlüssel und Versuch ausgeben, z. B. println(\"Schlüssel 3: \" + versuch);\n   }\n\n   // ---------- Profi: Häufigkeitsanalyse automatisch ----------\n\n   /**\n    * TODO 3: Wie oft kommt buchstabe im text vor?\n    * Beispiel: zaehle(\"BANANE\", 'A') liefert 2.\n    */\n   public int zaehle(String text, char buchstabe) {\n      return 0;\n   }\n\n   /**\n    * TODO 4: Welcher der Buchstaben A bis Z kommt im text am häufigsten vor?\n    * Beispiel: haeufigsterBuchstabe(\"BANANEN\") liefert 'N'.\n    * Tipp: Gehe alle Codes von 65 ('A') bis 90 ('Z') durch: (char) code ist der Buchstabe.\n    */\n   public char haeufigsterBuchstabe(String text) {\n      return 'A';\n   }\n\n   /**\n    * Schätzt den Caesar-Schlüssel: Der häufigste Buchstabe steht vermutlich für E.\n    */\n   public int schaetzeSchluessel(String geheimtext) {\n      char h = haeufigsterBuchstabe(geheimtext.toUpperCase());\n      return ((int) h - (int) 'E' + 26) % 26;\n   }\n}\n",
+   "identical_to_repository_version": false,
+   "repository_file_version": -1,
+   "isFolder": false
+  },
+  {
+   "name": "BruteforceTest",
+   "text": "/**\n * Selbsttest des Projekts. Bitte nicht verändern!\n * Starten: Klick auf das kleine Dreieck links neben \"@Test\"\n * (ganz oben: alle Tests) oder auf der Website \"Tests starten\".\n */\npublic class BruteforceTest {\n\n   @Test\n   public void artikelGefunden() {\n      Bruteforce bf = new Bruteforce();\n      Assertions.assertTrue(bf.enthaeltArtikel(\"HALLODIEWELT\"), \"TODO 1: In HALLODIEWELT steckt DIE.\");\n      Assertions.assertTrue(bf.enthaeltArtikel(\"WODERFROSCH\"), \"TODO 1: In WODERFROSCH steckt DER.\");\n      Assertions.assertTrue(bf.enthaeltArtikel(\"DASHAUS\"), \"TODO 1: DASHAUS beginnt mit DAS (Position 0).\");\n   }\n\n   @Test\n   public void keinArtikel() {\n      Bruteforce bf = new Bruteforce();\n      Assertions.assertFalse(bf.enthaeltArtikel(\"HALLOWELT\"), \"TODO 1: In HALLOWELT steckt weder DER noch DIE noch DAS.\");\n   }\n\n   @Test\n   public void zaehleBeispiel() {\n      Bruteforce bf = new Bruteforce();\n      Assertions.assertEquals(2, bf.zaehle(\"BANANE\", 'A'), \"TODO 3: In BANANE kommt A zweimal vor.\");\n      Assertions.assertEquals(0, bf.zaehle(\"BANANE\", 'X'), \"TODO 3: In BANANE kommt X nicht vor.\");\n   }\n\n   @Test\n   public void haeufigsterBeispiel() {\n      Bruteforce bf = new Bruteforce();\n      Assertions.assertEquals('N', bf.haeufigsterBuchstabe(\"BANANEN\"), \"TODO 4: In BANANEN ist N am häufigsten.\");\n      Assertions.assertEquals('Z', bf.haeufigsterBuchstabe(\"ZZZ\"), \"TODO 4: In ZZZ ist Z am häufigsten.\");\n   }\n\n   @Test\n   public void schaetzeBeispiel() {\n      Bruteforce bf = new Bruteforce();\n      Assertions.assertEquals(3, bf.schaetzeSchluessel(\"HHHAB\"), \"TODO 4: H ist am häufigsten, H steht für E, also Schlüssel 3.\");\n   }\n}\n",
+   "identical_to_repository_version": false,
+   "repository_file_version": -1,
+   "isFolder": false
+  }
+ ],
+ "settings": {
+  "libraries": []
+ },
+ "isFolder": false
+}

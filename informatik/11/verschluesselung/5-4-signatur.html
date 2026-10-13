@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5.4 Digitale Signatur | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Verschlüsselung, Informatik 11 (NTG): Hashfunktionen, Man-in-the-Middle, digitale Signatur, Ablauf einer signierten Kommunikation und Zertifikate – mit Hash-Labor, Animationen und RSA-Labor, passend zu Arbeitsblatt 5.4.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="verschluesselung.css">
+    <script defer src="verschluesselung.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">✍️</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="verschluesselung.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 5.4</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#pin">💳 Ein Fingerabdruck</a></li>
+            <li><a href="#hash">#️⃣ Hashfunktionen</a></li>
+            <li><a href="#mitm">🦹 Man in the Middle</a></li>
+            <li><a href="#signatur">📝 Digitale Signatur</a></li>
+            <li><a href="#ablauf">🔁 Der ganze Ablauf</a></li>
+            <li><a href="#zertifikate">🏛️ Zertifikate</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Verschlüsselung</div>
+            <ul class="sidebar-menu">
+                <li><a href="verschluesselung.html">Übersicht</a></li>
+                <li><a href="5-1-grundlagen.html">5.1 Grundlagen</a></li>
+                <li><a href="5-2-symmetrisch.html">5.2 Symmetrisch</a></li>
+                <li><a href="5-3-asymmetrisch.html">5.3 Asymmetrisch (RSA)</a></li>
+                <li><a href="5-4-signatur.html">5.4 Digitale Signatur</a></li>
+                <li><a href="5-5-sicherheit.html">5.5 Sicherheit</a></li>
+                <li><a href="rsa.html">RSA-Labor</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero vs-hero">
+                <h1 class="hero-title">5.4 Digitale Signatur</h1>
+                <p class="hero-subtitle">Verschlüsselung · Informatik 11 (NTG) · 2 Stunden</p>
+                <span class="vs-kompetenz">Du kannst: erklären, wie Hashfunktionen die Integrität und digitale Signaturen die Authentizität einer Nachricht sichern, einen Man-in-the-Middle-Angriff beschreiben und die Rolle von Zertifikaten erläutern.</span>
+                <div class="vs-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-5-4-signatur.pdf">📝 Arbeitsblatt 5.4 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-5-4-signatur.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#pin">💳 Einstieg</a><a class="p-investigate" href="#hash">#️⃣ Hash</a><a class="p-problem" href="#mitm">🦹 Angriff</a><a class="p-note" href="#signatur">📝 Festhalten</a><a class="p-modify" href="#ablauf">🔁 Ablauf</a><a class="p-make" href="#zertifikate">🏛️ Zertifikate</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="pin" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">💳</span><h2>Einstieg<small>Aufgabe 1: Ein Fingerabdruck für die PIN</small></h2></div>
+                <div class="phase-body">
+                    <p>Eine Bankkarte enthält nicht die PIN im Klartext, sondern eine Art <strong>Fingerabdruck</strong> der PIN. Er lässt sich leicht aus der PIN berechnen, verrät aber nichts über die PIN selbst. Der Automat berechnet den Fingerabdruck der eingetippten PIN und vergleicht.</p>
+                    <p>Ist die <strong>Quersumme</strong> ein guter Fingerabdruck? Probiere es im zweiten Teil des Hash-Labors aus.</p>
+                    <div data-hash></div>
+                    <ol class="aufgaben">
+                        <li><strong>Blatt, Aufgabe 1:</strong> Bewerte, ob die Quersumme ein geeigneter Fingerabdruck ist.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 1">
+                        <template data-stufe="Lösung" data-halten><p>Ungeeignet: Es gibt nur 37 mögliche Quersummen (0 bis 36), viele PINs haben dieselbe (4242, 3333, 9300 …). Wer den Fingerabdruck kennt, findet sofort eine passende PIN.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-5-4-signatur.pdf">📝 Blatt 5.4 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="hash" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">#️⃣</span><h2>Untersuchen<small>Kryptographische Hashfunktionen</small></h2></div>
+                <div class="phase-body">
+                    <p>Ein besserer Fingerabdruck ist eine <strong>kryptographische Hashfunktion</strong> wie SHA-256. Nutze den ersten Teil des Hash-Labors oben:</p>
+                    <ol class="aufgaben">
+                        <li>Lass beim Text „Hallo Welt!“ das Ausrufezeichen weg. Wie viele Bit des Hashwerts ändern sich?</li>
+                        <li>Wie lang ist der Hashwert bei einem einzigen Buchstaben, wie lang bei einem ganzen Absatz?</li>
+                        <li>Ergänze den Lückentext auf dem Blatt.</li>
+                        <li><strong>Zum Nachdenken (mündlich):</strong> Es gibt unendlich viele Texte, aber nur 2<sup>256</sup> Hashwerte. Also haben manche Texte denselben Hashwert. Warum ist das trotzdem kein praktisches Problem?</li>
+                    </ol>
+                    <div class="konzept">
+                        <h4>Hashfunktion</h4>
+                        <p>Eine Hashfunktion berechnet aus beliebig langen Daten einen kurzen Wert fester Länge, den <strong>Hash</strong>. Er ist leicht zu berechnen, aber praktisch nicht umzukehren, und schon die kleinste Änderung ergibt einen völlig anderen Hashwert. Damit prüft man, ob Daten unterwegs <strong>verändert</strong> wurden (<strong>Integrität</strong>).</p>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-5-4-signatur.pdf">📝 Blatt 5.4 · Integritätsprüfung</a></p>
+                </div>
+            </section>
+
+            <section id="mitm" class="phase problem">
+                <div class="phase-head"><span class="phase-icon">🦹</span><h2>Stolperstein<small>Aufgabe 2: Der Mann in der Mitte</small></h2></div>
+                <div class="phase-body">
+                    <p>Asymmetrische Verschlüsselung hat eine Schwachstelle: Man muss sicher sein, dass ein öffentlicher Schlüssel wirklich der richtigen Person gehört. Spiele den Angriff zuerst <strong>ohne</strong> Zertifikat durch.</p>
+                    <div data-mitm></div>
+                    <ol class="aufgaben">
+                        <li><strong>Blatt, Aufgabe 2:</strong> Erkläre kurz das Prinzip einer Man-in-the-Middle-Attacke.</li>
+                        <li>Hilft es, die Nachricht zusätzlich mit einem Hashwert zu verschicken? (Tipp: Mallory kann selbst Hashwerte berechnen.)</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 2">
+                        <template data-stufe="Lösung" data-halten><p>Der Angreifer schaltet sich zwischen die beiden und gibt sich jeweils als der andere aus: Er gibt Alice seinen eigenen öffentlichen Schlüssel statt PubB, entschlüsselt alles, liest (und ändert) mit und verschlüsselt es mit PubB neu für Bob. Ein mitgeschickter Hashwert hilft nicht, denn Mallory berechnet einfach einen neuen.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-5-4-signatur.pdf">📝 Blatt 5.4 · Aufgabe 2</a></p>
+                </div>
+            </section>
+
+            <section id="signatur" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Authentizitätsprüfung mit digitalen Signaturen</small></h2></div>
+                <div class="phase-body">
+                    <p>Der Trick: Man dreht die Rollen der Schlüssel um. Was mit dem <strong>privaten</strong> Schlüssel verschlüsselt wurde, kann jeder mit dem passenden <strong>öffentlichen</strong> Schlüssel entschlüsseln. Erzeugt haben kann es aber nur der Besitzer des privaten Schlüssels.</p>
+                    <div class="konzept">
+                        <h4>Digitale Signatur</h4>
+                        <p>Der Absender verschlüsselt den Hashwert seiner Nachricht mit seinem <strong>privaten Schlüssel</strong>: Das ist die <strong>digitale Signatur</strong>. Jeder kann sie mit dem <strong>öffentlichen Schlüssel</strong> des Absenders entschlüsseln und mit dem selbst berechneten Hashwert vergleichen. Stimmen beide überein, wurde die Nachricht nicht verändert (<strong>Integrität</strong>), und nur der Besitzer des privaten Schlüssels kann sie unterschrieben haben (<strong>Authentizität</strong>).</p>
+                    </div>
+                    <details class="denk"><summary>Denkanstoß (mündlich): Warum signiert man den Hashwert und nicht die ganze Nachricht?</summary>
+                        <p>Denke an die Rechenzeit von RSA (5.3) und an eine Datei mit 100 MB.</p>
+                    </details>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-5-4-signatur.pdf">📝 Blatt 5.4 · Authentizitätsprüfung</a></p>
+                </div>
+            </section>
+
+            <section id="ablauf" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">🔁</span><h2>Anwenden<small>Aufgabe 3: Ablauf einer Kommunikation mit digitaler Signatur</small></h2></div>
+                <div class="phase-body">
+                    <p>Jetzt kommt alles zusammen: A schickt B die Nachricht „Hallo“, verschlüsselt <strong>und</strong> signiert. Der Hashwert wird wirklich mit SHA-256 berechnet.</p>
+                    <div data-ablauf="signatur"></div>
+                    <ol class="aufgaben">
+                        <li><strong>Blatt, Aufgabe 3a:</strong> Trage im Ablaufbild ein, welcher Schlüssel bzw. welche Funktion an jeder Stelle benutzt wird.</li>
+                        <li><strong>Blatt, Aufgabe 3b:</strong> Welches Sicherheitsziel sichert welcher Teil?</li>
+                        <li>Spiele den Ablauf noch einmal mit Mallory, der die Nachricht austauscht. In welchem Schritt fliegt er auf?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 3">
+                        <template data-stufe="Tipp"><p>Oben (Nachricht): Wer darf lesen? Unten (Hashwert): Wer darf unterschreiben?</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) Nachricht verschlüsseln mit PubB, entschlüsseln mit PrB; Hashfunktion; Hashwert verschlüsseln mit PrA (Signatur), entschlüsseln mit PubA; B vergleicht mit dem selbst berechneten Hashwert.<br>b) PubB/PrB sichert die Vertraulichkeit; die Signatur sichert Integrität und Authentizität (und Verbindlichkeit: A kann die Nachricht später nicht abstreiten).</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-5-4-signatur.pdf">📝 Blatt 5.4 · Aufgabe 3</a></p>
+                </div>
+            </section>
+
+            <section id="zertifikate" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🏛️</span><h2>Zertifikate<small>Aufgabe 4 und RSA-Labor</small></h2></div>
+                <div class="phase-body">
+                    <p>Gegen den Mann in der Mitte hilft nur, öffentliche Schlüssel zu <strong>beglaubigen</strong>. Spiele den Angriff oben noch einmal <strong>mit</strong> Zertifikat.</p>
+                    <div class="konzept">
+                        <h4>Zertifikate</h4>
+                        <p>Zentrale <strong>Zertifizierungsstellen</strong> (CA) stellen <strong>Zertifikate</strong> aus: „Dieser öffentliche Schlüssel gehört Bob“, signiert mit dem privaten Schlüssel der CA. Die öffentlichen Schlüssel der CAs sind in Betriebssystemen und Browsern schon gespeichert. Damit lässt sich jedes Zertifikat prüfen. Das schützt die <strong>Authentizität</strong> und ermöglicht <strong>Verbindlichkeit</strong>.</p>
+                    </div>
+                    <ol class="aufgaben">
+                        <li><strong>Blatt, Aufgabe 4:</strong> Öffne in Cryptocastle Abschnitt [3] die erste und zweite Tür mit <code>7TGP4</code> und <code>T3ZFANL</code> und knacke die dritte Tür.</li>
+                        <li><strong>Gruppenarbeit im RSA-Labor:</strong> Eine Person ist die Zertifizierungsstelle, mindestens zwei sind Alice und Bob. Folgt dem Ablauf auf der Startseite des Labors: Schlüssel erzeugen, Zertifikate ausstellen und prüfen, signierte Nachrichten schicken.</li>
+                        <li>Klicke im Browser auf das Schloss neben einer <code>https://</code>-Adresse. Wer hat das Zertifikat ausgestellt?</li>
+                    </ol>
+                    <p><a class="btn btn-primary" href="rsa.html">Zum RSA-Labor</a> <a class="btn btn-outline" href="https://view.genial.ly/647f2a04bc62140019e744a0/interactive-content-the-mystery-of-cryptocastle" target="_blank" rel="noopener">Cryptocastle (extern)</a></p>
+                    <div class="lw" data-loesungsweg="Lückentext Zertifikate">
+                        <template data-stufe="Lösung" data-halten><p>Zertifikate · Kommunikationspartners (Korrespondenten) · Zertifizierungsstelle</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-5-4-signatur.pdf">📝 Blatt 5.4 · Aufgabe 4, Zertifikate</a></p>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🕵️ Wie sicher ist sicher?</h4>
+                            <p>Wann gilt ein Verfahren als sicher, und wie gehen Angreifer vor? In 5.5 knackst du selbst Geheimtexte, von Hand und mit dem Computer.</p>
+                            <a class="btn btn-outline btn-sm" href="5-5-sicherheit.html">Zu 5.5 Sicherheit</a>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>🪪 Personalausweis und E-Rezept</h4>
+                            <p>Der Chip im Personalausweis und die elektronische Gesundheitskarte enthalten private Schlüssel, die den Chip nie verlassen. Damit wird digital unterschrieben.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="5-3-asymmetrisch.html">← 5.3 Asymmetrisch</a>
+                <a class="btn btn-primary" href="5-5-sicherheit.html">5.5 Sicherheit →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-5-4-signatur-lsg.pdf">Lösung Blatt 5.4 (PDF)</a></p>
+                    <p><strong>Aufbau:</strong> Seite 1 und der Zertifikate-Teil des bisherigen Blatts „5-4 Digitale Signatur“. Der Teil 5-5 (Sicherheit, Angriffsmethoden, Häufigkeitsanalyse, Brute Force) hat ein eigenes Blatt 5.5.</p>
+                    <table>
+                        <thead><tr><th>Änderung</th><th>Grund</th></tr></thead>
+                        <tbody>
+                            <tr><td>Neu: Aufgabe 3 „Ablauf einer Kommunikation mit digitaler Signatur“ als Lückenbild (nach Ihrer Skizze: A, B, Schlüsselfarben, „Hallo“ → x34ycf, Hashwert, Vergleich ≟).</td><td>Bündelt Verschlüsselung (5.3) und Signatur; ist das Ergebnisbild der Einheit.</td></tr>
+                            <tr><td>Hash-Beispiele: SHA-256 und MD5 von „Hallo Welt!“ und „Hallo Welt“ (alle Werte nachgerechnet). SHA3-256/HAVAL entfallen.</td><td>Der Vergleich zweier fast gleicher Texte zeigt den Lawineneffekt; SHA-256 rechnet auch das Hash-Labor.</td></tr>
+                            <tr><td>Reihenfolge: Hashfunktion → Man-in-the-Middle → Signatur → Ablauf → Zertifikate.</td><td>MITM motiviert, warum Authentizität nötig ist; Zertifikate lösen den MITM aus 5.3/5.4.</td></tr>
+                            <tr><td>Cryptocastle-Türen bleiben Aufgabe 4 (Codes 7TGP4, T3ZFANL).</td><td>Wie bisher.</td></tr>
+                        </tbody>
+                    </table>
+                    <p class="mt-2"><strong>Website:</strong> Hash-Labor und Ablauf verwenden echtes SHA-256 (Web Crypto API, lokal im Browser). Das RSA-Labor (<code>rsa.html</code>) ist unverändert in seiner Funktion und eignet sich für die Gruppenarbeit mit Zertifizierungsstelle.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum &amp; Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

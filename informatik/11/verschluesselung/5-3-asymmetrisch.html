@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5.3 Asymmetrische Verschlüsselung (RSA) | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Verschlüsselung, Informatik 11 (NTG): Arbeitsauftrag zur asymmetrischen Verschlüsselung – Vorhängeschloss-Prinzip, Cryptocastle, Videos zu RSA, RSA-Übersicht für „HI“ mit p = 5 und q = 17 zum Prüfen, Ablauf der Kommunikation und Man-in-the-Middle.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="verschluesselung.css">
+    <script defer src="verschluesselung.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🔐</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="verschluesselung.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 5.3</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#auftrag">📋 Der Arbeitsauftrag</a></li>
+            <li><a href="#prinzip">🔓 Das Prinzip</a></li>
+            <li><a href="#burg">🏰 1 Cryptocastle</a></li>
+            <li><a href="#videos">🎬 2 Videos zu RSA</a></li>
+            <li><a href="#uebersicht">🧮 3 RSA-Übersicht</a></li>
+            <li><a href="#ablauf">🔁 4 Ablauf und Angriff</a></li>
+            <li><a href="#ergebnis">📝 Ergebnis sichern</a></li>
+            <li><a href="#uebungen">🏋️ Übungen</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Verschlüsselung</div>
+            <ul class="sidebar-menu">
+                <li><a href="verschluesselung.html">Übersicht</a></li>
+                <li><a href="5-1-grundlagen.html">5.1 Grundlagen</a></li>
+                <li><a href="5-2-symmetrisch.html">5.2 Symmetrisch</a></li>
+                <li><a href="5-3-asymmetrisch.html">5.3 Asymmetrisch (RSA)</a></li>
+                <li><a href="5-4-signatur.html">5.4 Digitale Signatur</a></li>
+                <li><a href="5-5-sicherheit.html">5.5 Sicherheit</a></li>
+                <li><a href="rsa.html">RSA-Labor</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero vs-hero">
+                <h1 class="hero-title">5.3 Asymmetrische Verschlüsselung</h1>
+                <p class="hero-subtitle">Verschlüsselung · Informatik 11 (NTG) · 2 Stunden · Arbeitsauftrag in Gruppen</p>
+                <span class="vs-kompetenz">Du kannst: das Prinzip der asymmetrischen Verschlüsselung und einen Man-in-the-Middle-Angriff erklären und den RSA-Algorithmus an einer eigenen Übersicht vorführen.</span>
+                <div class="vs-actions">
+                    <a class="btn btn-ab" href="#ergebnis">📝 Was am Ende stehen soll</a>
+                    <a class="btn btn-tex" href="rsa.html">RSA-Labor</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#prinzip">🔓 Prinzip</a><a class="p-run" href="#burg">🏰 Spiel</a><a class="p-investigate" href="#videos">🎬 Videos</a><a class="p-modify" href="#uebersicht">🧮 Übersicht</a><a class="p-problem" href="#ablauf">🔁 Ablauf</a><a class="p-note" href="#ergebnis">📝 Ergebnis</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="auftrag" class="mb-4">
+                <div class="konzept">
+                    <h4>📋 Arbeitsauftrag (Gruppenarbeit, ca. 2 Stunden)</h4>
+                    <ol>
+                        <li>Spielt mindestens <strong>zwei Türen</strong> des letzten Teils <strong>[3]</strong> von <em>The Mystery of Cryptocastle</em> über asymmetrische Verschlüsselung.</li>
+                        <li>Schaut euch die <strong>beiden Videos</strong> zum RSA-Algorithmus an.</li>
+                        <li>Erstellt eine <strong>Übersicht zum Ablauf von RSA</strong> für das Wort „HI“ mit <strong>p = 5</strong> und <strong>q = 17</strong> (ASCII-Werte der Buchstaben nachschlagen).</li>
+                        <li>Skizziert den <strong>Ablauf der Kommunikation</strong> zwischen A und B: Wer benutzt wann welchen Schlüssel?</li>
+                    </ol>
+                    <p class="mt-2"><strong>Am Ende sollte jede und jeder von euch erklären können:</strong> das Prinzip der asymmetrischen Verschlüsselung · das Prinzip eines Man-in-the-Middle-Angriffs · den RSA-Algorithmus (mit eurer Übersicht).</p>
+                </div>
+                <p class="vs-klein">Zu dieser Station gibt es kein Arbeitsblatt. Eure Übersicht und eure Skizze sind das Ergebnis. Sie entsprechen der Buchseite 85 (Informatik 11, C.C.Buchner) und dem Ablaufbild, das ihr auf Blatt 5.4 vervollständigt.</p>
+            </section>
+
+            <section id="prinzip" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔓</span><h2>Einstieg<small>Das Prinzip: offene Vorhängeschlösser verschicken</small></h2></div>
+                <div class="phase-body">
+                    <p>In 5.2 blieb ein Problem: Für symmetrische Verfahren muss der geheime Schlüssel vorher sicher übergeben werden. Wie kann Alice Bob etwas Geheimes schicken, ohne dass sie sich je getroffen haben? Klicke dich durch:</p>
+                    <div data-schloss></div>
+                    <details class="denk"><summary>Denkanstoß (mündlich): Was ist hier öffentlich, was privat?</summary>
+                        <p>Das offene Schloss darf jeder haben, auch Mallory. Warum ist das kein Problem? Und was müsste passieren, damit Mallory die Kiste doch öffnen kann?</p>
+                    </details>
+                </div>
+            </section>
+
+            <section id="burg" class="phase run">
+                <div class="phase-head"><span class="phase-icon">🏰</span><h2>Schritt 1<small>The Mystery of Cryptocastle, Teil [3]</small></h2></div>
+                <div class="phase-body">
+                    <p>Spielt mindestens zwei Türen des letzten Teils <strong>[3]</strong>. Notiert euch, welche Schlüssel dort auftauchen und wofür sie benutzt werden.</p>
+                    <p><a class="btn btn-primary" href="https://view.genial.ly/647f2a04bc62140019e744a0/interactive-content-the-mystery-of-cryptocastle" target="_blank" rel="noopener">Spiel öffnen (externe Seite, genial.ly)</a></p>
+                    <p class="vs-klein">Hinweis: Das Spiel liegt bei einem externen Anbieter. Beim Öffnen gelten dessen Datenschutzbestimmungen.</p>
+                </div>
+            </section>
+
+            <section id="videos" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🎬</span><h2>Schritt 2<small>Zwei Videos zum RSA-Algorithmus</small></h2></div>
+                <div class="phase-body">
+                    <p>Die Videos liegen auf YouTube und öffnen sich in einem neuen Tab. Schaut sie gemeinsam an und haltet zwischendurch an.</p>
+                    <div class="video-liste">
+                        <a class="video-karte" href="https://www.youtube.com/watch?v=4zahvcJ9glg" target="_blank" rel="noopener"><span class="vk-icon">▶️</span><span><strong>Video 1: RSA</strong><small>youtube.com/watch?v=4zahvcJ9glg</small></span></a>
+                        <a class="video-karte" href="https://www.youtube.com/watch?v=oOcTVTpUsPQ" target="_blank" rel="noopener"><span class="vk-icon">▶️</span><span><strong>Video 2: RSA</strong><small>youtube.com/watch?v=oOcTVTpUsPQ</small></span></a>
+                    </div>
+                    <p class="vs-klein">Datenschutz: Die Videos werden bewusst nicht in diese Seite eingebettet. Erst beim Klick verbindest du dich mit YouTube.</p>
+                    <ol class="aufgaben">
+                        <li>Welche Zahlen braucht man, um ein Schlüsselpaar zu erzeugen? Welche davon werden veröffentlicht, welche bleiben geheim?</li>
+                        <li>Mit welcher Rechnung wird verschlüsselt, mit welcher entschlüsselt?</li>
+                        <li>Warum kann man aus dem öffentlichen Schlüssel den privaten nicht einfach ausrechnen? (Stichwort: <strong>Einwegfunktion</strong>, <strong>Primfaktorzerlegung</strong>)</li>
+                    </ol>
+                </div>
+            </section>
+
+            <section id="uebersicht" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">🧮</span><h2>Schritt 3<small>Eure RSA-Übersicht für „HI“ mit p = 5 und q = 17</small></h2></div>
+                <div class="phase-body">
+                    <p>Legt eine Tabelle mit drei Teilen an: <strong>Schlüsselerzeugung</strong>, <strong>Verschlüsselung</strong>, <strong>Entschlüsselung</strong>. Links steht jeweils der allgemeine Schritt (Eingabe, Berechnung, Ausgabe), rechts euer Beispiel mit kleinen Zahlen. Rechnet zuerst selbst, dann tragt eure Werte unten ein: Jedes Feld wird grün oder rot.</p>
+                    <div data-rsa></div>
+                    <div class="tipp"><strong>Hilfen:</strong> „Teilerfremd“ heißt: ggT = 1. Das d kann man bei kleinen Zahlen durch Probieren finden (d · e mod f = 1), sonst mit dem erweiterten euklidischen Algorithmus. Große Potenzen mod n rechnet der Rechner unten aus.</div>
+                    <div data-modrechner></div>
+                    <details class="denk"><summary>ASCII-Tabelle (Großbuchstaben)</summary>
+                        <p class="vs-mono">A 65 · B 66 · C 67 · D 68 · E 69 · F 70 · G 71 · H 72 · I 73 · J 74 · K 75 · L 76 · M 77 · N 78 · O 79 · P 80 · Q 81 · R 82 · S 83 · T 84 · U 85 · V 86 · W 87 · X 88 · Y 89 · Z 90 · * 42</p>
+                        <p>Das Wort „HI“ als <em>eine</em> Zahl: 01001000 01001001<sub>2</sub> = 18505. Weil 18505 größer als n ist, wird die Nachricht in Teilpakete zerlegt, die kleiner als n sind: ein Buchstabe pro Paket.</p>
+                    </details>
+                    <div class="lw" data-loesungsweg="Schritt 3: eure Übersicht">
+                        <template data-stufe="Tipp 1"><p>n = p · q und f = (p − 1) · (q − 1). Für e = 3 gilt ggT(3, f) = 1.</p></template>
+                        <template data-stufe="Tipp 2"><p>Gesucht ist d mit 3 · d mod 64 = 1. Probiere: 3 · d muss 65, 129, 193, … sein.</p></template>
+                        <template data-stufe="Musterübersicht" data-halten>
+                            <div class="tab-scroll"><table class="vs-tabelle">
+                                <thead><tr><th>Schlüsselerzeugung</th><th>Beispiel mit kleinen Zahlen</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Eingabe: zwei Primzahlen p und q</td><td>p = 5, q = 17</td></tr>
+                                    <tr><td>n = p · q; f = (p − 1)(q − 1); e teilerfremd zu f; d mit d · e mod f = 1 (d &lt; f)</td><td>n = 85; f = 4 · 16 = 64; ggT(3, 64) = 1, also e = 3; 43 · 3 mod 64 = 1, also d = 43</td></tr>
+                                    <tr><td>Ausgabe: privater Schlüssel (n, d), öffentlicher Schlüssel (n, e)</td><td>privat (85, 43), öffentlich (85, 3)</td></tr>
+                                </tbody>
+                                <thead><tr><th>Verschlüsselung</th><th></th></tr></thead>
+                                <tbody>
+                                    <tr><td>Eingabe: öffentlicher Schlüssel und Klartext</td><td>(85, 3) und „HI“</td></tr>
+                                    <tr><td>Klartext als Zahl(en) m<sub>i</sub> &lt; n</td><td>„HI“ ≙ 18505 &gt; 85, also m<sub>1</sub> = 72, m<sub>2</sub> = 73</td></tr>
+                                    <tr><td>c<sub>i</sub> = m<sub>i</sub><sup>e</sup> mod n</td><td>c<sub>1</sub> = 72<sup>3</sup> mod 85 = 13; c<sub>2</sub> = 73<sup>3</sup> mod 85 = 57</td></tr>
+                                </tbody>
+                                <thead><tr><th>Entschlüsselung</th><th></th></tr></thead>
+                                <tbody>
+                                    <tr><td>Eingabe: privater Schlüssel und Geheimtext</td><td>(85, 43) und c = 13; 57</td></tr>
+                                    <tr><td>m<sub>i</sub> = c<sub>i</sub><sup>d</sup> mod n</td><td>13<sup>43</sup> mod 85 = 72; 57<sup>43</sup> mod 85 = 73 → „HI“</td></tr>
+                                </tbody>
+                            </table></div>
+                        </template>
+                    </div>
+                    <p>Zur Vertiefung: Im <a href="rsa.html">RSA-Labor</a> rechnet ihr in Schritt 1 dasselbe Beispiel und erzeugt danach echte Schlüssel mit über 300 Stellen.</p>
+                </div>
+            </section>
+
+            <section id="ablauf" class="phase problem">
+                <div class="phase-head"><span class="phase-icon">🔁</span><h2>Schritt 4<small>Ablauf der Kommunikation und der Mann in der Mitte</small></h2></div>
+                <div class="phase-body">
+                    <p>Wer benutzt wann welchen Schlüssel? A und B haben jeweils ein eigenes Schlüsselpaar. Klickt euch durch und skizziert den Ablauf mit Personen, Nachricht und Schlüsseln (Farben wie hier).</p>
+                    <div data-ablauf="verschluesseln"></div>
+                    <p>Die Schwachstelle: Woher weiß A, dass der öffentliche Schlüssel wirklich von B ist?</p>
+                    <div data-mitm></div>
+                    <ol class="aufgaben">
+                        <li>Erklärt euch gegenseitig in eigenen Worten, was bei einem Man-in-the-Middle-Angriff passiert.</li>
+                        <li>Spielt den Angriff noch einmal mit Zertifikat. Was ändert sich?</li>
+                        <li>Wer schneller ist: Schaltet unten den Ablauf <em>mit digitaler Signatur</em> durch und ergänzt eure Skizze. Das ist das Thema von 5.4.</li>
+                    </ol>
+                    <div data-ablauf="signatur"></div>
+                </div>
+            </section>
+
+            <section id="ergebnis" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Ergebnis sichern<small>Was am Ende in eurem Heft / auf eurem Tablet steht</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Merke: Asymmetrische Verschlüsselung</h4>
+                        <p>Bei <strong>asymmetrischen Verschlüsselungsverfahren</strong> wird ein bekannter <strong>öffentlicher Schlüssel</strong> zur Verschlüsselung und ein geheimer <strong>privater Schlüssel</strong> zur Entschlüsselung verwendet. Damit wird ein Schlüsseltausch überflüssig. Möglich wird das durch spezielle <strong>Einwegfunktionen</strong>, die <strong>Falltürfunktionen</strong>. Asymmetrische Verfahren sind dadurch aber rechenaufwendiger als vergleichbare symmetrische Verfahren.</p>
+                    </div>
+                    <ul class="ergebnis-liste">
+                        <li>✅ <strong>RSA-Übersicht</strong> für „HI“ mit p = 5, q = 17 (drei Teile wie oben, Muster hinter dem Lösungsweg in Schritt 3)</li>
+                        <li>✅ <strong>Ablaufskizze</strong>: A verschlüsselt mit PubB, B entschlüsselt mit PrB (Erweiterung mit Signatur folgt auf Blatt 5.4, Aufgabe 3)</li>
+                        <li>✅ Jede und jeder kann das Prinzip, den Man-in-the-Middle-Angriff und RSA erklären</li>
+                    </ul>
+                    <div class="lw" data-loesungsweg="Musterskizze Ablauf">
+                        <template data-stufe="Musterskizze" data-halten>
+                            <svg viewBox="0 0 640 250" style="width:100%;max-width:640px;height:auto" role="img" aria-label="Ablauf: A verschlüsselt Hallo mit PubB, B entschlüsselt mit PrB; A bildet den Hashwert, verschlüsselt ihn mit PrA als Signatur; B entschlüsselt die Signatur mit PubA und vergleicht mit dem selbst berechneten Hashwert">
+                                <g font-family="system-ui, sans-serif" font-size="14" text-anchor="middle">
+                                    <text x="30" y="40" font-weight="700">A</text><text x="610" y="40" font-weight="700">B</text>
+                                    <text x="30" y="70" font-size="11" fill="#166534">PrA</text><text x="30" y="86" font-size="11" fill="#1e40af">PubA</text><text x="30" y="102" font-size="11" fill="#9a3412">PubB</text>
+                                    <text x="610" y="70" font-size="11" fill="#1e40af">PubA</text><text x="610" y="86" font-size="11" fill="#9a3412">PubB</text><text x="610" y="102" font-size="11" fill="#9d174d">PrB</text>
+                                    <rect x="80" y="30" width="80" height="34" rx="4" fill="#fff" stroke="#111"/><text x="120" y="52">Hallo</text>
+                                    <rect x="470" y="30" width="80" height="34" rx="4" fill="#fff" stroke="#111"/><text x="510" y="52">Hallo</text>
+                                    <line x1="160" y1="47" x2="466" y2="47" stroke="#111" stroke-width="2" marker-end="url(#pf)"/>
+                                    <text x="313" y="40" font-family="monospace">x34ycf</text>
+                                    <text x="190" y="22" fill="#9a3412" font-weight="700">🔒 PubB</text><text x="440" y="22" fill="#9d174d" font-weight="700">🔓 PrB</text>
+                                    <line x1="120" y1="64" x2="120" y2="176" stroke="#2563eb" stroke-width="2" marker-end="url(#pf)"/><text x="66" y="124" fill="#2563eb" font-size="12">Hashfunktion</text>
+                                    <rect x="75" y="180" width="90" height="34" rx="4" fill="#fff" stroke="#2563eb"/><text x="120" y="202" fill="#2563eb">Hashwert</text>
+                                    <rect x="465" y="180" width="90" height="34" rx="4" fill="#fff" stroke="#111"/><text x="510" y="202">Hashwert</text>
+                                    <line x1="165" y1="197" x2="461" y2="197" stroke="#111" stroke-width="2" marker-end="url(#pf)"/>
+                                    <text x="313" y="190" font-size="12">Signatur (verschlüsselter Hashwert)</text>
+                                    <text x="200" y="232" fill="#166534" font-weight="700">🔒 PrA</text><text x="430" y="232" fill="#1e40af" font-weight="700">🔓 PubA</text>
+                                    <text x="585" y="140" font-size="22">≟</text>
+                                    <line x1="550" y1="64" x2="578" y2="120" stroke="#2563eb" stroke-width="2" marker-end="url(#pf)"/><text x="600" y="118" fill="#2563eb" font-size="11">Hash</text>
+                                    <line x1="555" y1="197" x2="585" y2="150" stroke="#111" stroke-width="2" marker-end="url(#pf)"/>
+                                    <text x="615" y="165" font-size="18" fill="#15803d">✓</text>
+                                </g>
+                                <defs><marker id="pf" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#111"/></marker></defs>
+                            </svg>
+                            <p>Oberer Weg: Vertraulichkeit (PubB / PrB). Unterer Weg: digitale Signatur (PrA / PubA) für Integrität und Authentizität.</p>
+                        </template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="uebungen" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🏋️</span><h2>Übungen<small>Aus dem Buch, S. 85 (A3)</small></h2></div>
+                <div class="phase-body">
+                    <div class="uebung">
+                        <h3>Übung 1: Ein Sternchen verschlüsseln</h3>
+                        <p>Verschlüssle mit dem öffentlichen Schlüssel (51, 3) das Zeichen „*“ und entschlüssle es wieder mit dem privaten Schlüssel (51, 11).</p>
+                        <div class="lw" data-loesungsweg="Übung 1">
+                            <template data-stufe="Lösung" data-halten><p>„*“ = 42 &lt; 51. c = 42<sup>3</sup> mod 51 = 36. m = 36<sup>11</sup> mod 51 = 42 = „*“.</p></template>
+                        </div>
+                    </div>
+                    <div class="uebung">
+                        <h3>Übung 2: Eigenes Schlüsselpaar</h3>
+                        <p>Erzeuge mit p = 7 und q = 13 ein Schlüsselpaar und verschlüssle die Nachricht „DU“. Prüfe deine Werte oben in der Übersicht mit „🧪 Eigene Werte“.</p>
+                        <div class="lw" data-loesungsweg="Übung 2">
+                            <template data-stufe="Tipp"><p>f = 72 = 2<sup>3</sup> · 3<sup>2</sup>. Für e kommen alle Zahlen in Frage, die weder durch 2 noch durch 3 teilbar sind, z. B. 5, 7, 11, …</p></template>
+                            <template data-stufe="Lösung (mit e = 5)" data-halten><p>n = 91, f = 72, e = 5, d = 29 (29 · 5 = 145 = 2 · 72 + 1). Privat (91, 29), öffentlich (91, 5).<br>„D“ = 68, „U“ = 85 (beide &lt; 91): c<sub>1</sub> = 68<sup>5</sup> mod 91 = 87, c<sub>2</sub> = 85<sup>5</sup> mod 91 = 50.</p></template>
+                        </div>
+                    </div>
+                    <p class="vs-klein">Die Rückblick-Aufgabe des Buchs („Geheimtext 42 mit (65, 11) knacken“) bearbeitest du in 5.5.</p>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>✍️ Digitale Signatur</h4>
+                            <p>Vertraulich ist die Nachricht jetzt. Aber stammt sie wirklich von A, und kam sie unverändert an? In 5.4 dreht ihr die Schlüssel um.</p>
+                            <a class="btn btn-outline btn-sm" href="5-4-signatur.html">Zu 5.4 Digitale Signatur</a>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>⚡ Hybride Verschlüsselung</h4>
+                            <p>RSA ist langsam. In der Praxis (z. B. HTTPS) wird mit RSA nur ein zufälliger symmetrischer Schlüssel ausgetauscht, mit dem dann schnell symmetrisch weiterverschlüsselt wird.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="5-2-symmetrisch.html">← 5.2 Symmetrisch</a>
+                <a class="btn btn-primary" href="5-4-signatur.html">5.4 Digitale Signatur →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Hinweise</strong></summary>
+                    <p class="mt-2"><strong>Ablauf wie im bisherigen Arbeitsauftrag 5-3</strong> (Cryptocastle [3], zwei Videos, Übersicht „HI“ mit p = 5, q = 17; Ziele: Prinzip, Man-in-the-Middle, RSA). Ohne Arbeitsblatt. Ergänzt um eine Einstiegs-Animation (Vorhängeschloss), einen Prüfmodus für die Übersicht, die Ablaufskizze der Kommunikation als vierten Schritt und die Buchaufgaben als Übung.</p>
+                    <table>
+                        <thead><tr><th>Hinweis</th><th>Details</th></tr></thead>
+                        <tbody>
+                            <tr><td>Erwartetes Ergebnis 1: Übersicht wie Buch S. 85</td><td>n = 85, f = 64, e = 3, d = 43; m = 72; 73 (≙ 18505); c = 13; 57. Das Werkzeug prüft jedes Feld, zeigt aber keine Werte. Die Musterübersicht steht hinter dem Lösungsweg.</td></tr>
+                            <tr><td>Erwartetes Ergebnis 2: Ablaufskizze</td><td>Entspricht Ihrer Skizze „Ablauf Kommunikation mit digitaler Signatur“: oberer Weg (PubB/PrB) in 5.3, unterer Weg (Hash, PrA/PubA, Vergleich) als Erweiterung; vollständig auf Blatt 5.4, Aufgabe 3.</td></tr>
+                            <tr><td>Fehler in der Verlagslösung zu A3b</td><td>Dort steht privater Schlüssel (72, 29) / öffentlicher (72, 5) und „DU“ mit D = 44, U = 55, gerechnet mod 72. Richtig: Modul ist n = 91, also (91, 29) und (91, 5); D = 68, U = 85 (ASCII dezimal; 44 und 55 sind die Hex-Werte); c = 87; 50.</td></tr>
+                            <tr><td>Fehler in der Verlagslösung zu Aufgabe 1 (Rückblick)</td><td>m = 42<sup>35</sup> mod 65 = 48 ist korrekt, 48 ist im ASCII-Code aber das Zeichen „0“, nicht „H“ (= 72). Diese Aufgabe steht jetzt auf Blatt 5.5 (Aufgabe 4) mit korrigierter Lösung.</td></tr>
+                            <tr><td>Videos</td><td>Nur verlinkt, nicht eingebettet (kein YouTube-Aufruf ohne Klick, DSGVO).</td></tr>
+                            <tr><td>RSA-Labor</td><td><a href="rsa.html">rsa.html</a> (Funktionen unverändert): Schritt 1 rechnet dasselbe Beispiel; Schritte 2–5 (CA, Zertifikate, Signieren) passen als Gruppenarbeit zu 5.4.</td></tr>
+                        </tbody>
+                    </table>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum &amp; Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

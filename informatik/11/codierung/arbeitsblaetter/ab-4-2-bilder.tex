@@ -1,0 +1,127 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcommand{\kopfzelle}[1]{\cellcolor{blue!8}\textbf{#1}}
+% Pixelbild: \pixelbild{Zellgröße}{{Zeile 1 als Ziffernliste},{Zeile 2},…} (0 weiß, 1 schwarz, 2 gelb, 3 rot)
+\newcommand{\pixelbild}[2]{\begin{tikzpicture}[x=#1,y=#1]
+  \foreach \zeile [count=\y] in {#2} {
+    \foreach \c [count=\x] in \zeile {
+      \ifcase\c\relax\def\farbe{white}\or\def\farbe{black!85}\or\def\farbe{yellow!85!orange}\or\def\farbe{red!80}\fi
+      \fill[\farbe] (\x-1,-\y) rectangle (\x,-\y+1);
+    }
+  }
+  \draw[cyan!50!black,line width=0.3pt] (0,-8) grid (8,0);
+\end{tikzpicture}}
+% Raster zum Codieren: \codierraster{{Bits Zeile 1},{Bits Zeile 2},…}{Dezimalwerte}{Zusatz-TikZ}
+\newlength{\zelle}\setlength{\zelle}{5.5mm}
+\newcommand{\codierraster}[3]{\begin{tikzpicture}[x=\zelle,y=\zelle]
+  \draw[gray!60,line width=0.3pt] (0,-8) grid (8,0);
+  \draw[line width=0.6pt] (0,-8) rectangle (8,0);
+  \node[font=\scriptsize\bfseries,anchor=south] at (4,0.05) {Bild};
+  \node[font=\scriptsize\bfseries,anchor=south] at (11.3,0.05) {binär};
+  \node[font=\scriptsize\bfseries,anchor=south] at (15.9,0.05) {dezimal};
+  \foreach \y in {1,...,8} {
+    \draw[black!65,line width=0.35pt] (8.6,-\y) -- (14,-\y);
+    \draw[black!65,line width=0.35pt] (14.6,-\y) -- (17.2,-\y);
+  }
+  #3
+  \ifloesung
+  \foreach \zeile [count=\y] in {#1} {
+    \foreach \c [count=\x] in \zeile {
+      \ifnum\c=1 \fill[red!75!black,opacity=0.75] (\x-1+0.12,-\y+0.12) rectangle (\x-0.12,-\y+0.88);\fi
+      \node[font=\footnotesize\ttfamily,text=red!75!black,anchor=south,inner sep=1pt] at (8.85+0.6*\x,-\y) {\c};
+    }
+  }
+  \foreach \d [count=\y] in {#2} {\node[font=\footnotesize,text=red!75!black,anchor=south] at (15.9,-\y) {\d};}
+  \fi
+\end{tikzpicture}}
+\begin{document}
+\abtitel{4.2}{Bilder codieren}
+
+\begin{aufgabe}[The Mystery of Cryptocastle]{1}
+{\lueckentext Öffne das Spiel (Link auf der Website).\\
+\textbf{a)} Gehe zum Dezimalhof. Öffne die Tür zum Hexadezimalturm, indem du \zs{1111011}{2} ins Dezimalsystem umrechnest: \lsg[1.8cm]{123}\\
+\textbf{b)} Geh den Turm hinauf und gib \zs{155}{10} als Hexadezimalzahl (\lsg[1.6cm]{9B}) und \zs{55}{16} als Dezimalzahl (\lsg[1.6cm]{85}) ein.\\
+\textbf{c)} Öffne die Tür zum letzten Raum, indem du die Ergebnisse für \zs{10110100}{2} $\to$ Hex und \zs{D9}{16} $\to$ Binär aneinanderhängst: \lsg[4.5cm]{B4\,11011001}\\
+\textbf{d)} Finde die Lösung für den Raum. Die Farbcodes der pinken Farbe, von \texttt{\#BBB11}, der grauen Farbe und von \texttt{255 127 76} bestimmst du mit dem \textbf{RGB-Mischer} auf der Website. Code: \lsg[4cm]{VW2RT83V}\par}
+\end{aufgabe}
+
+\textbf{Wozu nun die Farben?}\par
+\begin{minipage}[c]{0.43\linewidth}
+{\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{@{}l l l l@{}}
+\nr{1} & \zs{11011}{2} & \zs{1B}{16} & 27\\
+\nr{2} & Hallo! & Hello! & ¡Hola!\\
+\nr{3} & rot & \tikz[baseline=-0.6ex]\fill[red!85] (0,-0.15) rectangle (1.1,0.2); & 255, 0, 0\\
+\end{tabular}}
+\end{minipage}\hfill
+\begin{minipage}[c]{0.55\linewidth}
+{\lueckentext Ein und dieselbe Information lässt sich auf verschiedene Arten darstellen. Für die Umwandlung gibt es feste Regeln. Sind diese Regeln \textbf{öffentlich bekannt} (also nicht geheim), spricht man von \lsg[3.5cm]{Codierung}.\par}
+\end{minipage}
+
+\medskip
+\begin{minipage}[t]{0.74\linewidth}
+\textbf{Codierung von Farben – das RGB-Verfahren}\par
+{\lueckentext Die Abkürzung steht für \lsg[2.2cm]{Rot}, \lsg[2.2cm]{Grün}, \lsg[2.2cm]{Blau}. Aus diesen drei Lichtfarben lassen sich alle anderen Farben mischen. Die Intensität, mit der jede der drei Farben zu einem Pixel beiträgt, wird oft in einem \textbf{Byte} (\lsg[3.5cm]{= 8 Bit}) pro Farbe gespeichert, also als Zahl von 0 bis 255. Insgesamt lassen sich so \lsg[4.6cm]{$256\cdot 256\cdot 256 = 16\,777\,216$}, also rund 16 Millionen, Farben codieren. Mit dieser Codierung braucht jedes \textbf{Pixel} \lsg[2.5cm]{3 Byte}.\par}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.23\linewidth}
+\vspace{4mm}\centering
+\begin{tikzpicture}[scale=0.58]
+  \begin{scope}[blend group=screen]
+    \fill[red!90] (90:0.75) circle (1.05);
+    \fill[green!75!black] (210:0.75) circle (1.05);
+    \fill[blue!85] (330:0.75) circle (1.05);
+  \end{scope}
+  \node[white,font=\bfseries\small] at (90:1.15) {R};
+  \node[white,font=\bfseries\small] at (210:1.15) {G};
+  \node[white,font=\bfseries\small] at (330:1.15) {B};
+\end{tikzpicture}
+\end{minipage}
+
+\begin{aufgabe}[Farbcodes lesen]{2}
+Im Web schreibt man eine Farbe als \textbf{Hex-Code}: \texttt{\#RRGGBB}, also je zwei Hexadezimalziffern (= 1 Byte) für Rot, Grün und Blau. Fülle die Tabelle aus. Schätze die Farbe und kontrolliere mit dem RGB-Mischer.\par\vspace{1mm}
+{\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\linewidth}{|c|C|C|C|C|}\hline
+\kopfzelle{Hex-Code} & \kopfzelle{Rot (dezimal)} & \kopfzelle{Grün (dezimal)} & \kopfzelle{Blau (dezimal)} & \kopfzelle{Farbe}\\\hline
+\texttt{\#FF0000} & 255 & 0 & 0 & rot\\\hline
+\texttt{\#00FF00} & \schreibzeile\lsgtext{0} & \lsgtext{255} & \lsgtext{0} & \lsgtext{grün}\\\hline
+\texttt{\#FFFF00} & \schreibzeile\lsgtext{255} & \lsgtext{255} & \lsgtext{0} & \lsgtext{gelb}\\\hline
+\texttt{\#808080} & \schreibzeile\lsgtext{128} & \lsgtext{128} & \lsgtext{128} & \lsgtext{grau}\\\hline
+\schreibzeile\lsgtext{\texttt{\#FFFFFF}} & 255 & 255 & 255 & \lsgtext{weiß}\\\hline
+\end{tabularx}}
+\end{aufgabe}
+
+\textbf{Zerteilung in Pixel}\par
+\begin{minipage}[t]{0.26\linewidth}
+\vspace{1mm}
+\pixelbild{4.6mm}{{0,0,2,2,2,2,0,0},{0,2,2,2,2,2,2,0},{2,2,1,2,2,1,2,2},{2,2,2,2,2,2,2,2},{2,1,2,2,2,2,1,2},{2,2,1,1,1,1,2,2},{0,2,2,3,3,2,2,0},{0,0,2,2,2,2,0,0}}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.72\linewidth}
+{\lueckentext Um Bilder zu codieren, zerlegt man sie in kleine Teile. Jedes entspricht einem Bildpunkt mit einem Farbwert. Diese Bildpunkte heißen \lsg[2.5cm]{Pixel}. Beim Fotografieren oder Scannen wird Licht von einem \lsg[3.5cm]{Sensor} erfasst, der aus vielen Pixeln besteht. „12 Megapixel“ bedeutet, dass ein Bild aus 12 \lsg[3cm]{Millionen} Bildpunkten besteht. Diese Angabe heißt \textbf{Auflösung}. Man kann sie auch als Breite × Höhe in Pixeln angeben, z.\,B. 1920 × 1080. Das nennt man auch \lsg[2.5cm]{Full HD}, 3840 × 2160 heißt \lsg[3.5cm]{Ultra HD (4K)}.\par}
+\end{minipage}
+
+\begin{aufgabe}[Wie groß ist ein Foto?]{3}
+{\lueckentext Ein Foto hat die Auflösung 1920 × 1080, jedes Pixel wird mit 3 Byte gespeichert.\\
+\textbf{a)} Anzahl der Pixel: \lsg[4cm]{$1920\cdot 1080 = 2\,073\,600$}\qquad
+\textbf{b)} Speicherbedarf: \lsg[4.6cm]{$6\,220\,800$ Byte $\approx 6{,}2$ MB}\\
+\textbf{c)} Ein Smartphone-Foto mit 12 Megapixel braucht so \lsg[3.5cm]{$12\cdot 3 = 36$ MB}.\par}
+\textit{Zum Nachdenken (mündlich):} Die JPEG-Datei des Fotos aus c) ist nur etwa 3 MB groß. Wie kann das sein?
+\end{aufgabe}
+
+\begin{aufgabe}[Smiley-Post]{4}
+Arbeitet zu zweit. Zeichnet jeweils links einen \textbf{schwarz-weißen Smiley} in das 8 × 8-Raster (schwarz = 1, weiß = 0). Codiert das Bild Zeile für Zeile als Binärzahl und als Dezimalzahl. Schickt euch \textbf{nur die Dezimalzahlen}, decodiert das Bild des anderen rechts und kontrolliert euch gegenseitig.\par\vspace{2mm}
+\noindent\codierraster{{0,0,1,1,1,1,0,0},{0,1,0,0,0,0,1,0},{1,0,1,0,0,1,0,1},{1,0,0,0,0,0,0,1},{1,0,1,0,0,1,0,1},{1,0,0,1,1,0,0,1},{0,1,0,0,0,0,1,0},{0,0,1,1,1,1,0,0}}{60,66,165,129,165,153,66,60}{\node[font=\scriptsize\bfseries,anchor=south west] at (0,1) {Mein Bild};}\hfill
+\begin{tikzpicture}[x=\zelle,y=\zelle]
+  \draw[gray!60,line width=0.3pt] (0,-8) grid (8,0);
+  \draw[line width=0.6pt] (0,-8) rectangle (8,0);
+  \node[font=\scriptsize\bfseries,anchor=south west] at (0,1) {Bild meines Partners};
+  \node[font=\scriptsize\bfseries,anchor=south] at (4,0.05) {Bild};
+  \node[font=\scriptsize\bfseries,anchor=south] at (10.4,0.05) {dezimal};
+  \foreach \y in {1,...,8} {\draw[black!65,line width=0.35pt] (8.8,-\y) -- (12,-\y);}
+\end{tikzpicture}\par\vspace{2mm}
+\textbf{Bonus:} Codiert einen Spielstand von Tic-Tac-Toe (3 × 3 Felder: leer, X oder O) als Hexadezimalzahl. Wie viele Bit braucht ihr pro Feld?
+\end{aufgabe}
+
+\vfill
+\web{Station 4.2 Bilder codieren: RGB-Mischer, Pixel-Lupe, Pixel-Editor}
+\end{document}

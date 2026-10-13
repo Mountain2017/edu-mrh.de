@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5.2 Symmetrische Verschlüsselung | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Verschlüsselung, Informatik 11 (NTG): Transposition und Substitution, Caesar programmieren (Projekt 11-5-1 mit Coach), Vigenère-Quadrat, One-Time-Pad und das Schlüsselverteilungsproblem – passend zu Arbeitsblatt 5.2.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/include/online-ide-embedded.css">
+    <script type="module" src="https://edu-mrh.de/embed/include/online-ide-embedded.js"></script>
+    <link rel="stylesheet" href="verschluesselung.css">
+    <script defer src="verschluesselung.js"></script>
+    <script defer src="ide-coach.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🔐</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="verschluesselung.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 5.2</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#klassen">📝 Klassifizierung</a></li>
+            <li><a href="#caesar">🔮 Caesar planen</a></li>
+            <li><a href="#programmieren">✏️ Caesar programmieren</a></li>
+            <li><a href="#vigenere">🔍 Vigenère</a></li>
+            <li><a href="#selbst">🛠️ Vigenère programmieren</a></li>
+            <li><a href="#tausch">⚠️ Schlüsseltausch</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Verschlüsselung</div>
+            <ul class="sidebar-menu">
+                <li><a href="verschluesselung.html">Übersicht</a></li>
+                <li><a href="5-1-grundlagen.html">5.1 Grundlagen</a></li>
+                <li><a href="5-2-symmetrisch.html">5.2 Symmetrisch</a></li>
+                <li><a href="5-3-asymmetrisch.html">5.3 Asymmetrisch (RSA)</a></li>
+                <li><a href="5-4-signatur.html">5.4 Digitale Signatur</a></li>
+                <li><a href="5-5-sicherheit.html">5.5 Sicherheit</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero vs-hero">
+                <h1 class="hero-title">5.2 Symmetrische Verschlüsselung</h1>
+                <p class="hero-subtitle">Verschlüsselung · Informatik 11 (NTG) · 2–3 Stunden</p>
+                <span class="vs-kompetenz">Du kannst: Verfahren als Transposition oder (mono-/poly-)alphabetische Substitution einordnen, Caesar in Java umsetzen, mit dem Vigenère-Quadrat arbeiten und das Schlüsselverteilungsproblem erklären.</span>
+                <div class="vs-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-5-2-symmetrisch.pdf">📝 Arbeitsblatt 5.2 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-5-2-symmetrisch.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-note" href="#klassen">📝 Einordnen</a><a class="p-predict" href="#caesar">🔮 Planen</a><a class="p-modify" href="#programmieren">✏️ Programmieren</a><a class="p-investigate" href="#vigenere">🔍 Vigenère</a><a class="p-make" href="#selbst">🛠️ Selbst bauen</a><a class="p-problem" href="#tausch">⚠️ Problem</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="klassen" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Klassifizierung symmetrischer Verfahren</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Transposition und Substitution</h4>
+                        <p>Bei <strong>Transpositionsverfahren</strong> bleiben die Zeichen gleich, nur ihre <strong>Positionen werden vertauscht</strong>. Bei <strong>Substitutionsverfahren</strong> wird jedes Zeichen <strong>durch ein anderes ersetzt</strong>, die Positionen bleiben.<br>
+                        Steht ein Zeichen im Geheimtext immer für dasselbe Klartextzeichen, heißt die Substitution <strong>monoalphabetisch</strong>, sonst <strong>polyalphabetisch</strong>.</p>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Ordne die Skytale und ROT13 aus 5.1 ein (Blatt, Seite 1).</li>
+                        <li><strong>Zum Nachdenken (mündlich):</strong> Woran erkennt man an einem Geheimtext, ob eine Transposition benutzt wurde? (Tipp: Zähle die Buchstaben.)</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Lückentext Klassifizierung">
+                        <template data-stufe="Lösung" data-halten><p>monoalphabetisch · polyalphabetisch · Skytale: Transposition · ROT13: monoalphabetische Substitution. Bei einer Transposition kommen im Geheimtext genau dieselben Buchstaben gleich oft vor wie im Klartext.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-5-2-symmetrisch.pdf">📝 Blatt 5.2 · Klassifizierung</a></p>
+                </div>
+            </section>
+
+            <section id="caesar" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔮</span><h2>Vorhersagen und planen<small>Aufgabe 1a–c: Die Caesar-Verschlüsselung</small></h2></div>
+                <div class="phase-body">
+                    <p>Julius Caesar soll seine Briefe verschlüsselt haben, indem er jeden Buchstaben um drei Stellen verschob. Allgemein heißt die Verschiebung <strong>Schlüssel k</strong>. ROT13 ist also Caesar mit k = 13, nur dass die 13 jeder kennt.</p>
+                    <div data-scheibe data-k="3" data-text="HALLO" data-zurueck></div>
+                    <ol class="aufgaben">
+                        <li>Sage auf dem Blatt voraus, was <code>caesar("HALLO", 3)</code> und <code>caesar("ZOO", 3)</code> liefern. Prüfe danach mit der Scheibe.</li>
+                        <li>Vergleiche mit <code>rot13</code> aus 5.1: Was ist dort fest, was soll bei <code>caesar</code> veränderbar sein?</li>
+                        <li>Die Methode <code>rotiere</code> kann nur vorwärts drehen. Probiere unter der Scheibe aus: „3 Schritte zurück“ und „23 Schritte vor“. Was fällt dir auf? Wie weit muss man allgemein vorwärts drehen, um um <code>schluessel</code> Stellen zurückzukommen?</li>
+                    </ol>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-5-2-symmetrisch.pdf">📝 Blatt 5.2 · Aufgabe 1a–c</a></p>
+                </div>
+            </section>
+
+            <section id="programmieren" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">✏️</span><h2>Programmieren<small>Aufgabe 1d: TODO 1 und 2 im Projekt 11-5-1</small></h2></div>
+                <div class="phase-body">
+                    <p>Dein Projekt aus 5.1 ist hier wieder geöffnet. Ergänze <code>caesar</code> (TODO 1) und <code>caesarEnt</code> (TODO 2). Das Hauptprogramm verschlüsselt „Veni vidi vici“ und entschlüsselt es wieder. Mit <strong>Tests starten</strong> prüfst du auch Sonderfälle (Z, Kleinbuchstaben, Leerzeichen, große Schlüssel).</p>
+                    <div class="stolper"><strong>Stolperstein:</strong> Zum Entschlüsseln liegt <code>rotiere(zeichen, -schluessel)</code> nahe. Schau in <code>rotiere</code> bei ③ nach: Was passiert, wenn der Code kleiner als 65 ('A') wird?</div>
+                    <div class="ide-block" id="ide">
+                        <div class="ide-kopf"><h3>Projekt 11-5-1 Verschluesselung</h3></div>
+<!-- IDE-START verschluesselung -->
+<div class="java-online" style="width:100%;height:700px" data-java-online="{ 'id': 'i11-51-verschluesselung', 'speed': 1000000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true, 'withErrorList': true, 'jsonFilename': '11-5-1 Verschluesselung.json', 'enableFileAccess': true, 'enableRunExitStatusAccess': true }">
+<script type="text/plain" title="Hauptprogramm.java">
+Symverschluesselung sv = new Symverschluesselung();
+
+// Blatt 5.1, Aufgabe 2: Helgas Forumseintrag mit ROT13 entschlüsseln
+println(sv.rot13("PUNEYRF ONOONTR"));
+
+// Blatt 5.2, Aufgabe 1: Caesar (liefert erst nach TODO 1 und 2 etwas)
+String geheim = sv.caesar("Veni vidi vici", 3);
+println("Verschlüsselt: " + geheim);
+println("Entschlüsselt: " + sv.caesarEnt(geheim, 3));
+
+// Selbst bauen (TODO 3 und 4): Vigenère
+// println(sv.vigenere("KAFFEE", "ELF"));
+// println(sv.vigenereEnt("GOVTGYZTTMZKCYE", "????"));   // Schlüsselwort aus Cryptocastle
+</script>
+<script type="text/plain" title="Symverschluesselung.java">
+/**
+ * Symmetrische Verschlüsselung: ROT13, Caesar und Vigenère (Stationen 5.1 und 5.2).
+ * Verschlüsselt werden nur die Großbuchstaben A bis Z, alle anderen Zeichen
+ * (z. B. Leerzeichen) bleiben, wie sie sind.
+ * Suche (Strg + F) nach "TODO" und ergänze den Code.
+ */
+public class Symverschluesselung {
+
+   /**
+    * Verschiebt einen Großbuchstaben um rotationUm Stellen im Alphabet.
+    * Nach Z geht es wieder bei A weiter.
+    * Beispiele: rotiere('B', 3) liefert 'E', rotiere('Y', 3) liefert 'B'.
+    */
+   public char rotiere(char buchstabe, int rotationUm) {
+      if (buchstabe < 'A' || buchstabe > 'Z') {   // ⓪ kein Großbuchstabe (z. B. Leerzeichen)?
+         return buchstabe;                         //    dann unverändert zurückgeben
+      }
+      rotationUm = rotationUm % 26;               // ① 26 Schritte sind einmal ganz herum
+      int code = (int) buchstabe + rotationUm;    // ② ASCII-Code + Verschiebung, z. B. 'Y' (89) + 3 = 92
+      if (code > 90) {                            // ③ hinter 'Z' (Code 90) gelandet?
+         code = code - 26;                        //    dann vorne weiterzählen: 92 - 26 = 66 ('B')
+      }
+      return (char) code;                         // ④ Zahl wieder als Zeichen zurückgeben
+   }
+
+   /**
+    * ROT13: Jeder Buchstabe wird um 13 Stellen verschoben (Blatt 5.1, Aufgabe 2).
+    * Beispiel: rot13("HALLO") liefert "UNYYB".
+    */
+   public String rot13(String klartext) {
+      klartext = klartext.toUpperCase();                 // ① alles in Großbuchstaben
+      String geheimtext = "";                            // ② der Geheimtext ist zuerst leer
+      for (int i = 0; i < klartext.length(); i++) {      // ③ Zeichen für Zeichen (i = 0, 1, 2, ...)
+         char zeichen = klartext.charAt(i);              // ④ das Zeichen an Position i holen
+         geheimtext = geheimtext + rotiere(zeichen, 13); // ⑤ verschieben und hinten anhängen
+      }
+      return geheimtext;                                 // ⑥ fertigen Geheimtext zurückgeben
+   }
+
+   /**
+    * TODO 1 (Blatt 5.2, Aufgabe 1): Caesar-Verschlüsselung mit beliebigem Schlüssel.
+    * Beispiel: caesar("HALLO", 3) liefert "KDOOR".
+    * Tipp: Vergleiche mit rot13. Was ist dort fest, was soll hier veränderbar sein?
+    */
+   public String caesar(String klartext, int schluessel) {
+      return "";
+   }
+
+   /**
+    * TODO 2 (Blatt 5.2, Aufgabe 1): Caesar-Entschlüsselung.
+    * Beispiel: caesarEnt("KDOOR", 3) liefert "HALLO".
+    * Tipp: rotiere kann nur vorwärts. Um 3 zurück ist dasselbe wie um 23 vor.
+    */
+   public String caesarEnt(String geheimtext, int schluessel) {
+      return "";
+   }
+
+   // ---------- Selbst bauen (Website): Vigenère ----------
+
+   /**
+    * Wie weit verschiebt ein Schlüsselbuchstabe? 'A' = 0, 'B' = 1, ..., 'Z' = 25
+    */
+   public int verschiebung(char schluesselbuchstabe) {
+      return (int) schluesselbuchstabe - 65;
+   }
+
+   /**
+    * TODO 3: Vigenère-Verschlüsselung. Das Zeichen an Position i wird um den
+    * Schlüsselbuchstaben an Position i % schluessel.length() verschoben
+    * (so wiederholt sich das Schlüsselwort: ELFELFELF...).
+    * Beispiel: vigenere("KAFFEE", "ELF") liefert "OLKJPJ".
+    */
+   public String vigenere(String klartext, String schluessel) {
+      return "";
+   }
+
+   /**
+    * TODO 4: Vigenère-Entschlüsselung.
+    * Beispiel: vigenereEnt("OLKJPJ", "ELF") liefert "KAFFEE".
+    */
+   public String vigenereEnt(String geheimtext, String schluessel) {
+      return "";
+   }
+}
+</script>
+<script type="text/plain" title="SymverschluesselungTest.java" data-online-ide="{ 'readOnly': true }">
+/**
+ * Selbsttest des Projekts. Bitte nicht verändern!
+ * Starten: Klick auf das kleine Dreieck links neben "@Test"
+ * (ganz oben: alle Tests) oder auf der Website "Tests starten".
+ */
+public class SymverschluesselungTest {
+
+   @Test
+   public void rot13Beispiel() {
+      Symverschluesselung sv = new Symverschluesselung();
+      Assertions.assertEquals("UNYYB", sv.rot13("HALLO"), "rot13(\"HALLO\") muss UNYYB liefern.");
+   }
+
+   @Test
+   public void caesarEinfach() {
+      Symverschluesselung sv = new Symverschluesselung();
+      Assertions.assertEquals("KDOOR", sv.caesar("HALLO", 3), "TODO 1: caesar(\"HALLO\", 3) muss KDOOR liefern.");
+   }
+
+   @Test
+   public void caesarUeberZ() {
+      Symverschluesselung sv = new Symverschluesselung();
+      Assertions.assertEquals("ABC", sv.caesar("XYZ", 3), "TODO 1: caesar(\"XYZ\", 3) muss ABC liefern (nach Z geht es bei A weiter).");
+   }
+
+   @Test
+   public void caesarKleinUndLeer() {
+      Symverschluesselung sv = new Symverschluesselung();
+      Assertions.assertEquals("IBMMP XFMU", sv.caesar("Hallo Welt", 1), "TODO 1: caesar(\"Hallo Welt\", 1) muss IBMMP XFMU liefern.");
+   }
+
+   @Test
+   public void caesarEntEinfach() {
+      Symverschluesselung sv = new Symverschluesselung();
+      Assertions.assertEquals("HALLO", sv.caesarEnt("KDOOR", 3), "TODO 2: caesarEnt(\"KDOOR\", 3) muss HALLO liefern.");
+   }
+
+   @Test
+   public void caesarHinUndZurueck() {
+      Symverschluesselung sv = new Symverschluesselung();
+      for (int k = 0; k < 30; k++) {
+         Assertions.assertEquals("ZEBRA", sv.caesarEnt(sv.caesar("ZEBRA", k), k), "TODO 2: Mit Schlüssel " + k + " kommt beim Entschlüsseln nicht wieder ZEBRA heraus.");
+      }
+   }
+
+   @Test
+   public void vigenereBeispiel() {
+      Symverschluesselung sv = new Symverschluesselung();
+      Assertions.assertEquals("OLKJPJ", sv.vigenere("KAFFEE", "ELF"), "TODO 3: vigenere(\"KAFFEE\", \"ELF\") muss OLKJPJ liefern.");
+   }
+
+   @Test
+   public void vigenereEntBeispiel() {
+      Symverschluesselung sv = new Symverschluesselung();
+      Assertions.assertEquals("KAFFEE", sv.vigenereEnt("OLKJPJ", "ELF"), "TODO 4: vigenereEnt(\"OLKJPJ\", \"ELF\") muss KAFFEE liefern.");
+   }
+}
+</script>
+</div>
+<!-- IDE-ENDE verschluesselung -->
+                        <p class="ide-downloads">💾 Eigenen Stand sichern: Diskettensymbol in der IDE-Leiste („Workspace in Datei speichern“), der Name <code>11-5-1 Verschluesselung.json</code> ist schon vorgeschlagen. · <a href="Online-IDE/11-5-1%20Verschluesselung.json" download>Ausgangsprojekt für online-ide.de</a></p>
+                    </div>
+                    <div class="coach" data-coach="i11-51-verschluesselung"></div>
+                    <details class="denk"><summary>Zum Nachdenken (mündlich): Zwei Wege für caesarEnt</summary>
+                        <p>Man kann in <code>caesarEnt</code> die Schleife aus <code>caesar</code> kopieren und nur die Verschiebung ändern. Man kann aber auch <code>caesar</code> selbst aufrufen. Warum könnte man es so oder so machen? Was passiert jeweils, wenn später in <code>caesar</code> ein Fehler korrigiert wird?</p>
+                    </details>
+                    <div class="lw" data-loesungsweg="TODO 1 und 2">
+                        <template data-stufe="Tipp 1"><p>TODO 1: Kopiere den Rumpf von <code>rot13</code> nach <code>caesar</code>. Welche eine Zahl musst du ersetzen?</p></template>
+                        <template data-stufe="Tipp 2"><p>TODO 2: Um <code>schluessel</code> zurück = um <code>26 - schluessel</code> vor. Damit das auch für Schlüssel ab 26 klappt, rechne vorher <code>schluessel = schluessel % 26;</code></p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv">public String caesar(String klartext, int schluessel) {
+   klartext = klartext.toUpperCase();
+   String geheimtext = "";
+   for (int i = 0; i &lt; klartext.length(); i++) {
+      char zeichen = klartext.charAt(i);
+      geheimtext = geheimtext + rotiere(zeichen, schluessel);
+   }
+   return geheimtext;
+}
+
+public String caesarEnt(String geheimtext, int schluessel) {
+   schluessel = schluessel % 26;
+   return caesar(geheimtext, 26 - schluessel);
+}</pre></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-5-2-symmetrisch.pdf">📝 Blatt 5.2 · Aufgabe 1d</a></p>
+                </div>
+            </section>
+
+            <section id="vigenere" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Untersuchen<small>Polyalphabetisch: Vigenère · Aufgabe 2</small></h2></div>
+                <div class="phase-body">
+                    <p>Caesar hat ein Problem: Jedes E im Klartext wird zum selben Geheimtextbuchstaben. Bei der <strong>Vigenère-Verschlüsselung</strong> bestimmen die Buchstaben eines <strong>Schlüsselworts</strong>, wie weit jedes Zeichen verschoben wird (A = 0, B = 1, …). Das Schlüsselwort wird wiederholt, bis es so lang ist wie der Text. Aus KAFFEE mit dem Schlüssel ELF wird OLKJPJ: Die beiden F werden einmal zu K und einmal zu J.</p>
+                    <div data-vigenere></div>
+                    <ol class="aufgaben">
+                        <li>Verschlüssle „kaffee“ mit ELF im Quadrat (k mit E, a mit L, f mit F, …) und vergleiche mit dem Blatt.</li>
+                        <li><strong>Blatt, Aufgabe 2:</strong> Entschlüssle mindestens fünf Zeichen des Truhen-Codes <code>GOVTGYZTTMZKCYE</code> von Hand (Quadrat auf dem Blatt oder oben im Modus „Entschlüsseln“). Das Schlüsselwort stammt aus Cryptocastle.</li>
+                        <li>Ergänze den Lückentext zum One-Time-Pad.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 2">
+                        <template data-stufe="Tipp 1"><p>Entschlüsseln heißt: In der Zeile des Schlüsselbuchstabens den Geheimtextbuchstaben suchen, dann ganz nach oben schauen.</p></template>
+                        <template data-stufe="Tipp 2"><p>Das Schlüsselwort hat 4 Buchstaben und passt zum Ort, an dem ihr im Spiel seid.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>Schlüssel BURG (BURGBURGBURGBUR) → <strong>FUENFEINSSIEBEN</strong>, also „fünf eins sieben“.<br>One-Time-Pad: Schlüssel so lang wie der Klartext, echte Zufallsfolge, nur einmal verwendet.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-5-2-symmetrisch.pdf">📝 Blatt 5.2 · Aufgabe 2, One-Time-Pad</a></p>
+                </div>
+            </section>
+
+            <section id="selbst" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Selbst bauen<small>TODO 3 und 4: Vigenère in Java</small></h2></div>
+                <div class="phase-body">
+                    <p>Ergänze im <a href="#ide">Projekt oben</a> die Methoden <code>vigenere</code> und <code>vigenereEnt</code>. Entferne dann im Hauptprogramm die <code>//</code> vor den beiden letzten Zeilen und setze das Schlüsselwort aus Cryptocastle ein: Stimmt das Ergebnis mit deiner Lösung von Hand überein?</p>
+                    <div class="konzept">
+                        <h4>Gleiches Muster wie bei Caesar</h4>
+                        <p>Der einzige Unterschied: Die Verschiebung ist nicht für alle Zeichen gleich. Für Position <code>i</code> nimmt man den Schlüsselbuchstaben <code>schluessel.charAt(i % schluessel.length())</code>. Der Rest <code>i % 3</code> läuft 0, 1, 2, 0, 1, 2, … und wiederholt so das Schlüsselwort ELF.</p>
+                    </div>
+                    <details class="denk"><summary>Zum Nachdenken (mündlich): Und die Leerzeichen?</summary>
+                        <p>In unserer Lösung verbraucht auch ein Leerzeichen einen Schlüsselbuchstaben. Das Vigenère-Quadrat im Buch überspringt Leerzeichen. Wie müsstest du den Code ändern, damit nur Buchstaben mitzählen?</p>
+                    </details>
+                </div>
+            </section>
+
+            <section id="tausch" class="phase problem">
+                <div class="phase-head"><span class="phase-icon">⚠️</span><h2>Das Problem<small>Aufgabe 3: Logistik beim Schlüsseltausch</small></h2></div>
+                <div class="phase-body">
+                    <p>Alle Verfahren bisher sind <strong>symmetrisch</strong>: Sender und Empfänger brauchen denselben geheimen Schlüssel. Und jedes Paar braucht einen eigenen, sonst kann der Dritte mitlesen.</p>
+                    <div data-schluesselzaehler></div>
+                    <ol class="aufgaben">
+                        <li>Wie viele Schlüssel braucht eure Klasse, wenn jeder mit jedem geheim schreiben will? Finde mit dem Bild eine Formel für n Personen.</li>
+                        <li>Was würde es bedeuten, wenn es <em>nur</em> symmetrische Verschlüsselung gäbe? Denke an einen Login oder den ersten Einkauf in einem Online-Shop.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 3">
+                        <template data-stufe="Tipp"><p>Von jeder der n Personen gehen n − 1 Linien aus. Jede Linie verbindet aber zwei Personen.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) (n − 1) + (n − 2) + … + 1 = n · (n − 1) / 2 Schlüssel; bei 32 Personen 496.<br>b) Vor jedem ersten Kontakt müsste ein Schlüssel auf sicherem Weg übergeben werden (Kurier?): langsam, teuer, unsicher (Diebstahl), bei Millionen Kunden kaum zu organisieren. Den Schlüssel selbst kann man nicht symmetrisch verschlüsselt verschicken: das <strong>Schlüsselverteilungsproblem</strong>.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-5-2-symmetrisch.pdf">📝 Blatt 5.2 · Aufgabe 3</a></p>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🔓 Ein Schlüssel, den jeder kennen darf?</h4>
+                            <p>1977 fanden Rivest, Shamir und Adleman eine Lösung des Schlüsselverteilungsproblems: zwei verschiedene Schlüssel. Einer ist öffentlich, einer privat.</p>
+                            <a class="btn btn-outline btn-sm" href="5-3-asymmetrisch.html">Zu 5.3 Asymmetrische Verschlüsselung</a>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>🕵️ Wie sicher ist Caesar?</h4>
+                            <p>Es gibt nur 25 sinnvolle Schlüssel. In 5.5 lässt du den Computer alle ausprobieren und knackst einen Text mit der Häufigkeitsanalyse.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="5-1-grundlagen.html">← 5.1 Grundlagen</a>
+                <a class="btn btn-primary" href="5-3-asymmetrisch.html">5.3 Asymmetrische Verschlüsselung →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-5-2-symmetrisch-lsg.pdf">Lösung Blatt 5.2 (PDF)</a>
+                        <a class="btn btn-tex btn-sm" href="Online-IDE/LSG%2011-5-1%20Verschluesselung.json" download>Lösung 11-5-1 (JSON für online-ide.de)</a></p>
+                    <table>
+                        <thead><tr><th>Änderung</th><th>Grund</th></tr></thead>
+                        <tbody>
+                            <tr><td>Aufgabe 1 (bisher A2) mit Vorhersage (a) und Planung (b, c) auf dem Blatt; programmiert wird nur in der IDE.</td><td>„Erst denken, dann tippen“; c) bereitet den Kern von <code>caesarEnt</code> vor (26 − k).</td></tr>
+                            <tr><td>Aufgabe 2 (bisher 1b): Raster für Geheimtext/Schlüssel/Klartext, Vigenère-Quadrat direkt auf Seite 2.</td><td>Kein Extrablatt nötig. Lösung: Schlüssel BURG → FUENFEINSSIEBEN.</td></tr>
+                            <tr><td>Vigenère als „Selbst bauen“ (TODO 3/4) im selben Projekt; Hilfsmethode <code>verschiebung(char)</code> vorgegeben, Schlüsselindex über <code>i % schluessel.length()</code> statt <code>schluesseltext(…)</code>.</td><td>Kürzer und an Caesar anschlussfähig. Die Variante mit <code>schluesseltext</code> aus der alten Lösung kann als mündlicher Vergleich dienen.</td></tr>
+                            <tr><td>Coach unter der IDE (Tests als JUnit-Klasse <code>SymverschluesselungTest</code>, schreibgeschützt).</td><td>Rückmeldung zu Sonderfällen (Z → A, Kleinbuchstaben, Schlüssel ≥ 26) ohne Lösung.</td></tr>
+                        </tbody>
+                    </table>
+                    <p class="mt-2"><strong>Hinweise:</strong> Der Schlüsselzähler zeigt die Anzahl der Schlüssel nur bis 8 Personen, danach soll die Formel greifen. Das Vigenère-Quadrat auf der Seite verrät beim Entschlüsseln immer nur einen Buchstaben auf einmal.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum &amp; Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

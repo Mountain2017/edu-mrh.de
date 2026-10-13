@@ -1,0 +1,118 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+% ---------- Bausteine für das Ablaufdiagramm ----------
+\colorlet{kPrA}{green!55!black}\colorlet{kPubA}{blue!65!black}\colorlet{kPubB}{orange!85!black}\colorlet{kPrB}{magenta!75!black}
+% Schlüssel-Chip: \keychip{Farbe}{Name}
+\newcommand{\keychip}[2]{\tikz[baseline=-0.6ex]{\node[fill=#1!20,draw=#1,rounded corners=2pt,inner sep=1.6pt,font=\scriptsize\bfseries,text=#1] {#2};}}
+% Strichmännchen
+\newcommand{\figur}[2]{\begin{scope}[shift={#1},line width=0.8pt]\draw (0,0) circle (0.22); \draw (0,-0.22) -- (0,-0.85) (-0.35,-0.45) -- (0.35,-0.45) (0,-0.85) -- (-0.25,-1.25) (0,-0.85) -- (0.25,-1.25); \node[font=\bfseries] at (0,0.5) {#2};\end{scope}}
+% Schloss: \schloss{Position}{offen? 1/0}
+\newcommand{\schloss}[2]{\begin{scope}[shift={#1},line width=0.8pt]\draw[fill=gray!15] (-0.18,-0.17) rectangle (0.18,0.12); \ifnum#2=1 \draw (-0.11,0.12) -- (-0.11,0.28) arc (180:0:0.11) -- (0.11,0.24);\else \draw (-0.11,0.12) -- (-0.11,0.25) arc (180:0:0.11) -- (0.11,0.12);\fi\end{scope}}
+% Lücke im Bild: \bildluecke{Position}{Breite}{Lösung}
+\newcommand{\bildluecke}[3]{\node[draw=gray!70,dashed,minimum width=#2,minimum height=5.5mm,inner sep=1pt,font=\footnotesize\bfseries,text=red!75!black,fill=white] at #1 {\lsgtext{#3}};}
+\begin{document}
+\abtitel{5.4}{Digitale Signatur}
+
+\begin{minipage}[t]{0.66\linewidth}
+\vspace{0pt}
+Eine Bankkarte enthält nicht die PIN im Klartext, sondern eine Art \textbf{Fingerabdruck} der PIN. Er lässt sich leicht aus der PIN berechnen, erlaubt aber keinen Rückschluss auf die PIN selbst. Der Automat berechnet den Fingerabdruck der eingegebenen PIN und vergleicht.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.3\linewidth}
+\vspace{0pt}\centering
+\begin{tikzpicture}[font=\footnotesize]
+  \draw[rounded corners=2pt,fill=red!15] (0,0) rectangle (1.6,1); \fill[yellow!70!orange] (0.2,0.45) rectangle (0.5,0.7);
+  \node at (2.6,0.75) {PIN 4242};
+  \draw[-{Stealth}] (1.8,0.5) -- (2.3,0.5); \foreach \r in {0.08,0.16,0.24} {\draw[gray!70!black] (3.1,0.35) ellipse ({\r} and {\r*1.35});}
+  \node[align=center] at (1.6,-0.4) {Fingerabdruck(4242) $\overset{?}{=}$ \ldots};
+\end{tikzpicture}
+\end{minipage}
+
+\begin{aufgabe}[Ein Fingerabdruck für die PIN]{1}
+Bewerte, ob die \textbf{Quersumme} (4242 $\to$ 4 + 2 + 4 + 2 = 12) ein geeigneter Fingerabdruck wäre.
+\lsglinien{2}{Ungeeignet: Es gibt nur 37 Werte (0 bis 36), viele PINs haben dieselbe\\ Quersumme (3333 $\to$ 12). Eine passende PIN ist schnell gefunden.}
+\end{aufgabe}
+
+\textbf{Integritätsprüfung mit kryptographischen Hashfunktionen}\par
+{\lueckentext Mit einer \lsg[4cm]{Hashfunktion} ist genau das möglich. Der \textbf{Hash} bzw. \textbf{Hashwert}, den Verfahren wie SHA-256 oder MD5 liefern, ist leicht zu berechnen, aber praktisch nicht umzukehren. Schon die kleinste Änderung am Text ergibt einen völlig anderen Hashwert. Deshalb kann man damit prüfen, ob eine Nachricht unterwegs \lsg[4cm]{verändert} wurde.\par}
+\vspace{1mm}
+{\small\renewcommand{\arraystretch}{1.15}\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}l l l@{}}
+& \textbf{SHA-256} (64 Hex-Ziffern = 256 Bit) & \textbf{MD5} (128 Bit)\\
+„Hallo Welt!“ & \texttt{a582e8c28249fe7d7990bfa0afebd2da\ldots} & \texttt{55243ecf175013cfe9890023f9fd9037}\\
+„Hallo Welt“ & \texttt{2d2da19605a34e037dbe82173f98a992\ldots} & \texttt{5c372a32c9ae748a4c040ebadc51a829}\\
+\end{tabular}}
+
+\begin{aufgabe}[Der Mann in der Mitte]{2}
+\begin{minipage}[t]{0.58\linewidth}
+\vspace{0pt}
+Alice will Bob eine verschlüsselte Nachricht schicken und fragt ihn nach seinem öffentlichen Schlüssel. Erkläre kurz das Prinzip einer \textbf{Man-in-the-Middle-Attacke} (Bild).
+\end{minipage}\hfill
+\begin{minipage}[t]{0.38\linewidth}
+\vspace{0pt}\centering
+\begin{tikzpicture}[font=\scriptsize,x=1cm,y=1cm]
+  \figur{(0,0)}{Alice} \figur{(2.2,0)}{Mallory} \figur{(4.4,0)}{Bob}
+  \draw[-{Stealth},thick,kPubB] (4.1,-0.3) -- node[above] {\keychip{kPubB}{PubB}} (2.5,-0.3);
+  \draw[-{Stealth},thick,red!70!black] (1.9,-0.3) -- node[above] {\keychip{red!70!black}{PubM}} (0.3,-0.3);
+  \node[red!70!black] at (1.1,-0.75) {„Ich bin Bob!“};
+\end{tikzpicture}
+\end{minipage}
+\lsglinien{2}{Der Angreifer gibt Alice seinen Public Key statt PubB. Er entschlüsselt alles,\\ liest (und ändert) mit und verschlüsselt es mit PubB neu für Bob.}
+\end{aufgabe}
+
+\begin{minipage}[t]{0.68\linewidth}
+\textbf{Authentizitätsprüfung mit digitalen Signaturen}\par
+{\lueckentext Um die Authentizität einer Nachricht zu prüfen, verwendet man \lsg[5cm]{digitale Signaturen}. Dazu benutzt der Absender seinen \textbf{privaten} Schlüssel zum \lsg[3.5cm]{Verschlüsseln} des Hashwerts. Jeder kann diese Signatur mit dem \lsg[5cm]{öffentlichen Schlüssel} des Absenders entschlüsseln. Passt sie, kann nur die Person mit dem zugehörigen privaten Schlüssel die Nachricht unterschrieben haben.\par}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.28\linewidth}
+\vspace{6mm}\centering
+\begin{tikzpicture}[font=\scriptsize,x=1cm,y=1cm]
+  \node[align=center] (n) at (0,0) {Nachricht\\(bzw. Hash)};
+  \node (s) at (2.2,0) {Signatur};
+  \draw[-{Stealth},thick,kPrA] (n.north) to[bend left=45] node[above] {\keychip{kPrA}{privat}} (s.north);
+  \draw[-{Stealth},thick,kPubA] (s.south) to[bend left=45] node[below] {\keychip{kPubA}{öffentlich}} (n.south);
+\end{tikzpicture}
+\end{minipage}
+
+\newpage
+\begin{aufgabe}[Ablauf einer Kommunikation mit digitaler Signatur]{3}
+A schickt B die Nachricht „Hallo“: verschlüsselt \textbf{und} signiert. \textbf{a)} Trage in die gestrichelten Felder ein, welcher Schlüssel bzw. welche Funktion benutzt wird.\par\vspace{1mm}
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm,font=\small,box/.style={draw,minimum width=15mm,minimum height=7mm}]
+  \figur{(0,0.3)}{A} \figur{(15.4,0.3)}{B}
+  \node[anchor=north,align=center] at (0,-1.2) {\keychip{kPrA}{PrA}\\[0.5mm]\keychip{kPubA}{PubA}\\[0.5mm]\keychip{kPubB}{PubB}};
+  \node[anchor=north,align=center] at (15.4,-1.2) {\keychip{kPubA}{PubA}\\[0.5mm]\keychip{kPubB}{PubB}\\[0.5mm]\keychip{kPrB}{PrB}};
+  % Nachricht
+  \node[box] (h1) at (2.2,0) {Hallo};
+  \node[box] (h2) at (12.4,0) {Hallo};
+  \schloss{(3.25,0.55)}{0} \bildluecke{(3.25,1.15)}{13mm}{PubB}
+  \draw[-{Stealth},thick] (h1) -- node[above,font=\ttfamily] {x34ycf} (h2);
+  \schloss{(11.35,0.55)}{1} \bildluecke{(11.35,1.15)}{13mm}{PrB}
+  % Hash bei A
+  \node[box,blue!70!black] (w1) at (2.2,-2.6) {Hashwert};
+  \draw[-{Stealth},thick,blue!70!black] (h1) -- (w1);
+  \bildluecke{(3.65,-1.25)}{23mm}{Hashfunktion}
+  \schloss{(3.4,-2.05)}{0} \bildluecke{(3.4,-3.35)}{13mm}{PrA}
+  % Signatur zu B
+  \node[box] (w2) at (12.4,-2.6) {Hashwert};
+  \draw[-{Stealth},thick] (w1) -- node[above,font=\footnotesize] {Signatur (verschlüsselter Hashwert)} (w2);
+  \schloss{(11.2,-2.05)}{1} \bildluecke{(11.2,-3.35)}{13mm}{PubA}
+  % Vergleich bei B
+  \node[font=\Large] (v) at (14.0,-1.3) {$\overset{?}{=}$};
+  \draw[-{Stealth},thick,blue!70!black] (h2.south east) to[bend left=15] (v.north);
+  \node[blue!70!black,font=\footnotesize,anchor=east] at (13.75,-0.75) {Hashfunktion};
+  \draw[-{Stealth},thick] (w2.east) -| (v.south);
+\end{tikzpicture}\par\vspace{1mm}
+\raggedright
+{\lueckentext\textbf{b)} Die Verschlüsselung mit \lsg[1.8cm]{PubB} sichert die \lsg[3.5cm]{Vertraulichkeit}. Stimmen bei B die beiden Hashwerte überein, sind \lsg[3cm]{Integrität} und \lsg[3.5cm]{Authentizität} gesichert.\par}
+\end{aufgabe}
+
+\begin{aufgabe}[The Mystery of Cryptocastle]{4}
+Öffne das Spiel und gehe zu Abschnitt \textbf{[3]}. Öffne die erste und zweite Tür mit \texttt{\bfseries 7TGP4} und \texttt{\bfseries T3ZFANL}. Öffne dann die dritte Tür.
+\end{aufgabe}
+
+\textbf{Zertifikate – der Schlüssel zu Authentizität und Verbindlichkeit}\par
+{\lueckentext Damit ein öffentlicher Schlüssel wirklich zum gewünschten Gegenüber gehört, stellen zentrale Zertifizierungsstellen \lsg[3.5cm]{Zertifikate} aus. Die öffentlichen Schlüssel dieser vertrauenswürdigen Stellen sind in modernen Rechnern bereits gespeichert. Das Zertifikat enthält den öffentlichen Schlüssel des \lsg[4cm]{Kommunikationspartners} und ist von der \lsg[4.5cm]{Zertifizierungsstelle} signiert. Mit deren öffentlichem Schlüssel lässt es sich prüfen.\par}
+
+\vfill
+\web{Station 5.4 Digitale Signatur: Hash-Labor, Man-in-the-Middle, Ablauf-Animation, RSA-Labor mit Zertifizierungsstelle}
+\end{document}

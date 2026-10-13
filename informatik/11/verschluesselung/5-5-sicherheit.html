@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5.5 Sicherheit von Verschlüsselungen | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Verschlüsselung, Informatik 11 (NTG): Wann ist ein Verfahren sicher? Häufigkeitsanalyse mit Ersetzen-Werkzeug, Brute-Force-Angriff als Animation und in Java (Projekt 11-5-5 mit Coach), Schlüsselraum und das Knacken von RSA mit kleinen Zahlen.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/include/online-ide-embedded.css">
+    <script type="module" src="https://edu-mrh.de/embed/include/online-ide-embedded.js"></script>
+    <link rel="stylesheet" href="verschluesselung.css">
+    <script defer src="verschluesselung.js"></script>
+    <script defer src="ide-coach.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🕵️</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="verschluesselung.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 5.5</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#sicher">📝 Wann ist es sicher?</a></li>
+            <li><a href="#haeufigkeit">🔍 Häufigkeitsanalyse</a></li>
+            <li><a href="#maschine">▶ Brute Force ansehen</a></li>
+            <li><a href="#programmieren">✏️ Brute Force programmieren</a></li>
+            <li><a href="#dauer">⏱️ Wie lange dauert das?</a></li>
+            <li><a href="#rsa">🧮 RSA knacken?</a></li>
+            <li><a href="#ausblick">🚀 Rückblick und Ausblick</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Verschlüsselung</div>
+            <ul class="sidebar-menu">
+                <li><a href="verschluesselung.html">Übersicht</a></li>
+                <li><a href="5-1-grundlagen.html">5.1 Grundlagen</a></li>
+                <li><a href="5-2-symmetrisch.html">5.2 Symmetrisch</a></li>
+                <li><a href="5-3-asymmetrisch.html">5.3 Asymmetrisch (RSA)</a></li>
+                <li><a href="5-4-signatur.html">5.4 Digitale Signatur</a></li>
+                <li><a href="5-5-sicherheit.html">5.5 Sicherheit</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero vs-hero">
+                <h1 class="hero-title">5.5 Sicherheit von Verschlüsselungen</h1>
+                <p class="hero-subtitle">Verschlüsselung · Informatik 11 (NTG) · 2 Stunden</p>
+                <span class="vs-kompetenz">Du kannst: Kriterien für sichere Verfahren nennen, einen Geheimtext mit der Häufigkeitsanalyse knacken, einen Brute-Force-Angriff programmieren und abschätzen, warum moderne Verfahren dagegen sicher sind.</span>
+                <div class="vs-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-5-5-sicherheit.pdf">📝 Arbeitsblatt 5.5 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-5-5-sicherheit.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-note" href="#sicher">📝 Festhalten</a><a class="p-investigate" href="#haeufigkeit">🔍 Häufigkeit</a><a class="p-run" href="#maschine">▶ Ansehen</a><a class="p-modify" href="#programmieren">✏️ Programmieren</a><a class="p-problem" href="#dauer">⏱️ Dauer</a><a class="p-make" href="#rsa">🧮 RSA</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="sicher" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Wann ist ein Verfahren sicher? Wie wird angegriffen?</small></h2></div>
+                <div class="phase-body">
+                    <p>Absolut sicher ist (fast) nichts. Man nennt ein Verfahren sicher, wenn sich der Angriff nicht lohnt oder nicht machbar ist. Überlege zuerst selbst, welche Gründe das sein könnten, und ergänze dann das Blatt.</p>
+                    <div class="lw" data-loesungsweg="Kriterien und Angriffsmethoden">
+                        <template data-stufe="Tipp"><p>Denke an Geld, an Zeit und daran, wie viel Material ein Angreifer zum Untersuchen hat.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>① Kosten zum Knacken sind höher als der Wert der Daten. ② Das Knacken dauert länger, als die Daten von Bedeutung sind. ③ Man bräuchte mehr Geheimtext, als vorhanden ist.<br><strong>Brute-Force-Angriff:</strong> alle möglichen Schlüssel durchprobieren. <strong>Häufigkeitsanalyse:</strong> zählen, wie oft jedes Zeichen im Geheimtext vorkommt.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-5-5-sicherheit.pdf">📝 Blatt 5.5 · Seite 1</a></p>
+                </div>
+            </section>
+
+            <section id="haeufigkeit" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Untersuchen<small>Aufgabe 1: Häufigkeitsanalyse</small></h2></div>
+                <div class="phase-body">
+                    <p>Im Deutschen ist E der mit Abstand häufigste Buchstabe (etwa jeder sechste), danach kommen N, I, S, R. Eine monoalphabetische Substitution ersetzt zwar jeden Buchstaben, aber seine Häufigkeit bleibt! (Erinnerst du dich an den kurzen Morsecode für E in 4.3?)</p>
+                    <div data-haeufigkeit></div>
+                    <ol class="aufgaben">
+                        <li>Welcher Buchstabe ist im Geheimtext am häufigsten? Wofür steht er vermutlich?</li>
+                        <li>Ersetze Schritt für Schritt. Tipp: Ein Wort aus drei Buchstaben, das mehrmals vorkommt und mit dem häufigsten Buchstaben zu tun hat, ist oft DIE, DER oder DEN.</li>
+                        <li>Was fällt dir an den Ersetzungen auf, wenn du sie im Alphabet vergleichst?</li>
+                        <li><strong>Zum Nachdenken (mündlich):</strong> Warum funktioniert die Häufigkeitsanalyse bei Vigenère (5.2) viel schlechter? Und warum hilft ein langer Geheimtext dem Angreifer?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 1">
+                        <template data-stufe="Tipp 1"><p>X kommt 14-mal vor. Setze X → E. Das Wort WXF kommt dreimal vor: _E_.</p></template>
+                        <template data-stufe="Tipp 2"><p>WBX = DIE, WXF = DEM. Vergleiche W→D und X→E im Alphabet: um wie viele Stellen ist das verschoben?</p></template>
+                        <template data-stufe="Lösung" data-halten><p>DIE ANTWORT AUF DIE FRAGE NACH DEM LEBEN DEM UNIVERSUM UND DEM GANZEN REST LAUTET ZWEIUNDVIERZIG.<br>c) Alle Buchstaben sind um 7 verschoben (W→D, X→E): Es ist eine Caesar-Verschlüsselung mit Schlüssel 19. Dann hätte auch Brute Force geholfen.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-5-5-sicherheit.pdf">📝 Blatt 5.5 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="maschine" class="phase run">
+                <div class="phase-head"><span class="phase-icon">▶</span><h2>Ansehen<small>Aufgabe 2a: Die Brute-Force-Maschine</small></h2></div>
+                <div class="phase-body">
+                    <p>Bei Caesar gibt es nur 25 sinnvolle Schlüssel. Ein Computer probiert sie alle in Sekundenbruchteilen aus. Aber woran erkennt er, welcher Versuch der richtige ist? Sieh der Maschine zu. Der Geheimtext hier ist ein anderer als im Projekt.</p>
+                    <div data-bruteforce></div>
+                    <ol class="aufgaben">
+                        <li><strong>Blatt, Aufgabe 2a:</strong> Plane mit den Schritten ①–④ die Methode <code>caesarBruteForce</code>. Achte darauf, welche Schlüssel die Maschine durchprobiert.</li>
+                        <li>Findet die Maschine nur einen Treffer? Was ist bei einem „falschen Treffer“ passiert?</li>
+                        <li>Gib einen eigenen Caesar-Geheimtext ein (z. B. mit der Scheibe aus 5.2 erzeugt), in dem kein DER, DIE oder DAS vorkommt. Was passiert?</li>
+                    </ol>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-5-5-sicherheit.pdf">📝 Blatt 5.5 · Aufgabe 2a</a></p>
+                </div>
+            </section>
+
+            <section id="programmieren" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">✏️</span><h2>Programmieren<small>Aufgabe 2b: Projekt 11-5-5 BruteForce</small></h2></div>
+                <div class="phase-body">
+                    <p>Im Projekt sind <code>rotiere</code> und <code>caesarEnt</code> schon fertig (wie in 11-5-1). Ergänze <code>enthaeltArtikel</code> (TODO 1) und <code>caesarBruteForce</code> (TODO 2). Die Kommentare ①–④ im Code entsprechen deinem Plan. Starte dann das Programm: Welcher Schlüssel steckt im Geheimtext?</p>
+                    <div class="ide-block" id="ide">
+                        <div class="ide-kopf"><h3>Projekt 11-5-5 BruteForce</h3></div>
+<!-- IDE-START bruteforce -->
+<div class="java-online" style="width:100%;height:680px" data-java-online="{ 'id': 'i11-55-bruteforce', 'speed': 1000000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true, 'withErrorList': true, 'jsonFilename': '11-5-5 BruteForce.json', 'enableFileAccess': true, 'enableRunExitStatusAccess': true }">
+<script type="text/plain" title="Hauptprogramm.java">
+Bruteforce bf = new Bruteforce();
+
+// Blatt 5.5, Aufgabe 2: Welcher Caesar-Schlüssel steckt dahinter?
+String geheim = "JSFGQVZISGGSZIBUSBTIBYHWCBWSFSBCFRSBHZWQVWADZSASBHWSFHSGHOFYSYFMDHCGMGHSASGWBRSWBSRSFKSBWUSBRWBUSOITRWSAOBGWQVJSFZOGGSBYOBB";
+bf.caesarBruteForce(geheim);
+
+// Profi (TODO 3 und 4): Häufigkeitsanalyse automatisch, Text aus Aufgabe 1
+// String text = "WBX TGMPHKM TNY WBX YKTZX GTVA WXF EXUXG WXF NGBOXKLNF NGW WXF ZTGSXG KXLM ETNMXM SPXBNGWOBXKSBZ";
+// int k = bf.schaetzeSchluessel(text);
+// println("Geschätzter Schlüssel: " + k);
+// println(bf.caesarEnt(text, k));
+</script>
+<script type="text/plain" title="Bruteforce.java">
+/**
+ * Brute-Force-Angriff auf die Caesar-Verschlüsselung (Station 5.5).
+ * rotiere und caesarEnt kennst du aus Projekt 11-5-1.
+ * Suche (Strg + F) nach "TODO" und ergänze den Code.
+ */
+public class Bruteforce {
+
+   /**
+    * Verschiebt einen Großbuchstaben um rotationUm Stellen (nach Z geht es bei A weiter).
+    */
+   public char rotiere(char buchstabe, int rotationUm) {
+      if (buchstabe < 'A' || buchstabe > 'Z') {   // ⓪ kein Großbuchstabe: unverändert
+         return buchstabe;
+      }
+      rotationUm = rotationUm % 26;               // ① 26 Schritte sind einmal ganz herum
+      int code = (int) buchstabe + rotationUm;    // ② ASCII-Code + Verschiebung
+      if (code > 90) {                            // ③ hinter 'Z' (90)? vorne weiterzählen
+         code = code - 26;
+      }
+      return (char) code;                         // ④ wieder als Zeichen
+   }
+
+   /**
+    * Caesar-Entschlüsselung: um schluessel zurück = um 26 - schluessel vor.
+    */
+   public String caesarEnt(String geheimtext, int schluessel) {
+      geheimtext = geheimtext.toUpperCase();
+      String klartext = "";
+      schluessel = schluessel % 26;
+      for (int i = 0; i < geheimtext.length(); i++) {
+         klartext = klartext + rotiere(geheimtext.charAt(i), 26 - schluessel);
+      }
+      return klartext;
+   }
+
+   /**
+    * TODO 1: Liefert true, wenn im Text eines der Wörter DER, DIE oder DAS vorkommt.
+    * text.indexOf(wort) liefert die Position, an der wort zum ersten Mal vorkommt
+    * (gezählt ab 0), oder -1, wenn wort gar nicht vorkommt.
+    * Beispiele: "HALLO".indexOf("LL") liefert 2, "HALLO".indexOf("K") liefert -1.
+    */
+   public boolean enthaeltArtikel(String text) {
+      return false;
+   }
+
+   /**
+    * TODO 2: Brute-Force-Angriff. Probiert alle Schlüssel aus und gibt nur die Versuche aus,
+    * die nach deutschem Text aussehen. Die Schritte stehen auf Blatt 5.5, Aufgabe 2a.
+    */
+   public void caesarBruteForce(String geheimtext) {
+      // ① für jeden Schlüssel von 1 bis 25:
+      //    ② den Geheimtext mit diesem Schlüssel entschlüsseln (caesarEnt)
+      //    ③ prüfen, ob der Versuch deutsch aussieht (enthaeltArtikel)
+      //    ④ wenn ja: Schlüssel und Versuch ausgeben, z. B. println("Schlüssel 3: " + versuch);
+   }
+
+   // ---------- Profi: Häufigkeitsanalyse automatisch ----------
+
+   /**
+    * TODO 3: Wie oft kommt buchstabe im text vor?
+    * Beispiel: zaehle("BANANE", 'A') liefert 2.
+    */
+   public int zaehle(String text, char buchstabe) {
+      return 0;
+   }
+
+   /**
+    * TODO 4: Welcher der Buchstaben A bis Z kommt im text am häufigsten vor?
+    * Beispiel: haeufigsterBuchstabe("BANANEN") liefert 'N'.
+    * Tipp: Gehe alle Codes von 65 ('A') bis 90 ('Z') durch: (char) code ist der Buchstabe.
+    */
+   public char haeufigsterBuchstabe(String text) {
+      return 'A';
+   }
+
+   /**
+    * Schätzt den Caesar-Schlüssel: Der häufigste Buchstabe steht vermutlich für E.
+    */
+   public int schaetzeSchluessel(String geheimtext) {
+      char h = haeufigsterBuchstabe(geheimtext.toUpperCase());
+      return ((int) h - (int) 'E' + 26) % 26;
+   }
+}
+</script>
+<script type="text/plain" title="BruteforceTest.java" data-online-ide="{ 'readOnly': true }">
+/**
+ * Selbsttest des Projekts. Bitte nicht verändern!
+ * Starten: Klick auf das kleine Dreieck links neben "@Test"
+ * (ganz oben: alle Tests) oder auf der Website "Tests starten".
+ */
+public class BruteforceTest {
+
+   @Test
+   public void artikelGefunden() {
+      Bruteforce bf = new Bruteforce();
+      Assertions.assertTrue(bf.enthaeltArtikel("HALLODIEWELT"), "TODO 1: In HALLODIEWELT steckt DIE.");
+      Assertions.assertTrue(bf.enthaeltArtikel("WODERFROSCH"), "TODO 1: In WODERFROSCH steckt DER.");
+      Assertions.assertTrue(bf.enthaeltArtikel("DASHAUS"), "TODO 1: DASHAUS beginnt mit DAS (Position 0).");
+   }
+
+   @Test
+   public void keinArtikel() {
+      Bruteforce bf = new Bruteforce();
+      Assertions.assertFalse(bf.enthaeltArtikel("HALLOWELT"), "TODO 1: In HALLOWELT steckt weder DER noch DIE noch DAS.");
+   }
+
+   @Test
+   public void zaehleBeispiel() {
+      Bruteforce bf = new Bruteforce();
+      Assertions.assertEquals(2, bf.zaehle("BANANE", 'A'), "TODO 3: In BANANE kommt A zweimal vor.");
+      Assertions.assertEquals(0, bf.zaehle("BANANE", 'X'), "TODO 3: In BANANE kommt X nicht vor.");
+   }
+
+   @Test
+   public void haeufigsterBeispiel() {
+      Bruteforce bf = new Bruteforce();
+      Assertions.assertEquals('N', bf.haeufigsterBuchstabe("BANANEN"), "TODO 4: In BANANEN ist N am häufigsten.");
+      Assertions.assertEquals('Z', bf.haeufigsterBuchstabe("ZZZ"), "TODO 4: In ZZZ ist Z am häufigsten.");
+   }
+
+   @Test
+   public void schaetzeBeispiel() {
+      Bruteforce bf = new Bruteforce();
+      Assertions.assertEquals(3, bf.schaetzeSchluessel("HHHAB"), "TODO 4: H ist am häufigsten, H steht für E, also Schlüssel 3.");
+   }
+}
+</script>
+</div>
+<!-- IDE-ENDE bruteforce -->
+                        <p class="ide-downloads">💾 Eigenen Stand sichern: Diskettensymbol in der IDE-Leiste („Workspace in Datei speichern“), der Name <code>11-5-5 BruteForce.json</code> ist schon vorgeschlagen. · <a href="Online-IDE/11-5-5%20BruteForce.json" download>Ausgangsprojekt für online-ide.de</a></p>
+                    </div>
+                    <div class="coach" data-coach="i11-55-bruteforce"></div>
+                    <div class="lw" data-loesungsweg="TODO 1 und 2">
+                        <template data-stufe="Tipp 1"><p>TODO 1 in einer Zeile: <code>return text.indexOf("DER") != -1 || …;</code></p></template>
+                        <template data-stufe="Tipp 2"><p>TODO 2: Eine for-Schleife über <code>schluessel</code> von 1 bis 25. Darin eine Variable <code>versuch</code> mit dem Ergebnis von <code>caesarEnt</code> und ein <code>if</code>.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv">public boolean enthaeltArtikel(String text) {
+   return text.indexOf("DER") != -1 || text.indexOf("DIE") != -1 || text.indexOf("DAS") != -1;
+}
+
+public void caesarBruteForce(String geheimtext) {
+   for (int schluessel = 1; schluessel &lt;= 25; schluessel++) {     // ①
+      String versuch = caesarEnt(geheimtext, schluessel);          // ②
+      if (enthaeltArtikel(versuch)) {                               // ③
+         println("Schlüssel " + schluessel + ": " + versuch);        // ④
+      }
+   }
+}</pre><p>Ergebnis: Schlüssel 14, „VERSCHLUESSELUNGEN FUNKTIONIEREN ORDENTLICH IMPLEMENTIERT …“.</p></template>
+                    </div>
+                    <div class="uebung">
+                        <h3>Für Profis: Häufigkeitsanalyse automatisch (TODO 3 und 4)</h3>
+                        <p>Statt 25 Versuche: Zähle die Buchstaben (<code>zaehle</code>), finde den häufigsten (<code>haeufigsterBuchstabe</code>) und nimm an, dass er für E steht. <code>schaetzeSchluessel</code> ist schon fertig. Entferne im Hauptprogramm die <code>//</code> vor den letzten Zeilen: Wird der Text aus Aufgabe 1 automatisch geknackt?</p>
+                        <details class="denk"><summary>Zum Nachdenken (mündlich): Wann versagt das?</summary>
+                            <p>Probiere einen kurzen Text wie „HALLO OTTO“ verschlüsselt aus. Warum schätzt das Programm hier falsch? Was sagt das über Kriterium ③ (genug Geheimtext)?</p>
+                        </details>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-5-5-sicherheit.pdf">📝 Blatt 5.5 · Aufgabe 2b</a></p>
+                </div>
+            </section>
+
+            <section id="dauer" class="phase problem">
+                <div class="phase-head"><span class="phase-icon">⏱️</span><h2>Abschätzen<small>Aufgabe 3: Wie lange dauert Brute Force?</small></h2></div>
+                <div class="phase-body">
+                    <p>Caesar ist in Nanosekunden geknackt. Wie sieht es bei längeren Schlüsseln aus? Ein Computer schafft etwa eine Milliarde (10<sup>9</sup>) Versuche pro Sekunde. Rechne auf dem Blatt.</p>
+                    <ol class="aufgaben">
+                        <li>Wie viele Schlüssel gibt es bei einem Vigenère-Schlüsselwort mit 5 bzw. 12 Buchstaben? (Jeder Buchstabe hat 26 Möglichkeiten.)</li>
+                        <li>Wie lange dauert es, alle auszuprobieren? (1 Jahr ≈ 3,15 · 10<sup>7</sup> s)</li>
+                        <li><strong>Zum Nachdenken (mündlich):</strong> Welches Kriterium erfüllt AES? Warum hilft Brute Force beim One-Time-Pad überhaupt nicht, selbst mit unendlich viel Zeit?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 3">
+                        <template data-stufe="Tipp"><p>Zeit = Anzahl der Schlüssel : 10<sup>9</sup> Sekunden.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>Caesar: 25 → 2,5 · 10<sup>−8</sup> s · Vigenère (5): 26<sup>5</sup> = 11 881 376 → ca. 0,012 s · Vigenère (12): 26<sup>12</sup> ≈ 9,5 · 10<sup>16</sup> → ca. 3 Jahre · AES-128: 2<sup>128</sup> ≈ 3,4 · 10<sup>38</sup> → ca. 10<sup>22</sup> Jahre (das Universum ist etwa 1,4 · 10<sup>10</sup> Jahre alt): Kriterium ②.<br>One-Time-Pad: Jeder Klartext gleicher Länge ist mit irgendeinem Schlüssel möglich. Brute Force liefert alle sinnvollen Texte gleichzeitig, man weiß nicht, welcher stimmt.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-5-5-sicherheit.pdf">📝 Blatt 5.5 · Aufgabe 3</a></p>
+                </div>
+            </section>
+
+            <section id="rsa" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🧮</span><h2>Anwenden<small>Aufgabe 4: RSA knacken?</small></h2></div>
+                <div class="phase-body">
+                    <p>Du hast den Geheimtext <strong>42</strong> abgefangen. Er wurde mit RSA und dem öffentlichen Schlüssel (n, e) = (65, 11) verschlüsselt. Wer n in seine Primfaktoren p und q zerlegen kann, kann f und damit den privaten Schlüssel d ausrechnen. Probiere aus, wie lange das Zerlegen bei größeren Zahlen dauert:</p>
+                    <div data-faktor></div>
+                    <div data-modrechner></div>
+                    <ol class="aufgaben">
+                        <li>Zerlege 65, berechne f und d und entschlüssle den Geheimtext (Blatt). Welches Zeichen steckt dahinter?</li>
+                        <li>Beobachte die Zeiten der Stoppuhr. Begründe, warum die Primfaktorzerlegung erst bei sehr großen Zahlen eine Einwegfunktion ist.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 4">
+                        <template data-stufe="Tipp"><p>d · 11 mod 48 = 1: Probiere Vielfache von 48 plus 1, also 49, 97, 145, … Welches ist durch 11 teilbar?</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) 65 = 5 · 13, f = 4 · 12 = 48, d = 35 (35 · 11 = 385 = 8 · 48 + 1). m = 42<sup>35</sup> mod 65 = 48, im ASCII-Code das Zeichen „0“ (Null).<br>b) Kleine Zahlen zerlegt man durch Ausprobieren sofort. Mit jeder zusätzlichen Stelle wächst die Zahl der Versuche stark; für Zahlen mit Hunderten Stellen kennt man kein schnelles Verfahren. Multiplizieren ist leicht, Zerlegen praktisch unmöglich.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-5-5-sicherheit.pdf">📝 Blatt 5.5 · Aufgabe 4</a></p>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Rückblick und Ausblick<small>Was du in Kapitel 4 und 5 gelernt hast</small></h2></div>
+                <div class="phase-body">
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🧭 Der rote Faden</h4>
+                            <p>Codierung (öffentliche Regeln) → Verschlüsselung mit einem Schlüssel (Skytale, Caesar, Vigenère) → Problem Schlüsselverteilung → Schlüsselpaar (RSA) → Signatur und Zertifikate → Angriffe und Sicherheit.</p>
+                            <a class="btn btn-outline btn-sm" href="verschluesselung.html">Zur Übersicht</a>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>⚛️ Quantencomputer</h4>
+                            <p>Ein ausreichend großer Quantencomputer könnte Zahlen schnell faktorisieren und damit RSA brechen. Deshalb werden schon heute neue, „post-quanten-sichere“ Verfahren eingeführt.</p>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>🔒 Sichere Passwörter</h4>
+                            <p>Auch Passwörter werden per Brute Force angegriffen. Rechne mit Aufgabe 3: Wie lange dauert ein Passwort aus 8 Kleinbuchstaben, wie lange eins aus 12 beliebigen Zeichen?</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="5-4-signatur.html">← 5.4 Digitale Signatur</a>
+                <a class="btn btn-primary" href="verschluesselung.html">Zur Übersicht →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-5-5-sicherheit-lsg.pdf">Lösung Blatt 5.5 (PDF)</a>
+                        <a class="btn btn-tex btn-sm" href="Online-IDE/LSG%2011-5-5%20BruteForce.json" download>Lösung 11-5-5 (JSON für online-ide.de)</a></p>
+                    <p><strong>Aufbau:</strong> Teil 5-5 des bisherigen Blatts „5-4 Digitale Signatur“ (Kriterien, Angriffsmethoden, Aufgabe 2a Häufigkeitsanalyse, 2b Brute Force), ergänzt um Aufgabe 3 (Schlüsselraum) und Aufgabe 4 (Buch S. 85, Rückblick-Aufgabe 1).</p>
+                    <table>
+                        <thead><tr><th>Änderung</th><th>Grund</th></tr></thead>
+                        <tbody>
+                            <tr><td>Häufigkeitsanalyse und Ersetzen direkt auf der Seite (statt dcode.fr und „Suchen und Ersetzen“ in Word).</td><td>Kein externer Dienst; Balken für Geheimtext und Deutsch nebeneinander. Der Text ist eine Caesar-Verschiebung um 19 (Aufgabe 1c macht das bewusst und verbindet mit Brute Force).</td></tr>
+                            <tr><td>Projekt 11-5-5: <code>rotiere</code> wie in 11-5-1 (lässt Nicht-Buchstaben unverändert), neue Hilfsmethode <code>enthaeltArtikel</code> (TODO 1), <code>caesarBruteForce</code> mit Schrittkommentaren ①–④ (TODO 2), Profi-TODOs 3/4 (Häufigkeitsanalyse automatisch), JUnit-Tests und Coach.</td><td>Logik → Code: Die Schritte ①–④ stehen identisch auf Blatt, in der Animation und im Code. <code>enthaeltArtikel</code> ist einzeln testbar.</td></tr>
+                            <tr><td>Schleife von 1 bis 25 (<code>&lt;= 25</code>).</td><td>In der alten Lösung lief die Schleife nur bis 24 (<code>i &lt; 25</code>), Schlüssel 25 wurde nie probiert. Der Coach weist darauf hin.</td></tr>
+                            <tr><td>Brute-Force-Maschine mit eigenem Beispieltext (Schlüssel 9).</td><td>Zeigt das Vorgehen inklusive möglicher Fehltreffer, ohne das Ergebnis des IDE-Projekts (Schlüssel 14) zu verraten.</td></tr>
+                            <tr><td>Aufgabe 4: Lösung „48 ist das Zeichen 0“.</td><td>Die Verlagslösung nennt fälschlich „H“ (H = 72).</td></tr>
+                        </tbody>
+                    </table>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum &amp; Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>
