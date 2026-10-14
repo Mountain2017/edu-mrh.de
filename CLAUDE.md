@@ -103,9 +103,11 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
   - **Karopapier sauber**: 5-mm-Raster nur aus ganzen Kästchen, mittig
     (`\kariert{n}` rundet auf ganze Kästchen ab, `\karobox{b}{h}` rundet);
     Beschriftung oben bündig daneben, nicht schwebend.
-  - **Lückentexte**: Lücken lang genug für Handschrift (Fachbegriff mind.
-    3,5 cm, Standard 4,5 cm, Zahl/Zeichen 1,5 cm, längere Ausdrücke/Code
-    `\restzeile` bis Zeilenende). Absätze und Kästen mit Lücken mit
+  - **Lückentexte**: Lücken lang genug für Handschrift, seit 2026-10 um
+    **Faktor 1,5** verlängert (Fachbegriff mind. 5,25 cm, Standard 6,75 cm,
+    Zahl/Zeichen 2,25 cm, längere Ausdrücke/Code `\restzeile` bis
+    Zeilenende). Passt eine Lücke nicht mehr in die Zeile, neue Zeile oder
+    `\lsgrest`/`\restzeile` statt die Lücke zu kürzen; Blatt bleibt bei 2 Seiten. Absätze und Kästen mit Lücken mit
     `\lueckentext` (Zeilenabstand 1,5, Flattersatz), damit über jeder Lücke
     Schreibraum ist und der Blocksatz nicht zerreißt. Code-Lücken im Listing
     `javaluecke` mit `(*\luecke[…]*)`, nie Unterstrich-Ketten.
@@ -125,6 +127,9 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
     `\lsgtext{…}` für Tabellenzellen, `\lsgkarte`/`\lsgobjekt` für Klassen-
     und Objektkarten). Schrittnummern ①②③ mit `\nr{1}` (auch im Listing über
     `escapeinside`).
+  - **Syntaxdiagramme**: Terminale rund, Nichtterminale **eckig** (Stil `nt`
+    mit `sharp corners`, sonst erben Knoten auf einer `\draw[…,rounded corners]`-
+    Linie die runden Ecken).
 - **Rohmaterial der Lehrkraft** (`Material_*`, `material/`, Lösungen aus dem
   Unterricht) nie versionieren: steht in `.gitignore`, weil jeder Push alles
   Versionierte öffentlich deployt. Arbeitsnotizen ebenfalls nicht
