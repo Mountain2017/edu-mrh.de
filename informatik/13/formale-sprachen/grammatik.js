@@ -573,7 +573,7 @@
         if (n.t === 'T' || n.t === 'N' || (n.t === 'E' && l.platz)) {
             var kg = s('g', { 'class': 'sd-knoten ' + (n.t === 'T' ? 'sd-t' : n.t === 'N' ? 'sd-n' : 'sd-leer'), 'data-node': n.id || '' }, g);
             pfeilspitze(kg, x, y);
-            s('rect', { x: x, y: y - HB, width: l.w, height: BH, rx: n.t === 'T' ? HB : 3 }, kg);
+            s('rect', { x: x, y: y - HB, width: l.w, height: BH, rx: n.t === 'T' ? HB : 0 }, kg);   // Nichtterminal eckig wie auf den Blättern
             s('text', { x: x + l.w / 2, y: y + 5, 'text-anchor': 'middle', 'class': n.t === 'T' ? 'sd-tt' : 'sd-nt' }, kg,
               n.t === 'T' ? zeigeZ(n.v) : n.t === 'N' ? n.v : '＋ leer');
             if (n.t === 'N' && opt && opt.fehlend && opt.fehlend.indexOf(n.v) >= 0) kg.classList.add('sd-fehlt');
@@ -709,7 +709,7 @@
             var g = s('g', { 'class': 'baum-knoten baum-' + k.t + (k.offen ? ' offen' : '') + (opt && opt.aktuell === k ? ' aktuell' : '') }, svg);
             if (k.t === 'E') s('text', { x: k._x, y: y + 5, 'text-anchor': 'middle', 'class': 'baum-eps' }, g, 'ε');
             else {
-                s('rect', { x: k._x - k._b / 2, y: y - 11, width: k._b, height: 22, rx: k.t === 'T' ? 11 : 3 }, g);
+                s('rect', { x: k._x - k._b / 2, y: y - 11, width: k._b, height: 22, rx: k.t === 'T' ? 11 : 0 }, g);
                 s('text', { x: k._x, y: y + 5, 'text-anchor': 'middle' }, g, k.t === 'T' ? zeigeZ(k.v) : k.v);
             }
             if (k.t === 'N' && k.kinder) k.kinder.forEach(knoten);
