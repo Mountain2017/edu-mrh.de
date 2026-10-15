@@ -1,15 +1,51 @@
-/* W-Seminar "Time" – online check engine.
-   The questions in window.CHECK are encrypted (AES-256-GCM, key from the start
-   code via PBKDF2). Without the start code nothing can be read. The page holds
-   no answers: students hand in a result file, the teacher scores all files with
-   the key file that stays on the teacher's computer (section "For teachers").
-   Nothing is sent to a server; answers are kept in this browser until hand-in. */
+/* Online check – student page (generic, works for any check built with build_check.py).
+
+   Page markup:  <div id="check" data-title="Check 1"></div>
+                 <script defer src="<name>.js"></script>      (window.CHECK, encrypted)
+                 <script defer src="check-engine.js"></script>
+   Language of the page texts: <html lang="en|de">.
+
+   window.CHECK = {id, build, kdf: {salt, iter}, iv, data}. Everything else –
+   title, time, tasks, points, questions – is encrypted (AES-256-GCM, key from
+   the start code via PBKDF2). Without the start code nothing can be read, and
+   the page holds no answers at all. Students save a result file at the end;
+   the teacher scores all files on the separate scoring page with the key file,
+   which never leaves the teacher's computer. Nothing is sent to a server;
+   answers are kept in this browser (localStorage) until hand-in. */
 (function () {
     'use strict';
     var C = window.CHECK, root = document.getElementById('check');
     if (!C || !root) return;
     var KEY = 'check:' + C.id;
-    var PAYLOAD = null, ITEMS = {};
+    var PAYLOAD = null, META = null, ITEMS = {};
+
+    var TXT = {
+        en: {
+            check: 'Online check', rules: 'Work on your own. You may not use other pages, notes or tools. The time starts when you enter the start code. Your answers are saved in this browser as you go; the timer keeps running if you reload. At the end, save your result file and hand it in as your teacher tells you.',
+            name: 'First and last name', code: 'Start code from your teacher', start: 'Start the check', https: 'This page needs a secure connection (https).',
+            needName: 'Please enter your first and last name.', checking: 'Checking the code …', wrong: 'This start code is not correct.', loading: 'Loading …',
+            min: 'minutes', tasks: 'tasks', points: 'points', all: 'Select all that apply.', choose: '– choose –', answer: 'answer',
+            answered: 'answered', handIn: 'Hand in', allDone: 'All tasks answered. Check your answers, then hand in.', open: 'task(s) still open.',
+            confirmOpen: ' task(s) are not complete. Hand in anyway?', confirm: 'Hand in now? You cannot change your answers afterwards.',
+            handed: 'handed in', of: 'of', receipt: 'receipt', save: 'Save result file',
+            after: 'Hand in the result file as your teacher tells you (e.g. Teams). Your teacher scores it – you get your result later. Keep this screen open until your teacher has seen it.',
+            reset: 'New attempt (teacher)', resetBtn: 'Reset this browser', resetCode: 'start code', wrongCode: 'Wrong code.',
+            changed: 'This check has been updated since you started. Please ask your teacher.'
+        },
+        de: {
+            check: 'Online-Check', rules: 'Arbeite allein. Andere Seiten, Notizen und Hilfsmittel sind nicht erlaubt. Die Zeit läuft ab der Eingabe des Startcodes. Deine Antworten werden laufend in diesem Browser gespeichert; beim Neuladen läuft die Zeit weiter. Speichere am Ende deine Ergebnisdatei und gib sie ab, wie es deine Lehrkraft sagt.',
+            name: 'Vor- und Nachname', code: 'Startcode deiner Lehrkraft', start: 'Check starten', https: 'Diese Seite braucht eine sichere Verbindung (https).',
+            needName: 'Bitte gib Vor- und Nachnamen ein.', checking: 'Code wird geprüft …', wrong: 'Dieser Startcode stimmt nicht.', loading: 'Wird geladen …',
+            min: 'Minuten', tasks: 'Aufgaben', points: 'Punkte', all: 'Kreuze alle zutreffenden an.', choose: '– wählen –', answer: 'Antwort',
+            answered: 'beantwortet', handIn: 'Abgeben', allDone: 'Alle Aufgaben beantwortet. Prüfe deine Antworten, dann gib ab.', open: 'Aufgabe(n) noch offen.',
+            confirmOpen: ' Aufgabe(n) sind unvollständig. Trotzdem abgeben?', confirm: 'Jetzt abgeben? Danach kannst du nichts mehr ändern.',
+            handed: 'abgegeben', of: 'von', receipt: 'Quittung', save: 'Ergebnisdatei speichern',
+            after: 'Gib die Ergebnisdatei ab, wie es deine Lehrkraft sagt (z. B. Teams). Die Lehrkraft wertet sie aus – dein Ergebnis bekommst du später. Lass diesen Bildschirm offen, bis deine Lehrkraft ihn gesehen hat.',
+            reset: 'Neuer Versuch (Lehrkraft)', resetBtn: 'Browser zurücksetzen', resetCode: 'Startcode', wrongCode: 'Falscher Code.',
+            changed: 'Dieser Check wurde geändert, seit du begonnen hast. Bitte melde dich bei deiner Lehrkraft.'
+        }
+    };
+    var T = TXT[(document.documentElement.lang || 'en').slice(0, 2)] || TXT.en;
 
     function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
     function b64(s) { var b = atob(s), a = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); return a; }
@@ -29,6 +65,7 @@
             .then(function (key) { return crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(C.iv) }, key, b64(C.data)); })
             .then(function (buf) {
                 PAYLOAD = JSON.parse(new TextDecoder().decode(buf));
+                META = PAYLOAD.meta;
                 ITEMS = {};
                 PAYLOAD.slots.forEach(function (s) { s.variants.forEach(function (v) { ITEMS[v.id] = v; }); });
                 return PAYLOAD;
@@ -46,6 +83,7 @@
     function fmt(p) { return (Math.round(p * 2) / 2).toString().replace('.', ','); }
     function pad(n) { return String(n).padStart(2, '0'); }
     function when(ts) { var d = new Date(ts); return pad(d.getDate()) + '.' + pad(d.getMonth() + 1) + '.' + d.getFullYear() + ', ' + pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+    // same formula on the scoring page: detects edited result files
     function receipt(code, name, submittedAt, answers) {
         return sha([norm(code), C.id, name, submittedAt, JSON.stringify(answers)].join('|')).then(function (x) { return x.slice(0, 8).toUpperCase(); });
     }
@@ -54,7 +92,8 @@
     var state = null;
     function load() { try { state = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { state = null; } }
     function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* in-memory only */ } }
-    function draw(seed) {
+    function clear() { try { localStorage.removeItem(KEY); } catch (e) { } state = null; }
+    function draw(seed) {   // one variant per slot, options/rows in a random order
         var r = rng(seed), out = [];
         PAYLOAD.slots.forEach(function (s) {
             var v = s.variants[Math.floor(r() * s.variants.length)];
@@ -63,79 +102,19 @@
         return out;
     }
 
-    /* ---------------------------------------------------------------- teacher scoring (key file) */
-    function scoreItem(k, ans) {
-        if (!k) return 0;
-        if (k.type === 'single') return ans === k.correct ? k.points : 0;
-        if (k.type === 'multi') {
-            ans = ans || [];
-            var tp = ans.filter(function (a) { return k.correct.indexOf(a) >= 0; }).length, fp = ans.length - tp;
-            return Math.round(Math.max(0, tp - fp) / k.correct.length * k.points * 2) / 2;
-        }
-        ans = ans || {};
-        var rows = Object.keys(k.correct), right = rows.filter(function (r) { return ans[r] === k.correct[r]; }).length;
-        return Math.round(right / rows.length * k.points * 2) / 2;
-    }
-    function np(scale, percent) { for (var i = 0; i < scale.length; i++) if (percent >= scale[i][0]) return scale[i][1]; return 0; }
-
-    function teacherTools() {
-        return '<details class="ck-teacher"><summary>For teachers: score result files</summary>' +
-            '<p class="ck-small">1. Choose the key file (<code>…-key.json</code> from your computer). 2. Choose all result files your students handed in. The key never leaves your computer.</p>' +
-            '<label class="ck-small" for="ck-keyfile">Key file</label><input type="file" id="ck-keyfile" accept=".json,application/json">' +
-            '<label class="ck-small" for="ck-files">Result files</label><input type="file" id="ck-files" accept=".json,application/json" multiple>' +
-            '<div id="ck-table"></div></details>';
-    }
-    function wireTeacher() {
-        var kIn = document.getElementById('ck-keyfile'), fIn = document.getElementById('ck-files');
-        if (!kIn) return;
-        function run() {
-            var box = document.getElementById('ck-table');
-            if (!kIn.files[0] || !fIn.files.length) { box.innerHTML = ''; return; }
-            kIn.files[0].text().then(function (kt) {
-                var key; try { key = JSON.parse(kt); } catch (e) { box.textContent = 'The key file could not be read.'; return; }
-                if (key.check !== C.id) { box.textContent = 'This key belongs to another check.'; return; }
-                Promise.all(Array.prototype.map.call(fIn.files, function (f) {
-                    return f.text().then(function (t) {
-                        var r; try { r = JSON.parse(t); } catch (e) { return { file: f.name, err: 'not a result file' }; }
-                        if (r.check !== C.id) return { file: f.name, err: 'belongs to another check' };
-                        var per = r.draw.map(function (d) { return scoreItem(key.items[d.id], (r.answers || {})[d.id]); });
-                        var pts = per.reduce(function (a, b) { return a + b; }, 0), pc = Math.round(pts / key.max * 1000) / 10;
-                        return receipt(key.startCode, r.name, r.submittedAt, r.answers || {}).then(function (rc) {
-                            return { r: r, per: per, pts: pts, pc: pc, np: np(key.scale, pc), ok: rc === r.receipt };
-                        });
-                    });
-                })).then(function (rows) {
-                    rows.sort(function (a, b) { return (a.r ? a.r.name : '').localeCompare(b.r ? b.r.name : ''); });
-                    var html = '<table class="ck-res"><tr><th>name</th><th>points</th><th>%</th><th>NP</th><th>per task</th><th>handed in</th><th>receipt</th></tr>';
-                    var csv = 'name;points;max;percent;np;per task;handed in;receipt\n';
-                    rows.forEach(function (x) {
-                        if (x.err) { html += '<tr><td colspan="7">' + esc(x.file) + ': ' + x.err + '</td></tr>'; return; }
-                        var pc = String(x.pc).replace('.', ','), per = x.per.map(fmt).join(' · ');
-                        html += '<tr><td>' + esc(x.r.name) + '</td><td>' + fmt(x.pts) + ' / ' + key.max + '</td><td>' + pc + '</td><td><b>' + x.np + '</b></td><td class="ck-small">' + per + '</td><td>' + when(x.r.submittedAt) + '</td><td>' + (x.ok ? esc(x.r.receipt) + ' ✓' : '<span class="ck-warn">changed?</span>') + '</td></tr>';
-                        csv += [x.r.name, fmt(x.pts), key.max, pc, x.np, per, when(x.r.submittedAt), x.ok ? 'ok' : 'check'].join(';') + '\n';
-                    });
-                    html += '</table><button class="ck-btn ck-ghost" id="ck-csv">Download table (.csv)</button>';
-                    box.innerHTML = html;
-                    document.getElementById('ck-csv').addEventListener('click', function () {
-                        var a = document.createElement('a');
-                        a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }));
-                        a.download = C.id + '_results.csv'; document.body.appendChild(a); a.click(); a.remove();
-                    });
-                });
-            });
-        }
-        kIn.addEventListener('change', run); fIn.addEventListener('change', run);
-    }
-
     /* ---------------------------------------------------------------- screens */
     var tick = null;
     function render() {
         clearInterval(tick);
         load();
         if (!state) return renderStart();
+        if (state.build && state.build !== C.build && !state.submittedAt) {
+            root.innerHTML = '<div class="ck-card"><p class="ck-err">' + T.changed + '</p></div>' + resetBox(state.code);
+            return wireReset(state.code);
+        }
         if (!PAYLOAD) {
-            root.innerHTML = '<div class="ck-card"><p>Loading …</p></div>';
-            return decrypt(state.code).then(render, function () { state = null; try { localStorage.removeItem(KEY); } catch (e) { } renderStart(); });
+            root.innerHTML = '<div class="ck-card"><p>' + T.loading + '</p></div>';
+            return decrypt(state.code).then(render, function () { clear(); renderStart(); });
         }
         if (!state.submittedAt) return renderTest();
         return renderDone();
@@ -144,39 +123,36 @@
     function renderStart() {
         root.innerHTML =
             '<div class="ck-card ck-start">' +
-            '<p class="ck-kicker">' + esc(C.subtitle) + '</p><h1>' + esc(C.title) + '</h1>' +
-            '<ul class="ck-facts"><li><b>' + C.minutes + '</b> minutes</li><li><b>' + C.max + '</b> points</li><li><b>' + C.tasks + '</b> tasks</li></ul>' +
-            '<p>Work on your own. You may not use other pages, notes or tools. Your answers are saved in this browser as you go; the timer keeps running if you reload. At the end, save your result file and hand it in as your teacher tells you.</p>' +
-            (C.unitPage ? '<p class="ck-small">What the check covers: <a href="' + esc(C.unitPage) + '#check">can-do list</a>.</p>' : '') +
-            '<label for="ck-name">First and last name</label><input id="ck-name" autocomplete="name">' +
-            '<label for="ck-code">Start code from your teacher</label><input id="ck-code" autocomplete="off" spellcheck="false" placeholder="XXXX-XXXX-XXXX">' +
+            '<h1>' + esc(root.dataset.title || T.check) + '</h1>' +
+            '<p>' + T.rules + '</p>' +
+            '<label for="ck-name">' + T.name + '</label><input id="ck-name" autocomplete="name">' +
+            '<label for="ck-code">' + T.code + '</label><input id="ck-code" autocomplete="off" spellcheck="false" placeholder="XXXX-XXXX-XXXX">' +
             '<p class="ck-err" id="ck-err" aria-live="polite"></p>' +
-            '<button class="ck-btn" id="ck-go">Start the check</button></div>' + teacherTools();
-        if (!window.crypto || !crypto.subtle) document.getElementById('ck-err').textContent = 'This page needs a secure connection (https). Please open it via edu-mrh.de.';
+            '<button class="ck-btn" id="ck-go">' + T.start + '</button></div>';
+        if (!window.crypto || !crypto.subtle) document.getElementById('ck-err').textContent = T.https;
         document.getElementById('ck-go').addEventListener('click', function () {
             var btn = this, name = document.getElementById('ck-name').value.trim(), cd = document.getElementById('ck-code').value;
             var err = document.getElementById('ck-err');
-            if (name.split(/\s+/).length < 2) { err.textContent = 'Please enter your first and last name.'; return; }
-            btn.disabled = true; err.textContent = 'Checking the code …';
+            if (name.split(/\s+/).length < 2) { err.textContent = T.needName; return; }
+            btn.disabled = true; err.textContent = T.checking;
             decrypt(cd).then(function () {
                 var seed = Math.floor(Math.random() * 2147483647);
-                state = { name: name, code: norm(cd), seed: seed, draw: draw(seed), answers: {}, startedAt: Date.now(), submittedAt: null };
+                state = { name: name, code: norm(cd), build: C.build, seed: seed, draw: draw(seed), answers: {}, startedAt: Date.now(), submittedAt: null };
                 save(); render(); window.scrollTo(0, 0);
-            }, function () { btn.disabled = false; err.textContent = 'This start code is not correct.'; });
+            }, function () { btn.disabled = false; err.textContent = T.wrong; });
         });
-        wireTeacher();
     }
 
     function itemHTML(d, n) {
         var it = ITEMS[d.id], a = state.answers[it.id];
-        var html = '<fieldset class="ck-item" data-id="' + it.id + '"><legend><span class="ck-n">' + n + '</span><span class="ck-pts">' + fmt(it.points) + ' P</span></legend><div class="ck-prompt">' + it.prompt + '</div>';
+        var html = '<fieldset class="ck-item" data-id="' + esc(it.id) + '"><legend><span class="ck-n">' + n + '</span><span class="ck-pts">' + fmt(it.points) + ' P</span></legend><div class="ck-prompt">' + it.prompt + '</div>';
         if (it.type === 'single' || it.type === 'multi') {
             var byId = {}; it.options.forEach(function (o) { byId[o.id] = o; });
-            if (it.type === 'multi') html += '<p class="ck-small">Select all that apply.</p>';
+            if (it.type === 'multi') html += '<p class="ck-small">' + T.all + '</p>';
             html += '<div class="ck-opts">';
             d.order.forEach(function (oid) {
                 var checked = it.type === 'single' ? a === oid : (a || []).indexOf(oid) >= 0;
-                html += '<label class="ck-opt"><input type="' + (it.type === 'single' ? 'radio' : 'checkbox') + '" name="q' + it.id + '" value="' + oid + '"' + (checked ? ' checked' : '') + '><span>' + byId[oid].text + '</span></label>';
+                html += '<label class="ck-opt"><input type="' + (it.type === 'single' ? 'radio' : 'checkbox') + '" name="q' + esc(it.id) + '" value="' + oid + '"' + (checked ? ' checked' : '') + '><span>' + byId[oid].text + '</span></label>';
             });
             html += '</div>';
         } else {
@@ -184,7 +160,7 @@
             html += '<div class="ck-match">';
             d.order.forEach(function (rid) {
                 var val = (a || {})[rid] || '';
-                html += '<div class="ck-row"><span>' + rows[rid].text + '</span><select data-row="' + rid + '" aria-label="answer"><option value="">– choose –</option>' +
+                html += '<div class="ck-row"><span>' + rows[rid].text + '</span><select data-row="' + rid + '" aria-label="' + T.answer + '"><option value="">' + T.choose + '</option>' +
                     it.categories.map(function (c) { return '<option value="' + c.id + '"' + (val === c.id ? ' selected' : '') + '>' + esc(c.label) + '</option>'; }).join('') + '</select></div>';
             });
             html += '</div>';
@@ -193,15 +169,17 @@
     }
     function answered(d) {
         var a = state.answers[d.id], it = ITEMS[d.id];
+        if (!it) return false;
         if (it.type === 'single') return !!a;
         if (it.type === 'multi') return !!(a && a.length);
         return !!a && Object.keys(a).filter(function (k) { return a[k]; }).length === it.rows.length;
     }
     function renderTest() {
         var html = '<div class="ck-bar" role="status"><span class="ck-who">' + esc(state.name) + '</span><span id="ck-prog"></span><span class="ck-time" id="ck-time"></span></div>';
-        html += '<div class="ck-card"><p class="ck-kicker">' + esc(C.subtitle) + '</p><h1>' + esc(C.title) + '</h1></div>';
+        html += '<div class="ck-card"><p class="ck-kicker">' + esc(META.subtitle) + '</p><h1>' + esc(META.title) + '</h1>' +
+            '<p class="ck-small">' + META.minutes + ' ' + T.min + ' · ' + META.tasks + ' ' + T.tasks + ' · ' + fmt(META.max) + ' ' + T.points + '</p></div>';
         state.draw.forEach(function (d, i) { html += itemHTML(d, i + 1); });
-        html += '<div class="ck-card ck-end"><p id="ck-left"></p><button class="ck-btn" id="ck-submit">Hand in</button></div>';
+        html += '<div class="ck-card ck-end"><p id="ck-left"></p><button class="ck-btn" id="ck-submit">' + T.handIn + '</button></div>';
         root.innerHTML = html;
         root.querySelectorAll('.ck-item').forEach(function (fs) {
             var id = fs.dataset.id, it = ITEMS[id];
@@ -214,19 +192,19 @@
         });
         document.getElementById('ck-submit').addEventListener('click', function () {
             var open = state.draw.filter(function (d) { return !answered(d); }).length;
-            if (!confirm(open ? open + ' task(s) are not complete. Hand in anyway?' : 'Hand in now? You cannot change your answers afterwards.')) return;
+            if (!confirm(open ? open + T.confirmOpen : T.confirm)) return;
             submit();
         });
         progress(); clock(); tick = setInterval(clock, 1000);
     }
     function progress() {
         var done = state.draw.filter(answered).length;
-        document.getElementById('ck-prog').textContent = done + ' / ' + state.draw.length + ' answered';
+        document.getElementById('ck-prog').textContent = done + ' / ' + state.draw.length + ' ' + T.answered;
         var left = document.getElementById('ck-left');
-        if (left) left.textContent = done === state.draw.length ? 'All tasks answered. Check your answers, then hand in.' : (state.draw.length - done) + ' task(s) still open.';
+        if (left) left.textContent = done === state.draw.length ? T.allDone : (state.draw.length - done) + ' ' + T.open;
     }
     function clock() {
-        var rest = Math.round(C.minutes * 60 - (Date.now() - state.startedAt) / 1000);
+        var rest = Math.round(META.minutes * 60 - (Date.now() - state.startedAt) / 1000);
         var el = document.getElementById('ck-time'); if (!el) return;
         if (rest <= 0) { el.textContent = '0:00'; submit(); return; }
         el.textContent = Math.floor(rest / 60) + ':' + pad(rest % 60);
@@ -236,34 +214,38 @@
         clearInterval(tick);
         if (state.submittedAt) return;
         state.submittedAt = Date.now();
+        state.done = state.draw.filter(answered).length;
         save(); render(); window.scrollTo(0, 0);
+    }
+
+    function resetBox() {
+        return '<details class="ck-reset"><summary>' + T.reset + '</summary><input id="ck-rcode" placeholder="' + T.resetCode + '" autocomplete="off"><button class="ck-btn ck-ghost" id="ck-reset">' + T.resetBtn + '</button></details>';
+    }
+    function wireReset(code) {
+        document.getElementById('ck-reset').addEventListener('click', function () {
+            if (norm(document.getElementById('ck-rcode').value) !== code) { alert(T.wrongCode); return; }
+            clear(); PAYLOAD = null; render();
+        });
     }
 
     function renderDone() {
         receipt(state.code, state.name, state.submittedAt, state.answers).then(function (rc) {
             state.receipt = rc; save();
-            var done = state.draw.filter(answered).length, mins = Math.round((state.submittedAt - state.startedAt) / 60000);
+            var done = state.done != null ? state.done : state.draw.filter(answered).length, mins = Math.round((state.submittedAt - state.startedAt) / 60000);
             root.innerHTML = '<div class="ck-card ck-result">' +
-                '<p class="ck-kicker">' + esc(C.title) + '</p><h1>' + esc(state.name) + '</h1>' +
-                '<div class="ck-score"><div><span>✓</span> handed in</div><div><span>' + done + '</span> of ' + state.draw.length + ' answered</div></div>' +
-                '<p class="ck-small">' + when(state.submittedAt) + ' · ' + mins + ' min · receipt <b class="ck-code">' + rc + '</b></p>' +
-                '<button class="ck-btn" id="ck-save">Save result file</button>' +
-                '<p class="ck-small">Hand in the result file as your teacher tells you (e.g. Teams). Your teacher scores it – you get your result later. Keep this screen open until your teacher has seen it.</p>' +
-                '<details class="ck-reset"><summary>New attempt (teacher)</summary><input id="ck-rcode" placeholder="start code" autocomplete="off"><button class="ck-btn ck-ghost" id="ck-reset">Reset this browser</button></details></div>' +
-                teacherTools();
+                '<p class="ck-kicker">' + esc(META.title) + '</p><h1>' + esc(state.name) + '</h1>' +
+                '<div class="ck-score"><div><span>✓</span> ' + T.handed + '</div><div><span>' + done + '</span> ' + T.of + ' ' + state.draw.length + ' ' + T.answered + '</div></div>' +
+                '<p class="ck-small">' + when(state.submittedAt) + ' · ' + mins + ' min · ' + T.receipt + ' <b class="ck-code">' + rc + '</b></p>' +
+                '<button class="ck-btn" id="ck-save">' + T.save + '</button>' +
+                '<p class="ck-small">' + T.after + '</p>' + resetBox() + '</div>';
             document.getElementById('ck-save').addEventListener('click', function () {
-                var file = { check: C.id, title: C.title, name: state.name, startedAt: state.startedAt, submittedAt: state.submittedAt, draw: state.draw, answers: state.answers, receipt: rc };
+                var file = { check: C.id, build: state.build || C.build, title: META.title, name: state.name, startedAt: state.startedAt, submittedAt: state.submittedAt, draw: state.draw, answers: state.answers, receipt: rc };
                 var a = document.createElement('a');
                 a.href = URL.createObjectURL(new Blob([JSON.stringify(file, null, 1)], { type: 'application/json' }));
                 a.download = C.id + '_' + state.name.replace(/[^\wäöüÄÖÜß-]+/g, '-') + '.json';
                 document.body.appendChild(a); a.click(); a.remove();
             });
-            document.getElementById('ck-reset').addEventListener('click', function () {
-                if (norm(document.getElementById('ck-rcode').value) !== state.code) { alert('Wrong code.'); return; }
-                try { localStorage.removeItem(KEY); } catch (e) { }
-                state = null; PAYLOAD = null; render();
-            });
-            wireTeacher();
+            wireReset(state.code);
         });
     }
 

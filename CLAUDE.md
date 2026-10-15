@@ -187,18 +187,26 @@ QR-Codes (nicht löschen).
   die besten zwei zählen als „Test“. Im Unterricht am eigenen Gerät, die
   Lehrkraft sieht die Bildschirme. Vor Einführung mit Oberstufenkoordination
   abstimmen und vorab ankündigen.
-- **Online-Checks** (alles in `checks/`: `check-<n>-<thema>.html`, `check-engine.js`,
-  `check.css`; der Ordner ist auf dem Server zusätzlich per `.htaccess` geschützt):
+- **Online-Checks** (alles in `checks/`, generisch für jedes Thema; der Ordner ist auf
+  dem Server zusätzlich per `.htaccess` geschützt): `check-<n>-<thema>.html` ist nur eine
+  Hülle (`<div id="check" data-title="Check <n>">`, Sprache über `<html lang>`) ohne Links
+  außer dem Impressum; `check-engine.js` + `check.css` für Schüler:innen.
   Fragen im Klartext nur in `material/check-<n>-*.json` (nicht versioniert,
-  `.gitignore` – **nie pushen, das Repo ist öffentlich, auch die Historie**).
-  `python3 checks/build_check.py material/check-<n>-*.json` erzeugt
-  `checks/check-<n>-*.js` (Fragen AES-256-GCM-verschlüsselt, Schlüssel per
-  PBKDF2 aus dem Startcode, **keine Lösungen**) sowie `material/…-key.json`
-  (Schlüsseldatei für die Auswertung) und `…-key.md`. Startcode `"auto"` =
-  zufälliger 12-stelliger Code, nur im Unterricht nennen. Bewertung erst nach
-  der Stunde: Schüler:innen speichern eine Ergebnisdatei, die Lehrkraft lädt
-  Schlüssel- und Ergebnisdateien im Bereich „For teachers“ der Check-Seite.
-  Check-Seiten nicht von anderen Seiten verlinken (Link gibt die Lehrkraft).
+  `.gitignore` – **nie pushen, das Repo ist öffentlich, auch die Historie**; Format im
+  Kopf von `build_check.py`). `python3 checks/build_check.py material/check-<n>-*.json`
+  erzeugt `checks/check-<n>-*.js` (alles AES-256-GCM-verschlüsselt, auch Titel, Zeit,
+  Aufgabenzahl und Punkte; Schlüssel per PBKDF2 aus dem Startcode; zufällige IDs,
+  gemischte Reihenfolge, auf 8 KiB aufgefüllt; **keine Lösungen**) sowie
+  `material/…-key.json` (Schlüsseldatei mit Fragen, Lösungen, Notenschlüssel) und
+  `…-key.md`. Jeder Build hat eine eigene ID: Ergebnisse passen nur zur Schlüsseldatei
+  desselben Builds, also nie nach der Durchführung neu bauen. Startcode `"auto"` =
+  zufälliger 12-stelliger Code, nur im Unterricht nennen; nach einem Leck neuen Code
+  wählen (alte Builds stehen in der Historie). Bewertung erst nach der Stunde:
+  Schüler:innen speichern eine Ergebnisdatei; die Lehrkraft lädt Schlüssel- und
+  Ergebnisdateien in `checks/auswertung/auswertung.html` (unverlinkt, ohne Links,
+  liest nur lokal): Tabelle, CSV und je Person ein 2-seitiger Bericht (Druck → PDF)
+  mit Notenpunkten, Notenschlüssel und allen Aufgaben wie gesehen, eigene Antwort,
+  Lösung und Punkte. Check- und Auswertungsseite nirgends verlinken.
 
 ## Sprache & Inhalt
 
@@ -274,7 +282,7 @@ Kopf, Lösungen als Hash in `data-loesung`, Hash-Werkzeug im Lehrkräfte-Bereich
 13 `questions-on-the-text/` (→ AB, eigene Vorlage); W-Seminar „Time“ (12/13) in
 `englisch/w-seminar-time/` (Kursplan siehe eigener Abschnitt: `w-seminar-time.html`,
 `research-question.html`, `research-methods.html`, `checks/check-1-research-methods.html`
-(verschlüsselt); → AB `ws-w1` bis `ws-w5`, eigene Vorlage)
+(verschlüsselt), Auswertung `checks/auswertung/`; → AB `ws-w1` bis `ws-w5`, eigene Vorlage)
 
 **Weitere Fächer**: `mathe/` (12: Exponential-/ln-Funktion, Umkehrfunktion),
 `physik/` (10 Berlinfahrt-Lernpfad, 11 Federpendel + Protokoll, 12 Lorentzkraft),
