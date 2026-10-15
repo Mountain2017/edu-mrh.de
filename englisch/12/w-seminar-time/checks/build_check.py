@@ -1,33 +1,59 @@
 #!/usr/bin/env python3
-"""Build an online check for the W-Seminar "Time".
+"""Build an encrypted online check for the W-Seminar "Time".
 
 Usage:  python3 checks/build_check.py material/check-1-research-methods.json
 
-Reads the plain-text question file (answers in clear text, kept out of git in
-material/) and writes
-  checks/<name>.js         – questions for the page; answers only as salted
-                             SHA-256 hashes (first 16 hex digits)
-  material/<name>-key.md   – answer key for the teacher (not versioned)
+Input: the plain-text question file in material/ (answers in clear text; the
+folder is in .gitignore and must never be pushed).
+
+Output:
+  checks/<name>.js            – questions encrypted with AES-256-GCM. The key is
+                                derived from the start code (PBKDF2-SHA256,
+                                600 000 rounds). Contains NO answers. Safe to
+                                push: without the start code nothing is readable.
+  material/<name>-key.json    – answer key for the teacher tool on the check
+                                page (stays on the teacher's computer)
+  material/<name>-key.md      – the same key, readable
+
+Start code: "startCode": "auto" generates a random 12-character code and
+writes it back into the JSON. Own codes need at least 12 letters/digits.
+Students may type it with or without dashes; case does not matter.
 
 Item types in the JSON:
   single  options: [[id, text, correct?], …]       one correct option
   multi   options: [[id, text, correct?], …]       several correct options
   match   categories: [[id, label], …]
           rows: [[id, text, category-id], …]        one category per row
-The start code is stored only as a hash. Change "startCode" and rebuild to
-set a new one.
 """
-import hashlib, json, os, secrets, sys
+import base64, hashlib, json, os, re, secrets, sys
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+ITER = 600_000
+ALPHABET = '23456789ABCDEFGHJKMNPQRSTUVWXYZ'
 
 
-def h(*parts):
-    return hashlib.sha256('|'.join(parts).encode('utf-8')).hexdigest()[:16]
+def norm(code):
+    return re.sub(r'[^0-9A-Z]', '', code.upper())
+
+
+def b64(b):
+    return base64.b64encode(b).decode('ascii')
 
 
 def main(src):
     data = json.load(open(src, encoding='utf-8'))
-    salt = secrets.token_hex(8)
-    out_slots, key, total = [], [], 0
+    code = data.get('startCode', 'auto')
+    if code == 'auto' or not code:
+        raw = ''.join(secrets.choice(ALPHABET) for _ in range(12))
+        code = '-'.join(raw[i:i + 4] for i in range(0, 12, 4))
+        data['startCode'] = code
+        with open(src, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+            f.write('\n')
+    if len(norm(code)) < 12:
+        sys.exit('startCode must have at least 12 letters/digits (or use "auto").')
+
+    slots, keyitems, md, total = [], {}, [], 0
     for n, slot in enumerate(data['slots'], 1):
         variants, pts = [], None
         for it in slot['variants']:
@@ -36,47 +62,54 @@ def main(src):
                 sys.exit(f"Slot {n}: all variants need the same points")
             iid = it['id']
             pub = {k: it[k] for k in ('id', 'type', 'points', 'prompt')}
-            if it['type'] == 'single':
+            if it['type'] in ('single', 'multi'):
                 pub['options'] = [{'id': o[0], 'text': o[1]} for o in it['options']]
                 right = [o[0] for o in it['options'] if o[2]]
-                if len(right) != 1:
+                if it['type'] == 'single' and len(right) != 1:
                     sys.exit(f"Item {iid}: single needs exactly one correct option")
-                pub['key'] = h(salt, iid, right[0])
-                key.append((n, iid, it, ', '.join(f"{o[0]}) {o[1]}" for o in it['options'] if o[2])))
-            elif it['type'] == 'multi':
-                pub['options'] = [{'id': o[0], 'text': o[1], 'h': h(salt, iid, o[0], '1' if o[2] else '0')} for o in it['options']]
-                key.append((n, iid, it, '; '.join(f"{o[0]}) {o[1]}" for o in it['options'] if o[2])))
+                keyitems[iid] = {'type': it['type'], 'points': it['points'], 'correct': right[0] if it['type'] == 'single' else right}
+                ans = '; '.join(f"{o[0]}) {o[1]}" for o in it['options'] if o[2])
             elif it['type'] == 'match':
                 cats = dict(it['categories'])
                 pub['categories'] = [{'id': c[0], 'label': c[1]} for c in it['categories']]
-                pub['rows'] = [{'id': r[0], 'text': r[1], 'h': h(salt, iid, r[0], r[2])} for r in it['rows']]
-                key.append((n, iid, it, '<br>'.join(f"{r[1]} → **{cats[r[2]]}**" for r in it['rows'])))
+                pub['rows'] = [{'id': r[0], 'text': r[1]} for r in it['rows']]
+                keyitems[iid] = {'type': 'match', 'points': it['points'], 'correct': {r[0]: r[2] for r in it['rows']}}
+                ans = '<br>'.join(f"{r[1]} → **{cats[r[2]]}**" for r in it['rows'])
             else:
                 sys.exit(f"Item {iid}: unknown type {it['type']}")
             variants.append(pub)
+            md.append(f"## Task {n} · version {iid} ({it['points']} P)\n\n{it['prompt']}\n\n{ans}\n")
         total += pts
-        out_slots.append({'variants': variants})
+        slots.append({'variants': variants})
 
-    check = {
+    salt, iv = secrets.token_bytes(16), secrets.token_bytes(12)
+    key = hashlib.pbkdf2_hmac('sha256', norm(code).encode(), salt, ITER, 32)
+    plain = json.dumps({'id': data['id'], 'slots': slots}, ensure_ascii=False).encode('utf-8')
+    cipher = AESGCM(key).encrypt(iv, plain, None)
+
+    public = {
         'id': data['id'], 'title': data['title'], 'subtitle': data.get('subtitle', ''),
         'minutes': data['minutes'], 'unitPage': data.get('unitPage', ''),
-        'scale': data['scale'], 'salt': salt, 'start': h(salt, 'start', data['startCode'].strip().upper()),
-        'max': total, 'slots': out_slots,
+        'max': total, 'tasks': len(slots),
+        'kdf': {'salt': b64(salt), 'iter': ITER}, 'iv': b64(iv), 'data': b64(cipher),
     }
     base = os.path.splitext(os.path.basename(src))[0]
     here = os.path.dirname(os.path.abspath(__file__))
-    js = os.path.join(here, base + '.js')
-    with open(js, 'w', encoding='utf-8') as f:
-        f.write('/* Generated by build_check.py from material/' + os.path.basename(src) + ' – do not edit by hand. */\n')
-        f.write('window.CHECK = ' + json.dumps(check, ensure_ascii=False, indent=1) + ';\n')
-    md = os.path.join(os.path.dirname(os.path.abspath(src)), base + '-key.md')
-    with open(md, 'w', encoding='utf-8') as f:
-        f.write(f"# {data['title']} – answer key\n\nStart code: **{data['startCode']}** · {data['minutes']} min · {total} points\n\n")
-        f.write("Scoring: single = all or nothing; multi = (correct ticks − wrong ticks) ÷ number of correct options × points, min. 0, rounded to 0.5; match = equal share per row, rounded to 0.5.\n\n")
+    mat = os.path.dirname(os.path.abspath(src))
+    with open(os.path.join(here, base + '.js'), 'w', encoding='utf-8') as f:
+        f.write('/* Generated by build_check.py – encrypted, contains no answers. Do not edit by hand. */\n')
+        f.write('window.CHECK = ' + json.dumps(public) + ';\n')
+    with open(os.path.join(mat, base + '-key.json'), 'w', encoding='utf-8') as f:
+        json.dump({'check': data['id'], 'title': data['title'], 'startCode': code, 'max': total,
+                   'scale': data['scale'], 'items': keyitems}, f, ensure_ascii=False, indent=1)
+    with open(os.path.join(mat, base + '-key.md'), 'w', encoding='utf-8') as f:
+        f.write(f"# {data['title']} – answer key\n\nStart code: **{code}** · {data['minutes']} min · {total} points\n\n")
+        f.write("Scoring (teacher tool on the check page, with the -key.json file): single = all or nothing; "
+                "multi = (correct ticks − wrong ticks) ÷ number of correct options × points, min. 0, rounded to 0.5; "
+                "match = equal share per row, rounded to 0.5.\n\n")
         f.write("Notenpunkte: " + ' · '.join(f"≥{p} % → {np}" for p, np in data['scale']) + "\n\n")
-        for n, iid, it, ans in key:
-            f.write(f"## Slot {n} · item {iid} ({it['points']} P)\n\n{it['prompt']}\n\n{ans}\n\n")
-    print(f"wrote {js}\nwrote {md}\n{total} points, {len(out_slots)} slots")
+        f.write('\n'.join(md))
+    print(f"start code: {code}\n{total} points, {len(slots)} tasks\nwrote checks/{base}.js, material/{base}-key.json, material/{base}-key.md")
 
 
 if __name__ == '__main__':
