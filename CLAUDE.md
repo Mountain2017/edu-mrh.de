@@ -156,12 +156,16 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
   Gedrückthalten; `datenstrukturen.js`). Volle Lösungen für Lehrkräfte als
   LSG-PDF/-JSON im Lehrkräfte-Bereich.
 
-## W-Seminar „Time“ (Englisch 12/13, `englisch/12/w-seminar-time/`)
+## W-Seminar „Time“ (Englisch 12/13, `englisch/w-seminar-time/`)
 
 Kursplan in Modulen (je Modul: Website-Seite + Arbeitsblatt `ws-w<n>-…` +
 Präsentation; Folien liegen nicht im Repo). **Arbeitsblattnummer immer
 vorher bei der Lehrkraft erfragen.** Seiten und Blätter englisch, Design
 wie `w-seminar-time.html` (Tokens im `<style>`-Block, Fraunces/Inter lokal).
+Auf `englisch/englisch.html` eigener Abschnitt `#w-seminar-time` ganz am Ende
+(nach Klasse 13), je Modul eine Karte. Bis 2026-10 lag das Seminar unter
+`englisch/12/w-seminar-time/`; dort liegen nur noch Weiterleitungen für alte
+QR-Codes (nicht löschen).
 
 | Modul | Inhalt | Material | Stand |
 |---|---|---|---|
@@ -183,7 +187,8 @@ wie `w-seminar-time.html` (Tokens im `<style>`-Block, Fraunces/Inter lokal).
   die besten zwei zählen als „Test“. Im Unterricht am eigenen Gerät, die
   Lehrkraft sieht die Bildschirme. Vor Einführung mit Oberstufenkoordination
   abstimmen und vorab ankündigen.
-- **Online-Checks** (`check-<n>-<thema>.html` + `checks/check-engine.js`):
+- **Online-Checks** (alles in `checks/`: `check-<n>-<thema>.html`, `check-engine.js`,
+  `check.css`; der Ordner ist auf dem Server zusätzlich per `.htaccess` geschützt):
   Fragen im Klartext nur in `material/check-<n>-*.json` (nicht versioniert,
   `.gitignore` – **nie pushen, das Repo ist öffentlich, auch die Historie**).
   `python3 checks/build_check.py material/check-<n>-*.json` erzeugt
@@ -266,10 +271,10 @@ Kopf, Lösungen als Hash in `data-loesung`, Hash-Werkzeug im Lehrkräfte-Bereich
 **Englisch** (`englisch/englisch.html`): 5 `wordcraft`; 12 `uk/`
 (uk-and-writing, north-south-divide), `media/narrative_lens`,
 `immigration-social-structures-identity/`, `global issues/`,
-`w-seminar-time/` (W-Seminar „Time“, Kursplan siehe eigener Abschnitt: `w-seminar-time.html`,
-`research-question.html`, `research-methods.html`, `check-1-research-methods.html` (verschlüsselt);
-→ AB `ws-w1` bis `ws-w5`, eigene Vorlage); 13
-`questions-on-the-text/` (→ AB, eigene Vorlage)
+13 `questions-on-the-text/` (→ AB, eigene Vorlage); W-Seminar „Time“ (12/13) in
+`englisch/w-seminar-time/` (Kursplan siehe eigener Abschnitt: `w-seminar-time.html`,
+`research-question.html`, `research-methods.html`, `checks/check-1-research-methods.html`
+(verschlüsselt); → AB `ws-w1` bis `ws-w5`, eigene Vorlage)
 
 **Weitere Fächer**: `mathe/` (12: Exponential-/ln-Funktion, Umkehrfunktion),
 `physik/` (10 Berlinfahrt-Lernpfad, 11 Federpendel + Protokoll, 12 Lorentzkraft),
