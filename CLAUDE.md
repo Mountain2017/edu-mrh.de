@@ -185,12 +185,15 @@ wie `w-seminar-time.html` (Tokens im `<style>`-Block, Fraunces/Inter lokal).
   abstimmen und vorab ankündigen.
 - **Online-Checks** (`check-<n>-<thema>.html` + `checks/check-engine.js`):
   Fragen im Klartext nur in `material/check-<n>-*.json` (nicht versioniert,
-  `.gitignore`), daraus `python3 checks/build_check.py material/check-<n>-*.json`
-  → `checks/check-<n>-*.js` (Lösungen nur als SHA-256-Hashes) + Lehrkräfte-
-  Schlüssel `material/…-key.md`. Startcode im JSON; Ergebnis bleibt im
-  Browser, Schüler:innen speichern eine Ergebnisdatei, die Seite wertet
-  Ergebnisdateien für die Lehrkraft neu aus. Clientseitig = nicht
-  manipulationssicher, daher nur unter Aufsicht einsetzen.
+  `.gitignore` – **nie pushen, das Repo ist öffentlich, auch die Historie**).
+  `python3 checks/build_check.py material/check-<n>-*.json` erzeugt
+  `checks/check-<n>-*.js` (Fragen AES-256-GCM-verschlüsselt, Schlüssel per
+  PBKDF2 aus dem Startcode, **keine Lösungen**) sowie `material/…-key.json`
+  (Schlüsseldatei für die Auswertung) und `…-key.md`. Startcode `"auto"` =
+  zufälliger 12-stelliger Code, nur im Unterricht nennen. Bewertung erst nach
+  der Stunde: Schüler:innen speichern eine Ergebnisdatei, die Lehrkraft lädt
+  Schlüssel- und Ergebnisdateien im Bereich „For teachers“ der Check-Seite.
+  Check-Seiten nicht von anderen Seiten verlinken (Link gibt die Lehrkraft).
 
 ## Sprache & Inhalt
 
@@ -264,7 +267,7 @@ Kopf, Lösungen als Hash in `data-loesung`, Hash-Werkzeug im Lehrkräfte-Bereich
 (uk-and-writing, north-south-divide), `media/narrative_lens`,
 `immigration-social-structures-identity/`, `global issues/`,
 `w-seminar-time/` (W-Seminar „Time“, Kursplan siehe eigener Abschnitt: `w-seminar-time.html`,
-`research-question.html`, `research-methods.html`, `check-1-research-methods.html`;
+`research-question.html`, `research-methods.html`, `check-1-research-methods.html` (verschlüsselt);
 → AB `ws-w1` bis `ws-w5`, eigene Vorlage); 13
 `questions-on-the-text/` (→ AB, eigene Vorlage)
 
