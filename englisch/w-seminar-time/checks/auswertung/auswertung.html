@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auswertung Online-Check</title>
+    <meta name="robots" content="noindex, nofollow">
+    <!-- Auswertung für alle Online-Checks (build_check.py / check-engine.js).
+         Bewusst ohne Links von und zu anderen Seiten. Liest die Schlüsseldatei
+         (material/…-key.json) und die Ergebnisdateien nur im Browser; es wird
+         nichts hochgeladen. Enthält selbst keine Fragen und keine Lösungen. -->
+    <link rel="stylesheet" href="auswertung.css">
+    <script defer src="auswertung.js"></script>
+</head>
+<body>
+    <div class="ui">
+        <header>
+            <h1>Auswertung Online-Check</h1>
+            <p>Die Dateien werden nur in diesem Browser gelesen – nichts wird hochgeladen oder gespeichert.
+               Schlüsseldatei (<code>…-key.json</code>) und Ergebnisdateien gemeinsam auswählen oder hierher ziehen;
+               weitere Dateien lassen sich jederzeit dazunehmen.</p>
+        </header>
+
+        <label class="drop" id="drop">
+            <input type="file" id="files" accept=".json,application/json" multiple>
+            <span><b>Dateien wählen</b> oder hierher ziehen</span>
+        </label>
+        <p class="status" id="status" aria-live="polite"></p>
+
+        <section id="out" hidden>
+            <div class="actions">
+                <button id="pdf-all" class="btn">PDF für alle erzeugen</button>
+                <button id="csv" class="btn ghost">Tabelle als CSV</button>
+                <button id="reset" class="btn ghost">Alles leeren</button>
+            </div>
+            <p class="hint">PDF: Im Druckdialog „Als PDF speichern“ wählen, Format A4, Ränder „Keine“ bzw. Standard,
+               „Hintergrundgrafiken“ an. Jede Person bekommt genau zwei Seiten (für beidseitigen Druck).</p>
+            <p class="summary" id="summary"></p>
+            <div class="table-wrap"><table id="table"></table></div>
+            <h2>Vorschau der Berichte</h2>
+        </section>
+    </div>
+
+    <div id="druck"></div>
+    <div id="mess" aria-hidden="true"></div>
+</body>
+</html>
