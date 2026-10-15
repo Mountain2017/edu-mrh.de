@@ -298,7 +298,7 @@
             if (/\b(more|less|than|shorter|longer|higher|lower|most|mainly|rather than|because)\b/i.test(th)) g('Your thesis has a direction – good. Which result would prove it wrong?');
             else h('Add a direction: more or less than what? Mainly what – rather than what?');
         }
-        if ((o.data || '').trim()) g('You know what data to collect. Next session: how to make it reliable.');
+        if ((o.data || '').trim()) g('You know what data to collect. Later in 12/1 you learn how to make it reliable.');
         else if (q) h('What will you measure, count, compare or ask – and from whom?');
         if ((o.out || '').trim()) g('You drew a line – that keeps the paper to 10–15 pages.');
         else if (q) h('List what is out on purpose. It saves you pages later.');

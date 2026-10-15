@@ -156,6 +156,42 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
   Gedrückthalten; `datenstrukturen.js`). Volle Lösungen für Lehrkräfte als
   LSG-PDF/-JSON im Lehrkräfte-Bereich.
 
+## W-Seminar „Time“ (Englisch 12/13, `englisch/12/w-seminar-time/`)
+
+Kursplan in Modulen (je Modul: Website-Seite + Arbeitsblatt `ws-w<n>-…` +
+Präsentation; Folien liegen nicht im Repo). **Arbeitsblattnummer immer
+vorher bei der Lehrkraft erfragen.** Seiten und Blätter englisch, Design
+wie `w-seminar-time.html` (Tokens im `<style>`-Block, Fraunces/Inter lokal).
+
+| Modul | Inhalt | Material | Stand |
+|---|---|---|---|
+| M1 Orientierung | Seminarregeln, Bewertung, Backups; Dimensionen von Zeit | `w-seminar-time.html`, W1–W3 | fertig |
+| M2 Forschungsfrage | Frage vs. These, Marker, Eingrenzung, 1–3 Optionen | `research-question.html`, W4 | fertig |
+| M3 Recherche | 5 Leitfragen (refinery questions), Suchstrings, Orte, Lesen/Notieren, Quellencheck | `research-methods.html`, W5, Check 1 | fertig |
+| M4 Quellen einbauen | Zitieren, Paraphrasieren, MLA, Quellen in die eigene Argumentation integrieren | geplant, Check 2 | offen |
+| M5 Eigene Daten | Umfrage- und Experimentdesign, (Meta-)Analyse von Daten/Primärquellen | geplant, Check 3 | offen |
+| M6 Statistik | Auswertung mit Python (Grundlagen-Skripte) | geplant (12/2) | offen |
+| M7 Werkzeuge | LaTeX/Overleaf, Git, Kanban | geplant, wenn Ideen stehen | offen |
+
+- Fristen: Thema/Forschungsfrage bis Ende 12/1; Präsentation 12/2; Abgabe
+  2. Schultag im November (13); Prüfungsgespräch 13/1. Gewichtung
+  Seminararbeit : Prüfungsgespräch = 2 : 1 (KM-Info ab Abiturjahrgang
+  2025/2027), Leistungen werden einzeln im Zeugnis ausgewiesen.
+- Laufend: Snapshots des Schreibstands etwa alle 4 Wochen, KI-Log,
+  3-2-1-Backup; geplante betreute Schreibstunde als Sprachreferenz.
+- **Leistungsnachweis 12/1 (Planung):** drei Online-Checks nach M3, M4, M5,
+  die besten zwei zählen als „Test“. Im Unterricht am eigenen Gerät, die
+  Lehrkraft sieht die Bildschirme. Vor Einführung mit Oberstufenkoordination
+  abstimmen und vorab ankündigen.
+- **Online-Checks** (`check-<n>-<thema>.html` + `checks/check-engine.js`):
+  Fragen im Klartext nur in `material/check-<n>-*.json` (nicht versioniert,
+  `.gitignore`), daraus `python3 checks/build_check.py material/check-<n>-*.json`
+  → `checks/check-<n>-*.js` (Lösungen nur als SHA-256-Hashes) + Lehrkräfte-
+  Schlüssel `material/…-key.md`. Startcode im JSON; Ergebnis bleibt im
+  Browser, Schüler:innen speichern eine Ergebnisdatei, die Seite wertet
+  Ergebnisdateien für die Lehrkraft neu aus. Clientseitig = nicht
+  manipulationssicher, daher nur unter Aufsicht einsetzen.
+
 ## Sprache & Inhalt
 
 - Seitensprache Deutsch (`lang="de"`); Englisch-Fachseiten englisch
@@ -227,8 +263,9 @@ Kopf, Lösungen als Hash in `data-loesung`, Hash-Werkzeug im Lehrkräfte-Bereich
 **Englisch** (`englisch/englisch.html`): 5 `wordcraft`; 12 `uk/`
 (uk-and-writing, north-south-divide), `media/narrative_lens`,
 `immigration-social-structures-identity/`, `global issues/`,
-`w-seminar-time/` (W-Seminar „Time“: `w-seminar-time.html` Dimensionen,
-`research-question.html` Forschungsfrage/These; → AB `ws-w1` bis `ws-w4`, eigene Vorlage); 13
+`w-seminar-time/` (W-Seminar „Time“, Kursplan siehe eigener Abschnitt: `w-seminar-time.html`,
+`research-question.html`, `research-methods.html`, `check-1-research-methods.html`;
+→ AB `ws-w1` bis `ws-w5`, eigene Vorlage); 13
 `questions-on-the-text/` (→ AB, eigene Vorlage)
 
 **Weitere Fächer**: `mathe/` (12: Exponential-/ln-Funktion, Umkehrfunktion),
