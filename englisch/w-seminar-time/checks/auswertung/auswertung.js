@@ -4,6 +4,7 @@
    - Schlüsseldatei material/<check>-key.json (format 2): Fragen, IDs, Lösungen, Notenschlüssel
    - Ergebnisdateien der Schüler:innen (check-engine.js): Auslosung (draw), Antworten, Quittung
    Ausgabe: Tabelle, CSV und je Person ein Bericht über genau zwei A4-Seiten
+   (mit Textblöcken vier, falls zwei Seiten nur mit sehr kleiner Schrift reichen)
    (Druckdialog → „Als PDF speichern“): Punkte, Notenpunkte mit Notenschlüssel,
    dann alle Aufgaben in der Reihenfolge und Anordnung, die die Person gesehen hat,
    mit eigener Antwort, richtiger Lösung und Punkten.
@@ -11,14 +12,16 @@
    Bewertung: single = alles oder nichts; multi = max(0, richtige − falsche Kreuze)
    ÷ Zahl der richtigen Optionen × Punkte; match = gleicher Anteil je Zeile;
    jeweils auf 0,5 gerundet. Notenpunkte: höchste Stufe, deren Prozentgrenze
-   erreicht ist. Die Seite enthält selbst keine Fragen und keine Lösungen. */
+   erreicht ist. Die Seite enthält selbst keine Fragen und keine Lösungen.
+   Textblöcke (Schlüssel: "passages", Auslosung: draw[i].ps): Der Text steht im
+   Bericht einmal kompakt mit Zeilennummern vor seinen Aufgaben. */
 (function () {
     'use strict';
 
     /* Texte im Bericht (Sprache aus der Schlüsseldatei: "lang") */
     var REP = {
         en: {
-            task: 'Task', p: 'P', points: 'points', np: 'grade points', of: 'of', page: 'page', receipt: 'receipt',
+            task: 'Task', text: 'Text', p: 'P', points: 'points', np: 'grade points', of: 'of', page: 'page', receipt: 'receipt',
             handed: 'handed in', scale: 'Grade scale', npRow: 'NP', ptsRow: 'from', all: 'Select all that apply.',
             next: 'Next step: {np} NP from {pts} P ({diff} P more).', top: 'Highest grade point reached.',
             okSel: 'your answer – correct', badSel: 'your answer – wrong', miss: 'correct answer you did not choose',
@@ -27,7 +30,7 @@
             calcMatch: '{r} of {n} rows right × {pts} P = {res} P', rounded: ' (rounded to 0.5)'
         },
         de: {
-            task: 'Aufgabe', p: 'P', points: 'Punkte', np: 'Notenpunkte', of: 'von', page: 'Seite', receipt: 'Quittung',
+            task: 'Aufgabe', text: 'Text', p: 'P', points: 'Punkte', np: 'Notenpunkte', of: 'von', page: 'Seite', receipt: 'Quittung',
             handed: 'abgegeben', scale: 'Notenschlüssel', npRow: 'NP', ptsRow: 'ab', all: 'Kreuze alle zutreffenden an.',
             next: 'Nächste Stufe: {np} NP ab {pts} P (noch {diff} P).', top: 'Höchste Notenpunktzahl erreicht.',
             okSel: 'deine Antwort – richtig', badSel: 'deine Antwort – falsch', miss: 'richtige Antwort, nicht gewählt',
@@ -248,6 +251,19 @@
         return h + '</div>';
     }
 
+    function textBlock(ps, n) {
+        var p = (KEY.passages || {})[ps], no = 0;
+        if (!p) return '';
+        var h = '<div class="r-text"><div class="r-tt"><b>' + L().text + ' ' + n + '</b> ' + esc(p.title) + (p.byline ? ' <span>' + esc(p.byline) + '</span>' : '') + '</div><div class="r-lines">';
+        p.paras.forEach(function (para) {
+            para.forEach(function (l, i) {
+                no++;
+                h += '<div class="ln' + (i === 0 && no > 1 ? ' np' : '') + '"><i>' + (no % 5 === 0 ? no : '') + '</i><span>' + l + '</span></div>';
+            });
+        });
+        return h + '</div></div>';
+    }
+
     function sheet(rep) {
         var s = document.createElement('div');
         s.className = 'sheet';
@@ -277,20 +293,29 @@
         var rep = document.createElement('section');
         rep.className = 'rep';
         $('mess').appendChild(rep);
-        var blocks = [headBlock(x) + '', legendBlock()].concat(x.ev.map(function (e, i) { return itemBlock(x, i); }));
+        var blocks = [headBlock(x) + '', legendBlock()], texts = 0;
+        x.ev.forEach(function (e, i) {
+            var ps = x.r.draw[i].ps;
+            if (ps && (i === 0 || x.r.draw[i - 1].ps !== ps)) { var tb = textBlock(ps, ++texts); if (tb) blocks.push(tb); }
+            blocks.push(itemBlock(x, i));
+        });
         blocks[0] = '<div>' + blocks[0] + '</div>';   // Kopf als ein Block
         var sizes = [];
         for (var f = FS_MAX; f >= FS_MIN - 1e-9; f -= FS_STEP) sizes.push(Math.round(f * 100) / 100);
-        function fits(fs, two) { return layout(rep, blocks, fs, two, 2) <= 2; }
-        function search(two) {   // größte passende Schrift (Binärsuche über die absteigende Liste)
+        function fits(fs, two, max) { return layout(rep, blocks, fs, two, max) <= max; }
+        function search(two, max) {   // größte passende Schrift (Binärsuche über die absteigende Liste)
             var lo = 0, hi = sizes.length - 1, best = -1;
-            while (lo <= hi) { var mid = (lo + hi) >> 1; if (fits(sizes[mid], two)) { best = mid; hi = mid - 1; } else lo = mid + 1; }
+            while (lo <= hi) { var mid = (lo + hi) >> 1; if (fits(sizes[mid], two, max)) { best = mid; hi = mid - 1; } else lo = mid + 1; }
             return best;
         }
-        var best = search(false), two = false;
+        var best = search(false, 2), two = false;
         if (best < 0 || sizes[best] < 8.5) {   // lieber Optionen zweispaltig als sehr kleine Schrift
-            var b2 = search(true);
+            var b2 = search(true, 2);
             if (b2 >= 0 && (best < 0 || sizes[b2] > sizes[best] + 0.5)) { best = b2; two = true; }
+        }
+        if (KEY.passages && (best < 0 || sizes[best] < 8)) {   // mit Texten: lieber 4 lesbare Seiten
+            var b4 = search(false, 4);
+            if (b4 >= 0) { best = b4; two = false; }
         }
         var pages;
         if (best >= 0) pages = layout(rep, blocks, sizes[best], two, 0);

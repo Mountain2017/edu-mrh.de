@@ -11,17 +11,21 @@
    the page holds no answers at all. Students save a result file at the end;
    the teacher scores all files on the separate scoring page with the key file,
    which never leaves the teacher's computer. Nothing is sent to a server;
-   answers are kept in this browser (localStorage) until hand-in. */
+   answers are kept in this browser (localStorage) until hand-in.
+
+   Text blocks (slot.block): one variant = a text (passage, numbered lines) plus
+   several tasks on it. The text is shown once, next to its tasks on wide
+   screens (sticky) and above them on narrow ones. */
 (function () {
     'use strict';
     var C = window.CHECK, root = document.getElementById('check');
     if (!C || !root) return;
     var KEY = 'check:' + C.id;
-    var PAYLOAD = null, META = null, ITEMS = {};
+    var PAYLOAD = null, META = null, ITEMS = {}, TEXTS = {};
 
     var TXT = {
         en: {
-            check: 'Online check', rules: 'Work on your own. You may not use other pages, notes or tools. The time starts when you enter the start code. Your answers are saved in this browser as you go; the timer keeps running if you reload. At the end, save your result file and hand it in as your teacher tells you.',
+            check: 'Online check', text: 'Text', tasksOn: 'tasks', rules: 'Work on your own. You may not use other pages, notes or tools. The time starts when you enter the start code. Your answers are saved in this browser as you go; the timer keeps running if you reload. At the end, save your result file and hand it in as your teacher tells you.',
             name: 'First and last name', code: 'Start code from your teacher', start: 'Start the check', https: 'This page needs a secure connection (https).',
             needName: 'Please enter your first and last name.', checking: 'Checking the code …', wrong: 'This start code is not correct.', loading: 'Loading …',
             min: 'minutes', tasks: 'tasks', points: 'points', all: 'Select all that apply.', choose: '– choose –', answer: 'answer',
@@ -33,7 +37,7 @@
             changed: 'This check has been updated since you started. Please ask your teacher.'
         },
         de: {
-            check: 'Online-Check', rules: 'Arbeite allein. Andere Seiten, Notizen und Hilfsmittel sind nicht erlaubt. Die Zeit läuft ab der Eingabe des Startcodes. Deine Antworten werden laufend in diesem Browser gespeichert; beim Neuladen läuft die Zeit weiter. Speichere am Ende deine Ergebnisdatei und gib sie ab, wie es deine Lehrkraft sagt.',
+            check: 'Online-Check', text: 'Text', tasksOn: 'Aufgaben', rules: 'Arbeite allein. Andere Seiten, Notizen und Hilfsmittel sind nicht erlaubt. Die Zeit läuft ab der Eingabe des Startcodes. Deine Antworten werden laufend in diesem Browser gespeichert; beim Neuladen läuft die Zeit weiter. Speichere am Ende deine Ergebnisdatei und gib sie ab, wie es deine Lehrkraft sagt.',
             name: 'Vor- und Nachname', code: 'Startcode deiner Lehrkraft', start: 'Check starten', https: 'Diese Seite braucht eine sichere Verbindung (https).',
             needName: 'Bitte gib Vor- und Nachnamen ein.', checking: 'Code wird geprüft …', wrong: 'Dieser Startcode stimmt nicht.', loading: 'Wird geladen …',
             min: 'Minuten', tasks: 'Aufgaben', points: 'Punkte', all: 'Kreuze alle zutreffenden an.', choose: '– wählen –', answer: 'Antwort',
@@ -66,8 +70,14 @@
             .then(function (buf) {
                 PAYLOAD = JSON.parse(new TextDecoder().decode(buf));
                 META = PAYLOAD.meta;
-                ITEMS = {};
-                PAYLOAD.slots.forEach(function (s) { s.variants.forEach(function (v) { ITEMS[v.id] = v; }); });
+                ITEMS = {}; TEXTS = {};
+                PAYLOAD.slots.forEach(function (s) {
+                    s.variants.forEach(function (v) {
+                        if (!s.block) { ITEMS[v.id] = v; return; }
+                        TEXTS[v.passage.id] = v.passage;
+                        v.items.forEach(function (it) { ITEMS[it.id] = it; });
+                    });
+                });
                 return PAYLOAD;
             });
     }
@@ -97,7 +107,11 @@
         var r = rng(seed), out = [];
         PAYLOAD.slots.forEach(function (s) {
             var v = s.variants[Math.floor(r() * s.variants.length)];
-            out.push({ id: v.id, order: shuffle((v.options || v.rows).map(function (o) { return o.id; }), r) });
+            (s.block ? v.items : [v]).forEach(function (it) {
+                var d = { id: it.id, order: shuffle((it.options || it.rows).map(function (o) { return o.id; }), r) };
+                if (s.block) d.ps = v.passage.id;
+                out.push(d);
+            });
         });
         return out;
     }
@@ -167,6 +181,20 @@
         }
         return html + '</fieldset>';
     }
+    function textHTML(ps, n, from, to) {
+        var p = TEXTS[ps], no = 0;
+        var html = '<aside class="ck-text" aria-label="' + T.text + ' ' + n + '"><p class="ck-kicker">' + T.text + ' ' + n + ' · ' + T.tasksOn + ' ' + from + '–' + to + '</p>' +
+            '<h2>' + esc(p.title) + '</h2>' + (p.byline ? '<p class="ck-by">' + esc(p.byline) + '</p>' : '');
+        p.paras.forEach(function (para) {
+            html += '<div class="ck-para">';
+            para.forEach(function (l) {
+                no++;
+                html += '<div class="ck-ln"><span class="ck-no' + (no % 5 ? '' : ' ck-n5') + '" aria-hidden="true">' + no + '</span><span>' + l + '</span></div>';
+            });
+            html += '</div>';
+        });
+        return html + '</aside>';
+    }
     function answered(d) {
         var a = state.answers[d.id], it = ITEMS[d.id];
         if (!it) return false;
@@ -178,7 +206,16 @@
         var html = '<div class="ck-bar" role="status"><span class="ck-who">' + esc(state.name) + '</span><span id="ck-prog"></span><span class="ck-time" id="ck-time"></span></div>';
         html += '<div class="ck-card"><p class="ck-kicker">' + esc(META.subtitle) + '</p><h1>' + esc(META.title) + '</h1>' +
             '<p class="ck-small">' + META.minutes + ' ' + T.min + ' · ' + META.tasks + ' ' + T.tasks + ' · ' + fmt(META.max) + ' ' + T.points + '</p></div>';
-        state.draw.forEach(function (d, i) { html += itemHTML(d, i + 1); });
+        var texts = 0;
+        for (var i = 0; i < state.draw.length; i++) {
+            var d = state.draw[i];
+            if (!d.ps) { html += itemHTML(d, i + 1); continue; }
+            var j = i; while (j + 1 < state.draw.length && state.draw[j + 1].ps === d.ps) j++;
+            html += '<div class="ck-block">' + textHTML(d.ps, ++texts, i + 1, j + 1) + '<div class="ck-qs">';
+            for (var k = i; k <= j; k++) html += itemHTML(state.draw[k], k + 1);
+            html += '</div></div>';
+            i = j;
+        }
         html += '<div class="ck-card ck-end"><p id="ck-left"></p><button class="ck-btn" id="ck-submit">' + T.handIn + '</button></div>';
         root.innerHTML = html;
         root.querySelectorAll('.ck-item').forEach(function (fs) {
