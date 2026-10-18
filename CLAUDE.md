@@ -207,6 +207,16 @@ QR-Codes (nicht löschen).
   liest nur lokal): Tabelle, CSV und je Person ein 2-seitiger Bericht (Druck → PDF)
   mit Notenpunkten, Notenschlüssel und allen Aufgaben wie gesehen, eigene Antwort,
   Lösung und Punkte. Check- und Auswertungsseite nirgends verlinken.
+- **Textblöcke** (`"block": true` im Fragen-JSON): ein Lesetext mit Zeilennummern und
+  mehrere Aufgaben dazu; je Version ein Paralleltext, alle Versionen mit gleicher
+  Aufgabenfolge (Typ, Punkte). Auf breiten Bildschirmen steht der Text mitlaufend neben
+  den Aufgaben; im Bericht steht er vor seinen Aufgaben (dann bei Bedarf 4 statt 2 Seiten).
+- **Weitere Checks mit derselben Technik**: Englisch 13 Questions on the Text
+  (`englisch/13/questions-on-the-text/checks/`, Fragen in `…/material/`). Dort liegen
+  nur Hülle, gebautes `.js` und **Kopien** von `check-engine.js`/`check.css` (identisch
+  zu den W-Seminar-Dateien halten). Build-Skript und Auswertung gibt es nur einmal im
+  W-Seminar-Ordner: `python englisch/w-seminar-time/checks/build_check.py
+  <thema>/material/check-<n>-*.json` schreibt das `.js` nach `<thema>/checks/`.
 
 ## Sprache & Inhalt
 
@@ -279,7 +289,8 @@ Kopf, Lösungen als Hash in `data-loesung`, Hash-Werkzeug im Lehrkräfte-Bereich
 **Englisch** (`englisch/englisch.html`): 5 `wordcraft`; 12 `uk/`
 (uk-and-writing, north-south-divide), `media/narrative_lens`,
 `immigration-social-structures-identity/`, `global issues/`,
-13 `questions-on-the-text/` (→ AB, eigene Vorlage); W-Seminar „Time“ (12/13) in
+13 `questions-on-the-text/` (→ AB, eigene Vorlage; verschlüsselter Online-Check
+`checks/check-1-questions-on-the-text.html`, unverlinkt); W-Seminar „Time“ (12/13) in
 `englisch/w-seminar-time/` (Kursplan siehe eigener Abschnitt: `w-seminar-time.html`,
 `research-question.html`, `research-methods.html`, `checks/check-1-research-methods.html`
 (verschlüsselt), Auswertung `checks/auswertung/`; → AB `ws-w1` bis `ws-w5`, eigene Vorlage)
