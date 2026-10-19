@@ -100,11 +100,24 @@
   nullref/.style={font=\scriptsize\ttfamily,inner sep=1pt},
   schritt/.style={circle,draw,fill=white,inner sep=0.6pt,font=\scriptsize\bfseries},
   lsgschritt/.style={schritt,draw=red!75!black,text=red!75!black},
-  % Sequenzdiagramm
-  lebenslinie/.style={draw,rounded corners=1.5pt,fill=white,font=\scriptsize,inner sep=2pt},
+  % Sequenzdiagramm (UML 2): Kopf eckig, synchron = gefüllte Spitze, asynchron = offene Spitze,
+  %  Rückgabe und Erzeugung gestrichelt mit offener Spitze (kein hohles Dreieck: das wäre Vererbung)
+  lebenslinie/.style={draw,sharp corners,fill=white,font=\scriptsize,inner sep=2pt},
+  leben/.style={densely dashed,gray},
   aufruf/.style={thick,-{Stealth[length=2mm]}},
-  rueckgabe/.style={thick,densely dashed,-{Stealth[length=2mm,open]}},
+  asynchron/.style={thick,-{Straight Barb[length=2mm,width=2.4mm]}},
+  rueckgabe/.style={thick,densely dashed,-{Straight Barb[length=2mm,width=2.4mm]}},
+  erzeugung/.style={rueckgabe},
 }
+% Akteur (Strichmännchen) mit Namen darunter: \akteur{x}{y oben}{Name}; ca. 0,9 cm hoch
+\newcommand{\akteur}[3]{\begin{scope}[shift={(#1,#2)},line width=0.6pt]
+  \draw (0,-0.09cm) circle (0.09cm);
+  \draw (0,-0.18cm) -- (0,-0.42cm) (-0.16cm,-0.26cm) -- (0.16cm,-0.26cm)
+        (-0.13cm,-0.62cm) -- (0,-0.42cm) -- (0.13cm,-0.62cm);
+  \node[font=\scriptsize,inner sep=1pt,anchor=north] at (0,-0.63cm) {#3};
+\end{scope}}
+% Aktivierungsbalken auf der Lebenslinie bei x von y1 bis y2: \aktiv{x}{y1}{y2}
+\newcommand{\aktiv}[3]{\draw[fill=gray!15] ($(#1,#2)+(-0.09cm,0)$) rectangle ($(#1,#3)+(0.09cm,0)$);}
 % Lösungszeichnung: im Blatt unsichtbar, belegt aber denselben Platz
 \ifloesung
   \tikzset{lsgbild/.style={red!75!black}}

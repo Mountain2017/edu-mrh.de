@@ -1431,7 +1431,7 @@
         }
 
         // --- Start beim Hauptprogramm ---
-        s('aufruf', 'hp', 'liste', aufrufText, 'Das Hauptprogramm ruft liste.' + aufrufText + ' auf.', 'Liste', null);
+        s('aufruf', 'hp', 'liste', aufrufText, 'Der Akteur (im Projekt: das Hauptprogramm) ruft liste.' + aufrufText + ' auf und wartet auf die Antwort.', 'Liste', null);
         stapel.push('liste');
         if (modus === 'kompositum') {
             var a = z.anfang;
@@ -1494,7 +1494,7 @@
         return s;
     }
 
-    function titel(id) { return id === 'hp' ? 'Hauptprogramm' : id === 'liste' ? 'liste : Liste' : id === 'ab' ? ': Abschluss' : id === 'null' ? 'null' : id + ' : Knoten'; }
+    function titel(id) { return id === 'hp' ? 'Nutzer:in' : id === 'liste' ? 'liste : Liste' : id === 'ab' ? ': Abschluss' : id === 'null' ? 'null' : id + ' : Knoten'; }
 
     function zeichneStruktur(svg, zustand, modus) {
         while (svg.firstChild) svg.removeChild(svg.firstChild);
@@ -1614,47 +1614,83 @@
             return 56 + i * abstand;
         }
 
+        // UML-Sequenzdiagramm: Akteur (Strichmännchen) startet den Ablauf, Objekte mit eckigem Kopf
+        // und Lebenslinie, Aktivierungsbalken vom Aufruf bis zur Rückgabe; synchroner Aufruf mit
+        // gefüllter Spitze, Rückgabe und Erzeugung («create») gestrichelt mit offener Spitze.
         function zeichneSeq() {
             while (seq.firstChild) seq.removeChild(seq.firstChild);
-            var zeilenH = 30, kopfY = 6, start = 52;
+            var zeilenH = 30, kopfY = 12, start = 88, B = 5; // B = halbe Balkenbreite
             var gezeigt = daten.schritte.slice(0, pos);
             var hoehe = start + Math.max(gezeigt.length, 4) * zeilenH + 16;
             seq.setAttribute('viewBox', '0 0 820 ' + hoehe);
             var defs = el('defs', {}, seq);
-            [['a', '#1e293b', 'z'], ['r', '#0f766e', ''], ['n', '#7c3aed', 'z']].forEach(function (m) {
+            [['a', '#1e293b', 'z'], ['r', '#0f766e', ''], ['n', '#7c3aed', '']].forEach(function (m) {
                 var mk = el('marker', { id: mid + m[0], viewBox: '0 0 10 10', refX: 9, refY: 5, markerUnits: 'userSpaceOnUse', markerWidth: 9, markerHeight: 9, orient: 'auto' }, defs);
                 el('path', { d: m[2] ? 'M0,0 L10,5 L0,10 z' : 'M0,0 L10,5 L0,10', fill: m[2] ? m[1] : 'none', stroke: m[1], 'stroke-width': 1.5 }, mk);
             });
+            // Aktivierungsbalken: vom Aufruf eines Objekts bis zu seiner Rückgabe (offen = arbeitet/wartet noch)
+            var offen = [], balken = [];
+            gezeigt.forEach(function (st, i) {
+                if (st.art === 'aufruf' && st.zu !== 'null') offen.push({ id: st.zu, von: i });
+                if (st.art === 'rueckgabe') {
+                    for (var k = offen.length - 1; k >= 0; k--) {
+                        if (offen[k].id === st.von) { balken.push({ id: st.von, von: offen[k].von, bis: i }); offen.splice(k, 1); break; }
+                    }
+                }
+            });
+            offen.forEach(function (o) { balken.push({ id: o.id, von: o.von, bis: null }); });
+            var aktivBis = {}; // Zeile -> ids mit Balken (für Pfeilenden)
+            balken.forEach(function (b) {
+                var bis = b.bis === null ? gezeigt.length - 0.6 : b.bis;
+                for (var r = b.von; r <= Math.ceil(bis); r++) { (aktivBis[r] = aktivBis[r] || {})[b.id] = true; }
+                b.y1 = start + b.von * zeilenH;
+                b.y2 = start + bis * zeilenH;
+            });
+            function rand(id, zeile, richtung) { return x(id) + (aktivBis[zeile] && aktivBis[zeile][id] ? richtung * B : 0); }
             // Erzeugungszeitpunkt von k5
             var k5Zeile = -1;
             gezeigt.forEach(function (st, i) { if (st.art === 'neu' && k5Zeile < 0) k5Zeile = i; });
             sp.forEach(function (id) {
                 if (id === 'k5' && k5Zeile < 0) return;
+                var xm = x(id);
+                if (id === 'hp') {
+                    // Akteur als Strichmännchen
+                    el('circle', { cx: xm, cy: 10, r: 6, 'class': 'rw-akteur' }, seq);
+                    el('path', { d: 'M' + xm + ',16 L' + xm + ',32 M' + (xm - 11) + ',21 L' + (xm + 11) + ',21 M' + (xm - 9) + ',44 L' + xm + ',32 L' + (xm + 9) + ',44', 'class': 'rw-akteur' }, seq);
+                    el('text', { x: xm, y: 55, 'class': 'rw-klein' }, seq, titel(id));
+                    el('line', { x1: xm, y1: 63, x2: xm, y2: hoehe - 4, 'class': 'rw-leben' }, seq);
+                    return;
+                }
                 var y0 = id === 'k5' ? start + k5Zeile * zeilenH - 12 : kopfY;
-                var bw = id === 'hp' ? 104 : 86;
-                el('rect', { x: x(id) - bw / 2, y: y0, width: bw, height: 24, rx: 4, 'class': 'rw-kopf' + (id === 'ab' ? ' rw-kopf-ab' : '') + (id === 'null' ? ' rw-kopf-null' : '') }, seq);
-                el('text', { x: x(id), y: y0 + 13, 'class': 'rw-klein' }, seq, titel(id));
-                el('line', { x1: x(id), y1: y0 + 24, x2: x(id), y2: hoehe - 4, 'class': 'rw-leben' }, seq);
+                el('rect', { x: xm - 43, y: y0, width: 86, height: 24, 'class': 'rw-kopf' + (id === 'ab' ? ' rw-kopf-ab' : '') + (id === 'null' ? ' rw-kopf-null' : '') }, seq);
+                el('text', { x: xm, y: y0 + 13, 'class': 'rw-klein' }, seq, titel(id));
+                el('line', { x1: xm, y1: y0 + 24, x2: xm, y2: hoehe - 4, 'class': 'rw-leben' }, seq);
+            });
+            balken.forEach(function (b) {
+                el('rect', { x: x(b.id) - B, y: b.y1, width: 2 * B, height: Math.max(b.y2 - b.y1, 6), 'class': 'rw-balken' + (b.bis === null ? ' rw-balken-offen' : '') }, seq);
             });
             gezeigt.forEach(function (st, i) {
                 var y = start + i * zeilenH;
                 var letzt = i === gezeigt.length - 1;
                 var x1 = x(st.von), x2 = x(st.zu);
+                var dir = x2 > x1 ? 1 : -1;
                 if (st.art === 'aufruf' || st.art === 'neu') {
                     var istNeu = st.art === 'neu';
-                    // Beim Erzeugen endet der Pfeil am Kopf des neuen Objekts
-                    var ziel = istNeu ? x2 + (x2 > x1 ? -45 : 45) : x2 + (x2 > x1 ? -4 : 4);
-                    el('path', { d: 'M' + x1 + ',' + y + ' L' + ziel + ',' + y, 'class': 'rw-ruf' + (istNeu ? ' rw-ruf-neu' : '') + (letzt ? ' rw-letzt' : ''), 'marker-end': 'url(#' + mid + (istNeu ? 'n' : 'a') + ')' }, seq);
-                    el('text', { x: (x1 + ziel) / 2, y: y - 9, 'class': 'rw-klein rw-mono rw-label' }, seq, istNeu ? 'new' : st.beschriftung);
+                    var von = rand(st.von, i, dir);
+                    // Beim Erzeugen endet der Pfeil am Kopf des neuen Objekts, sonst am Aktivierungsbalken
+                    var ziel = istNeu ? x2 - dir * 43 : rand(st.zu, i, -dir);
+                    el('path', { d: 'M' + von + ',' + y + ' L' + ziel + ',' + y, 'class': 'rw-ruf' + (istNeu ? ' rw-ruf-neu' : '') + (letzt ? ' rw-letzt' : ''), 'marker-end': 'url(#' + mid + (istNeu ? 'n' : 'a') + ')' }, seq);
+                    el('text', { x: (von + ziel) / 2, y: y - 9, 'class': 'rw-klein rw-mono rw-label' }, seq, istNeu ? '«create»' : st.beschriftung);
                 } else if (st.art === 'rueckgabe') {
-                    el('path', { d: 'M' + x1 + ',' + y + ' L' + (x2 + (x2 > x1 ? -4 : 4)) + ',' + y, 'class': 'rw-rueck' + (letzt ? ' rw-letzt' : ''), 'marker-end': 'url(#' + mid + 'r)' }, seq);
-                    el('text', { x: (x1 + x2) / 2, y: y - 10, 'class': 'rw-wert rw-mono rw-label' }, seq, st.beschriftung);
+                    var von2 = rand(st.von, i, dir), ziel2 = rand(st.zu, i, -dir);
+                    el('path', { d: 'M' + von2 + ',' + y + ' L' + ziel2 + ',' + y, 'class': 'rw-rueck' + (letzt ? ' rw-letzt' : ''), 'marker-end': 'url(#' + mid + 'r)' }, seq);
+                    el('text', { x: (von2 + ziel2) / 2, y: y - 10, 'class': 'rw-wert rw-mono rw-label' }, seq, st.beschriftung);
                 } else if (st.art === 'aendern') {
-                    el('rect', { x: x1 + 6, y: y - 11, width: 8 + st.beschriftung.length * 6.6, height: 20, rx: 3, 'class': 'rw-aendern' + (letzt ? ' rw-letzt-box' : '') }, seq);
-                    el('text', { x: x1 + 10, y: y, 'class': 'rw-klein rw-mono rw-links' }, seq, st.beschriftung);
+                    el('rect', { x: x1 + B + 4, y: y - 11, width: 8 + st.beschriftung.length * 6.6, height: 20, rx: 3, 'class': 'rw-aendern' + (letzt ? ' rw-letzt-box' : '') }, seq);
+                    el('text', { x: x1 + B + 8, y: y, 'class': 'rw-klein rw-mono rw-links' }, seq, st.beschriftung);
                 } else if (st.art === 'absturz') {
                     el('path', { d: 'M' + (x2 - 9) + ',' + (y - 9) + ' L' + (x2 + 9) + ',' + (y + 9) + ' M' + (x2 + 9) + ',' + (y - 9) + ' L' + (x2 - 9) + ',' + (y + 9), 'class': 'rw-x' }, seq);
-                    el('text', { x: x2 - 14, y: y, 'class': 'rw-fehlertext rw-rechts' }, seq, 'NullPointerException');
+                    el('text', { x: x2 + 48, y: y + 20, 'class': 'rw-fehlertext rw-rechts' }, seq, 'NullPointerException');
                 }
             });
         }
