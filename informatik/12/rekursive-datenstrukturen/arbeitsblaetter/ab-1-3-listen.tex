@@ -3,7 +3,7 @@
 \begin{document}
 \abtitel{1.3}{Listen und Rekursion}
 
-Die Taxizentrale führt eine Liste der Taxis im Dienst. Taxis kommen dazu und melden sich ab -- in beliebiger Reihenfolge. Eine Warteschlange nimmt aber nur vorne heraus. Unsere \textbf{Liste} kennt nur ihren ersten Knoten (\code{anfang}), alles Weitere erledigen die Knoten. \web{Station 1.3, Projekt Taxizentrale}
+Taxis melden sich in beliebiger Reihenfolge an und ab. Unsere \textbf{Liste} kennt nur ihren ersten Knoten (\code{anfang}), den Rest erledigen die Knoten. \web{Station 1.3, Projekt Taxizentrale}
 
 \begin{aufgabe}[Wie viele stehen hinter dir?]{1}
 \begin{minipage}[t]{0.56\linewidth}
@@ -20,7 +20,7 @@ Die erste Person in der Mensa-Schlange will wissen, wie viele anstehen. Jede dar
 \end{aufgabe}
 
 \begin{aufgabe}[Projekt Taxizentrale, TODO 2]{2}
-\textbf{a)} Links zählt \code{anzahl()} aus 1.1 mit einer Wiederholung. Rechts arbeitet jeder Knoten nach der Regel aus Aufgabe 1. Ergänze die Lücken und beschrifte die Kommentare mit \textit{Abbruchbedingung} und \textit{rekursiver Aufruf}.\\[0.5mm]
+\textbf{a)} Ergänze \code{laenge()} nach der Regel aus Aufgabe 1. Beschrifte: \textit{Abbruchbedingung}, \textit{rekursiver Aufruf}.\\[0.5mm]
 \begin{minipage}[t]{0.38\linewidth}
 \vspace{0pt}
 \textit{\small iterativ (Warteschlange, 1.1)}
@@ -55,31 +55,68 @@ public int laenge() {
    else { return §\lsg[2.6cm]{anfang.laenge()}§; }
 }
 \end{java}
-\end{minipage}\\[1mm]
-\textbf{b)} Ergänze das Sequenzdiagramm für \code{liste.laenge()} bei drei Knoten: alle Aufrufe (durchgezogen) und alle Rückgaben mit Wert (gestrichelt).\\[0.5mm]
-\begin{tikzpicture}[x=1cm,y=1.2cm]
-\foreach \name/\x/\txt in {hp/0.4/Hauptprogramm, li/3.8/liste : Liste, k1/7.2/k1 : Knoten, k2/10.6/k2 : Knoten, k3/14/k3 : Knoten} {
+\end{minipage}
+\begin{merke}[Das UML-Sequenzdiagramm: Wer ruft wann wen auf?]
+\begin{minipage}[t]{0.43\linewidth}
+\vspace{0pt}
+\begin{tikzpicture}[x=1cm,y=0.8cm]
+\akteur{0.45}{0.25}{Nutzer:in}
+\draw[leben] (0.45,-0.95) -- (0.45,-3.6);
+\node[lebenslinie] (li) at (2.25,-0.55) {liste : Liste};
+\node[lebenslinie] (ta) at (6.35,-0.55) {t : Taxi};
+\node[lebenslinie] (kn) at (4.75,-1.85) {k1 : Knoten};
+\foreach \k/\x in {li/2.25, ta/6.35, kn/4.75} { \draw[leben] (\k.south) -- (\x,-3.6); }
+\aktiv{2.25}{-1.3}{-2.5}
+\aktiv{6.35}{-3.05}{-3.45}
+\draw[aufruf] (0.45,-1.3) -- node[above,pos=0.62,font=\scriptsize,inner sep=1pt] {\code{add(t)}} ([xshift=-0.09cm]2.25,-1.3);
+\draw[erzeugung] ([xshift=0.09cm]2.25,-1.85) -- node[above,font=\scriptsize,inner sep=1pt] {«create»} (kn.west);
+\draw[rueckgabe] ([xshift=-0.09cm]2.25,-2.5) -- node[above,pos=0.4,font=\scriptsize,inner sep=1pt] {\code{true}} (0.45,-2.5);
+\draw[asynchron] (0.45,-3.05) -- node[above,font=\scriptsize,inner sep=1pt] {\code{funk("Bahnhof")}} ([xshift=-0.09cm]6.35,-3.05);
+\foreach \x/\y/\n in {1.0/-0.3/1, 3.3/-0.55/2, 2.6/-2.17/3, 1.3/-1.65/4, 0.8/-2.24/5, 3.4/-2.22/6, 3.6/-3.4/7} { \node[schritt] at (\x,\y) {\n}; }
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.55\linewidth}
+\vspace{0pt}\scriptsize\raggedright
+\nr{1} \textbf{Akteur}: startet den Ablauf (im Projekt: Hauptprogramm).\\
+\nr{2} \textbf{Objekt} \code{name : Klasse} mit \textbf{Lebenslinie} (Zeit läuft nach unten).\\
+\nr{3} \textbf{Aktivierungsbalken}: Objekt arbeitet oder wartet auf Antwort.\\
+\nr{4} \textbf{Synchroner Aufruf}, gefüllte Spitze: Der Aufrufer wartet auf die Antwort (so jeder Methodenaufruf in Java).\\
+\nr{5} \textbf{Rückgabe}, gestrichelt, mit Wert: Danach endet der Balken.\\
+\nr{6} \textbf{Erzeugung} «create» (\code{new}): Pfeil zum Kopf des neuen Objekts.\\
+\nr{7} \textbf{Asynchroner Aufruf}, offene Spitze: Der Aufrufer schickt ab und arbeitet sofort weiter, ohne Rückgabe (wie Textnachricht statt Anruf).
+\end{minipage}
+\end{merke}
+\textbf{b)} Ergänze für \code{liste.laenge()} alle Aufrufe, Rückgaben mit Wert und Aktivierungsbalken.\\[0.5mm]
+\begin{tikzpicture}[x=1cm,y=0.85cm]
+\akteur{0.6}{0.5}{Nutzer:in}
+\draw[leben] (0.6,-0.6) -- (0.6,-3.55);
+\foreach \name/\x/\txt in {li/3.8/liste : Liste, k1/7.2/k1 : Knoten, k2/10.6/k2 : Knoten, k3/14/k3 : Knoten} {
   \node[lebenslinie] (\name) at (\x,0) {\txt};
-  \draw[densely dashed,gray] (\name.south) -- (\x,-3.5);
+  \draw[leben] (\name.south) -- (\x,-3.55);
 }
 \node[font=\tiny,gray,right=0pt of k1.south east,anchor=north west] {Taxi 12};
 \node[font=\tiny,gray,right=0pt of k2.south east,anchor=north west] {Taxi 7};
 \node[font=\tiny,gray,right=0pt of k3.south east,anchor=north west] {Taxi 3};
-\draw[aufruf] (0.4,-0.65) -- node[above,font=\scriptsize,inner sep=1pt] {\code{laenge()}} (3.8,-0.65);
+\aktiv{3.8}{-0.65}{-3.35}
+\draw[aufruf] (0.6,-0.65) -- node[above,font=\scriptsize,inner sep=1pt] {\code{laenge()}} ([xshift=-0.09cm]3.8,-0.65);
 \begin{scope}[lsgbild]
-  \draw[aufruf] (3.8,-1.05) -- node[above,font=\scriptsize,inner sep=1pt] {\lsgtext{\code{laenge()}}} (7.2,-1.05);
-  \draw[aufruf] (7.2,-1.45) -- node[above,font=\scriptsize,inner sep=1pt] {\lsgtext{\code{laenge()}}} (10.6,-1.45);
-  \draw[aufruf] (10.6,-1.85) -- node[above,font=\scriptsize,inner sep=1pt] {\lsgtext{\code{laenge()}}} (14,-1.85);
-  \draw[rueckgabe] (14,-2.3) -- node[above,font=\scriptsize,inner sep=1pt] {\lsgtext{\code{1}}} (10.6,-2.3);
-  \draw[rueckgabe] (10.6,-2.65) -- node[above,font=\scriptsize,inner sep=1pt] {\lsgtext{\code{2}}} (7.2,-2.65);
-  \draw[rueckgabe] (7.2,-3.0) -- node[above,font=\scriptsize,inner sep=1pt] {\lsgtext{\code{3}}} (3.8,-3.0);
-  \draw[rueckgabe] (3.8,-3.35) -- node[above,font=\scriptsize,inner sep=1pt] {\lsgtext{\code{3}}} (0.4,-3.35);
+  \aktiv{7.2}{-1.05}{-3.0}
+  \aktiv{10.6}{-1.45}{-2.65}
+  \aktiv{14}{-1.85}{-2.3}
+  \draw[aufruf] ([xshift=0.09cm]3.8,-1.05) -- node[above,font=\scriptsize,inner sep=1pt] {\lsgtext{\code{laenge()}}} ([xshift=-0.09cm]7.2,-1.05);
+  \draw[aufruf] ([xshift=0.09cm]7.2,-1.45) -- node[above,font=\scriptsize,inner sep=1pt] {\lsgtext{\code{laenge()}}} ([xshift=-0.09cm]10.6,-1.45);
+  \draw[aufruf] ([xshift=0.09cm]10.6,-1.85) -- node[above,font=\scriptsize,inner sep=1pt] {\lsgtext{\code{laenge()}}} ([xshift=-0.09cm]14,-1.85);
+  \draw[rueckgabe] ([xshift=-0.09cm]14,-2.3) -- node[above,font=\scriptsize,inner sep=1pt] {\lsgtext{\code{1}}} ([xshift=0.09cm]10.6,-2.3);
+  \draw[rueckgabe] ([xshift=-0.09cm]10.6,-2.65) -- node[above,font=\scriptsize,inner sep=1pt] {\lsgtext{\code{2}}} ([xshift=0.09cm]7.2,-2.65);
+  \draw[rueckgabe] ([xshift=-0.09cm]7.2,-3.0) -- node[above,font=\scriptsize,inner sep=1pt] {\lsgtext{\code{3}}} ([xshift=0.09cm]3.8,-3.0);
+  \draw[rueckgabe] ([xshift=-0.09cm]3.8,-3.35) -- node[above,font=\scriptsize,inner sep=1pt] {\lsgtext{\code{3}}} (0.6,-3.35);
 \end{scope}
-\end{tikzpicture}
+\end{tikzpicture}\\
+{\raggedright\textbf{c)} Die Aufrufe sind \lsg[5.25cm]{synchron}, weil \lsg[7.2cm]{jeder Aufrufer auf die Antwort wartet}.\par}
 \end{aufgabe}
 
 \begin{merke}[Rekursion]
-Eine Methode heißt \lsg[2.1cm]{rekursiv}, wenn sie sich selbst aufruft -- hier für den Nachfolger. Sie braucht eine \lsg[3.6cm]{Abbruchbedingung}, sonst würde sie sich endlos weiter aufrufen. Die Liste ist eine \textbf{rekursive Datenstruktur}: Ein Knoten mit seinem Rest ist wieder eine Liste. Darum folgen auch die Methoden der Struktur: Jeder Knoten erledigt seinen Teil und gibt den \lsg[2.2cm]{Rest} des Auftrags an seinen \lsg[2.4cm]{Nachfolger} weiter.
+Eine Methode heißt \lsg[2.1cm]{rekursiv}, wenn sie sich selbst aufruft. Ohne \lsg[3.6cm]{Abbruchbedingung} ruft sie sich endlos auf. Die Liste ist eine \textbf{rekursive Datenstruktur}: Ein Knoten mit seinem Rest ist wieder eine Liste. Darum erledigt jeder Knoten seinen Teil und gibt den \lsg[2.2cm]{Rest} an seinen \lsg[2.4cm]{Nachfolger} weiter.
 \end{merke}
 
 \newpage
