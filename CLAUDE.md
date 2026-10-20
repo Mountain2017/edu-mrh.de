@@ -228,7 +228,7 @@ QR-Codes (nicht löschen).
   Die Ergebnisdatei enthält dafür zusätzlich `pruefungsId` und `receiptId` (für den
   Power-Automate-Flow); Punkte stehen nie darin, die liefert nur die Auswertungsseite.
   **Startseite** (alle Checks): Name, Kurs/Klasse (Freitext; mit `data-kurse="10C,3e1"`
-  Auswahlliste) und Zeitzuschlag (Nachteilsausgleich, Auswahl `data-extra`, Standard 25/50 %);
+  Auswahlliste) und Zeitzuschlag (Nachteilsausgleich, Auswahl `data-extra`, Standard 10/15/20/25 %);
   die Zeit läuft dann `minutes × (1 + Zuschlag)`. Die Ergebnisdatei (`rv: 2`) enthält `kurs`,
   `zeitzuschlag`, `zeitMin`, `zeitErlaubtMin`, `dauerMin`, `dauer`, `zeitAbgelaufen`; die
   Quittung deckt ab `rv 2` auch Kurs, Zuschlag und Startzeit ab (gleiche Formel in

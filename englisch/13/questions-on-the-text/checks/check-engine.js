@@ -28,7 +28,7 @@
 
    Start screen: name, course/class and extra time (Nachteilsausgleich).
    data-kurse="10C,3e1" on #check → course as a drop-down, else free text.
-   data-extra="25,50" → extra-time choices in percent (default 25 and 50).
+   data-extra="10,15,20,25" → extra-time choices in percent (default 10, 15, 20, 25).
    The timer runs for minutes × (1 + extra/100). The result file contains the
    course, extra time, allowed time and the actual duration; from rv 2 on the
    receipt also covers course, extra time and start time (same formula on the
@@ -183,7 +183,7 @@
 
     function renderStart() {
         var kurse = (root.dataset.kurse || '').split(',').map(function (s) { return s.trim(); }).filter(Boolean);
-        var extras = (root.dataset.extra || '25,50').split(',').map(function (s) { return parseInt(s, 10); }).filter(function (n) { return n > 0; });
+        var extras = (root.dataset.extra || '10,15,20,25').split(',').map(function (s) { return parseInt(s, 10); }).filter(function (n) { return n > 0; });
         var kursField = kurse.length
             ? '<select id="ck-kurs"><option value="">' + T.choose + '</option>' + kurse.map(function (k) { return '<option>' + esc(k) + '</option>'; }).join('') + '</select>'
             : '<input id="ck-kurs" autocomplete="off" spellcheck="false">';
