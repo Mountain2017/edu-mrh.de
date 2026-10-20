@@ -32,7 +32,12 @@
    The timer runs for minutes × (1 + extra/100). The result file contains the
    course, extra time, allowed time and the actual duration; from rv 2 on the
    receipt also covers course, extra time and start time (same formula on the
-   scoring page). */
+   scoring page).
+
+   Result file = PDF (Microsoft Forms does not accept .json): one readable page
+   (name, course, time, receipt) plus the result data, all ASCII, twice:
+   as a comment line "%EDUJSON:{…}" right after the header (read by the scoring
+   page and the Power Automate flow) and as the attachment result.json. */
 (function () {
     'use strict';
     var C = window.CHECK, root = document.getElementById('check');
@@ -50,7 +55,10 @@
             min: 'minutes', tasks: 'tasks', points: 'points', all: 'Select all that apply.', choose: '– choose –', answer: 'answer',
             answered: 'answered', handIn: 'Hand in', allDone: 'All tasks answered. Check your answers, then hand in.', open: 'task(s) still open.',
             confirmOpen: ' task(s) are not complete. Hand in anyway?', confirm: 'Hand in now? You cannot change your answers afterwards.',
-            handed: 'handed in', of: 'of', receipt: 'receipt', save: 'Save result file',
+            handed: 'handed in', of: 'of', receipt: 'receipt', save: 'Save result file (PDF)',
+            pdfTitle: 'Result file', lCheck: 'Check', lName: 'Name', lKurs: 'Course / class', lHanded: 'Handed in', lTime: 'Time taken',
+            lAns: 'Answered', lReceipt: 'Receipt', lId: 'Check ID / build',
+            pdfNote: 'This PDF contains your answers as data for scoring (attachment result.json). Upload exactly this file and do not change, re-save or print it: changes are detected through the receipt.',
             after: 'Hand in the result file as your teacher tells you (e.g. Teams). Your teacher scores it – you get your result later. Keep this screen open until your teacher has seen it.',
             reset: 'New attempt (teacher)', resetBtn: 'Reset this browser', resetCode: 'start code', wrongCode: 'Wrong code.',
             changed: 'This check has been updated since you started. Please ask your teacher.',
@@ -69,7 +77,10 @@
             min: 'Minuten', tasks: 'Aufgaben', points: 'Punkte', all: 'Kreuze alle zutreffenden an.', choose: '– wählen –', answer: 'Antwort',
             answered: 'beantwortet', handIn: 'Abgeben', allDone: 'Alle Aufgaben beantwortet. Prüfe deine Antworten, dann gib ab.', open: 'Aufgabe(n) noch offen.',
             confirmOpen: ' Aufgabe(n) sind unvollständig. Trotzdem abgeben?', confirm: 'Jetzt abgeben? Danach kannst du nichts mehr ändern.',
-            handed: 'abgegeben', of: 'von', receipt: 'Quittung', save: 'Ergebnisdatei speichern',
+            handed: 'abgegeben', of: 'von', receipt: 'Quittung', save: 'Ergebnisdatei speichern (PDF)',
+            pdfTitle: 'Ergebnisdatei', lCheck: 'Check', lName: 'Name', lKurs: 'Kurs / Klasse', lHanded: 'Abgegeben', lTime: 'Bearbeitungszeit',
+            lAns: 'Beantwortet', lReceipt: 'Quittung', lId: 'Check-ID / Build',
+            pdfNote: 'Diese PDF enthält deine Antworten als Daten für die Auswertung (Anhang result.json). Lade genau diese Datei hoch und verändere, speichere oder drucke sie nicht neu: Änderungen werden über die Quittung erkannt.',
             after: 'Gib die Ergebnisdatei ab, wie es deine Lehrkraft sagt (z. B. Teams). Die Lehrkraft wertet sie aus – dein Ergebnis bekommst du später. Lass diesen Bildschirm offen, bis deine Lehrkraft ihn gesehen hat.',
             reset: 'Neuer Versuch (Lehrkraft)', resetBtn: 'Browser zurücksetzen', resetCode: 'Startcode', wrongCode: 'Falscher Code.',
             changed: 'Dieser Check wurde geändert, seit du begonnen hast. Bitte melde dich bei deiner Lehrkraft.',
@@ -312,12 +323,63 @@
         });
     }
 
+    /* ---------------------------------------------------------------- result PDF */
+    var WIN = { 0x2013: 0x96, 0x2014: 0x97, 0x2018: 0x91, 0x2019: 0x92, 0x201C: 0x93, 0x201D: 0x94, 0x201E: 0x84, 0x2022: 0x95, 0x2026: 0x85, 0x20AC: 0x80 };
+    function pdfStr(s) {   // PDF literal string, WinAnsi, ASCII only
+        return '(' + Array.from(String(s)).map(function (ch) {
+            var c = ch.codePointAt(0), b = WIN[c] != null ? WIN[c] : (c < 128 || (c >= 0xA0 && c <= 0xFF)) ? c : 63;
+            if (b === 40 || b === 41 || b === 92) return '\\' + String.fromCharCode(b);
+            if (b < 32 || b > 126) return '\\' + ('00' + b.toString(8)).slice(-3);
+            return String.fromCharCode(b);
+        }).join('') + ')';
+    }
+    function wrap(text, max) {
+        var out = [], line = '';
+        text.split(' ').forEach(function (w) { if ((line + ' ' + w).trim().length > max) { out.push(line.trim()); line = w; } else line += ' ' + w; });
+        if (line.trim()) out.push(line.trim());
+        return out;
+    }
+    function resultPdf(data, rows) {
+        var json = JSON.stringify(data).replace(/[\u0080-\uffff]/g, function (c) { return '\\u' + ('000' + c.charCodeAt(0).toString(16)).slice(-4); });
+        var c = [], y = 790;
+        function txt(font, size, x, yy, s) { c.push('BT /' + font + ' ' + size + ' Tf 1 0 0 1 ' + x + ' ' + yy + ' Tm ' + pdfStr(s) + ' Tj ET'); }
+        txt('F2', 20, 50, y, 'edu-mrh.de \u00b7 ' + T.pdfTitle);
+        txt('F1', 12, 50, y - 24, META.title);
+        c.push('0.6 w 50 ' + (y - 36) + ' m 545 ' + (y - 36) + ' l S');
+        y -= 66;
+        rows.forEach(function (r) {
+            txt('F2', 11, 50, y, r[0]);
+            txt(r[2] ? 'F2' : 'F1', r[2] ? 16 : 11, 190, y, r[1]);
+            y -= r[2] ? 28 : 22;
+        });
+        c.push('0.6 w 50 ' + (y + 6) + ' m 545 ' + (y + 6) + ' l S');
+        y -= 12;
+        wrap(T.pdfNote, 112).forEach(function (l) { txt('F1', 9, 50, y, l); y -= 13; });
+        var content = c.join('\n');
+        var objs = [null,
+            '<< /Type /Catalog /Pages 2 0 R /Names << /EmbeddedFiles << /Names [(result.json) 6 0 R] >> >> >>',
+            '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+            '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 8 0 R >>',
+            '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>',
+            '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>',
+            '<< /Type /Filespec /F (result.json) /UF (result.json) /Desc (Result data) /EF << /F 7 0 R >> >>',
+            '<< /Type /EmbeddedFile /Subtype /application#2Fjson /Length ' + json.length + ' >>\nstream\n' + json + '\nendstream',
+            '<< /Length ' + content.length + ' >>\nstream\n' + content + '\nendstream'];
+        var out = '%PDF-1.7\n%EDUJSON:' + json + '\n', offs = [];
+        for (var i = 1; i < objs.length; i++) { offs[i] = out.length; out += i + ' 0 obj\n' + objs[i] + '\nendobj\n'; }
+        var xref = out.length;
+        out += 'xref\n0 ' + objs.length + '\n0000000000 65535 f \n';
+        for (i = 1; i < objs.length; i++) out += ('000000000' + offs[i]).slice(-10) + ' 00000 n \n';
+        return out + 'trailer\n<< /Size ' + objs.length + ' /Root 1 0 R >>\nstartxref\n' + xref + '\n%%EOF\n';
+    }
+
     function renderDone() {
         receipt(state).then(function (rc) {
             state.receipt = rc; save();
             var done = state.done != null ? state.done : state.draw.filter(answered).length, took = (state.submittedAt - state.startedAt) / 1000;
             var mins = T.duration + ' ' + mmss(took) + ' / ' + mmss(limitSec()) + (state.extra ? ' (+' + state.extra + ' %)' : '');
-            var fname = C.id + '_' + state.name.replace(/[^\wäöüÄÖÜß-]+/g, '-') + '.json';
+            var safe = function (s) { return String(s).replace(/[^\wäöüÄÖÜß-]+/g, '-').replace(/^-+|-+$/g, ''); };
+            var fname = (state.kurs ? safe(state.kurs) + '_' : '') + safe(state.name) + '_' + C.id + '.pdf';
             var form = root.dataset.abgabe ? root.dataset.abgabe.split('NAME_X').join(encodeURIComponent(state.name))
                 .split('RECEIPT_X').join(encodeURIComponent(rc)).split('PRUEFUNG_X').join(encodeURIComponent(C.id)) : '';
             var saveBtn = '<button class="ck-btn" id="ck-save">' + T.save + '</button>';
@@ -346,8 +408,12 @@
                 var file = { check: C.id, build: state.build || C.build, title: META.title, name: state.name, startedAt: state.startedAt, submittedAt: state.submittedAt, draw: state.draw, answers: state.answers, receipt: rc, pruefungsId: C.id, receiptId: rc,
                     rv: state.rv || 1, kurs: state.kurs || '', zeitzuschlag: state.extra || 0, zeitMin: META.minutes, zeitErlaubtMin: Math.round(limitSec() / 6) / 10,
                     dauerMin: Math.round(took / 6) / 10, dauer: mmss(took), zeitAbgelaufen: !!state.timeUp };
+                var pdf = resultPdf(file, [
+                    [T.lName, state.name], [T.lKurs, state.kurs || '–'], [T.lHanded, when(state.submittedAt)],
+                    [T.lTime, mmss(took) + ' / ' + mmss(limitSec()) + ' min' + (state.extra ? ' (+' + state.extra + ' %)' : '')],
+                    [T.lAns, done + ' / ' + state.draw.length], [T.lReceipt, rc, true], [T.lId, C.id + ' / ' + (state.build || C.build)]]);
                 var a = document.createElement('a');
-                a.href = URL.createObjectURL(new Blob([JSON.stringify(file, null, 1)], { type: 'application/json' }));
+                a.href = URL.createObjectURL(new Blob([pdf], { type: 'application/pdf' }));
                 a.download = fname;
                 document.body.appendChild(a); a.click(); a.remove();
                 state.saved = Date.now(); save(); lock();

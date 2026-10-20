@@ -202,7 +202,11 @@ QR-Codes (nicht löschen).
   desselben Builds, also nie nach der Durchführung neu bauen. Startcode `"auto"` =
   zufälliger 12-stelliger Code, nur im Unterricht nennen; nach einem Leck neuen Code
   wählen (alte Builds stehen in der Historie). Bewertung erst nach der Stunde:
-  Schüler:innen speichern eine Ergebnisdatei; die Lehrkraft lädt Schlüssel- und
+  Schüler:innen speichern eine **Ergebnis-PDF** (Microsoft Forms nimmt kein `.json`): eine
+  lesbare Seite plus die Daten, nur ASCII, zweimal – als Zeile `%EDUJSON:{…}` direkt nach dem
+  Kopf (liest Auswertung und Power-Automate-Flow) und als Anhang `result.json`
+  (`resultPdf()` in `check-engine.js`; Dateiname `<kurs>_<name>_<check-id>.pdf`). Ältere
+  `.json`-Ergebnisdateien liest die Auswertung weiter. Die Lehrkraft lädt Schlüssel- und
   Ergebnisdateien in **`/checks/auswertung/auswertung.html`** (Repo-Root, zentral für alle
   Checks und Fächer, Ordner auf dem Server per eigener `.htaccess` geschützt; unverlinkt,
   ohne Links, liest nur lokal): Tabelle, CSV und je Person ein 2-seitiger Bericht (Druck → PDF)

@@ -3,7 +3,8 @@
    Eingabe (nur lokal im Browser gelesen):
    Liegt zentral unter /checks/auswertung/ (für alle Checks, Ordner per .htaccess geschützt).
    - Schlüsseldatei material/<check>-key.json (format 2): Fragen, IDs, Lösungen, Notenschlüssel
-   - Ergebnisdateien der Schüler:innen (check-engine.js): Auslosung (draw), Antworten, Quittung
+   - Ergebnisdateien der Schüler:innen (check-engine.js): PDF mit Datenzeile %EDUJSON:{…}
+     (ältere Checks: .json) – Auslosung (draw), Antworten, Quittung
    Ausgabe: Tabelle, CSV und je Person ein Bericht über genau zwei A4-Seiten
    (mit Textblöcken vier, falls zwei Seiten nur mit sehr kleiner Schrift reichen)
    (Druckdialog → „Als PDF speichern“): Punkte, Notenpunkte mit Notenschlüssel,
@@ -111,7 +112,14 @@
     function addFiles(list) {
         Promise.all(Array.prototype.map.call(list, function (f) {
             return f.text().then(function (t) {
-                var j; try { j = JSON.parse(t); } catch (e) { return { file: f.name, err: 'keine JSON-Datei' }; }
+                var j;
+                if (t.slice(0, 5) === '%PDF-') {   // Ergebnis-PDF von check-engine.js: Daten in der Zeile %EDUJSON:{…}
+                    var i = t.indexOf('%EDUJSON:'), n = i < 0 ? -1 : t.indexOf('\n', i);
+                    if (i < 0) return { file: f.name, err: 'PDF ohne Ergebnisdaten (nicht die Originaldatei, z. B. neu gespeichert oder gedruckt?)' };
+                    try { j = JSON.parse(t.slice(i + 9, n < 0 ? undefined : n).trim()); } catch (e) { return { file: f.name, err: 'Ergebnisdaten in der PDF beschädigt' }; }
+                } else {
+                    try { j = JSON.parse(t); } catch (e) { return { file: f.name, err: 'weder JSON- noch Ergebnis-PDF' }; }
+                }
                 return { file: f.name, json: j };
             });
         })).then(function (read) {
