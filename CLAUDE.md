@@ -203,8 +203,9 @@ QR-Codes (nicht löschen).
   zufälliger 12-stelliger Code, nur im Unterricht nennen; nach einem Leck neuen Code
   wählen (alte Builds stehen in der Historie). Bewertung erst nach der Stunde:
   Schüler:innen speichern eine Ergebnisdatei; die Lehrkraft lädt Schlüssel- und
-  Ergebnisdateien in `checks/auswertung/auswertung.html` (unverlinkt, ohne Links,
-  liest nur lokal): Tabelle, CSV und je Person ein 2-seitiger Bericht (Druck → PDF)
+  Ergebnisdateien in **`/checks/auswertung/auswertung.html`** (Repo-Root, zentral für alle
+  Checks und Fächer, Ordner auf dem Server per eigener `.htaccess` geschützt; unverlinkt,
+  ohne Links, liest nur lokal): Tabelle, CSV und je Person ein 2-seitiger Bericht (Druck → PDF)
   mit Notenpunkten, Notenschlüssel und allen Aufgaben wie gesehen, eigene Antwort,
   Lösung und Punkte. Check- und Auswertungsseite nirgends verlinken.
 - **Textblöcke** (`"block": true` im Fragen-JSON): ein Lesetext mit Zeilennummern und
@@ -221,8 +222,16 @@ QR-Codes (nicht löschen).
   Platzhaltern `NAME_X`, `RECEIPT_X`, `PRUEFUNG_X`; der Ergebnisbildschirm zeigt dann
   „1. Datei speichern, 2. Formular öffnen“ (Formular erst nach dem Speichern aktiv).
   Die Ergebnisdatei enthält dafür zusätzlich `pruefungsId` und `receiptId` (für den
-  Power-Automate-Flow); Punkte stehen nie darin, die liefert nur die Auswertungsseite. Build-Skript und Auswertung gibt es nur einmal im
-  W-Seminar-Ordner: `python englisch/w-seminar-time/checks/build_check.py
+  Power-Automate-Flow); Punkte stehen nie darin, die liefert nur die Auswertungsseite.
+  **Startseite** (alle Checks): Name, Kurs/Klasse (Freitext; mit `data-kurse="10C,3e1"`
+  Auswahlliste) und Zeitzuschlag (Nachteilsausgleich, Auswahl `data-extra`, Standard 25/50 %);
+  die Zeit läuft dann `minutes × (1 + Zuschlag)`. Die Ergebnisdatei (`rv: 2`) enthält `kurs`,
+  `zeitzuschlag`, `zeitMin`, `zeitErlaubtMin`, `dauerMin`, `dauer`, `zeitAbgelaufen`; die
+  Quittung deckt ab `rv 2` auch Kurs, Zuschlag und Startzeit ab (gleiche Formel in
+  `auswertung.js`, ältere Dateien ohne `rv` bleiben gültig). CSV der Auswertung: feste Spalten
+  zuerst (Kurs, Name, Quittung, Punkte, max, Prozent, NP, …), Aufgaben am Ende – die
+  Excel-Mappe der Lehrkraft liest diese Reihenfolge.
+  Das Build-Skript gibt es nur einmal im W-Seminar-Ordner (Auswertung zentral, s. o.): `python englisch/w-seminar-time/checks/build_check.py
   <thema>/material/check-<n>-*.json` schreibt das `.js` nach `<thema>/checks/`.
 
 ## Sprache & Inhalt
@@ -300,7 +309,7 @@ Kopf, Lösungen als Hash in `data-loesung`, Hash-Werkzeug im Lehrkräfte-Bereich
 `checks/check-1-questions-on-the-text.html`, unverlinkt); W-Seminar „Time“ (12/13) in
 `englisch/w-seminar-time/` (Kursplan siehe eigener Abschnitt: `w-seminar-time.html`,
 `research-question.html`, `research-methods.html`, `checks/check-1-research-methods.html`
-(verschlüsselt), Auswertung `checks/auswertung/`; → AB `ws-w1` bis `ws-w5`, eigene Vorlage)
+(verschlüsselt), Auswertung zentral in `/checks/auswertung/`; → AB `ws-w1` bis `ws-w5`, eigene Vorlage)
 
 **Weitere Fächer**: `mathe/` (12: Exponential-/ln-Funktion, Umkehrfunktion),
 `physik/` (10 Berlinfahrt-Lernpfad, 11 Federpendel + Protokoll, 12 Lorentzkraft),
