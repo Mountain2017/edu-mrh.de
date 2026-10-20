@@ -1,6 +1,7 @@
 /* Auswertung Online-Check (generisch für alle Checks aus build_check.py).
 
    Eingabe (nur lokal im Browser gelesen):
+   Liegt zentral unter /checks/auswertung/ (für alle Checks, Ordner per .htaccess geschützt).
    - Schlüsseldatei material/<check>-key.json (format 2): Fragen, IDs, Lösungen, Notenschlüssel
    - Ergebnisdateien der Schüler:innen (check-engine.js): Auslosung (draw), Antworten, Quittung
    Ausgabe: Tabelle, CSV und je Person ein Bericht über genau zwei A4-Seiten
@@ -21,7 +22,7 @@
     /* Texte im Bericht (Sprache aus der Schlüsseldatei: "lang") */
     var REP = {
         en: {
-            task: 'Task', text: 'Text', p: 'P', points: 'points', np: 'grade points', of: 'of', page: 'page', receipt: 'receipt',
+            task: 'Task', text: 'Text', p: 'P', points: 'points', np: 'grade points', of: 'of', page: 'page', receipt: 'receipt', time: 'time',
             handed: 'handed in', scale: 'Grade scale', npRow: 'NP', ptsRow: 'from', all: 'Select all that apply.',
             next: 'Next step: {np} NP from {pts} P ({diff} P more).', top: 'Highest grade point reached.',
             okSel: 'your answer – correct', badSel: 'your answer – wrong', miss: 'correct answer you did not choose',
@@ -30,7 +31,7 @@
             calcMatch: '{r} of {n} rows right × {pts} P = {res} P', rounded: ' (rounded to 0.5)'
         },
         de: {
-            task: 'Aufgabe', text: 'Text', p: 'P', points: 'Punkte', np: 'Notenpunkte', of: 'von', page: 'Seite', receipt: 'Quittung',
+            task: 'Aufgabe', text: 'Text', p: 'P', points: 'Punkte', np: 'Notenpunkte', of: 'von', page: 'Seite', receipt: 'Quittung', time: 'Zeit',
             handed: 'abgegeben', scale: 'Notenschlüssel', npRow: 'NP', ptsRow: 'ab', all: 'Kreuze alle zutreffenden an.',
             next: 'Nächste Stufe: {np} NP ab {pts} P (noch {diff} P).', top: 'Höchste Notenpunktzahl erreicht.',
             okSel: 'deine Antwort – richtig', badSel: 'deine Antwort – falsch', miss: 'richtige Antwort, nicht gewählt',
@@ -58,10 +59,16 @@
             return Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, '0'); }).join('');
         });
     }
-    function receipt(r) {   // gleiche Formel wie check-engine.js
-        return sha([norm(KEY.startCode), KEY.check, r.name, r.submittedAt, JSON.stringify(r.answers || {})].join('|'))
-            .then(function (x) { return x.slice(0, 8).toUpperCase(); });
+    function receipt(r) {   // gleiche Formel wie check-engine.js (ab rv 2 mit Kurs, Zeitzuschlag, Start)
+        var parts = r.rv === 2 ? [norm(KEY.startCode), KEY.check, r.name, r.kurs, r.zeitzuschlag || 0, r.startedAt, r.submittedAt, JSON.stringify(r.answers || {})]
+            : [norm(KEY.startCode), KEY.check, r.name, r.submittedAt, JSON.stringify(r.answers || {})];
+        return sha(parts.join('|')).then(function (x) { return x.slice(0, 8).toUpperCase(); });
     }
+    /* Zeit: erlaubt = Minuten × (1 + Zuschlag); Dauer aus Start/Abgabe (ältere Dateien ohne Kurs/Zuschlag) */
+    function allowed(r) { return KEY.minutes * (1 + (r.zeitzuschlag || 0) / 100); }
+    function took(r) { return (r.submittedAt - r.startedAt) / 60000; }
+    function mmss(min) { var s = Math.max(0, Math.round(min * 60)); return Math.floor(s / 60) + ':' + pad(s % 60); }
+    function late(r) { return took(r) > allowed(r) + 0.5; }
     function download(name, text, type) {
         var a = document.createElement('a');
         a.href = URL.createObjectURL(new Blob([text], { type: type }));
@@ -142,7 +149,10 @@
                 return { file: x.file, r: r, ev: ev, pts: pts, pct: pts / KEY.max * 100, g: grade(pts), ok: rc === r.receipt };
             });
         })).then(function (rows) {
-            rows.sort(function (a, b) { return String(a.r.name || '').localeCompare(String(b.r.name || ''), 'de'); });
+            rows.sort(function (a, b) {
+                return String(a.r.kurs || '').localeCompare(String(b.r.kurs || ''), 'de', { numeric: true }) ||
+                    String(a.r.name || '').localeCompare(String(b.r.name || ''), 'de');
+            });
             ROWS = rows;
             table(); reports();
         });
@@ -152,14 +162,14 @@
     function table() {
         var good = ROWS.filter(function (x) { return !x.err; });
         var names = {}; good.forEach(function (x) { names[x.r.name] = (names[x.r.name] || 0) + 1; });
-        var h = '<tr><th>Name</th><th>Punkte</th><th>%</th><th>NP</th><th>je Aufgabe</th><th>abgegeben</th><th>Dauer</th><th>Quittung</th><th></th></tr>';
+        var h = '<tr><th>Kurs</th><th>Name</th><th>Punkte</th><th>%</th><th>NP</th><th>je Aufgabe</th><th>abgegeben</th><th>Zeitzuschlag</th><th>Dauer / erlaubt</th><th>Quittung</th><th></th></tr>';
         ROWS.forEach(function (x, i) {
-            if (x.err) { h += '<tr class="err"><td>' + esc(x.r.name || x.file) + '</td><td colspan="8">' + esc(x.file) + ': ' + x.err + '</td></tr>'; return; }
-            var mins = Math.round((x.r.submittedAt - x.r.startedAt) / 60000);
-            h += '<tr><td>' + esc(x.r.name) + (names[x.r.name] > 1 ? ' <span class="warn">doppelt?</span>' : '') + '</td>' +
+            if (x.err) { h += '<tr class="err"><td>' + esc(x.r.kurs || '') + '</td><td>' + esc(x.r.name || x.file) + '</td><td colspan="9">' + esc(x.file) + ': ' + x.err + '</td></tr>'; return; }
+            h += '<tr><td>' + esc(x.r.kurs || '–') + '</td><td>' + esc(x.r.name) + (names[x.r.name] > 1 ? ' <span class="warn">doppelt?</span>' : '') + '</td>' +
                 '<td class="num">' + fmt(x.pts) + ' / ' + KEY.max + '</td><td class="num">' + pc1(x.pct) + '</td><td class="num"><b>' + x.g.np + '</b></td>' +
                 '<td class="per">' + x.ev.map(function (e) { return fmt(e.points); }).join(' · ') + '</td>' +
-                '<td>' + when(x.r.submittedAt) + '</td><td class="num">' + mins + ' min' + (mins > KEY.minutes + 1 ? ' <span class="warn">!</span>' : '') + '</td>' +
+                '<td>' + when(x.r.submittedAt) + '</td><td class="num">' + (x.r.zeitzuschlag ? '<b>+' + x.r.zeitzuschlag + ' %</b>' : '–') + '</td>' +
+                '<td class="num">' + mmss(took(x.r)) + ' / ' + mmss(allowed(x.r)) + (late(x.r) ? ' <span class="warn" title="länger als erlaubt (Browser zwischendurch geschlossen?)">!</span>' : '') + '</td>' +
                 '<td>' + (x.ok ? esc(x.r.receipt) + ' ✓' : '<span class="warn">verändert?</span>') + '</td>' +
                 '<td><button class="btn small ghost" data-one="' + i + '">PDF</button></td></tr>';
         });
@@ -174,13 +184,14 @@
     }
     function csv() {
         var first = ROWS.filter(function (x) { return !x.err; })[0];
-        var head = ['Name', 'Punkte', 'max', 'Prozent', 'NP'].concat(first ? first.ev.map(function (e, i) { return 'A' + (i + 1); }) : [])
-            .concat(['abgegeben', 'Dauer (min)', 'Quittung']);
+        // feste Spalten zuerst (Excel-Mappe „Prüfungsabgaben“ liest Quittung, Punkte, max, NP), Aufgaben am Ende
+        var head = ['Kurs', 'Name', 'Quittung', 'Punkte', 'max', 'Prozent', 'NP', 'Zeitzuschlag (%)', 'Dauer (min)', 'erlaubt (min)', 'abgegeben', 'Quittung ok']
+            .concat(first ? first.ev.map(function (e, i) { return 'A' + (i + 1); }) : []);
         var lines = [head.join(';')];
         ROWS.forEach(function (x) {
-            if (x.err) { lines.push([x.r.name || x.file, 'Fehler: ' + x.err.replace(/<[^>]+>/g, '')].join(';')); return; }
-            lines.push([x.r.name, fmt(x.pts), KEY.max, pc1(x.pct), x.g.np].concat(x.ev.map(function (e) { return fmt(e.points); }))
-                .concat([when(x.r.submittedAt), Math.round((x.r.submittedAt - x.r.startedAt) / 60000), x.ok ? 'ok' : 'prüfen']).join(';'));
+            if (x.err) { lines.push([x.r.kurs || '', x.r.name || x.file, x.r.receipt || '', 'Fehler: ' + x.err.replace(/<[^>]+>/g, '')].join(';')); return; }
+            lines.push([x.r.kurs || '', x.r.name, x.r.receipt || '', fmt(x.pts), KEY.max, pc1(x.pct), x.g.np, x.r.zeitzuschlag || 0, pc1(took(x.r)), pc1(allowed(x.r)),
+                when(x.r.submittedAt), x.ok ? 'ok' : 'prüfen'].concat(x.ev.map(function (e) { return fmt(e.points); })).join(';'));
         });
         download(KEY.check + '_auswertung.csv', '﻿' + lines.join('\n') + '\n', 'text/csv;charset=utf-8');
     }
@@ -198,8 +209,9 @@
         var next = g.next ? fill(t.next, { np: g.next.np, pts: fmt(g.next.min), diff: fmt(g.next.min - x.pts) }) : t.top;
         var chips = x.ev.map(function (e, i) { return '<span class="r-chip ' + e.state + '">' + (i + 1) + ': ' + fmt(e.points) + '/' + fmt(e.max) + '</span>'; }).join('');
         return '<div class="r-head"><div class="r-kick">' + esc(KEY.subtitle) + '</div>' +
-            '<div class="r-when">' + t.handed + ' ' + when(x.r.submittedAt) + '<br>' + t.receipt + ' ' + esc(x.r.receipt || '–') + '</div>' +
-            '<div class="r-title">' + esc(KEY.title) + '</div><div class="r-name">' + esc(x.r.name) + '</div></div>' +
+            '<div class="r-when">' + t.handed + ' ' + when(x.r.submittedAt) + ' · ' + t.time + ' ' + mmss(took(x.r)) + ' / ' + mmss(allowed(x.r)) +
+            (x.r.zeitzuschlag ? ' (+' + x.r.zeitzuschlag + ' %)' : '') + '<br>' + t.receipt + ' ' + esc(x.r.receipt || '–') + '</div>' +
+            '<div class="r-title">' + esc(KEY.title) + '</div><div class="r-name">' + esc(x.r.name) + (x.r.kurs ? ' <span class="r-kurs">· ' + esc(x.r.kurs) + '</span>' : '') + '</div></div>' +
             '<div class="r-sum"><div class="r-np"><b>' + g.np + '</b><span>' + t.np + '</span></div><div class="r-right">' +
             '<div class="r-pts"><b>' + fmt(x.pts) + ' / ' + fmt(KEY.max) + '</b> ' + t.points + ' · ' + pc1(x.pct) + ' %</div>' +
             '<table class="r-scale" aria-label="' + t.scale + '"><tr>' + npRow + '</tr><tr>' + ptRow + '</tr></table>' +
