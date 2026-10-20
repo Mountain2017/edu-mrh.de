@@ -214,7 +214,14 @@ QR-Codes (nicht löschen).
 - **Weitere Checks mit derselben Technik**: Englisch 13 Questions on the Text
   (`englisch/13/questions-on-the-text/checks/`, Fragen in `…/material/`). Dort liegen
   nur Hülle, gebautes `.js` und **Kopien** von `check-engine.js`/`check.css` (identisch
-  zu den W-Seminar-Dateien halten). Build-Skript und Auswertung gibt es nur einmal im
+  zu den W-Seminar-Dateien halten). Läuft im Safe Exam Browser: während des Checks
+  **kein Link** auf der Seite, auch nicht zum Impressum (Footer mit `data-after-hand-in
+  hidden`, erscheint erst nach der Abgabe; so von der Lehrkraft gewünscht). Abgabe über
+  Microsoft Forms: `data-abgabe` am `#check` = vorausgefüllter Forms-Link mit den
+  Platzhaltern `NAME_X`, `RECEIPT_X`, `PRUEFUNG_X`; der Ergebnisbildschirm zeigt dann
+  „1. Datei speichern, 2. Formular öffnen“ (Formular erst nach dem Speichern aktiv).
+  Die Ergebnisdatei enthält dafür zusätzlich `pruefungsId` und `receiptId` (für den
+  Power-Automate-Flow); Punkte stehen nie darin, die liefert nur die Auswertungsseite. Build-Skript und Auswertung gibt es nur einmal im
   W-Seminar-Ordner: `python englisch/w-seminar-time/checks/build_check.py
   <thema>/material/check-<n>-*.json` schreibt das `.js` nach `<thema>/checks/`.
 

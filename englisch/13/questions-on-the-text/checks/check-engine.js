@@ -15,7 +15,16 @@
 
    Text blocks (slot.block): one variant = a text (passage, numbered lines) plus
    several tasks on it. The text is shown once, next to its tasks on wide
-   screens (sticky) and above them on narrow ones. */
+   screens (sticky) and above them on narrow ones.
+
+   Optional hand-in form (Microsoft Forms):
+                 <div id="check" data-title="…" data-abgabe="PREFILLED-FORMS-URL">
+   The URL is the form's pre-filled link with the placeholders NAME_X, RECEIPT_X
+   and PRUEFUNG_X; they are replaced by name, receipt and check id. The result
+   screen then shows two steps: 1. save the file, 2. open the form (enabled only
+   after saving). Without data-abgabe the generic hand-in text is shown.
+   Elements with [data-after-hand-in] (e.g. the Impressum footer, set `hidden`)
+   are only shown after hand-in, so the page has no links during the check. */
 (function () {
     'use strict';
     var C = window.CHECK, root = document.getElementById('check');
@@ -34,7 +43,12 @@
             handed: 'handed in', of: 'of', receipt: 'receipt', save: 'Save result file',
             after: 'Hand in the result file as your teacher tells you (e.g. Teams). Your teacher scores it – you get your result later. Keep this screen open until your teacher has seen it.',
             reset: 'New attempt (teacher)', resetBtn: 'Reset this browser', resetCode: 'start code', wrongCode: 'Wrong code.',
-            changed: 'This check has been updated since you started. Please ask your teacher.'
+            changed: 'This check has been updated since you started. Please ask your teacher.',
+            steps: 'Hand in: 2 steps', step1: '<b>Save your result file.</b>',
+            step2: '<b>Open the hand-in form</b> (new window), sign in with your <b>school account</b>, <b>upload the saved file</b> and click <b>Submit</b>.',
+            prefilled: 'Your name and receipt are already filled in: <b>do not change them.</b>',
+            form: 'Open hand-in form', saveFirst: 'Do step 1 first: save the file.',
+            keepOpen: '<b>Keep this screen open</b> until your teacher has seen it.'
         },
         de: {
             check: 'Online-Check', text: 'Text', tasksOn: 'Aufgaben', rules: 'Arbeite allein. Andere Seiten, Notizen und Hilfsmittel sind nicht erlaubt. Die Zeit läuft ab der Eingabe des Startcodes. Deine Antworten werden laufend in diesem Browser gespeichert; beim Neuladen läuft die Zeit weiter. Speichere am Ende deine Ergebnisdatei und gib sie ab, wie es deine Lehrkraft sagt.',
@@ -46,7 +60,12 @@
             handed: 'abgegeben', of: 'von', receipt: 'Quittung', save: 'Ergebnisdatei speichern',
             after: 'Gib die Ergebnisdatei ab, wie es deine Lehrkraft sagt (z. B. Teams). Die Lehrkraft wertet sie aus – dein Ergebnis bekommst du später. Lass diesen Bildschirm offen, bis deine Lehrkraft ihn gesehen hat.',
             reset: 'Neuer Versuch (Lehrkraft)', resetBtn: 'Browser zurücksetzen', resetCode: 'Startcode', wrongCode: 'Falscher Code.',
-            changed: 'Dieser Check wurde geändert, seit du begonnen hast. Bitte melde dich bei deiner Lehrkraft.'
+            changed: 'Dieser Check wurde geändert, seit du begonnen hast. Bitte melde dich bei deiner Lehrkraft.',
+            steps: 'Abgabe in 2 Schritten', step1: '<b>Speichere deine Ergebnisdatei.</b>',
+            step2: '<b>Öffne das Abgabeformular</b> (neues Fenster), melde dich mit deinem <b>Schulkonto</b> an, <b>lade die gespeicherte Datei hoch</b> und klicke auf <b>Absenden</b>.',
+            prefilled: 'Name und Quittung sind schon eingetragen: <b>nicht ändern.</b>',
+            form: 'Abgabeformular öffnen', saveFirst: 'Erst Schritt 1: Datei speichern.',
+            keepOpen: '<b>Lass diesen Bildschirm offen</b>, bis deine Lehrkraft ihn gesehen hat.'
         }
     };
     var T = TXT[(document.documentElement.lang || 'en').slice(0, 2)] || TXT.en;
@@ -121,6 +140,7 @@
     function render() {
         clearInterval(tick);
         load();
+        document.querySelectorAll('[data-after-hand-in]').forEach(function (el) { el.hidden = !(state && state.submittedAt); });
         if (!state) return renderStart();
         if (state.build && state.build !== C.build && !state.submittedAt) {
             root.innerHTML = '<div class="ck-card"><p class="ck-err">' + T.changed + '</p></div>' + resetBox(state.code);
@@ -269,18 +289,38 @@
         receipt(state.code, state.name, state.submittedAt, state.answers).then(function (rc) {
             state.receipt = rc; save();
             var done = state.done != null ? state.done : state.draw.filter(answered).length, mins = Math.round((state.submittedAt - state.startedAt) / 60000);
+            var fname = C.id + '_' + state.name.replace(/[^\wäöüÄÖÜß-]+/g, '-') + '.json';
+            var form = root.dataset.abgabe ? root.dataset.abgabe.split('NAME_X').join(encodeURIComponent(state.name))
+                .split('RECEIPT_X').join(encodeURIComponent(rc)).split('PRUEFUNG_X').join(encodeURIComponent(C.id)) : '';
+            var saveBtn = '<button class="ck-btn" id="ck-save">' + T.save + '</button>';
+            var handIn = !form ? saveBtn + '<p class="ck-small">' + T.after + '</p>' :
+                '<div class="ck-steps"><h2>' + T.steps + '</h2>' +
+                '<div class="ck-step"><span class="ck-sn">1</span><div><p>' + T.step1 + '</p>' + saveBtn + '<p class="ck-small ck-code-s">' + esc(fname) + '</p></div></div>' +
+                '<div class="ck-step"><span class="ck-sn">2</span><div><p>' + T.step2 + ' ' + T.prefilled + '</p>' +
+                '<a class="ck-btn" id="ck-form" href="' + esc(form) + '" target="_blank" rel="noopener">' + T.form + '</a>' +
+                '<p class="ck-err" id="ck-form-err" aria-live="polite"></p></div></div>' +
+                '<p class="ck-keep">' + T.keepOpen + '</p></div>';
             root.innerHTML = '<div class="ck-card ck-result">' +
                 '<p class="ck-kicker">' + esc(META.title) + '</p><h1>' + esc(state.name) + '</h1>' +
                 '<div class="ck-score"><div><span>✓</span> ' + T.handed + '</div><div><span>' + done + '</span> ' + T.of + ' ' + state.draw.length + ' ' + T.answered + '</div></div>' +
                 '<p class="ck-small">' + when(state.submittedAt) + ' · ' + mins + ' min · ' + T.receipt + ' <b class="ck-code">' + rc + '</b></p>' +
-                '<button class="ck-btn" id="ck-save">' + T.save + '</button>' +
-                '<p class="ck-small">' + T.after + '</p>' + resetBox() + '</div>';
+                handIn + resetBox() + '</div>';
+            var link = document.getElementById('ck-form');
+            function lock() { if (link) link.setAttribute('aria-disabled', state.saved ? 'false' : 'true'); }
+            if (link) link.addEventListener('click', function (e) {
+                if (state.saved) return;
+                e.preventDefault(); document.getElementById('ck-form-err').textContent = T.saveFirst;
+            });
+            lock();
             document.getElementById('ck-save').addEventListener('click', function () {
-                var file = { check: C.id, build: state.build || C.build, title: META.title, name: state.name, startedAt: state.startedAt, submittedAt: state.submittedAt, draw: state.draw, answers: state.answers, receipt: rc };
+                // pruefungsId/receiptId: field names read by the Power Automate flow (Forms hand-in)
+                var file = { check: C.id, build: state.build || C.build, title: META.title, name: state.name, startedAt: state.startedAt, submittedAt: state.submittedAt, draw: state.draw, answers: state.answers, receipt: rc, pruefungsId: C.id, receiptId: rc };
                 var a = document.createElement('a');
                 a.href = URL.createObjectURL(new Blob([JSON.stringify(file, null, 1)], { type: 'application/json' }));
-                a.download = C.id + '_' + state.name.replace(/[^\wäöüÄÖÜß-]+/g, '-') + '.json';
+                a.download = fname;
                 document.body.appendChild(a); a.click(); a.remove();
+                state.saved = Date.now(); save(); lock();
+                var err = document.getElementById('ck-form-err'); if (err) err.textContent = '';
             });
             wireReset(state.code);
         });
