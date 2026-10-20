@@ -39,6 +39,22 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
 4. **Bestehende URLs nicht brechen**: Dateien nicht umbenennen/verschieben,
    ohne dass es der Auftrag verlangt.
 
+## Geheimnisse (PINs, Startcodes, Schlüsseldateien)
+
+- Liegen in einem Cloud-Sync-Ordner **außerhalb des Repos**, im Repo nur als
+  ignorierte Verknüpfungen: `geheim/` (Repo-Root) mit `geheim/zugaenge.md`
+  (PINs, Startcodes, Passwörter) und je Thema `material/` bzw. `Material_*`
+  → gleicher Pfad unter `geheim/`. Einrichten/Aktualisieren je Gerät:
+  `tools/geheim-verlinken.ps1` (Windows) bzw. `.sh` (macOS); `-Uebernehmen`
+  verschiebt lokale `material/`-Ordner in den Sync-Ordner.
+- Neue `material/`-Ordner direkt unter `geheim/<pfad>/material/` anlegen und
+  das Skript ohne Argument erneut ausführen (sonst landen sie nicht im Sync).
+- Wer einen PIN, Startcode o. Ä. festlegt, trägt ihn in `geheim/zugaenge.md`
+  ein. **Remote-Sessions** haben den Ordner nicht: dann den Wert in der
+  Schlussnachricht ausdrücklich nennen („in zugaenge.md eintragen“). Im Repo
+  steht höchstens ein Hash.
+- Nie `git clean -x`/`-X` ausführen (löscht durch die Verknüpfungen hindurch).
+
 ## Online-IDE (Java-Projekte in Seiten)
 
 - Eingebettet über `<div class="java-online" data-java-online="{ 'id': '…', … }">`
@@ -257,6 +273,7 @@ Wo was liegt (Stand 2026-10). `→ AB` = LaTeX-Arbeitsblätter in `arbeitsblaett
 
 **Gerüst**: `index.html` (Startseite), `checks/auswertung/` (Auswertung aller Online-Checks), `style.css`, `script.js`, `controls.js`,
 `sidebar-anker.js`, `mobileMenu.js`, `baseScript.js`, `templates/`,
+`tools/` (Geheim-Ordner verknüpfen), `geheim/` (nur lokal, s. o.),
 `contribute.html`, `Online-IDE API-Documentation.txt`, `.github/workflows/`
 (FTPS-Deploy aller versionierten Dateien inkl. `.md`, Online-IDE, SQL-IDE, Snap!).
 
@@ -301,7 +318,8 @@ Wo was liegt (Stand 2026-10). `→ AB` = LaTeX-Arbeitsblätter in `arbeitsblaett
 
 **Makerspace** (`makerspace/makerspace.html`, Wahlkurs Unterstufe, Stationen je 3 Wochen;
 nur Robotik online): `makerspace/robotik/` LEGO SPIKE Prime – `robotik.html` (Team,
-Lernpfad, Akku, Abzeichen, Spickzettel, Lehrkräfte-Werkzeuge mit PIN), Starter
+Lernpfad, Akku, Abzeichen, Spickzettel, Lehrkräfte-Werkzeuge mit PIN – Klartext in
+`geheim/zugaenge.md`, im Repo nur `pinHash`), Starter
 `starter-1-hallo-hub`, `starter-2-fahrschule`, `starter-3-sensoren`, Maker `maker-tresor`,
 `maker-roboter-show`, `maker-linienfolger`, `innovator`; Logik `robotik.js` (Markup-Doku im
 Kopf, Lösungen als Hash in `data-loesung`, Hash-Werkzeug im Lehrkräfte-Bereich), `robotik.css`
