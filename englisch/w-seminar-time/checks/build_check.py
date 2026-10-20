@@ -45,7 +45,7 @@ Output:
                               authored order can be read after decrypting.
                               out-dir: 2nd argument, else checks/ next to the
                               material folder, else the folder of this script.
-  material/<name>-key.json  – key file for the scoring page checks/auswertung/:
+  material/<name>-key.json  – key file for the scoring page /checks/auswertung/ (repo root):
                               questions, texts, ids, correct answers, scale. Stays
                               on the teacher's computer.
   material/<name>-key.md    – the same key, readable
@@ -206,7 +206,7 @@ def main(src, out_dir=None):
     with open(os.path.join(mat, base + '-key.md'), 'w', encoding='utf-8') as f:
         f.write(f"# {data['title']} – answer key\n\nStart code: **{code}** · {data['minutes']} min · "
                 f"{total} points · build {build}\n\n")
-        f.write("Scoring (page checks/auswertung/, with the -key.json file of the same build): "
+        f.write("Scoring (page /checks/auswertung/auswertung.html, with the -key.json file of the same build): "
                 "single = all or nothing; multi = (correct ticks − wrong ticks) ÷ number of correct "
                 "options × points, min. 0, rounded to 0.5; match = equal share per row, rounded to 0.5.\n\n")
         f.write("Notenpunkte: " + ' · '.join(f"≥{p} % → {np}" for p, np in data['scale']) + "\n\n")

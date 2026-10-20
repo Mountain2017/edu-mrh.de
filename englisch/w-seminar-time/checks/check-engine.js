@@ -24,7 +24,15 @@
    screen then shows two steps: 1. save the file, 2. open the form (enabled only
    after saving). Without data-abgabe the generic hand-in text is shown.
    Elements with [data-after-hand-in] (e.g. the Impressum footer, set `hidden`)
-   are only shown after hand-in, so the page has no links during the check. */
+   are only shown after hand-in, so the page has no links during the check.
+
+   Start screen: name, course/class and extra time (Nachteilsausgleich).
+   data-kurse="10C,3e1" on #check → course as a drop-down, else free text.
+   data-extra="25,50" → extra-time choices in percent (default 25 and 50).
+   The timer runs for minutes × (1 + extra/100). The result file contains the
+   course, extra time, allowed time and the actual duration; from rv 2 on the
+   receipt also covers course, extra time and start time (same formula on the
+   scoring page). */
 (function () {
     'use strict';
     var C = window.CHECK, root = document.getElementById('check');
@@ -35,7 +43,9 @@
     var TXT = {
         en: {
             check: 'Online check', text: 'Text', tasksOn: 'tasks', rules: 'Work on your own. You may not use other pages, notes or tools. The time starts when you enter the start code. Your answers are saved in this browser as you go; the timer keeps running if you reload. At the end, save your result file and hand it in as your teacher tells you.',
-            name: 'First and last name', code: 'Start code from your teacher', start: 'Start the check', https: 'This page needs a secure connection (https).',
+            name: 'First and last name', kurs: 'Course / class', needKurs: 'Please enter your course or class.',
+            extra: 'Extra time – only if it has been granted to you (e.g. for dyslexia/LRS)', noExtra: 'No extra time', extraOpt: '% extra time',
+            incl: 'incl.', duration: 'time taken', code: 'Start code from your teacher', start: 'Start the check', https: 'This page needs a secure connection (https).',
             needName: 'Please enter your first and last name.', checking: 'Checking the code …', wrong: 'This start code is not correct.', loading: 'Loading …',
             min: 'minutes', tasks: 'tasks', points: 'points', all: 'Select all that apply.', choose: '– choose –', answer: 'answer',
             answered: 'answered', handIn: 'Hand in', allDone: 'All tasks answered. Check your answers, then hand in.', open: 'task(s) still open.',
@@ -52,7 +62,9 @@
         },
         de: {
             check: 'Online-Check', text: 'Text', tasksOn: 'Aufgaben', rules: 'Arbeite allein. Andere Seiten, Notizen und Hilfsmittel sind nicht erlaubt. Die Zeit läuft ab der Eingabe des Startcodes. Deine Antworten werden laufend in diesem Browser gespeichert; beim Neuladen läuft die Zeit weiter. Speichere am Ende deine Ergebnisdatei und gib sie ab, wie es deine Lehrkraft sagt.',
-            name: 'Vor- und Nachname', code: 'Startcode deiner Lehrkraft', start: 'Check starten', https: 'Diese Seite braucht eine sichere Verbindung (https).',
+            name: 'Vor- und Nachname', kurs: 'Kurs / Klasse', needKurs: 'Bitte gib deinen Kurs oder deine Klasse an.',
+            extra: 'Zeitzuschlag – nur wenn er dir gewährt wurde (z. B. bei LRS)', noExtra: 'Kein Zeitzuschlag', extraOpt: '% mehr Zeit',
+            incl: 'inkl.', duration: 'Bearbeitungszeit', code: 'Startcode deiner Lehrkraft', start: 'Check starten', https: 'Diese Seite braucht eine sichere Verbindung (https).',
             needName: 'Bitte gib Vor- und Nachnamen ein.', checking: 'Code wird geprüft …', wrong: 'Dieser Startcode stimmt nicht.', loading: 'Wird geladen …',
             min: 'Minuten', tasks: 'Aufgaben', points: 'Punkte', all: 'Kreuze alle zutreffenden an.', choose: '– wählen –', answer: 'Antwort',
             answered: 'beantwortet', handIn: 'Abgeben', allDone: 'Alle Aufgaben beantwortet. Prüfe deine Antworten, dann gib ab.', open: 'Aufgabe(n) noch offen.',
@@ -113,9 +125,13 @@
     function pad(n) { return String(n).padStart(2, '0'); }
     function when(ts) { var d = new Date(ts); return pad(d.getDate()) + '.' + pad(d.getMonth() + 1) + '.' + d.getFullYear() + ', ' + pad(d.getHours()) + ':' + pad(d.getMinutes()); }
     // same formula on the scoring page: detects edited result files
-    function receipt(code, name, submittedAt, answers) {
-        return sha([norm(code), C.id, name, submittedAt, JSON.stringify(answers)].join('|')).then(function (x) { return x.slice(0, 8).toUpperCase(); });
+    function receipt(s) {
+        var parts = s.rv === 2 ? [norm(s.code), C.id, s.name, s.kurs, s.extra || 0, s.startedAt, s.submittedAt, JSON.stringify(s.answers)]
+            : [norm(s.code), C.id, s.name, s.submittedAt, JSON.stringify(s.answers)];
+        return sha(parts.join('|')).then(function (x) { return x.slice(0, 8).toUpperCase(); });
     }
+    function limitSec() { return Math.round(META.minutes * 60 * (1 + (state.extra || 0) / 100)); }
+    function mmss(sec) { sec = Math.max(0, Math.round(sec)); return Math.floor(sec / 60) + ':' + pad(sec % 60); }
 
     /* ---------------------------------------------------------------- state */
     var state = null;
@@ -155,23 +171,33 @@
     }
 
     function renderStart() {
+        var kurse = (root.dataset.kurse || '').split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+        var extras = (root.dataset.extra || '25,50').split(',').map(function (s) { return parseInt(s, 10); }).filter(function (n) { return n > 0; });
+        var kursField = kurse.length
+            ? '<select id="ck-kurs"><option value="">' + T.choose + '</option>' + kurse.map(function (k) { return '<option>' + esc(k) + '</option>'; }).join('') + '</select>'
+            : '<input id="ck-kurs" autocomplete="off" spellcheck="false">';
         root.innerHTML =
             '<div class="ck-card ck-start">' +
             '<h1>' + esc(root.dataset.title || T.check) + '</h1>' +
             '<p>' + T.rules + '</p>' +
             '<label for="ck-name">' + T.name + '</label><input id="ck-name" autocomplete="name">' +
+            '<label for="ck-kurs">' + T.kurs + '</label>' + kursField +
+            '<label for="ck-extra">' + T.extra + '</label><select id="ck-extra"><option value="0">' + T.noExtra + '</option>' +
+            extras.map(function (n) { return '<option value="' + n + '">+' + n + ' ' + T.extraOpt + '</option>'; }).join('') + '</select>' +
             '<label for="ck-code">' + T.code + '</label><input id="ck-code" autocomplete="off" spellcheck="false" placeholder="XXXX-XXXX-XXXX">' +
             '<p class="ck-err" id="ck-err" aria-live="polite"></p>' +
             '<button class="ck-btn" id="ck-go">' + T.start + '</button></div>';
         if (!window.crypto || !crypto.subtle) document.getElementById('ck-err').textContent = T.https;
         document.getElementById('ck-go').addEventListener('click', function () {
-            var btn = this, name = document.getElementById('ck-name').value.trim(), cd = document.getElementById('ck-code').value;
+            var btn = this, name = document.getElementById('ck-name').value.trim().replace(/\s+/g, ' '), cd = document.getElementById('ck-code').value;
+            var kurs = document.getElementById('ck-kurs').value.trim().replace(/\s+/g, ' '), extra = parseInt(document.getElementById('ck-extra').value, 10) || 0;
             var err = document.getElementById('ck-err');
-            if (name.split(/\s+/).length < 2) { err.textContent = T.needName; return; }
+            if (name.split(' ').length < 2) { err.textContent = T.needName; return; }
+            if (!kurs) { err.textContent = T.needKurs; return; }
             btn.disabled = true; err.textContent = T.checking;
             decrypt(cd).then(function () {
                 var seed = Math.floor(Math.random() * 2147483647);
-                state = { name: name, code: norm(cd), build: C.build, seed: seed, draw: draw(seed), answers: {}, startedAt: Date.now(), submittedAt: null };
+                state = { rv: 2, name: name, kurs: kurs, extra: extra, code: norm(cd), build: C.build, seed: seed, draw: draw(seed), answers: {}, startedAt: Date.now(), submittedAt: null };
                 save(); render(); window.scrollTo(0, 0);
             }, function () { btn.disabled = false; err.textContent = T.wrong; });
         });
@@ -223,9 +249,10 @@
         return !!a && Object.keys(a).filter(function (k) { return a[k]; }).length === it.rows.length;
     }
     function renderTest() {
-        var html = '<div class="ck-bar" role="status"><span class="ck-who">' + esc(state.name) + '</span><span id="ck-prog"></span><span class="ck-time" id="ck-time"></span></div>';
+        var html = '<div class="ck-bar" role="status"><span class="ck-who">' + esc(state.name) + (state.kurs ? ' · ' + esc(state.kurs) : '') + '</span><span id="ck-prog"></span><span class="ck-time" id="ck-time"></span></div>';
+        var mins = mmss(limitSec()).replace(/:00$/, '') + ' ' + T.min + (state.extra ? ' (' + T.incl + ' +' + state.extra + ' %)' : '');
         html += '<div class="ck-card"><p class="ck-kicker">' + esc(META.subtitle) + '</p><h1>' + esc(META.title) + '</h1>' +
-            '<p class="ck-small">' + META.minutes + ' ' + T.min + ' · ' + META.tasks + ' ' + T.tasks + ' · ' + fmt(META.max) + ' ' + T.points + '</p></div>';
+            '<p class="ck-small">' + mins + ' · ' + META.tasks + ' ' + T.tasks + ' · ' + fmt(META.max) + ' ' + T.points + '</p></div>';
         var texts = 0;
         for (var i = 0; i < state.draw.length; i++) {
             var d = state.draw[i];
@@ -261,9 +288,9 @@
         if (left) left.textContent = done === state.draw.length ? T.allDone : (state.draw.length - done) + ' ' + T.open;
     }
     function clock() {
-        var rest = Math.round(META.minutes * 60 - (Date.now() - state.startedAt) / 1000);
+        var rest = Math.round(limitSec() - (Date.now() - state.startedAt) / 1000);
         var el = document.getElementById('ck-time'); if (!el) return;
-        if (rest <= 0) { el.textContent = '0:00'; submit(); return; }
+        if (rest <= 0) { el.textContent = '0:00'; state.timeUp = true; submit(); return; }
         el.textContent = Math.floor(rest / 60) + ':' + pad(rest % 60);
         el.classList.toggle('ck-low', rest <= 120);
     }
@@ -286,9 +313,10 @@
     }
 
     function renderDone() {
-        receipt(state.code, state.name, state.submittedAt, state.answers).then(function (rc) {
+        receipt(state).then(function (rc) {
             state.receipt = rc; save();
-            var done = state.done != null ? state.done : state.draw.filter(answered).length, mins = Math.round((state.submittedAt - state.startedAt) / 60000);
+            var done = state.done != null ? state.done : state.draw.filter(answered).length, took = (state.submittedAt - state.startedAt) / 1000;
+            var mins = T.duration + ' ' + mmss(took) + ' / ' + mmss(limitSec()) + (state.extra ? ' (+' + state.extra + ' %)' : '');
             var fname = C.id + '_' + state.name.replace(/[^\wäöüÄÖÜß-]+/g, '-') + '.json';
             var form = root.dataset.abgabe ? root.dataset.abgabe.split('NAME_X').join(encodeURIComponent(state.name))
                 .split('RECEIPT_X').join(encodeURIComponent(rc)).split('PRUEFUNG_X').join(encodeURIComponent(C.id)) : '';
@@ -303,7 +331,7 @@
             root.innerHTML = '<div class="ck-card ck-result">' +
                 '<p class="ck-kicker">' + esc(META.title) + '</p><h1>' + esc(state.name) + '</h1>' +
                 '<div class="ck-score"><div><span>✓</span> ' + T.handed + '</div><div><span>' + done + '</span> ' + T.of + ' ' + state.draw.length + ' ' + T.answered + '</div></div>' +
-                '<p class="ck-small">' + when(state.submittedAt) + ' · ' + mins + ' min · ' + T.receipt + ' <b class="ck-code">' + rc + '</b></p>' +
+                '<p class="ck-small">' + (state.kurs ? esc(state.kurs) + ' · ' : '') + when(state.submittedAt) + ' · ' + mins + ' · ' + T.receipt + ' <b class="ck-code">' + rc + '</b></p>' +
                 handIn + resetBox() + '</div>';
             var link = document.getElementById('ck-form');
             function lock() { if (link) link.setAttribute('aria-disabled', state.saved ? 'false' : 'true'); }
@@ -314,7 +342,10 @@
             lock();
             document.getElementById('ck-save').addEventListener('click', function () {
                 // pruefungsId/receiptId: field names read by the Power Automate flow (Forms hand-in)
-                var file = { check: C.id, build: state.build || C.build, title: META.title, name: state.name, startedAt: state.startedAt, submittedAt: state.submittedAt, draw: state.draw, answers: state.answers, receipt: rc, pruefungsId: C.id, receiptId: rc };
+                // kurs … zeitAbgelaufen: course, extra time (%), regular/allowed time and actual duration (minutes)
+                var file = { check: C.id, build: state.build || C.build, title: META.title, name: state.name, startedAt: state.startedAt, submittedAt: state.submittedAt, draw: state.draw, answers: state.answers, receipt: rc, pruefungsId: C.id, receiptId: rc,
+                    rv: state.rv || 1, kurs: state.kurs || '', zeitzuschlag: state.extra || 0, zeitMin: META.minutes, zeitErlaubtMin: Math.round(limitSec() / 6) / 10,
+                    dauerMin: Math.round(took / 6) / 10, dauer: mmss(took), zeitAbgelaufen: !!state.timeUp };
                 var a = document.createElement('a');
                 a.href = URL.createObjectURL(new Blob([JSON.stringify(file, null, 1)], { type: 'application/json' }));
                 a.download = fname;

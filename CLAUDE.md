@@ -242,7 +242,7 @@ ansehen (Desktop- und Mobilbreite). Es gibt keine Tests und keinen Linter.
 
 Wo was liegt (Stand 2026-10). `→ AB` = LaTeX-Arbeitsblätter in `arbeitsblaetter/`.
 
-**Gerüst**: `index.html` (Startseite), `style.css`, `script.js`, `controls.js`,
+**Gerüst**: `index.html` (Startseite), `checks/auswertung/` (Auswertung aller Online-Checks), `style.css`, `script.js`, `controls.js`,
 `sidebar-anker.js`, `mobileMenu.js`, `baseScript.js`, `templates/`,
 `contribute.html`, `Online-IDE API-Documentation.txt`, `.github/workflows/`
 (FTPS-Deploy aller versionierten Dateien inkl. `.md`, Online-IDE, SQL-IDE, Snap!).
