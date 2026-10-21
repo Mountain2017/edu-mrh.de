@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viable Data 2: Refine | W-Seminar English 12 – edu-mrh.de</title>
+    <meta name="description" content="W-Seminar 'Time' (English, Year 12), viable data part 2: run a pilot, check your instrument with numbers – Cronbach's alpha, item analysis, Cohen's kappa, outliers, manipulation checks, method breaks – and fix it before the real data collection. With Python on the page.">
+
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <link rel="stylesheet" href="viable-data.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <script defer src="viable-data.js" data-pyodide="https://edu-mrh.de/embed/pyodide/"></script>
+    <script defer src="data-refine.js"></script>
+
+    <style>
+        .loop .node rect { fill: rgba(255,255,255,.07); stroke: rgba(255,255,255,.3); }
+        .loop .node.hot rect { fill: rgba(217,171,47,.16); stroke: #d9ab2f; }
+        .loop text { font: 600 15px var(--sans); fill: #fff; }
+        .loop text.sub { font: 12px var(--sans); fill: #aeb3e3; }
+        .loop .arc { fill: none; stroke: #d9ab2f; stroke-width: 2; }
+        .loop .arc.back { stroke-dasharray: 5 6; animation: flow 1.2s linear infinite; }
+        @keyframes flow { to { stroke-dashoffset: -22; } }
+        .three { counter-reset: t; }
+        .alab { display: grid; gap: .45rem; margin-top: .75rem; }
+        .arow { display: grid; grid-template-columns: auto auto minmax(0, 1fr) 7.5rem; gap: .5rem .75rem; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: .45rem .7rem; font-size: .9rem; }
+        .arow.off { opacity: .5; }
+        .arow label { display: flex; align-items: center; gap: .25rem; font-size: .8rem; color: var(--ink-soft); white-space: nowrap; cursor: pointer; }
+        .arow .it b { font-family: var(--mono); font-size: .82rem; margin-right: .35rem; }
+        .arow .bar { height: 10px; border-radius: 5px; background: #eef0f7; position: relative; overflow: hidden; }
+        .arow .bar i { position: absolute; top: 0; bottom: 0; border-radius: 5px; }
+        .arow .rv { font-size: .78rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+        .verdict { font-weight: 600; }
+        .imap svg { width: 100%; height: auto; display: block; }
+        .imap text { font: 11px var(--sans); fill: var(--ink-soft); }
+        .imap .pt text { font: 600 10px var(--sans); fill: #fff; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+        .imap .pt { cursor: pointer; }
+        .imap .pt:focus { outline: none; }
+        .imap .pt:focus-visible circle, .imap .pt[aria-pressed="true"] circle { stroke: var(--ink); stroke-width: 3; }
+        .item-info { min-height: 4.5em; font-size: .95rem; background: #f8f9fc; border-radius: 10px; padding: .6rem .8rem; margin-top: .5rem; }
+        .cm td.diag { background: #ecfdf5; font-weight: 600; }
+        .cm td.off-hot { background: #fef2f2; font-weight: 600; }
+        .thresholds td:nth-child(2) { white-space: nowrap; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="icon"><a href="https://edu-mrh.de/">🇬🇧</a></span>
+                <span>edu-mrh English</span>
+            </div>
+            <div class="nav-links">
+                <a href="w-seminar-time.html#materials" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content t">
+
+        <!-- ============================ HERO ============================ -->
+        <header class="hero-d" id="start">
+            <div class="t-wrap">
+                <div class="hero-grid">
+                    <div>
+                        <p class="kicker">W-Seminar English, Year 12 · Time · Viable data 2 of 3</p>
+                        <h1>Test your test before it tests you.</h1>
+                        <p class="lead">Your instrument looks fine on paper. A pilot with a handful of people shows what it really does: which item nobody understands, which question everyone answers the same, which instruction gets misread. Fix it now – after the real data collection it is too late.</p>
+                    </div>
+                    <svg class="loop" viewBox="0 0 520 300" role="img" aria-labelledby="loop-t">
+                        <title id="loop-t">The pilot loop: build, pilot, check, fix – and back to pilot until the checks pass; then collect.</title>
+                        <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#d9ab2f"/></marker></defs>
+                        <g class="node"><rect x="10" y="20" width="140" height="64" rx="12"/><text x="80" y="48" text-anchor="middle">1 Build</text><text class="sub" x="80" y="68" text-anchor="middle">part 1</text></g>
+                        <g class="node hot"><rect x="190" y="20" width="140" height="64" rx="12"/><text x="260" y="48" text-anchor="middle">2 Pilot</text><text class="sub" x="260" y="68" text-anchor="middle">5–20 people</text></g>
+                        <g class="node hot"><rect x="370" y="20" width="140" height="64" rx="12"/><text x="440" y="48" text-anchor="middle">3 Check</text><text class="sub" x="440" y="68" text-anchor="middle">α, κ, p, outliers</text></g>
+                        <g class="node hot"><rect x="370" y="200" width="140" height="64" rx="12"/><text x="440" y="228" text-anchor="middle">4 Fix</text><text class="sub" x="440" y="248" text-anchor="middle">reword, drop, clarify</text></g>
+                        <g class="node"><rect x="10" y="200" width="160" height="64" rx="12"/><text x="90" y="228" text-anchor="middle">5 Collect</text><text class="sub" x="90" y="248" text-anchor="middle">part 3</text></g>
+                        <path class="arc" d="M150 52 H186" marker-end="url(#ah)"/>
+                        <path class="arc" d="M330 52 H366" marker-end="url(#ah)"/>
+                        <path class="arc" d="M440 84 V196" marker-end="url(#ah)"/>
+                        <path class="arc back" d="M370 220 C 290 220, 260 150, 260 88" marker-end="url(#ah)"/>
+                        <text class="sub" x="232" y="168" text-anchor="end">not good enough</text>
+                        <path class="arc" d="M440 84 C 380 140, 250 190, 174 224" marker-end="url(#ah)" style="opacity:.55"/>
+                        <text class="sub" x="300" y="290" text-anchor="middle">checks pass → collect</text>
+                    </svg>
+                </div>
+                <ol class="seq">
+                    <li><a href="data-design.html"><span class="n">Part 1</span><b>Design</b><small>criteria, data types, sample, plan</small></a></li>
+                    <li><span class="here"><span class="n">Part 2 · you are here</span><b>Refine</b><small>pilot, check the numbers, fix</small></span></li>
+                    <li><a href="data-evaluate.html"><span class="n">Part 3</span><b>Evaluate</b><small>describe, compare, relate, conclude</small></a></li>
+                </ol>
+            </div>
+        </header>
+
+        <!-- ============================ PILOT ============================ -->
+        <section class="sec" id="pilot" style="--c: var(--s1)">
+            <div class="t-wrap">
+                <h2>Run a pilot</h2>
+                <p class="lead">A pilot is a dress rehearsal: the full procedure with a few people who are like your sample but not part of it – a parallel class, younger students, family. Their data don’t go into your results; they go into your method chapter as “The instrument was piloted with …”.</p>
+                <div class="grid3">
+                    <div class="panel">
+                        <h3>Watch and ask</h3>
+                        <ul>
+                            <li>Time it. Is it as short as you promised?</li>
+                            <li>Note every question people ask you – each one is an unclear instruction.</li>
+                            <li><b>Think aloud:</b> let two or three people say what they think while they answer. You will hear “Do weekends count?”.</li>
+                            <li>Ask afterwards: What was unclear? What did you think this was about?</li>
+                        </ul>
+                    </div>
+                    <div class="panel">
+                        <h3>Check the numbers</h3>
+                        <ul>
+                            <li>Does every item get different answers – or does everyone tick 5?</li>
+                            <li>Do items on the same idea agree with each other?</li>
+                            <li>Are there impossible values (wrong unit, typos)?</li>
+                            <li>Do two coders agree? Did the manipulation work?</li>
+                        </ul>
+                        <p class="small">The tools for your data type follow below – with real pilot data.</p>
+                    </div>
+                    <div class="panel">
+                        <h3>Check the procedure</h3>
+                        <ul>
+                            <li>Does the stopwatch, the link, the music, the form work?</li>
+                            <li>Can you run it the same way every time?</li>
+                            <li>How do you get the data into a table – one row per person, one column per variable?</li>
+                            <li>Is anything missing that you will need for your analysis?</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tipbox"><b>A pilot is small.</b> 5–20 people are enough to find problems. They are <em>not</em> enough to test your hypothesis – a difference in the pilot can be pure chance, and so can “no difference”.</div>
+            </div>
+        </section>
+
+        <!-- ============================ CHECKS BY TYPE ============================ -->
+        <section class="sec" id="checks" style="--c: var(--s3)">
+            <div class="t-wrap">
+                <h2>Check the numbers</h2>
+                <p class="lead">Each data type has its own quality check. The pilot data below are invented but realistic – every one of them hides a problem that real pilots show again and again. Find it, then decide what to fix.</p>
+                <div class="trackbar"></div>
+
+                <!-- ---------- survey ---------- -->
+                <div class="track" data-track="survey" style="--c: var(--s1)">
+                    <h3 class="track-h">Survey <small>pilot of a time-pressure scale, 24 students</small></h3>
+                    <div class="cols">
+                        <div>
+                            <p>Six statements, each answered from 1 (strongly disagree) to 5 (strongly agree). Together they should measure one thing: how much time pressure students feel on school days.</p>
+                            <div class="scroll-x"><table class="dt">
+                                <tbody>
+                                    <tr><td><code>tp1</code></td><td>I often feel I don’t have enough time for my schoolwork.</td></tr>
+                                    <tr><td><code>tp2</code></td><td>My days feel rushed.</td></tr>
+                                    <tr><td><code>tp3</code></td><td>I usually have time to relax in the evening.</td></tr>
+                                    <tr><td><code>tp4</code></td><td>I feel stressed and tired in the morning.</td></tr>
+                                    <tr><td><code>tp5</code></td><td>Deadlines often catch me by surprise.</td></tr>
+                                    <tr><td><code>tp6</code></td><td>I sometimes have more to do than I can manage.</td></tr>
+                                </tbody>
+                            </table></div>
+                        </div>
+                        <div class="panel">
+                            <h3>Reliability: Cronbach’s α</h3>
+                            <p>If all items measure the same thing, people who agree with one should also agree with the others. Cronbach’s α (0 to 1) summarises how well the items hang together.</p>
+                            <dl class="kv">
+                                <dt>α ≥ 0.80</dt><dd>good</dd>
+                                <dt>α ≥ 0.70</dt><dd>acceptable for a Seminararbeit</dd>
+                                <dt>α &lt; 0.70</dt><dd>look at the items</dd>
+                            </dl>
+                            <p class="small" style="margin-top:.6rem">The <b>item–rest correlation</b> shows how well one item agrees with the sum of all the others. Below 0.30: this item doesn’t fit.</p>
+                        </div>
+                    </div>
+
+                    <div class="panel" style="margin-top:1.25rem">
+                        <h3>α lab: switch items on and off</h3>
+                        <p class="small">Tick <b>reverse</b> for a statement that is worded the other way round (1 ↔ 5). Untick <b>use</b> to leave an item out. Can you get α above 0.80 with at least four items?</p>
+                        <div class="bigread" id="alpha-out" aria-live="polite">–</div>
+                        <div class="verdict" id="alpha-verdict"></div>
+                        <div class="alab" id="alpha-lab"></div>
+                    </div>
+
+                    <div class="py-task" style="margin-top:1.5rem">
+                        <h4>In Python</h4>
+                        <ol>
+                            <li>Run step 1. Which item gets almost the same answer from everyone? What do the pilot comments say?</li>
+                            <li>In step 2, put <code>"tp3"</code> into the list <code>reverse</code> (TODO 1). How does α change – and why?</li>
+                            <li>Which item would you drop or rewrite (TODO 2)? Remove it from <code>items</code> and run again.</li>
+                            <li>Step 3: does the refined score fit with sleep the way it should?</li>
+                        </ol>
+                    </div>
+                    <div class="py" data-py="refine-survey-items" data-title="Step 1: look at every item" data-files="data/survey-pilot.csv">
+<script type="text/plain">
+# Pilot of a time-pressure scale (24 students, answers 1–5).
+# Look at each item before you calculate anything.
+import csv
+from statistics import mean, stdev
+from collections import Counter
+from edu import bars
+
+with open("survey-pilot.csv", encoding="utf-8") as f:
+    rows = list(csv.DictReader(f))
+items = ["tp1", "tp2", "tp3", "tp4", "tp5", "tp6"]
+print(len(rows), "students answered\n")
+
+print("item  mean    SD   how many chose 1 2 3 4 5")
+for it in items:
+    values = [int(r[it]) for r in rows]
+    count = Counter(values)
+    print("%-4s  %.2f  %.2f                  %s" % (it, mean(values), stdev(values),
+          " ".join(str(count[k]) for k in range(1, 6))))
+
+item = "tp6"                      # try another item
+count = Counter(int(r[item]) for r in rows)
+bars([1, 2, 3, 4, 5], [count[k] for k in range(1, 6)],
+     title="Answers to " + item, xlabel="answer (1 = strongly disagree … 5 = strongly agree)", ylabel="students")
+
+print("\nComments from the pilot (Q3 = tp3 …):")
+for r in rows:
+    if r["comment"]:
+        print("  " + r["id"] + ": " + r["comment"])
+</script>
+                    </div>
+                    <div class="py" data-py="refine-survey-alpha" data-title="Step 2: Cronbach’s α and item–rest correlations" data-files="data/survey-pilot.csv">
+<script type="text/plain">
+# Do the items measure the same thing? Cronbach's alpha.
+import csv
+from statistics import variance, correlation
+
+with open("survey-pilot.csv", encoding="utf-8") as f:
+    rows = list(csv.DictReader(f))
+
+items = ["tp1", "tp2", "tp3", "tp4", "tp5", "tp6"]
+reverse = []        # TODO 1: tp3 is worded the other way round – write "tp3" into this list
+
+def answers(item):
+    values = [int(r[item]) for r in rows]
+    if item in reverse:
+        values = [6 - v for v in values]     # 1 ↔ 5, 2 ↔ 4, 3 stays 3
+    return values
+
+def alpha(item_list):
+    columns = [answers(it) for it in item_list]
+    k = len(columns)
+    totals = [sum(person) for person in zip(*columns)]
+    return k / (k - 1) * (1 - sum(variance(c) for c in columns) / variance(totals))
+
+print("alpha with %d items: %.2f\n" % (len(items), alpha(items)))
+print("item   item-rest r   alpha without it")
+for it in items:
+    others = [o for o in items if o != it]
+    rest = [sum(person) for person in zip(*[answers(o) for o in others])]
+    print("%-4s     %5.2f          %.2f" % (it, correlation(answers(it), rest), alpha(others)))
+
+# TODO 2: which item would you drop or rewrite? Remove it from items and run again.
+</script>
+                    </div>
+                    <div class="py" data-py="refine-survey-validity" data-title="Step 3: a first validity check" data-files="data/survey-pilot.csv">
+<script type="text/plain">
+# People under time pressure should sleep less on school nights.
+# If the scale showed no link at all, it might not measure time pressure.
+import csv
+from statistics import mean, correlation
+from edu import scatter
+
+with open("survey-pilot.csv", encoding="utf-8") as f:
+    rows = list(csv.DictReader(f))
+
+scale = ["tp1", "tp2", "tp3", "tp5"]           # tp3 reversed; tp4 and tp6 left out
+def score(r):
+    values = [int(r[it]) for it in scale]
+    values[scale.index("tp3")] = 6 - values[scale.index("tp3")]
+    return mean(values)
+
+pressure = [score(r) for r in rows]
+sleep = [float(r["sleep_school"]) for r in rows]
+print("r(time pressure, sleep) = %.2f" % correlation(pressure, sleep))
+scatter(pressure, sleep, line=True, title="Pilot: time pressure and sleep",
+        xlabel="time pressure (mean of 4 items, 1–5)", ylabel="hours of sleep on school nights")
+
+print("Minutes needed for the survey:", sorted(int(r["minutes"]) for r in rows))
+</script>
+                    </div>
+                    <details class="panel" style="margin-top:1rem">
+                        <summary><b>Compare with our findings</b> (after you have tried)</summary>
+                        <ul>
+                            <li><b>tp3</b> was not reversed: it pulled α down to about 0.2. Reversed, the six items reach about 0.7. Several pilot students also ticked the wrong end – make reversed items easy to spot, but keep them.</li>
+                            <li><b>tp4</b> asks two things at once (stressed <em>and</em> tired) and hardly correlates with the rest. Without it α rises to about 0.8. Split it or drop it.</li>
+                            <li><b>tp6</b> (“sometimes”) gets 4 or 5 from every single student: a ceiling effect. An item without variance carries no information. Make it stronger: “Most days I have more to do than I can manage.”</li>
+                            <li>The refined score correlates with sleep at about −0.5: more pressure, less sleep – as expected. A first hint at validity, not proof (24 people).</li>
+                        </ul>
+                    </details>
+                </div>
+
+                <!-- ---------- test ---------- -->
+                <div class="track" data-track="test" style="--c: var(--s2)">
+                    <h3 class="track-h">Test <small>pilot of a 12-item grammar test, 30 students</small></h3>
+                    <p>A gap test: present perfect or past simple? Each item is scored 1 (right) or 0 (wrong). Two numbers per item tell you whether it does its job.</p>
+                    <div class="cols">
+                        <div class="panel">
+                            <h3>Two numbers per item</h3>
+                            <dl class="kv">
+                                <dt>difficulty p</dt><dd>share of students who got it right. Useful items: 0.20–0.80. An item everyone solves (or no one) doesn’t separate anybody.</dd>
+                                <dt>discrimination</dt><dd>correlation of the item with the rest of the test. Good students should get it right more often: ≥ 0.30 good, around 0 useless, <b>negative</b> = something is wrong with the item or the key.</dd>
+                                <dt>KR-20</dt><dd>reliability of the whole test (Cronbach’s α for right/wrong items). ≥ 0.70 is the aim.</dd>
+                            </dl>
+                        </div>
+                        <div class="panel imap">
+                            <h3>Item map</h3>
+                            <p class="small">Tap an item. The green zone is where good items live.</p>
+                            <svg id="imap" viewBox="0 0 420 300" role="group" aria-label="Items by difficulty (left to right) and discrimination (bottom to top)"></svg>
+                            <div class="item-info" id="item-info" aria-live="polite">Choose an item.</div>
+                        </div>
+                    </div>
+                    <div class="py-task" style="margin-top:1.25rem">
+                        <h4>In Python</h4>
+                        <ol>
+                            <li>Run the item analysis. Which items are flagged – and for which reason?</li>
+                            <li>Take the problem items out of <code>items</code>. How does KR-20 change?</li>
+                            <li>q7 might not be a bad item at all. Look at its text in the item map: what would you change instead?</li>
+                        </ol>
+                    </div>
+                    <div class="py" data-py="refine-test-items" data-title="Item analysis: difficulty, discrimination, KR-20" data-files="data/test-pilot.csv">
+<script type="text/plain">
+# Pilot of a 12-item grammar test (30 students, 1 = right, 0 = wrong).
+import csv, math
+from statistics import mean, pvariance, correlation
+from edu import scatter
+
+with open("test-pilot.csv", encoding="utf-8") as f:
+    rows = list(csv.DictReader(f))
+items = ["q%d" % i for i in range(1, 13)]    # TODO: remove the items you would drop
+
+def scores(item):
+    return [int(r[item]) for r in rows]
+
+def kr20(item_list):                         # Cronbach's alpha for right/wrong items
+    k = len(item_list)
+    totals = [sum(int(r[it]) for it in item_list) for r in rows]
+    pq = sum(mean(scores(it)) * (1 - mean(scores(it))) for it in item_list)
+    return k / (k - 1) * (1 - pq / pvariance(totals))
+
+print("item  difficulty p  discrimination")
+difficulty, discrimination = [], []
+for it in items:
+    p = mean(scores(it))
+    rest = [sum(int(r[o]) for o in items if o != it) for r in rows]
+    d = correlation(scores(it), rest) if 0 < p < 1 else float("nan")   # no variance → no correlation
+    difficulty.append(p)
+    discrimination.append(d)
+    flag = ""
+    if p > 0.9: flag = "too easy"
+    if p < 0.1: flag = "too hard"
+    if not math.isnan(d) and d < 0.2: flag += " CHECK THIS ITEM"
+    print("%-4s     %.2f          %5.2f   %s" % (it, p, d, flag))
+
+print("\nKR-20 with %d items: %.2f" % (len(items), kr20(items)))
+scatter(difficulty, discrimination, title="Items: difficulty and discrimination",
+        xlabel="difficulty p (share right)", ylabel="discrimination")
+</script>
+                    </div>
+                    <details class="panel" style="margin-top:1rem">
+                        <summary><b>Compare with our findings</b> (after you have tried)</summary>
+                        <ul>
+                            <li><b>q4</b> (“Yesterday I ___ (see) …”) is solved by 97 %: too easy, it separates nobody. Keep one easy warm-up item at most.</li>
+                            <li><b>q9</b> needs the past perfect – not part of the blueprint. Nobody solved it. It measures something else: drop it (validity).</li>
+                            <li><b>q7</b> has a <em>negative</em> discrimination: the strongest students “failed”. They wrote “have been living” – also correct, but not in the key. Fix the key, not the students (objectivity).</li>
+                            <li>Without q4, q7 and q9, KR-20 rises from about 0.63 to about 0.78. With q7’s key fixed, keep it.</li>
+                        </ul>
+                    </details>
+                </div>
+
+                <!-- ---------- experiment ---------- -->
+                <div class="track" data-track="experiment" style="--c: var(--s3)">
+                    <h3 class="track-h">Experiment <small>pilot: fast vs. slow music, 16 students</small></h3>
+                    <p>Each student waited exactly 3 minutes with fast or slow music, then wrote down an estimate of the waiting time “in minutes” and rated how fast the music was (1 = very slow … 5 = very fast).</p>
+                    <div class="grid3">
+                        <div class="panel"><h3>Impossible values</h3>An estimate of 210 “minutes” for a 3-minute wait is not a slow clock – it’s someone who wrote seconds. The fix is not just to convert it: rewrite the instruction so it can’t happen again.</div>
+                        <div class="panel"><h3>Manipulation check</h3>If the fast music doesn’t <em>feel</em> faster, your experiment can’t show an effect of tempo. Check it in the pilot – and choose stronger contrasts if needed.</div>
+                        <div class="panel"><h3>How many people?</h3>The pilot gives you a first guess of the difference and the spread. Simulate how many people you need to find such a difference reliably (the <em>power</em> of your study).</div>
+                    </div>
+                    <div class="py-task" style="margin-top:1.25rem">
+                        <h4>In Python</h4>
+                        <ol>
+                            <li>Find the outliers. What do the notes say?</li>
+                            <li>Convert estimates above 20 into minutes (TODO) and compare the group means again.</li>
+                            <li>Did the manipulation work?</li>
+                            <li>In the power simulation: with the pilot’s difference of 0.3 minutes, how many people per group do you need to find it in 80 % of experiments?</li>
+                        </ol>
+                    </div>
+                    <div class="py" data-py="refine-exp-check" data-title="Outliers, groups, manipulation check" data-files="data/experiment-pilot.csv">
+<script type="text/plain">
+# Pilot: 16 students waited 3 minutes with fast or slow music, then estimated the wait in minutes.
+import csv
+from statistics import mean, median, quantiles
+from edu import boxplot
+
+with open("experiment-pilot.csv", encoding="utf-8") as f:
+    rows = list(csv.DictReader(f))
+
+# 1. Outliers: more than 1.5 × IQR outside the middle half
+values = [float(r["estimate"]) for r in rows]
+q1, q2, q3 = quantiles(values, n=4)
+iqr = q3 - q1
+for r in rows:
+    v = float(r["estimate"])
+    if v < q1 - 1.5 * iqr or v > q3 + 1.5 * iqr:
+        print("outlier:", r["id"], r["condition"], v, "–", r["note"])
+
+# 2. Groups
+groups = {}
+for r in rows:
+    v = float(r["estimate"])
+    # TODO: if v is larger than 20, it was probably given in seconds – convert it to minutes
+    groups.setdefault(r["condition"], []).append(v)
+print()
+for name, v in groups.items():
+    print("%-5s n = %d   mean %6.2f   median %.2f" % (name, len(v), mean(v), median(v)))
+boxplot(groups, title="Pilot: estimated waiting time", ylabel="estimate")
+
+# 3. Manipulation check: did the fast music feel faster?
+print()
+for name in groups:
+    ratings = [int(r["tempo_rating"]) for r in rows if r["condition"] == name]
+    print("tempo rating, %s music: %.2f" % (name, mean(ratings)))
+</script>
+                    </div>
+                    <div class="py" data-py="refine-exp-power" data-title="Power: how many people do you need?">
+<script type="text/plain">
+# Pilot (cleaned): fast ≈ 2.5 min, slow ≈ 2.9 min, SD ≈ 0.6. Pilots tend to overestimate
+# effects, so plan with a slightly smaller difference.
+# If that difference is real – how often would an experiment with n people per group find it?
+import random
+from statistics import mean, stdev
+
+random.seed(3)
+difference = 0.3        # TODO: try the difference you expect: 0.3, 0.5 …
+sd = 0.6
+
+def finds_it(a, b):
+    # rule of thumb: a difference counts as found if it is larger than about 2 standard errors
+    se = (stdev(a) ** 2 / len(a) + stdev(b) ** 2 / len(b)) ** 0.5
+    return abs(mean(b) - mean(a)) > 2 * se
+
+for n in [8, 15, 30, 50, 64, 100]:
+    found = 0
+    for experiment in range(1000):
+        fast = [random.gauss(2.6, sd) for _ in range(n)]
+        slow = [random.gauss(2.6 + difference, sd) for _ in range(n)]
+        if finds_it(fast, slow):
+            found += 1
+    print("n = %3d per group: difference found in %3.0f %% of experiments" % (n, found / 10))
+</script>
+                    </div>
+                    <details class="panel" style="margin-top:1rem">
+                        <summary><b>Compare with our findings</b> (after you have tried)</summary>
+                        <ul>
+                            <li><b>E06 and E13</b> wrote 210 and 165 – seconds. One of them even asked. New instruction: “How long did you wait? Write your answer in minutes and seconds, e.g. 2 min 40 s.” Converted, the fast group estimates about 0.35 minutes less than the slow group – in a pilot, that may be chance.</li>
+                            <li>Tempo ratings: fast about 3.6, slow about 3.3. The music hardly felt different – <b>the manipulation is too weak</b>. Choose pieces that are clearly fast (around 140 bpm) and clearly slow (around 60 bpm) and pilot the ratings again.</li>
+                            <li>A difference of 0.3 minutes with SD 0.6 (d = 0.5) needs about <b>64 people per group</b> for 80 % power. With 30 per group you would miss it about half of the time. Options: a stronger manipulation (bigger difference), a within-subjects design – or a smaller claim.</li>
+                            <li>E03 knew the song, E10’s phone buzzed: write such notes down. Decide <em>before</em> the main study whether they lead to exclusion.</li>
+                        </ul>
+                    </details>
+                </div>
+
+                <!-- ---------- coding ---------- -->
+                <div class="track" data-track="coding" style="--c: var(--s4)">
+                    <h3 class="track-h">Coding texts <small>two coders, 30 song lines, future forms</small></h3>
+                    <p>Two students coded the same lines independently: <code>will</code>, <code>going_to</code>, <code>gonna</code>, <code>prog</code> (present progressive about the future: “I’m leaving tomorrow”) or <code>none</code> (no future reference). The lines are invented, the problem is real.</p>
+                    <div class="cols">
+                        <div class="panel">
+                            <h3>Agreement – and agreement by chance</h3>
+                            <p>77 % agreement sounds good. But two coders who guess would also agree sometimes. <b>Cohen’s κ</b> corrects for that:</p>
+                            <p style="font-family:var(--serif);font-size:1.1rem">κ = (agreement − chance agreement) / (1 − chance agreement)</p>
+                            <dl class="kv">
+                                <dt>κ ≥ 0.80</dt><dd>very good – aim for this before you code everything</dd>
+                                <dt>κ 0.60–0.80</dt><dd>substantial – sharpen the codebook</dd>
+                                <dt>κ &lt; 0.60</dt><dd>the categories are not clear enough</dd>
+                            </dl>
+                        </div>
+                        <div class="panel">
+                            <h3>Who disagrees about what?</h3>
+                            <div class="pills" id="cm-tabs" role="group" aria-label="Coding round"></div>
+                            <div class="scroll-x" id="cm"></div>
+                            <p class="small" id="cm-text" aria-live="polite"></p>
+                        </div>
+                    </div>
+                    <div class="py-task" style="margin-top:1.25rem">
+                        <h4>In Python</h4>
+                        <ol>
+                            <li>Run the agreement check. Where do the disagreements cluster?</li>
+                            <li>Write one decision rule for the codebook that would settle most of them.</li>
+                            <li>The coders tried again on 30 new lines with that rule: change <code>FILE</code> to <code>"coding-round2.csv"</code>.</li>
+                        </ol>
+                    </div>
+                    <div class="py" data-py="refine-coding-kappa" data-title="Inter-coder agreement: Cohen’s κ" data-files="data/coding-round1.csv data/coding-round2.csv">
+<script type="text/plain">
+# Two coders coded the same song lines for how they talk about the future.
+import csv
+from collections import Counter
+
+FILE = "coding-round1.csv"          # TODO: after the codebook update, try "coding-round2.csv"
+with open(FILE, encoding="utf-8") as f:
+    rows = list(csv.DictReader(f))
+a = [r["coder_a"] for r in rows]
+b = [r["coder_b"] for r in rows]
+n = len(rows)
+categories = sorted(set(a) | set(b))
+
+agree = sum(x == y for x, y in zip(a, b)) / n
+count_a, count_b = Counter(a), Counter(b)
+chance = sum(count_a[c] / n * count_b[c] / n for c in categories)   # expected if both guessed
+kappa = (agree - chance) / (1 - chance)
+print("agreement %.0f %%, by chance %.0f %%, Cohen's kappa = %.2f\n" % (100 * agree, 100 * chance, kappa))
+
+print("A ↓  B →  " + "".join("%10s" % c for c in categories))
+for x in categories:
+    print("%-10s" % x + "".join("%10d" % sum(1 for p, q in zip(a, b) if p == x and q == y) for y in categories))
+
+print("\nDisagreements:")
+for r in rows:
+    if r["coder_a"] != r["coder_b"]:
+        print("  %s  %-38s A: %-9s B: %s" % (r["id"], r["line"], r["coder_a"], r["coder_b"]))
+</script>
+                    </div>
+                    <details class="panel" style="margin-top:1rem">
+                        <summary><b>Compare with our findings</b> (after you have tried)</summary>
+                        <ul>
+                            <li>Coder B coded “going to the river” as <code>going_to</code> – but that is movement, not the going-to future. And A and B disagreed whether “I’m waiting for the summer” talks about the future.</li>
+                            <li>New rule: <em>going to + verb</em> = <code>going_to</code>; <em>going (to) + place</em> = movement. A present progressive counts as <code>prog</code> only with a future time marker (tomorrow, on Sunday, next week, when …) – otherwise <code>none</code>.</li>
+                            <li>Round 2 with the rule: κ rises from about 0.71 to about 0.92. Now the codebook is ready for the whole corpus. Report both rounds in your method chapter.</li>
+                        </ul>
+                    </details>
+                </div>
+
+                <!-- ---------- existing ---------- -->
+                <div class="track" data-track="existing" style="--c: var(--s5)">
+                    <h3 class="track-h">Existing data <small>school-night sleep of 15-year-olds, 2004–2024</small></h3>
+                    <p>A yearly survey reports average sleep. You didn’t collect it, so you can’t pilot it – but you can check it before you trust it. This series (invented) has three classic problems.</p>
+                    <div class="grid3">
+                        <div class="panel"><h3>Units</h3>Do all rows use the same unit? A value of 476 next to 7.9 is minutes next to hours.</div>
+                        <div class="panel"><h3>Gaps</h3>A missing year is information: why is it missing? Never fill it with a guess without saying so.</div>
+                        <div class="panel"><h3>Method breaks</h3>If the way of measuring changes, the numbers may jump without anything changing in reality – read the documentation.</div>
+                    </div>
+                    <div class="py-task" style="margin-top:1.25rem">
+                        <h4>In Python</h4>
+                        <ol>
+                            <li>Run the check and look at the chart. What goes wrong?</li>
+                            <li>Convert minutes into hours (TODO) and run again.</li>
+                            <li>What happens in 2015? Is it a change in teenagers’ sleep?</li>
+                        </ol>
+                    </div>
+                    <div class="py" data-py="refine-existing-check" data-title="Check a data series before you trust it" data-files="data/existing-sleep.csv">
+<script type="text/plain">
+# Average school-night sleep of 15-year-olds, from a yearly survey (invented data).
+import csv
+from edu import line
+
+with open("existing-sleep.csv", encoding="utf-8") as f:
+    rows = list(csv.DictReader(f))
+
+years, sleep = [], []
+for r in rows:
+    if r["sleep"] == "":
+        print(r["year"], "missing")
+        value = None
+    elif r["unit"] == "min":
+        print(r["year"], "is given in minutes:", r["sleep"])
+        value = float(r["sleep"])           # TODO: convert to hours
+    else:
+        value = float(r["sleep"])
+    years.append(int(r["year"]))
+    sleep.append(value)
+
+print("\nmethods used:")
+for m in sorted(set(r["method"] for r in rows if r["method"])):
+    in_use = [int(r["year"]) for r in rows if r["method"] == m]
+    print(" ", m, "from", min(in_use), "to", max(in_use))
+
+line(years, sleep, title="Average school-night sleep, age 15", xlabel="year", ylabel="hours")
+</script>
+                    </div>
+                    <details class="panel" style="margin-top:1rem">
+                        <summary><b>Compare with our findings</b> (after you have tried)</summary>
+                        <ul>
+                            <li>2009 and 2010 are in minutes (476 min ≈ 7.93 h). Unconverted, they ruin the chart.</li>
+                            <li>2020 is missing – the survey didn’t take place. Leave the gap and say why.</li>
+                            <li>From 2015 the survey used an app instead of a sleep diary. The drop of about a quarter of an hour in one year is a <b>method break</b>, not a change in sleep. Analyse both periods separately (part 3) – or you will report a decline that is much too steep.</li>
+                        </ul>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ FIX ============================ -->
+        <section class="sec" id="fix" style="--c: var(--s2)">
+            <div class="t-wrap">
+                <h2>From signal to fix</h2>
+                <p class="lead">A pilot gives you signals. Each signal points to a typical cause – and a typical fix. Change the instrument, not the data.</p>
+                <div class="scroll-x"><table class="dt">
+                    <thead><tr><th>signal in the pilot</th><th>likely cause</th><th>fix</th></tr></thead>
+                    <tbody>
+                        <tr><td>low α, one item with low item–rest r</td><td>item measures something else or two things</td><td>split, reword or drop it</td></tr>
+                        <tr><td>very low α, one item correlates <em>negatively</em></td><td>reversed item not recoded – or misread</td><td>recode it; make the wording clear</td></tr>
+                        <tr><td>almost everyone ticks the same answer</td><td>item too weak or too strong (ceiling / floor)</td><td>sharpen the wording or widen the scale</td></tr>
+                        <tr><td>test item p &gt; 0.90 or &lt; 0.10</td><td>too easy, too hard – or not part of the content</td><td>replace it; check the blueprint</td></tr>
+                        <tr><td>negative discrimination</td><td>wrong key, ambiguous item, two right answers</td><td>fix the key or the item</td></tr>
+                        <tr><td>impossible values, questions during the pilot</td><td>unclear instruction or unit</td><td>rewrite the instruction, give an example</td></tr>
+                        <tr><td>manipulation check shows little difference</td><td>conditions too similar</td><td>stronger contrast between conditions</td></tr>
+                        <tr><td>κ below 0.80, disagreements on the same kind of case</td><td>category boundary unclear</td><td>decision rule plus example in the codebook</td></tr>
+                        <tr><td>takes much longer than planned</td><td>too many items, too much reading</td><td>cut items that add least (α without it barely drops)</td></tr>
+                        <tr><td>jump or gap in a data series</td><td>method change, missing year</td><td>analyse periods separately, report the gap</td></tr>
+                    </tbody>
+                </table></div>
+
+                <div class="panel" style="margin-top:1.5rem">
+                    <h3>Practice: what would you do?</h3>
+                    <div class="quiz stack" id="fix-quiz"></div>
+                    <p class="score" id="fix-score" aria-live="polite"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ GOOD ENOUGH ============================ -->
+        <section class="sec" id="enough" style="--c: var(--s3)">
+            <div class="t-wrap">
+                <h2>When is it good enough?</h2>
+                <p class="lead">There is no perfect instrument. These are common thresholds – useful guides, not laws. If you can’t reach one, collect anyway and discuss it as a limitation.</p>
+                <div class="cols">
+                    <div class="scroll-x"><table class="dt thresholds">
+                        <thead><tr><th>check</th><th>aim</th><th>for</th></tr></thead>
+                        <tbody>
+                            <tr><td>Cronbach’s α of a scale</td><td>≥ 0.70</td><td>survey</td></tr>
+                            <tr><td>item–rest correlation</td><td>≥ 0.30</td><td>survey, test</td></tr>
+                            <tr><td>item difficulty p</td><td>0.20–0.80</td><td>test</td></tr>
+                            <tr><td>KR-20 of a test</td><td>≥ 0.70</td><td>test</td></tr>
+                            <tr><td>Cohen’s κ between coders</td><td>≥ 0.80</td><td>coding</td></tr>
+                            <tr><td>manipulation check</td><td>clear difference</td><td>experiment</td></tr>
+                            <tr><td>power for the expected effect</td><td>≈ 80 %</td><td>experiment, survey</td></tr>
+                            <tr><td>no impossible values, no open questions in the pilot</td><td>0</td><td>all</td></tr>
+                        </tbody>
+                    </table></div>
+                    <div class="panel">
+                        <h3>Then pilot again?</h3>
+                        <p>After small changes (one reworded item, a clearer instruction) a short check with two or three people is enough. After big changes – new items, a new manipulation – run a second pilot.</p>
+                        <p>The refined time-pressure scale (five items, tp3 reversed, tp4 split, tp6 sharpened) reached α = 0.84 in the main survey (125 complete answers). You’ll work with those data in part 3.</p>
+                    </div>
+                </div>
+                <div class="py" data-py="refine-main-alpha" data-title="Main survey: α of the refined scale" data-files="data/survey-main.csv">
+<script type="text/plain">
+import csv
+from statistics import variance
+
+with open("survey-main.csv", encoding="utf-8") as f:
+    rows = [r for r in csv.DictReader(f) if all(r[k] != "" for k in ["p1", "p2", "p3", "p4", "p5"])]
+
+def answers(item):
+    values = [int(r[item]) for r in rows]
+    return [6 - v for v in values] if item == "p3" else values   # p3 is reversed
+
+columns = [answers(it) for it in ["p1", "p2", "p3", "p4", "p5"]]
+totals = [sum(person) for person in zip(*columns)]
+k = len(columns)
+alpha = k / (k - 1) * (1 - sum(variance(c) for c in columns) / variance(totals))
+print("n = %d, alpha = %.2f" % (len(rows), alpha))
+</script>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ LOG ============================ -->
+        <section class="band" id="log">
+            <div class="t-wrap">
+                <h2>Your refinement log</h2>
+                <p class="lead">Write down every change and why you made it. This log becomes a paragraph in your method chapter – reviewers love it, because it shows that you tested your instrument. It stays in this browser; download a copy.</p>
+                <div id="log-rows" style="margin-top:1.25rem"></div>
+                <div class="pills"><button class="pill" type="button" id="log-add">Add a row</button><button class="pill" type="button" id="log-download">Download (.txt)</button><button class="pill" type="button" id="log-clear">Clear</button></div>
+                <p class="saved" id="log-saved" aria-live="polite"></p>
+            </div>
+        </section>
+
+        <!-- ============================ NEXT ============================ -->
+        <section class="sec" id="next" style="--c: var(--s4)">
+            <div class="t-wrap">
+                <h2>Before you go on</h2>
+                <ul class="cando">
+                    <li>plan and run a pilot, including think-aloud and timing</li>
+                    <li>explain Cronbach’s α and the item–rest correlation – and use them to improve a scale</li>
+                    <li>recode reversed items and spot ceiling and floor effects</li>
+                    <li>judge test items by difficulty and discrimination</li>
+                    <li>explain why Cohen’s κ is better than plain agreement</li>
+                    <li>find impossible values and fix the instruction that caused them</li>
+                    <li>use a manipulation check and a power simulation to plan an experiment</li>
+                    <li>spot unit errors, gaps and method breaks in existing data</li>
+                </ul>
+                <div class="next">
+                    <span>Instrument fixed, data collected? Time to find out what they say – and what they don’t.</span>
+                    <a class="go" href="data-evaluate.html">Part 3: Evaluate →</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="dl" id="materials">
+            <div class="t-wrap">
+                <h2>Materials</h2>
+                <div class="dl-list">
+                    <a href="data-design.html"><b>Viable data 1: Design</b><span>Criteria, data types, sample, data plan</span></a>
+                    <a href="data-evaluate.html"><b>Viable data 3: Evaluate</b><span>Describe, compare, correlate, diagnose</span></a>
+                    <a href="data-evaluate.html#files"><b>All practice data</b><span>CSV files for your own Python or spreadsheet</span></a>
+                    <a href="w-seminar-time.html#materials"><b>Seminar overview</b><span>All modules and materials</span></a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum & Datenschutz</a> | <a href="https://edu-mrh.de/">Startseite</a></p>
+        </div>
+    </footer>
+
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+        <span></span><span></span><span></span>
+    </button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Viable data 2: Refine</h3>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Close sidebar">✕</button>
+        </div>
+        <nav class="sidebar-menu">
+            <ul>
+                <li><a href="#start">Start</a></li>
+                <li><a href="#pilot">Run a pilot</a></li>
+                <li><a href="#checks">Check the numbers</a></li>
+                <li><a href="#fix">From signal to fix</a></li>
+                <li><a href="#enough">Good enough?</a></li>
+                <li><a href="#log">Refinement log</a></li>
+                <li><a href="#next">Before you go on</a></li>
+                <li><a href="data-design.html">← Part 1: Design</a></li>
+                <li><a href="data-evaluate.html">→ Part 3: Evaluate</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+</body>
+</html>

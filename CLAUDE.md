@@ -32,9 +32,10 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
    vor `</body>`.
 2. **Keine externen CDNs, Google Fonts oder Tracker (DSGVO).** Bibliotheken
    über `https://edu-mrh.de/embed/…` (verfügbar: style.css, script.js,
-   MathJax, KaTeX, Java-Online-IDE, SQL-IDE, GeoGebra, Snap! – Einbinde-Zeilen
-   stehen auskommentiert in `templates/themenseite.html`; Snap!-Beispiel in
-   `informatik/11/algorithmik/snap-ide.html`). Schriften als lokale `.woff2`.
+   MathJax, KaTeX, Java-Online-IDE, SQL-IDE, GeoGebra, Snap!, Pyodide – Einbinde-
+   Zeilen stehen auskommentiert in `templates/themenseite.html`; Snap!-Beispiel in
+   `informatik/11/algorithmik/snap-ide.html`; Python-Zellen per Pyodide siehe
+   `englisch/w-seminar-time/viable-data.js` + `py-worker.js`). Schriften als lokale `.woff2`.
 3. **Nutzerdaten bleiben im Browser** (`localStorage`), nie zum Server.
 4. **Bestehende URLs nicht brechen**: Dateien nicht umbenennen/verschieben,
    ohne dass es der Auftrag verlangt.
@@ -189,14 +190,24 @@ QR-Codes (nicht löschen).
 | M2 Forschungsfrage | Frage vs. These, Marker, Eingrenzung, 1–3 Optionen | `research-question.html`, W4 | fertig |
 | M3 Recherche | 5 Leitfragen (refinery questions), Suchstrings, Orte, Lesen/Notieren, Quellencheck | `research-methods.html`, W5, Check 1 | fertig |
 | M4 Quellen einbauen | Zitieren, Paraphrasieren, MLA, Quellen in die eigene Argumentation integrieren | geplant, Check 2 | offen |
-| M5 Eigene Daten | Umfrage- und Experimentdesign, (Meta-)Analyse von Daten/Primärquellen | geplant, Check 3 | offen |
-| M6 Statistik | Auswertung mit Python (Grundlagen-Skripte) | geplant (12/2) | offen |
+| M5 Viable data | Gütekriterien, Datentypen (Umfrage, Test, Experiment, Textcodierung, vorhandene Daten), Pilot + Verfeinern (α, Itemanalyse, κ, Power), Auswerten (d, Permutationstest, r, Nullbefund) | `data-design.html`, `data-refine.html`, `data-evaluate.html` (noch ohne AB), Check 3 | Seiten fertig |
+| M6 Statistik | Auswertung mit Python (Grundlagen-Skripte); erste Python-Zellen schon in M5 | geplant (12/2) | offen |
 | M7 Werkzeuge | LaTeX/Overleaf, Git, Kanban | geplant, wenn Ideen stehen | offen |
 
 - Fristen: Thema/Forschungsfrage bis Ende 12/1; Präsentation 12/2; Abgabe
   2. Schultag im November (13); Prüfungsgespräch 13/1. Gewichtung
   Seminararbeit : Prüfungsgespräch = 2 : 1 (KM-Info ab Abiturjahrgang
   2025/2027), Leistungen werden einzeln im Zeugnis ausgewiesen.
+- **Viable-data-Sequenz (M5)**: drei Seiten mit gemeinsamem `viable-data.css`/`viable-data.js`
+  (Datentyp-Auswahl `data-track`, gemerkt in `localStorage 'wsDataTrack'`; Quiz, Diagramme)
+  plus je Seite `data-*.js`. Übungsdaten (erfunden, so konstruiert, dass jede Aufgabe ihr
+  Problem zeigt) in `data/*.csv`; die Zahlen in den Seitentexten („Compare with our
+  findings“, Musterformulierungen) passen genau zu diesen Dateien – Daten nur zusammen mit
+  den Texten ändern. **Python-Zellen**: `<div class="py" data-py="<id>" data-files="data/x.csv">
+  <script type="text/plain">…</script></div>`, laufen in `py-worker.js` (Pyodide, nur
+  Standardbibliothek + Modul `edu` für Diagramme: bars, hist, scatter, boxplot, line, table).
+  Pyodide liegt selbst gehostet unter `/embed/pyodide/` (Workflow `deploy-pyodide.yml`);
+  lokal testen: `data-pyodide` am Script-Tag auf eine lokale Kopie zeigen lassen.
 - Laufend: Snapshots des Schreibstands etwa alle 4 Wochen, KI-Log,
   3-2-1-Backup; geplante betreute Schreibstunde als Sprachreferenz.
 - **Leistungsnachweis 12/1 (Planung):** drei Online-Checks nach M3, M4, M5,
@@ -275,7 +286,7 @@ Wo was liegt (Stand 2026-10). `→ AB` = LaTeX-Arbeitsblätter in `arbeitsblaett
 `sidebar-anker.js`, `mobileMenu.js`, `baseScript.js`, `templates/`,
 `tools/` (Geheim-Ordner verknüpfen), `geheim/` (nur lokal, s. o.),
 `contribute.html`, `Online-IDE API-Documentation.txt`, `.github/workflows/`
-(FTPS-Deploy aller versionierten Dateien inkl. `.md`, Online-IDE, SQL-IDE, Snap!).
+(FTPS-Deploy aller versionierten Dateien inkl. `.md`, Online-IDE, SQL-IDE, Snap!, Pyodide).
 
 **Informatik** (`informatik/informatik.html`)
 - 9: `9/online-ide-intro.html`
@@ -330,8 +341,11 @@ Kopf, Lösungen als Hash in `data-loesung`, Hash-Werkzeug im Lehrkräfte-Bereich
 13 `questions-on-the-text/` (→ AB, eigene Vorlage; verschlüsselter Online-Check
 `checks/check-1-questions-on-the-text.html`, unverlinkt); W-Seminar „Time“ (12/13) in
 `englisch/w-seminar-time/` (Kursplan siehe eigener Abschnitt: `w-seminar-time.html`,
-`research-question.html`, `research-methods.html`, `checks/check-1-research-methods.html`
-(verschlüsselt), Auswertung zentral in `/checks/auswertung/`; → AB `ws-w1` bis `ws-w5`, eigene Vorlage)
+`research-question.html`, `research-methods.html`, Viable data `data-design.html`,
+`data-refine.html`, `data-evaluate.html` (Python im Browser, Daten in `data/`),
+`checks/check-1-research-methods.html` (verschlüsselt), Auswertung zentral in
+`/checks/auswertung/`; → AB `ws-w1` bis `ws-w5`, eigene Vorlage; Modulübersicht ganz unten
+auf `w-seminar-time.html#materials`)
 
 **Weitere Fächer**: `mathe/` (12: Exponential-/ln-Funktion, Umkehrfunktion),
 `physik/` (10 Berlinfahrt-Lernpfad, 11 Federpendel + Protokoll, 12 Lorentzkraft),

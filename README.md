@@ -104,6 +104,7 @@ auf edu-mrh.de und später auf edu-bay.de:
 | Java-Online-IDE | `https://edu-mrh.de/embed/include/online-ide-embedded.js` |
 | SQL-IDE | `https://edu-mrh.de/embed/sql-IDE-embedded/includeIDE.js` |
 | GeoGebra | `https://edu-mrh.de/embed/GeoGebra/deployggb.js` |
+| Pyodide (Python im Browser, nur Standardbibliothek, selbst gehostet) | `https://edu-mrh.de/embed/pyodide/pyodide.js` – am besten im Web Worker laden; Beispiel: `englisch/w-seminar-time/py-worker.js` |
 | Snap! (Blockprogrammierung, selbst gehostet) | `https://edu-mrh.de/embed/snap/edu-snap.html` – Projekt laden per `#open:<URL-kodiertes Projekt-XML>`; Beispiel-Einbindung: `informatik/11/algorithmik/snap-ide.html` |
 
 Die fertigen Einbinde-Zeilen stehen auskommentiert in
