@@ -1,0 +1,57 @@
+name: Deploy Pyodide (Python im Browser, embed/pyodide)
+
+# Stellt Pyodide (https://github.com/pyodide/pyodide, MPL-2.0) – CPython als
+# WebAssembly – unter https://edu-mrh.de/embed/pyodide/ bereit, damit Seiten
+# Python-Code direkt im Browser ausführen können, ohne CDN (DSGVO). Es wird nur
+# das Core-Paket ausgeliefert (Interpreter + Standardbibliothek, ca. 12 MB),
+# keine Zusatzpakete wie numpy. Genutzt von englisch/w-seminar-time/data-*.html
+# (py-worker.js lädt pyodide.js per importScripts in einem Web Worker).
+#
+# Version aktualisieren: PYODIDE_VERSION unten auf ein neues Release setzen
+# (https://github.com/pyodide/pyodide/releases) und den Workflow manuell starten.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+    paths:
+      - '.github/workflows/deploy-pyodide.yml'
+
+env:
+  PYODIDE_VERSION: 0.28.3
+
+jobs:
+  deploy-pyodide:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pyodide-Core herunterladen
+        run: |
+          curl -fsSL -o core.tar.bz2 "https://github.com/pyodide/pyodide/releases/download/${PYODIDE_VERSION}/pyodide-core-${PYODIDE_VERSION}.tar.bz2"
+          tar xjf core.tar.bz2
+          cd pyodide
+          # Nur was der Browser braucht (keine Node-/CLI-Dateien, keine Typdefinitionen)
+          rm -f python python_cli_entry.mjs *.d.ts
+          test -f pyodide.js && test -f pyodide.asm.wasm && test -f python_stdlib.zip && test -f pyodide-lock.json
+          # Richtiger MIME-Typ für WebAssembly (schneller Start per instantiateStreaming)
+          # und CORS, damit Seiten auch lokal (python3 -m http.server) die Dateien laden können.
+          cat > .htaccess <<'HTACCESS'
+          AddType application/wasm .wasm
+          AddType application/javascript .mjs
+          <IfModule mod_headers.c>
+              Header set Access-Control-Allow-Origin "*"
+              Header set Cache-Control "public, max-age=2592000"
+          </IfModule>
+          HTACCESS
+          du -sh . ; ls -la
+
+      - name: Deploy to Hetzner via FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./pyodide/
+          server-dir: /embed/pyodide/
+          timeout: 600000

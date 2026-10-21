@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viable Data 3: Evaluate | W-Seminar English 12 – edu-mrh.de</title>
+    <meta name="description" content="W-Seminar 'Time' (English, Year 12), viable data part 3: clean and describe your data, compare groups (effect size, permutation test), find relationships (correlation), track change, and diagnose results that show nothing – with Python on the page, practice data and a template for your own CSV.">
+
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <link rel="stylesheet" href="viable-data.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <script defer src="viable-data.js" data-pyodide="https://edu-mrh.de/embed/pyodide/"></script>
+    <script defer src="data-evaluate.js"></script>
+
+    <style>
+        .anscombe { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+        .anscombe svg { width: 100%; height: auto; display: block; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.14); border-radius: 10px; }
+        .anscombe text { font: 600 11px var(--sans); fill: #cfd2f5; }
+        .acard { background: #fff; border: 1px solid var(--line); border-top: 5px solid var(--cc); border-radius: 14px; padding: 1rem 1.1rem; font-size: .92rem; }
+        .acard b.big { display: block; font-family: var(--serif); font-size: 1.25rem; color: var(--cc); margin-bottom: .25rem; }
+        .acard .ask { font-family: var(--serif); font-style: italic; font-size: 1rem; margin: .2rem 0 .5rem; }
+        .acard dl { margin: .4rem 0; }
+        .acard a { font-weight: 600; }
+        .fitchips { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .5rem; }
+        .fitchips span { font-size: .75rem; border: 1px solid var(--line); border-radius: 99px; padding: .05rem .5rem; color: var(--ink-soft); }
+        .acard.mine { box-shadow: 0 0 0 2px var(--cc); }
+        .acard.mine::after { content: '★ fits your data type'; display: block; font-size: .78rem; font-weight: 600; color: var(--cc); margin-top: .5rem; }
+        .perm svg, .guess svg, .explore svg { width: 100%; height: auto; display: block; }
+        .perm text, .guess text { font: 11px var(--sans); fill: var(--ink-soft); }
+        .perm .lab2 { font: 600 12px var(--sans); fill: var(--ink); }
+        .guess-row { display: grid; grid-template-columns: 1fr auto; gap: .75rem; align-items: center; }
+        .model { font-family: var(--serif); font-size: 1.05rem; line-height: 1.55; background: #f5f3ff; border-radius: 12px; padding: .8rem 1rem; margin-top: .5rem; }
+        .model span { display: block; font-family: var(--sans); font-size: .78rem; color: var(--ink-soft); margin-bottom: .2rem; }
+        .model.bad { background: #fef2f2; }
+        .diag { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; gap: .55rem; counter-reset: dg; }
+        .diag li { counter-increment: dg; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: .7rem 1rem .7rem 2.8rem; position: relative; }
+        .diag li::before { content: counter(dg); position: absolute; left: 1rem; top: .65rem; font-family: var(--serif); font-weight: 600; font-size: 1.2rem; color: var(--c); }
+        .diag b { display: block; }
+        #choose .grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        @media (max-width: 640px) { #choose .grid4 { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="icon"><a href="https://edu-mrh.de/">🇬🇧</a></span>
+                <span>edu-mrh English</span>
+            </div>
+            <div class="nav-links">
+                <a href="w-seminar-time.html#materials" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content t">
+
+        <!-- ============================ HERO ============================ -->
+        <header class="hero-d" id="start">
+            <div class="t-wrap">
+                <div class="hero-grid">
+                    <div>
+                        <p class="kicker">W-Seminar English, Year 12 · Time · Viable data 3 of 3</p>
+                        <h1>Numbers don’t speak. You do.</h1>
+                        <p class="lead">A mean, a correlation, a p-value – each answers one narrow question. Choose the analysis that fits your question, always look at the data first, and say honestly what your results can and cannot show. Even “no effect” is a result.</p>
+                    </div>
+                    <div>
+                        <div class="anscombe" id="anscombe" aria-label="Anscombe's quartet: four datasets with the same mean and the same correlation, r = 0.82, but completely different shapes."></div>
+                        <p class="hero-cap">Anscombe’s quartet (1973): four datasets, same means, same r = 0.82 – four completely different stories. Always plot your data.</p>
+                    </div>
+                </div>
+                <ol class="seq">
+                    <li><a href="data-design.html"><span class="n">Part 1</span><b>Design</b><small>criteria, data types, sample, plan</small></a></li>
+                    <li><a href="data-refine.html"><span class="n">Part 2</span><b>Refine</b><small>pilot, check the numbers, fix</small></a></li>
+                    <li><span class="here"><span class="n">Part 3 · you are here</span><b>Evaluate</b><small>describe, compare, relate, conclude</small></span></li>
+                </ol>
+            </div>
+        </header>
+
+        <!-- ============================ CLEAN + DESCRIBE ============================ -->
+        <section class="sec" id="clean" style="--c: var(--s1)">
+            <div class="t-wrap">
+                <h2>Clean first, then describe</h2>
+                <p class="lead">Before any test: get the data into shape, write down every exclusion, and describe what you have. Most of the insight in a Seminararbeit comes from good description – not from fancy statistics.</p>
+                <div class="grid3">
+                    <div class="panel">
+                        <h3>Tidy table</h3>
+                        <ul>
+                            <li>one row per person (or text, or year)</li>
+                            <li>one column per variable, short names: <code>sleep_school</code></li>
+                            <li>numbers with a point, not a comma; empty cell = missing</li>
+                            <li>save as CSV, keep the raw file untouched</li>
+                        </ul>
+                    </div>
+                    <div class="panel">
+                        <h3>Codebook</h3>
+                        <ul>
+                            <li>what each column means, with the exact question</li>
+                            <li>unit and range (1–5, hours, 0/1)</li>
+                            <li>which items are reversed, how scores are built</li>
+                            <li>goes into the appendix of your paper</li>
+                        </ul>
+                    </div>
+                    <div class="panel">
+                        <h3>Cleaning log</h3>
+                        <ul>
+                            <li>rules fixed <em>before</em> you look at the results</li>
+                            <li>every excluded row with the reason</li>
+                            <li>report: “Of 126 questionnaires, 4 were excluded (3 incomplete, 1 impossible value).”</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="cols">
+                    <div class="panel">
+                        <h3>Which number describes what?</h3>
+                        <dl class="kv">
+                            <dt>n</dt><dd>how many – always report it, per group</dd>
+                            <dt>mean</dt><dd>the average; sensitive to outliers</dd>
+                            <dt>median</dt><dd>the middle value; robust, use it for ordinal data and skewed values</dd>
+                            <dt>SD</dt><dd>standard deviation: how far values typically lie from the mean</dd>
+                            <dt>IQR</dt><dd>range of the middle half (the box in a box plot)</dd>
+                            <dt>%</dt><dd>for categories – always with the base: “38 % (46 of 122)”</dd>
+                        </dl>
+                    </div>
+                    <div class="panel">
+                        <h3>Which chart?</h3>
+                        <dl class="kv">
+                            <dt>bar chart</dt><dd>counts or percentages of categories</dd>
+                            <dt>histogram</dt><dd>distribution of one numeric variable</dd>
+                            <dt>box plot</dt><dd>compare a numeric variable between groups</dd>
+                            <dt>scatter plot</dt><dd>relationship between two numeric variables</dd>
+                            <dt>line chart</dt><dd>change over time</dd>
+                        </dl>
+                        <p class="small">No 3D, no pie charts with ten slices, axes labelled with units, source under the chart.</p>
+                    </div>
+                </div>
+
+                <div class="py" data-py="eval-clean" data-title="Clean the main survey" data-files="data/survey-main.csv">
+<script type="text/plain">
+# Main survey: 126 students. Before any statistics: what is missing or impossible?
+import csv
+
+with open("survey-main.csv", encoding="utf-8") as f:
+    rows = list(csv.DictReader(f))
+print(len(rows), "rows; columns:", ", ".join(rows[0].keys()))
+
+clean, log = [], []
+for r in rows:
+    empty = [k for k, v in r.items() if v == ""]
+    if empty:
+        log.append(r["id"] + ": empty " + ", ".join(empty))
+        continue
+    if not 3 <= float(r["sleep_school"]) <= 12:          # rule fixed in advance
+        log.append(r["id"] + ": impossible sleep_school = " + r["sleep_school"])
+        continue
+    clean.append(r)
+
+print("\nCleaning log – this goes into your method chapter:")
+for entry in log:
+    print("  " + entry)
+print("\n%d of %d rows kept" % (len(clean), len(rows)))
+# TODO: S041 only skipped one item. Would you really drop the whole person? What else could you do?
+</script>
+                </div>
+                <div class="py" data-py="eval-describe" data-title="Describe groups: n, mean, median, SD, box plot" data-files="data/experiment-main.csv">
+<script type="text/plain">
+# Main experiment: 84 students waited 3 minutes – with fast music, slow music or in silence.
+import csv
+from statistics import mean, median, stdev
+from edu import boxplot
+
+with open("experiment-main.csv", encoding="utf-8") as f:
+    rows = list(csv.DictReader(f))
+
+groups = {"fast": [], "slow": [], "silence": []}
+for r in rows:
+    groups[r["condition"]].append(float(r["estimate"]))
+
+print("group     n   mean  median    SD")
+for name, v in groups.items():
+    print("%-8s %2d   %.2f   %.2f   %.2f" % (name, len(v), mean(v), median(v), stdev(v)))
+boxplot(groups, title="Estimated waiting time (real wait: 3 minutes)", ylabel="minutes")
+</script>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ CHOOSE ============================ -->
+        <section class="sec" id="choose" style="--c: var(--s4)">
+            <div class="t-wrap">
+                <h2>Which analysis answers your question?</h2>
+                <p class="lead">Your research question already contains the analysis. Look at its verb: do you <em>compare</em> groups, <em>relate</em> two variables, track a <em>change</em> – or <em>count</em> categories?</p>
+                <div class="trackbar" data-label="Highlight for:"></div>
+                <div class="grid4">
+                    <div class="acard" style="--cc: var(--s3)" data-fits="experiment survey test">
+                        <b class="big">Compare groups</b>
+                        <div class="ask">Do fast-music listeners estimate shorter waits than slow-music listeners?</div>
+                        <dl class="kv"><dt>describe</dt><dd>means, medians, SD per group</dd><dt>chart</dt><dd>box plot</dd><dt>size</dt><dd>difference, Cohen’s d</dd><dt>chance?</dt><dd>permutation test, p</dd></dl>
+                        <a href="#compare">→ compare</a>
+                    </div>
+                    <div class="acard" style="--cc: var(--s1)" data-fits="survey existing test">
+                        <b class="big">Relate two variables</b>
+                        <div class="ask">Do evening types sleep less on school nights?</div>
+                        <dl class="kv"><dt>chart</dt><dd>scatter plot</dd><dt>size</dt><dd>Pearson r, Spearman ρ</dd><dt>careful</dt><dd>correlation ≠ cause</dd></dl>
+                        <a href="#relate">→ relate</a>
+                    </div>
+                    <div class="acard" style="--cc: var(--s2)" data-fits="test experiment existing">
+                        <b class="big">Track a change</b>
+                        <div class="ask">Did the lesson improve the test score?</div>
+                        <dl class="kv"><dt>describe</dt><dd>before, after, gain</dd><dt>chart</dt><dd>box plot of gains, line chart</dd><dt>needs</dt><dd>a control group</dd></dl>
+                        <a href="#change">→ change</a>
+                    </div>
+                    <div class="acard" style="--cc: var(--s5)" data-fits="coding existing survey">
+                        <b class="big">Count categories</b>
+                        <div class="ask">Has the share of “gonna” grown since the 1960s?</div>
+                        <dl class="kv"><dt>describe</dt><dd>counts and shares (%)</dd><dt>chart</dt><dd>bar or line chart</dd><dt>careful</dt><dd>compare shares, not raw counts</dd></dl>
+                        <a href="#counts">→ count</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ COMPARE ============================ -->
+        <section class="sec" id="compare" style="--c: var(--s3)">
+            <div class="t-wrap">
+                <h2>Compare groups</h2>
+                <p class="lead">The fast-music group estimated the wait as shorter. Two questions follow: <b>how big</b> is the difference – and <b>could it be chance</b>? Answer both. A tiny difference can be “significant” with a huge sample; a big one can be chance with a small sample.</p>
+                <div class="cols">
+                    <div class="panel">
+                        <h3>How big? Cohen’s d</h3>
+                        <p>d = difference of the means ÷ standard deviation. It says how many SDs apart the groups are – comparable across studies.</p>
+                        <dl class="kv"><dt>d ≈ 0.2</dt><dd>small – hardly visible</dd><dt>d ≈ 0.5</dt><dd>medium – visible to a careful eye</dd><dt>d ≈ 0.8</dt><dd>large – obvious</dd></dl>
+                        <h3 style="margin-top:1.25rem">Could it be chance? The permutation test</h3>
+                        <p>Suppose the music made <em>no</em> difference. Then the labels “fast” and “slow” would be arbitrary. Shuffle them at random, many times, and see how often chance alone produces a difference as big as yours. That share is the <b>p-value</b>. Below 0.05 (5 %) we usually say: unlikely to be chance alone.</p>
+                    </div>
+                    <div class="panel perm">
+                        <h3>Shuffle the labels</h3>
+                        <svg id="perm-dots" viewBox="0 0 520 150" role="img" aria-label="Estimates of the fast and slow group as dots"></svg>
+                        <div class="pills"><button class="pill" type="button" id="perm-1">Shuffle once</button><button class="pill" type="button" id="perm-100">× 100</button><button class="pill" type="button" id="perm-1000">× 1000</button><button class="pill" type="button" id="perm-reset">Reset</button></div>
+                        <svg id="perm-hist" viewBox="0 0 520 170" role="img" aria-label="Histogram of differences after shuffling"></svg>
+                        <p class="small" id="perm-text" aria-live="polite"></p>
+                    </div>
+                </div>
+                <div class="py" data-py="eval-compare" data-title="Effect size and permutation test" data-files="data/experiment-main.csv">
+<script type="text/plain">
+import csv, random
+from statistics import mean, stdev
+from edu import hist
+
+with open("experiment-main.csv", encoding="utf-8") as f:
+    rows = list(csv.DictReader(f))
+A, B = "fast", "slow"                        # TODO: compare "slow" and "silence"
+a = [float(r["estimate"]) for r in rows if r["condition"] == A]
+b = [float(r["estimate"]) for r in rows if r["condition"] == B]
+
+diff = mean(b) - mean(a)
+pooled_sd = ((stdev(a) ** 2 + stdev(b) ** 2) / 2) ** 0.5
+d = diff / pooled_sd                          # Cohen's d
+print("%s: M = %.2f (SD %.2f), %s: M = %.2f (SD %.2f)" % (A, mean(a), stdev(a), B, mean(b), stdev(b)))
+print("difference %.2f min, d = %.2f" % (diff, d))
+
+# Permutation test: if the music made no difference, the labels would be arbitrary.
+random.seed(1)
+pool = a + b
+shuffled = []
+for _ in range(5000):
+    random.shuffle(pool)
+    shuffled.append(mean(pool[len(a):]) - mean(pool[:len(a)]))
+p = sum(abs(x) >= abs(diff) for x in shuffled) / len(shuffled)
+print("p = %.3f – share of 5000 shuffles with a difference at least as large" % p)
+hist(shuffled, bins=30, title="Differences when the labels are shuffled", xlabel="difference in minutes")
+</script>
+                </div>
+                <h3 style="margin-top:1.5rem">Write it up</h3>
+                <p class="model"><span>good</span>Students who waited with fast music estimated the three-minute wait as shorter (M = 2.60 min, SD = 0.61, n = 28) than students who waited with slow music (M = 3.04 min, SD = 0.62, n = 28). The difference of 0.45 minutes is a medium-to-large effect (d = 0.73) and unlikely to be due to chance (permutation test, p ≈ .01).</p>
+                <p class="model bad"><span>not like this</span>The experiment proves that fast music makes time go faster.</p>
+                <p class="small">“Proves” is too strong for one experiment with 56 students, and you measured <em>estimated</em> waiting time, not time itself. Report the numbers, then interpret carefully in the discussion.</p>
+            </div>
+        </section>
+
+        <!-- ============================ RELATE ============================ -->
+        <section class="sec" id="relate" style="--c: var(--s1)">
+            <div class="t-wrap">
+                <h2>Relate two variables</h2>
+                <p class="lead">Does one variable go up when the other goes up (or down)? The correlation coefficient r runs from −1 (perfect opposite) through 0 (no straight-line link) to +1 (perfect together). Always look at the scatter plot first.</p>
+                <div class="cols">
+                    <div class="panel">
+                        <h3>Reading r</h3>
+                        <dl class="kv"><dt>|r| ≈ 0.1</dt><dd>small</dd><dt>|r| ≈ 0.3</dt><dd>medium</dd><dt>|r| ≥ 0.5</dt><dd>large (for survey data)</dd><dt>r²</dt><dd>share of the variation “explained”: r = 0.5 → 25 %</dd></dl>
+                        <p class="small" style="margin-top:.6rem"><b>Pearson r</b> for numeric data and straight-line links. <b>Spearman ρ</b> uses ranks: better for ordinal answers (1–5) and robust against outliers.</p>
+                        <h3 style="margin-top:1.25rem">Correlation is not causation</h3>
+                        <ul>
+                            <li><b>third variable:</b> owls sleep less – because of the chronotype, or because they use their phones longer?</li>
+                            <li><b>reverse direction:</b> does stress shorten sleep, or does short sleep cause stress?</li>
+                            <li><b>chance:</b> with many variables, some pairs correlate by accident (see below)</li>
+                        </ul>
+                        <p class="small">Only an experiment can show cause and effect. Write “is associated with”, not “causes”.</p>
+                    </div>
+                    <div class="panel guess">
+                        <h3>Train your eye: guess r</h3>
+                        <svg id="guess-svg" viewBox="0 0 300 220" role="img" aria-label="A scatter plot – guess its correlation"></svg>
+                        <div class="guess-row">
+                            <input type="range" id="guess-r" min="-1" max="1" step="0.05" value="0" aria-label="Your guess for r">
+                            <span class="readout" id="guess-out">0.00</span>
+                        </div>
+                        <div class="pills"><button class="pill" type="button" id="guess-go">Check</button><button class="pill" type="button" id="guess-new">New plot</button></div>
+                        <p class="small" id="guess-text" aria-live="polite">Move the slider to your guess, then check.</p>
+                    </div>
+                </div>
+                <div class="py" data-py="eval-relate" data-title="Correlations in the main survey" data-files="data/survey-main.csv">
+<script type="text/plain">
+import csv
+from statistics import correlation, mean
+from edu import scatter
+
+with open("survey-main.csv", encoding="utf-8") as f:
+    rows = [r for r in csv.DictReader(f) if "" not in r.values() and float(r["sleep_school"]) <= 12]
+
+def column(name):
+    return [float(r[name]) for r in rows]
+
+def pressure(r):                    # scale score: mean of p1–p5, p3 reversed
+    v = [int(r[k]) for k in ["p1", "p2", "p3", "p4", "p5"]]
+    v[2] = 6 - v[2]
+    return mean(v)
+
+data = {"chrono": column("chrono"), "sleep_school": column("sleep_school"),
+        "sleep_weekend": column("sleep_weekend"), "commute_min": column("commute_min"),
+        "pressure": [pressure(r) for r in rows]}
+
+x, y = "chrono", "sleep_school"     # TODO: try other pairs from data
+print("n = %d" % len(rows))
+print("Pearson r  = %.2f" % correlation(data[x], data[y]))
+print("Spearman ρ = %.2f" % correlation(data[x], data[y], method="ranked"))
+scatter(data[x], data[y], line=True, title=x + " and " + y, xlabel=x + " (1 = lark … 5 = owl)", ylabel=y + " (hours)")
+
+print("\nAll pairs (Pearson r):")
+names = list(data)
+print(" " * 14 + "".join("%14s" % n for n in names))
+for n1 in names:
+    print("%-14s" % n1 + "".join("%14.2f" % correlation(data[n1], data[n2]) for n2 in names))
+</script>
+                </div>
+                <h3 style="margin-top:1.5rem">Write it up</h3>
+                <p class="model"><span>good</span>Evening types reported less sleep on school nights: chronotype and school-night sleep were negatively correlated (r = −.48, n = 122). The association is cross-sectional and does not show that chronotype causes short sleep.</p>
+            </div>
+        </section>
+
+        <!-- ============================ CHANGE ============================ -->
+        <section class="sec" id="change" style="--c: var(--s2)">
+            <div class="t-wrap">
+                <h2>Track a change</h2>
+                <p class="lead">Before and after a lesson, a treatment, a decade. Change alone proves little: people improve the second time anyway (they know the test), and everything else changed too. A control group shows how much change happens <em>without</em> your intervention.</p>
+                <div class="py" data-py="eval-change" data-title="Before and after: lesson vs. control group" data-files="data/test-prepost.csv">
+<script type="text/plain">
+# Grammar test (0–10 points) before and after – one class had the lesson, one didn't.
+import csv
+from statistics import mean, stdev
+from edu import boxplot
+
+with open("test-prepost.csv", encoding="utf-8") as f:
+    rows = list(csv.DictReader(f))
+
+gains = {"lesson": [], "control": []}
+for r in rows:
+    gains[r["group"]].append(int(r["post"]) - int(r["pre"]))
+
+for g in gains:
+    pre = [int(r["pre"]) for r in rows if r["group"] == g]
+    post = [int(r["post"]) for r in rows if r["group"] == g]
+    print("%-7s n = %d   pre %.1f   post %.1f   gain %.1f (SD %.1f)"
+          % (g, len(pre), mean(pre), mean(post), mean(gains[g]), stdev(gains[g])))
+boxplot(gains, title="Gain = post − pre (points)", ylabel="gain")
+
+# TODO 1: why is the control group's gain not zero?
+# TODO 2: copy the permutation test from "Compare groups" and compare the gains of both groups.
+</script>
+                </div>
+                <h3 style="margin-top:1.5rem">Write it up</h3>
+                <p class="model"><span>good</span>Both classes improved from pre- to post-test, but the class with the lesson gained clearly more (M = 2.1 points) than the control class (M = 0.4 points). Part of the improvement is therefore a retest effect; the additional gain can be attributed to the lesson.</p>
+            </div>
+        </section>
+
+        <!-- ============================ COUNTS + TRENDS ============================ -->
+        <section class="sec" id="counts" style="--c: var(--s5)">
+            <div class="t-wrap">
+                <h2>Count categories, follow trends</h2>
+                <p class="lead">Coded texts and existing statistics often give you counts and time series. Two rules: compare <b>shares</b>, not raw counts (when the totals differ) – and don’t draw one trend line across a method break.</p>
+                <div class="py" data-py="eval-counts" data-title="Future forms in song lyrics, 1960s–2020s" data-files="data/coding-decades.csv">
+<script type="text/plain">
+# 40 songs per decade, every future reference coded (invented data).
+import csv
+from edu import line
+
+with open("coding-decades.csv", encoding="utf-8") as f:
+    rows = list(csv.DictReader(f))
+forms = ["will", "going_to", "gonna", "prog"]
+decades = [int(r["decade"]) for r in rows]
+share = {form: [] for form in forms}
+
+print("decade  total  " + "  ".join("%8s" % f for f in forms))
+for r in rows:
+    total = sum(int(r[f]) for f in forms)
+    for form in forms:
+        share[form].append(round(100 * int(r[form]) / total, 1))
+    print("%5s   %4d   " % (r["decade"], total) + "  ".join("%7.1f%%" % share[f][-1] for f in forms))
+
+line(decades, share, title="Share of all future references", xlabel="decade", ylabel="%")
+# TODO: the 1960s songs contain more future references in total. Why would raw counts mislead?
+</script>
+                </div>
+                <div class="py" data-py="eval-trend" data-title="A trend across a method break" data-files="data/existing-sleep.csv">
+<script type="text/plain">
+# School-night sleep of 15-year-olds, 2004–2024 (invented); diary until 2014, app from 2015.
+import csv
+from statistics import linear_regression
+from edu import line
+
+with open("existing-sleep.csv", encoding="utf-8") as f:
+    rows = [r for r in csv.DictReader(f) if r["sleep"] != ""]
+for r in rows:
+    r["hours"] = float(r["sleep"]) / 60 if r["unit"] == "min" else float(r["sleep"])
+
+def trend(part):                    # slope of the best straight line, in minutes per decade
+    slope, intercept = linear_regression([int(r["year"]) for r in part], [r["hours"] for r in part])
+    return slope * 60 * 10
+
+print("all years together: %+.0f minutes per decade" % trend(rows))
+for m in ["diary", "app"]:
+    part = [r for r in rows if r["method"] == m]
+    print("%-5s years only:   %+.0f minutes per decade" % (m, trend(part)))
+
+years = [int(r["year"]) for r in rows]
+line(years, {m: [r["hours"] if r["method"] == m else None for r in rows] for m in ["diary", "app"]},
+     title="School-night sleep, age 15", xlabel="year", ylabel="hours")
+</script>
+                </div>
+                <p class="small" style="margin-top:1rem">The trend over all years is much steeper than within each method: the jump in 2015 is the switch from diary to app. Reported as one trend, the decline looks almost twice as steep.</p>
+            </div>
+        </section>
+
+        <!-- ============================ NOTHING FOUND ============================ -->
+        <section class="sec" id="nothing" style="--c: var(--bad)">
+            <div class="t-wrap">
+                <h2>Found nothing? Diagnose before you conclude</h2>
+                <p class="lead">No difference, no correlation. Two very different situations can hide behind that: either there really is no link – or your study could not have seen it. Check these causes before you write “there is no relationship”.</p>
+                <div class="cols wide-left">
+                    <div class="panel explore">
+                        <h3>Explorer: why r can be close to 0</h3>
+                        <div class="pills" id="ex-tabs" role="group" aria-label="Scenarios"></div>
+                        <div id="ex-chart"></div>
+                        <p id="ex-text" aria-live="polite"></p>
+                    </div>
+                    <div>
+                        <ol class="diag">
+                            <li><b>Too few people?</b> Small samples miss real effects (part 2, power). Report the effect size anyway.</li>
+                            <li><b>Unreliable measure?</b> Noise weakens every correlation. Check α / κ; a scale beats one item.</li>
+                            <li><b>Restricted range?</b> If everyone is similar, nothing can vary together.</li>
+                            <li><b>Not a straight line?</b> r only sees straight lines. Plot it: a U-shape gives r ≈ 0.</li>
+                            <li><b>Groups cancelling out?</b> Opposite trends in two subgroups. Split the data.</li>
+                            <li><b>Ceiling or floor?</b> Everyone at the top of the scale – no room to differ.</li>
+                            <li><b>Outlier?</b> One extreme case can hide or fake a link. Check it, report it both ways.</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="grid3">
+                    <div class="panel"><h3>Found it in the pilot?</h3>Before the main study, “nothing” is a warning. Go back to <a href="data-refine.html#fix">part 2</a>: a weaker manipulation, an unreliable scale, a ceiling – fix it now, then collect.</div>
+                    <div class="panel"><h3>Found it in the main study?</h3>Report it honestly, with effect size and n. Discuss which causes on the list could apply. “Absence of evidence is not evidence of absence” – but a well-designed study that finds nothing is valuable.</div>
+                    <div class="panel"><h3>Don’t go fishing</h3>Testing twenty variables until one is “significant” finds chance, not knowledge. Write your hypotheses in your data plan <em>before</em> you see the data, and mark everything else as exploratory.</div>
+                </div>
+
+                <div class="py" data-py="eval-diagnose" data-title="Three checks with the main survey" data-files="data/survey-main.csv">
+<script type="text/plain">
+import csv, random
+from statistics import correlation, mean
+
+with open("survey-main.csv", encoding="utf-8") as f:
+    rows = [r for r in csv.DictReader(f) if "" not in r.values() and float(r["sleep_school"]) <= 12]
+chrono = [float(r["chrono"]) for r in rows]
+sleep = [float(r["sleep_school"]) for r in rows]
+
+# 1. Restricted range: what if you had only asked "in-between" types (chronotype 2.5–3.5)?
+middle = [(c, s) for c, s in zip(chrono, sleep) if 2.5 <= c <= 3.5]
+print("all students:         r = %.2f (n = %d)" % (correlation(chrono, sleep), len(rows)))
+print("chronotype 2.5–3.5:   r = %.2f (n = %d)" % (correlation([c for c, s in middle], [s for c, s in middle]), len(middle)))
+
+# 2. Reliability: one single item instead of the whole scale
+def pressure(r):
+    v = [int(r[k]) for k in ["p1", "p2", "p3", "p4", "p5"]]
+    v[2] = 6 - v[2]
+    return mean(v)
+print("\nsleep and pressure (5-item scale): r = %.2f" % correlation([pressure(r) for r in rows], sleep))
+print("sleep and item p1 alone:           r = %.2f" % correlation([float(r["p1"]) for r in rows], sleep))
+
+# 3. Fishing: 20 "questions" filled with random numbers – correlated with sleep
+random.seed(3)
+print("\n20 random questions – which look like a link (|r| > 0.18, about p < .05 with n = %d)?" % len(rows))
+hits = 0
+for q in range(1, 21):
+    noise = [random.randint(1, 5) for _ in rows]
+    r = correlation(noise, sleep)
+    if abs(r) > 0.18:
+        hits += 1
+        print("  question %2d: r = %+.2f   ← pure chance" % (q, r))
+print(hits, "of 20 random questions look 'significant'")
+</script>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ OWN DATA ============================ -->
+        <section class="sec" id="own" style="--c: var(--s3)">
+            <div class="t-wrap">
+                <h2>Your own data</h2>
+                <p class="lead">Load your own CSV file – exported from Excel, Numbers, Google Sheets or Microsoft Forms. It stays in this browser. The first cell gives an overview; then copy the cells above and change file and column names.</p>
+                <div class="panel">
+                    <div class="py-upload"></div>
+                </div>
+                <div class="py" data-py="eval-own" data-title="Overview of my-data.csv">
+<script type="text/plain">
+# Your own data: load a CSV file above, then run this cell.
+import csv
+from statistics import mean, median, stdev
+
+with open("my-data.csv", encoding="utf-8-sig") as f:
+    text = f.read()
+dialect = csv.Sniffer().sniff(text[:2000], delimiters=",;\t")    # German Excel uses ";"
+rows = list(csv.DictReader(text.splitlines(), dialect=dialect))
+print(len(rows), "rows")
+print("columns:", list(rows[0].keys()), "\n")
+
+for name in rows[0].keys():
+    values = []
+    for r in rows:
+        try:
+            values.append(float((r[name] or "").replace(",", ".")))   # 7,5 → 7.5
+        except ValueError:
+            pass
+    if len(values) >= 2:
+        print("%-20s n = %3d   mean %.2f   median %.2f   SD %.2f" % (name[:20], len(values), mean(values), median(values), stdev(values)))
+    else:
+        print("%-20s text – count the categories instead" % name[:20])
+</script>
+                </div>
+                <div class="tipbox"><b>Python on your own computer.</b> Everything here is standard Python 3 – it runs unchanged in Thonny, VS Code, Jupyter or Google Colab. Only the charts (<code>from edu import …</code>) belong to this page; at home use <code>matplotlib</code>: <code>import matplotlib.pyplot as plt</code>, then <code>plt.scatter(x, y)</code>, <code>plt.boxplot([a, b])</code>, <code>plt.hist(v)</code>, <code>plt.show()</code>. Statistics module M6 builds on this.</div>
+            </div>
+        </section>
+
+        <!-- ============================ WRITE ============================ -->
+        <section class="sec" id="write" style="--c: var(--s4)">
+            <div class="t-wrap">
+                <h2>Results, discussion, limitations</h2>
+                <p class="lead">Keep three things apart: what you <em>found</em> (results), what it <em>means</em> (discussion) and what <em>limits</em> it (limitations). Mixing them is the most common weakness in empirical Seminararbeiten.</p>
+                <div class="grid3">
+                    <div class="panel"><h3>Results</h3><ul><li>n, exclusions, reliability (α, κ)</li><li>descriptive numbers per group, one chart per question</li><li>effect size + p or r – no interpretation yet</li><li>past tense: “Students estimated …”</li></ul></div>
+                    <div class="panel"><h3>Discussion</h3><ul><li>Does it support your hypothesis?</li><li>How does it fit the studies from your background chapter?</li><li>Other explanations? Surprises?</li><li>Careful verbs: suggests, indicates, is associated with</li></ul></div>
+                    <div class="panel"><h3>Limitations</h3><ul><li>sample (size, convenience, one school)</li><li>measurement (self-report, single items, pilot changes)</li><li>design (no random assignment? cross-sectional?)</li><li>what a follow-up study should do differently</li></ul></div>
+                </div>
+                <p class="model"><span>a limitation, well written</span>As the sample consisted of volunteers from one school, the results cannot be generalised to all teenagers. In addition, sleep was self-reported, which may overestimate actual sleep duration.</p>
+            </div>
+        </section>
+
+        <!-- ============================ CHECK ============================ -->
+        <section class="sec" id="check" style="--c: var(--s2)">
+            <div class="t-wrap">
+                <h2>Check 3: what you should be able to do</h2>
+                <p class="lead">The third online check covers the whole viable-data sequence (parts 1–3). You can …</p>
+                <ul class="cando">
+                    <li>explain objectivity, reliability and validity and spot threats to each</li>
+                    <li>choose a suitable data type and operationalise a construct</li>
+                    <li>judge a scale with Cronbach’s α, a test with difficulty and discrimination, coding with κ</li>
+                    <li>name typical pilot signals and the fitting fix</li>
+                    <li>choose the analysis and the chart that fit a research question</li>
+                    <li>interpret mean, median, SD, Cohen’s d, p and r – and their limits</li>
+                    <li>explain why correlation is not causation and why a control group matters</li>
+                    <li>diagnose a result of “no effect” and avoid fishing</li>
+                    <li>report results, discussion and limitations separately</li>
+                </ul>
+                <div class="next">
+                    <span class="small">Check 3 opens in class on your own device. Your teacher gives you the link and the start code.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ FILES ============================ -->
+        <section class="dl" id="files">
+            <div class="t-wrap">
+                <h2>Practice data and materials</h2>
+                <p class="small">All datasets are invented for practice. Use them in your own Python or spreadsheet – but never as evidence in your paper.</p>
+                <ul class="files-list">
+                    <li><a href="data/survey-pilot.csv" download><code>survey-pilot.csv</code></a> – time-pressure scale, pilot, 24 students</li>
+                    <li><a href="data/survey-main.csv" download><code>survey-main.csv</code></a> – chronotype, sleep, commute, refined scale, 126 students</li>
+                    <li><a href="data/test-pilot.csv" download><code>test-pilot.csv</code></a> – 12-item grammar test, pilot, 30 students</li>
+                    <li><a href="data/test-prepost.csv" download><code>test-prepost.csv</code></a> – pre/post test, lesson vs. control</li>
+                    <li><a href="data/experiment-pilot.csv" download><code>experiment-pilot.csv</code></a> – music and waiting, pilot, 16 students</li>
+                    <li><a href="data/experiment-main.csv" download><code>experiment-main.csv</code></a> – fast / slow / silence, 84 students</li>
+                    <li><a href="data/coding-round1.csv" download><code>coding-round1.csv</code></a>, <a href="data/coding-round2.csv" download><code>coding-round2.csv</code></a> – two coders, 30 lines each</li>
+                    <li><a href="data/coding-decades.csv" download><code>coding-decades.csv</code></a> – future forms per decade</li>
+                    <li><a href="data/existing-sleep.csv" download><code>existing-sleep.csv</code></a> – sleep series 2004–2024 with a method break</li>
+                </ul>
+                <div class="dl-list" style="margin-top:2rem">
+                    <a href="data-design.html"><b>Viable data 1: Design</b><span>Criteria, data types, sample, data plan</span></a>
+                    <a href="data-refine.html"><b>Viable data 2: Refine</b><span>Pilot, α, item analysis, κ, fixes</span></a>
+                    <a href="arbeitsblaetter/ws-w2-research-and-writing.pdf"><b>W2: Research and writing guide</b><span>Structure of the paper, data, MLA</span></a>
+                    <a href="w-seminar-time.html#materials"><b>Seminar overview</b><span>All modules and materials</span></a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum & Datenschutz</a> | <a href="https://edu-mrh.de/">Startseite</a></p>
+        </div>
+    </footer>
+
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+        <span></span><span></span><span></span>
+    </button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Viable data 3: Evaluate</h3>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Close sidebar">✕</button>
+        </div>
+        <nav class="sidebar-menu">
+            <ul>
+                <li><a href="#start">Start</a></li>
+                <li><a href="#clean">Clean and describe</a></li>
+                <li><a href="#choose">Which analysis?</a></li>
+                <li><a href="#compare">Compare groups</a></li>
+                <li><a href="#relate">Relate two variables</a></li>
+                <li><a href="#change">Track a change</a></li>
+                <li><a href="#counts">Counts and trends</a></li>
+                <li><a href="#nothing">Found nothing?</a></li>
+                <li><a href="#own">Your own data</a></li>
+                <li><a href="#write">Write it up</a></li>
+                <li><a href="#check">Check 3</a></li>
+                <li><a href="#files">Practice data</a></li>
+                <li><a href="data-design.html">← Part 1: Design</a></li>
+                <li><a href="data-refine.html">← Part 2: Refine</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+</body>
+</html>

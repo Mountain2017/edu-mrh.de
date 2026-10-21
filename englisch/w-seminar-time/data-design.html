@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viable Data 1: Design | W-Seminar English 12 – edu-mrh.de</title>
+    <meta name="description" content="W-Seminar 'Time' (English, Year 12), viable data part 1: objectivity, reliability and validity, choosing between survey, test, experiment, text coding and existing data, designing each one, sample size and ethics – with Python on the page and a data plan.">
+
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <link rel="stylesheet" href="viable-data.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <script defer src="viable-data.js" data-pyodide="https://edu-mrh.de/embed/pyodide/"></script>
+    <script defer src="data-design.js"></script>
+
+    <style>
+        .targets { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem 1rem; }
+        .targets figure { margin: 0; text-align: center; }
+        .targets figcaption { font-size: .85rem; color: #cfd2f5; margin-top: .2rem; }
+        .targets figcaption b { color: #fff; font-weight: 600; }
+        .hero-d button.pill { --c: var(--brass); background: transparent; color: var(--brass); margin-top: .75rem; }
+        .hero-d button.pill:hover { background: var(--brass); color: var(--dusk); }
+        .chain { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin-top: 1.25rem; font-weight: 600; }
+        .chain span { border-radius: 99px; padding: .3rem .8rem; color: #fff; }
+        .chain i { font-style: normal; color: var(--ink-soft); font-weight: 400; }
+        .levels td:first-child { font-weight: 600; white-space: nowrap; }
+        .steps { counter-reset: s; list-style: none; padding: 0; margin: 1rem 0 0; display: grid; gap: .6rem; }
+        .steps > li { counter-increment: s; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: .75rem 1rem .75rem 3rem; position: relative; }
+        .steps > li::before { content: counter(s); position: absolute; left: 1rem; top: .7rem; font-family: var(--serif); font-weight: 600; font-size: 1.25rem; color: var(--c); }
+        .steps b { display: block; margin-bottom: .15rem; }
+        .secure { margin-top: 1.25rem; }
+        .secure td:first-child { font-weight: 600; width: 7.5rem; }
+        .secure tr.o td:first-child { color: var(--obj); } .secure tr.r td:first-child { color: var(--rel); } .secure tr.v td:first-child { color: var(--val); }
+        .sim svg { width: 100%; height: auto; display: block; }
+        .sim text { font: 11px var(--sans); fill: var(--ink-soft); }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="icon"><a href="https://edu-mrh.de/">🇬🇧</a></span>
+                <span>edu-mrh English</span>
+            </div>
+            <div class="nav-links">
+                <a href="w-seminar-time.html#materials" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content t">
+
+        <!-- ============================ HERO ============================ -->
+        <header class="hero-d" id="start">
+            <div class="t-wrap">
+                <div class="hero-grid">
+                    <div>
+                        <p class="kicker">W-Seminar English, Year 12 · Time · Viable data 1 of 3</p>
+                        <h1>Good data is designed, not found.</h1>
+                        <p class="lead">Statistics can’t rescue a badly built survey, test or experiment. Before you ask a single person, make sure your measurement is <em>objective</em>, <em>reliable</em> and <em>valid</em> – and choose the kind of data that can actually answer your question.</p>
+                    </div>
+                    <div>
+                        <div class="targets" id="targets" aria-label="Four targets: each dot is one measurement, the centre is the true value."></div>
+                        <button class="pill" id="throw" type="button">Measure again</button>
+                        <p class="hero-cap">Each dot is one measurement of the same thing; the centre is the true value. The white cross marks the average.</p>
+                    </div>
+                </div>
+                <ol class="seq">
+                    <li><span class="here"><span class="n">Part 1 · you are here</span><b>Design</b><small>criteria, data types, sample, plan</small></span></li>
+                    <li><a href="data-refine.html"><span class="n">Part 2</span><b>Refine</b><small>pilot, check the numbers, fix</small></a></li>
+                    <li><a href="data-evaluate.html"><span class="n">Part 3</span><b>Evaluate</b><small>describe, compare, relate, conclude</small></a></li>
+                </ol>
+            </div>
+        </header>
+
+        <!-- ============================ CRITERIA ============================ -->
+        <section class="sec" id="criteria" style="--c: var(--obj)">
+            <div class="t-wrap">
+                <h2>Three questions every measurement must survive</h2>
+                <p class="lead">Whatever you measure – waiting time, sleep, grammar, the way songs talk about the future – your data are only as good as the instrument. Three quality criteria <span class="de">(Gütekriterien)</span> tell you what can go wrong.</p>
+
+                <div class="grid3">
+                    <div class="crit" style="--cc: var(--obj)">
+                        <b class="big">Objectivity</b><span class="de">Objektivität</span>
+                        <p class="q">Would someone else get the same result?</p>
+                        The result must not depend on <em>who</em> runs, scores or interprets the measurement.
+                        <ul>
+                            <li><b>running it:</b> same written instructions, same conditions</li>
+                            <li><b>scoring it:</b> a marking key, closed answers, a codebook</li>
+                            <li><b>interpreting it:</b> decide <em>before</em> collecting what counts as what</li>
+                        </ul>
+                        <p class="ex">Two teachers mark the same essay with 11 and 7 points – the score says more about the marker than about the essay.</p>
+                    </div>
+                    <div class="crit" style="--cc: var(--rel)">
+                        <b class="big">Reliability</b><span class="de">Reliabilität</span>
+                        <p class="q">Would you get the same result again?</p>
+                        A reliable instrument measures <em>precisely</em>: little random noise.
+                        <ul>
+                            <li><b>test–retest:</b> same people, later, similar results</li>
+                            <li><b>internal consistency:</b> several items on one idea agree (Cronbach’s α)</li>
+                            <li><b>inter-rater:</b> two coders agree (Cohen’s κ)</li>
+                        </ul>
+                        <p class="ex">A single question “Are you stressed?” wobbles with today’s mood. Five items on the same idea average the wobble out.</p>
+                    </div>
+                    <div class="crit" style="--cc: var(--val)">
+                        <b class="big">Validity</b><span class="de">Validität</span>
+                        <p class="q">Do you measure what you claim to measure?</p>
+                        The most important – and the hardest – criterion.
+                        <ul>
+                            <li><b>content:</b> covers the whole idea, nothing else</li>
+                            <li><b>construct / criterion:</b> fits with related measures (stress ↔ sleep)</li>
+                            <li><b>internal:</b> in experiments, only <em>your</em> factor explains the difference</li>
+                            <li><b>external:</b> results carry over beyond your sample</li>
+                        </ul>
+                        <p class="ex">Measuring reading speed to find out how well students <em>understand</em> a time-travel novel: precise, but beside the point.</p>
+                    </div>
+                </div>
+
+                <div class="chain" aria-label="Objectivity is needed for reliability, reliability for validity">
+                    <span style="background:var(--obj)">objective</span><i>is needed for</i><span style="background:var(--rel)">reliable</span><i>is needed for</i><span style="background:var(--val)">valid</span>
+                </div>
+                <p class="small" style="max-width:70ch">It only works in this direction: a measurement can be perfectly reliable and still invalid (top right target above). A bathroom scale that always shows 2 kg too much is reliable – and wrong.</p>
+
+                <div class="panel" style="margin-top:1.5rem">
+                    <h3>Practice: which criterion is at risk?</h3>
+                    <p class="small">Often more than one is affected – choose the one that is hit first.</p>
+                    <div class="quiz" id="crit-quiz"></div>
+                    <p class="score" id="crit-score" aria-live="polite"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ TYPES ============================ -->
+        <section class="sec" id="types" style="--c: var(--s4)">
+            <div class="t-wrap">
+                <h2>Pick your kind of data</h2>
+                <p class="lead">Your research question decides the method – not the other way round. Choose the type that fits your Seminararbeit; the rest of this sequence then shows you the matching tools. You can switch at any time.</p>
+
+                <div class="types">
+                    <button class="tcard" type="button" data-pick="survey" style="--c: var(--s1)"><span class="tci"><b>Survey</b>What people <em>say</em> they think, feel or do.<div class="ask">Do owls feel more time pressure than larks?</div><span class="mark-yes">+</span> many people, quickly<br><span class="mark-no">–</span> self-report: memory, honesty, wording</span></button>
+                    <button class="tcard" type="button" data-pick="test" style="--c: var(--s2)"><span class="tci"><b>Test</b>What people <em>can</em> do: knowledge, skills.<div class="ask">Does a lesson on the present perfect improve accuracy?</div><span class="mark-yes">+</span> right or wrong, easy to score<br><span class="mark-no">–</span> items that are too easy, too hard or unfair</span></button>
+                    <button class="tcard" type="button" data-pick="experiment" style="--c: var(--s3)"><span class="tci"><b>Experiment</b>What <em>causes</em> what: you change one thing.<div class="ask">Does fast music make a wait feel shorter?</div><span class="mark-yes">+</span> the only way to show cause and effect<br><span class="mark-no">–</span> confounds, small groups</span></button>
+                    <button class="tcard" type="button" data-pick="coding" style="--c: var(--s4)"><span class="tci"><b>Coding texts</b>Counting categories in texts, films, lyrics, behaviour.<div class="ask">Has “gonna” replaced “will” in song lyrics?</div><span class="mark-yes">+</span> real language, no participants needed<br><span class="mark-no">–</span> fuzzy categories, biased samples</span></button>
+                    <button class="tcard" type="button" data-pick="existing" style="--c: var(--s5)"><span class="tci"><b>Existing data</b>Statistics others collected: Destatis, OWID, Ngram.<div class="ask">Do teenagers sleep less than 20 years ago?</div><span class="mark-yes">+</span> large, long time series<br><span class="mark-no">–</span> you don’t control definitions or methods</span></button>
+                </div>
+                <p class="small" style="margin-top:.75rem">Mixing is common and strong: an experiment ends with a short survey; text coding is compared with existing statistics.</p>
+
+                <div class="cols">
+                    <div class="panel">
+                        <h3>What kind of numbers will you get?</h3>
+                        <p class="small">The level of measurement decides which statistics you may use later (part 3).</p>
+                        <div class="scroll-x"><table class="dt levels">
+                            <thead><tr><th>level</th><th>example</th><th>you may …</th></tr></thead>
+                            <tbody>
+                                <tr><td>nominal</td><td>lark / owl; future form “will” / “gonna”</td><td>count, percentages, mode</td></tr>
+                                <tr><td>ordinal</td><td>one answer 1–5 (“strongly disagree … strongly agree”)</td><td>+ median, ranks (Spearman)</td></tr>
+                                <tr><td>interval</td><td>mean of a 5-item scale; time of day</td><td>+ mean, SD, Pearson r</td></tr>
+                                <tr><td>ratio</td><td>minutes, hours of sleep, points in a test</td><td>+ “twice as long”</td></tr>
+                            </tbody>
+                        </table></div>
+                        <p class="small">A single 1–5 answer is strictly ordinal. The mean of several such items is usually treated as interval – one more reason to use several items.</p>
+                    </div>
+                    <div class="panel">
+                        <h3>Operationalise: from idea to number</h3>
+                        <p>“Time flies” is an idea. Data need a rule that turns it into a number or a category. Write the rule down – it is the heart of your method chapter.</p>
+                        <dl class="kv">
+                            <dt>idea</dt><dd>waiting feels shorter</dd>
+                            <dt>rule</dt><dd>“How long did you wait? Give your estimate in minutes.” – after exactly 3 minutes of waiting</dd>
+                            <dt>idea</dt><dd>time pressure</dd>
+                            <dt>rule</dt><dd>mean of five statements, each 1–5, one of them reversed</dd>
+                            <dt>idea</dt><dd>songs talk more casually about the future</dd>
+                            <dt>rule</dt><dd>share of “gonna” among all future references, coded with a codebook</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ DESIGN BY TYPE ============================ -->
+        <section class="sec" id="design" style="--c: var(--s3)">
+            <div class="t-wrap">
+                <h2>Build it right</h2>
+                <p class="lead">Each kind of data has its own traps. Choose your type – the steps, a practice task and a checklist for objectivity, reliability and validity follow.</p>
+                <div class="trackbar"></div>
+
+                <!-- ---------- survey ---------- -->
+                <div class="track" data-track="survey" style="--c: var(--s1)">
+                    <h3 class="track-h">Survey <small>questionnaire, mostly closed questions</small></h3>
+                    <ol class="steps">
+                        <li><b>Name the construct.</b> What exactly do you want to know? “Time pressure on school days”, not “stress and stuff”.</li>
+                        <li><b>Use several items per construct.</b> Three to six statements, answered on the same scale (e.g. 1 = strongly disagree … 5 = strongly agree). Turn one or two around (reverse-coded) so that people can’t just tick the same column.</li>
+                        <li><b>Ask facts directly, with units.</b> “On school nights, how many hours do you usually sleep? (e.g. 7.5)” beats “Do you sleep enough?”.</li>
+                        <li><b>Write clean items.</b> One idea per item, no leading words, no double negatives, no hidden assumptions – practise below.</li>
+                        <li><b>Order and layout.</b> Easy, neutral questions first; personal ones (age, class) at the end. Keep it under ten minutes.</li>
+                        <li><b>Plan the sample.</b> Who, how many, how chosen – see <a href="#sample">sample</a>. Anonymous, voluntary, with permission.</li>
+                    </ol>
+                    <div class="panel" style="margin-top:1.25rem">
+                        <h3>Practice: what is wrong with this item?</h3>
+                        <div class="quiz" id="item-quiz"></div>
+                        <p class="score" id="item-score" aria-live="polite"></p>
+                    </div>
+                    <table class="dt secure">
+                        <tbody>
+                            <tr class="o"><td>objectivity</td><td>printed or online form, same introduction text for everyone, closed answers, scoring rule fixed in advance (which items are reversed, how the scale score is built)</td></tr>
+                            <tr class="r"><td>reliability</td><td>several items per construct; check Cronbach’s α in the pilot (part 2)</td></tr>
+                            <tr class="v"><td>validity</td><td>items cover the whole construct; borrow tested scales from studies if you can (cite them); check that the score fits with a related measure; anonymity reduces “nice” answers</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ---------- test ---------- -->
+                <div class="track" data-track="test" style="--c: var(--s2)">
+                    <h3 class="track-h">Test <small>knowledge or skill, right or wrong</small></h3>
+                    <ol class="steps">
+                        <li><b>Make a blueprint.</b> A table of what the test should cover: content areas × difficulty. Every item belongs to one cell – and the cells reflect what you want to claim.</li>
+                        <li><b>Write more items than you need.</b> 12–20 items for one skill; the pilot will throw some out.</li>
+                        <li><b>One clear right answer – or a key that lists all of them.</b> “I have lived / have been living here since 2019”: if both are right, the key must say so.</li>
+                        <li><b>Plausible distractors</b> in multiple choice: wrong answers that real learners choose, not jokes.</li>
+                        <li><b>Same conditions:</b> same time limit, same instructions, no help, same room if possible.</li>
+                        <li><b>Before/after?</b> Use two parallel versions (A and B, same blueprint, different items) or the same test after a longer gap – otherwise people remember the answers.</li>
+                    </ol>
+                    <div class="panel" style="margin-top:1.25rem">
+                        <h3>Blueprint example: present perfect vs. past simple</h3>
+                        <div class="scroll-x"><table class="dt">
+                            <thead><tr><th>content</th><th class="num">recognise</th><th class="num">produce</th><th class="num">explain</th></tr></thead>
+                            <tbody>
+                                <tr><td>finished time (yesterday, in 2015)</td><td class="num">2</td><td class="num">2</td><td class="num">–</td></tr>
+                                <tr><td>since / for, until now</td><td class="num">1</td><td class="num">2</td><td class="num">1</td></tr>
+                                <tr><td>experience (ever, never)</td><td class="num">1</td><td class="num">2</td><td class="num">–</td></tr>
+                                <tr><td>result now (just, yet)</td><td class="num">1</td><td class="num">1</td><td class="num">1</td></tr>
+                            </tbody>
+                        </table></div>
+                        <p class="small">Not in the blueprint, so not in the test: past perfect. An item on it would measure something else (part 2 shows what happens).</p>
+                    </div>
+                    <table class="dt secure">
+                        <tbody>
+                            <tr class="o"><td>objectivity</td><td>marking key with all accepted answers, written before the test; closed or short answers; score anonymously</td></tr>
+                            <tr class="r"><td>reliability</td><td>enough items; items of medium difficulty; check difficulty, discrimination and KR-20 in the pilot</td></tr>
+                            <tr class="v"><td>validity</td><td>blueprint matches your claim; no item tests something else (reading speed, vocabulary, luck)</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ---------- experiment ---------- -->
+                <div class="track" data-track="experiment" style="--c: var(--s3)">
+                    <h3 class="track-h">Experiment <small>change one thing, measure the effect</small></h3>
+                    <ol class="steps">
+                        <li><b>Independent variable (IV):</b> the one thing you change – music fast / slow / none.</li>
+                        <li><b>Dependent variable (DV):</b> what you measure – estimated waiting time in minutes.</li>
+                        <li><b>Control everything else:</b> room, time of day, real waiting time, instructions, volume. Anything that differs between groups is a <em>confound</em>: it could explain the result instead of your IV.</li>
+                        <li><b>Assign at random.</b> Chance, not you, decides who is in which group (Python below does it). A control group without the treatment shows what happens anyway.</li>
+                        <li><b>Between or within?</b> Different people per condition (between) – or everyone gets all conditions (within, needs fewer people but the order must be <em>counterbalanced</em>).</li>
+                        <li><b>Standardise and blind.</b> Read the same script to everyone. Don’t tell participants your hypothesis. Add a manipulation check (“How fast was the music?”).</li>
+                    </ol>
+                    <div class="panel" style="margin-top:1.25rem">
+                        <h3>Practice: spot the problems</h3>
+                        <p class="small">A plan for “Does fast music make waiting feel shorter?”. Tap every step that threatens a fair result, then check.</p>
+                        <ol class="spot" id="exp-spot"></ol>
+                        <div class="pills" style="margin-top:.8rem"><button class="pill" type="button" id="exp-check">Check</button></div>
+                        <p class="score" id="exp-score" aria-live="polite"></p>
+                    </div>
+                    <table class="dt secure">
+                        <tbody>
+                            <tr class="o"><td>objectivity</td><td>written script, same procedure for every group, measurement that doesn’t need judgement (minutes on a card)</td></tr>
+                            <tr class="r"><td>reliability</td><td>precise measure (stopwatch, not “about 3 minutes”); enough people per group; repeat trials if possible</td></tr>
+                            <tr class="v"><td>validity</td><td>random assignment and no confounds (internal); a realistic situation and a sample that is not just your friends (external); manipulation check</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ---------- coding ---------- -->
+                <div class="track" data-track="coding" style="--c: var(--s4)">
+                    <h3 class="track-h">Coding texts <small>content analysis of texts, films, lyrics, behaviour</small></h3>
+                    <ol class="steps">
+                        <li><b>Define the corpus.</b> Which texts, from where, which years? “The 40 most-streamed songs per decade from one chart list” is a rule; “songs I know” is not.</li>
+                        <li><b>Sample fairly.</b> Same number per group (decade, author, genre), chosen by a rule or at random.</li>
+                        <li><b>Choose the unit.</b> What do you code: a word, a line, a scene, a whole text?</li>
+                        <li><b>Write a codebook.</b> For each category: definition, what counts, what doesn’t, an example – see below.</li>
+                        <li><b>Code twice.</b> A second person codes at least 20–30 units independently. Compare with Cohen’s κ (part 2) and sharpen the codebook.</li>
+                        <li><b>Then code everything</b> – with the final codebook, without changing rules along the way.</li>
+                    </ol>
+                    <div class="panel" style="margin-top:1.25rem">
+                        <h3>Codebook entry</h3>
+                        <dl class="kv">
+                            <dt>category</dt><dd><code>going_to</code> – future with “going to”</dd>
+                            <dt>definition</dt><dd>be + going to + <em>infinitive</em>, talking about the future</dd>
+                            <dt>counts</dt><dd>“She’s going to tell you everything.” · “It’s going to rain.”</dd>
+                            <dt>doesn’t count</dt><dd>“We’re going to the river” (going + place = movement) → see <code>prog</code> / <code>none</code>; “gonna” → <code>gonna</code></dd>
+                            <dt>unsure?</dt><dd>note the line, decide together after the first round</dd>
+                        </dl>
+                    </div>
+                    <table class="dt secure">
+                        <tbody>
+                            <tr class="o"><td>objectivity</td><td>codebook with definitions and examples; coders work independently</td></tr>
+                            <tr class="r"><td>reliability</td><td>inter-coder agreement (Cohen’s κ ≥ 0.80 for the final round); same coder recodes a sample after two weeks</td></tr>
+                            <tr class="v"><td>validity</td><td>categories really capture your idea; corpus represents what you generalise to (all pop songs? only charts?)</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ---------- existing ---------- -->
+                <div class="track" data-track="existing" style="--c: var(--s5)">
+                    <h3 class="track-h">Existing data <small>secondary analysis of statistics others collected</small></h3>
+                    <ol class="steps">
+                        <li><b>Find the original source.</b> Destatis, Eurostat, Our World in Data, Google Books Ngram, published study data – not a chart in a newspaper.</li>
+                        <li><b>Read the documentation.</b> Who was asked, how, when? What exactly does each column mean? Units?</li>
+                        <li><b>Look for breaks.</b> Did the method, the definition or the sample change over the years? Is any year missing – and why?</li>
+                        <li><b>Check comparability.</b> Different countries or surveys often define things differently (“teenager” = 13–17 or 15–19?).</li>
+                        <li><b>Download and keep the raw file</b> with the date – sources get updated.</li>
+                        <li><b>Cite the dataset</b> like any other source (MLA: author/organisation, title, publisher, year, URL, access date).</li>
+                    </ol>
+                    <table class="dt secure">
+                        <tbody>
+                            <tr class="o"><td>objectivity</td><td>documented by the publisher – you check the documentation, you don’t control it</td></tr>
+                            <tr class="r"><td>reliability</td><td>large official samples are usually precise; small subgroups or single years jump around</td></tr>
+                            <tr class="v"><td>validity</td><td>the biggest risk: does their variable measure <em>your</em> idea? Method breaks can fake a trend (part 2)</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ SAMPLE ============================ -->
+        <section class="sec" id="sample" style="--c: var(--s2)">
+            <div class="t-wrap">
+                <h2>How many – and who?</h2>
+                <p class="lead">You can’t ask everyone, so you ask a sample and hope it speaks for the population. Two things decide whether it does: <em>how</em> you choose people and <em>how many</em> you get.</p>
+                <div class="cols">
+                    <div class="panel">
+                        <h3>Who: the sample</h3>
+                        <ul>
+                            <li><b>Population:</b> everyone you want to make a claim about – “Year 10–12 students at our school”, not “teenagers”.</li>
+                            <li><b>Random sample:</b> everyone has the same chance (e.g. draw classes by lot). Best, rarely possible.</li>
+                            <li><b>Convenience sample:</b> whoever is available – your course, your friends. Fine for a Seminararbeit, if you say so and limit your claims.</li>
+                            <li><b>Watch for self-selection:</b> people who answer a voluntary survey on stress may be the most stressed.</li>
+                        </ul>
+                        <h4>How many: rules of thumb</h4>
+                        <ul>
+                            <li>comparing groups: at least 30 per group – more for small effects (part 2 shows how to estimate it)</li>
+                            <li>correlations: at least 50, better 100</li>
+                            <li>percentages: try the simulator – the error shrinks only with the square root of n</li>
+                            <li>plan for 10–20 % who drop out or answer incompletely</li>
+                        </ul>
+                    </div>
+                    <div class="panel sim">
+                        <h3>Simulator: 20 surveys at once</h3>
+                        <p class="small">Imagine 62 % of all 900 students at a school want school to start later. Each dot is one survey with <span class="readout" id="sim-n-out">30</span> randomly chosen students.</p>
+                        <label class="small" for="sim-n">sample size n</label>
+                        <input type="range" id="sim-n" min="5" max="400" step="5" value="30">
+                        <svg id="sim-svg" viewBox="0 0 520 150" role="img" aria-label="Results of 20 simulated surveys on a scale from 0 to 100 percent; the true value is 62 percent."></svg>
+                        <div class="pills"><button class="pill" type="button" id="sim-run">Run 20 surveys</button></div>
+                        <p class="small" id="sim-text" aria-live="polite"></p>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-top:1.5rem">
+                    <h3>Python on this page</h3>
+                    <p class="small">The dark boxes are real Python. Click <b>▶ Run</b> or press <b>Ctrl + Enter</b>. Change anything – your version is kept in this browser, <b>Reset</b> brings the original back. Python runs inside your browser: nothing you type or load is sent anywhere. The first start loads about 12 MB, then it’s fast.</p>
+                </div>
+
+                <div class="py" data-py="design-warmup" data-title="Warm-up: a list and three statistics">
+<script type="text/plain">
+# Python in two minutes: a list of numbers and three statistics.
+# Change the numbers and press Run (or Ctrl + Enter).
+from statistics import mean, median, stdev
+
+estimates = [2.5, 3.0, 2.75, 4.0, 3.25, 2.0, 3.5]   # estimated waiting time in minutes
+
+print("n      =", len(estimates))
+print("mean   =", round(mean(estimates), 2))
+print("median =", median(estimates))
+print("SD     =", round(stdev(estimates), 2))   # how far values typically lie from the mean
+
+for e in estimates:
+    if e > 3:
+        print(e, "is longer than the real wait of 3 minutes")
+</script>
+                </div>
+
+                <div class="py" data-py="design-assign" data-title="Random assignment for an experiment">
+<script type="text/plain">
+# Random assignment: every participant gets a code, chance decides the group.
+# Same seed = same result, so you can document it in your method chapter.
+import random
+
+random.seed(2026)                              # write the seed into your research log
+codes = ["P%02d" % i for i in range(1, 25)]    # P01 … P24 – codes, never names
+random.shuffle(codes)
+
+half = len(codes) // 2
+groups = {"fast music": codes[:half], "slow music": codes[half:]}
+for name, members in groups.items():
+    print(name, "(%d):" % len(members), ", ".join(sorted(members)))
+
+# Within-subjects: everyone hears both kinds of music – half of them in each order.
+print()
+random.shuffle(codes)
+orders = ["fast first", "slow first"]
+for k, order in enumerate(orders):
+    print(order + ":", ", ".join(sorted(codes[k::2])))
+</script>
+                </div>
+
+                <div class="py" data-py="design-sample" data-title="How big must the sample be? Simulate it">
+<script type="text/plain">
+# 62 % of all 900 students want school to start later. You can only ask a sample.
+# How far off can your result be? Simulate 1000 surveys for each sample size.
+import random
+from edu import hist
+
+random.seed(1)
+population = [1] * 558 + [0] * 342     # 1 = "yes": 558 of 900 = 62 %
+
+for n in [10, 30, 100, 300]:
+    results = []
+    for survey in range(1000):
+        sample = random.sample(population, n)
+        results.append(100 * sum(sample) / n)    # % "yes" in this survey
+    results.sort()
+    low, high = results[25], results[974]        # the middle 95 % of all surveys
+    print("n = %3d: 95 %% of surveys land between %2.0f %% and %2.0f %%" % (n, low, high))
+
+hist(results, bins=20, title="1000 surveys with n = 300", xlabel="% yes in the sample")
+# Try: what n do you need so that 95 % of surveys land within ±5 points of 62 %?
+</script>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ ETHICS ============================ -->
+        <section class="sec" id="ethics" style="--c: var(--bad)">
+            <div class="t-wrap">
+                <h2>Ask first, collect less</h2>
+                <p class="lead">Data about people are personal data. In school, the rules are strict – and they protect you as much as your participants.</p>
+                <div class="grid4">
+                    <div class="panel"><h3>Permission</h3>Talk to your teacher <em>before</em> you collect anything. Surveys and experiments in school need the school’s permission; under-18s may need their parents’ consent.</div>
+                    <div class="panel"><h3>Voluntary</h3>Everyone may say no or stop at any time, without disadvantage. Tell them what the study is about – without giving away your hypothesis.</div>
+                    <div class="panel"><h3>Anonymous</h3>Codes instead of names. Don’t ask for details that identify people in a small group (“girl, Year 12, plays the cello”).</div>
+                    <div class="panel"><h3>Minimal</h3>Only collect what you need for your question. Store the file safely, share only anonymous data, delete raw data when the seminar is over.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ PLAN ============================ -->
+        <section class="band" id="plan">
+            <div class="t-wrap">
+                <h2>Your data plan</h2>
+                <p class="lead">Plan your data collection before you build anything. The coach checks what is still missing. Everything stays in this browser – download a copy for your research log and your teacher.</p>
+                <div class="pgrid">
+                    <div id="plan-form"></div>
+                    <aside class="coach" aria-live="polite">
+                        <h3>Coach</h3>
+                        <ul id="plan-coach"></ul>
+                    </aside>
+                </div>
+                <div class="pills" style="margin-top:.5rem"><button class="pill" type="button" id="plan-download">Download my plan (.txt)</button><button class="pill" type="button" id="plan-clear">Clear</button></div>
+                <p class="saved" id="plan-saved" aria-live="polite"></p>
+            </div>
+        </section>
+
+        <!-- ============================ NEXT ============================ -->
+        <section class="sec" id="next" style="--c: var(--s3)">
+            <div class="t-wrap">
+                <h2>Before you go on</h2>
+                <ul class="cando">
+                    <li>explain objectivity, reliability and validity – and why reliable is not the same as valid</li>
+                    <li>name the kind of reliability that fits a survey, a test and a coding task</li>
+                    <li>choose a data type that fits your research question</li>
+                    <li>operationalise an idea into a rule that gives numbers or categories</li>
+                    <li>write survey items without leading, double-barrelled or vague wording</li>
+                    <li>spot confounds in an experiment and assign people at random</li>
+                    <li>explain why a bigger sample helps, and why it isn’t everything</li>
+                    <li>follow the rules for permission, consent and anonymity</li>
+                </ul>
+                <div class="next">
+                    <span>Your instrument exists on paper. Now test it on a few people – and let the numbers tell you what to fix.</span>
+                    <a class="go" href="data-refine.html">Part 2: Refine →</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="dl" id="materials">
+            <div class="t-wrap">
+                <h2>Materials</h2>
+                <div class="dl-list">
+                    <a href="data-refine.html"><b>Viable data 2: Refine</b><span>Pilot, Cronbach’s α, item analysis, κ, fixes</span></a>
+                    <a href="data-evaluate.html"><b>Viable data 3: Evaluate</b><span>Describe, compare, correlate, diagnose</span></a>
+                    <a href="arbeitsblaetter/ws-w2-research-and-writing.pdf"><b>W2: Research and writing guide</b><span>Section 5: get data you can actually use</span></a>
+                    <a href="w-seminar-time.html#materials"><b>Seminar overview</b><span>All modules and materials</span></a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum & Datenschutz</a> | <a href="https://edu-mrh.de/">Startseite</a></p>
+        </div>
+    </footer>
+
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+        <span></span><span></span><span></span>
+    </button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Viable data 1: Design</h3>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Close sidebar">✕</button>
+        </div>
+        <nav class="sidebar-menu">
+            <ul>
+                <li><a href="#start">Start</a></li>
+                <li><a href="#criteria">Quality criteria</a></li>
+                <li><a href="#types">Kinds of data</a></li>
+                <li><a href="#design">Build it right</a></li>
+                <li><a href="#sample">Sample size</a></li>
+                <li><a href="#ethics">Ethics</a></li>
+                <li><a href="#plan">Your data plan</a></li>
+                <li><a href="#next">Before you go on</a></li>
+                <li><a href="data-refine.html">→ Part 2: Refine</a></li>
+                <li><a href="data-evaluate.html">→ Part 3: Evaluate</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+</body>
+</html>
