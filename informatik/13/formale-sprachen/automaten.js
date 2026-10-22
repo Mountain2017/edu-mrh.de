@@ -5,7 +5,8 @@
  *        Simulator: Eingabeband mit Lesekopf und RZK, Zustände und Pfeile leuchten beim Lesen auf.
  *        „Selbst verfolgen“: Du klickst den nächsten Zustand (bei nichtdeterministischen Automaten
  *        einen Weg nach dem anderen). „Vorführen“: Schritt für Schritt oder als Animation.
- *   <div data-automat-bild="option|…|bezeichner|kommazahl|hexzahl">  Lösungsbild in gestuften Hilfen (1.5, 1.6)
+ *   <div data-automat-bild="option|…|bezeichner|kommazahl|hexzahl|signal-dea|kiosk|zonen|kinositz">  Lösungsbild in gestuften Hilfen (1.5, 1.6, Übung)
+ *   Übung zur 1. Schulaufgabe: Simulator parkhaus, signal; Baukasten kiosk, signal, zonen
  *   <div data-automat-bau="option|wiederholung|smiley|zahlen|knobel|frei">
  *        Automaten-Baukasten: Zustände setzen, Pfeile ziehen, Übergangstabelle und Eigenschaften
  *        live, Wörter testen, Prüfstand mit Gegenbeispielsuche, Export als Java-Code fürs Projekt.
@@ -112,7 +113,8 @@
         while (i < sortiert.length) {
             var j = i;
             while (j + 1 < sortiert.length && /[0-9A-Za-z]/.test(sortiert[j]) && /[0-9A-Za-z]/.test(sortiert[j + 1]) &&
-                   alph.indexOf(sortiert[j]) >= 0 && alph.indexOf(sortiert[j + 1]) === alph.indexOf(sortiert[j]) + 1) j++;
+                   alph.indexOf(sortiert[j]) >= 0 && alph.indexOf(sortiert[j + 1]) === alph.indexOf(sortiert[j]) + 1 &&
+                   sortiert[j + 1].charCodeAt(0) === sortiert[j].charCodeAt(0) + 1) j++;   // nur echte Bereiche wie 0–9, a–h
             teile.push(j - i >= 2 ? sortiert[i] + '–' + sortiert[j] : sortiert.slice(i, j + 1).join(', '));
             i = j + 1;
         }
@@ -292,6 +294,21 @@
             a: { alphabet: '01', zustaende: [{ n: 'Z0', x: 60, y: 80, start: true }, { n: 'Z1', x: 190, y: 80 }, { n: 'Z2', x: 320, y: 80, ende: true }],
                  ue: [{ von: 'Z0', nach: 'Z1', z: '1' }, { von: 'Z1', nach: 'Z1', z: '0' }, { von: 'Z1', nach: 'Z1', z: '1' }, { von: 'Z1', nach: 'Z2', z: '1' }, { von: 'Z0', nach: 'Z2', z: '1' }],
                  biegung: { 'Z0>Z2': -38 } }
+        },
+        // Übung zur Schulaufgabe: Parkhaus mit 3 Plätzen (e = Einfahrt, a = Ausfahrt), Fangzustand ZF
+        parkhaus: {
+            name: 'Parkhaus mit 3 Plätzen', beispiele: ['eeae', 'eaea', 'a', 'eeee', '', 'eeeaaa'],
+            a: { alphabet: 'ea', zustaende: [{ n: 'Z0', x: 60, y: 80, start: true, ende: true }, { n: 'Z1', x: 190, y: 80 }, { n: 'Z2', x: 320, y: 80 }, { n: 'Z3', x: 450, y: 80 }, { n: 'ZF', x: 255, y: 230 }],
+                 ue: [{ von: 'Z0', nach: 'Z1', z: 'e' }, { von: 'Z1', nach: 'Z2', z: 'e' }, { von: 'Z2', nach: 'Z3', z: 'e' }, { von: 'Z3', nach: 'ZF', z: 'e' },
+                      { von: 'Z1', nach: 'Z0', z: 'a' }, { von: 'Z2', nach: 'Z1', z: 'a' }, { von: 'Z3', nach: 'Z2', z: 'a' }, { von: 'Z0', nach: 'ZF', z: 'a' },
+                      { von: 'ZF', nach: 'ZF', z: 'e' }, { von: 'ZF', nach: 'ZF', z: 'a' }],
+                 schleife: { ZF: 90 }, startWinkel: -90 }
+        },
+        // Übung: Signale aus kurz (k) und lang (l), die auf kl enden (nichtdeterministisch)
+        signal: {
+            name: 'Signale, die auf kl enden (nichtdeterministisch)', beispiele: ['kkl', 'kl', 'klk', 'lkl', 'l', ''],
+            a: { alphabet: 'kl', zustaende: [{ n: 'Z0', x: 60, y: 90, start: true }, { n: 'Z1', x: 200, y: 90 }, { n: 'Z2', x: 340, y: 90, ende: true }],
+                 ue: [{ von: 'Z0', nach: 'Z0', z: 'k' }, { von: 'Z0', nach: 'Z0', z: 'l' }, { von: 'Z0', nach: 'Z1', z: 'k' }, { von: 'Z1', nach: 'Z2', z: 'l' }] }
         }
     };
 
@@ -568,7 +585,26 @@
             },
             a: { zustaende: [{ n: 'Z0', x: 80, y: 150, start: true }], ue: [] }
         },
-        frei: { titel: 'Freies Bauen', alphabet: '', a: { zustaende: [{ n: 'Z0', x: 80, y: 150, start: true }], ue: [] } }
+        frei: { titel: 'Freies Bauen', alphabet: '', a: { zustaende: [{ n: 'Z0', x: 80, y: 150, start: true }], ue: [] } },
+        // Übung zur Schulaufgabe
+        kiosk: {
+            titel: 'Bestellcodes am Kiosk (deterministisch, ohne Fangzustand)', alphabet: '23456789BSKA+', maxLaenge: 4, deterministisch: true,
+            ref: function (w) { return /^[2-9]?[BSKA](\+[2-9]?[BSKA])*$/.test(w); },
+            tests: [['B', true], ['2B+K', true], ['B+B+K', true], ['9A', true], ['2B+', false], ['B2', false], ['+K', false], ['22B', false], ['', false]],
+            a: { zustaende: [{ n: 'Z0', x: 80, y: 150, start: true }], ue: [] }
+        },
+        signal: {
+            titel: 'Signale, die auf kl enden: deterministisch', alphabet: 'kl', maxLaenge: 9, deterministisch: true,
+            ref: function (w) { return /kl$/.test(w); },
+            tests: [['kl', true], ['kkl', true], ['lkl', true], ['klkl', true], ['', false], ['k', false], ['klk', false], ['kll', false]],
+            a: { zustaende: [{ n: 'Z0', x: 80, y: 150, start: true }], ue: [] }
+        },
+        zonen: {
+            titel: 'Zonen im Ticketcode (deterministisch, ohne Fangzustand)', alphabet: 'ABC', maxLaenge: 6, deterministisch: true,
+            ref: function (w) { return /^(A(B(C)?)?|B(C)?|C)$/.test(w); },
+            tests: [['A', true], ['AB', true], ['ABC', true], ['BC', true], ['C', true], ['AC', false], ['BA', false], ['AA', false], ['ABCC', false], ['', false]],
+            a: { zustaende: [{ n: 'Z0', x: 80, y: 150, start: true }], ue: [] }
+        }
     };
 
     function automatenBau(box) {
@@ -1020,7 +1056,25 @@
         hexzahl: { alphabet: '0123456789xABCDEF', zustaende: [{ n: 'Z0', x: 60, y: 90, start: true }, { n: 'Z1', x: 190, y: 90 }, { n: 'Z2', x: 320, y: 90 }, { n: 'Z3', x: 450, y: 90, ende: true }],
                    ue: [{ von: 'Z0', nach: 'Z1', z: '0' }, { von: 'Z1', nach: 'Z2', z: 'x' }].concat([].concat.apply([], '0123456789ABCDEF'.split('').map(function (c) {
                        return [{ von: 'Z2', nach: 'Z3', z: c }, { von: 'Z3', nach: 'Z3', z: c }];
-                   }))) }
+                   }))) },
+        // Übung zur Schulaufgabe
+        'signal-dea': { alphabet: 'kl', zustaende: [{ n: 'Q0', x: 60, y: 90, start: true }, { n: 'Q1', x: 210, y: 90 }, { n: 'Q2', x: 360, y: 90, ende: true }],
+                        ue: [{ von: 'Q0', nach: 'Q0', z: 'l' }, { von: 'Q0', nach: 'Q1', z: 'k' }, { von: 'Q1', nach: 'Q1', z: 'k' }, { von: 'Q1', nach: 'Q2', z: 'l' },
+                             { von: 'Q2', nach: 'Q1', z: 'k' }, { von: 'Q2', nach: 'Q0', z: 'l' }],
+                        biegung: { 'Q2>Q0': 40 }, schleife: { Q0: -90, Q1: -90 } },
+        kiosk: { alphabet: '23456789BSKA+', zustaende: [{ n: 'Z0', x: 60, y: 90, start: true }, { n: 'Z1', x: 210, y: 90 }, { n: 'Z2', x: 360, y: 90, ende: true }],
+                 ue: [].concat('23456789'.split('').map(function (c) { return { von: 'Z0', nach: 'Z1', z: c }; }))
+                     .concat([].concat.apply([], 'BSKA'.split('').map(function (c) { return [{ von: 'Z0', nach: 'Z2', z: c }, { von: 'Z1', nach: 'Z2', z: c }]; })))
+                     .concat([{ von: 'Z2', nach: 'Z0', z: '+' }]),
+                 biegung: { 'Z0>Z2': -40, 'Z2>Z0': -40 } },
+        zonen: { alphabet: 'ABC', zustaende: [{ n: 'Z0', x: 60, y: 90, start: true }, { n: 'Z1', x: 190, y: 90, ende: true }, { n: 'Z2', x: 320, y: 90, ende: true }, { n: 'Z3', x: 450, y: 90, ende: true }],
+                 ue: [{ von: 'Z0', nach: 'Z1', z: 'A' }, { von: 'Z1', nach: 'Z2', z: 'B' }, { von: 'Z2', nach: 'Z3', z: 'C' }, { von: 'Z0', nach: 'Z2', z: 'B' }, { von: 'Z0', nach: 'Z3', z: 'C' }],
+                 biegung: { 'Z0>Z2': -40, 'Z0>Z3': 55 } },
+        kinositz: { alphabet: 'ABCDEFGH0123456789', zustaende: [{ n: 'Z0', x: 60, y: 90, start: true }, { n: 'Z1', x: 200, y: 90 }, { n: 'Z2', x: 360, y: 90, ende: true }, { n: 'Z3', x: 280, y: 200, ende: true }],
+                    ue: [].concat('ABCDEFGH'.split('').map(function (c) { return { von: 'Z0', nach: 'Z1', z: c }; }))
+                        .concat('23456789'.split('').map(function (c) { return { von: 'Z1', nach: 'Z2', z: c }; }))
+                        .concat([{ von: 'Z1', nach: 'Z3', z: '1' }])
+                        .concat('0123456789'.split('').map(function (c) { return { von: 'Z3', nach: 'Z2', z: c }; })) }
     };
     function loesungsbild(box) {
         if (box._fertig) return;

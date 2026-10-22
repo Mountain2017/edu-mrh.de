@@ -324,7 +324,9 @@ Wo was liegt (Stand 2026-10). `→ AB` = LaTeX-Arbeitsblätter in `arbeitsblaett
   (1.1 Syntax und Semantik, 1.2 Formale Sprachen, 1.3 Syntaxdiagramme, 1.4 EBNF,
   1.5 Endliche Automaten mit Java-Projekt `Online-IDE/13-1-5 Automat.json` + Coach (Übergangstabelle),
   1.6 Automaten programmieren: Automat als Code, abstrakte Oberklasse `DEA` mit `pruefe`, Unterklassen
-  mit `switch`, Projekt `Online-IDE/13-1-6 Automaten programmieren.json` + Coach, Vergleich mit 1.5);
+  mit `switch`, Projekt `Online-IDE/13-1-6 Automaten programmieren.json` + Coach, Vergleich mit 1.5;
+  Übung zur 1. Schulaufgabe `uebung-schulaufgabe-1.html` mit eigenen Kontexten, Projekt `13-1-U Parkhaus`;
+  die Schulaufgabe selbst liegt nur in `13/material/`, ihre Kontexte nie auf die Website);
   Werkzeuge: `formale-sprachen.js` (1.1/1.2, Lösungsweg), `grammatik.js` (EBNF-Parser,
   Syntaxdiagramme, Gleisnetz-Fahrt, Baukasten, Werkstatt), `automaten.js` (Simulator,
   Automaten-Baukasten); `13/material/` Rohmaterial, nur lokal

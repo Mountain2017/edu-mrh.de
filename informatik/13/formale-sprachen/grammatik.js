@@ -6,8 +6,9 @@
  *                                              optional mit mitwachsendem Ableitungsbaum
  *   <div data-baukasten="rgb|kennzeichen|frei"> Diagramm-Baukasten (Klicken statt Zeichnen) mit Prüfstand
  *   <div data-ebnf-spiegel>                    EBNF und Diagramm: Teile gegenseitig hervorheben
- *   <div data-ableitung>                       Ableitungs-Spiel: ein Zielwort Schritt für Schritt ableiten
- *   <div data-werkstatt="geld|molkerei|uhrzeit|terme|frei">  Grammatik-Werkstatt: EBNF tippen, testen
+ *   <div data-ableitung [data-ziel] [data-ebnf]>  Ableitungs-Spiel: ein Zielwort Schritt für Schritt ableiten
+ *                                              (ohne data-ebnf: Smiley-Grammatik)
+ *   <div data-werkstatt="geld|molkerei|uhrzeit|terme|frei|schach|monat|zonen">  Grammatik-Werkstatt: EBNF tippen, testen
  *
  * Kern: EBNF-Parser, Syntaxdiagramm-Zeichner (SVG), Erkenner (Fixpunkt über Start-/Endpositionen,
  * kommt mit Rekursion und ε zurecht), Fehlerstelle wie beim Compiler, Ableitungsbaum, Zufallswörter.
@@ -1389,7 +1390,7 @@
     function formText(sq) { return sq.length ? sq.map(function (x) { return x.t === 'T' ? terminalText(x.v) : x.v; }).join(' ') : 'ε'; }
 
     function ableitung(box) {
-        var g = grammatikAus(GRAMMATIKEN.smiley);
+        var g = grammatikAus(box.getAttribute('data-ebnf') || GRAMMATIKEN.smiley);   // eigene Grammatik über data-ebnf
         var ziel = h('input', { type: 'text', cls: 'mono', value: box.getAttribute('data-ziel') || '', maxlength: '20', autocomplete: 'off', spellcheck: 'false', 'aria-label': 'Zielwort' });
         var neu = h('button', { type: 'button', cls: 'knopf', text: 'Neu beginnen' });
         var zurueck = h('button', { type: 'button', cls: 'knopf', text: '↶ Schritt zurück' });
@@ -1496,7 +1497,30 @@
             titel: 'Prüfstand zu d): Klammern auch ohne Funktion',
             tests: [['(x+x)', true], ['x+(x)', true], ['((x))', true], ['sin((x))', true], ['x', true], ['()', false], ['(x+)', false], ['cos(x)(x)', false], ['sin x', false], ['x+x+', false]]
         },
-        frei: { text: '(* Deine eigene Grammatik. Die erste Regel ist das Startsymbol. *)\nStart = "a" {"b"}.', tests: [] }
+        frei: { text: '(* Deine eigene Grammatik. Die erste Regel ist das Startsymbol. *)\nStart = "a" {"b"}.', tests: [] },
+        // Übung zur 1. Schulaufgabe
+        schach: {
+            text: '(* Erweitere: Schach + oder Matt # am Ende, Umwandlung auf Reihe 8 *)\n' +
+                  'Zug = Figurzug | Bauernzug | Rochade.\n' +
+                  'Figurzug = Figur ["x"] Feld.\n' +
+                  'Bauernzug = [Linie "x"] Feld.\n' +
+                  'Rochade = "O-O" ["-O"].\n' +
+                  'Feld = Linie Reihe.\n' +
+                  'Figur = "K" | "D" | "T" | "L" | "S".\n' +
+                  'Linie = "a" | … | "h".\n' +
+                  'Reihe = "1" | … | "8".',
+            titel: 'Prüfstand: Schach, Matt und Umwandlung',
+            tests: [['e8D', true], ['dxe8S', true], ['Sf3+', true], ['Dh5#', true], ['O-O+', true], ['Sf8', true], ['exd5', true], ['Te8', true],
+                    ['e8', false], ['e8K', false], ['e7D', false], ['e4+#', false], ['Kx', false], ['Sf3++', false]]
+        },
+        monat: {
+            text: '(* Monat von 1 bis 12, ohne führende Null *)\nMonat = .',
+            tests: [['1', true], ['9', true], ['10', true], ['11', true], ['12', true], ['0', false], ['01', false], ['13', false], ['20', false], ['100', false], ['', false]]
+        },
+        zonen: {
+            text: '(* Zonen aus dem Syntaxdiagramm: A, AB, ABC, B, BC, C *)\nZonen = .',
+            tests: [['A', true], ['AB', true], ['ABC', true], ['B', true], ['BC', true], ['C', true], ['AC', false], ['BA', false], ['CB', false], ['ABCC', false], ['', false]]
+        }
     };
 
     function werkstatt(box) {
