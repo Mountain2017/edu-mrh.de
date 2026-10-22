@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1.6 Endliche Automaten programmieren | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Endliche Automaten programmieren, Informatik 13: deterministische endliche Automaten direkt als Java-Code – Zustand als Attribut, Übergänge als Fallunterscheidung, Fangzustand im else-Zweig, gemeinsame Oberklasse, Vergleich mit der Übergangstabelle.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/include/online-ide-embedded.css">
+    <script type="module" src="https://edu-mrh.de/embed/include/online-ide-embedded.js"></script>
+    <link rel="stylesheet" href="formale-sprachen.css">
+    <script defer src="formale-sprachen.js"></script>
+    <script defer src="automaten.js"></script>
+    <script defer src="ide-coach.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🔗</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="../../informatik.html#jahrgang-13" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 1.6</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#lesen">🔍 Code lesen</a></li>
+            <li><a href="#festhalten">📝 Automat als Code</a></li>
+            <li><a href="#projekt">☕ Projekt</a></li>
+            <li><a href="#veraendern">🔧 Kommazahlen</a></li>
+            <li><a href="#selbst">🛠️ Hexzahlen</a></li>
+            <li><a href="#vergleichen">⚖️ Tabelle oder Code?</a></li>
+            <li><a href="#nachdenken">💡 Nachdenken</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Formale Sprachen</div>
+            <ul class="sidebar-menu">
+                <li><a href="../../informatik.html#jahrgang-13">Übersicht Klasse 13</a></li>
+                <li><a href="1-1-syntax-semantik.html">1.1 Syntax und Semantik</a></li>
+                <li><a href="1-2-formale-sprachen.html">1.2 Formale Sprachen</a></li>
+                <li><a href="1-3-syntaxdiagramme.html">1.3 Syntaxdiagramme</a></li>
+                <li><a href="1-4-ebnf.html">1.4 Die EBNF</a></li>
+                <li><a href="1-5-endliche-automaten.html">1.5 Endliche Automaten</a></li>
+                <li><a href="1-6-automaten-programmieren.html">1.6 Automaten programmieren</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero fs-hero">
+                <h1 class="hero-title">1.6 Endliche Automaten programmieren</h1>
+                <p class="hero-subtitle">Formale Sprachen · Informatik 13 · 2 Stunden</p>
+                <span class="fs-kompetenz">Du kannst: einen deterministischen endlichen Automaten direkt als Java-Code programmieren (Zustand als Attribut, Übergänge als Fallunterscheidung, Fangzustand im else-Zweig) und diese Umsetzung mit der Übergangstabelle aus 1.5 vergleichen.</span>
+                <div class="fs-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-1-6-automaten-programmieren.pdf">📝 Arbeitsblatt 1.6 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-1-6-automaten-programmieren.tex">LaTeX-Quelle</a>
+                    <a class="btn btn-outline" href="#projekt">☕ zum Java-Projekt</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#lesen">🔍 Code lesen</a><a class="p-note" href="#festhalten">📝 Festhalten</a><a class="p-investigate" href="#projekt">☕ Projekt</a><a class="p-modify" href="#veraendern">🔧 Verändern</a><a class="p-make" href="#selbst">🛠️ Selbst bauen</a><a class="p-investigate" href="#vergleichen">⚖️ Vergleichen</a><a class="p-idee" href="#nachdenken">💡 Nachdenken</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="lesen" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Code lesen<small>Aufgabe 1: Der Bezeichner-Automat</small></h2></div>
+                <div class="phase-body">
+                    <p>In 1.5 stand der Automat in einer <strong>Übergangstabelle</strong>, also in Daten: Die Klasse <code>Automat</code> war für jeden Automaten gleich, nur die Tabelle war eine andere. Jetzt steckt der Automat direkt im <strong>Programmcode</strong>. Beispiel aus dem Compiler: Er muss Namen (Bezeichner) wie <code>zahl2</code> erkennen, vereinfacht <code>Bezeichner = Buchstabe {Buchstabe | Ziffer}.</code></p>
+                    <p>Lies den Code, bevor du ihn laufen lässt. Die Zeilennummern sind dieselben wie auf dem Blatt.</p>
+<pre class="jv"><span class="c"> 1</span>  public void zustandWechseln(char zeichen) {
+<span class="c"> 2</span>     switch (zustand) {
+<span class="c"> 3</span>        case 0:
+<span class="c"> 4</span>           if (Character.isLetter(zeichen)) {
+<span class="c"> 5</span>              zustand = 1;
+<span class="c"> 6</span>           } else {
+<span class="c"> 7</span>              zustand = ZF;
+<span class="c"> 8</span>           }
+<span class="c"> 9</span>           break;
+<span class="c">10</span>        case 1:
+<span class="c">11</span>           if (Character.isLetterOrDigit(zeichen)) {
+<span class="c">12</span>              zustand = 1;
+<span class="c">13</span>           } else {
+<span class="c">14</span>              zustand = ZF;
+<span class="c">15</span>           }
+<span class="c">16</span>           break;
+<span class="c">17</span>        default:
+<span class="c">18</span>           zustand = ZF;
+<span class="c">19</span>     }
+<span class="c">20</span>  }
+<span class="c">21</span>  public boolean istEndzustand() {
+<span class="c">22</span>     return zustand == 1;
+<span class="c">23</span>  }</pre>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 1a:</strong> Zeichne auf dem Blatt das Zustandsübergangsdiagramm, das im Code steckt, <em>mit</em> Fangzustand ZF. <code>zustand = 1;</code> heißt: Wechsle nach Z1.</li>
+                        <li><strong>Aufgabe 1b:</strong> Sage die Zustandsfolgen für <code>zahl2</code>, <code>2zahl</code> und das leere Wort voraus. Wird das Wort akzeptiert?</li>
+                        <li><strong>Aufgabe 1c:</strong> In welcher Zeile steht welcher Pfeil?</li>
+                        <li>Prüfe 1b im <a href="#projekt">Projekt</a>: Starte das Programm. <code>zeigeLauf</code> gibt die Zustandsfolge in der Konsole aus.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 1">
+                        <template data-stufe="Tipp"><p>Jeder <code>case</code> gehört zu einem Zustand: <code>case 0</code> beschreibt alle Pfeile, die aus Z0 herausführen. Jede Zeile <code>zustand = …;</code> ist ein Pfeil, die Bedingung im <code>if</code> davor seine Beschriftung. Der <code>else</code>-Zweig gilt für alle übrigen Zeichen.</p></template>
+                        <template data-stufe="Lösung" data-halten><div data-automat-bild="bezeichner"></div><p>1b: <code>zahl2</code>: Z0 Z1 Z1 Z1 Z1 Z1, akzeptiert · <code>2zahl</code>: Z0 ZF ZF ZF ZF ZF, abgelehnt · ε: Z0, abgelehnt (Z0 ist kein Endzustand). 1c: Z0 → Z1 Zeile 5 · Z1 → Z1 Zeile 12 · Z1 → ZF Zeile 14 · ZF → ZF Zeile 18.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-6-automaten-programmieren.pdf">📝 Blatt 1.6 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="festhalten" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Merkkasten „Einen Automaten als Code programmieren“</small></h2></div>
+                <div class="phase-body">
+                    <p>Ergänze den Merkkasten auf dem Blatt. Leitfragen: Wo merkt sich das Programm den Zustand? Wonach wird in <code>zustandWechseln</code> zuerst unterschieden, wonach danach? Was wird aus einem Pfeil? Was passiert bei einem Zeichen ohne passenden Pfeil? Warum steht <code>pruefe</code> in der Oberklasse?</p>
+                    <div class="code-paar">
+                        <div>
+                            <h4>Ein Pfeil im Diagramm …</h4>
+<pre class="jv">Z1  ──.──▶  Z2
+
+<span class="c">„In Z1 wird . gelesen ⇒ wechsle nach Z2“</span></pre>
+                        </div>
+                        <div>
+                            <h4>… ist eine Zeile im Code</h4>
+<pre class="jv">case 1:                       <span class="c">// aus Z1 …</span>
+   …
+   if (zeichen == '.') {      <span class="c">// … mit .</span>
+      zustand = 2;            <span class="c">// … nach Z2</span>
+   }</pre>
+                        </div>
+                    </div>
+                    <div class="konzept">
+                        <h4>Merkkasten zum Vergleichen</h4>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Merkkasten" data-halten>
+                                <p><strong>Zustand:</strong> Das Attribut <code>zustand</code> merkt sich, wo der Automat gerade steht (0 für Z0, 1 für Z1, …). <strong>Übergänge:</strong> <code>zustandWechseln(zeichen)</code> unterscheidet zuerst nach dem <strong>aktuellen Zustand</strong> (<code>switch</code>: je Zustand ein <code>case</code>), dann nach dem <strong>gelesenen Zeichen</strong> (<code>if</code>). Jeder <strong>Pfeil</strong> wird genau eine Anweisung <code>zustand = …;</code>. <strong>Kein passender Pfeil:</strong> Der <code>else</code>-Zweig führt in den <strong>Fangzustand ZF</strong>, der <code>default</code>-Zweig sorgt dafür, dass ZF <strong>nie verlassen wird</strong>. <strong>Endzustände:</strong> <code>istEndzustand()</code> vergleicht <code>zustand</code> mit allen <strong>Endzuständen</strong>.</p>
+                                <p><code>pruefe</code> ist für <strong>alle Automaten gleich</strong> und steht deshalb in der abstrakten Oberklasse <code>DEA</code>. Jede Unterklasse legt nur die <strong>Übergänge</strong> und die <strong>Endzustände</strong> fest.</p>
+                            </template>
+                        </div>
+                    </div>
+                    <h4>Gegeben: die abstrakte Oberklasse DEA</h4>
+<pre class="jv">public abstract class DEA {
+   protected int zustand;
+   protected final int ZF = 99;                    <span class="c">// Fangzustand</span>
+
+   public abstract void zustandWechseln(char zeichen);
+   public abstract boolean istEndzustand();
+
+   public boolean pruefe(String wort) {
+      zustand = 0;                                 <span class="c">// ①</span>
+      for (int i = 0; i &lt; wort.length(); i++) {    <span class="c">// ③</span>
+         zustandWechseln(wort.charAt(i));          <span class="c">// ②</span>
+      }
+      return istEndzustand();                      <span class="c">// ④</span>
+   }
+}</pre>
+                    <p>In <code>pruefe</code> stecken die vier Regeln aus 1.5: ① Start im Startzustand Z0. ③ Zeichen für Zeichen lesen und dabei ② dem passenden Pfeil folgen. ④ Ist die Restzeichenkette leer, wird akzeptiert, wenn der aktuelle Zustand ein Endzustand ist. <strong>Neu gegenüber 1.5:</strong> Statt abzubrechen, landet ein Wort ohne passenden Pfeil im Fangzustand ZF und wird dort zu Ende gelesen.</p>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-6-automaten-programmieren.pdf">📝 Blatt 1.6 · Merkkasten</a></p>
+                </div>
+            </section>
+
+            <section id="projekt" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">☕</span><h2>Projekt<small>Automaten als Code: eine Oberklasse, drei Automaten</small></h2></div>
+                <div class="phase-body">
+                    <p>Das Projekt enthält die Oberklasse <code>DEA</code> und drei Unterklassen: <code>Bezeichner</code> (fertig, Aufgabe 1), <code>Kommazahl</code> (Aufgabe 2) und <code>Hexzahl</code> (Aufgabe 3). Du schreibst nur die Methoden, die einen Automaten von den anderen unterscheiden: <code>zustandWechseln</code> und <code>istEndzustand</code>.</p>
+                    <ol class="aufgaben">
+                        <li><strong>P1:</strong> Starte das Projekt unverändert und vergleiche die Ausgaben von Aufgabe 1 mit deinen Zustandsfolgen auf dem Blatt. Die Kommazahlen und Hexzahlen werden noch abgelehnt.</li>
+                        <li><strong>Tests:</strong> „Tests starten“ prüft alle drei Automaten. Der Coach unter der IDE zeigt, welche TODOs schon stimmen.</li>
+                    </ol>
+                    <div class="stolper"><strong>Stolpersteine:</strong> Ohne <code>break</code> am Ende eines <code>case</code> läuft Java einfach in den nächsten <code>case</code> weiter. Und <code>'.'</code> (einfache Anführungszeichen) ist ein <code>char</code>, <code>"."</code> ein <code>String</code>: <code>zeichen</code> vergleichst du mit <code>'.'</code>.</div>
+                    <div class="ide-block" id="ide">
+                        <div class="ide-kopf"><h3>Projekt Automaten als Code</h3></div>
+                        <div class="java-online" style="width:100%;height:680px" data-java-online="{ 'id': 'i13-16-automat-code', 'speed': 1000000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true, 'withErrorList': true, 'jsonFilename': '13-1-6 Automaten programmieren.json', 'enableFileAccess': true, 'enableRunExitStatusAccess': true }">
+<!-- IDE-START -->
+<script type="text/plain" title="Hauptprogramm.java">
+// Aufgabe 1: Bezeichner. Stimmen deine Zustandsfolgen von Blatt 1.6?
+Bezeichner name = new Bezeichner();
+name.zeigeLauf("zahl2");
+name.zeigeLauf("2zahl");
+name.zeigeLauf("x");
+name.zeigeLauf("");
+println("");
+
+// Aufgabe 2: Kommazahlen (TODO 2a bis 2c in Kommazahl)
+Kommazahl zahl = new Kommazahl();
+String[] zahlen = {"42", "3.14", "0.5", "3.", ".5", "1.2.3"};
+for (int i = 0; i < zahlen.length; i++) {
+   zahl.zeigeLauf(zahlen[i]);
+}
+println("");
+
+// Aufgabe 3: Hexzahlen (TODO 3a und 3b in Hexzahl)
+Hexzahl hex = new Hexzahl();
+String[] hexzahlen = {"0x1F", "0xFF", "0x7", "0x", "1F", "0x1G"};
+for (int i = 0; i < hexzahlen.length; i++) {
+   hex.zeigeLauf(hexzahlen[i]);
+}
+</script>
+<script type="text/plain" title="DEA.java" data-online-ide="{ 'readOnly': true }">
+/**
+ * Oberklasse für deterministische endliche Automaten, die als Code programmiert sind.
+ * Was bei JEDEM Automaten gleich ist, steht hier: der aktuelle Zustand und das Prüfen eines Worts.
+ * Was jeder Automat anders macht (Übergänge, Endzustände), legt die Unterklasse fest.
+ * Muss nicht verändert werden.
+ */
+public abstract class DEA {
+   protected int zustand;            // aktueller Zustand: 0 steht für Z0, 1 für Z1, …
+   protected final int ZF = 99;      // Fangzustand: eine Nummer, die kein anderer Zustand hat
+
+   // ② Ein Zeichen lesen und dem passenden Pfeil folgen. Jede Unterklasse legt das selbst fest.
+   public abstract void zustandWechseln(char zeichen);
+
+   // ④ Steht der Automat in einem Endzustand? Jede Unterklasse legt das selbst fest.
+   public abstract boolean istEndzustand();
+
+   // Prüft, ob wort zur Sprache gehört (die vier Regeln von Blatt 1.5).
+   public boolean pruefe(String wort) {
+      zustand = 0;                                  // ① Start im Startzustand Z0
+      for (int i = 0; i < wort.length(); i++) {     // ③ Zeichen für Zeichen lesen
+         zustandWechseln(wort.charAt(i));           // ② dem Pfeil folgen
+      }
+      return istEndzustand();                       // ④ RZK leer: Endzustand?
+   }
+
+   // Wie pruefe, gibt aber die Folge der Zustände aus, z. B.  ab1: Z0 Z1 Z1 Z1  ->  akzeptiert
+   public void zeigeLauf(String wort) {
+      zustand = 0;
+      String folge = name(zustand);
+      for (int i = 0; i < wort.length(); i++) {
+         zustandWechseln(wort.charAt(i));
+         folge = folge + " " + name(zustand);
+      }
+      String ergebnis = "abgelehnt";
+      if (istEndzustand()) {
+         ergebnis = "akzeptiert";
+      }
+      String anzeige = wort;
+      if (wort.length() == 0) {
+         anzeige = "(leeres Wort)";
+      }
+      println(anzeige + ": " + folge + "  ->  " + ergebnis);
+   }
+
+   private String name(int z) {
+      if (z == ZF) {
+         return "ZF";
+      }
+      return "Z" + z;
+   }
+}
+</script>
+<script type="text/plain" title="Bezeichner.java">
+/**
+ * Aufgabe 1: Erkennt Namen (Bezeichner) wie in Java, vereinfacht:
+ * zuerst ein Buchstabe, danach beliebig viele Buchstaben oder Ziffern.
+ * Bezeichner = Buchstabe {Buchstabe | Ziffer}.
+ * Fertig: nur lesen, nicht verändern.
+ */
+public class Bezeichner extends DEA {
+
+   public void zustandWechseln(char zeichen) {
+      switch (zustand) {
+         case 0:
+            if (Character.isLetter(zeichen)) {
+               zustand = 1;
+            } else {
+               zustand = ZF;
+            }
+            break;
+         case 1:
+            if (Character.isLetterOrDigit(zeichen)) {
+               zustand = 1;
+            } else {
+               zustand = ZF;
+            }
+            break;
+         default:
+            zustand = ZF;
+      }
+   }
+
+   public boolean istEndzustand() {
+      return zustand == 1;
+   }
+}
+</script>
+<script type="text/plain" title="Kommazahl.java">
+/**
+ * Aufgabe 2: Erkennt Kommazahlen wie in Java, vereinfacht: 42, 3.14, 0.5
+ * (ohne Vorzeichen; 3. und .5 sind hier nicht erlaubt).
+ * Bisher erkennt der Automat nur ganze Zahlen wie 42.
+ */
+public class Kommazahl extends DEA {
+
+   public void zustandWechseln(char zeichen) {
+      switch (zustand) {
+         case 0:
+            if (Character.isDigit(zeichen)) {
+               zustand = 1;
+            } else {
+               zustand = ZF;
+            }
+            break;
+         case 1:
+            if (Character.isDigit(zeichen)) {
+               zustand = 1;
+            // TODO 2a: Pfeil von Z1 mit '.' nach Z2
+            } else {
+               zustand = ZF;
+            }
+            break;
+         // TODO 2b: Zustände Z2 und Z3 (Nachkommastellen)
+
+         default:
+            zustand = ZF;
+      }
+   }
+
+   public boolean istEndzustand() {
+      return zustand == 1;      // TODO 2c: Auch Z3 ist ein Endzustand.
+   }
+}
+</script>
+<script type="text/plain" title="Hexzahl.java">
+/**
+ * Aufgabe 3: Erkennt Hexadezimalzahlen wie in Java, z. B. 0x1F, 0xFF, 0x7
+ * (vereinfacht: nur Großbuchstaben A bis F).
+ * Hexzahl = "0" "x" HexZiffer {HexZiffer}.
+ * HexZiffer = "0" | "1" | … | "9" | "A" | "B" | … | "F".
+ */
+public class Hexzahl extends DEA {
+
+   // TODO 3a: Übergänge nach deinem Diagramm von Blatt 1.6, Aufgabe 3
+   public void zustandWechseln(char zeichen) {
+
+   }
+
+   // TODO 3b: Endzustand?
+   public boolean istEndzustand() {
+      return false;
+   }
+
+   // true, wenn zeichen eine der Hex-Ziffern 0 bis 9 oder A bis F ist
+   private boolean istHexZiffer(char zeichen) {
+      return "0123456789ABCDEF".indexOf(zeichen) >= 0;
+   }
+}
+</script>
+<script type="text/plain" title="DEATest.java" data-online-ide="{ 'readOnly': true }">
+/**
+ * Selbsttest des Projekts. Bitte nicht verändern!
+ * Starten: Klick auf das kleine Dreieck links neben "@Test"
+ * (ganz oben: alle Tests) oder auf der Website "Tests starten".
+ */
+public class DEATest {
+
+   @Test
+   public void bezeichnerFertig() {
+      Bezeichner b = new Bezeichner();
+      Assertions.assertTrue(b.pruefe("zahl2"), "Bezeichner: zahl2 ist ein Name.");
+      Assertions.assertFalse(b.pruefe("2zahl"), "Bezeichner: 2zahl beginnt mit einer Ziffer.");
+      Assertions.assertFalse(b.pruefe(""), "Bezeichner: Das leere Wort ist kein Name.");
+   }
+
+   @Test
+   public void ganzeZahlen() {
+      Kommazahl k = new Kommazahl();
+      Assertions.assertTrue(k.pruefe("42"), "Aufgabe 2: 42 muss weiterhin akzeptiert werden.");
+      Assertions.assertTrue(k.pruefe("7"), "Aufgabe 2: 7 muss weiterhin akzeptiert werden.");
+      Assertions.assertFalse(k.pruefe(""), "Aufgabe 2: Das leere Wort ist keine Zahl.");
+   }
+
+   @Test
+   public void kommazahlenAkzeptiert() {
+      Kommazahl k = new Kommazahl();
+      Assertions.assertTrue(k.pruefe("3.14"), "Aufgabe 2: 3.14 muss akzeptiert werden (TODO 2a bis 2c).");
+      Assertions.assertTrue(k.pruefe("0.5"), "Aufgabe 2: 0.5 muss akzeptiert werden (TODO 2a bis 2c).");
+   }
+
+   @Test
+   public void kommazahlenAbgelehnt() {
+      Kommazahl k = new Kommazahl();
+      Assertions.assertFalse(k.pruefe("3."), "Aufgabe 2: 3. endet in Z2, das ist kein Endzustand.");
+      Assertions.assertFalse(k.pruefe(".5"), "Aufgabe 2: .5 beginnt nicht mit einer Ziffer.");
+      Assertions.assertFalse(k.pruefe("1.2.3"), "Aufgabe 2: 1.2.3 hat zwei Punkte.");
+      Assertions.assertFalse(k.pruefe("3,14"), "Aufgabe 2: Java schreibt Kommazahlen mit Punkt, nicht mit Komma.");
+   }
+
+   @Test
+   public void hexzahlenAkzeptiert() {
+      Hexzahl h = new Hexzahl();
+      Assertions.assertTrue(h.pruefe("0x1F"), "Aufgabe 3: 0x1F muss akzeptiert werden.");
+      Assertions.assertTrue(h.pruefe("0xFF"), "Aufgabe 3: 0xFF muss akzeptiert werden.");
+      Assertions.assertTrue(h.pruefe("0x7"), "Aufgabe 3: 0x7 muss akzeptiert werden.");
+   }
+
+   @Test
+   public void hexzahlenAbgelehnt() {
+      Hexzahl h = new Hexzahl();
+      Assertions.assertFalse(h.pruefe("0x"), "Aufgabe 3: Nach 0x muss mindestens eine Hex-Ziffer folgen.");
+      Assertions.assertFalse(h.pruefe("1F"), "Aufgabe 3: Eine Hexzahl beginnt mit 0x.");
+      Assertions.assertFalse(h.pruefe("0x1G"), "Aufgabe 3: G ist keine Hex-Ziffer.");
+      Assertions.assertFalse(h.pruefe("00x1"), "Aufgabe 3: Nach der 0 muss das x kommen.");
+      Assertions.assertFalse(h.pruefe(""), "Aufgabe 3: Das leere Wort ist keine Hexzahl.");
+   }
+}
+</script>
+<!-- IDE-ENDE -->
+</div>
+                        <p class="ide-downloads">💾 Eigenen Stand sichern: Diskettensymbol in der IDE-Leiste („Workspace in Datei speichern“), der Name <code>13-1-6 Automaten programmieren.json</code> ist schon vorgeschlagen. Laden: Ordnersymbol daneben. · <a href="Online-IDE/13-1-6%20Automaten%20programmieren.json" download>Ausgangsprojekt für online-ide.de</a></p>
+                    </div>
+                    <div class="coach" data-coach="i13-16-automat-code"></div>
+                </div>
+            </section>
+
+            <section id="veraendern" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">🔧</span><h2>Verändern<small>Aufgabe 2: Kommazahlen (TODO 2a bis 2c)</small></h2></div>
+                <div class="phase-body">
+                    <p>Die Klasse <code>Kommazahl</code> erkennt bisher nur ganze Zahlen wie <code>42</code>: Z0 –0–9→ Z1, Schleife 0–9 an Z1, Endzustand Z1. Künftig sollen auch <code>3.14</code> und <code>0.5</code> akzeptiert werden, <code>3.</code>, <code>.5</code> und <code>1.2.3</code> aber nicht.</p>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 2a:</strong> Ergänze auf dem Blatt das Diagramm um Z2 und Z3. Ergänze im Code den Pfeil Z1 → Z2 (TODO 2a, auch auf dem Blatt).</li>
+                        <li><strong>TODO 2b:</strong> Programmiere die Fälle für Z2 und Z3: zwei neue <code>case</code>-Zweige nach dem Muster der vorhandenen.</li>
+                        <li><strong>TODO 2c:</strong> Welche Zustände sind jetzt Endzustände? Passe <code>istEndzustand()</code> an.</li>
+                        <li><strong>Aufgabe 2d:</strong> Starte das Programm. <code>3.</code> landet nie in ZF und wird trotzdem abgelehnt. Warum?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 2">
+                        <template data-stufe="Tipp 2a"><p>Der neue Pfeil beginnt in Z1, also gehört er in <code>case 1</code>. Dort gibt es schon ein <code>if</code> für die Ziffern und ein <code>else</code> für den Rest: Der Punkt bekommt einen eigenen Zweig dazwischen, <code>else if (…)</code>.</p></template>
+                        <template data-stufe="Tipp 2b"><p>Aus Z2 führt nur ein Pfeil heraus (eine Ziffer nach Z3), aus Z3 eine Schleife. Alles andere führt in ZF. Vergiss das <code>break;</code> am Ende jedes <code>case</code> nicht.</p></template>
+                        <template data-stufe="Lösung" data-halten><div data-automat-bild="kommazahl"></div>
+<pre class="jv">case 1:
+   if (Character.isDigit(zeichen)) {
+      zustand = 1;
+   } else if (zeichen == '.') {       <span class="c">// TODO 2a</span>
+      zustand = 2;
+   } else {
+      zustand = ZF;
+   }
+   break;
+case 2:                               <span class="c">// TODO 2b</span>
+   if (Character.isDigit(zeichen)) {
+      zustand = 3;
+   } else {
+      zustand = ZF;
+   }
+   break;
+case 3:
+   if (Character.isDigit(zeichen)) {
+      zustand = 3;
+   } else {
+      zustand = ZF;
+   }
+   break;
+…
+public boolean istEndzustand() {
+   return zustand == 1 || zustand == 3;   <span class="c">// TODO 2c</span>
+}</pre>
+<p>2d: <code>3.</code> endet in Z2. Die Restzeichenkette ist leer, aber Z2 ist kein Endzustand (Regel ④).</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-6-automaten-programmieren.pdf">📝 Blatt 1.6 · Aufgabe 2</a></p>
+                </div>
+            </section>
+
+            <section id="selbst" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Selbst bauen<small>Aufgabe 3: Hexadezimalzahlen (TODO 3a, 3b)</small></h2></div>
+                <div class="phase-body">
+                    <p>In Java schreibt man Hexzahlen mit <code>0x</code> davor, z. B. <code>0x1F</code> (= 31) oder <code>0xFF</code> (= 255), wie bei den Farbcodes aus 1.1 und den Zahlensystemen aus der 11. Klasse:</p>
+<pre class="jv">Hexzahl = "0" "x" HexZiffer {HexZiffer}.
+HexZiffer = "0" | … | "9" | "A" | … | "F".</pre>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 3a:</strong> Zeichne auf dem Blatt den deterministischen Automaten (ohne ZF).</li>
+                        <li><strong>Aufgabe 3b:</strong> Programmiere ihn in der Klasse <code>Hexzahl</code> (TODO 3a: <code>zustandWechseln</code>, TODO 3b: <code>istEndzustand</code>). Die Hilfsmethode <code>istHexZiffer(zeichen)</code> ist schon da.</li>
+                        <li><strong>Aufgabe 3c:</strong> Wie viele <code>case</code>-Zweige brauchst du? Notiere die Bedingung von <code>istEndzustand()</code>.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 3">
+                        <template data-stufe="Tipp 1"><p>Jedes Feld der Aneinanderreihung <code>"0" "x" HexZiffer</code> ist ein Pfeil, die Wiederholung <code>{HexZiffer}</code> eine Schleife (Blatt 1.5, Aufgabe 3). Wie viele Zustände ergibt das?</p></template>
+                        <template data-stufe="Tipp 2"><p>Schreibe für jeden Zustand ohne ZF einen <code>case</code>. Einzelne Zeichen vergleichst du mit <code>==</code>, z. B. <code>zeichen == 'x'</code>; für die Hex-Ziffern nimmst du <code>istHexZiffer(zeichen)</code>. Den <code>default</code>-Zweig kannst du aus den anderen Klassen übernehmen.</p></template>
+                        <template data-stufe="Lösung" data-halten><div data-automat-bild="hexzahl"></div>
+<pre class="jv">public void zustandWechseln(char zeichen) {
+   switch (zustand) {
+      case 0:
+         if (zeichen == '0') {
+            zustand = 1;
+         } else {
+            zustand = ZF;
+         }
+         break;
+      case 1:
+         if (zeichen == 'x') {
+            zustand = 2;
+         } else {
+            zustand = ZF;
+         }
+         break;
+      case 2:
+         if (istHexZiffer(zeichen)) {
+            zustand = 3;
+         } else {
+            zustand = ZF;
+         }
+         break;
+      case 3:
+         if (istHexZiffer(zeichen)) {
+            zustand = 3;
+         } else {
+            zustand = ZF;
+         }
+         break;
+      default:
+         zustand = ZF;
+   }
+}
+
+public boolean istEndzustand() {
+   return zustand == 3;
+}</pre>
+<p>3c: vier <code>case</code>-Zweige (Z0 bis Z3), Endzustand nur Z3.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-6-automaten-programmieren.pdf">📝 Blatt 1.6 · Aufgabe 3</a></p>
+                </div>
+            </section>
+
+            <section id="vergleichen" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">⚖️</span><h2>Vergleichen<small>Aufgabe 4: Übergangstabelle (1.5) oder Code (1.6)?</small></h2></div>
+                <div class="phase-body">
+                    <p>Beide Projekte erkennen dieselben Sprachen. Vergleiche sie und fülle die Tabelle auf dem Blatt aus:</p>
+                    <ol class="aufgaben">
+                        <li>Wo stehen die Pfeile des Automaten: im Programmtext oder in Daten?</li>
+                        <li>Was ist zu tun, wenn ein neuer Automat dazukommt?</li>
+                        <li>Wie aufwendig ist ein Pfeil, der für alle Buchstaben gilt? Denk an die Spalten der Tabelle in 1.5.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 4">
+                        <template data-stufe="Lösung" data-halten>
+                            <div class="tab-scroll"><table>
+                                <tr><th></th><th>Übergangstabelle (1.5)</th><th>Code (1.6)</th></tr>
+                                <tr><td>Wo stehen die Pfeile?</td><td>in Daten: im Feld <code>tabelle</code>, gefüllt durch Aufrufe im Hauptprogramm</td><td>im Programmtext: in <code>zustandWechseln</code> einer Unterklasse</td></tr>
+                                <tr><td>Neuer Automat?</td><td>nur neue Aufrufe (<code>uebergangHinzufuegen</code> …), die Klasse bleibt gleich</td><td>eine neue Unterklasse von <code>DEA</code></td></tr>
+                                <tr><td>Ein Pfeil für alle Buchstaben?</td><td>je Zeichen eine Spalte: über 50 Spalten nur für Buchstaben</td><td>eine Bedingung: <code>Character.isLetter(zeichen)</code></td></tr>
+                            </table></div>
+                            <p>Faustregel: Die Tabelle lohnt sich, wenn Automaten erst beim Programmlauf entstehen (z. B. aus dem Baukasten). Der Code lohnt sich für einen festen Automaten mit großen Zeichenklassen, so wie im Compiler.</p>
+                        </template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-6-automaten-programmieren.pdf">📝 Blatt 1.6 · Aufgabe 4</a></p>
+                </div>
+            </section>
+
+            <section id="nachdenken" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Besprecht mündlich</small></h2></div>
+                <div class="phase-body">
+                    <p>Überlegt zu zweit. Die Hinweise sind zum Nachlesen <em>nach</em> dem Gespräch: Halte dazu den Knopf gedrückt.</p>
+                    <div class="idee"><strong>Warum ist <code>pruefe</code> in <code>DEA</code> fertig programmiert, <code>zustandWechseln</code> aber abstrakt?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Das Lesen Zeichen für Zeichen ist bei jedem Automaten gleich, die Pfeile sind bei jedem anders. Die Oberklasse schreibt den gemeinsamen Ablauf einmal auf und lässt die Lücke für den Teil, den jede Unterklasse selbst füllen muss. <code>pruefe</code> ruft dabei die Methode der tatsächlichen Klasse auf (Polymorphie, Klasse 10 und 12).</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>In Java sind auch <code>3.</code> und <code>.5</code> gültige Kommazahlen. Was müsstest du in <code>Kommazahl</code> ändern?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Für <code>3.</code> wird Z2 zum Endzustand. Für <code>.5</code> braucht Z0 einen Pfeil mit <code>.</code> in einen neuen Zustand, von dem aus eine Ziffer nach Z3 führt. Würde der Pfeil direkt nach Z2 gehen, wäre auch <code>.</code> allein gültig, wenn Z2 Endzustand ist.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Ließe sich der nichtdeterministische Automat für ungerade Binärzahlen aus 1.5 genauso programmieren?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Nicht direkt: <code>zustand</code> speichert genau einen Zustand, und jede Zeile <code>zustand = …;</code> legt genau einen Folgezustand fest. Man baut zuerst den gleichwertigen deterministischen Automaten (Nachdenken in 1.5) und programmiert dann diesen.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Für Schnelle: Ein Programm soll für jedes Wort einer Zeile ausgeben, ob es ein Name, eine Kommazahl oder eine Hexzahl ist. Wie hilft dabei die gemeinsame Oberklasse?</strong> Probiere es im Hauptprogramm aus.
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Alle drei Automaten sind <code>DEA</code>-Objekte und lassen sich in ein Feld legen. Eine Schleife fragt sie der Reihe nach:</p>
+<pre class="jv">DEA[] automaten = {new Bezeichner(), new Kommazahl(), new Hexzahl()};
+String[] arten = {"Name", "Kommazahl", "Hexzahl"};
+String[] woerter = {"x2", "=", "3.14", "+", "0x1F"};
+for (int w = 0; w &lt; woerter.length; w++) {
+   String art = "unbekannt";
+   for (int a = 0; a &lt; automaten.length; a++) {
+      if (automaten[a].pruefe(woerter[w])) {
+         art = arten[a];
+      }
+   }
+   println(woerter[w] + ": " + art);
+}</pre>
+<p>So arbeitet der erste Teil eines Compilers (Scanner): Er zerlegt den Quelltext in Bausteine und bestimmt ihre Art.</p></template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🎮 Zustände steuern Programme</h4>
+                            <p>Dasselbe Muster aus Zustand und Fallunterscheidung steckt in Spielfiguren (steht, läuft, springt), Ampeln oder Getränkeautomaten. Dort löst ein Ereignis (Taste, Münze) den Zustandswechsel aus, und jeder Wechsel kann zusätzlich etwas tun, z. B. eine Animation starten.</p>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>⚙️ Automaten im Compiler</h4>
+                            <p>Der Scanner aus dem Nachdenken-Teil ist der erste Schritt jedes Compilers. Danach prüft der Parser mit der Grammatik, ob die Bausteine richtig zusammengesetzt sind. Für verschachtelte Klammern reicht ein endlicher Automat nicht (1.5).</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="1-5-endliche-automaten.html">← 1.5 Endliche Automaten</a>
+                <a class="btn btn-primary" href="../../informatik.html#jahrgang-13">Übersicht Klasse 13 →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-1-6-automaten-programmieren-lsg.pdf">Lösung Blatt 1.6 (PDF)</a>
+                        <a class="btn btn-tex btn-sm" href="Online-IDE/LSG%2013-1-6%20Automaten%20programmieren.json" download>Lösungsprojekt (JSON für online-ide.de)</a>
+                        <a class="btn btn-outline btn-sm" href="Online-IDE/13-1-6%20Automaten%20programmieren.json" download>Ausgangsprojekt (JSON)</a></p>
+                    <div class="tab-scroll">
+                        <table>
+                            <tr><th>Aufgabe</th><th>Lösung / Hinweis</th></tr>
+                            <tr><td>1</td><td>Z0 –Buchstabe→ Z1, Schleife Buchstabe/Ziffer an Z1, Z0 und Z1 –sonst→ ZF, Schleife an ZF; Endzustand Z1. <code>zahl2</code>: Z0 Z1 Z1 Z1 Z1 Z1 ja · <code>2zahl</code>: Z0 ZF ZF ZF ZF ZF nein · ε: Z0 nein. Zeilen 5, 12, 14, 18.</td></tr>
+                            <tr><td>2</td><td>Z1 –.→ Z2 –0–9→ Z3, Schleife 0–9 an Z3, Endzustände Z1 und Z3. Code: <code>else if (zeichen == '.') { zustand = 2; }</code> in <code>case 1</code>, <code>case 2</code> und <code>case 3</code>, <code>return zustand == 1 || zustand == 3;</code>. 2d: <code>3.</code> endet in Z2, kein Endzustand.</td></tr>
+                            <tr><td>3</td><td>Z0 –0→ Z1 –x→ Z2 –HexZiffer→ Z3, Schleife HexZiffer an Z3, Endzustand Z3; vier <code>case</code>-Zweige, <code>return zustand == 3;</code>.</td></tr>
+                            <tr><td>4</td><td>Tabelle: Pfeile in Daten, neuer Automat = neue Aufrufe, eine Spalte je Zeichen. Code: Pfeile im Programmtext, neuer Automat = neue Unterklasse, Zeichenklassen mit einer Bedingung.</td></tr>
+                        </table>
+                    </div>
+                    <p class="mt-2"><strong>Einordnung:</strong> Station 1.5 setzt den Automaten als Übergangstabelle um (Projekt „Automat“, Daten). 1.6 zeigt die zweite übliche Umsetzung als Code (Zustandsvariable mit Fallunterscheidung) und vergleicht beide. Die Prüfschleife <code>pruefe</code> steht fertig in der abstrakten Oberklasse <code>DEA</code>, damit sie nicht ein zweites Mal geschrieben wird; die Schüler:innen schreiben nur Übergänge und Endzustände (Aufgabe 2: wenige Zeilen ergänzen, Aufgabe 3: eine Methode nach eigenem Diagramm). Fehlende Pfeile führen hier in den Fangzustand <code>ZF</code> (<code>else</code>/<code>default</code>), ein Abbruch wie in 1.5 ist nicht nötig.</p>
+                    <p><strong>Projekt</strong> (ID <code>i13-16-automat-code</code>): <code>DEA</code> und <code>DEATest</code> (6 JUnit-Tests) sind schreibgeschützt, <code>Bezeichner</code> ist fertig. <code>zeigeLauf(wort)</code> gibt die Zustandsfolge aus (ZF als „ZF“). Der Coach zeigt den Fortschritt je TODO und weist auf fehlende <code>break</code>-Anweisungen und <code>"."</code> statt <code>'.'</code> hin. Ohne Grafik, deshalb läuft alles sofort.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum &amp; Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

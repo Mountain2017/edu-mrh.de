@@ -1,0 +1,51 @@
+{
+ "name": "13-1-6 Automaten programmieren",
+ "modules": [
+  {
+   "name": "Hauptprogramm",
+   "text": "// Aufgabe 1: Bezeichner. Stimmen deine Zustandsfolgen von Blatt 1.6?\nBezeichner name = new Bezeichner();\nname.zeigeLauf(\"zahl2\");\nname.zeigeLauf(\"2zahl\");\nname.zeigeLauf(\"x\");\nname.zeigeLauf(\"\");\nprintln(\"\");\n\n// Aufgabe 2: Kommazahlen (TODO 2a bis 2c in Kommazahl)\nKommazahl zahl = new Kommazahl();\nString[] zahlen = {\"42\", \"3.14\", \"0.5\", \"3.\", \".5\", \"1.2.3\"};\nfor (int i = 0; i < zahlen.length; i++) {\n   zahl.zeigeLauf(zahlen[i]);\n}\nprintln(\"\");\n\n// Aufgabe 3: Hexzahlen (TODO 3a und 3b in Hexzahl)\nHexzahl hex = new Hexzahl();\nString[] hexzahlen = {\"0x1F\", \"0xFF\", \"0x7\", \"0x\", \"1F\", \"0x1G\"};\nfor (int i = 0; i < hexzahlen.length; i++) {\n   hex.zeigeLauf(hexzahlen[i]);\n}\n",
+   "identical_to_repository_version": false,
+   "repository_file_version": -1,
+   "isFolder": false
+  },
+  {
+   "name": "DEA",
+   "text": "/**\n * Oberklasse für deterministische endliche Automaten, die als Code programmiert sind.\n * Was bei JEDEM Automaten gleich ist, steht hier: der aktuelle Zustand und das Prüfen eines Worts.\n * Was jeder Automat anders macht (Übergänge, Endzustände), legt die Unterklasse fest.\n * Muss nicht verändert werden.\n */\npublic abstract class DEA {\n   protected int zustand;            // aktueller Zustand: 0 steht für Z0, 1 für Z1, …\n   protected final int ZF = 99;      // Fangzustand: eine Nummer, die kein anderer Zustand hat\n\n   // ② Ein Zeichen lesen und dem passenden Pfeil folgen. Jede Unterklasse legt das selbst fest.\n   public abstract void zustandWechseln(char zeichen);\n\n   // ④ Steht der Automat in einem Endzustand? Jede Unterklasse legt das selbst fest.\n   public abstract boolean istEndzustand();\n\n   // Prüft, ob wort zur Sprache gehört (die vier Regeln von Blatt 1.5).\n   public boolean pruefe(String wort) {\n      zustand = 0;                                  // ① Start im Startzustand Z0\n      for (int i = 0; i < wort.length(); i++) {     // ③ Zeichen für Zeichen lesen\n         zustandWechseln(wort.charAt(i));           // ② dem Pfeil folgen\n      }\n      return istEndzustand();                       // ④ RZK leer: Endzustand?\n   }\n\n   // Wie pruefe, gibt aber die Folge der Zustände aus, z. B.  ab1: Z0 Z1 Z1 Z1  ->  akzeptiert\n   public void zeigeLauf(String wort) {\n      zustand = 0;\n      String folge = name(zustand);\n      for (int i = 0; i < wort.length(); i++) {\n         zustandWechseln(wort.charAt(i));\n         folge = folge + \" \" + name(zustand);\n      }\n      String ergebnis = \"abgelehnt\";\n      if (istEndzustand()) {\n         ergebnis = \"akzeptiert\";\n      }\n      String anzeige = wort;\n      if (wort.length() == 0) {\n         anzeige = \"(leeres Wort)\";\n      }\n      println(anzeige + \": \" + folge + \"  ->  \" + ergebnis);\n   }\n\n   private String name(int z) {\n      if (z == ZF) {\n         return \"ZF\";\n      }\n      return \"Z\" + z;\n   }\n}\n",
+   "identical_to_repository_version": false,
+   "repository_file_version": -1,
+   "isFolder": false
+  },
+  {
+   "name": "Bezeichner",
+   "text": "/**\n * Aufgabe 1: Erkennt Namen (Bezeichner) wie in Java, vereinfacht:\n * zuerst ein Buchstabe, danach beliebig viele Buchstaben oder Ziffern.\n * Bezeichner = Buchstabe {Buchstabe | Ziffer}.\n * Fertig: nur lesen, nicht verändern.\n */\npublic class Bezeichner extends DEA {\n\n   public void zustandWechseln(char zeichen) {\n      switch (zustand) {\n         case 0:\n            if (Character.isLetter(zeichen)) {\n               zustand = 1;\n            } else {\n               zustand = ZF;\n            }\n            break;\n         case 1:\n            if (Character.isLetterOrDigit(zeichen)) {\n               zustand = 1;\n            } else {\n               zustand = ZF;\n            }\n            break;\n         default:\n            zustand = ZF;\n      }\n   }\n\n   public boolean istEndzustand() {\n      return zustand == 1;\n   }\n}\n",
+   "identical_to_repository_version": false,
+   "repository_file_version": -1,
+   "isFolder": false
+  },
+  {
+   "name": "Kommazahl",
+   "text": "/**\n * Aufgabe 2: Erkennt Kommazahlen wie in Java, vereinfacht: 42, 3.14, 0.5\n * (ohne Vorzeichen; 3. und .5 sind hier nicht erlaubt).\n * Bisher erkennt der Automat nur ganze Zahlen wie 42.\n */\npublic class Kommazahl extends DEA {\n\n   public void zustandWechseln(char zeichen) {\n      switch (zustand) {\n         case 0:\n            if (Character.isDigit(zeichen)) {\n               zustand = 1;\n            } else {\n               zustand = ZF;\n            }\n            break;\n         case 1:\n            if (Character.isDigit(zeichen)) {\n               zustand = 1;\n            // TODO 2a: Pfeil von Z1 mit '.' nach Z2\n            } else {\n               zustand = ZF;\n            }\n            break;\n         // TODO 2b: Zustände Z2 und Z3 (Nachkommastellen)\n\n         default:\n            zustand = ZF;\n      }\n   }\n\n   public boolean istEndzustand() {\n      return zustand == 1;      // TODO 2c: Auch Z3 ist ein Endzustand.\n   }\n}\n",
+   "identical_to_repository_version": false,
+   "repository_file_version": -1,
+   "isFolder": false
+  },
+  {
+   "name": "Hexzahl",
+   "text": "/**\n * Aufgabe 3: Erkennt Hexadezimalzahlen wie in Java, z. B. 0x1F, 0xFF, 0x7\n * (vereinfacht: nur Großbuchstaben A bis F).\n * Hexzahl = \"0\" \"x\" HexZiffer {HexZiffer}.\n * HexZiffer = \"0\" | \"1\" | … | \"9\" | \"A\" | \"B\" | … | \"F\".\n */\npublic class Hexzahl extends DEA {\n\n   // TODO 3a: Übergänge nach deinem Diagramm von Blatt 1.6, Aufgabe 3\n   public void zustandWechseln(char zeichen) {\n\n   }\n\n   // TODO 3b: Endzustand?\n   public boolean istEndzustand() {\n      return false;\n   }\n\n   // true, wenn zeichen eine der Hex-Ziffern 0 bis 9 oder A bis F ist\n   private boolean istHexZiffer(char zeichen) {\n      return \"0123456789ABCDEF\".indexOf(zeichen) >= 0;\n   }\n}\n",
+   "identical_to_repository_version": false,
+   "repository_file_version": -1,
+   "isFolder": false
+  },
+  {
+   "name": "DEATest",
+   "text": "/**\n * Selbsttest des Projekts. Bitte nicht verändern!\n * Starten: Klick auf das kleine Dreieck links neben \"@Test\"\n * (ganz oben: alle Tests) oder auf der Website \"Tests starten\".\n */\npublic class DEATest {\n\n   @Test\n   public void bezeichnerFertig() {\n      Bezeichner b = new Bezeichner();\n      Assertions.assertTrue(b.pruefe(\"zahl2\"), \"Bezeichner: zahl2 ist ein Name.\");\n      Assertions.assertFalse(b.pruefe(\"2zahl\"), \"Bezeichner: 2zahl beginnt mit einer Ziffer.\");\n      Assertions.assertFalse(b.pruefe(\"\"), \"Bezeichner: Das leere Wort ist kein Name.\");\n   }\n\n   @Test\n   public void ganzeZahlen() {\n      Kommazahl k = new Kommazahl();\n      Assertions.assertTrue(k.pruefe(\"42\"), \"Aufgabe 2: 42 muss weiterhin akzeptiert werden.\");\n      Assertions.assertTrue(k.pruefe(\"7\"), \"Aufgabe 2: 7 muss weiterhin akzeptiert werden.\");\n      Assertions.assertFalse(k.pruefe(\"\"), \"Aufgabe 2: Das leere Wort ist keine Zahl.\");\n   }\n\n   @Test\n   public void kommazahlenAkzeptiert() {\n      Kommazahl k = new Kommazahl();\n      Assertions.assertTrue(k.pruefe(\"3.14\"), \"Aufgabe 2: 3.14 muss akzeptiert werden (TODO 2a bis 2c).\");\n      Assertions.assertTrue(k.pruefe(\"0.5\"), \"Aufgabe 2: 0.5 muss akzeptiert werden (TODO 2a bis 2c).\");\n   }\n\n   @Test\n   public void kommazahlenAbgelehnt() {\n      Kommazahl k = new Kommazahl();\n      Assertions.assertFalse(k.pruefe(\"3.\"), \"Aufgabe 2: 3. endet in Z2, das ist kein Endzustand.\");\n      Assertions.assertFalse(k.pruefe(\".5\"), \"Aufgabe 2: .5 beginnt nicht mit einer Ziffer.\");\n      Assertions.assertFalse(k.pruefe(\"1.2.3\"), \"Aufgabe 2: 1.2.3 hat zwei Punkte.\");\n      Assertions.assertFalse(k.pruefe(\"3,14\"), \"Aufgabe 2: Java schreibt Kommazahlen mit Punkt, nicht mit Komma.\");\n   }\n\n   @Test\n   public void hexzahlenAkzeptiert() {\n      Hexzahl h = new Hexzahl();\n      Assertions.assertTrue(h.pruefe(\"0x1F\"), \"Aufgabe 3: 0x1F muss akzeptiert werden.\");\n      Assertions.assertTrue(h.pruefe(\"0xFF\"), \"Aufgabe 3: 0xFF muss akzeptiert werden.\");\n      Assertions.assertTrue(h.pruefe(\"0x7\"), \"Aufgabe 3: 0x7 muss akzeptiert werden.\");\n   }\n\n   @Test\n   public void hexzahlenAbgelehnt() {\n      Hexzahl h = new Hexzahl();\n      Assertions.assertFalse(h.pruefe(\"0x\"), \"Aufgabe 3: Nach 0x muss mindestens eine Hex-Ziffer folgen.\");\n      Assertions.assertFalse(h.pruefe(\"1F\"), \"Aufgabe 3: Eine Hexzahl beginnt mit 0x.\");\n      Assertions.assertFalse(h.pruefe(\"0x1G\"), \"Aufgabe 3: G ist keine Hex-Ziffer.\");\n      Assertions.assertFalse(h.pruefe(\"00x1\"), \"Aufgabe 3: Nach der 0 muss das x kommen.\");\n      Assertions.assertFalse(h.pruefe(\"\"), \"Aufgabe 3: Das leere Wort ist keine Hexzahl.\");\n   }\n}\n",
+   "identical_to_repository_version": false,
+   "repository_file_version": -1,
+   "isFolder": false
+  }
+ ],
+ "settings": {
+  "libraries": []
+ },
+ "isFolder": false
+}
