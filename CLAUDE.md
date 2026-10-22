@@ -322,7 +322,9 @@ Wo was liegt (Stand 2026-10). `→ AB` = LaTeX-Arbeitsblätter in `arbeitsblaett
 - 12 sonst: `12/binaerbaeume/`, `12/tiefensuche/`, `12/nebenlaeufigkeit/`
 - 13 Formale Sprachen (neues Format, → AB): `13/formale-sprachen/`
   (1.1 Syntax und Semantik, 1.2 Formale Sprachen, 1.3 Syntaxdiagramme, 1.4 EBNF,
-  1.5 Endliche Automaten mit Java-Projekt `Online-IDE/13-1-5 Automat.json` + Coach);
+  1.5 Endliche Automaten mit Java-Projekt `Online-IDE/13-1-5 Automat.json` + Coach (Übergangstabelle),
+  1.6 Automaten programmieren: Automat als Code, abstrakte Oberklasse `DEA` mit `pruefe`, Unterklassen
+  mit `switch`, Projekt `Online-IDE/13-1-6 Automaten programmieren.json` + Coach, Vergleich mit 1.5);
   Werkzeuge: `formale-sprachen.js` (1.1/1.2, Lösungsweg), `grammatik.js` (EBNF-Parser,
   Syntaxdiagramme, Gleisnetz-Fahrt, Baukasten, Werkstatt), `automaten.js` (Simulator,
   Automaten-Baukasten); `13/material/` Rohmaterial, nur lokal

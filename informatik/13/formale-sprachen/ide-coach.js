@@ -1,7 +1,7 @@
 /*
  * IDE-Coach – dynamische Hinweise zu einem eingebetteten Online-IDE-Projekt
  *
- *   <div class="coach" data-coach="i13-15-automat"></div>
+ *   <div class="coach" data-coach="i13-15-automat"></div>   (1.5; 1.6: i13-16-automat-code)
  *
  * Der Coach liest über die Zugriffsschnittstelle der Online-IDE
  * (data-java-online mit 'enableFileAccess': true, 'enableRunExitStatusAccess': true)
@@ -161,6 +161,58 @@
             }
             if (c.alleTestsGruen) {
                 liste.push({ art: 'ok', titel: 'Alle Tests bestanden', text: 'Dein Automat speichert seine Regeln in einer Tabelle und prüft Wörter nach den vier Regeln. Baue jetzt eigene Automaten im Hauptprogramm, z. B. mit dem Java-Export aus dem Automaten-Baukasten.' });
+            }
+            return liste;
+        }
+    };
+
+    // ===== 1.6 Projekt Automaten als Code =====
+    // Zählt case und break im Rumpf von zustandWechseln (fehlendes break = Durchfallen in den nächsten case)
+    function caseOhneBreak(code) {
+        var r = methode(code, 'void\\s+zustandWechseln\\s*\\(');
+        if (!r) return false;
+        var cases = (r.match(/\bcase\b/g) || []).length, breaks = (r.match(/\bbreak\s*;/g) || []).length;
+        return cases > 0 && breaks < cases;
+    }
+    REGELN['i13-16-automat-code'] = {
+        titel: 'Projekt Automaten als Code',
+        testDatei: 'DEATest.java',
+        tests: {
+            bezeichnerFertig: { titel: 'Bezeichner (fertig, Aufgabe 1)', hinweis: function () { return 'Die Klasse Bezeichner ist fertig. Hast du sie verändert? Lade sonst das Ausgangsprojekt neu.'; } },
+            ganzeZahlen: { titel: 'Ganze Zahlen werden weiter erkannt', hinweis: function () { return 'Die Pfeile Z0 → Z1 und die Schleife an Z1 dürfen nicht verloren gehen. Auch nach deiner Änderung muss 42 akzeptiert werden.'; } },
+            kommazahlenAkzeptiert: { titel: 'TODO 2a bis 2c: 3.14 und 0.5 akzeptiert', hinweis: function (c) {
+                var k = c.datei('Kommazahl.java');
+                if (!/'\.'/.test(ohneKommentare(k))) return 'TODO 2a: In case 1 fehlt noch der Pfeil mit dem Punkt. Bisher landet der Punkt im else-Zweig und damit in ZF. Wo muss ein weiterer Zweig hin?';
+                if (!/case\s+2\s*:/.test(ohneKommentare(k)) || !/case\s+3\s*:/.test(ohneKommentare(k))) return 'TODO 2b: Für Z2 und Z3 braucht zustandWechseln je einen eigenen case.';
+                return 'TODO 2c: Ist Z3 schon ein Endzustand? Schau in istEndzustand().'; } },
+            kommazahlenAbgelehnt: { titel: '3. und .5 und 1.2.3 abgelehnt', hinweis: function () { return 'Welche Zustände sind Endzustände? Z2 (nach dem Punkt, noch keine Nachkommastelle) darf keiner sein. Und nach Z3 darf kein zweiter Punkt mehr kommen.'; } },
+            hexzahlenAkzeptiert: { titel: 'TODO 3: 0x1F, 0xFF und 0x7 akzeptiert', hinweis: function (c) {
+                var r = methode(c.datei('Hexzahl.java'), 'void\\s+zustandWechseln\\s*\\(');
+                if (r !== null && !/\bcase\b/.test(r)) return 'TODO 3a: zustandWechseln ist noch leer. Lege für jeden Zustand deines Diagramms (ohne ZF) einen case an, wie in Kommazahl.';
+                return 'Folge 0x1F mit dem Finger durch dein Diagramm und vergleiche mit der Ausgabe von zeigeLauf. Und: Liefert istEndzustand() für Z3 schon true (TODO 3b)?'; } },
+            hexzahlenAbgelehnt: { titel: 'Keine Hexzahlen: 0x, 1F, 0x1G …', hinweis: function () { return 'Jeder Zustand braucht ein else, das in ZF führt. Und Z2 (nach 0x, noch keine Ziffer) ist kein Endzustand.'; } }
+        },
+        schritte: [
+            { titel: 'Aufgabe 1: Bezeichner (fertig)', tests: ['bezeichnerFertig'] },
+            { titel: 'Aufgabe 2: Kommazahlen (TODO 2a bis 2c)', tests: ['ganzeZahlen', 'kommazahlenAkzeptiert', 'kommazahlenAbgelehnt'] },
+            { titel: 'Aufgabe 3: Hexzahlen (TODO 3a, 3b)', tests: ['hexzahlenAkzeptiert', 'hexzahlenAbgelehnt'] }
+        ],
+        hinweise: function (c) {
+            var liste = [];
+            ['Kommazahl.java', 'Hexzahl.java'].forEach(function (d) {
+                var code = c.datei(d);
+                if (caseOhneBreak(code)) {
+                    liste.push({ art: 'warnung', titel: d + ': ein case ohne break', text: 'Ohne break; am Ende eines case läuft Java in den nächsten case weiter und überschreibt den neuen Zustand. Jeder case endet mit break;.' });
+                }
+                if (/zeichen\s*==\s*"|"\s*==\s*zeichen/.test(ohneKommentare(code))) {
+                    liste.push({ art: 'fehler', titel: d + ': Zeichen mit String verglichen', text: 'zeichen ist ein char. Vergleiche mit einem Zeichen in einfachen Anführungszeichen, z. B. zeichen == \'.\', nicht mit "." (String).' });
+                }
+            });
+            if (c.laeuftLange) {
+                liste.push({ art: 'warnung', titel: 'Das Programm läuft sehr lange', text: 'Läuft eine Schleife im Hauptprogramm endlos? zustandWechseln selbst enthält keine Schleife.' });
+            }
+            if (c.alleTestsGruen) {
+                liste.push({ art: 'ok', titel: 'Alle Tests bestanden', text: 'Deine Automaten stehen jetzt als Code in eigenen Unterklassen. Vergleiche mit der Übergangstabelle aus 1.5 (Aufgabe 4) oder probiere den Scanner aus dem Nachdenken-Teil.' });
             }
             return liste;
         }

@@ -5,6 +5,7 @@
  *        Simulator: Eingabeband mit Lesekopf und RZK, Zustände und Pfeile leuchten beim Lesen auf.
  *        „Selbst verfolgen“: Du klickst den nächsten Zustand (bei nichtdeterministischen Automaten
  *        einen Weg nach dem anderen). „Vorführen“: Schritt für Schritt oder als Animation.
+ *   <div data-automat-bild="option|…|bezeichner|kommazahl|hexzahl">  Lösungsbild in gestuften Hilfen (1.5, 1.6)
  *   <div data-automat-bau="option|wiederholung|smiley|zahlen|knobel|frei">
  *        Automaten-Baukasten: Zustände setzen, Pfeile ziehen, Übergangstabelle und Eigenschaften
  *        live, Wörter testen, Prüfstand mit Gegenbeispielsuche, Export als Java-Code fürs Projekt.
@@ -127,6 +128,7 @@
             var k = u.von + '>' + u.nach;
             if (!m[k]) { m[k] = { von: u.von, nach: u.nach, zeichen: [], key: k }; reihe.push(m[k]); }
             if (m[k].zeichen.indexOf(u.z) < 0) m[k].zeichen.push(u.z);
+            if (u.etikett) m[k].etikett = u.etikett;   // eigene Beschriftung (z. B. „Buchstabe“, „sonst“)
         });
         return reihe;
     }
@@ -190,7 +192,7 @@
             var p1 = (x - l * Math.cos(w) + b * Math.sin(w)) + ',' + (y - l * Math.sin(w) - b * Math.cos(w));
             var p2 = (x - l * Math.cos(w) - b * Math.sin(w)) + ',' + (y - l * Math.sin(w) + b * Math.cos(w));
             s('polygon', { points: x + ',' + y + ' ' + p1 + ' ' + p2, 'class': 'au-spitze' }, e);
-            var text = beschriftung(gr.zeichen, alph);
+            var text = gr.etikett || beschriftung(gr.zeichen, alph);
             var tb = Math.max(14, text.length * 8 + 6);
             s('rect', { x: geo.lx - tb / 2, y: geo.ly - 13, width: tb, height: 17, rx: 4, 'class': 'au-label-grund' }, e);
             s('text', { x: geo.lx, y: geo.ly, 'text-anchor': 'middle', 'class': 'au-label' }, e, text);
@@ -1004,7 +1006,21 @@
             });
             a.schleife.ZF = 0;
             return a;
-        })()
+        })(),
+        // 1.6 Automaten programmieren: Zeichenklassen als Beschriftung (etikett), ZF wie im Code
+        bezeichner: { alphabet: 'bsa', zustaende: [{ n: 'Z0', x: 60, y: 90, start: true }, { n: 'Z1', x: 270, y: 90, ende: true }, { n: 'ZF', x: 165, y: 200 }],
+                      ue: [{ von: 'Z0', nach: 'Z1', z: 'b', etikett: 'Buchstabe' }, { von: 'Z1', nach: 'Z1', z: 'b', etikett: 'Buchstabe, Ziffer' },
+                           { von: 'Z0', nach: 'ZF', z: 's', etikett: 'sonst' }, { von: 'Z1', nach: 'ZF', z: 's', etikett: 'sonst' },
+                           { von: 'ZF', nach: 'ZF', z: 'a', etikett: 'alle' }],
+                      schleife: { ZF: 0 } },
+        kommazahl: { alphabet: '0123456789.', zustaende: [{ n: 'Z0', x: 60, y: 90, start: true }, { n: 'Z1', x: 190, y: 90, ende: true }, { n: 'Z2', x: 320, y: 90 }, { n: 'Z3', x: 450, y: 90, ende: true }],
+                     ue: [].concat.apply([], '0123456789'.split('').map(function (c) {
+                         return [{ von: 'Z0', nach: 'Z1', z: c }, { von: 'Z1', nach: 'Z1', z: c }, { von: 'Z2', nach: 'Z3', z: c }, { von: 'Z3', nach: 'Z3', z: c }];
+                     })).concat([{ von: 'Z1', nach: 'Z2', z: '.' }]) },
+        hexzahl: { alphabet: '0123456789xABCDEF', zustaende: [{ n: 'Z0', x: 60, y: 90, start: true }, { n: 'Z1', x: 190, y: 90 }, { n: 'Z2', x: 320, y: 90 }, { n: 'Z3', x: 450, y: 90, ende: true }],
+                   ue: [{ von: 'Z0', nach: 'Z1', z: '0' }, { von: 'Z1', nach: 'Z2', z: 'x' }].concat([].concat.apply([], '0123456789ABCDEF'.split('').map(function (c) {
+                       return [{ von: 'Z2', nach: 'Z3', z: c }, { von: 'Z3', nach: 'Z3', z: c }];
+                   }))) }
     };
     function loesungsbild(box) {
         if (box._fertig) return;

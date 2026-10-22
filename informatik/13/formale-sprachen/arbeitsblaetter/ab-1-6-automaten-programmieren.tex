@@ -1,0 +1,172 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+% Blatt:   tectonic ab-1-6-automaten-programmieren.tex
+% Lösung:  tectonic ab-1-6-automaten-programmieren-lsg.tex
+% Progression: fertigen Automaten als Code lesen (Code -> Diagramm, Pfeil = Zeile)
+%              -> Merkkasten „Automat als Code“ (Zustand, switch/if, Fangzustand, Oberklasse DEA)
+%              -> Verändern: Kommazahl um zwei Zustände erweitern (nur die Schlüsselstellen auf dem Blatt)
+%              -> Selbst bauen: Hexzahlen (Diagramm auf dem Blatt, Code im Projekt)
+%              -> Vergleich mit der Übergangstabelle aus 1.5
+% Projekt: Online-IDE/13-1-6 Automaten programmieren.json, TODO-Nummern = Aufgabennummern.
+\newcommand{\zeile}{\rule[-2.4mm]{0pt}{7.5mm}}
+\tikzset{
+  aut/.style={x=1mm,y=1mm,>={Stealth[length=1.5mm,width=1.2mm]},font=\small,line width=0.55pt},
+  zst/.style={circle,draw,line width=0.6pt,fill=blue!7,minimum size=6.4mm,inner sep=0pt,font=\small},
+  ezst/.style={zst,double,double distance=0.9pt},
+  ue/.style={font=\small,inner sep=0.8pt},
+}
+\newcommand{\startpfeil}[1]{\draw[<-] (#1.west) -- ++(-8,0) node[pos=0.55,above=-0.3mm,font=\scriptsize]{Start};}
+% Karofläche mit vorgegebener Zeichnung (immer sichtbar) und Lösungszeichnung (nur in der Lösung):
+% \karomit{Karozeilen}{vorgegeben}{Lösung}; Koordinaten in mm, Ursprung links oben, y nach unten negativ
+\newcommand{\karomit}[3]{\par\vspace{1mm}\noindent\begin{tikzpicture}
+  \draw[step=5mm,gray!45,thin] (0,0) grid (\linewidth-1pt,#1*5mm);
+  \useasboundingbox (0,0) rectangle (\linewidth-1pt,#1*5mm);
+  \begin{scope}[aut,shift={(0,#1*5mm)}]#2\end{scope}
+  \ifloesung\begin{scope}[aut,shift={(0,#1*5mm)},lsgbild]#3\end{scope}\fi
+\end{tikzpicture}\par}
+\begin{document}
+\abtitel{1.6}{Endliche Automaten programmieren}
+
+In 1.5 stand der Automat in einer \textbf{Übergangstabelle}, also in Daten. Hier steckt er direkt im
+\textbf{Programmcode}. Beispiel: Ein Compiler muss Namen (Bezeichner) wie \code{zahl2} erkennen, vereinfacht:
+\code{Bezeichner = Buchstabe \{Buchstabe | Ziffer\}.}
+
+\begin{aufgabe}[Code lesen: der Bezeichner-Automat]{1}
+\begin{minipage}[t]{0.53\linewidth}
+\vspace{0pt}
+\begin{java}[basicstyle=\ttfamily\fontsize{8.6}{10.2}\selectfont,numbers=left,xleftmargin=5mm,framexleftmargin=1mm]
+public void zustandWechseln(char zeichen) {
+   switch (zustand) {
+      case 0:
+         if (Character.isLetter(zeichen)) {
+            zustand = 1;
+         } else {
+            zustand = ZF;
+         }
+         break;
+      case 1:
+         if (Character.isLetterOrDigit(zeichen)) {
+            zustand = 1;
+         } else {
+            zustand = ZF;
+         }
+         break;
+      default:
+         zustand = ZF;
+   }
+}
+public boolean istEndzustand() {
+   return zustand == 1;
+}
+\end{java}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.44\linewidth}
+\vspace{0pt}\raggedright
+\textbf{a)} Zeichne das Zustandsübergangsdiagramm, das im Code steckt, \emph{mit} Fangzustand ZF.
+\karolsg{6}{
+  \node[zst,fill=red!5] (A) at (10,-11) {Z0}; \node[ezst,fill=red!5] (B) at (46,-11) {Z1}; \node[zst,fill=red!5] (F) at (28,-25) {ZF};
+  \draw[<-] (A.north) -- ++(0,5) node[right,font=\scriptsize]{Start};
+  \draw[->] (A) -- node[above,ue,font=\scriptsize]{Buchstabe} (B);
+  \draw[->] (B) to[out=60,in=120,looseness=6] node[above,ue,font=\scriptsize]{Buchst., Ziffer} (B);
+  \draw[->] (A) -- node[left,ue,font=\scriptsize]{sonst} (F);
+  \draw[->] (B) -- node[right,ue,font=\scriptsize]{sonst} (F);
+  \draw[->] (F) to[out=-30,in=30,looseness=5] node[right,ue,font=\scriptsize]{alle} (F);
+}
+\textbf{b)} Zustandsfolge und Ergebnis:\\[0.8mm]
+{\renewcommand{\arraystretch}{1}\small
+\begin{tabularx}{\linewidth}{|l|X|l|}\hline
+\code{zahl2}\zeile & \lsgoder{\lsgfarbe Z0 Z1 Z1 Z1 Z1 Z1}{} & \lsgoder{\lsgfarbe ja}{\phantom{nein}}\\\hline
+\code{2zahl}\zeile & \lsgoder{\lsgfarbe Z0 ZF ZF ZF ZF ZF}{} & \lsgoder{\lsgfarbe nein}{}\\\hline
+\eps\zeile & \lsgoder{\lsgfarbe Z0}{} & \lsgoder{\lsgfarbe nein}{}\\\hline
+\end{tabularx}}\\[1.5mm]
+\textbf{c)} In welcher Zeile steht der Pfeil …\\[0.8mm]
+{\renewcommand{\arraystretch}{1}\small
+\begin{tabularx}{\linewidth}{|X|X|X|X|}\hline
+Z0 $\to$ Z1 & Z1 $\to$ Z1 & Z1 $\to$ ZF & ZF $\to$ ZF\\\hline
+\lsgoder{\lsgfarbe 5}{}\zeile & \lsgoder{\lsgfarbe 12}{} & \lsgoder{\lsgfarbe 14}{} & \lsgoder{\lsgfarbe 18}{}\\\hline
+\end{tabularx}}
+\end{minipage}
+\end{aufgabe}
+
+\begin{merke}[Einen Automaten als Code programmieren]
+\lueckentext
+\textbf{Zustand:} Das Attribut \code{zustand} merkt sich, wo der Automat gerade steht (0 für Z0, 1 für Z1, …).\\
+\textbf{Übergänge:} \code{zustandWechseln(zeichen)} unterscheidet zuerst nach dem \lsg[5.25cm]{aktuellen Zustand} (\code{switch}: je Zustand ein \code{case}), dann nach dem \lsg[5.25cm]{gelesenen Zeichen} (\code{if}). Jeder \lsg[5.25cm]{Pfeil} wird genau eine Anweisung \code{zustand = …;}\\
+\textbf{Kein passender Pfeil:} Der \code{else}-Zweig führt in den \lsg[5.25cm]{Fangzustand ZF}, der \code{default}-Zweig sorgt dafür, dass ZF \lsg[5.25cm]{nie verlassen wird}.\\
+\textbf{Endzustände:} \code{istEndzustand()} vergleicht \code{zustand} mit allen \lsg[5.25cm]{Endzuständen}.\\[1mm]
+\begin{minipage}[t]{0.47\linewidth}
+\vspace{0pt}
+{\small Gegeben: abstrakte Oberklasse \code{DEA}}
+\begin{java}[basicstyle=\ttfamily\fontsize{8.6}{10.2}\selectfont,aboveskip=0.5mm,belowskip=0mm]
+public boolean pruefe(String wort) {
+   zustand = 0;                              // (*\nr{1}*)
+   for (int i = 0; i < wort.length(); i++) { // (*\nr{3}*)
+      zustandWechseln(wort.charAt(i));       // (*\nr{2}*)
+   }
+   return istEndzustand();                   // (*\nr{4}*)
+}
+\end{java}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.5\linewidth}
+\vspace{4mm}\lueckentext
+\code{pruefe} ist für \lsg[5.25cm]{alle Automaten gleich} und steht deshalb in der Oberklasse \code{DEA}. Jede Unterklasse legt nur die \lsg[3.9cm]{Übergänge} und die \lsg[3.9cm]{Endzustände} fest.
+\end{minipage}
+\end{merke}
+
+\newpage
+\begin{aufgabe}[Verändern: Kommazahlen \normalfont(Projekt: TODO 2)]{2}
+\code{Kommazahl} erkennt bisher nur ganze Zahlen wie \code{42}. Künftig sollen auch \code{3.14} und \code{0.5} akzeptiert
+werden, \code{3.} und \code{.5} nicht. \textbf{a)} Ergänze das Diagramm um Z2 und Z3 (fehlende Pfeile führen in ZF).
+\karomit{4}{
+  \node[zst] (A) at (14,-13) {Z0}; \node[ezst] (B) at (44,-13) {Z1};
+  \startpfeil{A}
+  \draw[->] (A) -- node[above,ue]{0–9} (B);
+  \draw[->] (B) to[out=60,in=120,looseness=6] node[above,ue]{0–9} (B);
+}{
+  \node[zst,fill=red!5] (C) at (80,-13) {Z2}; \node[ezst,fill=red!5] (D) at (116,-13) {Z3};
+  \draw[->] (44,-13) ++(3.4,0) -- node[above,ue]{\Large\textbf{.}} (C);
+  \draw[->] (C) -- node[above,ue]{0–9} (D);
+  \draw[->] (D) to[out=60,in=120,looseness=6] node[above,ue]{0–9} (D);
+}
+\textbf{b)} Ergänze im \code{case 1} den Pfeil Z1 $\to$ Z2 (TODO 2a). Die Fälle für Z2 und Z3 programmierst du im Projekt (TODO 2b).
+\begin{javaluecke}[aboveskip=1mm,belowskip=1mm]
+   if (Character.isDigit(zeichen)) {
+      zustand = 1;
+   } (*\lsg[6.75cm]{\ttfamily else if (zeichen == '.') \{}*)
+        (*\lsg[6.75cm]{\ttfamily zustand = 2;}*)
+   } else {
+      zustand = ZF;
+   }
+\end{javaluecke}
+\lueckentext
+\textbf{c)} TODO 2c: \code{istEndzustand()} liefert \code{return} \lsg[6.75cm]{\code{zustand == 1 || zustand == 3}}\code{;}\\
+\textbf{d)} \code{3.} landet nie in ZF und wird trotzdem abgelehnt. Warum? \lsgrest{Es endet in Z2, kein Endzustand (Regel \nr{4}).}
+\end{aufgabe}
+\begin{aufgabe}[Selbst bauen: Hexadezimalzahlen \normalfont(Projekt: TODO 3)]{3}
+In Java schreibt man Hexzahlen mit \code{0x} davor, z.\,B. \code{0x1F} (= 31) oder \code{0xFF} (= 255):\\[0.5mm]
+\hspace*{4mm}\code{Hexzahl = "0" "x" HexZiffer \{HexZiffer\}.}\\
+\hspace*{4mm}\code{HexZiffer = "0" | … | "9" | "A" | … | "F".}\\[0.8mm]
+\textbf{a)} Zeichne den deterministischen Automaten (ohne ZF). \textbf{b)} Programmiere ihn im Projekt (\code{Hexzahl}).
+\karolsg{4}{
+  \node[zst,fill=red!5] (A) at (14,-13) {Z0}; \node[zst,fill=red!5] (B) at (44,-13) {Z1};
+  \node[zst,fill=red!5] (C) at (74,-13) {Z2}; \node[ezst,fill=red!5] (D) at (110,-13) {Z3};
+  \draw[<-] (A.west) -- ++(-8,0) node[pos=0.55,above=-0.3mm,font=\scriptsize]{Start};
+  \draw[->] (A) -- node[above,ue]{0} (B);
+  \draw[->] (B) -- node[above,ue]{x} (C);
+  \draw[->] (C) -- node[above,ue]{0–9, A–F} (D);
+  \draw[->] (D) to[out=60,in=120,looseness=6] node[above,ue]{0–9, A–F} (D);
+}
+\lueckentext
+\textbf{c)} Anzahl der \code{case}-Zweige (ohne \code{default}): \lsg[2.25cm]{4}\quad \code{istEndzustand()}: \code{return} \lsgrest{\code{zustand == 3;}}
+\end{aufgabe}
+
+\begin{aufgabe}[Vergleichen: Tabelle (Projekt 1.5) oder Code (Projekt 1.6)?]{4}
+{\renewcommand{\arraystretch}{1.05}\small
+\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{3.6cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}\hline
+ & \textbf{Übergangstabelle (1.5)} & \textbf{Code (1.6)}\\\hline
+Wo stehen die Pfeile?\rule[-5mm]{0pt}{12mm} & \lsgoder{\lsgfarbe in Daten: im Feld \code{tabelle}, gefüllt durch Aufrufe im Hauptprogramm}{} & \lsgoder{\lsgfarbe im Programmtext: in \code{zustandWechseln} einer Unterklasse}{}\\\hline
+Was tun für einen neuen Automaten?\rule[-5mm]{0pt}{12mm} & \lsgoder{\lsgfarbe nur neue Aufrufe (\code{uebergangHinzufuegen} …); die Klasse bleibt gleich}{} & \lsgoder{\lsgfarbe eine neue Unterklasse von \code{DEA} schreiben}{}\\\hline
+Ein Pfeil für alle Buchstaben?\rule[-5mm]{0pt}{12mm} & \lsgoder{\lsgfarbe je Zeichen eine Spalte: über 50 Spalten nur für Buchstaben}{} & \lsgoder{\lsgfarbe eine einzige Bedingung: \code{Character.isLetter(zeichen)}}{}\\\hline
+\end{tabularx}}
+\end{aufgabe}
+\end{document}
