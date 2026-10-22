@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Übung zur 1. Schulaufgabe: Formale Sprachen | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Übungsaufgaben zur 1. Schulaufgabe Informatik 13: Grundwissen, Syntax und Semantik, Grammatiken (EBNF, Syntaxdiagramme, Ableitung), endliche Automaten (deterministisch, nichtdeterministisch, Fangzustand), Implementierung und eine abiturnahe Aufgabe – mit Werkzeugen, Prüfständen und gestuften Lösungen.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/include/online-ide-embedded.css">
+    <script type="module" src="https://edu-mrh.de/embed/include/online-ide-embedded.js"></script>
+    <link rel="stylesheet" href="formale-sprachen.css">
+    <script defer src="formale-sprachen.js"></script>
+    <script defer src="grammatik.js"></script>
+    <script defer src="automaten.js"></script>
+    <script defer src="ide-coach.js"></script>
+    <style>
+        .ue-kopf { display: flex; flex-wrap: wrap; gap: .4rem .8rem; align-items: baseline; margin: 1.2rem 0 .3rem; }
+        .ue-kopf h3 { margin: 0; font-size: 1.12rem; color: var(--fs-primary-dark); }
+        .sterne { color: #d97706; letter-spacing: .1em; font-size: .95rem; white-space: nowrap; }
+        .be { font-weight: 700; white-space: nowrap; }
+        .aufgaben li .sterne { margin-left: .3rem; }
+        .regeln { font-family: var(--font-mono, ui-monospace, monospace); background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: .7rem 1rem; overflow-x: auto; white-space: pre; line-height: 1.6; }
+        .operatoren td:first-child { font-weight: 700; white-space: nowrap; }
+        .checkliste li { margin: .25rem 0; }
+        .kontext { background: #f8fafc; border-left: 5px solid var(--fs-primary, #0f766e); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; margin: .8rem 0; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🔗</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="../../informatik.html#jahrgang-13" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Übung Schulaufgabe 1</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#start">🧭 So arbeitest du</a></li>
+            <li><a href="#grundwissen">🧱 Grundwissen</a></li>
+            <li><a href="#sprachen">🔤 Sprachen, Syntax, Semantik</a></li>
+            <li><a href="#grammatik">♟️ Grammatiken</a></li>
+            <li><a href="#rekursion">📁 Rekursion und Grenzen</a></li>
+            <li><a href="#automaten">🅿️ Automaten lesen</a></li>
+            <li><a href="#nea">🔀 Nichtdeterminismus</a></li>
+            <li><a href="#bauen">🛠️ Automaten entwickeln</a></li>
+            <li><a href="#implementierung">☕ Implementierung</a></li>
+            <li><a href="#abitur">🎓 Abiturnahe Aufgabe</a></li>
+            <li><a href="#checkliste">✅ Checkliste</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Formale Sprachen</div>
+            <ul class="sidebar-menu">
+                <li><a href="../../informatik.html#jahrgang-13">Übersicht Klasse 13</a></li>
+                <li><a href="1-1-syntax-semantik.html">1.1 Syntax und Semantik</a></li>
+                <li><a href="1-2-formale-sprachen.html">1.2 Formale Sprachen</a></li>
+                <li><a href="1-3-syntaxdiagramme.html">1.3 Syntaxdiagramme</a></li>
+                <li><a href="1-4-ebnf.html">1.4 Die EBNF</a></li>
+                <li><a href="1-5-endliche-automaten.html">1.5 Endliche Automaten</a></li>
+                <li><a href="1-6-automaten-programmieren.html">1.6 Automaten programmieren</a></li>
+                <li><a href="uebung-schulaufgabe-1.html">Übung zur Schulaufgabe</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero fs-hero">
+                <h1 class="hero-title">Übung zur 1. Schulaufgabe</h1>
+                <p class="hero-subtitle">Formale Sprachen · Informatik 13 · Stationen 1.1 bis 1.6</p>
+                <span class="fs-kompetenz">Hier übst du alle Aufgabentypen rund um formale Sprachen und endliche Automaten, dazu eine abiturnahe Aufgabe. Es gibt mehr Aufgaben als in einer Schulaufgabe: Wer hier sicher ist, ist auf alles vorbereitet.</span>
+                <div class="fs-actions">
+                    <a class="btn btn-outline" href="#checkliste">✅ zur Checkliste</a>
+                    <a class="btn btn-outline" href="#abitur">🎓 zur abiturnahen Aufgabe</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-note" href="#start">🧭 Start</a><a class="p-investigate" href="#grundwissen">🧱 Grundwissen</a><a class="p-predict" href="#sprachen">🔤 Sprachen</a><a class="p-modify" href="#grammatik">♟️ Grammatiken</a><a class="p-idee" href="#rekursion">📁 Rekursion</a><a class="p-investigate" href="#automaten">🅿️ Automaten</a><a class="p-predict" href="#nea">🔀 NEA</a><a class="p-make" href="#bauen">🛠️ Entwickeln</a><a class="p-modify" href="#implementierung">☕ Code</a><a class="p-ausblick" href="#abitur">🎓 Abitur</a>
+            </div>
+
+            <!-- ===================================================== Start -->
+            <section id="start" class="phase note">
+                <div class="phase-head"><span class="phase-icon">🧭</span><h2>So arbeitest du<small>Aufgaben wie in Schulaufgabe und Abitur</small></h2></div>
+                <div class="phase-body">
+                    <p>Die Aufgaben sind so formuliert wie in Schulaufgabe und Abitur: in der Sie-Form, mit einem <strong>Operator</strong>, der sagt, was verlangt ist, und mit <strong>Bewertungseinheiten (BE)</strong>. Die Sterne zeigen die Schwierigkeit: <span class="sterne">★</span> Grundlagen, <span class="sterne">★★</span> Anwenden, <span class="sterne">★★★</span> knifflig. Löse zuerst auf Papier und schau dann in die Hilfen. Tipps blenden sich mit einem Klick ein, die Lösung erst nach Gedrückthalten.</p>
+                    <div class="tab-scroll">
+                        <table class="operatoren">
+                            <tr><th>Operator</th><th>Was du lieferst</th></tr>
+                            <tr><td>Geben Sie … an, Nennen Sie</td><td>nur das Ergebnis, ohne Begründung (außer es wird verlangt: „mit kurzer Begründung“)</td></tr>
+                            <tr><td>Bestimmen Sie</td><td>Ergebnis mit erkennbarem Weg, z. B. die Folge der Zustände</td></tr>
+                            <tr><td>Prüfen Sie</td><td>Entscheidung (gültig oder nicht) und bei „nein“ die verletzte Regel</td></tr>
+                            <tr><td>Beschreiben Sie</td><td>in eigenen Worten mit Fachbegriffen, z. B. welche Wörter zu einer Sprache gehören</td></tr>
+                            <tr><td>Erklären Sie, Erläutern Sie</td><td>nachvollziehbar machen, warum etwas so ist; „erläutern“ zusätzlich mit Beispiel</td></tr>
+                            <tr><td>Begründen Sie</td><td>eine Aussage auf Regeln oder Eigenschaften zurückführen („weil …“)</td></tr>
+                            <tr><td>Zeichnen Sie</td><td>vollständig: Startpfeil, Endzustände doppelt, alle Pfeile beschriftet; Terminale rund, Nichtterminale eckig</td></tr>
+                            <tr><td>Entwickeln Sie, Implementieren Sie</td><td>selbst eine Grammatik, einen Automaten oder Code erstellen</td></tr>
+                            <tr><td>Deuten Sie</td><td>sagen, was etwas im Sachzusammenhang bedeutet, z. B. wofür ein Zustand steht</td></tr>
+                            <tr><td>Beurteilen Sie</td><td>ein eigenes Urteil mit Gründen dafür und dagegen</td></tr>
+                        </table>
+                    </div>
+                    <div class="tipp"><strong>Bei Automaten:</strong> Steht „Ein Fangzustand ist nicht nötig“, lässt du ihn weg; jeder fehlende Pfeil bedeutet dann Abbruch. Wird ein <em>vollständiger</em> Automat verlangt, gehört der Fangzustand dazu. Ein deterministischer Automat hat in jedem Zustand für jedes Zeichen <em>höchstens einen</em> Pfeil.</div>
+                </div>
+            </section>
+
+            <!-- ===================================================== Grundwissen -->
+            <section id="grundwissen" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🧱</span><h2>Grundwissen<small>Wiederholen mit dem Grundwissensblatt</small></h2></div>
+                <div class="phase-body">
+                    <p>In jeder Schulaufgabe steht eine Grundwissensaufgabe am Anfang. Sie kann aus jedem Thema der Jahrgangsstufen 6 bis 12 kommen. Wiederhole dazu dein <strong>Grundwissensblatt</strong> vom Beginn der 13. Klasse: Teil A (Grundwissen 6 bis 11) und Teil B (die Übersichtsaufgaben zu Jahrgangsstufe 12).</p>
+                </div>
+            </section>
+
+            <!-- ===================================================== Sprachen -->
+            <section id="sprachen" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔤</span><h2>Sprachen, Syntax, Semantik<small>Bestellcodes am Schulkiosk (Teil 1 von 3)</small></h2></div>
+                <div class="phase-body">
+                    <div class="kontext">
+                        <p><strong>Bestellcodes am Schulkiosk.</strong> Am Bildschirm des Schulkiosks bestellt man mit einem Code. Ein <strong>Posten</strong> besteht aus einer Anzahl von 2 bis 9 und einem Artikel; fehlt die Anzahl, ist ein Stück gemeint. Artikel: <code>B</code> Breze, <code>S</code> Semmel, <code>K</code> Kakao, <code>A</code> Apfel. Mehrere Posten werden mit <code>+</code> verbunden, ohne Leerzeichen. Beispiel: <code>3S+K</code> heißt drei Semmeln und ein Kakao.</p>
+                    </div>
+                    <ol class="aufgaben">
+                        <li><span class="be">(1 BE)</span> <span class="sterne">★</span> Geben Sie das Alphabet der Bestellcodes sowie die Länge des Worts <code>3S+2K+A</code> an.</li>
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★★</span> Bestimmen Sie, wie viele Wörter der Länge 2 es über diesem Alphabet gibt und wie viele davon gültige Bestellcodes sind.</li>
+                        <li><span class="be">(1 BE)</span> <span class="sterne">★★</span> Begründen Sie, ob die Sprache der Bestellcodes endlich oder unendlich ist.</li>
+                        <li><span class="be">(3 BE)</span> <span class="sterne">★</span> Jemand möchte <strong>zwei Brezen und einen Kakao</strong> bestellen. Entscheiden Sie für jeden Code, ob er korrekt ist, einen Syntaxfehler oder einen Semantikfehler enthält, und begründen Sie Fehler kurz. Prüfe dich hier:</li>
+                    </ol>
+                    <div class="werk">
+                        <ul class="detektiv" data-detektiv>
+                            <li data-loesung="korrekt" data-gebiet="Bestellung"><span class="ausdruck">2B+K</span><span class="erkl-text">Genau das Gewünschte.</span></li>
+                            <li data-loesung="korrekt" data-gebiet="Bestellung"><span class="ausdruck">B+B+K</span><span class="erkl-text">Anders geschrieben, aber dieselbe Bestellung: zweimal eine Breze, ein Kakao.</span></li>
+                            <li data-loesung="korrekt" data-gebiet="Bestellung"><span class="ausdruck">K+2B</span><span class="erkl-text">Die Reihenfolge der Posten ändert nichts an der Bestellung.</span></li>
+                            <li data-loesung="semantik" data-gebiet="Bestellung"><span class="ausdruck">2K+B</span><span class="erkl-text">Richtig aufgebaut, aber es kommen zwei Kakao und eine Breze.</span></li>
+                            <li data-loesung="syntax" data-gebiet="Bestellung"><span class="ausdruck">2B+K+</span><span class="erkl-text">Nach dem letzten + fehlt ein Posten.</span></li>
+                            <li data-loesung="syntax" data-gebiet="Bestellung"><span class="ausdruck">B2+K</span><span class="erkl-text">Die Anzahl steht vor dem Artikel, nicht dahinter.</span></li>
+                            <li data-loesung="syntax" data-gebiet="Bestellung"><span class="ausdruck">1B+1B+K</span><span class="erkl-text">Die Anzahl 1 ist nicht vorgesehen (nur 2 bis 9, sonst gar keine Zahl).</span></li>
+                            <li data-loesung="semantik" data-gebiet="Bestellung"><span class="ausdruck">2B+2K</span><span class="erkl-text">Gültig, aber zwei Kakao statt einem.</span></li>
+                            <li data-loesung="syntax" data-gebiet="Bestellung"><span class="ausdruck">2b+K</span><span class="erkl-text">Kleines b gehört nicht zum Alphabet.</span></li>
+                        </ul>
+                    </div>
+                    <ol class="aufgaben" start="5" style="counter-reset: aufg 4">
+                        <li><span class="be">(1 BE)</span> <span class="sterne">★★</span> Der Kiosk prüft jeden Code, bevor er die Bestellung annimmt. Erklären Sie, warum er bei <code>2K+B</code> trotzdem nicht merkt, dass etwas falsch ist.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Sprachen">
+                        <template data-stufe="Tipp a, b"><p>Das Alphabet enthält jedes Zeichen, das in einem Code vorkommen kann, also auch das <code>+</code>. Bei <em>k</em> Zeichen gibt es <em>k</em>² Wörter der Länge 2. Gültig mit zwei Zeichen ist nur „Anzahl, dann Artikel“.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) A = {2, 3, …, 9, B, S, K, A, +} mit 13 Zeichen; |<code>3S+2K+A</code>| = 7. b) 13² = 169 Wörter, davon gültig 8 · 4 = 32 (eine Anzahl 2 bis 9 und ein Artikel). c) Unendlich: Posten dürfen beliebig oft mit + angehängt werden (<code>B</code>, <code>B+B</code>, <code>B+B+B</code>, …). d) siehe Detektiv. e) Der Kiosk prüft nur die Syntax, also ob der Code nach den Regeln gebaut ist. <code>2K+B</code> ist gültig; was gemeint war (Semantik), kann er nicht wissen.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================================================== Grammatik -->
+            <section id="grammatik" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">♟️</span><h2>Grammatiken<small>Schachzüge notieren</small></h2></div>
+                <div class="phase-body">
+                    <div class="kontext">
+                        <p><strong>Schachnotation (vereinfacht).</strong> Ein Zug wird so notiert: Figur (<code>K</code> König, <code>D</code> Dame, <code>T</code> Turm, <code>L</code> Läufer, <code>S</code> Springer), bei einem Schlagzug ein <code>x</code>, dann das Zielfeld aus Linie <code>a</code> bis <code>h</code> und Reihe <code>1</code> bis <code>8</code>, z. B. <code>Sf3</code> oder <code>Lxe5</code>. Bauern haben keinen Buchstaben; schlägt ein Bauer, steht seine Linie davor: <code>e4</code>, <code>exd5</code>. Die Rochaden heißen <code>O-O</code> und <code>O-O-O</code>.</p>
+                    </div>
+<div class="regeln">R1  Zug = Figurzug | Bauernzug | Rochade.
+R2  Figurzug = Figur ["x"] Feld.
+R3  Bauernzug = [Linie "x"] Feld.
+R4  Rochade = "O-O" ["-O"].
+R5  Feld = Linie Reihe.
+R6  Figur = "K" | "D" | "T" | "L" | "S".
+R7  Linie = "a" | "b" | … | "h".
+R8  Reihe = "1" | "2" | … | "8".</div>
+                    <ol class="aufgaben">
+                        <li><span class="be">(1 BE)</span> <span class="sterne">★</span> Geben Sie das Startsymbol, drei Nichtterminale und drei Terminale der Grammatik an.</li>
+                        <li><span class="be">(3 BE)</span> <span class="sterne">★</span> Prüfen Sie, ob die folgenden Wörter Züge im Sinne der Grammatik sind. Begründen Sie bei ungültigen Wörtern: <code>Sf3</code>, <code>exd5</code>, <code>Lxb9</code>, <code>Kxx3</code>, <code>O-O-O</code>, <code>Sg1f3</code>.</li>
+                        <li><span class="be">(3 BE)</span> <span class="sterne">★★</span> Zeichnen Sie die Syntaxdiagramme zu R1, R2 und R3.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Grammatik a bis c">
+                        <template data-stufe="Tipp b"><p>Fahre jedes Wort durch die Regeln: Welcher Zweig von R1 passt zum ersten Zeichen? Ein Großbuchstabe außer O führt zu R2, ein Kleinbuchstabe zu R3.</p></template>
+                        <template data-stufe="Tipp c"><p>R1 ist eine Alternative mit drei Zweigen. In R2 und R3 steckt je eine Option: Ein Zweig überspringt das optionale Stück. In R3 umfasst die Option zwei Felder: <code>Linie</code> und <code>"x"</code>.</p></template>
+                        <template data-stufe="Lösung" data-halten>
+                            <p>a) Startsymbol Zug; Nichtterminale z. B. Figurzug, Feld, Reihe; Terminale z. B. <code>K</code>, <code>x</code>, <code>O-O</code>. b) <code>Sf3</code> gültig · <code>exd5</code> gültig (Bauer schlägt) · <code>Lxb9</code> ungültig: Reihe 9 gibt es nicht (R8) · <code>Kxx3</code> ungültig: nach dem x muss ein Feld folgen, also Linie a–h · <code>O-O-O</code> gültig · <code>Sg1f3</code> ungültig: Ein Startfeld ist nicht vorgesehen, nach <code>Sg1</code> ist der Zug zu Ende.</p>
+                            <div data-diagramm data-ebnf="Zug = Figurzug | Bauernzug | Rochade. Figurzug = Figur [&quot;x&quot;] Feld. Bauernzug = [Linie &quot;x&quot;] Feld."></div>
+                        </template>
+                    </div>
+
+                    <ol class="aufgaben" start="4" style="counter-reset: aufg 3">
+                        <li><span class="be">(3 BE)</span> <span class="sterne">★★</span> In einem Partieprotokoll stehen Zeilen wie <code>1.e4 e5</code> oder <code>12.Sf3</code>. Die folgenden Syntaxdiagramme legen sie fest. Geben Sie die Regeln in EBNF an.</li>
+                    </ol>
+                    <div data-diagramm data-ebnf="Zeile = Nummer &quot;.&quot; Zug [&quot; &quot; Zug]. Nummer = ZifferOhneNull {Ziffer}. Ziffer = &quot;0&quot; | ZifferOhneNull."></div>
+                    <div class="lw" data-loesungsweg="Grammatik d">
+                        <template data-stufe="Tipp"><p>Lies jedes Diagramm wie ein Gleisnetz von links nach rechts: Was muss man durchfahren, was kann man umfahren (Option <code>[ ]</code>), wo kann man im Kreis fahren (Wiederholung <code>{ }</code>)? Zeichen in runden Feldern kommen in Anführungszeichen.</p></template>
+                        <template data-stufe="Lösung" data-halten><p><code>Zeile = Nummer "." Zug [" " Zug].</code><br><code>Nummer = ZifferOhneNull {Ziffer}.</code><br><code>Ziffer = "0" | ZifferOhneNull.</code><br>Beim Leerzeichen genügt auch <code>"␣"</code>. <code>0.e4</code> ist ungültig, weil eine Nummer nicht mit 0 beginnt.</p></template>
+                    </div>
+
+                    <ol class="aufgaben" start="5" style="counter-reset: aufg 4">
+                        <li><span class="be">(3 BE)</span> <span class="sterne">★★</span> Leiten Sie das Wort <code>Lxe5</code> schrittweise ab und zeichnen Sie den Ableitungsbaum. Unten kannst du die Ableitung nachspielen: Klicke ein Nichtterminal an und wähle die passende rechte Seite.</li>
+                    </ol>
+                    <div class="werk" data-ableitung data-ziel="Lxe5" data-ebnf="Zug = Figurzug | Bauernzug | Rochade. Figurzug = Figur [&quot;x&quot;] Feld. Bauernzug = [Linie &quot;x&quot;] Feld. Rochade = &quot;O-O&quot; [&quot;-O&quot;]. Feld = Linie Reihe. Figur = &quot;K&quot; | &quot;D&quot; | &quot;T&quot; | &quot;L&quot; | &quot;S&quot;. Linie = &quot;a&quot; | … | &quot;h&quot;. Reihe = &quot;1&quot; | … | &quot;8&quot;."></div>
+                    <div class="lw" data-loesungsweg="Grammatik e">
+                        <template data-stufe="Lösung" data-halten><p><code>Zug</code> ⇒(R1) <code>Figurzug</code> ⇒(R2) <code>Figur "x" Feld</code> ⇒(R6) <code>"L" "x" Feld</code> ⇒(R5) <code>"L" "x" Linie Reihe</code> ⇒(R7) <code>"L" "x" "e" Reihe</code> ⇒(R8) <code>"L" "x" "e" "5"</code>.</p>
+<pre class="jv">           Zug
+            |
+        Figurzug
+      /     |     \
+  Figur    "x"    Feld
+    |            /    \
+   "L"       Linie   Reihe
+               |       |
+              "e"     "5"</pre></template>
+                    </div>
+
+                    <ol class="aufgaben" start="6" style="counter-reset: aufg 5">
+                        <li><span class="be">(4 BE)</span> <span class="sterne">★★★</span> Die Notation wird erweitert: Ein Zug darf mit <code>+</code> (Schach) oder <code>#</code> (Matt) enden. Erreicht ein Bauer die Reihe 8, muss dahinter die Figur stehen, in die er sich umwandelt (<code>D</code>, <code>T</code>, <code>L</code> oder <code>S</code>), z. B. <code>e8D</code> oder <code>dxe8S</code>. Ändern bzw. ergänzen Sie die Grammatik. Teste deine Lösung in der Werkstatt:</li>
+                    </ol>
+                    <div class="werk" data-werkstatt="schach"></div>
+                    <div class="lw" data-loesungsweg="Grammatik f">
+                        <template data-stufe="Tipp 1"><p>Schach und Matt betreffen alle Züge: Ergänze sie dort, wo der ganze Zug entsteht (R1), als Option mit Alternative.</p></template>
+                        <template data-stufe="Tipp 2"><p>Die Umwandlung betrifft nur Bauernzüge auf Reihe 8. Die Regel <code>Feld</code> „sieht“ nicht, ob ein Bauer oder eine Figur zieht. Unterscheide deshalb in <code>Bauernzug</code>: Reihe 1 bis 7 oder Reihe 8 mit Umwandlungsfigur. Der König ist als Umwandlung nicht erlaubt.</p></template>
+                        <template data-stufe="Lösung" data-halten><p><code>Zug = (Figurzug | Bauernzug | Rochade) ["+" | "#"].</code><br><code>Bauernzug = [Linie "x"] (Linie BauernReihe | Linie "8" Umwandlung).</code><br><code>BauernReihe = "1" | … | "7".</code><br><code>Umwandlung = "D" | "T" | "L" | "S".</code><br>R2 und R4 bis R8 bleiben. Andere richtige Lösungen sind gleichwertig, der Prüfstand zeigt es.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================================================== Rekursion -->
+            <section id="rekursion" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">📁</span><h2>Rekursion und Grenzen<small>Ordnerstrukturen als Text</small></h2></div>
+                <div class="phase-body">
+                    <div class="kontext">
+                        <p><strong>Ordnerstrukturen.</strong> Ein Sicherungsprogramm speichert den Inhalt eines Ordners als Text: <code>&lt;</code> öffnet einen Ordner, <code>&gt;</code> schließt ihn, <code>d</code> steht für eine Datei. <code>&lt;d&lt;dd&gt;&gt;</code> ist ein Ordner mit einer Datei und einem Unterordner, der zwei Dateien enthält.</p>
+                    </div>
+<div class="regeln">R1  Ordner = "&lt;" {Eintrag} "&gt;".
+R2  Eintrag = "d" | Ordner.</div>
+                    <ol class="aufgaben">
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★</span> Prüfen Sie, ob die Wörter zur Sprache gehören, und begründen Sie bei ungültigen: <code>&lt;&gt;</code>, <code>&lt;d&lt;&gt;d&gt;</code>, <code>&lt;d&gt;&gt;</code>, <code>&lt;d&gt;&lt;d&gt;</code>.</li>
+                        <li><span class="be">(1 BE)</span> <span class="sterne">★★</span> Geben Sie an, welche Regeln rekursiv sind, und ob die Sprache endlich ist.</li>
+                        <li><span class="be">(3 BE)</span> <span class="sterne">★★</span> Zeichnen Sie einen Ableitungsbaum für <code>&lt;d&lt;d&gt;&gt;</code>.</li>
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★★★</span> Begründen Sie, dass kein endlicher Automat genau diese Sprache erkennt.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Rekursion">
+                        <template data-stufe="Tipp a"><p>Ein gültiges Wort ist genau <em>ein</em> Ordner: Es beginnt mit <code>&lt;</code> und endet mit dem dazu passenden <code>&gt;</code>.</p></template>
+                        <template data-stufe="Tipp d"><p>Denk an Wörter wie <code>&lt;&lt;&lt;d&gt;&gt;&gt;</code> mit immer tieferer Schachtelung. Was müsste sich ein Automat beim Lesen der öffnenden Zeichen merken?</p></template>
+                        <template data-stufe="Lösung" data-halten>
+                            <p>a) <code>&lt;&gt;</code> gültig (leerer Ordner, Wiederholung keinmal) · <code>&lt;d&lt;&gt;d&gt;</code> gültig · <code>&lt;d&gt;&gt;</code> ungültig: Nach dem Ordner <code>&lt;d&gt;</code> steht noch ein <code>&gt;</code>, zu dem es kein <code>&lt;</code> gibt · <code>&lt;d&gt;&lt;d&gt;</code> ungültig: zwei Ordner nebeneinander, das Startsymbol erzeugt aber genau einen. b) R1 und R2 verweisen über den Umweg R1 → R2 → R1 auf sich selbst (indirekte Rekursion). Die Sprache ist unendlich.</p>
+<pre class="jv">        Ordner
+     /    |    |    \
+  "&lt;"  Eintrag Eintrag "&gt;"
+          |       |
+         "d"    Ordner
+              /   |    \
+           "&lt;" Eintrag "&gt;"
+                  |
+                 "d"</pre>
+                            <p>d) Zu jedem <code>&lt;</code> muss später ein <code>&gt;</code> folgen. Ein Automat müsste sich merken, wie viele Ordner gerade offen sind. Er hat aber nur endlich viele Zustände, also kann er nur endlich viele Schachtelungstiefen unterscheiden; die Tiefe ist aber unbegrenzt. In der Grammatik erledigt das die Rekursion.</p>
+                        </template>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================================================== Automaten lesen -->
+            <section id="automaten" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🅿️</span><h2>Automaten lesen und deuten<small>Ein Parkhaus mit drei Plätzen</small></h2></div>
+                <div class="phase-body">
+                    <div class="kontext">
+                        <p><strong>Parkhaus.</strong> Die Schranke eines kleinen Parkhauses protokolliert jede Einfahrt mit <code>e</code> und jede Ausfahrt mit <code>a</code>. Am Abend prüft ein endlicher Automat das Tagesprotokoll. Morgens ist das Parkhaus leer.</p>
+                    </div>
+                    <div class="werk" data-automat-sim="parkhaus">
+                        <h4>Der Automat (zum Verfolgen: Modus „Selbst verfolgen“)</h4>
+                    </div>
+                    <ol class="aufgaben">
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★</span> Geben Sie für die Protokolle <code>eeae</code>, <code>eaea</code>, <code>a</code> und das leere Wort jeweils die Folge der Zustände an und entscheiden Sie, ob das Protokoll akzeptiert wird.</li>
+                        <li><span class="be">(1 BE)</span> <span class="sterne">★</span> Geben Sie jeweils mit kurzer Begründung an, ob der Automat deterministisch und ob er vollständig ist.</li>
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★★</span> Beschreiben Sie, welche Protokolle der Automat akzeptiert, und deuten Sie die Zustände Z0 bis Z3 und ZF im Hinblick auf das Parkhaus.</li>
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★★</span> Geben Sie die Übergangstabelle des Automaten an.</li>
+                        <li><span class="be">(1 BE)</span> <span class="sterne">★★</span> Das Parkhaus wird auf vier Plätze erweitert. Beschreiben Sie, wie sich der Automat ändert.</li>
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★★★</span> Begründen Sie, dass es für ein Parkhaus <em>ohne</em> Platzbegrenzung keinen endlichen Automaten gibt, der genau die Protokolle akzeptiert, nach denen das Parkhaus leer ist (und nie mehr Autos aus- als eingefahren sind).</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Parkhaus">
+                        <template data-stufe="Tipp c"><p>Verfolge <code>eeeaaa</code>: Was zählt der Automat mit? Und wann landet er in ZF?</p></template>
+                        <template data-stufe="Lösung" data-halten>
+                            <p>a) <code>eeae</code>: Z0 Z1 Z2 Z1 Z2, nein (Z2 kein Endzustand) · <code>eaea</code>: Z0 Z1 Z0 Z1 Z0, ja · <code>a</code>: Z0 ZF, nein · ε: Z0, ja (Z0 ist Start- und Endzustand). b) Deterministisch: In jedem Zustand gibt es für e und für a höchstens einen Pfeil. Vollständig: Es sind auch immer mindestens einer, dank ZF fehlt kein Übergang.</p>
+                            <p>c) Zi heißt: i Autos stehen im Parkhaus. ZF heißt: Das Protokoll ist unmöglich (ein viertes Auto fährt ein, oder ein Auto fährt aus einem leeren Parkhaus). Akzeptiert werden Protokolle mit gleich vielen e wie a, bei denen der Bestand nie unter 0 sinkt und nie über 3 steigt, nach denen das Parkhaus also wieder leer ist.</p>
+                            <div class="tab-scroll"><table class="au-tab"><tr><th></th><th>e</th><th>a</th></tr><tr><th>Z0 ◎</th><td>Z1</td><td>ZF</td></tr><tr><th>Z1</th><td>Z2</td><td>Z0</td></tr><tr><th>Z2</th><td>Z3</td><td>Z1</td></tr><tr><th>Z3</th><td>ZF</td><td>Z2</td></tr><tr><th>ZF</th><td>ZF</td><td>ZF</td></tr></table></div>
+                            <p>e) Ein Zustand Z4 mehr: Z3 –e→ Z4, Z4 –a→ Z3, Z4 –e→ ZF (statt Z3 –e→ ZF). f) Der Automat müsste sich die Anzahl der Autos merken, und die ist ohne Platzgrenze unbeschränkt. Für jede Anzahl bräuchte er einen eigenen Zustand, also unendlich viele. Mit Grenze reichen endlich viele: genau das zeigt der Automat oben.</p>
+                        </template>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================================================== NEA -->
+            <section id="nea" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔀</span><h2>Nichtdeterminismus<small>Signale aus kurz und lang</small></h2></div>
+                <div class="phase-body">
+                    <div class="kontext">
+                        <p><strong>Signale.</strong> Ein Taster sendet kurze (<code>k</code>) und lange (<code>l</code>) Signale. Eine Tür soll aufgehen, wenn die Folge auf <code>kl</code> endet. Der erste Entwurf ist ein nichtdeterministischer Automat:</p>
+                    </div>
+                    <div class="werk" data-automat-sim="signal">
+                        <h4>Nichtdeterministischer Automat (alle Wege: Modus „Vorführen“)</h4>
+                    </div>
+                    <ol class="aufgaben">
+                        <li><span class="be">(1 BE)</span> <span class="sterne">★</span> Begründen Sie, dass der Automat nichtdeterministisch ist.</li>
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★★</span> Geben Sie alle Wege für die Eingabe <code>kkl</code> an und entscheiden Sie, ob sie akzeptiert wird.</li>
+                        <li><span class="be">(1 BE)</span> <span class="sterne">★★</span> Erklären Sie, warum der Automat nicht direkt in das Java-Projekt aus 1.5 (Übergangstabelle) oder 1.6 (Code) übertragen werden kann.</li>
+                        <li><span class="be">(3 BE)</span> <span class="sterne">★★★</span> Entwickeln Sie einen deterministischen Automaten, der dieselbe Sprache erkennt. Prüfe ihn im Baukasten:</li>
+                    </ol>
+                    <div class="werk" data-automat-bau="signal">
+                        <h4>Automaten-Baukasten: deterministisch</h4>
+                    </div>
+                    <div class="lw" data-loesungsweg="Nichtdeterminismus">
+                        <template data-stufe="Tipp d"><p>Verfolge im Modus „Vorführen“, welche Zustände <em>gleichzeitig</em> leuchten: nach <code>k</code>, nach <code>kl</code>, nach <code>kll</code>. Jede Menge, die auftritt, wird ein Zustand des neuen Automaten.</p></template>
+                        <template data-stufe="Lösung" data-halten>
+                            <p>a) In Z0 gibt es für <code>k</code> zwei Pfeile (nach Z0 und nach Z1). b) Z0 Z0 Z0 Z0: kein Endzustand · Z0 Z0 Z1 Z2: Endzustand, RZK leer · Z0 Z1, dann Abbruch (aus Z1 kein Pfeil mit <code>k</code>). Akzeptiert, weil ein erfolgreicher Weg genügt. c) In der Tabelle steht je Feld genau ein Folgezustand, im Code legt jede Anweisung <code>zustand = …;</code> genau einen fest. Für mehrere mögliche Folgezustände ist kein Platz.</p>
+                            <p>d) Q0 = {Z0}, Q1 = {Z0, Z1} („zuletzt k“), Q2 = {Z0, Z2} („zuletzt kl“, Endzustand):</p>
+                            <div data-automat-bild="signal-dea"></div>
+                        </template>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================================================== Automaten entwickeln -->
+            <section id="bauen" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Automaten entwickeln<small>Bestellcodes am Kiosk (Teil 2 von 3)</small></h2></div>
+                <div class="phase-body">
+                    <p>Die Bestellcodes vom <a href="#sprachen">Schulkiosk</a> sind durch diese Grammatik festgelegt:</p>
+<div class="regeln">Bestellung = Posten {"+" Posten}.
+Posten = [Anzahl] Artikel.
+Anzahl = "2" | "3" | … | "9".
+Artikel = "B" | "S" | "K" | "A".</div>
+                    <ol class="aufgaben">
+                        <li><span class="be">(3 BE)</span> <span class="sterne">★★</span> Zeichnen Sie das Zustandsübergangsdiagramm eines deterministischen endlichen Automaten, der genau die Bestellcodes akzeptiert. Ein Fangzustand ist nicht nötig. Prüfe ihn im Baukasten:</li>
+                    </ol>
+                    <div class="werk" data-automat-bau="kiosk">
+                        <h4>Automaten-Baukasten: Bestellcodes</h4>
+                    </div>
+                    <ol class="aufgaben" start="2" style="counter-reset: aufg 1">
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★★</span> Ergänzen Sie Ihren Automaten um einen Fangzustand. Geben Sie für jeden Pfeil nach ZF die Beschriftung an.</li>
+                        <li><span class="be">(1 BE)</span> <span class="sterne">★★</span> Eilige Bestellungen enden mit <code>!</code>, z. B. <code>2B+K!</code>. Beschreiben Sie, wie sich der Automat aus a) ändert.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Automaten entwickeln">
+                        <template data-stufe="Tipp a"><p>Wie viele Stellen hat das Gleisnetz eines Postens? Vor der Anzahl, nach der Anzahl, nach dem Artikel. Die Option <code>[Anzahl]</code> bekommt einen Extrapfeil, der die Anzahl überspringt; die Wiederholung <code>{"+" Posten}</code> einen Pfeil zurück.</p></template>
+                        <template data-stufe="Lösung" data-halten>
+                            <div data-automat-bild="kiosk"></div>
+                            <p>a) Z0 –2…9→ Z1, Z0 und Z1 –B, S, K, A→ Z2 (Endzustand), Z2 –+→ Z0. b) Z0 –+→ ZF · Z1 –2…9, +→ ZF · Z2 –2…9, B, S, K, A→ ZF · ZF –alle Zeichen→ ZF. c) Neuer Endzustand Z3 mit Z2 –!→ Z3, aus Z3 führt kein Pfeil heraus (Z2 bleibt Endzustand für Bestellungen ohne <code>!</code>).</p>
+                        </template>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================================================== Implementierung -->
+            <section id="implementierung" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">☕</span><h2>Implementierung<small>Tabelle (1.5) und Code (1.6)</small></h2></div>
+                <div class="phase-body">
+                    <div class="ue-kopf"><h3>I1 · Kinositzplätze mit der Übergangstabelle</h3><span class="sterne">★ bis ★★★</span></div>
+                    <p>Eine Kino-App prüft Sitzplätze mit der Klasse <code>Automat</code> aus 1.5 (Übergangstabelle, <code>-1</code> = kein Übergang, Startzustand Z0):</p>
+<pre class="jv">Automat sitz = new Automat(4, "ABCDEFGH0123456789");
+sitz.uebergaengeHinzufuegen(0, "ABCDEFGH", 1);
+sitz.uebergaengeHinzufuegen(1, "23456789", 2);
+sitz.uebergangHinzufuegen(1, '1', 3);
+sitz.uebergaengeHinzufuegen(3, "0123456789", 2);
+sitz.setEndzustand(2);
+sitz.setEndzustand(3);</pre>
+                    <ol class="aufgaben">
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★</span> Zeichnen Sie das Zustandsübergangsdiagramm des Automaten <code>sitz</code>.</li>
+                        <li><span class="be">(1 BE)</span> <span class="sterne">★★</span> Beschreiben Sie, welche Sitzplätze akzeptiert werden.</li>
+                        <li><span class="be">(1 BE)</span> <span class="sterne">★★</span> Bestimmen Sie für <code>C12</code> und <code>C21</code> die Folge der Zustände und das Ergebnis von <code>pruefe</code>.</li>
+                        <li><span class="be">(1 BE)</span> <span class="sterne">★★</span> Geben Sie an, welcher Wert in <code>tabelle[0][9]</code> steht, und erklären Sie, was er bedeutet.</li>
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★★★</span> Das Kino bekommt eine Reihe J. Beschreiben Sie, was am Programm geändert werden muss, und begründen Sie, warum die übrigen Aufrufe gleich bleiben können.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="I1 Kinositzplätze">
+                        <template data-stufe="Tipp d"><p>Die Spalte gehört zum Zeichen an Position 9 im Alphabet-String (Zählung ab 0). Gibt es aus Z0 einen Pfeil mit diesem Zeichen?</p></template>
+                        <template data-stufe="Lösung" data-halten>
+                            <div data-automat-bild="kinositz"></div>
+                            <p>b) Ein Buchstabe A bis H (Reihe) und eine Zahl von 1 bis 19 ohne führende Null (Platz). c) <code>C12</code>: Z0 Z1 Z3 Z2, akzeptiert · <code>C21</code>: Z0 Z1 Z2, dann kein Übergang für 1: Abbruch, <code>false</code>. d) Spalte 9 gehört zum Zeichen <code>1</code>. Aus Z0 gibt es keinen Pfeil mit einer Ziffer, also steht dort <code>-1</code>: kein Übergang. e) Im Konstruktor muss J ins Alphabet (sonst gibt es keine Spalte dafür), und der erste Aufruf braucht <code>"ABCDEFGHJ"</code>. Die übrigen Aufrufe nennen Zeichen, nicht Spaltennummern; die Spalte bestimmt die Klasse selbst mit <code>indexOf</code>.</p>
+                        </template>
+                    </div>
+
+                    <div class="ue-kopf"><h3>I2 · Das Parkhaus als Code</h3><span class="sterne">★★ ★★★</span></div>
+                    <ol class="aufgaben">
+                        <li><span class="be">(4 BE)</span> <span class="sterne">★★</span> Implementieren Sie den <a href="#automaten">Parkhaus-Automaten</a> als Unterklasse von <code>DEA</code> (wie in 1.6): die Methoden <code>zustandWechseln(char zeichen)</code> und <code>istEndzustand()</code>. Schreibe erst auf Papier, dann teste im Projekt.</li>
+                    </ol>
+                    <div class="ide-block" id="ide">
+                        <div class="ide-kopf"><h3>Übungsprojekt Parkhaus</h3></div>
+                        <div class="java-online" style="width:100%;height:560px" data-java-online="{ 'id': 'i13-ue1-parkhaus', 'speed': 1000000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true, 'withErrorList': true, 'jsonFilename': '13-1-U Parkhaus.json', 'enableFileAccess': true, 'enableRunExitStatusAccess': true }">
+<!-- IDE-START -->
+<script type="text/plain" title="Hauptprogramm.java">
+// Übung: Parkhaus mit 3 Plätzen. Vergleiche die Zustandsfolgen mit deiner Tabelle auf der Übungsseite.
+Parkhaus haus = new Parkhaus();
+String[] protokolle = {"eeae", "eaea", "a", "eeee", "", "eeeaaa"};
+for (int i = 0; i < protokolle.length; i++) {
+   haus.zeigeLauf(protokolle[i]);
+}
+</script>
+<script type="text/plain" title="DEA.java" data-online-ide="{ 'readOnly': true }">
+/**
+ * Oberklasse für deterministische endliche Automaten, die als Code programmiert sind.
+ * Was bei JEDEM Automaten gleich ist, steht hier: der aktuelle Zustand und das Prüfen eines Worts.
+ * Was jeder Automat anders macht (Übergänge, Endzustände), legt die Unterklasse fest.
+ * Muss nicht verändert werden.
+ */
+public abstract class DEA {
+   protected int zustand;            // aktueller Zustand: 0 steht für Z0, 1 für Z1, …
+   protected final int ZF = 99;      // Fangzustand: eine Nummer, die kein anderer Zustand hat
+
+   // ② Ein Zeichen lesen und dem passenden Pfeil folgen. Jede Unterklasse legt das selbst fest.
+   public abstract void zustandWechseln(char zeichen);
+
+   // ④ Steht der Automat in einem Endzustand? Jede Unterklasse legt das selbst fest.
+   public abstract boolean istEndzustand();
+
+   // Prüft, ob wort zur Sprache gehört (die vier Regeln von Blatt 1.5).
+   public boolean pruefe(String wort) {
+      zustand = 0;                                  // ① Start im Startzustand Z0
+      for (int i = 0; i < wort.length(); i++) {     // ③ Zeichen für Zeichen lesen
+         zustandWechseln(wort.charAt(i));           // ② dem Pfeil folgen
+      }
+      return istEndzustand();                       // ④ RZK leer: Endzustand?
+   }
+
+   // Wie pruefe, gibt aber die Folge der Zustände aus, z. B.  ab1: Z0 Z1 Z1 Z1  ->  akzeptiert
+   public void zeigeLauf(String wort) {
+      zustand = 0;
+      String folge = name(zustand);
+      for (int i = 0; i < wort.length(); i++) {
+         zustandWechseln(wort.charAt(i));
+         folge = folge + " " + name(zustand);
+      }
+      String ergebnis = "abgelehnt";
+      if (istEndzustand()) {
+         ergebnis = "akzeptiert";
+      }
+      String anzeige = wort;
+      if (wort.length() == 0) {
+         anzeige = "(leeres Wort)";
+      }
+      println(anzeige + ": " + folge + "  ->  " + ergebnis);
+   }
+
+   private String name(int z) {
+      if (z == ZF) {
+         return "ZF";
+      }
+      return "Z" + z;
+   }
+}
+</script>
+<script type="text/plain" title="Parkhaus.java">
+/**
+ * Übung zur Schulaufgabe: Das Parkhaus mit 3 Plätzen als Automat (Umsetzung als Code wie in 1.6).
+ * Eingabe: e = Einfahrt, a = Ausfahrt. Zustand Zi heißt: i Autos stehen im Parkhaus.
+ * Akzeptiert wird ein Protokoll, nach dem das Parkhaus wieder leer ist (siehe Diagramm auf der Übungsseite).
+ */
+public class Parkhaus extends DEA {
+
+   // TODO 1: Übergänge nach dem Diagramm. Alles, wofür es keinen Pfeil gibt, führt in den Fangzustand ZF.
+   public void zustandWechseln(char zeichen) {
+
+   }
+
+   // TODO 2: Endzustand?
+   public boolean istEndzustand() {
+      return false;
+   }
+}
+</script>
+<script type="text/plain" title="ParkhausTest.java" data-online-ide="{ 'readOnly': true }">
+/**
+ * Selbsttest der Übung. Bitte nicht verändern!
+ * Starten: Klick auf das kleine Dreieck links neben "@Test" oder auf der Website "Tests starten".
+ */
+public class ParkhausTest {
+
+   @Test
+   public void leeresParkhausAmEnde() {
+      Parkhaus p = new Parkhaus();
+      Assertions.assertTrue(p.pruefe(""), "Das leere Protokoll: Das Parkhaus ist leer, also akzeptiert (Z0 ist Endzustand).");
+      Assertions.assertTrue(p.pruefe("ea"), "ea: ein Auto rein, eines raus.");
+      Assertions.assertTrue(p.pruefe("eeeaaa"), "eeeaaa: voll und wieder leer.");
+      Assertions.assertTrue(p.pruefe("eaea"), "eaea: zweimal rein und raus.");
+   }
+
+   @Test
+   public void nichtLeerAmEnde() {
+      Parkhaus p = new Parkhaus();
+      Assertions.assertFalse(p.pruefe("e"), "e: Ein Auto steht noch drin.");
+      Assertions.assertFalse(p.pruefe("eeae"), "eeae: Am Ende stehen zwei Autos im Parkhaus.");
+   }
+
+   @Test
+   public void ueberlaufUndUnterlauf() {
+      Parkhaus p = new Parkhaus();
+      Assertions.assertFalse(p.pruefe("a"), "a: Aus einem leeren Parkhaus kann kein Auto fahren (ZF).");
+      Assertions.assertFalse(p.pruefe("eeeeaaaa"), "eeeeaaaa: Das vierte Auto passt nicht hinein (ZF), auch wenn danach vier ausfahren.");
+      Assertions.assertFalse(p.pruefe("eaa"), "eaa: Unterlauf nach dem ersten Paar (ZF).");
+      Assertions.assertFalse(p.pruefe("ex"), "ex: x ist kein Zeichen des Alphabets (ZF).");
+   }
+}
+</script>
+<!-- IDE-ENDE -->
+</div>
+                        <p class="ide-downloads">💾 Stand sichern: Diskettensymbol in der IDE-Leiste. · <a href="Online-IDE/13-1-U%20Parkhaus.json" download>Ausgangsprojekt für online-ide.de</a></p>
+                    </div>
+                    <div class="coach" data-coach="i13-ue1-parkhaus"></div>
+                    <ol class="aufgaben" start="2" style="counter-reset: aufg 1">
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★★★</span> Jemand schlägt diese kürzere Methode vor. Beurteilen Sie den Vorschlag: Wird genau dieselbe Sprache erkannt?</li>
+                    </ol>
+<pre class="jv">public void zustandWechseln(char zeichen) {
+   if (zeichen == 'e' &amp;&amp; zustand &lt; 3) {
+      zustand++;
+   } else if (zeichen == 'a' &amp;&amp; zustand &gt; 0) {
+      zustand--;
+   } else {
+      zustand = ZF;
+   }
+}</pre>
+                    <div class="lw" data-loesungsweg="I2 Parkhaus als Code">
+                        <template data-stufe="Tipp a"><p>Ein <code>case</code> je Zustand Z0 bis Z3, darin je Pfeil eine Anweisung <code>zustand = …;</code>. Alles andere führt in ZF, der <code>default</code>-Zweig hält ZF fest.</p></template>
+                        <template data-stufe="Tipp b"><p>Was passiert, wenn der Automat schon in ZF steht (<code>ZF</code> hat den Wert 99) und ein <code>a</code> kommt?</p></template>
+                        <template data-stufe="Lösung" data-halten>
+<pre class="jv">public void zustandWechseln(char zeichen) {
+   switch (zustand) {
+      case 0:
+         if (zeichen == 'e') { zustand = 1; } else { zustand = ZF; }
+         break;
+      case 1:
+         if (zeichen == 'e') { zustand = 2; }
+         else if (zeichen == 'a') { zustand = 0; }
+         else { zustand = ZF; }
+         break;
+      case 2:
+         if (zeichen == 'e') { zustand = 3; }
+         else if (zeichen == 'a') { zustand = 1; }
+         else { zustand = ZF; }
+         break;
+      case 3:
+         if (zeichen == 'a') { zustand = 2; } else { zustand = ZF; }
+         break;
+      default:
+         zustand = ZF;
+   }
+}
+
+public boolean istEndzustand() {
+   return zustand == 0;
+}</pre>
+                            <p>b) Der Vorschlag rechnet geschickt mit der Zustandsnummer (Z0 bis Z3 sind genau die Anzahl der Autos), erkennt aber nicht dieselbe Sprache: Steht der Automat in ZF (Wert 99), ist <code>zustand &gt; 0</code> wahr, und ein <code>a</code> setzt ihn auf 98. Er verlässt den Fangzustand. Gegenbeispiel: 100-mal <code>a</code>. Das erste <code>a</code> führt nach ZF, die übrigen 99 zählen bis 0 herunter, und das unmögliche Protokoll wird akzeptiert. Mit der zusätzlichen Bedingung <code>zustand != ZF</code> im <code>a</code>-Zweig wäre er richtig.</p>
+                        </template>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================================================== Abitur -->
+            <section id="abitur" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🎓</span><h2>Abiturnahe Aufgabe<small>Handytickets im Verkehrsverbund (21 BE)</small></h2></div>
+                <div class="phase-body">
+                    <p>Diese Aufgabe ist so aufgebaut wie eine Abituraufgabe: ein durchgehender Sachzusammenhang, Teilaufgaben aus verschiedenen Bereichen und mehr eigenständiges Arbeiten. Plane etwa 30 Minuten ein.</p>
+                    <div class="kontext">
+                        <p>Der Verkehrsverbund Isartal verkauft Tickets per App. Ein <strong>Ticketcode</strong> besteht aus dem Tarif (<code>E</code> Einzelfahrt, <code>T</code> Tageskarte, <code>W</code> Wochenkarte), den Tarifzonen und dem Tag, an dem das Ticket gilt, z. B. <code>T-AB-24.12</code>. Die Zonen <code>A</code>, <code>B</code> und <code>C</code> liegen hintereinander; ein Ticket gilt immer für zusammenhängende Zonen. Kontrolleure scannen den Code, ein Programm prüft ihn.</p>
+                    </div>
+<div class="regeln">Ticketcode = Tarif "-" Zonen "-" Datum.
+Tarif = "E" | "T" | "W".
+Datum = Tag "." Monat.
+Tag = ZifferOhneNull | ("1" | "2") Ziffer | "3" ("0" | "1").
+Ziffer = "0" | ZifferOhneNull.
+ZifferOhneNull = "1" | "2" | … | "9".</div>
+                    <p>Die Regel <code>Zonen</code> ist nur als Syntaxdiagramm gegeben:</p>
+                    <div data-diagramm data-ebnf="Zonen = &quot;A&quot; [&quot;B&quot; [&quot;C&quot;]] | &quot;B&quot; [&quot;C&quot;] | &quot;C&quot;."></div>
+                    <ol class="aufgaben">
+                        <li><span class="be">(2 BE)</span> Erläutern Sie am Ticketcode <code>E-BC-31.4</code> den Unterschied zwischen Syntax und Semantik.</li>
+                        <li><span class="be">(3 BE)</span> Geben Sie die Regel <code>Zonen</code> in EBNF an.</li>
+                        <li><span class="be">(2 BE)</span> Die Regel <code>Monat</code> fehlt noch. Geben Sie sie in EBNF an: Monate von 1 bis 12, ohne führende Null.</li>
+                        <li><span class="be">(2 BE)</span> Prüfen Sie, ob die folgenden Wörter gültige Ticketcodes sind, und begründen Sie bei ungültigen: <code>T-AB-24.12</code>, <code>W-AC-3.5</code>, <code>E-ABC-07.3</code>, <code>E-B-32.1</code>.</li>
+                        <li><span class="be">(3 BE)</span> Zeichnen Sie das Zustandsübergangsdiagramm eines deterministischen endlichen Automaten, der genau die Wörter der Regel <code>Zonen</code> akzeptiert. Ein Fangzustand ist nicht nötig.</li>
+                        <li><span class="be">(4 BE)</span> Implementieren Sie Ihren Automaten aus e) als Unterklasse <code>Zonen</code> der Klasse <code>DEA</code> aus dem Unterricht.</li>
+                        <li><span class="be">(3 BE)</span> Ein Fahrgast ändert in einem gekauften Code das Datum. Begründen Sie, warum die Prüfung mit Grammatik oder Automat das nicht erkennt, und erläutern Sie ein Verfahren der Informationssicherheit, mit dem die Kontrolle gefälschte Codes erkennen kann.</li>
+                        <li><span class="be">(2 BE)</span> Beurteilen Sie den Vorschlag, die Grammatik so zu ändern, dass nur Tage gültig sind, die es im jeweiligen Monat gibt (also kein <code>31.4</code>).</li>
+                    </ol>
+                    <p>Zum Selbstprüfen: b) und c) in der Werkstatt, e) im Baukasten. Code zu f) kannst du im <a href="1-6-automaten-programmieren.html#projekt">Projekt aus 1.6</a> als neue Klasse testen.</p>
+                    <div class="werk" data-werkstatt="zonen"><h4>Werkstatt zu b): Zonen</h4></div>
+                    <div class="werk" data-werkstatt="monat"><h4>Werkstatt zu c): Monat</h4></div>
+                    <div class="werk" data-automat-bau="zonen"><h4>Baukasten zu e): Zonen</h4></div>
+                    <div class="lw" data-loesungsweg="Abiturnahe Aufgabe">
+                        <template data-stufe="Tipp b, c"><p>b) Das Diagramm hat drei Zweige; in den ersten beiden stecken verschachtelte Optionen. c) Einstellige Monate 1 bis 9, zweistellige nur 10, 11, 12: Die erste Ziffer ist dann 1, die zweite 0, 1 oder 2.</p></template>
+                        <template data-stufe="Tipp e, f"><p>e) Ein Zustand „zuletzt gelesene Zone“ genügt: nach A, nach B, nach C. Nach A darf nur B folgen, nach B nur C, nach C nichts mehr. f) Aufbau wie in 1.6: <code>switch (zustand)</code>, je Zustand ein <code>case</code>, je Pfeil eine Anweisung, sonst ZF.</p></template>
+                        <template data-stufe="Tipp g"><p>Was prüft eine Grammatik, was nicht? Und welches Schutzziel ist verletzt, wenn ein Code verändert wird? Denk an die digitale Signatur aus der 11. Klasse.</p></template>
+                        <template data-stufe="Erwartungshorizont" data-halten>
+                            <p><strong>a) (2 BE, AFB I/II)</strong> Syntax: Der Code ist nach den Regeln gebaut (Tarif E, Zonen BC, Tag 31, Monat 4), also syntaktisch korrekt. Semantik: Die Bedeutung „gültig am 31. April“ ergibt keinen Sinn, weil der April nur 30 Tage hat.</p>
+                            <p><strong>b) (3 BE, AFB II)</strong> <code>Zonen = "A" ["B" ["C"]] | "B" ["C"] | "C".</code> (gleichwertig: <code>"A" | "A" "B" | "A" "B" "C" | "B" | "B" "C" | "C"</code>).</p>
+                            <p><strong>c) (2 BE, AFB II)</strong> <code>Monat = ZifferOhneNull | "1" ("0" | "1" | "2").</code></p>
+                            <p><strong>d) (2 BE, AFB I)</strong> <code>T-AB-24.12</code> gültig · <code>W-AC-3.5</code> ungültig: Nach A darf nur B folgen (Zonen zusammenhängend) · <code>E-ABC-07.3</code> ungültig: Ein Tag beginnt nicht mit 0 · <code>E-B-32.1</code> ungültig: Nach der 3 sind nur 0 und 1 erlaubt.</p>
+                            <div data-automat-bild="zonen"></div>
+                            <p><strong>e) (3 BE, AFB II)</strong> Z0 –A→ Z1, Z0 –B→ Z2, Z0 –C→ Z3, Z1 –B→ Z2, Z2 –C→ Z3; Endzustände Z1, Z2, Z3.</p>
+                            <p><strong>f) (4 BE, AFB II)</strong></p>
+<pre class="jv">public class Zonen extends DEA {
+   public void zustandWechseln(char zeichen) {
+      switch (zustand) {
+         case 0:
+            if (zeichen == 'A') { zustand = 1; }
+            else if (zeichen == 'B') { zustand = 2; }
+            else if (zeichen == 'C') { zustand = 3; }
+            else { zustand = ZF; }
+            break;
+         case 1:
+            if (zeichen == 'B') { zustand = 2; } else { zustand = ZF; }
+            break;
+         case 2:
+            if (zeichen == 'C') { zustand = 3; } else { zustand = ZF; }
+            break;
+         default:                 <span class="c">// Z3 und ZF: kein Pfeil mehr</span>
+            zustand = ZF;
+      }
+   }
+
+   public boolean istEndzustand() {
+      return zustand == 1 || zustand == 2 || zustand == 3;
+   }
+}</pre>
+                            <p><strong>g) (3 BE, AFB II/III)</strong> Grammatik und Automat prüfen nur die Syntax. Ein gefälschter Code mit anderem Datum ist genauso korrekt gebaut wie ein echter. Verletzt sind Integrität und Authentizität. Verfahren: Der Verbund signiert jeden Code digital: Er bildet einen Hashwert des Codes und verschlüsselt ihn mit seinem privaten Schlüssel. Das Kontrollgerät entschlüsselt die Signatur mit dem öffentlichen Schlüssel des Verbunds und vergleicht mit dem Hashwert des gescannten Codes. Wurde der Code verändert, passen die Werte nicht zusammen; eine neue Signatur kann der Fahrgast ohne den privaten Schlüssel nicht erzeugen.</p>
+                            <p><strong>h) (2 BE, AFB III)</strong> Möglich wäre es, weil es nur endlich viele Kombinationen gibt: Man unterscheidet Monate mit 31, 30 und 28 bzw. 29 Tagen. Die Grammatik würde aber lang und unübersichtlich (und Schaltjahre hängen vom Jahr ab, das im Code gar nicht steht). Sinnvoller: Die Grammatik prüft nur die Form, ob das Datum existiert, prüft das Programm danach als Bedeutung. Andere begründete Urteile sind gleichwertig.</p>
+                        </template>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================================================== Checkliste -->
+            <section id="checkliste" class="phase note">
+                <div class="phase-head"><span class="phase-icon">✅</span><h2>Checkliste<small>Kann ich das?</small></h2></div>
+                <div class="phase-body">
+                    <p>Gehe die Liste ehrlich durch. Wo du unsicher bist, hilft die Station in Klammern.</p>
+                    <ul class="checkliste">
+                        <li>Ich kann Syntax und Semantik unterscheiden und an Beispielen erläutern, auch: verschieden geschrieben, gleiche Bedeutung (1.1).</li>
+                        <li>Ich kenne Alphabet, Wort, Länge, leeres Wort, A* und L ⊆ A* und kann Wörter zählen (|A|ⁿ) (1.1, 1.2).</li>
+                        <li>Ich kann begründen, ob eine Sprache endlich oder unendlich ist (1.2, 1.3).</li>
+                        <li>Ich kenne Startsymbol, Terminale, Nichtterminale und Produktionsregeln (1.3).</li>
+                        <li>Ich kann Syntaxdiagramme lesen, zeichnen und in EBNF übersetzen, in beide Richtungen (1.3, 1.4).</li>
+                        <li>Ich kann Wörter mit einer Grammatik prüfen und den Fehler benennen (1.3, 1.4).</li>
+                        <li>Ich kann ein Wort schrittweise ableiten und einen Ableitungsbaum zeichnen, auch mit Rekursion (1.3, 1.4).</li>
+                        <li>Ich kann eine Grammatik selbst entwickeln und erweitern, z. B. Zahlbereiche ohne führende Null (1.4).</li>
+                        <li>Ich kann einen Automaten Zeichen für Zeichen verfolgen, auch mit leerem Wort und Abbruch, und entscheide nach den vier Regeln (1.5).</li>
+                        <li>Ich kann Diagramm und Übergangstabelle ineinander übertragen und einen Fangzustand ergänzen (1.5).</li>
+                        <li>Ich kann „deterministisch“, „vollständig“ und „nichtdeterministisch“ erklären und an einem Automaten begründen (1.5).</li>
+                        <li>Ich kann beschreiben, welche Sprache ein Automat erkennt, und deuten, was sich ein Zustand merkt (1.5).</li>
+                        <li>Ich kann aus einer Grammatik einen deterministischen Automaten entwickeln (1.5).</li>
+                        <li>Ich kann begründen, warum endliche Automaten verschachtelte Klammern oder unbegrenztes Zählen nicht schaffen (1.5).</li>
+                        <li>Ich kann aus Code mit <code>uebergangHinzufuegen</code> das Diagramm zeichnen und erklären, wozu <code>-1</code> in der Tabelle dient (1.5).</li>
+                        <li>Ich kann einen Automaten mit Zustandsvariable und <code>switch</code> programmieren und Code eines Automaten beurteilen (1.6).</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="1-6-automaten-programmieren.html">← 1.6 Automaten programmieren</a>
+                <a class="btn btn-primary" href="../../informatik.html#jahrgang-13">Übersicht Klasse 13 →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Hinweise</strong></summary>
+                    <p class="mt-2">Übungssequenz zu den Stationen 1.1 bis 1.6 mit eigenen Kontexten, die in den Stationen nicht vorkommen. Grundwissen nur als Verweis auf das Grundwissensblatt, ohne eigene Aufgaben. Bestellcodes am Kiosk (Teil 1 Sprachen und Detektiv, Teil 2 Automat aus Grammatik), Schachnotation (Grammatik lesen, beide Übersetzungsrichtungen, Ableitung, Erweiterung mit Fallunterscheidung), Ordnerstrukturen (Rekursion, Grenzen), Parkhaus (Zählautomat lesen, deuten, Tabelle, Grenzen; als Code programmieren), Signale (NEA, Wege, Potenzmengenkonstruktion), Kinositzplätze (Übergangstabelle aus Code). Die Aufgaben sind wie Schulaufgabe und Abitur formuliert (Sie-Form, Operatoren, BE), Sterne geben die Schwierigkeit an.</p>
+                    <p><strong>Abiturnahe Aufgabe</strong> (21 BE, etwa 30 Minuten): durchgehender Kontext mit Themenübergriff zu Informationssicherheit (digitale Signatur, Schutzziele); Erwartungshorizont mit AFB in den gestuften Hilfen.</p>
+                    <p><strong>Werkzeuge:</strong> Detektiv (formale-sprachen.js), Syntaxdiagramme, Ableitungsspiel mit eigener Grammatik (<code>data-ebnf</code>) und Werkstatt-Aufträge <code>schach</code>, <code>monat</code>, <code>zonen</code> mit Prüfstand (grammatik.js), Simulator <code>parkhaus</code> und <code>signal</code>, Baukasten <code>kiosk</code>, <code>signal</code>, <code>zonen</code> mit Gegenbeispielsuche (automaten.js). Übungsprojekt Parkhaus (ID <code>i13-ue1-parkhaus</code>, <code>DEA</code> und Test schreibgeschützt) mit Coach; <a href="Online-IDE/LSG%2013-1-U%20Parkhaus.json" download>Lösungsprojekt (JSON)</a>.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum &amp; Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

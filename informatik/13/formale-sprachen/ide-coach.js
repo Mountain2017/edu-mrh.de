@@ -218,6 +218,37 @@
         }
     };
 
+    // ===== Übung zur 1. Schulaufgabe: Parkhaus als Code =====
+    REGELN['i13-ue1-parkhaus'] = {
+        titel: 'Übungsprojekt Parkhaus',
+        testDatei: 'ParkhausTest.java',
+        tests: {
+            leeresParkhausAmEnde: { titel: 'Leeres Parkhaus am Ende: akzeptiert', hinweis: function (c) {
+                var r = methode(c.datei('Parkhaus.java'), 'void\\s+zustandWechseln\\s*\\(');
+                if (r !== null && !/\bcase\b/.test(r)) return 'TODO 1: zustandWechseln ist noch leer. Lege für Z0 bis Z3 je einen case an, wie in 1.6.';
+                return 'Welcher Zustand bedeutet „Parkhaus leer“? Genau der ist Endzustand (TODO 2). Und führt ein a aus Z1 wirklich zurück nach Z0?'; } },
+            nichtLeerAmEnde: { titel: 'Autos im Parkhaus am Ende: abgelehnt', hinweis: function () { return 'Nur der Zustand „leer“ ist Endzustand, nicht Z1 bis Z3.'; } },
+            ueberlaufUndUnterlauf: { titel: 'Überlauf, Unterlauf, fremde Zeichen: abgelehnt', hinweis: function () { return 'Aus Z3 darf kein e weiterführen, aus Z0 kein a: beides führt in ZF. Und ZF darf nie wieder verlassen werden (default-Zweig).'; } }
+        },
+        schritte: [
+            { titel: 'TODO 1 und 2: Parkhaus programmieren', tests: ['leeresParkhausAmEnde', 'nichtLeerAmEnde', 'ueberlaufUndUnterlauf'] }
+        ],
+        hinweise: function (c) {
+            var liste = [];
+            var code = c.datei('Parkhaus.java');
+            if (caseOhneBreak(code)) {
+                liste.push({ art: 'warnung', titel: 'Ein case ohne break', text: 'Ohne break; läuft Java in den nächsten case weiter und überschreibt den neuen Zustand.' });
+            }
+            if (/zeichen\s*==\s*"|"\s*==\s*zeichen/.test(ohneKommentare(code))) {
+                liste.push({ art: 'fehler', titel: 'Zeichen mit String verglichen', text: 'zeichen ist ein char: Vergleiche mit \'e\' und \'a\' in einfachen Anführungszeichen.' });
+            }
+            if (c.alleTestsGruen) {
+                liste.push({ art: 'ok', titel: 'Alle Tests bestanden', text: 'Dein Parkhaus läuft. Beurteile jetzt den kürzeren Vorschlag in Aufgabe b): Was passiert dort im Fangzustand?' });
+            }
+            return liste;
+        }
+    };
+
     // ---------- Coach-Engine ----------
     function Coach(box) {
         this.box = box;
