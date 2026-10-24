@@ -117,6 +117,10 @@ def main(src, out_dir=None):
                 sys.exit(f"Item {iid}: single needs exactly one correct option")
             if it['type'] == 'multi' and not right:
                 sys.exit(f"Item {iid}: multi needs at least one correct option")
+            if it['type'] == 'multi' and len(right) * 2 > len(it['options']):
+                print(f"Hinweis: {iid} hat {len(right)} richtige von {len(it['options'])} Optionen (mehr als die Hälfte). "
+                      f"Ein überzähliges Kreuz kostet dort {len(right) / (len(it['options']) - len(right)) if len(it['options']) > len(right) else 1:.2g} Anteile, "
+                      f"damit „alles ankreuzen“ 0 Punkte ergibt. Gewollt?")
             shuffled = opts[:]; rnd.shuffle(shuffled)
             pub['options'] = shuffled
             key['options'] = opts
@@ -207,8 +211,10 @@ def main(src, out_dir=None):
         f.write(f"# {data['title']} – answer key\n\nStart code: **{code}** · {data['minutes']} min · "
                 f"{total} points · build {build}\n\n")
         f.write("Scoring (page /checks/auswertung/auswertung.html, with the -key.json file of the same build): "
-                "single = all or nothing; multi = (correct ticks − wrong ticks) ÷ number of correct "
-                "options × points, min. 0, rounded to 0.5; match = equal share per row, rounded to 0.5.\n\n")
+                "single = all or nothing; multi = correct ticks ÷ number of correct options × points, minus "
+                "one share for every tick beyond the number of correct options (more if over half the "
+                "options are correct, so that ticking everything gives 0), min. 0, rounded to 0.5; "
+                "match = equal share per row, rounded to 0.5.\n\n")
         f.write("Notenpunkte: " + ' · '.join(f"≥{p} % → {np}" for p, np in data['scale']) + "\n\n")
         f.write('\n'.join(md))
     print(f"start code: {code}\nbuild {build}: {total} points, {nr - 1} tasks\n"
