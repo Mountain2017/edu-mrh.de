@@ -23,8 +23,9 @@
    and PRUEFUNG_X; they are replaced by name, receipt and check id. The result
    screen then shows two steps: 1. save the file, 2. open the form (enabled only
    after saving). Without data-abgabe the generic hand-in text is shown.
-   Elements with [data-after-hand-in] (e.g. the Impressum footer, set `hidden`)
-   are only shown after hand-in, so the page has no links during the check.
+   Check pages have no links at all, not even to the Impressum (exception to the
+   site rule, so students cannot leave the page by accident). Elements with
+   [data-after-hand-in] (set `hidden`) are only shown after hand-in.
 
    Start screen: name, course/class and extra time (Nachteilsausgleich).
    data-kurse="10C,3e1" on #check → course as a drop-down, else free text.

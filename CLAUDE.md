@@ -19,6 +19,10 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
   Abschnitten (Tab-Modus) und schluckt alle anderen `#`-Klicks.
 - Neue Seiten auf der Fachseite (`<fach>/<fach>.html`) als Karte verlinken;
   neue Fächer zusätzlich in `index.html` (Sidebar + info-grid-Karte).
+- **KI-Prompt** auf `contribute.html#ai-template` (`<pre id="prompt-text">`, HTML-escaped)
+  beschreibt Gerüst, Bausteine und alle `/embed/`-Werkzeuge für Leute ohne Repo
+  (auch Vorlage für den fobizz-Assistenten, der nur verlinkt ist, kein iframe).
+  Ändern sich Vorlagen, Einbinde-Zeilen oder Regeln, den Prompt mit anpassen.
 - Stilistische Referenz sind die **Informatik- und Englisch-Seiten**
   (z. B. `informatik/informatik.html`, `englisch/12/uk/uk-and-writing.html`):
   gemeinsames Grundgerüst, darauf themenspezifisches Styling im `<style>`-
@@ -29,7 +33,9 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
 1. **Jede Seite braucht erreichbares Impressum + Zurück-/Übersichts-Element.**
    Standard-Layout: über die Navbar (in den Vorlagen enthalten). Freies
    Design: `<script defer src="https://edu-mrh.de/controls.js"></script>`
-   vor `</body>`.
+   vor `</body>`. **Ausnahme: Online-Checks/Tests** (`checks/check-*.html`) haben
+   gar keinen Link, auch kein Impressum, damit niemand versehentlich die Seite
+   verlässt (so von der Lehrkraft gewünscht); einziger Link ist das Abgabeformular.
 2. **Keine externen CDNs, Google Fonts oder Tracker (DSGVO).** Bibliotheken
    über `https://edu-mrh.de/embed/…` (verfügbar: style.css, script.js,
    MathJax, KaTeX, Java-Online-IDE, SQL-IDE, GeoGebra, Snap!, Pyodide – Einbinde-
@@ -216,8 +222,10 @@ QR-Codes (nicht löschen).
   abstimmen und vorab ankündigen.
 - **Online-Checks** (alles in `checks/`, generisch für jedes Thema; der Ordner ist auf
   dem Server zusätzlich per `.htaccess` geschützt): `check-<n>-<thema>.html` ist nur eine
-  Hülle (`<div id="check" data-title="Check <n>">`, Sprache über `<html lang>`) ohne Links
-  außer dem Impressum; `check-engine.js` + `check.css` für Schüler:innen.
+  Hülle (`<div id="check" data-title="Check <n>" data-abgabe="…">`, Sprache über `<html lang>`)
+  **ohne jeden Link, auch ohne Impressum** (Ausnahme von Regel 1); `check-engine.js` +
+  `check.css` für Schüler:innen. Abgabe über Microsoft Forms wie bei Englisch 13 (s. u.,
+  gleiches Formular, `data-abgabe` aus der QotT-Hülle übernehmen).
   Fragen im Klartext nur in `material/check-<n>-*.json` (nicht versioniert,
   `.gitignore` – **nie pushen, das Repo ist öffentlich, auch die Historie**; Format im
   Kopf von `build_check.py`). `python3 checks/build_check.py material/check-<n>-*.json`
@@ -246,10 +254,10 @@ QR-Codes (nicht löschen).
 - **Weitere Checks mit derselben Technik**: Englisch 13 Questions on the Text
   (`englisch/13/questions-on-the-text/checks/`, Fragen in `…/material/`). Dort liegen
   nur Hülle, gebautes `.js` und **Kopien** von `check-engine.js`/`check.css` (identisch
-  zu den W-Seminar-Dateien halten). Läuft im Safe Exam Browser: während des Checks
-  **kein Link** auf der Seite, auch nicht zum Impressum (Footer mit `data-after-hand-in
-  hidden`, erscheint erst nach der Abgabe; so von der Lehrkraft gewünscht). Abgabe über
-  Microsoft Forms: `data-abgabe` am `#check` = vorausgefüllter Forms-Link mit den
+  zu den W-Seminar-Dateien halten). Läuft im Safe Exam Browser; wie alle Checks **ohne
+  Link**, auch nicht zum Impressum (auch nicht nach der Abgabe). Stand 2026-10: 13 Aufgaben,
+  25 Minuten (frühere Aufgabe 14 `rev-*` entfernt, zu uneindeutig). Abgabe über
+  Microsoft Forms (alle Checks, gleiches Formular): `data-abgabe` am `#check` = vorausgefüllter Forms-Link mit den
   Platzhaltern `NAME_X`, `RECEIPT_X`, `PRUEFUNG_X`; der Ergebnisbildschirm zeigt dann
   „1. Datei speichern, 2. Formular öffnen“ (Formular erst nach dem Speichern aktiv).
   Die Ergebnisdatei enthält dafür zusätzlich `pruefungsId` und `receiptId` (für den
