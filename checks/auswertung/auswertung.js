@@ -190,18 +190,64 @@
             b.addEventListener('click', function () { printOnly(+b.dataset.one); });
         });
     }
-    function csv() {
-        var first = ROWS.filter(function (x) { return !x.err; })[0];
-        // feste Spalten zuerst (Excel-Mappe „Prüfungsabgaben“ liest Quittung, Punkte, max, NP), Aufgaben am Ende
-        var head = ['Kurs', 'Name', 'Quittung', 'Punkte', 'max', 'Prozent', 'NP', 'Zeitzuschlag (%)', 'Dauer (min)', 'erlaubt (min)', 'abgegeben', 'Quittung ok']
-            .concat(first ? first.ev.map(function (e, i) { return 'A' + (i + 1); }) : []);
-        var lines = [head.join(';')];
+    /* Alle Angaben je Abgabe als Tabelle (für CSV und „Für Excel kopieren“).
+       Spalten A–L fest (die Excel-Mappe „Prüfungsabgaben“ liest Quittung = C, Punkte = D, max = E,
+       NP = G, Quittung ok = L), danach Prüfangaben, Punkte je Aufgabe (A1…) und gezogene
+       Aufgabenversion je Aufgabe (V1…). Fehlerzeilen: L = „prüfen“, Grund in „Hinweis“. */
+    function grid() {
+        var n = ROWS.reduce(function (m, x) { return Math.max(m, x.r && x.r.draw ? x.r.draw.length : 0); }, 0);
+        var nums = []; for (var i = 1; i <= n; i++) nums.push(i);
+        var head = ['Kurs', 'Name', 'Quittung', 'Punkte', 'max', 'Prozent', 'NP', 'Zeitzuschlag (%)', 'Dauer (min)', 'erlaubt (min)', 'abgegeben', 'Quittung ok',
+            'Hinweis', 'Check-ID', 'Build', 'begonnen', 'Dauer (m:ss)', 'Zeit abgelaufen', 'beantwortet', 'Datei']
+            .concat(nums.map(function (k) { return 'A' + k; }), nums.map(function (k) { return 'V' + k; }));
+        var out = [head];
         ROWS.forEach(function (x) {
-            if (x.err) { lines.push([x.r.kurs || '', x.r.name || x.file, x.r.receipt || '', 'Fehler: ' + x.err.replace(/<[^>]+>/g, '')].join(';')); return; }
-            lines.push([x.r.kurs || '', x.r.name, x.r.receipt || '', fmt(x.pts), KEY.max, pc1(x.pct), x.g.np, x.r.zeitzuschlag || 0, pc1(took(x.r)), pc1(allowed(x.r)),
-                when(x.r.submittedAt), x.ok ? 'ok' : 'prüfen'].concat(x.ev.map(function (e) { return fmt(e.points); })).join(';'));
+            var r = x.r || {}, ok = !x.err && x.ok;
+            var hint = x.err ? 'Fehler: ' + x.err.replace(/<[^>]+>/g, '') : !x.ok ? 'Quittung passt nicht: Datei verändert?' : late(r) ? 'länger als erlaubt' : '';
+            var answered = r.draw ? r.draw.filter(function (d) { var a = (r.answers || {})[d.id]; return a && (typeof a !== 'object' || Object.keys(a).length); }).length : '';
+            var row = [tx(r.kurs || ''), tx(r.name || x.file), tx(r.receipt || ''),
+                x.err ? '' : fmt(x.pts), x.err ? '' : KEY.max, x.err ? '' : pc1(x.pct), x.err ? '' : x.g.np,
+                r.zeitzuschlag || 0, r.startedAt ? pc1(took(r)) : '', pc1(allowed(r)), r.submittedAt ? when(r.submittedAt) : '', ok ? 'ok' : 'prüfen',
+                hint, tx(r.check || ''), tx(r.build || ''), r.startedAt ? when(r.startedAt) : '', tx(r.startedAt ? mmss(took(r)) : ''),
+                r.zeitAbgelaufen ? 'ja' : 'nein', tx(answered + (r.draw ? ' / ' + r.draw.length : '')), tx(x.file)];
+            for (var k = 0; k < n; k++) row.push(!x.err && x.ev[k] ? fmt(x.ev[k].points) : '');
+            for (k = 0; k < n; k++) row.push(tx(r.draw && r.draw[k] ? r.draw[k].id : ''));
+            out.push(row);
         });
-        download(KEY.check + '_auswertung.csv', '﻿' + lines.join('\n') + '\n', 'text/csv;charset=utf-8');
+        return out;
+    }
+    /* Excel macht sonst aus „3e1“ die Zahl 30, aus Quittung „12345678“ eine Zahl (dann passt sie
+       nicht mehr zur Abgabe) und aus „0:01“ eine Uhrzeit. Textfelder daher als ="…" (Formel mit
+       Textergebnis, sicher auch gegen Formel-Einschleusung über Namen); übrige Felder ohne
+       führendes = + - @. */
+    function tx(v) { return { t: String(v == null ? '' : v) }; }
+    function cell(v) {
+        if (v && typeof v === 'object') return v.t === '' ? '' : '="' + v.t.replace(/"/g, '""') + '"';
+        v = String(v == null ? '' : v);
+        return /^[=+\-@]/.test(v) ? ' ' + v : v;
+    }
+    function csv() {   // Semikolon, Felder mit ; , " oder Umbruch in Anführungszeichen; „sep=;“ für Excel
+        var lines = grid().map(function (row) {
+            return row.map(function (v) { v = cell(v); return /[;,"\r\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(';');
+        });
+        download(KEY.check + '_auswertung.csv', '﻿sep=;\r\n' + lines.join('\r\n') + '\r\n', 'text/csv;charset=utf-8');
+    }
+    function copyExcel() {   // Tabulator-getrennt: Excel verteilt das beim Einfügen immer richtig auf Spalten
+        var rows = grid(), text = rows.map(function (row) {
+            return row.map(function (v) { return cell(v).replace(/[\t\r\n]+/g, ' '); }).join('\t');
+        }).join('\r\n') + '\r\n';
+        var done = function () {
+            $('copy-msg').innerHTML = '<b>' + (rows.length - 1) + ' Zeile(n) kopiert.</b> In der Mappe „Prüfungsabgaben“ im Blatt „Auswertung“ Zelle A1 anklicken und einfügen (Strg+V). ' +
+                'Weitere Prüfungen darunter einfügen, Kopfzeilen dürfen doppelt vorkommen.';
+        };
+        var fallback = function () {
+            var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+            document.body.appendChild(ta); ta.select();
+            var ok = false; try { ok = document.execCommand('copy'); } catch (e) { }
+            ta.remove();
+            if (ok) done(); else $('copy-msg').textContent = 'Kopieren hat nicht geklappt. Bitte „Tabelle als CSV“ verwenden.';
+        };
+        if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
     }
 
     /* ---------------------------------------------------------------- Bericht je Person */
@@ -379,6 +425,7 @@
     document.addEventListener('drop', function (e) { e.preventDefault(); if (e.target !== drop && !drop.contains(e.target) && e.dataTransfer.files.length) addFiles(e.dataTransfer.files); });
     $('pdf-all').addEventListener('click', function () { document.body.classList.remove('only'); window.print(); });
     $('csv').addEventListener('click', csv);
+    $('xl').addEventListener('click', copyExcel);
     $('reset').addEventListener('click', function () {
         KEY = null; RESULTS = []; FILES = {}; ROWS = [];
         $('table').innerHTML = ''; $('druck').innerHTML = ''; $('status').textContent = ''; $('out').hidden = true;

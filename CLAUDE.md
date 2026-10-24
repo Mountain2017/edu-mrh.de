@@ -267,9 +267,13 @@ QR-Codes (nicht löschen).
   die Zeit läuft dann `minutes × (1 + Zuschlag)`. Die Ergebnisdatei (`rv: 2`) enthält `kurs`,
   `zeitzuschlag`, `zeitMin`, `zeitErlaubtMin`, `dauerMin`, `dauer`, `zeitAbgelaufen`; die
   Quittung deckt ab `rv 2` auch Kurs, Zuschlag und Startzeit ab (gleiche Formel in
-  `auswertung.js`, ältere Dateien ohne `rv` bleiben gültig). CSV der Auswertung: feste Spalten
-  zuerst (Kurs, Name, Quittung, Punkte, max, Prozent, NP, …), Aufgaben am Ende – die
-  Excel-Mappe der Lehrkraft liest diese Reihenfolge.
+  `auswertung.js`, ältere Dateien ohne `rv` bleiben gültig). CSV der Auswertung und Button
+  „Für Excel kopieren“ (Tabulator, Zwischenablage) liefern dieselbe Tabelle (`grid()`): Spalten
+  A–L fest (Kurs, Name, Quittung, Punkte, max, Prozent, NP, Zuschlag, Dauer, erlaubt, abgegeben,
+  Quittung ok – die Excel-Mappe der Lehrkraft liest C, D, E, G, L), dann Hinweis, Check-ID,
+  Build, begonnen, Dauer m:ss, Zeit abgelaufen, beantwortet, Datei, Punkte je Aufgabe `A…`,
+  gezogene Version je Aufgabe `V…`. Textfelder als `="…"`, damit Excel „3e1“ oder eine
+  Ziffern-Quittung nicht in Zahlen umwandelt; CSV mit `sep=;` und Anführungszeichen.
   Das Build-Skript gibt es nur einmal im W-Seminar-Ordner (Auswertung zentral, s. o.): `python englisch/w-seminar-time/checks/build_check.py
   <thema>/material/check-<n>-*.json` schreibt das `.js` nach `<thema>/checks/`.
 
