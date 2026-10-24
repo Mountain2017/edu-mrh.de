@@ -11,8 +11,10 @@
    dann alle Aufgaben in der Reihenfolge und Anordnung, die die Person gesehen hat,
    mit eigener Antwort, richtiger Lösung und Punkten.
 
-   Bewertung: single = alles oder nichts; multi = max(0, richtige − falsche Kreuze)
-   ÷ Zahl der richtigen Optionen × Punkte; match = gleicher Anteil je Zeile;
+   Bewertung: single = alles oder nichts; multi = richtige Kreuze ÷ Zahl der richtigen
+   Optionen × Punkte, abgezogen wird nur für Kreuze über diese Zahl hinaus (wer höchstens so
+   viele Kreuze setzt, wie es richtige Optionen gibt, verliert für ein falsches Kreuz nichts
+   extra; „alles ankreuzen“ lohnt sich nicht); match = gleicher Anteil je Zeile;
    jeweils auf 0,5 gerundet. Notenpunkte: höchste Stufe, deren Prozentgrenze
    erreicht ist. Die Seite enthält selbst keine Fragen und keine Lösungen.
    Textblöcke (Schlüssel: "passages", Auslosung: draw[i].ps): Der Text steht im
@@ -28,7 +30,7 @@
             next: 'Next step: {np} NP from {pts} P ({diff} P more).', top: 'Highest grade point reached.',
             okSel: 'your answer – correct', badSel: 'your answer – wrong', miss: 'correct answer you did not choose',
             mkOk: '✓', mkBad: '✗', mkMiss: '✓ correct', noAnswer: 'no answer', correctIs: '→ ',
-            calcMulti: '({tp} right − {fp} wrong) ÷ {n} correct × {pts} P = {res} P',
+            calcMulti: '{tp} of {n} correct ticked{exTxt} → ({tp} − {ex}) ÷ {n} × {pts} P = {res} P', exEn: ', {ex} ticked too many',
             calcMatch: '{r} of {n} rows right × {pts} P = {res} P', rounded: ' (rounded to 0.5)'
         },
         de: {
@@ -37,7 +39,7 @@
             next: 'Nächste Stufe: {np} NP ab {pts} P (noch {diff} P).', top: 'Höchste Notenpunktzahl erreicht.',
             okSel: 'deine Antwort – richtig', badSel: 'deine Antwort – falsch', miss: 'richtige Antwort, nicht gewählt',
             mkOk: '✓', mkBad: '✗', mkMiss: '✓ richtig', noAnswer: 'keine Antwort', correctIs: '→ ',
-            calcMulti: '({tp} richtig − {fp} falsch) ÷ {n} richtige × {pts} P = {res} P',
+            calcMulti: '{tp} von {n} richtigen angekreuzt{exTxt} → ({tp} − {ex}) ÷ {n} × {pts} P = {res} P', exEn: ', {ex} zu viel angekreuzt',
             calcMatch: '{r} von {n} Zeilen richtig × {pts} P = {res} P', rounded: ' (auf 0,5 gerundet)'
         }
     };
@@ -85,7 +87,8 @@
             ans = Array.isArray(ans) ? ans : [];
             e.tp = ans.filter(function (a) { return k.correct.indexOf(a) >= 0; }).length;
             e.fp = ans.length - e.tp; e.n = k.correct.length;
-            e.raw = Math.max(0, e.tp - e.fp) / e.n * k.points;
+            e.ex = Math.max(0, ans.length - e.n);   // Kreuze über die Zahl der richtigen Optionen hinaus
+            e.raw = Math.max(0, e.tp - e.ex) / e.n * k.points;
             e.points = half(e.raw);
         } else {
             ans = ans && typeof ans === 'object' ? ans : {};
@@ -304,7 +307,7 @@
     function itemBlock(x, n) {
         var t = L(), d = x.r.draw[n], k = KEY.items[d.id], e = x.ev[n], a = (x.r.answers || {})[d.id];
         var rounded = e.raw != null && Math.abs(e.raw - e.points) > 1e-9 ? t.rounded : '';
-        var calc = k.type === 'multi' ? fill(t.calcMulti, { tp: e.tp, fp: e.fp, n: e.n, pts: fmt(k.points), res: fmt(e.points) }) + rounded
+        var calc = k.type === 'multi' ? fill(t.calcMulti, { tp: e.tp, ex: e.ex, n: e.n, pts: fmt(k.points), res: fmt(e.points), exTxt: e.ex ? fill(t.exEn, { ex: e.ex }) : '' }) + rounded
             : k.type === 'match' ? fill(t.calcMatch, { r: e.r, n: e.n, pts: fmt(k.points), res: fmt(e.points) }) + rounded : '';
         var h = '<div class="r-it ' + e.state + '"><div class="r-prompt"><span class="r-ith"><span class="r-calc">' + calc + '</span>' +
             '<span class="r-ip">' + fmt(e.points) + ' / ' + fmt(e.max) + ' ' + t.p + '</span></span>' +
@@ -361,13 +364,20 @@
         rep.appendChild(s);
         return s.querySelector('.body');
     }
-    function over(body) { return body.scrollHeight > body.clientHeight + 1; }
+    /* Reserve: Beim Drucken setzt der Browser Schrift oft minimal breiter als am Bildschirm, dann
+       bricht eine Zeile mehr um. Deshalb bleibt beim Verteilen unten 6 % der Seite frei. */
+    var RESERVE = 0.06;
+    function over(body) {   // Unterkante des letzten Blocks (nicht scrollHeight: das ist nie kleiner als die Seite)
+        var last = body.lastElementChild; if (!last) return false;
+        var top = body.getBoundingClientRect().top, bottom = last.getBoundingClientRect().bottom;
+        return bottom - top > body.clientHeight * (1 - RESERVE);
+    }
     /* Blöcke auf Seiten verteilen; Rückgabe: Zahl der Seiten (bei limit: Abbruch, sobald überschritten) */
     function layout(rep, blocks, fs, two, limit) {
         rep.innerHTML = '';
         rep.style.setProperty('--fs', fs + 'pt');
         rep.classList.toggle('two', two);
-        var body = sheet(rep), pages = 1;
+        var body = sheet(rep), pages = 1, big = false;
         for (var i = 0; i < blocks.length; i++) {
             var tmp = document.createElement('div'); tmp.innerHTML = blocks[i];
             var el = tmp.firstChild; body.appendChild(el);
@@ -375,6 +385,11 @@
                 body.removeChild(el);
                 if (limit && pages >= limit) return pages + 1;
                 body = sheet(rep); pages++; body.appendChild(el);
+            }
+            if (over(body) && body.children.length === 1) {   // ein Block allein größer als eine Seite
+                big = true;
+                if (limit) return limit + 1;                     // kleinere Schrift versuchen
+                body.parentNode.classList.add('grow');           // sonst Seite wachsen lassen: nichts abschneiden
             }
         }
         return pages;

@@ -207,8 +207,9 @@ def main(src, out_dir=None):
         f.write(f"# {data['title']} – answer key\n\nStart code: **{code}** · {data['minutes']} min · "
                 f"{total} points · build {build}\n\n")
         f.write("Scoring (page /checks/auswertung/auswertung.html, with the -key.json file of the same build): "
-                "single = all or nothing; multi = (correct ticks − wrong ticks) ÷ number of correct "
-                "options × points, min. 0, rounded to 0.5; match = equal share per row, rounded to 0.5.\n\n")
+                "single = all or nothing; multi = correct ticks ÷ number of correct options × points, minus "
+                "one share for every tick beyond the number of correct options, min. 0, rounded to 0.5; "
+                "match = equal share per row, rounded to 0.5.\n\n")
         f.write("Notenpunkte: " + ' · '.join(f"≥{p} % → {np}" for p, np in data['scale']) + "\n\n")
         f.write('\n'.join(md))
     print(f"start code: {code}\nbuild {build}: {total} points, {nr - 1} tasks\n"
