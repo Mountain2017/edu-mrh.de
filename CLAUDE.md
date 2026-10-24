@@ -246,7 +246,10 @@ QR-Codes (nicht löschen).
   Checks und Fächer, Ordner auf dem Server per eigener `.htaccess` geschützt; unverlinkt,
   ohne Links, liest nur lokal): Tabelle, CSV und je Person ein 2-seitiger Bericht (Druck → PDF)
   mit Notenpunkten, Notenschlüssel und allen Aufgaben wie gesehen, eigene Antwort,
-  Lösung und Punkte. Check- und Auswertungsseite nirgends verlinken.
+  Lösung und Punkte (Verteilung auf Seiten mit 6 % Reserve, weil der Druck Schrift breiter
+  setzt als der Bildschirm; ein Block größer als eine Seite lässt das Blatt wachsen statt
+  abzuschneiden). Bewertung Mehrfachauswahl: richtige Kreuze ÷ Zahl der richtigen Optionen,
+  Abzug nur für Kreuze über diese Zahl hinaus. Check- und Auswertungsseite nirgends verlinken.
 - **Textblöcke** (`"block": true` im Fragen-JSON): ein Lesetext mit Zeilennummern und
   mehrere Aufgaben dazu; je Version ein Paralleltext, alle Versionen mit gleicher
   Aufgabenfolge (Typ, Punkte). Auf breiten Bildschirmen steht der Text mitlaufend neben
