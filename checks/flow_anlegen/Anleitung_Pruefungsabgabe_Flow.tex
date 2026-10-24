@@ -1,0 +1,629 @@
+% Anleitung: Prüfungsabgaben mit Microsoft Forms + Power Automate + Excel
+% Kompilieren mit LuaLaTeX (oder XeLaTeX).
+\documentclass[11pt,a4paper,parskip=half]{scrartcl}
+
+\usepackage{fontspec}
+\usepackage{babel}
+\babelprovide[import,main]{ngerman}
+\IfFontExistsTF{Inter}{\setsansfont{Inter}[Scale=0.95]\setmainfont{Inter}[Scale=0.95]}{%
+  \IfFontExistsTF{DejaVu Sans}{\setsansfont{DejaVu Sans}[Scale=0.9]\setmainfont{DejaVu Sans}[Scale=0.9]}{}}
+\IfFontExistsTF{DejaVu Sans Mono}{\setmonofont{DejaVu Sans Mono}[Scale=0.82]}{}
+\renewcommand{\familydefault}{\sfdefault}
+
+\usepackage[margin=2.2cm,top=2cm,bottom=2.4cm]{geometry}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage[most]{tcolorbox}
+\usepackage{enumitem}
+\usepackage{tabularx,booktabs,array}
+\usepackage{listings}
+\usepackage{csquotes}
+\usepackage{pifont}
+\usepackage{amssymb}
+\setlength{\emergencystretch}{3em}
+\usepackage{scrlayer-scrpage}
+\usepackage[hidelinks]{hyperref}
+
+% ---------- Farben (edu-mrh: blau/violett, hell) ----------
+\definecolor{blau}{HTML}{2F4A8A}
+\definecolor{violett}{HTML}{5B4B9A}
+\definecolor{hellblau}{HTML}{EEF2FA}
+\definecolor{hellviolett}{HTML}{F1EEF9}
+\definecolor{gelb}{HTML}{FFF4CC}
+\definecolor{rot}{HTML}{B3261E}
+\definecolor{hellrot}{HTML}{FBE9E7}
+\definecolor{gruen}{HTML}{1E6B3A}
+\definecolor{hellgruen}{HTML}{E6F4EC}
+\definecolor{grau}{HTML}{5F6675}
+\definecolor{hellgrau}{HTML}{F4F5F8}
+
+\addtokomafont{disposition}{\color{blau}}
+\addtokomafont{section}{\Large\bfseries}
+\addtokomafont{subsection}{\large\bfseries\color{violett}}
+\setkomafont{pageheadfoot}{\small\color{grau}}
+\pagestyle{scrheadings}
+\clearpairofpagestyles
+\ihead{Prüfungsabgabe: Forms $\rightarrow$ Power Automate $\rightarrow$ Excel}
+\ohead{\pagemark}
+
+\setlist{itemsep=2pt,topsep=3pt}
+\setlist[enumerate]{label=\textbf{\arabic*.}}
+
+% ---------- Bausteine ----------
+% Bedienelement: \ui{Neuer Schritt}
+\newcommand{\ui}[1]{\tikz[baseline=(t.base)]\node[draw=blau!50,fill=hellblau,rounded corners=2pt,inner xsep=3pt,inner ysep=1.5pt,font=\small\bfseries\color{blau}](t){#1};}
+% Feldname in Excel/Forms: \feld{KontoEmail}
+\newcommand{\feld}[1]{\texttt{\color{violett}#1}}
+% dynamischer Inhalt (Blitz-Symbol)
+\newcommand{\dyn}[1]{\tikz[baseline=(t.base)]\node[fill=violett!12,rounded corners=2pt,inner xsep=3pt,inner ysep=1.5pt,font=\small\color{violett}](t){#1};}
+
+\newtcolorbox{info}[1][Gut zu wissen]{enhanced,breakable,colback=hellblau,colframe=blau,
+  boxrule=0pt,leftrule=3pt,arc=2pt,fonttitle=\bfseries,coltitle=blau,colbacktitle=hellblau,
+  title={#1},attach title to upper={\ },before skip=8pt,after skip=8pt}
+\newtcolorbox{achtung}[1][Achtung]{enhanced,breakable,colback=hellrot,colframe=rot,
+  boxrule=0pt,leftrule=3pt,arc=2pt,fonttitle=\bfseries,coltitle=rot,
+  title={#1},attach title to upper={\ },before skip=8pt,after skip=8pt}
+\newtcolorbox{fertig}[1][Kontrolle]{enhanced,breakable,colback=hellgruen,colframe=gruen,
+  boxrule=0pt,leftrule=3pt,arc=2pt,fonttitle=\bfseries,coltitle=gruen,
+  title={#1},attach title to upper={\ },before skip=8pt,after skip=8pt}
+
+% Schritt-Kasten mit Nummer
+\newcounter{schritt}
+\newtcolorbox{schritt}[2][]{enhanced,breakable,colback=white,colframe=blau!35,boxrule=0.6pt,arc=3pt,
+  left=10pt,right=10pt,top=8pt,bottom=8pt,before skip=10pt,after skip=10pt,
+  title={\stepcounter{schritt}\tikz[baseline=-0.6ex]\node[circle,fill=blau,text=white,font=\bfseries\small,inner sep=1.6pt,minimum size=15pt]{\theschritt};\ \ #2},
+  fonttitle=\bfseries\large,coltitle=blau,colbacktitle=white,
+  titlerule=0pt,toptitle=6pt,bottomtitle=0pt,#1}
+
+% Ausdruck-Kasten (über fx eingeben)
+\lstdefinestyle{fx}{basicstyle=\ttfamily\small\color{black},breaklines=true,breakatwhitespace=false,
+  columns=fullflexible,keepspaces=true,showstringspaces=false,
+  literate={ä}{{\"a}}1 {ö}{{\"o}}1 {ü}{{\"u}}1 {ß}{{\ss}}1 {Ä}{{\"A}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1 {…}{{\ldots}}1}
+\newtcblisting{ausdruck}[1][Ausdruck (über \textbf{fx} eingeben)]{enhanced,listing only,
+  listing options={style=fx},colback=hellgrau,colframe=grau!40,boxrule=0.5pt,arc=2pt,
+  left=6pt,right=6pt,top=3pt,bottom=3pt,
+  title={\small #1},fonttitle=\color{grau},colbacktitle=hellgrau,coltitle=grau,
+  titlerule=0pt,toptitle=2pt,bottomtitle=0pt,before skip=4pt,after skip=6pt}
+\newtcblisting{code}[1][]{enhanced,breakable,listing only,
+  listing options={style=fx,language=Java,morekeywords={const,function,let,return},
+    keywordstyle=\color{blau}\bfseries,stringstyle=\color{violett},commentstyle=\color{grau}\itshape},
+  colback=hellgrau,colframe=grau!40,boxrule=0.5pt,arc=2pt,left=6pt,right=6pt,
+  title={\small #1},fonttitle=\color{grau},colbacktitle=hellgrau,coltitle=grau,titlerule=0pt,
+  before skip=6pt,after skip=8pt}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\begin{document}
+
+% ================================================================ Titel
+\begin{tcolorbox}[enhanced,colback=blau,colframe=blau,arc=4pt,left=14pt,right=14pt,top=12pt,bottom=12pt]
+  \color{white}
+  {\small\bfseries PRÜFUNGEN IM SAFE EXAM BROWSER}\\[3pt]
+  {\LARGE\bfseries Abgaben automatisch einsammeln}\\[4pt]
+  {\large Microsoft Forms $\rightarrow$ Power Automate $\rightarrow$ Excel. Schritt für Schritt, ohne Vorkenntnisse.}
+\end{tcolorbox}
+
+\section*{Worum geht es?}
+
+Am Ende einer Prüfung im Safe Exam Browser (SEB) speichern die Schüler:innen eine Ergebnisdatei
+(\texttt{.json}) und klicken auf \ui{Jetzt abgeben}. Es öffnet sich ein Microsoft-Formular, in dem
+Name, Receipt-ID und Prüfungs-ID schon eingetragen sind. Die Schüler:innen laden nur noch die Datei
+hoch und schicken ab. Ein Power-Automate-Flow liest die Datei aus und schreibt eine Zeile in die
+Excel-Mappe \feld{Pruefungsabgaben.xlsx}. Dort wird die Abgabe automatisch der richtigen Person im
+richtigen Kurs zugeordnet.
+
+\begin{center}
+\begin{tikzpicture}[node distance=7mm,
+  box/.style={draw=blau!50,fill=hellblau,rounded corners=4pt,align=center,font=\small,
+              minimum height=17mm,text width=29mm,inner sep=4pt},
+  pfeil/.style={-{Stealth[length=2.6mm]},thick,blau}]
+  \node[box](a){\textbf{Prüfung im SEB}\\ Name zu Beginn,\\ am Ende JSON\\ + Abgabe-Link};
+  \node[box,right=of a](b){\textbf{Forms}\\ Login mit Schulkonto,\\ Felder vorausgefüllt,\\ Datei-Upload};
+  \node[box,right=of b](c){\textbf{Power Automate}\\ liest die JSON-\\Datei aus};
+  \node[box,right=of c,fill=hellviolett,draw=violett!50](d){\textbf{Excel}\\ Abgaben $\rightarrow$\\ Kontrolle $\rightarrow$\\ Kursblatt + Note};
+  \draw[pfeil](a)--(b); \draw[pfeil](b)--(c); \draw[pfeil](c)--(d);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Ein Formular und ein Flow für alle Kurse.} Welcher Kurs gemeint ist, ergibt sich aus der
+Prüfungs-ID im JSON. Im Excel-Blatt \feld{Prüfungen} steht zu jeder Prüfungs-ID der passende Kurs.
+Innerhalb des Kurses wird über den Namen zugeordnet.
+
+\begin{achtung}[Wichtig: Vorausgefüllte Felder lassen sich nicht sperren.]
+Microsoft Forms kann vorausgefüllte Felder nicht schreibgeschützt machen. Schüler:innen
+\emph{könnten} Name oder Receipt-ID im Formular überschreiben. Deshalb gilt:
+\begin{itemize}
+  \item Name, Receipt-ID, Prüfungs-ID und Punkte nimmt der Flow \textbf{aus der JSON-Datei}. Die Datei
+        erzeugt die Prüfungsseite, und im SEB gibt es keinen Editor, um sie zu verändern.
+  \item Die Receipt-ID aus dem Formular dient nur zum Gegencheck. Weicht sie von der Datei ab, steht
+        in Excel \textbf{PRÜFEN}.
+  \item Das Formular verlangt die Anmeldung mit dem Schulkonto. Die Konto-E-Mail wird mit der
+        Klassenliste verglichen. Gibt jemand unter fremdem Namen ab, fällt das auf.
+\end{itemize}
+\end{achtung}
+
+\subsection*{Was du brauchst}
+\begin{itemize}
+  \item dein Schulkonto (Microsoft 365) mit Zugriff auf Forms, OneDrive, Excel und Power Automate.
+        \textbf{Premium ist nicht nötig}, alle Bausteine sind Standard.
+  \item die Excel-Mappe \feld{Pruefungsabgaben.xlsx}
+  \item etwa 45 Minuten Zeit für die Ersteinrichtung. Danach läuft alles von selbst.
+\end{itemize}
+
+% ================================================================ Teil 1
+\section{Excel-Mappe vorbereiten}
+
+\setcounter{schritt}{0}
+\begin{schritt}{Mappe in OneDrive ablegen}
+\begin{enumerate}
+  \item Öffne \url{https://www.office.com} und melde dich mit dem Schulkonto an.
+  \item Öffne \ui{OneDrive}. Lege einen Ordner \feld{Prüfungen} an.
+  \item Lade \feld{Pruefungsabgaben.xlsx} in diesen Ordner hoch.
+\end{enumerate}
+\begin{achtung}[Nicht verschieben, nicht umbenennen.]
+Der Flow findet die Mappe über Ordner und Dateinamen. Wenn du sie später verschiebst oder
+umbenennst, bricht er ab.
+\end{achtung}
+\end{schritt}
+
+\begin{schritt}{Kurs und Prüfung eintragen}
+Die Mappe enthält ein Blatt \feld{Start} mit allen Erklärungen. \colorbox{gelb}{Gelbe Zellen} sind
+zum Ausfüllen da, graue rechnen automatisch.
+\begin{enumerate}
+  \item \textbf{Kursblatt anlegen:} Rechtsklick auf das Blatt \feld{Kursvorlage}
+        $\rightarrow$ \ui{Verschieben oder kopieren} $\rightarrow$ Haken bei \ui{Kopie erstellen}.
+        Die Kopie \textbf{genau so nennen, wie die Schüler:innen ihren Kurs zu Beginn der Prüfung
+        eingeben}, z.\,B. \feld{10C} oder \feld{3e1} (Groß-/Kleinschreibung egal). Denselben Namen in
+        Zelle \feld{B2} eintragen. Sag den Kursnamen vor der Prüfung an.
+  \item \textbf{Klassenliste} ausfüllen: Nachname, Vorname, möglichst die Schul-E-Mail
+        (für den Gegencheck) und bei Nachteilsausgleich den \textbf{Zeitzuschlag in Prozent}
+        (z.\,B. \feld{25}). Es gibt Platz für 40 Personen.
+  \item \textbf{Prüfung anlegen:} Im Blatt \feld{Prüfungen} eine Zeile ausfüllen. Die
+        \textbf{Prüfungs-ID} muss genau so geschrieben sein wie in der JSON-Datei, z.\,B.
+        \feld{e13-qott-check-1}. Der \textbf{Standardkurs} ist optional: Läuft die Prüfung in genau
+        einem Kurs, trägst du ihn ein; er gilt, wenn eine Kursangabe nicht passt. Bei
+        \textbf{Skala} wählst du \feld{1-6} für Noten oder \feld{0-15} für Notenpunkte.
+  \item In \textbf{jedem} beteiligten Kursblatt in \textbf{Zeile 4} über der ersten freien
+        Prüfungsspalte die Prüfungs-ID aus der Liste wählen.
+\end{enumerate}
+\end{schritt}
+
+\begin{fertig}
+Im Blatt \feld{Prüfungen} zeigt die Spalte \enquote{Kursblatt vorhanden?} ein \textbf{\ding{51}}
+(oder \enquote{Kurs aus Abgabe}, wenn du keinen Standardkurs eingetragen hast), und im
+Kursblatt steht unter der Prüfungs-ID \enquote{Abgaben: 0 von \ldots}.
+\end{fertig}
+
+\begin{info}[Beispieldaten]
+Das Blatt \feld{Beispielkurs} und die vier Beispielzeilen in \feld{Abgaben} zeigen, wie alles
+aussieht, auch typische Problemfälle. Lösch sie vor dem Echtbetrieb. Wie das geht, steht im Blatt
+\feld{Start}.
+\end{info}
+
+% ================================================================ Teil 2
+\section{Formular anlegen}
+
+\begin{schritt}{Neues Formular erstellen}
+\begin{enumerate}
+  \item Öffne \url{https://forms.office.com} und klicke \ui{Neues Formular}, \textbf{nicht} \enquote{Neues Quiz}.
+  \item Titel: \feld{Prüfungsabgabe}. Darunter als Beschreibung zum Beispiel:
+        \emph{\enquote{Bitte nur die Ergebnisdatei hochladen. Die übrigen Felder sind schon ausgefüllt und dürfen nicht geändert werden.}}
+\end{enumerate}
+\begin{achtung}[Persönliches Formular verwenden]
+Lege das Formular in \emph{deinem} Forms an, nicht in einem Teams- oder Gruppenformular. Nur dann
+landen die Dateien in deinem OneDrive, wo der Flow sie findet.
+\end{achtung}
+\end{schritt}
+
+\begin{schritt}{Vier Fragen anlegen}
+Klicke jeweils \ui{+ Neue hinzufügen} und wähle den Fragetyp. Alle vier Fragen auf \ui{Erforderlich} stellen.
+
+\medskip
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\linewidth}{@{}c l l Y@{}}
+\toprule
+\textbf{Nr.} & \textbf{Typ} & \textbf{Fragetext} & \textbf{Untertitel / Einstellung}\\
+\midrule
+1 & Text & Name & \enquote{Wird automatisch eingetragen. Nicht ändern.}\\
+2 & Text & Receipt-ID & \enquote{Wird automatisch eingetragen. Nicht ändern.}\\
+3 & Text & Prüfungs-ID & \enquote{Wird automatisch eingetragen. Nicht ändern.}\\
+4 & Datei hochladen & Ergebnisdatei hochladen & Anzahl: \textbf{1}, Größe: \textbf{10 MB}.\newline
+\enquote{Dateityp angeben} \textbf{an}, Typ \textbf{PDF}. Die Ergebnisdatei ist eine PDF,
+in der die Daten stecken (Forms nimmt keine JSON-Dateien an).\\
+\bottomrule
+\end{tabularx}
+
+\medskip
+Den Untertitel erreichst du über die drei Punkte \ui{\dots} an der Frage $\rightarrow$ \ui{Untertitel}.
+\end{schritt}
+
+\begin{schritt}{Einstellungen setzen}
+Oben rechts \ui{\dots} $\rightarrow$ \ui{Einstellungen}:
+\begin{itemize}
+  \item \ui{Nur Personen in meiner Organisation können antworten}: \textbf{an}. Für Datei-Uploads
+        ist das ohnehin Pflicht.
+  \item \ui{Namen erfassen}: \textbf{an}. So kommt die Konto-E-Mail mit.
+  \item \ui{Eine Antwort pro Person}: \textbf{aus}. Das Formular wird für mehrere Prüfungen verwendet.
+        Doppelte Abgaben erkennt die Excel-Mappe selbst.
+  \item \ui{Antworten nach dem Absenden bearbeiten}, falls vorhanden: \textbf{aus}. Eine nachträgliche
+        Änderung würde der Flow nicht mitbekommen.
+\end{itemize}
+\end{schritt}
+
+\begin{schritt}{Vorausgefüllten Link erzeugen}
+\begin{enumerate}
+  \item Oben rechts \ui{\dots} $\rightarrow$ \ui{Vorausgefüllte URL abrufen}. Die Bezeichnung kann
+        je nach Version leicht abweichen.
+  \item \ui{Vorausgefüllte Antworten aktivieren} einschalten.
+  \item In die drei Textfelder genau diese Platzhalter eintragen:\\[2pt]
+        Name $\rightarrow$ \feld{NAME\_X} \qquad Receipt-ID $\rightarrow$ \feld{RECEIPT\_X} \qquad Prüfungs-ID $\rightarrow$ \feld{PRUEFUNG\_X}
+  \item Link erzeugen und kopieren. Er enthält die drei Platzhalter. Die Prüfungsseite ersetzt sie
+        später durch die echten Werte (Code im Anhang auf Seite~\pageref{anhang}).
+\end{enumerate}
+\end{schritt}
+
+\begin{info}[Wo landen die Dateien?]
+Forms legt hochgeladene Dateien in deinem OneDrive unter
+\feld{Apps / Microsoft Forms / Prüfungsabgabe / \ldots} ab. Der Ordner entsteht erst mit dem ersten Upload.
+Du musst dort nichts tun.
+\end{info}
+
+% ================================================================ Teil 3
+\section{Den Flow bauen}
+
+Öffne \url{https://make.powerautomate.com} und melde dich mit dem Schulkonto an. Die Anleitung geht
+vom aktuellen Designer aus. Im älteren Designer heißen Knöpfe teils anders (\ui{+ Neuer Schritt}
+statt \ui{+}), die Inhalte bleiben gleich.
+
+\begin{info}[Drei Handgriffe, die du immer wieder brauchst]
+\begin{description}[leftmargin=0pt,font=\color{blau}\bfseries]
+  \item[Aktion hinzufügen:] unter der letzten Aktion auf \ui{+} $\rightarrow$ \ui{Aktion hinzufügen},
+        dann den Namen der Aktion ins Suchfeld tippen.
+  \item[Aktion umbenennen:] Aktion anklicken, im Seitenbereich oben auf den Titel klicken und
+        den neuen Namen eintippen. \textbf{Immer zuerst umbenennen}, dann ausfüllen, denn die
+        Ausdrücke verweisen auf diese Namen.
+  \item[Ausdruck eintragen:] ins Feld klicken $\rightarrow$ Symbol \ui{fx} $\rightarrow$ Ausdruck
+        eintippen oder einfügen $\rightarrow$ \ui{Hinzufügen}. Für \dyn{dynamischen Inhalt} stattdessen
+        auf das Blitz-Symbol klicken und den Eintrag auswählen.
+\end{description}
+\end{info}
+
+\begin{schritt}{Flow mit Auslöser anlegen}
+\begin{enumerate}
+  \item Links \ui{+ Erstellen} $\rightarrow$ \ui{Automatisierter Cloud-Flow}.
+  \item Name: \feld{Prüfungsabgabe nach Excel}.
+  \item Auslöser suchen: \feld{Wenn eine neue Antwort übermittelt wird} (Microsoft Forms) $\rightarrow$ \ui{Erstellen}.
+  \item Auslöser umbenennen in \feld{NeueAntwort}.
+  \item Bei \textbf{Formular-ID} das Formular \feld{Prüfungsabgabe} auswählen.
+\end{enumerate}
+\end{schritt}
+
+\begin{schritt}{Antwort abrufen}
+\begin{enumerate}
+  \item Aktion hinzufügen: \feld{Antwortdetails abrufen} (Microsoft Forms).
+  \item Umbenennen in \feld{Antwort}.
+  \item \textbf{Formular-ID}: wieder \feld{Prüfungsabgabe}.
+  \item \textbf{Antwort-ID}: \dyn{Antwort-ID} aus \enquote{NeueAntwort}.
+\end{enumerate}
+\end{schritt}
+
+\begin{schritt}{Upload-Angaben herausziehen}
+Forms liefert zur hochgeladenen Datei einen Text mit Name, Link und ID. Diese Aktion macht daraus
+etwas, das der Flow lesen kann.
+\begin{enumerate}
+  \item Aktion hinzufügen: \feld{Verfassen} (Datenvorgang). Umbenennen in \feld{Upload}.
+  \item In das Feld \textbf{Eingaben} klicken $\rightarrow$ \ui{fx}. Tippe:
+\end{enumerate}
+\begin{ausdruck}[Ausdruck, Teil 1 (tippen)]
+first(json(
+\end{ausdruck}
+\begin{enumerate}[resume]
+  \item Im selben Fenster auf den Reiter \ui{Dynamischer Inhalt} wechseln und unter \enquote{Antwort}
+        die Frage \dyn{Ergebnisdatei hochladen} anklicken. Sie wird in den Ausdruck eingefügt.
+  \item Dahinter zwei schließende Klammern tippen: \texttt{))}. Dann \ui{Hinzufügen}.
+\end{enumerate}
+Fertig sieht der Ausdruck ungefähr so aus (die Buchstabenfolge nach \texttt{body/r} ist bei dir anders):
+\begin{ausdruck}[So sieht es danach aus]
+first(json(outputs('Antwort')?['body/r3f8a1c...']))
+\end{ausdruck}
+\end{schritt}
+
+\begin{schritt}{Datei aus OneDrive lesen}
+\begin{enumerate}
+  \item Aktion hinzufügen: \feld{Dateiinhalt abrufen} (\textbf{OneDrive for Business}). Umbenennen in \feld{Datei}.
+  \item Feld \textbf{Datei}: über \ui{fx} eintragen:
+\end{enumerate}
+\begin{ausdruck}
+outputs('Upload')?['id']
+\end{ausdruck}
+\begin{enumerate}[resume]
+  \item Unter \ui{Erweiterte Parameter} die Option \textbf{Dateiinhaltstyp ableiten} auf \textbf{Nein} stellen.
+\end{enumerate}
+\begin{info}[Warum \enquote{Nein}?]
+Dann liefert OneDrive die Datei immer im selben Format. Der nächste Schritt kann sie so zuverlässig
+entschlüsseln.
+\end{info}
+\end{schritt}
+
+\begin{schritt}{Ergebnisdaten aus der PDF holen}
+\begin{enumerate}
+  \item Aktion hinzufügen: \feld{Verfassen}. Umbenennen in \feld{Daten}.
+  \item Feld \textbf{Eingaben} über \ui{fx}, am besten aus der PDF kopieren und einfügen:
+\end{enumerate}
+\begin{ausdruck}
+json(first(split(last(split(base64ToString(body('Datei')?['$content']),'%EDUJSON:')),decodeUriComponent('%0A'))))
+\end{ausdruck}
+\begin{info}[Was passiert da?]
+Die Ergebnis-PDF enthält in ihrer zweiten Zeile die Daten als \texttt{\%EDUJSON:\{\ldots\}}. Der Ausdruck
+schneidet genau diese Zeile heraus: alles nach \texttt{\%EDUJSON:} bis zum Zeilenende
+(\texttt{decodeUriComponent('\%0A')} ist der Zeilenumbruch).
+\end{info}
+Ab jetzt kommt der Flow an jedes Feld der Ergebnisdaten heran, z.\,B. mit
+\texttt{outputs('Daten')?['name']}.
+\end{schritt}
+
+\begin{schritt}{Zeile in Excel schreiben}
+\begin{enumerate}
+  \item Aktion hinzufügen: \feld{Zeile zu einer Tabelle hinzufügen} (\textbf{Excel Online (Business)}).
+        Umbenennen in \feld{Excel}.
+  \item \textbf{Speicherort}: \feld{OneDrive for Business}. \textbf{Dokumentbibliothek}: \feld{OneDrive}.
+  \item \textbf{Datei}: über das Ordnersymbol \feld{/Prüfungen/Pruefungsabgaben.xlsx} auswählen.
+  \item \textbf{Tabelle}: \feld{tblAbgaben}. Jetzt erscheinen fünfzehn Felder. Fülle sie nach der Tabelle aus:
+\end{enumerate}
+
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\linewidth}{@{}>{\ttfamily\color{violett}}l Y@{}}
+\toprule
+\normalfont\textbf{Feld} & \textbf{Inhalt}\\
+\midrule
+Eingang          & \ui{fx}\; Ausdruck aus dem Kasten unter der Tabelle\\
+AntwortID        & \dyn{Antwort-ID} (aus \enquote{NeueAntwort})\\
+KontoEmail       & \dyn{E-Mail des Antwortenden} (aus \enquote{Antwort}, engl. \emph{Responders' Email})\\
+PruefungsID      & \ui{fx}\; \texttt{outputs('Daten')?['pruefungsId']}\\
+NameLautPruefung & \ui{fx}\; \texttt{outputs('Daten')?['name']}\\
+ReceiptFormular  & \dyn{Receipt-ID} (die Formularfrage, aus \enquote{Antwort})\\
+ReceiptDatei     & \ui{fx}\; \texttt{outputs('Daten')?['receiptId']}\\
+Punkte           & \ui{fx}\; \texttt{string(outputs('Daten')?['punkte'])}\\
+MaxPunkte        & \ui{fx}\; \texttt{string(outputs('Daten')?['maxPunkte'])}\\
+Dateiname        & \ui{fx}\; \texttt{outputs('Upload')?['name']}\\
+DateiLink        & \ui{fx}\; \texttt{outputs('Upload')?['link']}\\
+Kurs             & \ui{fx}\; \texttt{outputs('Daten')?['kurs']}\\
+Zeitzuschlag     & \ui{fx}\; \texttt{string(outputs('Daten')?['zeitzuschlag'])}\\
+ZeitErlaubtMin   & \ui{fx}\; \texttt{string(outputs('Daten')?['zeitErlaubtMin'])}\\
+DauerMin         & \ui{fx}\; \texttt{string(outputs('Daten')?['dauerMin'])}\\
+\bottomrule
+\end{tabularx}
+
+\begin{ausdruck}[Ausdruck für \textbf{Eingang} (steht absichtlich in einer Zeile)]
+convertFromUtc(utcNow(),'W. Europe Standard Time','yyyy-MM-dd HH:mm')
+\end{ausdruck}
+
+\begin{achtung}[Ausdrücke aus der PDF kopieren]
+Ein Zeilenumbruch \emph{innerhalb} von Hochkommas ('\ldots') wird mitkopiert und macht den Ausdruck ungültig,
+z.\,B. \enquote{the value provided for the time zone id \ldots{} was not valid}. Nach dem Einfügen prüfen,
+dass zwischen zwei Hochkommas kein Umbruch steht. Umbrüche zwischen den Teilen (nach einem Komma) sind egal.
+\end{achtung}
+
+\begin{info}[Flow schon gebaut, Mappe neu?]
+Die neue Mappe hat vier Spalten mehr (Kurs, Zeitzuschlag, ZeitErlaubtMin, DauerMin). Alte Mappe in OneDrive
+durch die neue ersetzen (gleicher Name, gleicher Ordner). Im Schritt \enquote{Excel} die \textbf{Tabelle
+neu auswählen}, dann erscheinen die vier neuen Felder. Die übrigen Felder bleiben, wie sie sind.
+\end{info}
+
+\begin{info}[Punkte bei Online-Checks]
+Die Online-Checks auf edu-mrh.de enthalten in der Ergebnisdatei \textbf{keine Punkte} (die Seite kennt
+die Lösungen nicht). \feld{Punkte} und \feld{MaxPunkte} bleiben dann leer. Die Punkte kommen später über
+das Blatt \feld{Auswertung} in die Mappe (Abschnitt \enquote{Am Prüfungstag}).
+\end{info}
+
+\begin{info}[Andere Feldnamen in deiner JSON-Datei?]
+Die Wörter in eckigen Klammern (\texttt{'name'}, \texttt{'punkte'} \ldots) sind die Feldnamen der
+JSON-Datei. Heißt ein Feld bei dir anders, ersetzt du nur dieses Wort. Liegt ein Wert verschachtelt,
+etwa \texttt{\{"schueler":\{"name":"…"\}\}}, schreibst du \texttt{outputs('Daten')?['schueler']?['name']}.
+\end{info}
+\end{schritt}
+
+\begin{schritt}{Speichern}
+Oben rechts \ui{Speichern}. Erscheint eine rote Meldung, steht darin, welches Feld noch fehlt.
+Meist ist es ein Tippfehler in einem Aktionsnamen, z.\,B. \texttt{Daten} statt \texttt{Datei}.
+\end{schritt}
+
+\subsection*{Optional: Mail bei Auffälligkeiten}
+Wenn du sofort Bescheid wissen willst, falls die Receipt-ID im Formular nicht zur Datei passt:
+\begin{enumerate}
+  \item Nach \enquote{Excel} eine Aktion \feld{Bedingung} (Steuerelement) hinzufügen.
+  \item Die Bedingung so ausfüllen:\\[2pt]
+        links: \ui{fx}\; \texttt{outputs('Daten')?['receiptId']}\\
+        Mitte: \ui{ist nicht gleich}\\
+        rechts: \dyn{Receipt-ID} (Formularfrage)
+  \item Im Zweig \ui{True} die Aktion \feld{E-Mail senden (V2)} (Office 365 Outlook) an dich selbst.
+        Betreff z.\,B. \enquote{Abgabe prüfen}, im Text \dyn{E-Mail des Antwortenden}.
+\end{enumerate}
+Die Excel-Mappe zeigt solche Fälle ohnehin an. Die Mail ist nur ein Extra.
+
+% ================================================================ Teil 4
+\section{Testen}
+
+\begin{schritt}{Probeabgabe mit dem eigenen Konto}
+\begin{enumerate}
+  \item Trag dich selbst in ein Kursblatt ein, mit deinem Namen und deiner Schul-E-Mail.
+  \item Lege in \feld{Prüfungen} die Zeile mit der Prüfungs-ID des Checks an (z.\,B.
+        \feld{e13-qott-check-1}) und wähle sie im Kursblatt aus.
+  \item Mach den Online-Check selbst durch: Name, als Kurs den Blattnamen, Startcode. Gib ab,
+        speichere die Ergebnis-PDF und klick auf \ui{Open hand-in form}. Lade die PDF hoch und sende ab.
+  \item In Power Automate unter \ui{Meine Flows} $\rightarrow$ Flow anklicken $\rightarrow$
+        \ui{Ausführungsverlauf} nach ein bis zwei Minuten nachsehen.
+\end{enumerate}
+\end{schritt}
+
+\begin{fertig}[Alles richtig, wenn \ldots]
+der Lauf grün ist (\enquote{Erfolgreich}), in \feld{Abgaben} eine neue Zeile steht,
+\feld{Kontrolle} dafür \textbf{OK} zeigt (oder \textbf{OFFEN}, solange noch keine Punkte da sind) und im
+Kursblatt bei dir Dauer und Status \textbf{ok} bzw.\ \textbf{offen} erscheinen.
+\end{fertig}
+
+Ist ein Lauf rot, klick ihn an. Die fehlerhafte Aktion ist markiert. Unter
+\enquote{Fehlerbehebung} (Seite~\pageref{fehler}) stehen die häufigsten Ursachen.
+
+% ================================================================ Teil 5
+\section{Am Prüfungstag}
+
+\begin{minipage}[t]{0.48\linewidth}
+\subsection*{Vorher}
+\begin{itemize}
+  \item[$\square$] Prüfung in \feld{Prüfungen} angelegt, Kursblatt zeigt \ding{51}
+  \item[$\square$] Prüfungs-ID im Kursblatt (Zeile 4) gewählt
+  \item[$\square$] Formular nimmt Antworten an
+  \item[$\square$] SEB-Konfiguration getestet (siehe unten)
+\end{itemize}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}
+\subsection*{Nachher}
+\begin{itemize}
+  \item[$\square$] Rundgang: Receipt-IDs am Platz ins Kursblatt
+        (Spalte \enquote{Receipt notiert}). Optional.
+  \item[$\square$] Punkte holen (siehe unten)
+  \item[$\square$] Kursblatt: alle \textbf{ok}? \enquote{fehlt}/\enquote{prüfen} klären
+  \item[$\square$] In \feld{Kontrolle} nach \textbf{PRÜFEN} filtern
+  \item[$\square$] Note in die gelbe Spalte \enquote{Note} eintragen
+\end{itemize}
+\end{minipage}
+
+\subsection*{Punkte holen (Online-Checks)}
+\begin{enumerate}
+  \item Auswertungsseite \feld{edu-mrh.de/checks/auswertung/auswertung.html} öffnen. Schlüsseldatei
+        (\feld{…-key.json}) und alle Ergebnisdateien hineinziehen. Die Ergebnisdateien liegen in deinem
+        OneDrive im Forms-Ordner, oder du nimmst die Links aus der Spalte \enquote{Datei} in \feld{Kontrolle}.
+  \item \ui{Tabelle als CSV} $\rightarrow$ CSV in Excel öffnen $\rightarrow$ alles markieren, kopieren
+        $\rightarrow$ in der Mappe im Blatt \feld{Auswertung} in Zelle \feld{A1} einfügen. Weitere Prüfungen
+        fügst du einfach darunter ein.
+  \item Die Mappe findet jede Abgabe über die Receipt-ID und übernimmt Punkte und Notenpunkte.
+        \textbf{OFFEN} wird zu \textbf{OK}.
+\end{enumerate}
+
+\subsection*{Status im Kursblatt}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabularx}{\linewidth}{@{}l Y@{}}
+\toprule
+\colorbox{hellgruen}{\textbf{\color{gruen}ok}} & Abgabe zugeordnet, alle Abgleiche in Ordnung.\\
+\colorbox{blue!10}{offen} & Abgabe zugeordnet, aber noch keine Punkte: CSV der Auswertung ins Blatt \feld{Auswertung} einfügen.\\
+\colorbox{orange!20}{fehlt} & Keine Abgabe gefunden. Entweder fehlt sie wirklich, oder der Name passte nicht. Dann steht sie in \feld{Kontrolle} mit \enquote{Name nicht in Klassenliste}.\\
+\colorbox{hellrot}{\textbf{\color{rot}prüfen}} & Abgabe da, aber etwas passt nicht. Die Spalte \enquote{Hinweise} in \feld{Kontrolle} sagt, was.\\
+\colorbox{hellrot}{\textbf{\color{rot}Receipt $\neq$}} & Die beim Rundgang notierte Receipt-ID stimmt nicht mit der Datei überein.\\
+\bottomrule
+\end{tabularx}
+
+\subsection*{Safe Exam Browser}
+In der SEB-Konfiguration (SEB Config Tool):
+\begin{itemize}
+  \item \ui{Allow downloading files} und \ui{Allow uploading files} aktivieren.
+  \item PDFs müssen \textbf{heruntergeladen} und nicht im SEB angezeigt werden. Dafür gibt es in
+        den Download-Einstellungen eine Option wie \enquote{Download and open PDF files instead of
+        displaying them inline}. Unbedingt auf einem Schülergerät testen: Nach
+        \ui{Save result file (PDF)} muss eine Datei im Download-Ordner liegen.
+  \item In der URL-Filterliste erlauben:
+        \begin{itemize}[label=--,itemsep=0pt]
+          \item \feld{forms.office.com} und \feld{forms.cloud.microsoft}
+          \item \feld{login.microsoftonline.com}
+          \item \feld{aadcdn.msauth.net} und \feld{aadcdn.msftauth.net}
+        \end{itemize}
+        Fehlt beim Test etwas, zeigt der SEB die blockierte Adresse an. Dann ergänzt du sie.
+  \item Öffnet der Abgabe-Button ein neues Fenster, muss \ui{Allow new windows} erlaubt sein.
+        Sonst den Link im selben Fenster öffnen lassen.
+\end{itemize}
+
+\begin{info}[Datenschutz]
+Die Ergebnisdateien liegen in deinem OneDrive. Lösch sie nach Ablauf der Aufbewahrungsfrist,
+zusammen mit den Antworten im Formular (\ui{Antworten} $\rightarrow$ \ui{\dots} $\rightarrow$
+\ui{Alle Antworten löschen}).
+\end{info}
+
+% ================================================================ Teil 6
+\section{Fehlerbehebung}\label{fehler}
+
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{4.3cm} Y@{}}
+\toprule
+\textbf{Problem} & \textbf{Lösung}\\
+\midrule
+Flow startet gar nicht &
+Richtiges Formular im Auslöser gewählt? Flow eingeschaltet (\ui{Einschalten})? Die Abgabe wurde wirklich abgeschickt?\\
+\enquote{Upload} rot &
+Die Frage \dyn{Ergebnisdatei hochladen} fehlt im Ausdruck, oder es wurde keine Datei hochgeladen. Schritt \enquote{Upload-Angaben herausziehen} prüfen.\\
+\enquote{Datei} rot, \emph{File not found} &
+Formular ist ein Gruppen-/Teams-Formular. Neu als persönliches Formular anlegen.\\
+\enquote{Daten} rot, \emph{invalid JSON} &
+Ist \enquote{Dateiinhaltstyp ableiten} auf \textbf{Nein}? Ist die hochgeladene Datei die Original-Ergebnis-PDF? Eine neu gespeicherte, gedruckte oder fremde PDF enthält die Zeile \texttt{\%EDUJSON:} nicht mehr. Dann die Originaldatei aus dem Download-Ordner nachreichen lassen.\\
+\enquote{Excel} rot, \emph{InvalidTemplate} &
+Ein Ausdruck ist ungültig, meist durch einen beim Kopieren aus der PDF mitgenommenen Zeilenumbruch. Die Meldung nennt die Funktion (z.\,B. \texttt{convertFromUtc}): diesen Ausdruck löschen und neu einfügen oder abtippen.\\
+\enquote{Excel} rot &
+Mappe umbenannt oder verschoben? Tabelle \feld{tblAbgaben} umbenannt oder Spalten geändert? Dann im Schritt \enquote{Excel} Datei und Tabelle neu auswählen.\\
+Excel: Punkte leer &
+Bei Online-Checks normal: Punkte kommen über das Blatt \feld{Auswertung}. Sonst heißt der Feldname in der JSON-Datei anders, siehe Kasten in Schritt \enquote{Excel}.\\
+Kontrolle: \enquote{Kurs \ldots{} hat kein Kursblatt} &
+Kursangabe passt zu keinem Blattnamen. Blatt so benennen, wie die Schüler:innen den Kurs schreiben, Standardkurs in \feld{Prüfungen} eintragen oder die Angabe in \feld{Abgaben} korrigieren.\\
+Kontrolle: \enquote{Zeitzuschlag nicht in Klassenliste} &
+Die Person hat zu Beginn mehr Zeit gewählt, als im Kursblatt (Spalte \enquote{Zeitzuschlag}) steht. Klären; ist der Zuschlag berechtigt, in der Klassenliste nachtragen.\\
+Kontrolle: \enquote{länger als erlaubt} &
+Abgabe kam nach Ablauf der Zeit, meist weil der Browser zwischendurch geschlossen war. Die Antworten stammen vom letzten Speicherstand.\\
+Kontrolle: \enquote{Prüfungs-ID unbekannt} &
+Zeile in \feld{Prüfungen} fehlt, oder die ID ist anders geschrieben als im JSON.\\
+Kontrolle: \enquote{Name nicht in Klassenliste} &
+Tippfehler beim Namen zu Prüfungsbeginn. Abhilfe: Schul-E-Mail in die Klassenliste eintragen, dann klappt die Zuordnung über das Konto. Oder den Namen in \feld{Abgaben} von Hand korrigieren.\\
+Kontrolle: \enquote{mehrfach abgegeben} &
+Das Kursblatt nimmt die \emph{erste} Abgabe. Die falsche Zeile in \feld{Abgaben} löschen: markieren $\rightarrow$ Rechtsklick $\rightarrow$ \ui{Löschen} $\rightarrow$ \ui{Tabellenzeilen}.\\
+\bottomrule
+\end{tabularx}
+
+% ================================================================ Anhang
+\clearpage
+\section*{Anhang: Für die Prüfungsseite}\label{anhang}
+\addcontentsline{toc}{section}{Anhang}
+
+\subsection*{Was in der Ergebnis-PDF steckt}
+Die Online-Checks auf edu-mrh.de speichern am Ende eine PDF: eine lesbare Seite (Name, Kurs, Zeit,
+Quittung) und dieselben Daten zweimal, als Zeile \texttt{\%EDUJSON:\{\ldots\}} direkt nach dem Dateikopf
+(liest der Flow und die Auswertungsseite) und als Anhang \feld{result.json} (öffnet jeder PDF-Reader).
+Diese Felder liest der Flow. \texttt{punkte} und \texttt{maxPunkte} sind optional (bei Online-Checks
+nicht enthalten). Weitere Felder, etwa die einzelnen Antworten, stören nicht.
+\begin{code}[Ergebnisdaten (gekürzt, lesbar formatiert)]
+{
+  "pruefungsId": "TEST-01",
+  "name": "Vorname Nachname",
+  "receiptId": "R-1B9C4",
+  "kurs": "3e1",
+  "zeitzuschlag": 25,
+  "zeitErlaubtMin": 31.3,
+  "dauerMin": 27.4,
+  "punkte": 21.5,
+  "maxPunkte": 24
+}
+\end{code}
+
+\subsection*{Woher kommt was?}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabularx}{\linewidth}{@{}>{\ttfamily\color{violett}}l l Y@{}}
+\toprule
+\normalfont\textbf{Excel-Spalte} & \textbf{Quelle} & \textbf{Zweck}\\
+\midrule
+KontoEmail       & Forms-Anmeldung & Wer saß wirklich am Rechner? Abgleich mit der Klassenliste\\
+NameLautPruefung & JSON            & Zuordnung zur Person im Kurs\\
+PruefungsID      & JSON            & Zuordnung zu Prüfung und Kurs\\
+ReceiptDatei     & JSON            & maßgebliche Receipt-ID\\
+ReceiptFormular  & Formular        & Gegencheck: wurde im Formular etwas verändert?\\
+Kurs             & JSON            & Zuordnung zum Kursblatt\\
+Zeitzuschlag     & JSON            & Abgleich mit der Klassenliste (Nachteilsausgleich)\\
+DauerMin         & JSON            & Bearbeitungszeit, Abgleich mit ZeitErlaubtMin\\
+Punkte, MaxPunkte& JSON / Auswertung & Prozent und Notenvorschlag\\
+\bottomrule
+\end{tabularx}
+
+\subsection*{Eigene Prüfungsseiten}
+Willst du dieselbe Abgabe für eine eigene Seite nutzen, muss sie ebenfalls eine PDF erzeugen, deren
+zweite Zeile \texttt{\%EDUJSON:} gefolgt von den Daten als JSON in einer Zeile ist (nur ASCII-Zeichen,
+Umlaute als \texttt{\textbackslash u00fc} usw.). Vorbild ist die Funktion \texttt{resultPdf} in
+\feld{check-engine.js}. Den Abgabe-Link baust du, indem du im vorausgefüllten Forms-Link die Platzhalter
+\feld{NAME\_X}, \feld{RECEIPT\_X} und \feld{PRUEFUNG\_X} durch die URL-codierten Werte ersetzt.
+
+\end{document}
