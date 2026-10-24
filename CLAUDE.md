@@ -246,7 +246,14 @@ QR-Codes (nicht löschen).
   Checks und Fächer, Ordner auf dem Server per eigener `.htaccess` geschützt; unverlinkt,
   ohne Links, liest nur lokal): Tabelle, CSV und je Person ein 2-seitiger Bericht (Druck → PDF)
   mit Notenpunkten, Notenschlüssel und allen Aufgaben wie gesehen, eigene Antwort,
-  Lösung und Punkte. Check- und Auswertungsseite nirgends verlinken.
+  Lösung und Punkte (Verteilung auf Seiten mit 8 % Reserve, weil der Druck Schrift breiter
+  setzt als der Bildschirm; passt ein Blatt im Druck trotzdem nicht, wächst es im Druck auf die
+  nächste Seite und bricht zwischen Aufgaben um, nie über den Rand. Seiten je Person auf gerade
+  Zahl aufgefüllt, mit Häkchen „2 Seiten pro Blatt“ auf ein Vielfaches von 4 – dann im
+  Druckdialog „Seiten pro Blatt: 2“). Bewertung Mehrfachauswahl: richtige Kreuze ÷ Zahl der richtigen Optionen,
+  Abzug nur für Kreuze über diese Zahl hinaus (je Kreuz mindestens 1 Anteil, bei mehr als
+  halb so vielen richtigen wie möglichen Optionen n ÷ (Optionen − n), damit „alles
+  ankreuzen“ immer 0 ergibt; `build_check.py` warnt bei solchen Aufgaben). Check- und Auswertungsseite nirgends verlinken.
 - **Textblöcke** (`"block": true` im Fragen-JSON): ein Lesetext mit Zeilennummern und
   mehrere Aufgaben dazu; je Version ein Paralleltext, alle Versionen mit gleicher
   Aufgabenfolge (Typ, Punkte). Auf breiten Bildschirmen steht der Text mitlaufend neben
@@ -267,9 +274,13 @@ QR-Codes (nicht löschen).
   die Zeit läuft dann `minutes × (1 + Zuschlag)`. Die Ergebnisdatei (`rv: 2`) enthält `kurs`,
   `zeitzuschlag`, `zeitMin`, `zeitErlaubtMin`, `dauerMin`, `dauer`, `zeitAbgelaufen`; die
   Quittung deckt ab `rv 2` auch Kurs, Zuschlag und Startzeit ab (gleiche Formel in
-  `auswertung.js`, ältere Dateien ohne `rv` bleiben gültig). CSV der Auswertung: feste Spalten
-  zuerst (Kurs, Name, Quittung, Punkte, max, Prozent, NP, …), Aufgaben am Ende – die
-  Excel-Mappe der Lehrkraft liest diese Reihenfolge.
+  `auswertung.js`, ältere Dateien ohne `rv` bleiben gültig). CSV der Auswertung und Button
+  „Für Excel kopieren“ (Tabulator, Zwischenablage) liefern dieselbe Tabelle (`grid()`): Spalten
+  A–L fest (Kurs, Name, Quittung, Punkte, max, Prozent, NP, Zuschlag, Dauer, erlaubt, abgegeben,
+  Quittung ok – die Excel-Mappe der Lehrkraft liest C, D, E, G, L), dann Hinweis, Check-ID,
+  Build, begonnen, Dauer m:ss, Zeit abgelaufen, beantwortet, Datei, Versionen (Liste) – also
+  A–U für jede Prüfung gleich –, ab V die Punkte je Aufgabe `A1…An`. Textfelder als `="…"`, damit Excel „3e1“ oder eine
+  Ziffern-Quittung nicht in Zahlen umwandelt; CSV mit `sep=;` und Anführungszeichen.
   Das Build-Skript gibt es nur einmal im W-Seminar-Ordner (Auswertung zentral, s. o.): `python englisch/w-seminar-time/checks/build_check.py
   <thema>/material/check-<n>-*.json` schreibt das `.js` nach `<thema>/checks/`.
 
