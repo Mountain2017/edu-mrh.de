@@ -249,7 +249,9 @@ QR-Codes (nicht löschen).
   Lösung und Punkte (Verteilung auf Seiten mit 6 % Reserve, weil der Druck Schrift breiter
   setzt als der Bildschirm; ein Block größer als eine Seite lässt das Blatt wachsen statt
   abzuschneiden). Bewertung Mehrfachauswahl: richtige Kreuze ÷ Zahl der richtigen Optionen,
-  Abzug nur für Kreuze über diese Zahl hinaus. Check- und Auswertungsseite nirgends verlinken.
+  Abzug nur für Kreuze über diese Zahl hinaus (je Kreuz mindestens 1 Anteil, bei mehr als
+  halb so vielen richtigen wie möglichen Optionen n ÷ (Optionen − n), damit „alles
+  ankreuzen“ immer 0 ergibt; `build_check.py` warnt bei solchen Aufgaben). Check- und Auswertungsseite nirgends verlinken.
 - **Textblöcke** (`"block": true` im Fragen-JSON): ein Lesetext mit Zeilennummern und
   mehrere Aufgaben dazu; je Version ein Paralleltext, alle Versionen mit gleicher
   Aufgabenfolge (Typ, Punkte). Auf breiten Bildschirmen steht der Text mitlaufend neben

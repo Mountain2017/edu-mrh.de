@@ -14,7 +14,9 @@
    Bewertung: single = alles oder nichts; multi = richtige Kreuze ÷ Zahl der richtigen
    Optionen × Punkte, abgezogen wird nur für Kreuze über diese Zahl hinaus (wer höchstens so
    viele Kreuze setzt, wie es richtige Optionen gibt, verliert für ein falsches Kreuz nichts
-   extra; „alles ankreuzen“ lohnt sich nicht); match = gleicher Anteil je Zeile;
+   extra). Ein überzähliges Kreuz kostet mindestens einen Anteil, bei mehr als halb so vielen
+   richtigen wie möglichen Optionen n ÷ (Optionen − n) Anteile, damit „alles ankreuzen“ immer
+   0 ergibt; match = gleicher Anteil je Zeile;
    jeweils auf 0,5 gerundet. Notenpunkte: höchste Stufe, deren Prozentgrenze
    erreicht ist. Die Seite enthält selbst keine Fragen und keine Lösungen.
    Textblöcke (Schlüssel: "passages", Auslosung: draw[i].ps): Der Text steht im
@@ -30,7 +32,7 @@
             next: 'Next step: {np} NP from {pts} P ({diff} P more).', top: 'Highest grade point reached.',
             okSel: 'your answer – correct', badSel: 'your answer – wrong', miss: 'correct answer you did not choose',
             mkOk: '✓', mkBad: '✗', mkMiss: '✓ correct', noAnswer: 'no answer', correctIs: '→ ',
-            calcMulti: '{tp} of {n} correct ticked{exTxt} → ({tp} − {ex}) ÷ {n} × {pts} P = {res} P', exEn: ', {ex} ticked too many',
+            calcMulti: '{tp} of {n} correct ticked{exTxt} → ({tp} − {pen}) ÷ {n} × {pts} P = {res} P', exEn: ', {ex} ticked too many', exK: ' (each counts {k}×)',
             calcMatch: '{r} of {n} rows right × {pts} P = {res} P', rounded: ' (rounded to 0.5)'
         },
         de: {
@@ -39,7 +41,7 @@
             next: 'Nächste Stufe: {np} NP ab {pts} P (noch {diff} P).', top: 'Höchste Notenpunktzahl erreicht.',
             okSel: 'deine Antwort – richtig', badSel: 'deine Antwort – falsch', miss: 'richtige Antwort, nicht gewählt',
             mkOk: '✓', mkBad: '✗', mkMiss: '✓ richtig', noAnswer: 'keine Antwort', correctIs: '→ ',
-            calcMulti: '{tp} von {n} richtigen angekreuzt{exTxt} → ({tp} − {ex}) ÷ {n} × {pts} P = {res} P', exEn: ', {ex} zu viel angekreuzt',
+            calcMulti: '{tp} von {n} richtigen angekreuzt{exTxt} → ({tp} − {pen}) ÷ {n} × {pts} P = {res} P', exEn: ', {ex} zu viel angekreuzt', exK: ' (zählt je {k}-fach)',
             calcMatch: '{r} von {n} Zeilen richtig × {pts} P = {res} P', rounded: ' (auf 0,5 gerundet)'
         }
     };
@@ -88,7 +90,12 @@
             e.tp = ans.filter(function (a) { return k.correct.indexOf(a) >= 0; }).length;
             e.fp = ans.length - e.tp; e.n = k.correct.length;
             e.ex = Math.max(0, ans.length - e.n);   // Kreuze über die Zahl der richtigen Optionen hinaus
-            e.raw = Math.max(0, e.tp - e.ex) / e.n * k.points;
+            // Strafe je überzähligem Kreuz: mindestens 1 Anteil, bei mehr als halb so vielen richtigen
+            // wie möglichen Optionen so viel, dass „alles ankreuzen“ immer 0 ergibt
+            var m = k.options.length;
+            e.k = m > e.n ? Math.max(1, e.n / (m - e.n)) : 1;
+            e.pen = e.ex * e.k;
+            e.raw = Math.max(0, e.tp - e.pen) / e.n * k.points;
             e.points = half(e.raw);
         } else {
             ans = ans && typeof ans === 'object' ? ans : {};
@@ -307,7 +314,10 @@
     function itemBlock(x, n) {
         var t = L(), d = x.r.draw[n], k = KEY.items[d.id], e = x.ev[n], a = (x.r.answers || {})[d.id];
         var rounded = e.raw != null && Math.abs(e.raw - e.points) > 1e-9 ? t.rounded : '';
-        var calc = k.type === 'multi' ? fill(t.calcMulti, { tp: e.tp, ex: e.ex, n: e.n, pts: fmt(k.points), res: fmt(e.points), exTxt: e.ex ? fill(t.exEn, { ex: e.ex }) : '' }) + rounded
+        var kk = String(Math.round((e.k || 1) * 100) / 100).replace('.', L() === REP.de ? ',' : '.');
+        var pen = String(Math.round((e.pen || 0) * 100) / 100).replace('.', L() === REP.de ? ',' : '.');
+        var calc = k.type === 'multi' ? fill(t.calcMulti, { tp: e.tp, pen: pen, n: e.n, pts: fmt(k.points), res: fmt(e.points),
+            exTxt: e.ex ? fill(t.exEn, { ex: e.ex }) + (e.k > 1 ? fill(t.exK, { k: kk }) : '') : '' }) + rounded
             : k.type === 'match' ? fill(t.calcMatch, { r: e.r, n: e.n, pts: fmt(k.points), res: fmt(e.points) }) + rounded : '';
         var h = '<div class="r-it ' + e.state + '"><div class="r-prompt"><span class="r-ith"><span class="r-calc">' + calc + '</span>' +
             '<span class="r-ip">' + fmt(e.points) + ' / ' + fmt(e.max) + ' ' + t.p + '</span></span>' +
