@@ -246,9 +246,11 @@ QR-Codes (nicht löschen).
   Checks und Fächer, Ordner auf dem Server per eigener `.htaccess` geschützt; unverlinkt,
   ohne Links, liest nur lokal): Tabelle, CSV und je Person ein 2-seitiger Bericht (Druck → PDF)
   mit Notenpunkten, Notenschlüssel und allen Aufgaben wie gesehen, eigene Antwort,
-  Lösung und Punkte (Verteilung auf Seiten mit 6 % Reserve, weil der Druck Schrift breiter
-  setzt als der Bildschirm; ein Block größer als eine Seite lässt das Blatt wachsen statt
-  abzuschneiden). Bewertung Mehrfachauswahl: richtige Kreuze ÷ Zahl der richtigen Optionen,
+  Lösung und Punkte (Verteilung auf Seiten mit 8 % Reserve, weil der Druck Schrift breiter
+  setzt als der Bildschirm; passt ein Blatt im Druck trotzdem nicht, wächst es im Druck auf die
+  nächste Seite und bricht zwischen Aufgaben um, nie über den Rand. Seiten je Person auf gerade
+  Zahl aufgefüllt, mit Häkchen „2 Seiten pro Blatt“ auf ein Vielfaches von 4 – dann im
+  Druckdialog „Seiten pro Blatt: 2“). Bewertung Mehrfachauswahl: richtige Kreuze ÷ Zahl der richtigen Optionen,
   Abzug nur für Kreuze über diese Zahl hinaus (je Kreuz mindestens 1 Anteil, bei mehr als
   halb so vielen richtigen wie möglichen Optionen n ÷ (Optionen − n), damit „alles
   ankreuzen“ immer 0 ergibt; `build_check.py` warnt bei solchen Aufgaben). Check- und Auswertungsseite nirgends verlinken.

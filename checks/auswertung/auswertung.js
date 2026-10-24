@@ -376,7 +376,7 @@
     }
     /* Reserve: Beim Drucken setzt der Browser Schrift oft minimal breiter als am Bildschirm, dann
        bricht eine Zeile mehr um. Deshalb bleibt beim Verteilen unten 6 % der Seite frei. */
-    var RESERVE = 0.06;
+    var RESERVE = 0.08;
     function over(body) {   // Unterkante des letzten Blocks (nicht scrollHeight: das ist nie kleiner als die Seite)
         var last = body.lastElementChild; if (!last) return false;
         var top = body.getBoundingClientRect().top, bottom = last.getBoundingClientRect().bottom;
@@ -435,7 +435,8 @@
         var pages;
         if (best >= 0) pages = layout(rep, blocks, sizes[best], two, 0);
         else { pages = layout(rep, blocks, FS_MIN, true, 0); x.tooLong = true; }
-        while (rep.querySelectorAll('.sheet').length < 2 || rep.querySelectorAll('.sheet').length % 2) {
+        var per = duo() ? 4 : 2;   // Seitenzahl je Person auffüllen: beidseitig 2, bei 2 Seiten pro Blatt 4
+        while (rep.querySelectorAll('.sheet').length < per || rep.querySelectorAll('.sheet').length % per) {
             sheet(rep).innerHTML = '';
         }
         var all = rep.querySelectorAll('.sheet'), t = L();
@@ -447,6 +448,7 @@
         x.pages = all.length;
         return rep;
     }
+    function duo() { var c = $('duo'); return !!(c && c.checked); }
     function reports() {
         var druck = $('druck'); druck.innerHTML = '';
         var good = ROWS.filter(function (x) { return !x.err; });
@@ -474,6 +476,13 @@
     document.addEventListener('drop', function (e) { e.preventDefault(); if (e.target !== drop && !drop.contains(e.target) && e.dataTransfer.files.length) addFiles(e.dataTransfer.files); });
     $('pdf-all').addEventListener('click', function () { document.body.classList.remove('only'); window.print(); });
     $('csv').addEventListener('click', csv);
+    if ($('duo')) {
+        try { $('duo').checked = localStorage.getItem('auswertungDuo') === '1'; } catch (e) { }
+        $('duo').addEventListener('change', function () {
+            try { localStorage.setItem('auswertungDuo', this.checked ? '1' : '0'); } catch (e) { }
+            if (ROWS.length) reports();
+        });
+    }
     $('xl').addEventListener('click', copyExcel);
     $('reset').addEventListener('click', function () {
         KEY = null; RESULTS = []; FILES = {}; ROWS = [];
