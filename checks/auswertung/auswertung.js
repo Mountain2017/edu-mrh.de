@@ -232,22 +232,45 @@
         });
         download(KEY.check + '_auswertung.csv', '﻿sep=;\r\n' + lines.join('\r\n') + '\r\n', 'text/csv;charset=utf-8');
     }
+    /* Einblendung unten auf der Seite (ok = grün, sonst rot), verschwindet nach einigen Sekunden */
+    var toastTimer = null;
+    function toast(html, ok) {
+        var t = $('toast');
+        if (!t) { t = document.createElement('div'); t.id = 'toast'; t.setAttribute('role', 'status'); t.setAttribute('aria-live', 'polite'); document.body.appendChild(t); }
+        t.innerHTML = html; t.className = ok ? 'ok show' : 'bad show';
+        clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.className = t.className.replace(' show', ''); }, ok ? 6000 : 9000);
+    }
+    /* Kopieren: zuerst synchron über das copy-Ereignis (funktioniert in allen Browsern direkt im Klick,
+       ohne Berechtigung), sonst über die Clipboard-API. */
+    function copyText(text) {
+        var ok = false, handler = function (e) { e.clipboardData.setData('text/plain', text); e.preventDefault(); ok = true; };
+        document.addEventListener('copy', handler);
+        try { document.execCommand('copy'); } catch (e) { }
+        document.removeEventListener('copy', handler);
+        if (ok) return Promise.resolve();
+        if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+        return Promise.reject(new Error('Zwischenablage nicht verfügbar'));
+    }
     function copyExcel() {   // Tabulator-getrennt: Excel verteilt das beim Einfügen immer richtig auf Spalten
-        var rows = grid(), text = rows.map(function (row) {
-            return row.map(function (v) { return cell(v).replace(/[\t\r\n]+/g, ' '); }).join('\t');
-        }).join('\r\n') + '\r\n';
-        var done = function () {
-            $('copy-msg').innerHTML = '<b>' + (rows.length - 1) + ' Zeile(n) kopiert.</b> In der Mappe „Prüfungsabgaben“ im Blatt „Auswertung“ Zelle A1 anklicken und einfügen (Strg+V). ' +
-                'Weitere Prüfungen darunter einfügen, Kopfzeilen dürfen doppelt vorkommen.';
-        };
-        var fallback = function () {
-            var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-            document.body.appendChild(ta); ta.select();
-            var ok = false; try { ok = document.execCommand('copy'); } catch (e) { }
-            ta.remove();
-            if (ok) done(); else $('copy-msg').textContent = 'Kopieren hat nicht geklappt. Bitte „Tabelle als CSV“ verwenden.';
-        };
-        if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
+        var btn = $('xl'), rows, text;
+        try {
+            rows = grid();
+            text = rows.map(function (row) {
+                return row.map(function (v) { return cell(v).replace(/[\t\r\n]+/g, ' '); }).join('\t');
+            }).join('\r\n') + '\r\n';
+        } catch (e) {
+            toast('<b>Kopieren nicht möglich:</b> ' + esc(e.message) + '. Bitte „Tabelle als CSV“ verwenden.', false); return;
+        }
+        var n = rows.length - 1;
+        copyText(text).then(function () {
+            toast('<b>✓ In die Zwischenablage kopiert</b> (' + n + ' Abgabe' + (n === 1 ? '' : 'n') + ', ' + rows[0].length + ' Spalten).<br>' +
+                'Jetzt in der Mappe im Blatt „Auswertung“ Zelle <b>A1</b> anklicken und <b>Strg+V</b> drücken.', true);
+            $('copy-msg').innerHTML = '<b>Zuletzt kopiert: ' + n + ' Abgabe' + (n === 1 ? '' : 'n') + '.</b> Weitere Prüfungen in der Mappe einfach darunter einfügen; Kopfzeilen dürfen doppelt vorkommen.';
+            btn.textContent = '✓ Kopiert'; btn.classList.add('done');
+            setTimeout(function () { btn.textContent = 'Für Excel kopieren'; btn.classList.remove('done'); }, 2500);
+        }, function () {
+            toast('<b>Kopieren hat nicht geklappt.</b> Der Browser erlaubt den Zugriff auf die Zwischenablage nicht. Bitte „Tabelle als CSV“ verwenden.', false);
+        });
     }
 
     /* ---------------------------------------------------------------- Bericht je Person */
