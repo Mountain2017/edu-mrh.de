@@ -271,8 +271,8 @@ QR-Codes (nicht löschen).
   „Für Excel kopieren“ (Tabulator, Zwischenablage) liefern dieselbe Tabelle (`grid()`): Spalten
   A–L fest (Kurs, Name, Quittung, Punkte, max, Prozent, NP, Zuschlag, Dauer, erlaubt, abgegeben,
   Quittung ok – die Excel-Mappe der Lehrkraft liest C, D, E, G, L), dann Hinweis, Check-ID,
-  Build, begonnen, Dauer m:ss, Zeit abgelaufen, beantwortet, Datei, Punkte je Aufgabe `A…`,
-  gezogene Version je Aufgabe `V…`. Textfelder als `="…"`, damit Excel „3e1“ oder eine
+  Build, begonnen, Dauer m:ss, Zeit abgelaufen, beantwortet, Datei, Versionen (Liste) – also
+  A–U für jede Prüfung gleich –, ab V die Punkte je Aufgabe `A1…An`. Textfelder als `="…"`, damit Excel „3e1“ oder eine
   Ziffern-Quittung nicht in Zahlen umwandelt; CSV mit `sep=;` und Anführungszeichen.
   Das Build-Skript gibt es nur einmal im W-Seminar-Ordner (Auswertung zentral, s. o.): `python englisch/w-seminar-time/checks/build_check.py
   <thema>/material/check-<n>-*.json` schreibt das `.js` nach `<thema>/checks/`.

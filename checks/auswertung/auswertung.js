@@ -191,15 +191,16 @@
         });
     }
     /* Alle Angaben je Abgabe als Tabelle (für CSV und „Für Excel kopieren“).
-       Spalten A–L fest (die Excel-Mappe „Prüfungsabgaben“ liest Quittung = C, Punkte = D, max = E,
-       NP = G, Quittung ok = L), danach Prüfangaben, Punkte je Aufgabe (A1…) und gezogene
-       Aufgabenversion je Aufgabe (V1…). Fehlerzeilen: L = „prüfen“, Grund in „Hinweis“. */
+       Spalten A–U fest, für jede Prüfung gleich (die Excel-Mappe „Prüfungsabgaben“ liest
+       Quittung = C, Punkte = D, max = E, NP = G, Quittung ok = L, Hinweis = M; U = gezogene
+       Version je Aufgabe als Liste), ab V die Punkte je Aufgabe (A1…An, je nach Prüfung
+       verschieden viele). Fehlerzeilen: L = „prüfen“, Grund in „Hinweis“. */
     function grid() {
         var n = ROWS.reduce(function (m, x) { return Math.max(m, x.r && x.r.draw ? x.r.draw.length : 0); }, 0);
         var nums = []; for (var i = 1; i <= n; i++) nums.push(i);
         var head = ['Kurs', 'Name', 'Quittung', 'Punkte', 'max', 'Prozent', 'NP', 'Zeitzuschlag (%)', 'Dauer (min)', 'erlaubt (min)', 'abgegeben', 'Quittung ok',
-            'Hinweis', 'Check-ID', 'Build', 'begonnen', 'Dauer (m:ss)', 'Zeit abgelaufen', 'beantwortet', 'Datei']
-            .concat(nums.map(function (k) { return 'A' + k; }), nums.map(function (k) { return 'V' + k; }));
+            'Hinweis', 'Check-ID', 'Build', 'begonnen', 'Dauer (m:ss)', 'Zeit abgelaufen', 'beantwortet', 'Datei', 'Versionen (je Aufgabe)']
+            .concat(nums.map(function (k) { return 'A' + k; }));
         var out = [head];
         ROWS.forEach(function (x) {
             var r = x.r || {}, ok = !x.err && x.ok;
@@ -209,9 +210,9 @@
                 x.err ? '' : fmt(x.pts), x.err ? '' : KEY.max, x.err ? '' : pc1(x.pct), x.err ? '' : x.g.np,
                 r.zeitzuschlag || 0, r.startedAt ? pc1(took(r)) : '', pc1(allowed(r)), r.submittedAt ? when(r.submittedAt) : '', ok ? 'ok' : 'prüfen',
                 hint, tx(r.check || ''), tx(r.build || ''), r.startedAt ? when(r.startedAt) : '', tx(r.startedAt ? mmss(took(r)) : ''),
-                r.zeitAbgelaufen ? 'ja' : 'nein', tx(answered + (r.draw ? ' / ' + r.draw.length : '')), tx(x.file)];
+                r.zeitAbgelaufen ? 'ja' : 'nein', tx(answered + (r.draw ? ' / ' + r.draw.length : '')), tx(x.file),
+                tx(r.draw ? r.draw.map(function (d) { return d.id; }).join(', ') : '')];
             for (var k = 0; k < n; k++) row.push(!x.err && x.ev[k] ? fmt(x.ev[k].points) : '');
-            for (k = 0; k < n; k++) row.push(tx(r.draw && r.draw[k] ? r.draw[k].id : ''));
             out.push(row);
         });
         return out;
