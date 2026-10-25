@@ -373,5 +373,5 @@ auf `w-seminar-time.html#materials`)
 **Weitere Fächer**: `mathe/` (12: Exponential-/ln-Funktion, Umkehrfunktion),
 `physik/` (10 Berlinfahrt-Lernpfad, 11 Federpendel + Protokoll, 12 Lorentzkraft),
 `franzoesisch/` (8 Québec), `Latein/` (Cicero), `psychologie/` (Grawe),
-`Stadtrallye/` (Triest). Von keiner Seite verlinkt: `nutrition/` (de/en),
+`Stadtrallye/` (Triest), `lernen-lernen/` (Modulreihe „Fit für die Qualifikationsphase“: `lerntest/index.html` = Lerntest Modul I, `methodenkoffer/methodenkoffer.html` = Methodenkoffer Modul III; nur über QR-Codes im Schülerheft erreichbar, URLs nicht ändern; Schrift lokal in `lernen-lernen/fonts/`). Von keiner Seite verlinkt: `nutrition/` (de/en),
 `finanzen/` (Pflegevorsorge-Rechner), `dnd/`
