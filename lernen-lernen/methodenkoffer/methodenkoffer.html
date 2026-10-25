@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Methodenkoffer | Lernen lernen – edu-mrh.de</title>
+    <meta name="description" content="21 Methoden gegen Aufschieben und für besseres Lernen – mit Anleitung, Begründung aus der Forschung und eigenem Koffer zum Merken.">
+
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+
+    <style>
+        /* Lokale Schrift (DSGVO: keine externen Fonts) */
+        @font-face { font-family: 'Inter'; font-style: normal; font-weight: 400; font-display: swap;
+            src: url('../fonts/inter-latin-400-normal.woff2') format('woff2'), url('../fonts/inter-latin-ext-400-normal.woff2') format('woff2'); }
+        @font-face { font-family: 'Inter'; font-style: normal; font-weight: 600; font-display: swap;
+            src: url('../fonts/inter-latin-600-normal.woff2') format('woff2'), url('../fonts/inter-latin-ext-600-normal.woff2') format('woff2'); }
+
+        /* Farben wie im Schülerheft „Fit für die Qualifikationsphase“, Modul III */
+        :root {
+            --koffer: #7048e8;
+            --koffer-hell: #f3f0ff;
+            --text-leise: #5b6475;
+            --linie: #dde1ea;
+        }
+
+        .hero-title { font-size: clamp(2.2rem, 6vw, 3.5rem); }
+
+        /* Finder: Stolperstein → Kategorie */
+        .finder { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 0.9rem; }
+        .finder-kachel {
+            display: flex; flex-direction: column; gap: 0.25rem;
+            padding: 1rem 1.1rem; border-radius: 12px; text-decoration: none; color: var(--dark, #1e293b);
+            background: var(--k-hell); border: 1px solid transparent; border-left: 5px solid var(--k);
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+        .finder-kachel:hover, .finder-kachel:focus-visible { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(30,41,59,.12); }
+        .finder-kachel strong { color: var(--k); font-size: 1.1rem; }
+        .finder-kachel span { font-size: 0.92rem; color: var(--text-leise); }
+        .finder-phase { font-size: 0.72rem !important; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+
+        /* Mein Koffer */
+        .mein-koffer {
+            background: var(--koffer-hell); border: 2px dashed var(--koffer); border-radius: 14px;
+            padding: 1.2rem 1.4rem; margin-top: 1.5rem;
+        }
+        .mein-koffer h2 { font-size: 1.3rem; color: var(--koffer); margin: 0 0 0.4rem; }
+        .mein-koffer p { margin: 0; color: var(--text-leise); }
+        .koffer-liste { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; margin: 0.8rem 0 0; }
+        .koffer-liste a {
+            display: inline-block; padding: 0.35rem 0.8rem; border-radius: 999px; background: #fff;
+            border: 1px solid var(--koffer); color: var(--koffer); font-weight: 600; text-decoration: none; font-size: 0.92rem;
+        }
+        .koffer-hinweis { margin-top: 0.6rem !important; font-size: 0.9rem; }
+
+        /* Kategorien */
+        .kat-kopf { border-left-color: var(--k); }
+        .kat-kopf .chapter-number { background: var(--k); }
+        .kat-kopf h2 { font-size: clamp(1.7rem, 4vw, 2.3rem); }
+        .hilft { margin: 0.5rem 0 0; color: var(--text-leise); font-size: 1.05rem; }
+        .hilft strong { color: var(--k); }
+
+        .mk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 1.1rem; }
+        .mk {
+            background: #fff; border-radius: 14px; padding: 1.2rem 1.3rem 1.1rem;
+            box-shadow: 0 1px 2px rgba(30,41,59,.06), 0 6px 20px rgba(30,41,59,.06);
+            border-top: 4px solid var(--k); min-width: 0; scroll-margin-top: 90px;
+        }
+        .mk-kopf { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.8rem; flex-wrap: wrap; }
+        .mk h3 { margin: 0; font-size: 1.25rem; color: var(--k); }
+        .mk-kurz { margin: 0.5rem 0 0.9rem; font-size: 1.02rem; line-height: 1.55; }
+        .mk-teile { display: grid; gap: 0.8rem; }
+        .mk h4 { margin: 0 0 0.35rem; font-size: 0.78rem; letter-spacing: .07em; text-transform: uppercase; color: var(--text-leise); }
+        .mk ol { margin: 0; padding-left: 1.3rem; display: grid; gap: 0.25rem; }
+        .mk-warum { background: var(--k-hell); border-radius: 10px; padding: 0.7rem 0.9rem; }
+        .mk-warum p { margin: 0; font-size: 0.95rem; line-height: 1.5; }
+        .quelle { color: var(--text-leise); font-size: 0.85rem; white-space: nowrap; }
+        .mk-links { list-style: none; padding: 0; margin: 0.8rem 0 0; display: grid; gap: 0.3rem; }
+        .mk-links a { color: var(--k); font-weight: 600; text-decoration: none; }
+        .mk-links a::before { content: "↗ "; }
+        .mk-links a:hover { text-decoration: underline; }
+
+        .stern {
+            font: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+            border: 1px solid var(--linie); background: #fff; color: var(--text-leise);
+            border-radius: 999px; padding: 0.3rem 0.75rem; white-space: nowrap;
+        }
+        .stern:hover { border-color: var(--koffer); color: var(--koffer); }
+        .stern[aria-pressed="true"] { background: var(--koffer); border-color: var(--koffer); color: #fff; }
+        .stern:focus-visible, .finder-kachel:focus-visible { outline: 3px solid var(--koffer); outline-offset: 2px; }
+
+        .tipp-box { background: #f1f3f5; border-radius: 12px; padding: 1rem 1.2rem; margin-top: 1.5rem; }
+        .quellen-liste { font-size: 0.88rem; color: var(--text-leise); line-height: 1.5; padding-left: 1.2rem; }
+        .quellen-liste li { margin-bottom: 0.3rem; }
+
+        @media (prefers-reduced-motion: reduce) { .finder-kachel { transition: none; } }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="icon"><a href="https://edu-mrh.de/">🧠</a></span>
+                <span>edu-mrh Lernen</span>
+            </div>
+            <div class="nav-links">
+                <a href="https://edu-mrh.de/" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>Inhalt</h3>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#finden">Wo hakt’s?</a></li>
+            <li><a href="#ziel">Ziel klar kriegen</a></li><li><a href="#planen">Planen</a></li><li><a href="#loslegen">Loslegen</a></li><li><a href="#dranbleiben">Dranbleiben</a></li><li><a href="#gefuehl">Kopf &amp; Gefühl</a></li><li><a href="#belohnen">Belohnen &amp; Unterstützen</a></li>
+            <li><a href="#quellen">Quellen</a></li>
+        </ul>
+    </aside>
+
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menü öffnen">
+        <span></span><span></span><span></span>
+    </button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero">
+                <h1 class="hero-title">Methodenkoffer</h1>
+                <p class="hero-subtitle">Lernen lernen · Modul III · Oberstufe</p>
+                <p class="hero-description">21 Methoden gegen das Aufschieben – jede mit kurzer Anleitung und dem Grund, warum sie wirkt. Such dir aus, was zu deinem Stolperstein passt, und probier es mindestens eine Woche lang aus.</p>
+            </section>
+
+            <section id="finden" class="mt-4">
+                <div class="chapter-header" style="border-left-color: var(--koffer)">
+                    <span class="chapter-number" style="background: var(--koffer)">Start</span>
+                    <h2>Wo hakt’s bei dir?</h2>
+                    <p class="hilft">Wähle die Situation, die am besten passt. Die Phasen kommen aus dem Rubikon-Modell (Schülerheft, Modul III).</p>
+                </div>
+                <div class="finder"><a class="finder-kachel" href="#ziel" style="--k:#3b5bdb;--k-hell:#edf2ff"><span class="finder-phase">Abwägen → Rubikon</span><strong>Ziel klar kriegen</strong><span>… wenn du nicht genau weißt, was du eigentlich erreichen willst.</span></a><a class="finder-kachel" href="#planen" style="--k:#7048e8;--k-hell:#f3f0ff"><span class="finder-phase">Planen</span><strong>Planen</strong><span>… wenn alles gleichzeitig ansteht und du nicht weißt, wo du anfangen sollst.</span></a><a class="finder-kachel" href="#loslegen" style="--k:#1971c2;--k-hell:#e7f5ff"><span class="finder-phase">Handeln</span><strong>Loslegen</strong><span>… wenn du weißt, was zu tun ist – und trotzdem nicht anfängst.</span></a><a class="finder-kachel" href="#dranbleiben" style="--k:#1971c2;--k-hell:#e7f5ff"><span class="finder-phase">Handeln</span><strong>Dranbleiben</strong><span>… wenn du zwar anfängst, aber nach kurzer Zeit abschweifst.</span></a><a class="finder-kachel" href="#gefuehl" style="--k:#e8590c;--k-hell:#fff4e6"><span class="finder-phase">Emotionskontrolle</span><strong>Kopf &amp; Gefühl</strong><span>… wenn ein Gefühl im Weg steht: Angst, Ärger, Überforderung.</span></a><a class="finder-kachel" href="#belohnen" style="--k:#2b8a3e;--k-hell:#ebfbee"><span class="finder-phase">Anreize</span><strong>Belohnen &amp; Unterstützen</strong><span>… wenn der Antrieb fehlt und das Ziel noch weit weg ist.</span></a></div>
+
+                <div class="mein-koffer" aria-live="polite">
+                    <h2>Mein Koffer</h2>
+                    <p id="koffer-leer">Noch leer. Tippe bei einer Methode auf „In meinen Koffer“, dann sammelt sie sich hier. Das wird nur in deinem Browser gespeichert.</p>
+                    <ul class="koffer-liste" id="koffer-liste" hidden></ul>
+                    <p class="koffer-hinweis" id="koffer-viel" hidden>Weniger ist mehr: Starte mit 1–3 Methoden und trag sie auf dein Blatt (Aufgabe 6) ein.</p>
+                </div>
+            </section>
+
+            <section id="ziel" class="kategorie mt-4" style="--k:#3b5bdb;--k-hell:#edf2ff">
+                <div class="chapter-header kat-kopf">
+                    <span class="chapter-number">1 · Abwägen → Rubikon</span>
+                    <h2>Ziel klar kriegen</h2>
+                    <p class="hilft"><strong>Hilft, wenn</strong> du nicht genau weißt, was du eigentlich erreichen willst.</p>
+                </div>
+                <div class="mk-grid">
+<article class="mk" id="smart" style="--k:#3b5bdb;--k-hell:#edf2ff">
+  <header class="mk-kopf"><h3>SMART-Ziel</h3><button type="button" class="stern" data-id="smart" data-name="SMART-Ziel" aria-pressed="false" aria-label="SMART-Ziel in meinen Koffer legen"><span aria-hidden="true">☆</span> In meinen Koffer</button></header>
+  <p class="mk-kurz">Spezifisch, messbar, attraktiv, realistisch, terminiert. Aus „Mathe lernen“ wird „heute 14:30–16 Uhr, S. 42, Nr. 1–3“ – so weißt du genau, wann du fertig bist.</p>
+  <div class="mk-teile">
+    <div><h4>So geht’s</h4><ol><li>Schreib dein Ziel so auf, wie es dir einfällt.</li><li>Prüfe jeden Buchstaben: Was genau? Woran merke ich, dass ich fertig bin? Will ich das? Schaffe ich das? Bis wann?</li><li>Formuliere neu – lieber klein und machbar als groß und vage.</li></ol></div>
+    <div class="mk-warum"><h4>Warum es wirkt</h4><p>Konkrete Ziele führen zu mehr Leistung als ein „Ich geb mein Bestes“, weil sie zeigen, wohin die Anstrengung gehen soll und wann du fertig bist. <span class="quelle">(Locke &amp; Latham 2002)</span></p></div>
+  </div>
+  <ul class="mk-links"><li><a href="https://studyflix.de/wirtschaft/smart-ziele-1464/video" target="_blank" rel="noopener">SMARTe Ziele – Erklärvideo (Studyflix)</a></li><li><a href="https://www.nachhilfe-team.net/lernen-leicht-gemacht/smart-methode/" target="_blank" rel="noopener">SMART-Methode mit Beispielen (Nachhilfe-Team)</a></li></ul>
+</article>
+<article class="mk" id="teilziele" style="--k:#3b5bdb;--k-hell:#edf2ff">
+  <header class="mk-kopf"><h3>Teilziele</h3><button type="button" class="stern" data-id="teilziele" data-name="Teilziele" aria-pressed="false" aria-label="Teilziele in meinen Koffer legen"><span aria-hidden="true">☆</span> In meinen Koffer</button></header>
+  <p class="mk-kurz">Zerleg den Berg in Etappen, die in eine Lernsitzung passen. Jede erledigte Etappe ist ein kleiner Sieg und zeigt dir: Ich komme voran.</p>
+  <div class="mk-teile">
+    <div><h4>So geht’s</h4><ol><li>Schreib das große Ziel oben auf ein Blatt, z. B. „Bio-Klausur am 12.12.“.</li><li>Darunter 3–5 Teilziele (Themen), darunter je konkrete Aufgaben von 20–45 Minuten.</li><li>Verteil die Aufgaben auf die Tage davor und hak ab, was erledigt ist.</li></ol></div>
+    <div class="mk-warum"><h4>Warum es wirkt</h4><p>Nahe Etappenziele stärken Ausdauer und das Gefühl, etwas zu können, deutlich mehr als ein fernes Gesamtziel. <span class="quelle">(Bandura &amp; Schunk 1981)</span></p></div>
+  </div>
+</article>
+                </div>
+            </section>
+            <section id="planen" class="kategorie mt-4" style="--k:#7048e8;--k-hell:#f3f0ff">
+                <div class="chapter-header kat-kopf">
+                    <span class="chapter-number">2 · Planen</span>
+                    <h2>Planen</h2>
+                    <p class="hilft"><strong>Hilft, wenn</strong> alles gleichzeitig ansteht und du nicht weißt, wo du anfangen sollst.</p>
+                </div>
+                <div class="mk-grid">
+<article class="mk" id="todo" style="--k:#7048e8;--k-hell:#f3f0ff">
+  <header class="mk-kopf"><h3>Zwei To-do-Listen</h3><button type="button" class="stern" data-id="todo" data-name="Zwei To-do-Listen" aria-pressed="false" aria-label="Zwei To-do-Listen in meinen Koffer legen"><span aria-hidden="true">☆</span> In meinen Koffer</button></header>
+  <p class="mk-kurz">Eine für die Schule, eine für Privates. Was aufgeschrieben ist, muss dein Kopf nicht mehr mit sich herumtragen.</p>
+  <div class="mk-teile">
+    <div><h4>So geht’s</h4><ol><li>Alles aufschreiben, was ansteht – auch Kleinkram.</li><li>Auf zwei Listen verteilen: Schule und Privat.</li><li>Auf der Schul-Liste festlegen, wann du was erledigst.</li></ol></div>
+    <div class="mk-warum"><h4>Warum es wirkt</h4><p>Unerledigte Aufgaben geistern im Kopf herum und stören die Konzentration. In Experimenten verschwand dieser Effekt, sobald die Teilnehmenden einen konkreten Plan für die offene Aufgabe aufschrieben. <span class="quelle">(Masicampo &amp; Baumeister 2011)</span></p></div>
+  </div>
+</article>
+<article class="mk" id="pareto" style="--k:#7048e8;--k-hell:#f3f0ff">
+  <header class="mk-kopf"><h3>80/20-Regel</h3><button type="button" class="stern" data-id="pareto" data-name="80/20-Regel" aria-pressed="false" aria-label="80/20-Regel in meinen Koffer legen"><span aria-hidden="true">☆</span> In meinen Koffer</button></header>
+  <p class="mk-kurz">Oft bringen 20 % des Aufwands 80 % des Ergebnisses. Also zuerst die Kerninhalte, Details und Perfektion danach.</p>
+  <div class="mk-teile">
+    <div><h4>So geht’s</h4><ol><li>Liste alle Themen der Prüfung auf.</li><li>Markiere die Kerninhalte: Was kam im Unterricht oft vor? Was baut aufeinander auf?</li><li>Lern zuerst die Kerninhalte sicher, dann die Details.</li></ol></div>
+    <div class="mk-warum"><h4>Warum es wirkt</h4><p>Eine Faustregel (Pareto-Prinzip), keine exakte Zahl. Sie hilft gegen Perfektionismus: Wer zuerst das Wichtige sicher kann, hat auch bei Zeitnot eine solide Basis.</p></div>
+  </div>
+</article>
+<article class="mk" id="alpen" style="--k:#7048e8;--k-hell:#f3f0ff">
+  <header class="mk-kopf"><h3>ALPEN</h3><button type="button" class="stern" data-id="alpen" data-name="ALPEN" aria-pressed="false" aria-label="ALPEN in meinen Koffer legen"><span aria-hidden="true">☆</span> In meinen Koffer</button></header>
+  <p class="mk-kurz">Aufgaben notieren, Länge schätzen, Puffer lassen, Entscheiden, Nachkontrolle.</p>
+  <div class="mk-teile">
+    <div><h4>So geht’s</h4><ol><li><b>A</b>ufgaben: alles notieren, was morgen ansteht.</li><li><b>L</b>änge: Zeit je Aufgabe schätzen.</li><li><b>P</b>uffer: nur etwa 60 % der Zeit verplanen, 40 % bleiben frei.</li><li><b>E</b>ntscheiden: Was kommt zuerst, was fällt notfalls weg?</li><li><b>N</b>achkontrolle: abends kurz prüfen, was geklappt hat und was auf morgen wandert.</li></ol></div>
+    <div class="mk-warum"><h4>Warum es wirkt</h4><p>Fast alle Menschen unterschätzen, wie lange Aufgaben dauern (Planungsfehlschluss). Der Puffer fängt das ab, statt dass der ganze Plan kippt. <span class="quelle">(Buehler, Griffin &amp; Ross 1994; Methode nach L. Seiwert)</span></p></div>
+  </div>
+  <ul class="mk-links"><li><a href="https://besser-lernen.blog/zeitmanagement/" target="_blank" rel="noopener">Mehr zum Zeitmanagement (besser-lernen.blog)</a></li></ul>
+</article>
+                </div>
+            </section>
+            <section id="loslegen" class="kategorie mt-4" style="--k:#1971c2;--k-hell:#e7f5ff">
+                <div class="chapter-header kat-kopf">
+                    <span class="chapter-number">3 · Handeln</span>
+                    <h2>Loslegen</h2>
+                    <p class="hilft"><strong>Hilft, wenn</strong> du weißt, was zu tun ist – und trotzdem nicht anfängst.</p>
+                </div>
+                <div class="mk-grid">
+<article class="mk" id="lernort" style="--k:#1971c2;--k-hell:#e7f5ff">
+  <header class="mk-kopf"><h3>Fester Lernort</h3><button type="button" class="stern" data-id="lernort" data-name="Fester Lernort" aria-pressed="false" aria-label="Fester Lernort in meinen Koffer legen"><span aria-hidden="true">☆</span> In meinen Koffer</button></header>
+  <p class="mk-kurz">Ein Platz nur fürs Lernen, nicht Bett oder Sofa. Dein Gehirn verknüpft den Ort mit Arbeit, und das Anfangen geht leichter.</p>
+  <div class="mk-teile">
+    <div><h4>So geht’s</h4><ol><li>Such dir einen festen Platz: Schreibtisch, Bibliothek oder der Küchentisch zu festen Zeiten.</li><li>Dort nur lernen – nicht zocken oder Serien schauen.</li><li>Bett und Sofa bleiben fürs Entspannen.</li></ol></div>
+    <div class="mk-warum"><h4>Warum es wirkt</h4><p>Gewohnheiten hängen stark an Orten: Der gleiche Ort löst das gleiche Verhalten aus. Ein fester Lernplatz macht das Anfangen mit der Zeit fast automatisch. <span class="quelle">(Wood &amp; Neal 2007)</span></p></div>
+  </div>
+</article>
+<article class="mk" id="handy" style="--k:#1971c2;--k-hell:#e7f5ff">
+  <header class="mk-kopf"><h3>Handy raus</h3><button type="button" class="stern" data-id="handy" data-name="Handy raus" aria-pressed="false" aria-label="Handy raus in meinen Koffer legen"><span aria-hidden="true">☆</span> In meinen Koffer</button></header>
+  <p class="mk-kurz">Am besten in einen anderen Raum, mindestens stumm und außer Sicht. Schon das Summen einer Nachricht holt dich raus.</p>
+  <div class="mk-teile">
+    <div><h4>So geht’s</h4><ol><li>Vor dem Lernen das Handy in einen anderen Raum legen.</li><li>Geht das nicht: stumm, umgedreht, außer Sichtweite – oder eine Fokus-App wie Forest.</li><li>Nachrichten in den Pausen gebündelt checken.</li></ol></div>
+    <div class="mk-warum"><h4>Warum es wirkt</h4><p>Schon das Summen einer Nachricht stört die Aufmerksamkeit fast so stark wie das Antworten. Liegt das Handy in einem anderen Raum, fallen Gedächtnistests im Schnitt etwas besser aus. <span class="quelle">(Stothart u. a. 2015; Ward u. a. 2017; Böttger u. a. 2023)</span></p></div>
+  </div>
+</article>
+<article class="mk" id="countdown" style="--k:#1971c2;--k-hell:#e7f5ff">
+  <header class="mk-kopf"><h3>Platz + Countdown</h3><button type="button" class="stern" data-id="countdown" data-name="Platz + Countdown" aria-pressed="false" aria-label="Platz + Countdown in meinen Koffer legen"><span aria-hidden="true">☆</span> In meinen Koffer</button></header>
+  <p class="mk-kurz">Buch auf, Stifte bereit, dann einen 3-Minuten-Countdown starten. Bei null geht’s los – ohne weitere Diskussion mit dir selbst.</p>
+  <div class="mk-teile">
+    <div><h4>So geht’s</h4><ol><li>Buch aufschlagen, Stifte und Block hinlegen, Wasser hinstellen.</li><li>Countdown von 3 Minuten stellen (Küchenwecker, wenn das Handy schon draußen ist).</li><li>Bei null fängst du an, ohne noch einmal zu überlegen.</li></ol></div>
+    <div class="mk-warum"><h4>Warum es wirkt</h4><p>Ein fester Auslöser ersetzt die tägliche Entscheidung „jetzt oder später?“. Solche Wenn-dann-Pläne gehören zu den wirksamsten Kleinst-Strategien gegen das Aufschieben. <span class="quelle">(Gollwitzer &amp; Sheeran 2006)</span></p></div>
+  </div>
+</article>
+<article class="mk" id="leicht" style="--k:#1971c2;--k-hell:#e7f5ff">
+  <header class="mk-kopf"><h3>Leicht anfangen</h3><button type="button" class="stern" data-id="leicht" data-name="Leicht anfangen" aria-pressed="false" aria-label="Leicht anfangen in meinen Koffer legen"><span aria-hidden="true">☆</span> In meinen Koffer</button></header>
+  <p class="mk-kurz">Starte mit einer einfachen Aufgabe zum Aufwärmen, auch nach Pausen. Läuft der Kopf, kommt die schwere dran.</p>
+  <div class="mk-teile">
+    <div><h4>So geht’s</h4><ol><li>Als Einstieg eine kurze, leichte Aufgabe wählen: Vokabeln wiederholen, Mitschrift ordnen.</li><li>Nach 5–10 Minuten zur schweren Aufgabe wechseln.</li><li>Auch nach Pausen wieder leicht einsteigen.</li></ol></div>
+    <div class="mk-warum"><h4>Warum es wirkt</h4><p>Der Start ist die größte Hürde. Ein schneller Erfolg nimmt Druck raus, und wer einmal im Arbeitsmodus ist, bleibt leichter dabei. Probier aus, ob bei dir „leicht zuerst“ oder „das Fieseste zuerst“ besser funktioniert.</p></div>
+  </div>
+</article>
+<article class="mk" id="fuenf" style="--k:#1971c2;--k-hell:#e7f5ff">
+  <header class="mk-kopf"><h3>5-Minuten-Regel</h3><button type="button" class="stern" data-id="fuenf" data-name="5-Minuten-Regel" aria-pressed="false" aria-label="5-Minuten-Regel in meinen Koffer legen"><span aria-hidden="true">☆</span> In meinen Koffer</button></header>
+  <p class="mk-kurz">Versprich dir nur fünf Minuten, danach darfst du aufhören. Meist machst du weiter – das Schwerste war der Start.</p>
+  <div class="mk-teile">
+    <div><h4>So geht’s</h4><ol><li>Sag dir: „Ich mache genau fünf Minuten.“</li><li>Timer stellen und anfangen.</li><li>Nach fünf Minuten ehrlich entscheiden: Aufhören ist erlaubt, weitermachen auch.</li></ol></div>
+    <div class="mk-warum"><h4>Warum es wirkt</h4><p>Aufgaben wirken vor dem Start meist schlimmer als mittendrin. Fünf Minuten sind so klein, dass kaum Widerstand entsteht – und eine angefangene Aufgabe lässt sich leichter fortsetzen als eine neue beginnen.</p></div>
+  </div>
+</article>
+                </div>
+            </section>
+            <section id="dranbleiben" class="kategorie mt-4" style="--k:#1971c2;--k-hell:#e7f5ff">
+                <div class="chapter-header kat-kopf">
+                    <span class="chapter-number">4 · Handeln</span>
+                    <h2>Dranbleiben</h2>
+                    <p class="hilft"><strong>Hilft, wenn</strong> du zwar anfängst, aber nach kurzer Zeit abschweifst.</p>
+                </div>
+                <div class="mk-grid">
+<article class="mk" id="pomodoro" style="--k:#1971c2;--k-hell:#e7f5ff">
+  <header class="mk-kopf"><h3>Pomodoro</h3><button type="button" class="stern" data-id="pomodoro" data-name="Pomodoro" aria-pressed="false" aria-label="Pomodoro in meinen Koffer legen"><span aria-hidden="true">☆</span> In meinen Koffer</button></header>
+  <p class="mk-kurz">25 Minuten konzentriert, 5 Minuten Pause, nach vier Runden eine lange Pause.</p>
+  <div class="mk-teile">
+    <div><h4>So geht’s</h4><ol><li>Timer auf 25 Minuten, eine Aufgabe, keine Unterbrechung.</li><li>5 Minuten echte Pause.</li><li>Nach vier Runden 15–20 Minuten Pause.</li></ol></div>
+    <div class="mk-warum"><h4>Warum es wirkt</h4><p>In einer Studie mit Studierenden fühlten sich die Teilnehmenden mit festen Pausen weniger müde und motivierter als diejenigen, die nach Gefühl Pause machten – und schafften gleich viel in kürzerer Zeit. <span class="quelle">(Biwer u. a. 2023; Technik nach F. Cirillo)</span></p></div>
+  </div>
+</article>
+<article class="mk" id="pausen" style="--k:#1971c2;--k-hell:#e7f5ff">
+  <header class="mk-kopf"><h3>Echte Pausen</h3><button type="button" class="stern" data-id="pausen" data-name="Echte Pausen" aria-pressed="false" aria-label="Echte Pausen in meinen Koffer legen"><span aria-hidden="true">☆</span> In meinen Koffer</button></header>
+  <p class="mk-kurz">Aufstehen, lüften, trinken, kurz bewegen. Scrollen ist für dein Gehirn keine Pause.</p>
+  <div class="mk-teile">
+    <div><h4>So geht’s</h4><ol><li>Vom Platz aufstehen.</li><li>Fenster auf, etwas trinken, kurz bewegen.</li><li>Den Wiedereinstieg schon vor der Pause bereitlegen.</li></ol></div>
+    <div class="mk-warum"><h4>Warum es wirkt</h4><p>Kurze Pausen von wenigen Minuten machen nachweislich wacher und weniger erschöpft. Beim Scrollen prasseln dagegen neue Reize auf dich ein – der Kopf bekommt keine Pause. <span class="quelle">(Albulescu u. a. 2022)</span></p></div>
+  </div>
+</article>
+<article class="mk" id="abwechslung" style="--k:#1971c2;--k-hell:#e7f5ff">
+  <header class="mk-kopf"><h3>Abwechslung</h3><button type="button" class="stern" data-id="abwechslung" data-name="Abwechslung" aria-pressed="false" aria-label="Abwechslung in meinen Koffer legen"><span aria-hidden="true">☆</span> In meinen Koffer</button></header>
+  <p class="mk-kurz">Lernwege wechseln: schreiben, laut sprechen, Erklärvideo, App. Auch verschiedene Aufgabentypen zu mischen hält wach.</p>
+  <div class="mk-teile">
+    <div><h4>So geht’s</h4><ol><li>Vokabeln schreiben, dann laut sprechen, dann in der App üben.</li><li>In Mathe verschiedene Aufgabentypen mischen statt zehnmal dasselbe.</li><li>Fächer wechseln – ähnliche (z. B. zwei Sprachen) aber nicht direkt hintereinander.</li></ol></div>
+    <div class="mk-warum"><h4>Warum es wirkt</h4><p>Gemischtes Üben ist anstrengender, bringt aber mehr: Du lernst nicht nur den Lösungsweg, sondern auch zu erkennen, welcher Weg gerade passt. <span class="quelle">(Brunmair &amp; Richter 2019)</span></p></div>
+  </div>
+</article>
+<article class="mk" id="gemeinsam" style="--k:#1971c2;--k-hell:#e7f5ff">
+  <header class="mk-kopf"><h3>Gemeinsam lernen</h3><button type="button" class="stern" data-id="gemeinsam" data-name="Gemeinsam lernen" aria-pressed="false" aria-label="Gemeinsam lernen in meinen Koffer legen"><span aria-hidden="true">☆</span> In meinen Koffer</button></header>
+  <p class="mk-kurz">Mit anderen verabreden, auch per Videocall – jede:r an ihrem eigenen Stoff. Wenn jemand wartet, fängst du pünktlich an.</p>
+  <div class="mk-teile">
+    <div><h4>So geht’s</h4><ol><li>Feste Lernzeit mit einer Freundin oder einem Freund ausmachen.</li><li>Zu Beginn sagt jede:r kurz, was sie oder er schaffen will.</li><li>Am Ende kurz berichten, was geklappt hat.</li></ol></div>
+    <div class="mk-warum"><h4>Warum es wirkt</h4><p>Die Verabredung macht aus einem Vorsatz einen Termin. Und wer sein Ziel ausspricht und am Ende berichtet, nutzt einen der wirksamsten Hebel für Durchhalten (siehe „Helfer:in einweihen“).</p></div>
+  </div>
+</article>
+<article class="mk" id="outfit" style="--k:#1971c2;--k-hell:#e7f5ff">
+  <header class="mk-kopf"><h3>Lern-Outfit</h3><button type="button" class="stern" data-id="outfit" data-name="Lern-Outfit" aria-pressed="false" aria-label="Lern-Outfit in meinen Koffer legen"><span aria-hidden="true">☆</span> In meinen Koffer</button></header>
+  <p class="mk-kurz">Ein bestimmter Hoodie oder Haargummi nur fürs Lernen. Klingt albern, ist aber ein klares Startsignal: Jetzt ist Arbeitsmodus.</p>
+  <div class="mk-teile">
+    <div><h4>So geht’s</h4><ol><li>Such dir etwas aus: Hoodie, Haargummi, Brille, Mütze.</li><li>Zieh es nur zum Lernen an.</li><li>Danach wieder aus – Feierabend.</li></ol></div>
+    <div class="mk-warum"><h4>Warum es wirkt</h4><p>Ein Ritual, kein Zaubertrick: Ein festes Startsignal markiert den Übergang von Freizeit zu Arbeit. Gerade zu Hause, wo beides am selben Ort stattfindet, hilft so eine Grenze.</p></div>
+  </div>
+</article>
+                </div>
+            </section>
+            <section id="gefuehl" class="kategorie mt-4" style="--k:#e8590c;--k-hell:#fff4e6">
+                <div class="chapter-header kat-kopf">
+                    <span class="chapter-number">5 · Emotionskontrolle</span>
+                    <h2>Kopf &amp; Gefühl</h2>
+                    <p class="hilft"><strong>Hilft, wenn</strong> ein Gefühl im Weg steht: Angst, Ärger, Überforderung.</p>
+                </div>
+                <div class="mk-grid">
+<article class="mk" id="benennen" style="--k:#e8590c;--k-hell:#fff4e6">
+  <header class="mk-kopf"><h3>Gefühl benennen</h3><button type="button" class="stern" data-id="benennen" data-name="Gefühl benennen" aria-pressed="false" aria-label="Gefühl benennen in meinen Koffer legen"><span aria-hidden="true">☆</span> In meinen Koffer</button></header>
+  <p class="mk-kurz">Frag dich ehrlich: Warum schiebe ich das auf? „Ich habe Angst, es nicht zu können“ trifft es oft besser als „keine Lust“.</p>
+  <div class="mk-teile">
+    <div><h4>So geht’s</h4><ol><li>Wenn du merkst, dass du ausweichst: kurz innehalten.</li><li>Den Satz vervollständigen: „Ich schiebe das auf, weil ich … fühle.“</li><li>Dann fragen: Was ist der kleinste Schritt, den ich trotzdem machen kann?</li></ol></div>
+    <div class="mk-warum"><h4>Warum es wirkt</h4><p>Aufschieben ist oft eine Flucht vor einem unangenehmen Gefühl, nicht vor der Arbeit. Gefühle in Worte zu fassen dämpft messbar die Reaktion im Gehirn. <span class="quelle">(Lieberman u. a. 2007; Sirois &amp; Pychyl 2013)</span></p></div>
+  </div>
+</article>
+<article class="mk" id="freund" style="--k:#e8590c;--k-hell:#fff4e6">
+  <header class="mk-kopf"><h3>Freundes-Check</h3><button type="button" class="stern" data-id="freund" data-name="Freundes-Check" aria-pressed="false" aria-label="Freundes-Check in meinen Koffer legen"><span aria-hidden="true">☆</span> In meinen Koffer</button></header>
+  <p class="mk-kurz">Was würdest du einer Freundin in deiner Lage sagen? Sag genau das zu dir.</p>
+  <div class="mk-teile">
+    <div><h4>So geht’s</h4><ol><li>Stell dir vor, eine Freundin steckt genau in deiner Lage.</li><li>Was würdest du ihr sagen? Schreib es auf.</li><li>Lies es dir selbst vor – und mach den nächsten kleinen Schritt.</li></ol></div>
+    <div class="mk-warum"><h4>Warum es wirkt</h4><p>Studierende, die sich ihr Aufschieben vor einer Prüfung verziehen, schoben vor der nächsten Prüfung weniger auf. Selbstvorwürfe halten das Aufschieben dagegen eher am Laufen. <span class="quelle">(Wohl, Pychyl &amp; Bennett 2010; Sirois 2014)</span></p></div>
+  </div>
+</article>
+<article class="mk" id="atmen" style="--k:#e8590c;--k-hell:#fff4e6">
+  <header class="mk-kopf"><h3>Entspannungsübung</h3><button type="button" class="stern" data-id="atmen" data-name="Entspannungsübung" aria-pressed="false" aria-label="Entspannungsübung in meinen Koffer legen"><span aria-hidden="true">☆</span> In meinen Koffer</button></header>
+  <p class="mk-kurz">Vor dem Start eine Minute langsam atmen: 4 Sekunden ein, 6 Sekunden aus.</p>
+  <div class="mk-teile">
+    <div><h4>So geht’s</h4><ol><li>Aufrecht hinsetzen, Augen zu oder Blick auf einen Punkt.</li><li>4 Sekunden ein-, 6 Sekunden ausatmen.</li><li>Fünf- bis zehnmal wiederholen, dann loslegen.</li></ol></div>
+    <div class="mk-warum"><h4>Warum es wirkt</h4><p>Langsames Atmen mit betontem Ausatmen beruhigt Puls und Nervensystem und hebt die Stimmung. Das hilft, wenn Aufregung oder Ärger den Start blockieren. <span class="quelle">(Balban u. a. 2023)</span></p></div>
+  </div>
+  <ul class="mk-links"><li><a href="https://www.tk.de/techniker/magazin/life-balance/aktiv-entspannen/download-anleitung-entspannung-2006922" target="_blank" rel="noopener">Entspannungsanleitungen zum Download (Techniker Krankenkasse)</a></li></ul>
+</article>
+                </div>
+            </section>
+            <section id="belohnen" class="kategorie mt-4" style="--k:#2b8a3e;--k-hell:#ebfbee">
+                <div class="chapter-header kat-kopf">
+                    <span class="chapter-number">6 · Anreize</span>
+                    <h2>Belohnen &amp; Unterstützen</h2>
+                    <p class="hilft"><strong>Hilft, wenn</strong> der Antrieb fehlt und das Ziel noch weit weg ist.</p>
+                </div>
+                <div class="mk-grid">
+<article class="mk" id="belohnung" style="--k:#2b8a3e;--k-hell:#ebfbee">
+  <header class="mk-kopf"><h3>Kleine Belohnung</h3><button type="button" class="stern" data-id="belohnung" data-name="Kleine Belohnung" aria-pressed="false" aria-label="Kleine Belohnung in meinen Koffer legen"><span aria-hidden="true">☆</span> In meinen Koffer</button></header>
+  <p class="mk-kurz">Vorher festlegen, erst nach der Etappe genießen: Lieblingssong, Kakao, eine Folge.</p>
+  <div class="mk-teile">
+    <div><h4>So geht’s</h4><ol><li>Vor dem Lernen festlegen: Nach dieser Etappe gibt es …</li><li>Die Belohnung erst nach getaner Arbeit.</li><li>Bonus: Etwas, das du magst, nur beim Lernen erlauben – Lieblingstee oder eine Playlist ohne Gesang.</li></ol></div>
+    <div class="mk-warum"><h4>Warum es wirkt</h4><p>Lernen zahlt sich erst spät aus, Ablenkung sofort. Eine geplante Belohnung holt den Lohn nach vorne. Wer sich ein Vergnügen nur für eine ungeliebte Tätigkeit erlaubt, macht diese häufiger. <span class="quelle">(Milkman, Minson &amp; Volpp 2014)</span></p></div>
+  </div>
+</article>
+<article class="mk" id="spruch" style="--k:#2b8a3e;--k-hell:#ebfbee">
+  <header class="mk-kopf"><h3>Spruch oder Kraftfigur</h3><button type="button" class="stern" data-id="spruch" data-name="Spruch oder Kraftfigur" aria-pressed="false" aria-label="Spruch oder Kraftfigur in meinen Koffer legen"><span aria-hidden="true">☆</span> In meinen Koffer</button></header>
+  <p class="mk-kurz">Ein Satz oder eine Figur, die dich antreibt, gut sichtbar am Lernplatz.</p>
+  <div class="mk-teile">
+    <div><h4>So geht’s</h4><ol><li>Such einen Spruch oder ein Bild, das zu deinem Warum passt.</li><li>Gestalte es schön und häng es gut sichtbar auf.</li><li>Ab und zu austauschen, damit es nicht unsichtbar wird.</li></ol></div>
+    <div class="mk-warum"><h4>Warum es wirkt</h4><p>Eine Erinnerung an dein Warum holt dein langfristiges Ziel in den Moment, in dem die Ablenkung lockt. Wichtig ist nur, dass sie für dich etwas bedeutet.</p></div>
+  </div>
+  <ul class="mk-links"><li><a href="https://blog.cleverly.de/motivationssprueche-lernen/" target="_blank" rel="noopener">Motivationssprüche fürs Lernen (cleverly)</a></li></ul>
+</article>
+<article class="mk" id="helfer" style="--k:#2b8a3e;--k-hell:#ebfbee">
+  <header class="mk-kopf"><h3>Helfer:in einweihen</h3><button type="button" class="stern" data-id="helfer" data-name="Helfer:in einweihen" aria-pressed="false" aria-label="Helfer:in einweihen in meinen Koffer legen"><span aria-hidden="true">☆</span> In meinen Koffer</button></header>
+  <p class="mk-kurz">Erzähl jemandem von deinem Plan und lass dich nachfragen. Wer berichten muss, bleibt eher dran.</p>
+  <div class="mk-teile">
+    <div><h4>So geht’s</h4><ol><li>Überleg: Wer kann dich unterstützen – Freund:in, Eltern, Geschwister, Lehrkraft?</li><li>Sag konkret, was du vorhast und bis wann.</li><li>Bitte darum, dass die Person nachfragt.</li></ol></div>
+    <div class="mk-warum"><h4>Warum es wirkt</h4><p>Fortschritt festzuhalten steigert die Chance, ein Ziel zu erreichen – laut einer Metaanalyse mit über 130 Studien besonders dann, wenn man anderen davon berichtet. <span class="quelle">(Harkin u. a. 2016)</span></p></div>
+  </div>
+</article>
+                </div>
+            </section>
+
+            <div class="tipp-box">
+                <strong>Tipp: Kombinieren!</strong> Methoden wirken oft am besten im Team, zum Beispiel <em>Handy raus</em> + <em>Pomodoro</em> + <em>kleine Belohnung</em> nach vier Runden. Formuliere deine Auswahl als Wenn-dann-Satz: „Wenn ich merke, dass …, dann …“.
+            </div>
+
+            <section id="quellen" class="mt-4">
+                <div class="chapter-header">
+                    <span class="chapter-number">Zum Nachlesen</span>
+                    <h2>Quellen</h2>
+                </div>
+                <ul class="quellen-liste"><li>Albulescu, P. u. a. (2022): „Give me a break!“ A systematic review and meta-analysis on the efficacy of micro-breaks. <i>PLOS ONE</i> 17(8).</li><li>Balban, M. Y. u. a. (2023): Brief structured respiration practices enhance mood and reduce physiological arousal. <i>Cell Reports Medicine</i> 4(1).</li><li>Bandura, A. &amp; Schunk, D. H. (1981): Cultivating competence, self-efficacy, and intrinsic interest through proximal self-motivation. <i>Journal of Personality and Social Psychology</i> 41(3).</li><li>Biwer, F. u. a. (2023): Understanding effort regulation: Comparing „Pomodoro“ breaks and self-regulated breaks. <i>British Journal of Educational Psychology</i> 93(S2).</li><li>Böttger, T., Poschik, M. &amp; Zierer, K. (2023): Does the brain drain effect really exist? A meta-analysis. <i>Behavioral Sciences</i> 13(9).</li><li>Brunmair, M. &amp; Richter, T. (2019): Similarity matters: A meta-analysis of interleaved learning. <i>Psychological Bulletin</i> 145(11).</li><li>Buehler, R., Griffin, D. &amp; Ross, M. (1994): Exploring the „planning fallacy“. <i>Journal of Personality and Social Psychology</i> 67(3).</li><li>Gollwitzer, P. M. &amp; Sheeran, P. (2006): Implementation intentions and goal achievement. <i>Advances in Experimental Social Psychology</i> 38.</li><li>Harkin, B. u. a. (2016): Does monitoring goal progress promote goal attainment? <i>Psychological Bulletin</i> 142(2).</li><li>Lieberman, M. D. u. a. (2007): Putting feelings into words. <i>Psychological Science</i> 18(5).</li><li>Locke, E. A. &amp; Latham, G. P. (2002): Building a practically useful theory of goal setting and task motivation. <i>American Psychologist</i> 57(9).</li><li>Masicampo, E. J. &amp; Baumeister, R. F. (2011): Consider it done! Plan making can eliminate the cognitive effects of unfulfilled goals. <i>Journal of Personality and Social Psychology</i> 101(4).</li><li>Milkman, K. L., Minson, J. A. &amp; Volpp, K. G. M. (2014): Holding the Hunger Games hostage at the gym. <i>Management Science</i> 60(2).</li><li>Sirois, F. M. (2014): Procrastination and stress: Exploring the role of self-compassion. <i>Self and Identity</i> 13(2).</li><li>Sirois, F. M. &amp; Pychyl, T. A. (2013): Procrastination and the priority of short-term mood regulation. <i>Social and Personality Psychology Compass</i> 7(2).</li><li>Stothart, C., Mitchum, A. &amp; Yehnert, C. (2015): The attentional cost of receiving a cell phone notification. <i>JEP: Human Perception and Performance</i> 41(4).</li><li>Ward, A. F. u. a. (2017): Brain drain. <i>Journal of the Association for Consumer Research</i> 2(2).</li><li>Wohl, M. J. A., Pychyl, T. A. &amp; Bennett, S. H. (2010): I forgive myself, now I can study. <i>Personality and Individual Differences</i> 48(7).</li><li>Wood, W. &amp; Neal, D. T. (2007): A new look at habits and the habit–goal interface. <i>Psychological Review</i> 114(4).</li></ul>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum</a> | <a href="https://edu-mrh.de/">Startseite</a></p>
+        </div>
+    </footer>
+
+    <script>
+    (function () {
+        'use strict';
+        var KEY = 'llMethodenkoffer';
+        function laden() {
+            try { var w = JSON.parse(localStorage.getItem(KEY) || '[]'); return Array.isArray(w) ? w : []; }
+            catch (e) { return []; }
+        }
+        function speichern(liste) { try { localStorage.setItem(KEY, JSON.stringify(liste)); } catch (e) { /* privat/geblockt */ } }
+
+        var knoepfe = Array.prototype.slice.call(document.querySelectorAll('.stern'));
+        var namen = {};
+        knoepfe.forEach(function (b) { namen[b.dataset.id] = b.dataset.name; });
+
+        function zeichnen() {
+            var gewaehlt = laden().filter(function (id) { return namen[id]; });
+            knoepfe.forEach(function (b) {
+                var an = gewaehlt.indexOf(b.dataset.id) !== -1;
+                b.setAttribute('aria-pressed', an ? 'true' : 'false');
+                b.firstElementChild.textContent = an ? '★' : '☆';
+                b.lastChild.textContent = an ? ' Im Koffer' : ' In meinen Koffer';
+            });
+            var ul = document.getElementById('koffer-liste');
+            ul.innerHTML = '';
+            gewaehlt.forEach(function (id) {
+                var li = document.createElement('li');
+                var a = document.createElement('a');
+                a.href = '#' + id; a.textContent = '★ ' + namen[id];
+                li.appendChild(a); ul.appendChild(li);
+            });
+            ul.hidden = gewaehlt.length === 0;
+            document.getElementById('koffer-leer').hidden = gewaehlt.length > 0;
+            document.getElementById('koffer-viel').hidden = gewaehlt.length <= 3;
+        }
+
+        knoepfe.forEach(function (b) {
+            b.addEventListener('click', function () {
+                var liste = laden();
+                var i = liste.indexOf(b.dataset.id);
+                if (i === -1) liste.push(b.dataset.id); else liste.splice(i, 1);
+                speichern(liste);
+                zeichnen();
+            });
+        });
+        zeichnen();
+    })();
+    </script>
+</body>
+</html>
