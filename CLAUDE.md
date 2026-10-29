@@ -322,8 +322,10 @@ Wo was liegt (Stand 2026-10). `→ AB` = LaTeX-Arbeitsblätter in `arbeitsblaett
   `ab-0-grundwissen` = Grundwissen 6–9; Lösungen `ab-…-lsg.pdf`, verlinkt im
   Lehrkräfte-Bereich von `java.html`. `Material_Java/` = Rohmaterial der
   Lehrkraft (nur lokal, `.gitignore`).
-- 11 Algorithmik mit Snap!: `11/algorithmik/` (Stationen 0–6, HTML-Arbeitsblätter
-  in `arbeitsblaetter/*.html`, `snap-ide.html`)
+- 11 Algorithmik mit Snap!: `11/algorithmik/` (Stationen 0–7, HTML-Arbeitsblätter
+  in `arbeitsblaetter/*.html`, `snap-ide.html`; Snap!-Vorlagen aus `projekte/erzeuge_projekte.py`;
+  Station 6 Listen `6-listen.html` mit Listen-Labor/Durchlauf-Tafel in `listen.js`; Station 7 Projekt
+  liegt weiter in `6-projekt.html`/`ab-6-projekt.html`/`6-*-start.xml`, Dateien nicht umbenennen)
 - 11 Graphen (neues Format, → AB): `11/graphen/` (3.1 Grundbegriffe,
   3.2 Umsetzung, 3.3 Breitensuche, 3.4 Dijkstra; Graph-Abenteuer `haenselundgretel/`);
   Werkzeuge in `graphen.js` (u. a. Dijkstra-Vorführung/Trainer `data-dj`, Lösungsweg)

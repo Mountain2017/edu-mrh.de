@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Station 6: Listen | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Algorithmik mit Snap!, Station 6: Listen – der Datentyp Liste zum Anfassen: Elemente, Stellen, Operationen, Durchlaufen und wie ein Computer Listen speichert.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="algorithmik.css">
+    <script src="snap-config.js"></script>
+    <script defer src="listen.js"></script>
+    <style>
+        /* Von der Schachtel zum Regal */
+        .regal-vergleich { display: grid; grid-template-columns: 1fr 1.6fr; gap: 1rem; margin: 1rem 0; }
+        .regal-vergleich > div { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 10px; padding: .9rem 1rem; }
+        .regal-vergleich h4 { margin: 0 0 .5rem; font-size: 1rem; color: var(--alg-primary-dark); }
+        .regal-vergleich p { font-size: .92rem; color: var(--gray); margin: .5rem 0 0; }
+        .schachtel { display: inline-flex; flex-direction: column; align-items: center; }
+        .schachtel .etikett, .regal .etikett { font-size: .8rem; font-weight: 700; color: #fff; background: #f3761d; border-radius: 6px 6px 0 0; padding: .1rem .6rem; }
+        .schachtel .inhalt { border: 3px solid #f3761d; border-radius: 0 0 8px 8px; min-width: 4.5rem; text-align: center; padding: .5rem .8rem; font-weight: 700; font-size: 1.2rem; background: #fff; }
+        .regal { display: inline-flex; flex-direction: column; align-items: flex-start; max-width: 100%; }
+        .regal .etikett { background: #d94d11; }
+        .regal .faecher { display: flex; flex-wrap: wrap; border: 3px solid #d94d11; border-radius: 0 8px 8px 8px; background: #fff; }
+        .regal .fach { display: flex; flex-direction: column; align-items: center; min-width: 3.4rem; border-right: 2px solid #fbd5c4; }
+        .regal .fach:last-child { border-right: 0; }
+        .regal .fach small { display: block; width: 100%; text-align: center; font-size: .72rem; font-weight: 700; color: #d94d11; background: #fff1eb; padding: .05rem 0; }
+        .regal .fach b { padding: .35rem .5rem; font-size: 1.1rem; }
+
+        .alltag { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: .8rem; margin: 1rem 0; }
+        .alltag div { background: #fff7f3; border: 1px solid #fbd5c4; border-radius: 10px; padding: .7rem .9rem; font-size: .92rem; }
+        .alltag strong { display: block; color: #9a3412; margin-bottom: .2rem; }
+
+        /* Listen-Labor (listen.js) */
+        .labor { border: 2px solid #d94d11; border-radius: 12px; padding: 1rem 1.1rem; margin: 1rem 0; background: #fffdfb; }
+        .ll-kopf { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; justify-content: space-between; margin-bottom: .6rem; }
+        .ll-ansicht button { border: 1px solid #d94d11; background: #fff; color: #9a3412; padding: .3rem .7rem; font: inherit; font-size: .88rem; cursor: pointer; }
+        .ll-ansicht button:first-child { border-radius: 6px 0 0 6px; }
+        .ll-ansicht button:last-child { border-radius: 0 6px 6px 0; border-left: 0; }
+        .ll-ansicht button.aktiv { background: #d94d11; color: #fff; font-weight: 600; }
+        .ll-laenge { font-weight: 700; color: #9a3412; }
+        .ll-buehne { display: flex; align-items: flex-start; gap: .6rem; background: #fff; border: 1px dashed #fbd5c4; border-radius: 10px; padding: .8rem; min-height: 5.2rem; overflow-x: auto; }
+        .ll-name { font-weight: 700; color: #fff; background: #f3761d; border-radius: 6px; padding: .15rem .55rem; font-size: .85rem; margin-top: .9rem; }
+        .ll-liste { display: flex; flex-wrap: wrap; align-items: center; gap: 0; }
+        .ll-liste.kette { gap: .3rem; }
+        .ll-fach { display: flex; flex-direction: column; align-items: center; min-width: 4.2rem; border: 2px solid #d94d11; margin-left: -2px; background: #fff; transition: background .4s; }
+        .ll-liste.kette .ll-fach { margin-left: 0; border-radius: 8px; }
+        .ll-fach .ll-nr { width: 100%; text-align: center; font-size: .75rem; font-weight: 700; color: #d94d11; background: #fff1eb; }
+        .ll-liste.kette .ll-fach .ll-nr { color: #c2a597; background: #fafafa; }
+        .ll-fach .ll-wert-anz { padding: .4rem .55rem; font-weight: 700; }
+        .ll-fach .ll-zeiger { font-size: .7rem; color: #64748b; border-top: 1px dashed #cbd5e1; width: 100%; text-align: center; padding: .1rem .3rem; }
+        .ll-fach.neu { background: #dcfce7; animation: ll-pop .5s; }
+        .ll-fach.verschoben { background: #fef9c3; }
+        .ll-fach.gelesen { background: #dbeafe; }
+        @keyframes ll-pop { from { transform: scale(.6); } to { transform: scale(1); } }
+        .ll-pfeil { color: #d94d11; font-weight: 700; }
+        .ll-anfang { font-size: .8rem; font-weight: 700; color: #9a3412; }
+        .ll-leer { color: #94a3b8; font-style: italic; padding: .5rem; }
+        .ll-eingaben { display: flex; flex-wrap: wrap; gap: 1rem; margin: .8rem 0 .4rem; }
+        .ll-eingaben label { font-weight: 600; font-size: .9rem; display: flex; align-items: center; gap: .4rem; }
+        .ll-eingaben input { font: inherit; padding: .25rem .5rem; border: 1px solid #cbd5e1; border-radius: 6px; width: 8rem; }
+        .ll-eingaben input[type="number"] { width: 4.5rem; }
+        .ll-gruppe { display: flex; flex-wrap: wrap; gap: .45rem; align-items: center; margin: .5rem 0; }
+        .ll-gruppe-titel { flex-basis: 100%; font-size: .8rem; color: var(--gray); font-weight: 600; }
+        .ll-gruppe button.blk { border: 0; cursor: pointer; font-size: .92rem; padding: .3rem .7rem; }
+        .ll-gruppe button.blk:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        .ll-gruppe button.blk-bool { padding-left: 1rem; padding-right: 1rem; }
+        .ll-ausgabe { background: #f8fafc; border-radius: 8px; padding: .7rem .9rem; margin-top: .6rem; min-height: 3rem; }
+        .ll-zeile { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+        .ll-ergebnis { font-weight: 700; background: #fff; border: 2px solid #94a3b8; border-radius: 14px; padding: .1rem .7rem; }
+        .ll-weg { color: #b91c1c; }
+        .ll-fehler { color: #b45309; margin: .4rem 0 0; font-size: .92rem; }
+        .ll-meldung { margin: 0; color: var(--gray); font-size: .92rem; }
+        .ll-aufwand { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-top: .6rem; font-size: .88rem; }
+        .ll-aufwand div { background: #fff; border-radius: 6px; padding: .4rem .6rem; border: 1px solid #e5e7eb; }
+
+        /* Durchlauf-Tafel (listen.js) */
+        .durchlauf { border: 2px solid var(--ph-investigate); border-radius: 12px; padding: 1rem 1.1rem; margin: 1rem 0; }
+        .dl-grid { display: grid; grid-template-columns: auto 1fr; gap: 1.2rem; align-items: start; }
+        .dl-code { background: #f8fafc; border-radius: 8px; padding: .6rem .8rem; }
+        .dl-z { padding: .2rem .3rem; border-radius: 6px; border-left: 4px solid transparent; }
+        .dl-z.dl-innen { margin-left: 1.4rem; border-left-color: #f0c9b8; }
+        .dl-z.aktiv { background: #fef3c7; border-left-color: var(--alg-accent); }
+        .dl-liste { display: flex; flex-wrap: wrap; align-items: center; gap: 0; }
+        .dl-name { font-weight: 700; color: #fff; background: #f3761d; border-radius: 6px; padding: .1rem .5rem; font-size: .82rem; margin-right: .5rem; }
+        .dl-fach { display: flex; flex-direction: column; align-items: center; min-width: 3rem; border: 2px solid #d94d11; margin-left: -2px; background: #fff; font-weight: 700; }
+        .dl-fach span:last-child { padding: .3rem .4rem; }
+        .dl-fach .ll-nr { width: 100%; text-align: center; font-size: .72rem; color: #d94d11; background: #fff1eb; }
+        .dl-fach.fertig { background: #f1f5f9; color: #94a3b8; }
+        .dl-fach.aktiv { background: #fef3c7; outline: 3px solid var(--alg-accent); outline-offset: -3px; }
+        .dl-vars { display: flex; gap: .8rem; margin: .7rem 0 .3rem; }
+        .dl-var { display: flex; align-items: center; background: #f3761d; color: #fff; border-radius: 6px; padding: .15rem .2rem .15rem .55rem; font-size: .85rem; font-weight: 600; gap: .4rem; }
+        .dl-var b { background: #fff; color: #333; border-radius: 4px; padding: .05rem .5rem; min-width: 2rem; text-align: center; }
+        .dl-text { font-size: .92rem; color: var(--gray); min-height: 2.6em; margin: .3rem 0 0; }
+        .dl-tabelle { max-width: 420px; }
+        .dl-tabelle th { color: var(--dark, #1f2937); }
+        .dl-tabelle td { padding: .3rem .7rem; }
+        .dl-tabelle tr.aktiv td { background: #fef3c7; }
+
+        /* Unter der Haube */
+        .haube { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+        .haube > div { border: 1px solid #e5e7eb; border-radius: 10px; padding: .9rem 1rem; background: #fff; }
+        .haube h4 { margin: 0 0 .4rem; color: var(--alg-primary-dark); }
+        .haube p { font-size: .93rem; }
+        .speicher { display: flex; gap: 2px; margin: .6rem 0; font-family: ui-monospace, Consolas, monospace; font-size: .78rem; flex-wrap: wrap; }
+        .speicher span { border: 1px solid #cbd5e1; padding: .3rem .35rem; min-width: 3.1rem; text-align: center; background: #f8fafc; }
+        .speicher span.b { background: #fff1eb; border-color: #d94d11; font-weight: 700; }
+        .speicher span small { display: block; color: #94a3b8; font-weight: 400; }
+        .vergleich { width: 100%; border-collapse: collapse; margin: .6rem 0 1rem; font-size: .93rem; }
+        .vergleich th, .vergleich td { border: 1px solid #e5e7eb; padding: .45rem .6rem; text-align: left; vertical-align: top; }
+        .vergleich th { background: #f3f4f6; }
+        .vergleich .gut { color: #15803d; font-weight: 600; }
+        .vergleich .schlecht { color: #b45309; font-weight: 600; }
+        .spiel { background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 10px; padding: .8rem 1rem; margin: 1rem 0; }
+        .spiel h4 { margin: 0 0 .4rem; color: #6d28d9; }
+        .spiel ol { margin: .3rem 0 0 1.2rem; padding: 0; }
+        .spiel li { margin: .2rem 0; }
+
+        @media (max-width: 768px) {
+            .regal-vergleich, .haube, .dl-grid, .ll-aufwand { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">💻</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="algorithmik.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 6</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#vorhersagen">🔮 Vorhersagen</a></li>
+            <li><a href="#ausprobieren">▶ Ausprobieren</a></li>
+            <li><a href="#untersuchen">🔍 Untersuchen</a></li>
+            <li><a href="#labor">🧪 Listen-Labor</a></li>
+            <li><a href="#haube">⚙️ Unter der Haube</a></li>
+            <li><a href="#veraendern">✏️ Verändern</a></li>
+            <li><a href="#bauen">🛠️ Selbst bauen</a></li>
+            <li><a href="#festhalten">📝 Festhalten</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Alle Stationen</div>
+            <ul class="sidebar-menu">
+                <li><a href="algorithmik.html">Übersicht</a></li>
+                <li><a href="0-start.html">0 Start</a></li>
+                <li><a href="1-sequenz.html">1 Sequenz</a></li>
+                <li><a href="2-variablen.html">2 Variablen</a></li>
+                <li><a href="3-bedingungen.html">3 Bedingungen</a></li>
+                <li><a href="4-wiederholung.html">4 Wiederholung</a></li>
+                <li><a href="5-funktionen.html">5 Funktionen</a></li>
+                <li><a href="6-projekt.html">7 Projekt</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero alg-hero">
+                <h1 class="hero-title">📋 Station 6: Listen</h1>
+                <p class="hero-subtitle">Algorithmik mit Snap! · Informatik 11 · 3 Stunden</p>
+                <span class="alg-kompetenz">Du kannst: viele Werte in einer Liste speichern, über ihre Stelle darauf zugreifen, die Liste verändern und durchlaufen – und erklären, wie ein Computer eine Liste speichert.</span>
+                <div class="snap-actions">
+                    <a class="btn btn-snap" href="snap-ide.html?p=6-listen">▶ Vorlage in Snap! öffnen</a>
+                    <a class="btn btn-outline" href="projekte/6-listen.xml" download>⬇ 6-listen.xml</a>
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-6-listen.html">📝 Arbeitsblatt 6</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#vorhersagen">🔮 Vorhersagen</a><a class="p-run" href="#ausprobieren">▶ Ausprobieren</a><a class="p-investigate" href="#untersuchen">🔍 Untersuchen</a><a class="p-modify" href="#veraendern">✏️ Verändern</a><a class="p-make" href="#bauen">🛠️ Selbst bauen</a><a class="p-note" href="#festhalten">📝 Festhalten</a>
+            </div>
+
+            <section id="vorhersagen" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔮</span><h2>Vorhersagen<small>Von der Schachtel zum Regal</small></h2></div>
+                <div class="phase-body">
+
+                    <p>In Station 2 war eine Variable eine beschriftete <strong>Schachtel</strong> für genau einen Wert. Was aber, wenn du die Klausurpunkte der ganzen Klasse speichern willst? 25 Variablen <em>punkte1</em>, <em>punkte2</em>, … – und für jede neue Schülerin das Programm umschreiben? Eine <strong>Liste</strong> ist eine Variable mit einem ganzen <strong>Regal</strong> voller nummerierter Fächer.</p>
+                    <div class="regal-vergleich">
+                        <div>
+                            <h4>Variable (Station 2)</h4>
+                            <div class="schachtel"><span class="etikett">punkte</span><span class="inhalt">12</span></div>
+                            <p>Ein Name – ein Wert. Neuer Wert, alter Wert weg.</p>
+                        </div>
+                        <div>
+                            <h4>Liste (Station 6)</h4>
+                            <div class="regal"><span class="etikett">punkte</span>
+                                <div class="faecher">
+                                    <div class="fach"><small>1</small><b>12</b></div><div class="fach"><small>2</small><b>7</b></div><div class="fach"><small>3</small><b>15</b></div><div class="fach"><small>4</small><b>9</b></div><div class="fach"><small>5</small><b>11</b></div>
+                                </div>
+                            </div>
+                            <p>Ein Name – viele Werte in fester Reihenfolge. Jedes Fach hat eine <strong>Nummer</strong> (Stelle). Das Regal kann wachsen und schrumpfen.</p>
+                        </div>
+                    </div>
+                    <div class="alltag">
+                        <div><strong>🎵 Playlist</strong>Song 3 abspielen = Element 3. „Zur Warteschlange hinzufügen“ = hinten anhängen.</div>
+                        <div><strong>🛒 Einkaufszettel</strong>Etwas dazuschreiben, etwas durchstreichen, nachsehen: Steht Milch drauf?</div>
+                        <div><strong>💬 Chatverlauf</strong>Jede neue Nachricht kommt ans Ende. Die Länge zeigt, wie viel ihr geschrieben habt.</div>
+                        <div><strong>🏫 Klassenliste</strong>Nummer 1 bis 25. Wer kommt dran? Eine Zufallszahl zwischen 1 und der Länge.</div>
+                    </div>
+                    <p>In der Vorlage gibt es dafür neue Blöcke aus der Palette <span class="blk blk-variables">Variablen</span> (unten, rot-orange). Sag voraus, bevor du klickst:</p>
+                    <table class="vorhersage">
+                        <tr><th>Skript</th><th>Kern</th><th>Meine Vorhersage</th></tr>
+                        <tr><td>A (⚑)</td><td><span class="blk blk-variables">setze <span class="slot">einkauf</span> auf</span> <span class="blk blk-lists blk-rep">Liste <span class="slot">Milch</span> <span class="slot">Brot</span> <span class="slot">Äpfel</span></span> · <span class="blk blk-lists">füge <span class="slot">Käse</span> zu <span class="slot">einkauf</span> hinzu</span> · sage <span class="blk blk-lists blk-rep">Länge von <span class="slot">einkauf</span></span> · sage <span class="blk blk-lists blk-rep">Element <span class="slot">2</span> von <span class="slot">einkauf</span></span></td><td class="frei">Zwei Ausgaben – welche?</td></tr>
+                        <tr><td>B (Taste b)</td><td>Start: Milch, Brot, Äpfel, Käse. Dann ① <span class="blk blk-lists">entferne <span class="slot">1</span> aus <span class="slot">einkauf</span></span> ② <span class="blk blk-lists">füge <span class="slot">Eier</span> als <span class="slot">1</span> in <span class="slot">einkauf</span> ein</span> ③ <span class="blk blk-lists">ersetze Element <span class="slot">3</span> in <span class="slot">einkauf</span> durch <span class="slot">Birnen</span></span> ④ <span class="blk blk-lists">füge <span class="slot">Tee</span> zu <span class="slot">einkauf</span> hinzu</span></td><td class="frei">Wie sieht die Liste am Ende aus? Was steht an Stelle 3?</td></tr>
+                        <tr><td>C (Taste s)</td><td><span class="blk blk-variables">setze <span class="slot">punkte</span> auf</span> <span class="blk blk-lists blk-rep">Liste <span class="slot">12</span> <span class="slot">7</span> <span class="slot">15</span> <span class="slot">9</span> <span class="slot">11</span></span> · <span class="blk blk-variables">setze <span class="slot">summe</span> auf <span class="slot">0</span></span> · <span class="blk blk-lists">für jedes <span class="slot">Element</span> von <span class="slot">punkte</span></span> <span class="blk blk-variables">ändere <span class="slot">summe</span> um <span class="slot">Element</span></span> · sage summe · sage <span class="blk blk-operators blk-rep"><span class="slot">summe</span> / <span class="blk blk-lists blk-rep">Länge von <span class="slot">punkte</span></span></span></td><td class="frei">Zwei Zahlen – welche?</td></tr>
+                        <tr><td>D (Taste z)</td><td><span class="blk blk-variables">setze <span class="slot">nr</span> auf</span> <span class="blk blk-operators blk-rep">Zufallszahl von <span class="slot">1</span> bis <span class="blk blk-lists blk-rep">Länge von <span class="slot">klasse</span></span></span> · sage <span class="blk blk-lists blk-rep">Element <span class="slot">nr</span> von <span class="slot">klasse</span></span> (klasse: Anna, Ben, Cem, Dana, Emil)</td><td class="frei">Welcher Name? Kann ein Name kommen, der nicht in der Liste steht?</td></tr>
+                    </table>
+                </div>
+            </section>
+
+            <section id="ausprobieren" class="phase run">
+                <div class="phase-head"><span class="phase-icon">▶</span><h2>Ausprobieren<small>Vergleichen – und der Liste zusehen</small></h2></div>
+                <div class="phase-body">
+
+                    <ol class="aufgaben">
+                        <li>Öffne die Vorlage: <a class="btn btn-snap btn-sm" href="snap-ide.html?p=6-listen">▶ Vorlage in Snap! öffnen</a></li>
+                        <li>Starte A, B, C, D (⚑, b, s, z). Beobachte dabei die <strong>Listen-Anzeigen</strong> auf der Bühne: Snap! zeigt jede Liste als Tabelle mit Nummern links – genau das Regal von oben.</li>
+                        <li>Skript B läuft langsam: Die Figur sagt zuerst, was gleich passiert. Schau, wie sich die Nummern der anderen Elemente verändern.</li>
+                        <li>Drücke <strong>e</strong> und gib ein paar Namen ein (Ende mit <em>fertig</em>). Die Liste <em>namen</em> wächst mit jeder Eingabe.</li>
+                        <li>Klicke im Skriptbereich direkt auf einen Block wie <span class="blk blk-lists blk-rep">Element <span class="slot">2</span> von <span class="slot">einkauf</span></span>: Snap! zeigt das Ergebnis in einer Sprechblase.</li>
+                    </ol>
+                </div>
+            </section>
+
+            <section id="untersuchen" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Untersuchen<small>Stellen, Operationen, Durchlaufen</small></h2></div>
+                <div class="phase-body">
+
+                    <ol class="aufgaben">
+                        <li>Skript B: Was passiert mit den Nummern von Brot, Äpfeln und Käse, wenn vorne etwas <em>entfernt</em> wird? Und wenn vorne etwas <em>eingefügt</em> wird? Trag den Zustand nach jedem Schritt ins Arbeitsblatt ein.</li>
+                        <li>Vergleiche <span class="blk blk-lists">entferne …</span> mit <span class="blk blk-lists blk-rep">Element … von …</span>. Welcher Block verändert die Liste, welcher fragt nur nach? Woran erkennst du das an der Form (Station 5)?</li>
+                        <li>Skript D: Füge in <em>klasse</em> einen sechsten Namen hinzu. Musst du sonst noch etwas ändern? Warum steht dort <span class="blk blk-lists blk-rep">Länge von <span class="slot">klasse</span></span> und nicht einfach 5?</li>
+                        <li>Skript C: Wie oft läuft die Schleife? Welchen Wert hat <em>Element</em> im 3. Durchgang, welchen <em>summe</em> danach? Prüfe mit der Durchlauf-Tafel unten.</li>
+                        <li>Ein Text ist auch eine Art Liste – aus Zeichen. Klicke auf <span class="blk blk-operators blk-rep">Zeichen <span class="slot">2</span> von <span class="slot">Brot</span></span> und <span class="blk blk-operators blk-rep">Länge von <span class="slot">Brot</span></span> (Palette Operatoren). Was ist gleich wie bei Listen?</li>
+                    </ol>
+
+                    <h3 class="mt-3">🔁 Durchlauf-Tafel: „für jedes Element“ in Zeitlupe</h3>
+                    <p>Die Schleife <span class="blk blk-lists">für jedes <span class="slot">Element</span> von <span class="slot">punkte</span></span> holt sich der Reihe nach jedes Fach in die Variable <em>Element</em> und führt dann den Inhalt der Klammer aus. Klicke dich durch Skript C:</p>
+                    <div class="durchlauf" data-durchlauf><noscript>Die Durchlauf-Tafel braucht JavaScript.</noscript></div>
+
+                    <div class="merke">
+                        <h4>Das steckt dahinter</h4>
+                        <dl>
+                            <dt>Liste</dt><dd>Eine Folge von Werten in fester Reihenfolge unter <strong>einem</strong> Namen. Die einzelnen Werte heißen <strong>Elemente</strong>. Die Liste kann wachsen und schrumpfen, sie kann auch leer sein.</dd>
+                            <dt>Stelle (Index)</dt><dd>Die Nummer eines Elements. In Snap! hat das erste Element die Stelle 1. Wird vorne etwas eingefügt oder entfernt, bekommen alle Elemente dahinter eine neue Nummer.</dd>
+                            <dt>Länge</dt><dd>Die Anzahl der Elemente. Das letzte Element steht an Stelle <em>Länge</em>. Wer mit der Länge statt mit einer festen Zahl rechnet, schreibt Programme, die mit jeder Liste funktionieren.</dd>
+                            <dt>Datentyp Liste</dt><dd>Wie bei Zahl, Zeichenkette und Wahrheitswert legt der Datentyp fest, <strong>welche Werte</strong> es gibt und <strong>welche Operationen</strong> damit möglich sind. Werte: endliche Folgen von Elementen (Zahlen, Texte, sogar Listen). Operationen: erzeugen (<span class="blk blk-lists blk-rep">Liste</span>), nachfragen (<em>Element, Länge, enthält, Index von</em>) und verändern (<em>füge hinzu, füge ein, ersetze, entferne</em>).</dd>
+                            <dt>Durchlaufen</dt><dd>Mit <span class="blk blk-lists">für jedes <span class="slot">Element</span> von <span class="slot">liste</span></span> wird jedes Element genau einmal bearbeitet – egal wie lang die Liste ist. Typische Muster: Summe bilden, zählen, das Größte suchen, etwas finden.</dd>
+                        </dl>
+                    </div>
+
+                    <h3 id="labor" class="mt-4">🧪 Listen-Labor: jede Operation zum Anfassen</h3>
+                    <p>Hier kannst du alle Listen-Operationen ausprobieren, ohne etwas kaputt zu machen. Wähle einen Wert und eine Stelle und klicke auf einen Block. <span style="background:#dcfce7;padding:0 .3rem">Grün</span> = neu, <span style="background:#fef9c3;padding:0 .3rem">gelb</span> = hat eine neue Nummer bekommen, <span style="background:#dbeafe;padding:0 .3rem">blau</span> = wurde gelesen.</p>
+                    <div class="labor" data-listen-labor><noscript>Das Listen-Labor braucht JavaScript.</noscript></div>
+                    <div class="tipp"><strong>Forscherauftrag:</strong> Was passiert bei <em>Element 7</em>, wenn die Liste nur 4 Elemente hat? Füge etwas an Stelle 1 ein und dann an Stelle Länge + 1. Welche Elemente werden gelb – und warum?</div>
+
+                    <h3 id="haube" class="mt-4">⚙️ Unter der Haube: Wie speichert der Computer eine Liste?</h3>
+                    <p>Bisher ging es darum, <strong>was</strong> eine Liste kann. Das ist die Idee des Datentyps. <strong>Wie</strong> der Computer sie im Speicher ablegt, ist eine zweite Frage. Der Speicher ist eine riesige Reihe nummerierter Speicherzellen (Adressen). Es gibt zwei klassische Lösungen. Schalte im Labor zwischen <em>Fächer</em> und <em>Kette</em> um und vergleiche den Aufwand.</p>
+                    <div class="haube">
+                        <div>
+                            <h4>🗄️ Feld (Array): Fächer nebeneinander</h4>
+                            <p>Alle Elemente liegen <strong>direkt hintereinander</strong> im Speicher, wie Schließfächer in einem Gang. Kennt man den Anfang, kann man jedes Fach sofort ausrechnen: Fach 4 liegt 3 Fächer hinter dem Anfang.</p>
+                            <div class="speicher"><span class="b"><small>100</small>Milch</span><span class="b"><small>101</small>Brot</span><span class="b"><small>102</small>Äpfel</span><span class="b"><small>103</small>Käse</span><span><small>104</small>frei</span></div>
+                            <p>Nachteil: Wer vorne einfügt, muss alle anderen Elemente ein Fach weiterrücken.</p>
+                        </div>
+                        <div>
+                            <h4>🔗 Verkettete Liste: eine Schnitzeljagd</h4>
+                            <p>Die Elemente liegen <strong>irgendwo</strong> im Speicher. Jedes trägt einen Zettel mit der Adresse des nächsten (einen <strong>Zeiger</strong>). Man kennt nur den Anfang.</p>
+                            <div class="speicher"><span class="b"><small>100</small>Milch ➜207</span><span><small>…</small></span><span class="b"><small>154</small>Äpfel ➜311</span><span class="b"><small>207</small>Brot ➜154</span><span class="b"><small>311</small>Käse ∅</span></div>
+                            <p>Einfügen geht schnell: nur zwei Zettel ändern. Aber um Element 4 zu finden, muss man der Kette von vorne folgen.</p>
+                        </div>
+                    </div>
+                    <table class="vergleich">
+                        <tr><th>Operation</th><th>🗄️ Feld</th><th>🔗 Kette</th></tr>
+                        <tr><td>Element an Stelle <em>i</em> lesen</td><td class="gut">sofort (1 Schritt)</td><td class="schlecht">vom Anfang abzählen (<em>i</em> Schritte)</td></tr>
+                        <tr><td>vorne einfügen / entfernen</td><td class="schlecht">alle anderen rücken</td><td class="gut">nur Zeiger umhängen</td></tr>
+                        <tr><td>hinten anhängen</td><td class="gut">sofort, solange Platz ist</td><td class="gut">sofort, wenn das Ende gemerkt ist</td></tr>
+                        <tr><td>suchen, durchlaufen</td><td colspan="2">beide: im schlimmsten Fall jedes Element einmal ansehen</td></tr>
+                    </table>
+                    <div class="spiel">
+                        <h4>🧍🧍🧍 Spielt es nach (5 Freiwillige, 10 Minuten)</h4>
+                        <ol>
+                            <li><strong>Menschen-Feld:</strong> Stellt euch auf nummerierte Plätze 1–5 direkt nebeneinander, jede Person hält einen Zettel mit einem Wort. Die Klasse ruft Befehle: „Element 4?“ – „Füge Lea als 2 ein!“ – „Entferne 1!“. Zählt, wie viele Personen jeweils umziehen müssen.</li>
+                            <li><strong>Menschen-Kette:</strong> Verteilt euch kreuz und quer im Raum. Jede Person zeigt auf die nächste, die Lehrkraft kennt nur Person 1. Dieselben Befehle: Wer muss sich jetzt bewegen? Wie findet ihr Element 4?</li>
+                            <li>Besprecht: Welche Speicherart ist besser für eine Playlist, in der man oft springt? Welche für eine Warteschlange, bei der ständig vorne jemand drankommt?</li>
+                        </ol>
+                    </div>
+                    <p>Snap! nimmt dir diese Entscheidung ab und wandelt intern sogar je nach Bedarf um. In anderen Sprachen wählst du selbst: In Java gibt es <code>ArrayList</code> (Feld) und <code>LinkedList</code> (Kette). Dort hat das erste Element übrigens den Index <strong>0</strong>, weil der Index angibt, wie viele Fächer man vom Anfang aus weitergehen muss.</p>
+                </div>
+            </section>
+
+            <section id="veraendern" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">✏️</span><h2>Verändern<small>Gezielt umbauen</small></h2></div>
+                <div class="phase-body">
+
+                    <ol class="aufgaben">
+                        <li>Skript A: Die Figur soll zusätzlich das <strong>letzte</strong> Element sagen – egal, wie viele Dinge auf der Liste stehen. Teste, indem du ein weiteres <em>füge … hinzu</em> einbaust.</li>
+                        <li>Skript C: Die Figur soll auch das <strong>beste Ergebnis</strong> (die größte Zahl) nennen. Überlege zuerst ohne Snap!: Wie findest du in einer Reihe von Zahlenkarten die größte, wenn du immer nur eine Karte gleichzeitig ansehen darfst?</li>
+                        <li>Skript D: Jede Person soll <strong>genau einmal</strong> drankommen, bis alle durch sind (z. B. für die Reihenfolge von Referaten).</li>
+                    </ol>
+                    <details class="loesung"><summary>Lösungshinweis</summary><p>1: Das letzte Element steht an Stelle <span class="blk blk-lists blk-rep">Länge von <span class="slot">einkauf</span></span> – dieser Block passt in die Lücke von <em>Element … von</em>. 2: Merke dir in einer Variable <em>max</em> zuerst Element 1. Vergleiche in <em>für jedes</em> jedes Element mit <em>max</em>; ist es größer, wird es das neue <em>max</em>. 3: <span class="blk blk-control">wiederhole bis <span class="slot">Länge von klasse = 0</span></span>: zufällige Stelle ziehen, Namen sagen, dann <span class="blk blk-lists">entferne <span class="slot">nr</span> aus <span class="slot">klasse</span></span>. <a href="snap-ide.html?p=6-listen-loesung">Lösungsprojekt öffnen</a>.</p></details>
+                </div>
+            </section>
+
+            <section id="bauen" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Selbst bauen<small>Listen in Aktion</small></h2></div>
+                <div class="phase-body">
+
+                    <div class="ideen">
+                        <div class="idee"><h4>🌡️ Wetterstation</h4><p>Temperaturen einer Woche als Liste. Gib Durchschnitt, wärmsten Wert und die Zahl der Frosttage (unter 0 °C) aus.</p><span class="stern">★★</span></div>
+                        <div class="idee"><h4>🎲 Würfelstatistik</h4><p>Würfle 60-mal. Eine Liste mit sechs Nullen zählt mit: Bei einer 4 wird Element 4 um 1 erhöht (<em>ersetze Element … durch …</em>). Ist der Würfel fair?</p><span class="stern">★★</span></div>
+                        <div class="idee"><h4>🗣️ Vokabeltrainer</h4><p>Zwei Listen <em>deutsch</em> und <em>englisch</em>: Was an derselben Stelle steht, gehört zusammen. Frage mit <span class="blk blk-control">für <span class="slot">i</span> = 1 bis …</span> alle ab und zähle die Treffer.</p><span class="stern">★★★</span></div>
+                        <div class="idee"><h4>🧩 Eigene Listen-Blöcke</h4><p>Reporter <em>Summe von (liste)</em> und <em>Maximum von (liste)</em> mit einem Parameter vom Typ Liste (Station 5). Einmal gebaut, für jede Liste nutzbar.</p><span class="stern">★★★</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="festhalten" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Arbeitsblatt 6</small></h2></div>
+                <div class="phase-body">
+
+                    <p>Trag den Zustand der Liste aus Skript B Schritt für Schritt ein, ergänze <strong>Liste, Element, Stelle, Länge, Datentyp</strong> im Merkkasten, ordne die Operationen in Befehle und Reporter und vergleiche Feld und Kette.</p>
+                    <div class="snap-actions"><a class="btn btn-ab" href="arbeitsblaetter/ab-6-listen.html">📝 Arbeitsblatt 6 öffnen</a></div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="5-funktionen.html">← Station 5 Funktionen</a>
+                <a class="btn btn-primary" href="6-projekt.html">Station 7 Projekt →</a>
+            </div>
+        </div>
+    </main>
+    <footer class="footer"><div class="container"><p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum &amp; Datenschutz</a></p></div></footer>
+</body>
+</html>
