@@ -36,6 +36,10 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
    Zeilen stehen auskommentiert in `templates/themenseite.html`; Snap!-Beispiel in
    `informatik/11/algorithmik/snap-ide.html`; Python-Zellen per Pyodide siehe
    `englisch/w-seminar-time/viable-data.js` + `py-worker.js`). Schriften als lokale `.woff2`.
+   Bilder lokal speichern (mit Bildnachweis), nicht von Wikimedia o. Ä. verlinken.
+   Fremde iframes (z. B. fobizz) nur per 2-Klick: `data-zwei-klick="URL"` statt
+   `src` + `<script defer src="/zwei-klick.js"></script>`; neuer Anbieter →
+   auch in der Datenschutzerklärung (`contribute.html#impressum`) ergänzen.
 3. **Nutzerdaten bleiben im Browser** (`localStorage`), nie zum Server.
 4. **Bestehende URLs nicht brechen**: Dateien nicht umbenennen/verschieben,
    ohne dass es der Auftrag verlangt.
