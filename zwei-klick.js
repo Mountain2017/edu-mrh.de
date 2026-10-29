@@ -8,10 +8,10 @@
  * Solange nicht geklickt wurde, zeigt das iframe nur einen Hinweis (srcdoc) und es
  * geht keine Anfrage an den Anbieter. Der Startknopf navigiert das iframe selbst zur
  * Adresse aus data-zwei-klick. Sprache nach <html lang> (de, sonst englisch).
- * Datenschutz-Abschnitt: https://edu-mrh.de/contribute.html#impressum (Abschnitt 7).
+ * Datenschutzerklärung: https://edu-mrh.de/datenschutz.html#fobizz (Nr. 7).
  */
 (function () {
-    var DATENSCHUTZ = 'https://edu-mrh.de/contribute.html#impressum';
+    var DATENSCHUTZ = 'https://edu-mrh.de/datenschutz.html#fobizz';
     var anbieterInfo = {
         fobizz: 'fobizz (101skills GmbH, Hamburg)'
     };

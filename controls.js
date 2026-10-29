@@ -3,7 +3,7 @@
  * edu-mrh.de – Basis-Bedienelemente (controls.js)
  * ==========================================================
  * Garantiert auf JEDER Seite – egal wie individuell sie gestaltet ist –
- * die Mindest-Bedienelemente: Zurück, Startseite und Impressum.
+ * die Mindest-Bedienelemente: Zurück, Startseite, Impressum und Datenschutz.
  *
  * Einbindung (eine Zeile, direkt vor </body> oder im <head> mit defer):
  *
@@ -21,7 +21,9 @@
  *                       sonst übergeordneter Ordner)
  *   data-home="…"       Ziel des Startseiten-Buttons (Standard: Seitenwurzel)
  *   data-impressum="…"  Ziel des Impressum-Links
- *                       (Standard: https://edu-mrh.de/contribute.html#impressum)
+ *                       (Standard: https://edu-mrh.de/impressum.html)
+ *   data-datenschutz="…" Ziel des Datenschutz-Links
+ *                       (Standard: https://edu-mrh.de/datenschutz.html)
  *   data-position="left" | "right"   Ecke unten links/rechts (Standard: left)
  */
 
@@ -46,6 +48,7 @@
         // ---- Vorhandene Bedienelemente erkennen -------------------------
         var links = document.querySelectorAll('a[href]');
         var hasImpressum = false;
+        var hasDatenschutz = false;
         var hasBack = false;
         for (var i = 0; i < links.length; i++) {
             var href = (links[i].getAttribute('href') || '').toLowerCase();
@@ -53,15 +56,19 @@
             if (href.indexOf('impressum') !== -1 || text.indexOf('impressum') !== -1) {
                 hasImpressum = true;
             }
+            if (href.indexOf('datenschutz') !== -1 || text.indexOf('datenschutz') !== -1) {
+                hasDatenschutz = true;
+            }
             if (text.indexOf('übersicht') !== -1 || text.indexOf('zurück') !== -1 ||
                 links[i].hasAttribute('data-edu-back')) {
                 hasBack = true;
             }
         }
-        if (hasImpressum && hasBack) return; // Seite ist bereits vollständig
+        if (hasImpressum && hasDatenschutz && hasBack) return; // Seite ist bereits vollständig
 
         // ---- Ziele bestimmen --------------------------------------------
-        var impressumUrl = cfg.impressum || 'https://edu-mrh.de/contribute.html#impressum';
+        var impressumUrl = cfg.impressum || 'https://edu-mrh.de/impressum.html';
+        var datenschutzUrl = cfg.datenschutz || 'https://edu-mrh.de/datenschutz.html';
         var homeUrl = cfg.home ||
             (location.protocol === 'file:' ? null : location.origin + '/');
 
@@ -126,6 +133,13 @@
             imp.href = impressumUrl;
             imp.textContent = 'Impressum';
             bar.appendChild(imp);
+        }
+
+        if (!hasDatenschutz) {
+            var ds = document.createElement('a');
+            ds.href = datenschutzUrl;
+            ds.textContent = 'Datenschutz';
+            bar.appendChild(ds);
         }
 
         document.body.appendChild(bar);

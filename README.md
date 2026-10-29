@@ -15,7 +15,9 @@ hat veröffentlicht – der Rest passiert automatisch.
 ```
 /
 ├── index.html                  Startseite (verlinkt alle Fächer)
-├── contribute.html             Mitmach-Seite + Impressum & Datenschutz
+├── contribute.html             Mitmach-Seite
+├── impressum.html              Impressum
+├── datenschutz.html            Datenschutzerklärung
 ├── controls.js                 Basis-Bedienelemente für frei gestaltete Seiten
 ├── templates/                  ⭐ Kopiervorlagen für neue Seiten
 │   ├── fachseite.html          Übersichtsseite eines Fachs
@@ -46,7 +48,7 @@ in dessen Ordner.**
    | [fachseite.html](templates/fachseite.html) | Nur für die eine Übersichtsseite eines (neuen) Fachs. |
    | [freie-seite.html](templates/freie-seite.html) | Eigenes Design **und/oder** mehrere in sich abgeschlossene Abschnitte, zwischen denen per Klick umgeschaltet wird (Tab-Navigation), statt durchgängig zu scrollen – wie `englisch/12/uk/uk-and-writing.html` oder `informatik/11/verschluesselung/rsa.html`. Enthält zusätzlich kopierbare Bausteine (Zeitstrahl, Zitat-Box, Themen-Banner, Fakt-Box). |
 
-   Beide Vorlagen teilen denselben Kopf (Navbar mit Übersicht/Impressum,
+   Beide Vorlagen teilen denselben Kopf (Navbar mit Übersicht/Impressum/Datenschutz,
    `style.css`/`script.js`) – der Unterschied liegt allein darin, wie der
    Inhalt darunter organisiert ist. Auch innerhalb einer Scroll-Seite darf
    das Styling einzelner Abschnitte komplett eigenständig sein (siehe
@@ -71,22 +73,22 @@ Jede Seite darf gestalterisch eigene Wege gehen – ein Physik-Experiment
 braucht anderes JavaScript als eine Englisch-Lektüreseite, ein Lernspiel ein
 anderes Design als eine Grammatikübersicht. Aber:
 
-> **Auf jeder Seite müssen Impressum und ein Zurück-/Übersichts-Element
-> erreichbar sein.**
+> **Auf jeder Seite müssen Impressum, Datenschutzerklärung und ein
+> Zurück-/Übersichts-Element erreichbar sein.**
 
 Dafür gibt es zwei Wege:
 
 - **Standard-Layout** (Vorlagen `themenseite.html` / `fachseite.html`):
-  Navbar mit „Übersicht“- und „Impressum“-Button ist schon drin. Fertig.
+  Navbar mit „Übersicht“-, „Impressum“- und „Datenschutz“-Button ist schon drin. Fertig.
 - **Freies Design**: eine Zeile vor `</body>` genügt –
   ```html
   <script defer src="https://edu-mrh.de/controls.js"></script>
   ```
-  Das fügt dezente Buttons (← Zurück · 🎓 Startseite · Impressum) unten links
+  Das fügt dezente Buttons (← Zurück · 🎓 Startseite · Impressum · Datenschutz) unten links
   ein, mit eigenem Styling, unabhängig vom Design der Seite. Hat die Seite
   bereits eigene Impressum-/Zurück-Links, erkennt das Skript das und fügt
   nichts doppelt hinzu. Anpassung über `data-back`, `data-home`,
-  `data-impressum`, `data-position="right"` am Script-Tag.
+  `data-impressum`, `data-datenschutz`, `data-position="right"` am Script-Tag.
 
 ## Gemeinsame Bausteine (embed)
 
@@ -148,6 +150,13 @@ und [`deploy-snap.yml`](.github/workflows/deploy-snap.yml) (manuell bzw. bei
 Änderung des Workflows; Snap!-Version dort über `SNAP_REF` gepinnt). Snap!
 wird dabei ohne Tracker und ohne Cloud-Anbindung als `edu-snap.html`
 bereitgestellt.
+
+Das gemeinsame Design `embed/style.css` und `embed/script.js` kommt aus
+`style.css` und `script.js` im Repo-Root:
+[`deploy-embed-basis.yml`](.github/workflows/deploy-embed-basis.yml) kopiert
+beide bei jeder Änderung auf `main` nach `/embed/` und prüft danach, ob die
+Live-Dateien dem Repo entsprechen. Nicht mehr von Hand hochladen, sonst
+überschreibt der nächste Push die Änderung.
 
 ## Mit KI arbeiten
 

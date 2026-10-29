@@ -1,0 +1,56 @@
+name: Deploy Basis-Design (embed/style.css, embed/script.js)
+
+# Fast alle Seiten laden das gemeinsame Design über
+#   https://edu-mrh.de/embed/style.css  und  https://edu-mrh.de/embed/script.js
+# Quelle dafür sind style.css und script.js im Repo-Root (bis 2026-10 wurden die
+# embed-Kopien von Hand hochgeladen). Dieser Workflow kopiert beide nach /embed/,
+# sobald sich eine der Dateien auf main ändert. Die Root-Dateien selbst deployt
+# weiterhin ftp-deploy.yml (unter /style.css bzw. /script.js).
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+    paths:
+      - 'style.css'
+      - 'script.js'
+      - '.github/workflows/deploy-embed-basis.yml'
+
+jobs:
+  deploy-embed-basis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Dateien zusammenstellen und prüfen
+        run: |
+          mkdir dist
+          cp style.css script.js dist/
+          # Schutz vor versehentlich leeren/kaputten Dateien
+          grep -q '\.navbar' dist/style.css
+          grep -q ':root' dist/style.css
+          test "$(wc -c < dist/style.css)" -gt 20000
+          test "$(wc -c < dist/script.js)" -gt 1000
+          ls -la dist
+
+      - name: Deploy to Hetzner via FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./dist/
+          server-dir: /embed/
+          # eigene Statusdatei, damit sich die Workflows für /embed/… nicht in die Quere kommen;
+          # die Aktion löscht nur Dateien, die sie selbst früher hochgeladen hat (hier nur diese zwei)
+          state-name: .ftp-deploy-embed-basis.json
+          timeout: 600000
+
+      - name: Live-Version prüfen
+        run: |
+          sleep 5
+          curl -fsS https://edu-mrh.de/embed/style.css | cmp - style.css
+          curl -fsS https://edu-mrh.de/embed/script.js | cmp - script.js
+          echo "embed/style.css und embed/script.js entsprechen dem Repo."
