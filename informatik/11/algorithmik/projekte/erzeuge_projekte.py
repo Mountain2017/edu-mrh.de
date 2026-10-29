@@ -91,11 +91,26 @@ is_a      = lambda v, t: blk("reportIsA", v, opt(t))
 length    = lambda t: blk("reportTextAttribute", opt("length"), t if t.startswith("<") else l(t))
 declare   = lambda *names: blk("doDeclareVariables", lst(*[l(n) for n in names]))
 
+# Listen (Station 6) ----------------------------------------------------------
+_v        = lambda x: x if str(x).startswith("<") else l(x)
+new_list  = lambda *items: blk("reportNewList", lst(*[_v(x) for x in items]))
+add_to    = lambda v, li: blk("doAddToList", _v(v), li)
+delete_at = lambda i, li: blk("doDeleteFromList", _v(i), li)
+insert_at = lambda v, i, li: blk("doInsertInList", _v(v), _v(i), li)
+replace_at = lambda i, li, v: blk("doReplaceInList", _v(i), li, _v(v))
+item      = lambda i, li: blk("reportListItem", _v(i), li)
+list_len  = lambda li: blk("reportListAttribute", opt("length"), li)
+contains  = lambda li, v: blk("reportListContainsItem", li, _v(v))
+for_each  = lambda name, li, *b: blk("doForEach", l(name), li, script(*b))
+for_i     = lambda name, a, b, *body: blk("doFor", l(name), _v(a), _v(b), script(*body))
+rnd_to    = lambda a, b: blk("reportRandom", _v(a), _v(b))
+
 # ---------------------------------------------------------------- Layout
 import re as _re
 _CMD = ("forward","turn","turnLeft","gotoXY","setHeading","down","up","clear","setSize","setColor",
         "doSayFor","bubble","doAsk","doSetVar","doChangeVar","doWait","doRepeat","doUntil","doForever",
-        "doIf","doIfElse","doReport","doDeclareVariables","receiveGo","receiveKey")
+        "doIf","doIfElse","doReport","doDeclareVariables","receiveGo","receiveKey",
+        "doAddToList","doDeleteFromList","doInsertInList","doReplaceInList","doForEach","doFor")
 
 def _hoehe(xml):
     """Grobe Höhe eines Skripts/Kommentars in Snap!-Pixeln (Skalierung 1)."""
@@ -122,14 +137,17 @@ def auto_layout(items, abstand=18):
     return out
 
 # ---------------------------------------------------------------- Projekt
-def project(name, notes, scripts, variables=(), blocks="", watchers=()):
-    scripts = auto_layout(scripts)
+def project(name, notes, scripts, variables=(), blocks="", watchers=(), abstand=18):
+    scripts = auto_layout(scripts, abstand)
     """variables: Liste von (name, startwert); watchers: Variablennamen, die
-    auf der Bühne angezeigt werden."""
+    auf der Bühne angezeigt werden (untereinander), oder (name, x, y) für eine
+    feste Position – nötig bei Listen, deren Anzeige höher ist."""
     vars_xml = "".join(f'<variable name="{esc(n)}">{l(v)}</variable>' for n, v in variables)
     watch_xml = "".join(
-        f'<watcher var="{esc(n)}" style="normal" x="{10}" y="{10 + 28 * i}" color="243,118,29"/>'
-        for i, n in enumerate(watchers))
+        f'<watcher var="{esc(w[0])}" style="normal" x="{w[1]}" y="{w[2]}" color="243,118,29"/>'
+        if isinstance(w, tuple) else
+        f'<watcher var="{esc(w)}" style="normal" x="{10}" y="{10 + 28 * i}" color="243,118,29"/>'
+        for i, w in enumerate(watchers))
     return (
         '<project name="' + esc(name) + '" app="Snap! 12, https://snap.berkeley.edu" version="1">'
         f"<notes>{esc(notes)}</notes><thumbnail></thumbnail>"
@@ -522,7 +540,141 @@ write("5-funktionen-loesung.xml", project(
     ],
     blocks=BLOCKS_5_LSG))
 
-# ================================================================ 6 – Projekt-Starter
+# ================================================================ 6 – Listen
+EINKAUF = var("einkauf")
+PUNKTE  = var("punkte")
+KLASSE  = var("klasse")
+ask_    = lambda t: blk("doAsk", _v(t))
+
+write("6-listen.xml", project(
+    "6 Listen",
+    "Station 6: Listen.\nEine Variable mit vielen nummerierten Fächern.\n"
+    "Flagge: Einkaufsliste. Taste b: Liste verändern. Taste s: Summe und Durchschnitt.\n"
+    "Taste z: Wer ist dran? Taste e: Liste aus Eingaben bauen.\n"
+    "Beobachte die Listen-Anzeigen auf der Bühne!",
+    [
+        comment(20, 20, "Skript A (Flagge): Wie lang ist die Liste am Ende? Was steht an Stelle 2?", 280),
+        scr(20, 60,
+            flag(),
+            set_var("einkauf", new_list("Milch", "Brot", "Äpfel")),
+            say_for("Meine Einkaufsliste ...", 2),
+            add_to("Käse", EINKAUF),
+            say_for(join("Die Liste hat ", list_len(EINKAUF), " Elemente."), 2),
+            say_for(join("An Stelle 2 steht: ", item(2, EINKAUF)), 2)),
+        comment(20, 260, "Skript B (Taste b): Vier Änderungen nacheinander. Wie sieht die Liste am Ende aus?", 280),
+        scr(20, 300,
+            key("b"),
+            set_var("einkauf", new_list("Milch", "Brot", "Äpfel", "Käse")),
+            say_for("Start", 2),
+            say_for("① entferne 1", 2),
+            delete_at(1, EINKAUF),
+            say_for("② füge Eier als 1 ein", 2),
+            insert_at("Eier", 1, EINKAUF),
+            say_for("③ ersetze Element 3 durch Birnen", 2),
+            replace_at(3, EINKAUF, "Birnen"),
+            say_for("④ füge Tee hinzu", 2),
+            add_to("Tee", EINKAUF),
+            say_for(join("An Stelle 3 steht jetzt: ", item(3, EINKAUF)), 3)),
+        comment(490, 20, "Skript C (Taste s): Notenpunkte einer Klausur. Welche zwei Zahlen sagt die Figur?", 280),
+        scr(490, 60,
+            key("s"),
+            set_var("punkte", new_list(12, 7, 15, 9, 11)),
+            set_var("summe", "0"),
+            for_each("Element", PUNKTE,
+                     change("summe", var("Element"))),
+            say_for(join("Summe: ", var("summe")), 2),
+            say_for(join("Durchschnitt: ", div(var("summe"), list_len(PUNKTE))), 3)),
+        comment(490, 260, "Skript D (Taste z): Wer wischt die Tafel? Kann die Figur einen Namen sagen, der nicht in der Liste steht?", 280),
+        scr(490, 310,
+            key("z"),
+            set_var("klasse", new_list("Anna", "Ben", "Cem", "Dana", "Emil")),
+            set_var("nr", rnd_to(1, list_len(KLASSE))),
+            say_for(join(item(var("nr"), KLASSE), " wischt heute die Tafel."), 3)),
+        comment(490, 460, "Skript E (Taste e): Die Liste wächst mit jeder Eingabe.", 280),
+        scr(490, 500,
+            key("e"),
+            set_var("namen", new_list()),
+            ask("Wer ist in deinem Team? (fertig = Ende)"),
+            until(eq(answer(), "fertig"),
+                  add_to(answer(), var("namen")),
+                  ask("Noch jemand? (fertig = Ende)")),
+            say_for(join("Dein Team hat ", list_len(var("namen")), " Mitglieder."), 3)),
+    ],
+    variables=[("einkauf", ""), ("punkte", ""), ("summe", 0), ("klasse", ""), ("nr", 0), ("namen", "")],
+    watchers=[("einkauf", 10, 10), ("namen", 370, 10), ("punkte", 10, 190), ("summe", 370, 320)],
+    abstand=40))
+
+BLOCKS_6_LSG = (
+    definition("Summe von %'liste'", "reporter", "lists", ["%l"],
+               declare("s"),
+               set_var("s", "0"),
+               for_each("Element", var("liste"), change("s", var("Element"))),
+               report(var("s")))
+    + definition("Maximum von %'liste'", "reporter", "lists", ["%l"],
+                 declare("m"),
+                 set_var("m", item(1, var("liste"))),
+                 for_each("Element", var("liste"),
+                          if_(gt(var("Element"), var("m")), set_var("m", var("Element")))),
+                 report(var("m")))
+)
+
+write("6-listen-loesung.xml", project(
+    "6 Listen – Lösung",
+    "Lösung Station 6: letztes Element (Flagge), Maximum (Taste m), Dienst ohne Wiederholung (Taste z),\n"
+    "Frosttage zählen (Taste t), Vokabeltrainer mit zwei Listen (Taste v), eigene Blöcke Summe/Maximum (Taste s).",
+    [
+        scr(20, 20,
+            flag(),
+            set_var("einkauf", new_list("Milch", "Brot", "Äpfel")),
+            add_to("Käse", EINKAUF),
+            say_for(join("Zuletzt steht da: ", item(list_len(EINKAUF), EINKAUF)), 2)),
+        scr(20, 140,
+            key("m"),
+            set_var("punkte", new_list(12, 7, 15, 9, 11)),
+            set_var("max", item(1, PUNKTE)),
+            for_each("Element", PUNKTE,
+                     if_(gt(var("Element"), var("max")), set_var("max", var("Element")))),
+            say_for(join("Bestes Ergebnis: ", var("max")), 3)),
+        scr(20, 340,
+            key("z"),
+            set_var("klasse", new_list("Anna", "Ben", "Cem", "Dana", "Emil")),
+            until(eq(list_len(KLASSE), "0"),
+                  set_var("nr", rnd_to(1, list_len(KLASSE))),
+                  say_for(join(item(var("nr"), KLASSE), " ist dran."), 1.5),
+                  delete_at(var("nr"), KLASSE)),
+            say_for("Alle waren einmal dran.", 2)),
+        scr(490, 20,
+            key("t"),
+            set_var("temperaturen", new_list(3, -2, 5, -1, 0, 4, -3)),
+            set_var("frost", "0"),
+            for_each("Element", var("temperaturen"),
+                     if_(lt(var("Element"), "0"), change("frost", "1"))),
+            say_for(join(var("frost"), " Frosttage"), 3)),
+        scr(490, 200,
+            key("v"),
+            set_var("deutsch", new_list("Hund", "Katze", "Haus")),
+            set_var("englisch", new_list("dog", "cat", "house")),
+            set_var("richtig", "0"),
+            for_i("i", 1, list_len(var("deutsch")),
+                  ask_(join("Was heißt ", item(var("i"), var("deutsch")), "?")),
+                  if_else(eq(answer(), item(var("i"), var("englisch"))),
+                          [change("richtig", "1"), say_for("Richtig!", 1)],
+                          [say_for(join("Falsch, richtig ist: ", item(var("i"), var("englisch"))), 2)])),
+            say_for(join(var("richtig"), " von ", list_len(var("deutsch")), " richtig."), 3)),
+        scr(490, 480,
+            key("s"),
+            set_var("punkte", new_list(12, 7, 15, 9, 11)),
+            say_for(join("Summe: ", custom("Summe von %l", PUNKTE)), 2),
+            say_for(join("Maximum: ", custom("Maximum von %l", PUNKTE)), 2)),
+    ],
+    variables=[("einkauf", ""), ("punkte", ""), ("max", 0), ("klasse", ""), ("nr", 0),
+               ("temperaturen", ""), ("frost", 0), ("deutsch", ""), ("englisch", ""), ("richtig", 0)],
+    watchers=[("klasse", 10, 10), ("richtig", 370, 10)],
+    blocks=BLOCKS_6_LSG,
+    abstand=40))
+
+# ================================================================ 7 – Projekt-Starter
+# (Station 7; die Dateinamen 6-…-start.xml bleiben, damit bestehende Links funktionieren)
 write("6-quiz-start.xml", project(
     "6 Projekt: Quiz",
     "Projekt-Starter: Quiz.\nDer Block 'Frage … richtige Antwort …' stellt eine Frage und zählt Punkte.\n"
@@ -535,6 +687,7 @@ write("6-quiz-start.xml", project(
             custom("Frage %s richtige Antwort %s", l("Hauptstadt von Bayern?"), l("München")),
             custom("Frage %s richtige Antwort %s", l("Wie viel ist 7 mal 8?"), l("56")),
             say_for(join("Du hast ", var("punkte"), " von 2 Punkten."), 3)),
+        comment(20, 0, "Mit Listen (Station 6): Fragen und Antworten in zwei Listen speichern und mit 'für i = 1 bis Länge' abfragen – dann ist eine neue Frage nur ein neues Listenelement. Falsch beantwortete Fragen in eine dritte Liste: am Ende noch einmal üben.", 280),
     ],
     variables=[("punkte", 0)],
     watchers=["punkte"],
@@ -555,6 +708,7 @@ write("6-zeichenroboter-start.xml", project(
             pen_down(),
             repeat("12", custom("Quadrat mit Seite %n", l(80)), turn("30")),
             pen_up()),
+        comment(20, 0, "Mit Listen (Station 6): eine Farbpalette als Liste, eine Liste von Seitenlängen oder ein Rekorder, der jeden Befehl (z. B. 'vor 50', 'drehe 90') in eine Liste schreibt und die Zeichnung danach noch einmal abspielt.", 280),
     ],
     blocks=(definition("Quadrat mit Seite %'seite'", "command", "pen", ["%n"],
                        repeat("4", move(var("seite")), turn("90")))
@@ -584,6 +738,7 @@ write("6-textabenteuer-start.xml", project(
                      change("leben", "-1"),
                      say_for("Du rutschst ab und verlierst ein Leben.", 2)]),
             say_for(join("Du hast noch ", var("leben"), " Leben."), 3)),
+        comment(20, 0, "Mit Listen (Station 6): ein Inventar als Liste. Gefundene Gegenstände kommen hinzu; eine Tür geht nur auf, falls 'inventar enthält Schlüssel'.", 280),
     ],
     variables=[("leben", 3)],
     watchers=["leben"],

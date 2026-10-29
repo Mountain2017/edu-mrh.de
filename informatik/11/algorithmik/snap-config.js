@@ -40,9 +40,12 @@
         '4-wiederholung-loesung':  { station: 4, title: 'Wiederholung – Lösung', solution: true },
         '5-funktionen':            { station: 5, title: 'Funktionen' },
         '5-funktionen-loesung':    { station: 5, title: 'Funktionen – Lösung', solution: true },
-        '6-quiz-start':            { station: 6, title: 'Projekt: Quiz (Starter)' },
-        '6-zeichenroboter-start':  { station: 6, title: 'Projekt: Zeichenroboter (Starter)' },
-        '6-textabenteuer-start':   { station: 6, title: 'Projekt: Textabenteuer (Starter)' }
+        '6-listen':                { station: 6, title: 'Listen' },
+        '6-listen-loesung':        { station: 6, title: 'Listen – Lösung', solution: true },
+        // Projekt ist seit Einführung der Listen Station 7; IDs/Dateinamen bleiben wegen bestehender Links
+        '6-quiz-start':            { station: 7, title: 'Projekt: Quiz (Starter)' },
+        '6-zeichenroboter-start':  { station: 7, title: 'Projekt: Zeichenroboter (Starter)' },
+        '6-textabenteuer-start':   { station: 7, title: 'Projekt: Textabenteuer (Starter)' }
     };
 
     var STATIONS = [
@@ -52,7 +55,8 @@
         { id: 3, file: '3-bedingungen.html',  title: 'Bedingte Anweisung',            icon: '🔀' },
         { id: 4, file: '4-wiederholung.html', title: 'Wiederholung',                  icon: '🔁' },
         { id: 5, file: '5-funktionen.html',   title: 'Funktionen',                    icon: '🧩' },
-        { id: 6, file: '6-projekt.html',      title: 'Projekt',                       icon: '🏗️' }
+        { id: 6, file: '6-listen.html',       title: 'Listen',                        icon: '📋' },
+        { id: 7, file: '6-projekt.html',      title: 'Projekt',                       icon: '🏗️' }
     ];
 
     // Basis-URL des Ordners informatik/11/algorithmik/ – unabhängig davon,
