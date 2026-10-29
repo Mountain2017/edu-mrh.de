@@ -46,8 +46,13 @@ body { margin: 0; background: var(--paper); color: var(--ink); font-family: syst
     font-family: 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
     font-size: var(--fs, 9.5pt); line-height: 1.33;
     -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    text-rendering: geometricPrecision;   /* gleiche Textbreite am Bildschirm und im Druck */
 }
-.sheet .body { flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 2mm; }
+.sheet .body { flex: 1 1 auto; min-height: 0; overflow: visible; display: flex; flex-direction: column; gap: 2mm; }
+/* Notfall: ein einzelner Block größer als eine Seite → Blatt wächst und bricht beim Druck um, statt abzuschneiden */
+.sheet.grow { height: auto; min-height: 296.5mm; overflow: visible; }
+.sheet.grow .r-it, .sheet.grow .r-text { break-inside: auto; }
+.o, .r-match tr, .r-lines .ln, .r-head, .r-sum, .r-legend { break-inside: avoid; }
 .sheet .foot { flex: none; display: flex; justify-content: space-between; gap: 4mm; border-top: .25mm solid #c9ccd8; margin-top: 2mm; padding-top: 1.5mm; font-size: 7pt; color: #666; }
 
 .r-head { display: grid; grid-template-columns: 1fr auto; gap: 1mm 6mm; align-items: end; border-bottom: .5mm solid var(--ink); padding-bottom: 2mm; }
@@ -137,9 +142,25 @@ body { margin: 0; background: var(--paper); color: var(--ink); font-family: syst
     .ui, #mess { display: none !important; }
     #druck { padding: 0; }
     #druck .rep { display: block; margin: 0; }
-    #druck .sheet { zoom: 1; box-shadow: none; break-after: page; }
+    /* Passt ein Blatt im Druck doch nicht, wächst es auf die nächste Seite und bricht zwischen
+       Aufgaben um (statt über den Rand zu schreiben); Innenabstand auf jeder Seite wiederholt */
+    #druck .sheet { zoom: 1; box-shadow: none; break-after: page; height: auto; min-height: 296.5mm; overflow: visible;
+        -webkit-box-decoration-break: clone; box-decoration-break: clone; }
     #druck .rep:last-child .sheet:last-child { break-after: auto; }
     body.only #druck .rep:not(.this) { display: none; }
     body.only #druck .rep.this .sheet:last-child { break-after: auto; }
 }
 @media (max-width: 700px) { #druck .sheet { zoom: .4; } }
+
+/* Bestätigung „In die Zwischenablage kopiert“ */
+#toast { position: fixed; left: 50%; bottom: 1.5rem; transform: translate(-50%, 1rem); max-width: min(40rem, calc(100vw - 2rem));
+    padding: .85rem 1.2rem; border-radius: 12px; font: .95rem/1.45 system-ui, sans-serif; box-shadow: 0 10px 30px rgba(20, 24, 50, .25);
+    opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 1000; }
+#toast.show { opacity: 1; transform: translate(-50%, 0); }
+#toast.ok { background: #14532d; color: #fff; }
+#toast.bad { background: #991b1b; color: #fff; }
+.btn.done { background: #15803d; }
+@media print { #toast { display: none; } }
+
+.duo { display: inline-flex; align-items: center; gap: .5rem; margin: .8rem 0 0; font-size: .95rem; cursor: pointer; }
+.duo input { width: 1.05rem; height: 1.05rem; accent-color: var(--acc); }

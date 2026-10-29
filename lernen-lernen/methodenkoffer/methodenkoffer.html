@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Methodenkoffer | Lernen lernen – edu-mrh.de</title>
+    <meta name="description" content="21 Methoden gegen Aufschieben und für besseres Lernen – sortiert nach Stolpersteinen, mit Anleitung, Begründung aus der Forschung und eigenem Koffer zum Packen.">
+
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+
+    <style>
+        /* Lokale Schrift (DSGVO: keine externen Fonts) */
+        @font-face { font-family: 'Inter'; font-style: normal; font-weight: 400; font-display: swap;
+            src: url('../fonts/inter-latin-400-normal.woff2') format('woff2'), url('../fonts/inter-latin-ext-400-normal.woff2') format('woff2'); }
+        @font-face { font-family: 'Inter'; font-style: normal; font-weight: 600; font-display: swap;
+            src: url('../fonts/inter-latin-600-normal.woff2') format('woff2'), url('../fonts/inter-latin-ext-600-normal.woff2') format('woff2'); }
+
+        /* Farben wie im Schülerheft „Fit für die Qualifikationsphase“, Modul III */
+        :root {
+            --koffer: #7048e8;
+            --koffer-hell: #f3f0ff;
+            --text-leise: #5b6475;
+            --linie: #dde1ea;
+            --tinte: #1e293b;
+        }
+        .ic { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+        .ic-f { fill: currentColor; stroke: none; }
+
+        .hero-title { font-size: clamp(2.2rem, 6vw, 3.5rem); }
+
+        /* ---------- Route: Rubikon-Modell als Wegweiser ---------- */
+        .route { position: relative; background: #fff; border-radius: 16px; padding: 1.2rem 1.2rem 1rem;
+            box-shadow: 0 1px 2px rgba(30,41,59,.06), 0 6px 20px rgba(30,41,59,.06); }
+        .route-titel { display: flex; align-items: baseline; justify-content: space-between; gap: .5rem 1rem; flex-wrap: wrap; margin-bottom: .3rem; }
+        .route-titel h2 { margin: 0; font-size: clamp(1.5rem, 4vw, 2rem); }
+        .route-titel p { margin: 0; color: var(--text-leise); font-size: .95rem; }
+        .phasen, .stationen { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .6rem; }
+        .phasen-wrap { position: relative; padding-top: 1.1rem; }
+        .ph { font-size: .78rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; text-align: center;
+            padding: .45rem 1rem .45rem 1.3rem; clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%, 12px 50%); }
+        .ph1 { background: #edf2ff; color: #3b5bdb; grid-column: 1; clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%); }
+        .ph2 { background: #f3f0ff; color: #7048e8; grid-column: 2; }
+        .ph3 { background: #e7f5ff; color: #1971c2; grid-column: 3 / 5; }
+        .ph4 { background: #ebfbee; color: #2b8a3e; grid-column: 5; }
+        .rubikon { position: absolute; top: 0; bottom: 4.2rem; left: calc((100% - 2.4rem) / 5 + .3rem);
+            border-left: 2px dashed #e8590c; pointer-events: none; }
+        .rubikon span { position: absolute; top: -.15rem; left: .4rem; font-size: .62rem; font-weight: 600;
+            letter-spacing: .1em; color: #e8590c; }
+        .stationen { margin-top: .9rem; }
+        .station { font: inherit; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: .45rem;
+            padding: .8rem .5rem .9rem; border-radius: 14px; border: 2px solid transparent; background: transparent; color: var(--tinte);
+            transition: background .15s ease, transform .15s ease, opacity .15s ease; position: relative; z-index: 1; }
+        .station:hover { background: var(--k-hell); transform: translateY(-2px); }
+        .station[aria-pressed="true"] { background: var(--k-hell); border-color: var(--k); }
+        .route.gefiltert .station[aria-pressed="false"] { opacity: .5; }
+        .st-ico { width: 3.3rem; height: 3.3rem; border-radius: 50%; background: var(--k); color: #fff; display: grid; place-items: center;
+            font-size: 1.6rem; box-shadow: 0 4px 12px rgba(30,41,59,.18); }
+        .st-text { display: flex; flex-direction: column; gap: .15rem; }
+        .st-text strong { color: var(--k); font-size: 1rem; line-height: 1.25; }
+        .st-phase { display: none; font-size: .68rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text-leise); }
+        .st-wenn { font-size: .82rem; line-height: 1.35; color: var(--text-leise); }
+        .station-breit { flex-direction: row; text-align: left; justify-content: center; padding: .55rem 1rem; background: var(--k-hell); margin-top: .2rem; }
+        .station-breit .st-ico { width: 2.5rem; height: 2.5rem; font-size: 1.25rem; }
+        .station-breit .st-text { flex-direction: row; flex-wrap: wrap; align-items: baseline; column-gap: .5rem; }
+        .station-breit .st-phase { display: inline; }
+
+        .werkzeuge { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; margin-top: 1rem; padding-top: .9rem; border-top: 1px solid var(--linie); }
+        .werkzeuge p { margin: 0; flex: 1 1 14rem; color: var(--text-leise); font-size: .95rem; }
+        .werkzeuge p strong { color: var(--tinte); }
+        .knopf { font: inherit; font-weight: 600; font-size: .95rem; cursor: pointer; display: inline-flex; align-items: center; gap: .45rem;
+            border-radius: 999px; padding: .5rem 1rem; border: 2px solid var(--koffer); background: #fff; color: var(--koffer); }
+        .knopf:hover { background: var(--koffer-hell); }
+        .knopf-voll { background: var(--koffer); color: #fff; }
+        .knopf-voll:hover { background: #5f3dc4; border-color: #5f3dc4; }
+        .knopf .ic { font-size: 1.25em; transition: transform .2s ease; }
+        #zufall:hover .ic { transform: rotate(-20deg); }
+
+        /* ---------- Mein Koffer ---------- */
+        .mein-koffer { position: relative; margin-top: 2.4rem; background: var(--koffer-hell); border: 3px solid var(--koffer);
+            border-radius: 18px; padding: 1.3rem 1.4rem 1.2rem; scroll-margin-top: 110px; }
+        .mein-koffer::before { content: ""; position: absolute; top: -1.35rem; left: 50%; width: 6rem; height: 1.2rem; transform: translateX(-50%);
+            border: 3px solid var(--koffer); border-bottom: none; border-radius: 12px 12px 0 0; }
+        .mk-titel { display: flex; align-items: center; gap: .6rem; margin: 0 0 .3rem; font-size: 1.3rem; color: var(--koffer); }
+        .mk-titel .ic { font-size: 1.4em; }
+        .zaehler { margin-left: auto; font-size: .85rem; font-weight: 600; background: var(--koffer); color: #fff; border-radius: 999px; padding: .15rem .65rem; }
+        .mein-koffer > p { margin: 0; color: var(--text-leise); }
+        .koffer-liste { list-style: none; padding: 0; margin: .9rem 0 0; display: grid; gap: .6rem; }
+        .koffer-liste li { display: grid; grid-template-columns: minmax(10rem, 14rem) 1fr auto; align-items: center; gap: .6rem;
+            background: #fff; border-radius: 12px; padding: .55rem .7rem; }
+        .koffer-name { display: flex; align-items: center; gap: .55rem; font-weight: 600; color: var(--k); text-decoration: none; }
+        .koffer-name:hover { text-decoration: underline; }
+        .kn-ico { width: 2rem; height: 2rem; border-radius: 50%; background: var(--k); color: #fff; display: grid; place-items: center; flex: none; }
+        .wenn-feld { display: flex; align-items: center; min-width: 0; }
+        .wenn-feld input { flex: 1; min-width: 0; font: inherit; font-size: .95rem; color: var(--tinte); border: none; border-bottom: 2px dotted #b8bfcc;
+            background: transparent; padding: .3rem .1rem; }
+        .wenn-feld input:focus { outline: none; border-bottom: 2px solid var(--koffer); }
+        .raus { font: inherit; cursor: pointer; border: none; background: none; color: var(--text-leise); padding: .35rem; border-radius: 50%; display: grid; place-items: center; }
+        .raus:hover { background: var(--koffer-hell); color: var(--tinte); }
+        .koffer-hinweis { margin-top: .7rem !important; font-size: .9rem; }
+
+        /* ---------- Filterhinweis ---------- */
+        .filter-hinweis { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; margin-top: 2rem; padding: .7rem 1rem;
+            border-radius: 12px; background: #f1f3f5; scroll-margin-top: 90px; }
+        .filter-hinweis[hidden] { display: none; }
+        .filter-hinweis p { margin: 0; flex: 1 1 12rem; }
+
+        /* ---------- Kategorien ---------- */
+        .kategorie { scroll-margin-top: 90px; }
+        .kategorie[hidden] { display: none; }
+        .kat-kopf { display: flex; gap: 1rem; align-items: flex-start; margin: 2.2rem 0 1.1rem; padding-left: .9rem; border-left: 5px solid var(--k); }
+        .kat-ico { width: 3.6rem; height: 3.6rem; border-radius: 16px; background: var(--k); color: #fff; display: grid; place-items: center;
+            font-size: 1.9rem; flex: none; transform: rotate(-4deg); }
+        .kat-phase { font-size: .75rem; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--k); }
+        .kat-kopf h2 { margin: .1rem 0 0; font-size: clamp(1.6rem, 4vw, 2.2rem); }
+        .hilft { margin: .35rem 0 0; color: var(--text-leise); font-size: 1.02rem; }
+        .hilft strong { color: var(--k); }
+
+        .mk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 1rem; align-items: start; }
+        .mk { background: #fff; border-radius: 14px; padding: 1rem 1.1rem .4rem; min-width: 0; scroll-margin-top: 100px;
+            box-shadow: 0 1px 2px rgba(30,41,59,.06), 0 6px 20px rgba(30,41,59,.06); border-top: 4px solid var(--k); }
+        .mk-kopf { display: flex; align-items: center; gap: .7rem; }
+        .mk-ico { width: 2.6rem; height: 2.6rem; border-radius: 50%; background: var(--k-hell); color: var(--k); display: grid; place-items: center;
+            font-size: 1.35rem; flex: none; }
+        .mk h3 { margin: 0; font-size: 1.15rem; color: var(--k); flex: 1; line-height: 1.25; }
+        .mk-kurz { margin: .6rem 0 .5rem; font-size: .98rem; line-height: 1.5; }
+        .mk-mehr { border-top: 1px solid var(--linie); }
+        .mk-mehr summary { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: .5rem;
+            padding: .6rem 0; font-weight: 600; font-size: .9rem; color: var(--k); }
+        .mk-mehr summary::-webkit-details-marker { display: none; }
+        .mk-mehr .pfeil { font-size: 1.2em; transition: transform .2s ease; }
+        .mk-mehr[open] .pfeil { transform: rotate(180deg); }
+        .mk-teile { display: grid; gap: .7rem; padding-bottom: .4rem; }
+        .mk h4 { margin: 0 0 .3rem; font-size: .75rem; letter-spacing: .07em; text-transform: uppercase; color: var(--text-leise); }
+        .mk ol { margin: 0; padding-left: 1.3rem; display: grid; gap: .25rem; font-size: .95rem; }
+        .mk-warum { background: var(--k-hell); border-radius: 10px; padding: .65rem .85rem; }
+        .mk-warum p { margin: 0; font-size: .92rem; line-height: 1.5; }
+        .quelle { color: var(--text-leise); font-size: .82rem; }
+        .mk-links { list-style: none; padding: 0; margin: .2rem 0 .6rem; display: grid; gap: .3rem; font-size: .92rem; }
+        .mk-links a { color: var(--k); font-weight: 600; text-decoration: none; }
+        .mk-links a::before { content: "↗ "; }
+        .mk-links a:hover { text-decoration: underline; }
+
+        .stern { font: inherit; font-size: .82rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: .3rem;
+            border: 1px solid var(--linie); background: #fff; color: var(--text-leise); border-radius: 999px; padding: .3rem .7rem; white-space: nowrap; }
+        .stern .ic { font-size: 1.15em; }
+        .stern .an { display: none; }
+        .stern:hover { border-color: var(--koffer); color: var(--koffer); }
+        .stern[aria-pressed="true"] { background: var(--koffer); border-color: var(--koffer); color: #fff; }
+        .stern[aria-pressed="true"] .an { display: block; }
+        .stern[aria-pressed="true"] .aus { display: none; }
+        .stern.hops .an { animation: hops .45s ease; }
+        @keyframes hops { 0% { transform: scale(.4) rotate(-30deg); } 70% { transform: scale(1.35); } 100% { transform: scale(1); } }
+        .mk.aufblitzen { animation: blitz 1.6s ease; }
+        @keyframes blitz { 0%, 100% { box-shadow: 0 1px 2px rgba(30,41,59,.06), 0 6px 20px rgba(30,41,59,.06); }
+            20%, 60% { box-shadow: 0 0 0 4px var(--k), 0 10px 30px rgba(30,41,59,.18); } }
+
+        /* ---------- Kombi-Rezepte ---------- */
+        .rezepte { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 1rem; }
+        .rezept { background: #fff; border-radius: 14px; padding: 1rem 1.1rem 1.1rem; border: 2px dashed var(--koffer);
+            box-shadow: 0 6px 20px rgba(30,41,59,.05); }
+        .rezept h3 { margin: 0; color: var(--koffer); font-size: 1.15rem; }
+        .rezept > p { margin: .15rem 0 .8rem; color: var(--text-leise); font-size: .92rem; }
+        .zutaten { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; }
+        .zutat { display: inline-flex; align-items: center; gap: .4rem; text-decoration: none; color: var(--k); font-weight: 600; font-size: .9rem;
+            background: var(--k-hell); border-radius: 999px; padding: .25rem .8rem .25rem .25rem; line-height: 1.15; }
+        .zutat small { display: block; font-weight: 400; color: var(--text-leise); font-size: .75rem; }
+        .zutat:hover { box-shadow: 0 0 0 2px var(--k); }
+        .z-ico { width: 1.9rem; height: 1.9rem; border-radius: 50%; background: var(--k); color: #fff; display: grid; place-items: center; flex: none; }
+        .z-sep { color: var(--text-leise); display: grid; place-items: center; }
+
+        .quellen-liste { font-size: .88rem; color: var(--text-leise); line-height: 1.5; padding-left: 1.2rem; }
+        .quellen-liste li { margin-bottom: .3rem; }
+        .station:focus-visible, .knopf:focus-visible, .stern:focus-visible, .zutat:focus-visible, .raus:focus-visible, .mk-mehr summary:focus-visible {
+            outline: 3px solid var(--koffer); outline-offset: 2px; }
+
+        @media (max-width: 760px) {
+            .phasen, .rubikon { display: none; }
+            .phasen-wrap { padding-top: 0; }
+            .stationen { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .3rem; margin-top: .4rem; }
+            .station { grid-column: auto !important; padding: .6rem .2rem .7rem; }
+            .station-breit, .station-breit .st-text { flex-direction: column; text-align: center; align-items: center; margin-top: 0; }
+            .station-breit { background: transparent; }
+            .station-breit .st-ico { width: 3.3rem; height: 3.3rem; font-size: 1.6rem; }
+            .st-text strong { font-size: .92rem; }
+            .st-phase { display: block !important; }
+            .st-wenn { display: none; }
+            .koffer-liste li { grid-template-columns: 1fr auto; }
+            .wenn-feld { grid-column: 1 / -1; grid-row: 2; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .station, .mk-mehr .pfeil, .knopf .ic { transition: none; }
+            .mk.aufblitzen, .stern.hops .an { animation: none; }
+            .mk.aufblitzen { box-shadow: 0 0 0 4px var(--k); }
+        }
+    </style>
+</head>
+<body>
+    <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true"><!-- Icons: Tabler Icons, MIT-Lizenz, tabler.io --><symbol id="i-alarm" viewBox="0 0 24 24"><path d="M12 13m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /> <path d="M12 10l0 3l2 0" /> <path d="M7 4l-2.75 2" /> <path d="M17 4l2.75 2" /></symbol><symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12l14 0" /> <path d="M13 18l6 -6" /> <path d="M13 6l6 6" /></symbol><symbol id="i-arrows-shuffle" viewBox="0 0 24 24"><path d="M18 4l3 3l-3 3" /> <path d="M18 20l3 -3l-3 -3" /> <path d="M3 7h3a5 5 0 0 1 5 5a5 5 0 0 0 5 5h5" /> <path d="M21 7h-5a4.978 4.978 0 0 0 -3 1m-4 8a4.984 4.984 0 0 1 -3 1h-3" /></symbol><symbol id="i-brain" viewBox="0 0 24 24"><path d="M15.5 13a3.5 3.5 0 0 0 -3.5 3.5v1a3.5 3.5 0 0 0 7 0v-1.8" /> <path d="M8.5 13a3.5 3.5 0 0 1 3.5 3.5v1a3.5 3.5 0 0 1 -7 0v-1.8" /> <path d="M17.5 16a3.5 3.5 0 0 0 0 -7h-.5" /> <path d="M19 9.3v-2.8a3.5 3.5 0 0 0 -7 0" /> <path d="M6.5 16a3.5 3.5 0 0 1 0 -7h.5" /> <path d="M5 9.3v-2.8a3.5 3.5 0 0 1 7 0v10" /></symbol><symbol id="i-briefcase" viewBox="0 0 24 24"><path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" /> <path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2" /> <path d="M12 12l0 .01" /> <path d="M3 13a20 20 0 0 0 18 0" /></symbol><symbol id="i-chart-pie" viewBox="0 0 24 24"><path d="M10 3.2a9 9 0 1 0 10.8 10.8a1 1 0 0 0 -1 -1h-6.8a2 2 0 0 1 -2 -2v-7a.9 .9 0 0 0 -1 -.8" /> <path d="M15 3.5a9 9 0 0 1 5.5 5.5h-4.5a1 1 0 0 1 -1 -1v-4.5" /></symbol><symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="M6 9l6 6l6 -6" /></symbol><symbol id="i-coffee" viewBox="0 0 24 24"><path d="M3 14c.83 .642 2.077 1.017 3.5 1c1.423 .017 2.67 -.358 3.5 -1c.83 -.642 2.077 -1.017 3.5 -1c1.423 -.017 2.67 .358 3.5 1" /> <path d="M8 3a2.4 2.4 0 0 0 -1 2a2.4 2.4 0 0 0 1 2" /> <path d="M12 3a2.4 2.4 0 0 0 -1 2a2.4 2.4 0 0 0 1 2" /> <path d="M3 10h14v5a6 6 0 0 1 -6 6h-2a6 6 0 0 1 -6 -6v-5z" /> <path d="M16.746 16.726a3 3 0 1 0 .252 -5.555" /></symbol><symbol id="i-desk" viewBox="0 0 24 24"><path d="M3 6h18" /> <path d="M4 6v13" /> <path d="M20 19v-13" /> <path d="M4 10h16" /> <path d="M15 6v8a2 2 0 0 0 2 2h3" /></symbol><symbol id="i-device-mobile-off" viewBox="0 0 24 24"><path d="M7.159 3.185c.256 -.119 .54 -.185 .841 -.185h8a2 2 0 0 1 2 2v9m0 4v1a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2v-13" /> <path d="M11 4h2" /> <path d="M3 3l18 18" /> <path d="M12 17v.01" /></symbol><symbol id="i-dice-5" viewBox="0 0 24 24"><path d="M3 3m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" /> <circle cx="8.5" cy="8.5" r=".5" fill="currentColor" /> <circle cx="15.5" cy="8.5" r=".5" fill="currentColor" /> <circle cx="15.5" cy="15.5" r=".5" fill="currentColor" /> <circle cx="8.5" cy="15.5" r=".5" fill="currentColor" /> <circle cx="12" cy="12" r=".5" fill="currentColor" /></symbol><symbol id="i-feather" viewBox="0 0 24 24"><path d="M4 20l10 -10m0 -5v5h5m-9 -1v5h5m-9 -1v5h5m-5 -5l4 -4l4 -4" /> <path d="M19 10c.638 -.636 1 -1.515 1 -2.486a3.515 3.515 0 0 0 -3.517 -3.514c-.97 0 -1.847 .367 -2.483 1m-3 13l4 -4l4 -4" /></symbol><symbol id="i-gift" viewBox="0 0 24 24"><path d="M3 8m0 1a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1z" /> <path d="M12 8l0 13" /> <path d="M19 12v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-7" /> <path d="M7.5 8a2.5 2.5 0 0 1 0 -5a4.8 8 0 0 1 4.5 5a4.8 8 0 0 1 4.5 -5a2.5 2.5 0 0 1 0 5" /></symbol><symbol id="i-heart-handshake" viewBox="0 0 24 24"><path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" /> <path d="M12 6l-3.293 3.293a1 1 0 0 0 0 1.414l.543 .543c.69 .69 1.81 .69 2.5 0l1 -1a3.182 3.182 0 0 1 4.5 0l2.25 2.25" /> <path d="M12.5 15.5l2 2" /> <path d="M15 13l2 2" /></symbol><symbol id="i-hourglass-high" viewBox="0 0 24 24"><path d="M6.5 7h11" /> <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z" /> <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z" /></symbol><symbol id="i-list-check" viewBox="0 0 24 24"><path d="M3.5 5.5l1.5 1.5l2.5 -2.5" /> <path d="M3.5 11.5l1.5 1.5l2.5 -2.5" /> <path d="M3.5 17.5l1.5 1.5l2.5 -2.5" /> <path d="M11 6l9 0" /> <path d="M11 12l9 0" /> <path d="M11 18l9 0" /></symbol><symbol id="i-map-route" viewBox="0 0 24 24"><path d="M3 7l6 -3l6 3l6 -3v13l-6 3l-6 -3l-6 3v-13" /> <path d="M9 12v.01" /> <path d="M6 13v.01" /> <path d="M17 15l-4 -4" /> <path d="M13 15l4 -4" /></symbol><symbol id="i-message-circle-question" viewBox="0 0 24 24"><path d="M15.02 19.52c-2.341 .736 -5 .606 -7.32 -.52l-4.7 1l1.3 -3.9c-2.324 -3.437 -1.426 -7.872 2.1 -10.374c3.526 -2.501 8.59 -2.296 11.845 .48c1.649 1.407 2.575 3.253 2.742 5.152" /> <path d="M19 22v.01" /> <path d="M19 19a2.003 2.003 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483" /></symbol><symbol id="i-mountain" viewBox="0 0 24 24"><path d="M3 20h18l-6.921 -14.612a2.3 2.3 0 0 0 -4.158 0l-6.921 14.612z" /> <path d="M7.5 11l2 2.5l2.5 -2.5l2 3l2.5 -2" /></symbol><symbol id="i-player-play" viewBox="0 0 24 24"><path d="M7 4v16l13 -8z" /></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5l0 14" /> <path d="M5 12l14 0" /></symbol><symbol id="i-quote" viewBox="0 0 24 24"><path d="M10 11h-4a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h3a1 1 0 0 1 1 1v6c0 2.667 -1.333 4.333 -4 5" /> <path d="M19 11h-4a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h3a1 1 0 0 1 1 1v6c0 2.667 -1.333 4.333 -4 5" /></symbol><symbol id="i-rocket" viewBox="0 0 24 24"><path d="M4 13a8 8 0 0 1 7 7a6 6 0 0 0 3 -5a9 9 0 0 0 6 -8a3 3 0 0 0 -3 -3a9 9 0 0 0 -8 6a6 6 0 0 0 -5 3" /> <path d="M7 14a6 6 0 0 0 -3 6a6 6 0 0 0 6 -3" /> <path d="M15 9m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></symbol><symbol id="i-run" viewBox="0 0 24 24"><path d="M13 4m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /> <path d="M4 17l5 1l.75 -1.5" /> <path d="M15 21l0 -4l-4 -3l1 -6" /> <path d="M7 12l0 -3l5 -1l3 3l3 1" /></symbol><symbol id="i-shirt" viewBox="0 0 24 24"><path d="M15 4l6 2v5h-3v8a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1v-8h-3v-5l6 -2a3 3 0 0 0 6 0" /></symbol><symbol id="i-stairs-up" viewBox="0 0 24 24"><path d="M22 6h-5v5h-5v5h-5v5h-5" /> <path d="M6 10v-7" /> <path d="M3 6l3 -3l3 3" /></symbol><symbol id="i-star" viewBox="0 0 24 24"><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" /></symbol><symbol id="i-target" viewBox="0 0 24 24"><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /> <path d="M12 12m-5 0a5 5 0 1 0 10 0a5 5 0 1 0 -10 0" /> <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /></symbol><symbol id="i-target-arrow" viewBox="0 0 24 24"><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /> <path d="M12 7a5 5 0 1 0 5 5" /> <path d="M13 3.055a9 9 0 1 0 7.941 7.945" /> <path d="M15 6v3h3l3 -3h-3v-3z" /> <path d="M15 9l-3 3" /></symbol><symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 21l8 0" /> <path d="M12 17l0 4" /> <path d="M7 4l10 0" /> <path d="M17 4v8a5 5 0 0 1 -10 0v-8" /> <path d="M5 9m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /> <path d="M19 9m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /></symbol><symbol id="i-user-heart" viewBox="0 0 24 24"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /> <path d="M6 21v-2a4 4 0 0 1 4 -4h.5" /> <path d="M18 22l3.35 -3.284a2.143 2.143 0 0 0 .005 -3.071a2.242 2.242 0 0 0 -3.129 -.006l-.224 .22l-.223 -.22a2.242 2.242 0 0 0 -3.128 -.006a2.143 2.143 0 0 0 -.006 3.071l3.355 3.296z" /></symbol><symbol id="i-users" viewBox="0 0 24 24"><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /> <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /> <path d="M16 3.13a4 4 0 0 1 0 7.75" /> <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" /></symbol><symbol id="i-wind" viewBox="0 0 24 24"><path d="M5 8h8.5a2.5 2.5 0 1 0 -2.34 -3.24" /> <path d="M3 12h15.5a2.5 2.5 0 1 1 -2.34 3.24" /> <path d="M4 16h5.5a2.5 2.5 0 1 1 -2.34 3.24" /></symbol><symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6l-12 12" /> <path d="M6 6l12 12" /></symbol><symbol id="i-star-f" viewBox="0 0 24 24"><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></symbol></svg>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="icon"><a href="https://edu-mrh.de/">🧠</a></span>
+                <span>edu-mrh Lernen</span>
+            </div>
+            <div class="nav-links">
+                <a href="https://edu-mrh.de/" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/contribute.html#impressum" class="btn btn-outline">Impressum</a>
+            </div>
+        </div>
+    </nav>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>Inhalt</h3>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#finden">Wo hakt’s?</a></li>
+            <li><a href="#mein-koffer">Mein Koffer</a></li>
+            <li><a href="#ziel">Ziel klar kriegen</a></li><li><a href="#planen">Planen</a></li><li><a href="#loslegen">Loslegen</a></li><li><a href="#dranbleiben">Dranbleiben</a></li><li><a href="#gefuehl">Kopf &amp; Gefühl</a></li><li><a href="#belohnen">Belohnen &amp; Unterstützen</a></li>
+            <li><a href="#rezepte">Kombi-Rezepte</a></li>
+            <li><a href="#quellen">Quellen</a></li>
+        </ul>
+    </aside>
+
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menü öffnen">
+        <span></span><span></span><span></span>
+    </button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero">
+                <h1 class="hero-title">Methodenkoffer</h1>
+                <p class="hero-subtitle">Lernen lernen · Modul III · Oberstufe</p>
+                <p class="hero-description">21 Tricks gegen das Aufschieben. Such deinen Stolperstein auf der Route, pack 1–3 Methoden ein und probier sie eine Woche lang aus.</p>
+            </section>
+
+            <section id="finden" class="mt-4" style="scroll-margin-top: 90px">
+                <div class="route" id="route">
+                    <div class="route-titel">
+                        <h2>Wo hakt’s bei dir?</h2>
+                        <p>Tippe auf eine Station – dann siehst du nur die passenden Methoden.</p>
+                    </div>
+                    <div class="phasen-wrap">
+                        <div class="phasen" aria-hidden="true"><span class="ph ph1">Abwägen</span><span class="ph ph2">Planen</span><span class="ph ph3">Handeln</span><span class="ph ph4">Bewerten</span></div><div class="stationen"><button type="button" class="station" data-filter="ziel" aria-pressed="false" style="--k:#3b5bdb;--k-hell:#edf2ff;grid-column:1"><span class="st-ico"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg></span><span class="st-text"><span class="st-phase">Abwägen</span><strong>Ziel klar kriegen</strong><span class="st-wenn">… wenn du nicht genau weißt, was du eigentlich erreichen willst.</span></span></button><button type="button" class="station" data-filter="planen" aria-pressed="false" style="--k:#7048e8;--k-hell:#f3f0ff;grid-column:2"><span class="st-ico"><svg class="ic" aria-hidden="true"><use href="#i-map-route"/></svg></span><span class="st-text"><span class="st-phase">Planen</span><strong>Planen</strong><span class="st-wenn">… wenn alles gleichzeitig ansteht und du nicht weißt, wo du anfangen sollst.</span></span></button><button type="button" class="station" data-filter="loslegen" aria-pressed="false" style="--k:#1971c2;--k-hell:#e7f5ff;grid-column:3"><span class="st-ico"><svg class="ic" aria-hidden="true"><use href="#i-rocket"/></svg></span><span class="st-text"><span class="st-phase">Handeln</span><strong>Loslegen</strong><span class="st-wenn">… wenn du weißt, was zu tun ist – und trotzdem nicht anfängst.</span></span></button><button type="button" class="station" data-filter="dranbleiben" aria-pressed="false" style="--k:#0c8599;--k-hell:#e3fafc;grid-column:4"><span class="st-ico"><svg class="ic" aria-hidden="true"><use href="#i-run"/></svg></span><span class="st-text"><span class="st-phase">Handeln</span><strong>Dranbleiben</strong><span class="st-wenn">… wenn du zwar anfängst, aber nach kurzer Zeit abschweifst.</span></span></button><button type="button" class="station" data-filter="belohnen" aria-pressed="false" style="--k:#2b8a3e;--k-hell:#ebfbee;grid-column:5"><span class="st-ico"><svg class="ic" aria-hidden="true"><use href="#i-trophy"/></svg></span><span class="st-text"><span class="st-phase">Bewerten</span><strong>Belohnen &amp; Unterstützen</strong><span class="st-wenn">… wenn der Antrieb fehlt und das Ziel noch weit weg ist.</span></span></button><button type="button" class="station station-breit" data-filter="gefuehl" aria-pressed="false" style="--k:#e8590c;--k-hell:#fff4e6;grid-column:1/-1"><span class="st-ico"><svg class="ic" aria-hidden="true"><use href="#i-brain"/></svg></span><span class="st-text"><span class="st-phase">alle Phasen</span><strong>Kopf &amp; Gefühl</strong><span class="st-wenn">… wenn ein Gefühl im Weg steht: Angst, Ärger, Überforderung.</span></span></button></div>
+                        <div class="rubikon" aria-hidden="true"><span>RUBIKON</span></div>
+                    </div>
+                    <div class="werkzeuge">
+                        <p id="filter-status" aria-live="polite"><strong>Alle 21 Methoden</strong> – oder lass den Zufall entscheiden:</p>
+                        <button type="button" class="knopf knopf-voll" id="zufall"><svg class="ic" aria-hidden="true"><use href="#i-dice-5"/></svg> Überrasch mich</button>
+                    </div>
+                </div>
+
+                <div class="mein-koffer" id="mein-koffer" aria-live="polite">
+                    <h2 class="mk-titel"><svg class="ic" aria-hidden="true"><use href="#i-briefcase"/></svg> Mein Koffer <span class="zaehler" id="koffer-zahl">0</span></h2>
+                    <p id="koffer-leer">Noch leer. Tippe bei einer Methode auf „Einpacken“, dann landet sie hier – und du kannst gleich deinen Wenn-dann-Satz dazuschreiben. Alles bleibt nur in deinem Browser.</p>
+                    <ul class="koffer-liste" id="koffer-liste" hidden></ul>
+                    <p class="koffer-hinweis" id="koffer-gut" hidden>Übertrag deine Sätze auf dein Blatt (Modul III, Aufgabe 6) und hak eine Woche lang ab, ob’s hilft.</p>
+                    <p class="koffer-hinweis" id="koffer-viel" hidden><strong>Weniger ist mehr:</strong> Starte mit 1–3 Methoden. Die anderen laufen dir nicht weg.</p>
+                </div>
+            </section>
+
+            <div class="filter-hinweis" id="filter-hinweis" hidden>
+                <p id="filter-text"></p>
+                <button type="button" class="knopf" id="alle-zeigen">Alle Kategorien zeigen</button>
+            </div>
+
+            <section id="ziel" class="kategorie mt-4" data-kat="ziel" style="--k:#3b5bdb;--k-hell:#edf2ff">
+                <div class="kat-kopf">
+                    <span class="kat-ico"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg></span>
+                    <div>
+                        <span class="kat-phase">Abwägen · 2 Methoden</span>
+                        <h2>Ziel klar kriegen</h2>
+                        <p class="hilft"><strong>Hilft, wenn</strong> du nicht genau weißt, was du eigentlich erreichen willst.</p>
+                    </div>
+                </div>
+                <div class="mk-grid">
+<article class="mk" id="smart" data-kat="ziel" style="--k:#3b5bdb;--k-hell:#edf2ff">
+  <div class="mk-kopf">
+    <span class="mk-ico"><svg class="ic" aria-hidden="true"><use href="#i-target-arrow"/></svg></span>
+    <h3>SMART-Ziel</h3>
+    <button type="button" class="stern" data-id="smart" data-name="SMART-Ziel" data-icon="target-arrow" data-farbe="#3b5bdb" aria-pressed="false" title="In meinen Koffer packen"><svg class="ic aus" aria-hidden="true"><use href="#i-star"/></svg><svg class="ic an ic-f" aria-hidden="true"><use href="#i-star-f"/></svg><span class="stern-text">Einpacken</span></button>
+  </div>
+  <p class="mk-kurz">Spezifisch, messbar, attraktiv, realistisch, terminiert. Aus „Mathe lernen“ wird „heute 14:30–16 Uhr, S. 42, Nr. 1–3“ – so weißt du genau, wann du fertig bist.</p>
+  <details class="mk-mehr">
+    <summary>So geht’s &amp; warum es wirkt <svg class="ic pfeil" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+    <div class="mk-teile">
+      <div><ol><li>Schreib dein Ziel so auf, wie es dir einfällt.</li><li>Prüfe jeden Buchstaben: Was genau? Woran merke ich, dass ich fertig bin? Will ich das? Schaffe ich das? Bis wann?</li><li>Formuliere neu – lieber klein und machbar als groß und vage.</li></ol></div>
+      <div class="mk-warum"><h4>Warum es wirkt</h4><p>Konkrete Ziele führen zu mehr Leistung als ein „Ich geb mein Bestes“, weil sie zeigen, wohin die Anstrengung gehen soll und wann du fertig bist. <span class="quelle">(Locke &amp; Latham 2002)</span></p></div>
+    </div>
+    <ul class="mk-links"><li><a href="https://studyflix.de/wirtschaft/smart-ziele-1464/video" target="_blank" rel="noopener">SMARTe Ziele – Erklärvideo (Studyflix)</a></li><li><a href="https://www.nachhilfe-team.net/lernen-leicht-gemacht/smart-methode/" target="_blank" rel="noopener">SMART-Methode mit Beispielen (Nachhilfe-Team)</a></li></ul>
+  </details>
+</article>
+<article class="mk" id="teilziele" data-kat="ziel" style="--k:#3b5bdb;--k-hell:#edf2ff">
+  <div class="mk-kopf">
+    <span class="mk-ico"><svg class="ic" aria-hidden="true"><use href="#i-stairs-up"/></svg></span>
+    <h3>Teilziele</h3>
+    <button type="button" class="stern" data-id="teilziele" data-name="Teilziele" data-icon="stairs-up" data-farbe="#3b5bdb" aria-pressed="false" title="In meinen Koffer packen"><svg class="ic aus" aria-hidden="true"><use href="#i-star"/></svg><svg class="ic an ic-f" aria-hidden="true"><use href="#i-star-f"/></svg><span class="stern-text">Einpacken</span></button>
+  </div>
+  <p class="mk-kurz">Zerleg den Berg in Etappen, die in eine Lernsitzung passen. Jede erledigte Etappe ist ein kleiner Sieg und zeigt dir: Ich komme voran.</p>
+  <details class="mk-mehr">
+    <summary>So geht’s &amp; warum es wirkt <svg class="ic pfeil" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+    <div class="mk-teile">
+      <div><ol><li>Schreib das große Ziel oben auf ein Blatt, z. B. „Bio-Klausur am 12.12.“.</li><li>Darunter 3–5 Teilziele (Themen), darunter je konkrete Aufgaben von 20–45 Minuten.</li><li>Verteil die Aufgaben auf die Tage davor und hak ab, was erledigt ist.</li></ol></div>
+      <div class="mk-warum"><h4>Warum es wirkt</h4><p>Nahe Etappenziele stärken Ausdauer und das Gefühl, etwas zu können, deutlich mehr als ein fernes Gesamtziel. <span class="quelle">(Bandura &amp; Schunk 1981)</span></p></div>
+    </div>
+  </details>
+</article>
+                </div>
+            </section>
+            <section id="planen" class="kategorie mt-4" data-kat="planen" style="--k:#7048e8;--k-hell:#f3f0ff">
+                <div class="kat-kopf">
+                    <span class="kat-ico"><svg class="ic" aria-hidden="true"><use href="#i-map-route"/></svg></span>
+                    <div>
+                        <span class="kat-phase">Planen · 3 Methoden</span>
+                        <h2>Planen</h2>
+                        <p class="hilft"><strong>Hilft, wenn</strong> alles gleichzeitig ansteht und du nicht weißt, wo du anfangen sollst.</p>
+                    </div>
+                </div>
+                <div class="mk-grid">
+<article class="mk" id="todo" data-kat="planen" style="--k:#7048e8;--k-hell:#f3f0ff">
+  <div class="mk-kopf">
+    <span class="mk-ico"><svg class="ic" aria-hidden="true"><use href="#i-list-check"/></svg></span>
+    <h3>Zwei To-do-Listen</h3>
+    <button type="button" class="stern" data-id="todo" data-name="Zwei To-do-Listen" data-icon="list-check" data-farbe="#7048e8" aria-pressed="false" title="In meinen Koffer packen"><svg class="ic aus" aria-hidden="true"><use href="#i-star"/></svg><svg class="ic an ic-f" aria-hidden="true"><use href="#i-star-f"/></svg><span class="stern-text">Einpacken</span></button>
+  </div>
+  <p class="mk-kurz">Eine für die Schule, eine für Privates. Was aufgeschrieben ist, muss dein Kopf nicht mehr mit sich herumtragen.</p>
+  <details class="mk-mehr">
+    <summary>So geht’s &amp; warum es wirkt <svg class="ic pfeil" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+    <div class="mk-teile">
+      <div><ol><li>Alles aufschreiben, was ansteht – auch Kleinkram.</li><li>Auf zwei Listen verteilen: Schule und Privat.</li><li>Auf der Schul-Liste festlegen, wann du was erledigst.</li></ol></div>
+      <div class="mk-warum"><h4>Warum es wirkt</h4><p>Unerledigte Aufgaben geistern im Kopf herum und stören die Konzentration. In Experimenten verschwand dieser Effekt, sobald die Teilnehmenden einen konkreten Plan für die offene Aufgabe aufschrieben. <span class="quelle">(Masicampo &amp; Baumeister 2011)</span></p></div>
+    </div>
+  </details>
+</article>
+<article class="mk" id="pareto" data-kat="planen" style="--k:#7048e8;--k-hell:#f3f0ff">
+  <div class="mk-kopf">
+    <span class="mk-ico"><svg class="ic" aria-hidden="true"><use href="#i-chart-pie"/></svg></span>
+    <h3>80/20-Regel</h3>
+    <button type="button" class="stern" data-id="pareto" data-name="80/20-Regel" data-icon="chart-pie" data-farbe="#7048e8" aria-pressed="false" title="In meinen Koffer packen"><svg class="ic aus" aria-hidden="true"><use href="#i-star"/></svg><svg class="ic an ic-f" aria-hidden="true"><use href="#i-star-f"/></svg><span class="stern-text">Einpacken</span></button>
+  </div>
+  <p class="mk-kurz">Oft bringen 20 % des Aufwands 80 % des Ergebnisses. Also zuerst die Kerninhalte, Details und Perfektion danach.</p>
+  <details class="mk-mehr">
+    <summary>So geht’s &amp; warum es wirkt <svg class="ic pfeil" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+    <div class="mk-teile">
+      <div><ol><li>Liste alle Themen der Prüfung auf.</li><li>Markiere die Kerninhalte: Was kam im Unterricht oft vor? Was baut aufeinander auf?</li><li>Lern zuerst die Kerninhalte sicher, dann die Details.</li></ol></div>
+      <div class="mk-warum"><h4>Warum es wirkt</h4><p>Eine Faustregel (Pareto-Prinzip), keine exakte Zahl. Sie hilft gegen Perfektionismus: Wer zuerst das Wichtige sicher kann, hat auch bei Zeitnot eine solide Basis.</p></div>
+    </div>
+  </details>
+</article>
+<article class="mk" id="alpen" data-kat="planen" style="--k:#7048e8;--k-hell:#f3f0ff">
+  <div class="mk-kopf">
+    <span class="mk-ico"><svg class="ic" aria-hidden="true"><use href="#i-mountain"/></svg></span>
+    <h3>ALPEN</h3>
+    <button type="button" class="stern" data-id="alpen" data-name="ALPEN" data-icon="mountain" data-farbe="#7048e8" aria-pressed="false" title="In meinen Koffer packen"><svg class="ic aus" aria-hidden="true"><use href="#i-star"/></svg><svg class="ic an ic-f" aria-hidden="true"><use href="#i-star-f"/></svg><span class="stern-text">Einpacken</span></button>
+  </div>
+  <p class="mk-kurz">Aufgaben notieren, Länge schätzen, Puffer lassen, Entscheiden, Nachkontrolle.</p>
+  <details class="mk-mehr">
+    <summary>So geht’s &amp; warum es wirkt <svg class="ic pfeil" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+    <div class="mk-teile">
+      <div><ol><li><b>A</b>ufgaben: alles notieren, was morgen ansteht.</li><li><b>L</b>änge: Zeit je Aufgabe schätzen.</li><li><b>P</b>uffer: nur etwa 60 % der Zeit verplanen, 40 % bleiben frei.</li><li><b>E</b>ntscheiden: Was kommt zuerst, was fällt notfalls weg?</li><li><b>N</b>achkontrolle: abends kurz prüfen, was geklappt hat und was auf morgen wandert.</li></ol></div>
+      <div class="mk-warum"><h4>Warum es wirkt</h4><p>Fast alle Menschen unterschätzen, wie lange Aufgaben dauern (Planungsfehlschluss). Der Puffer fängt das ab, statt dass der ganze Plan kippt. <span class="quelle">(Buehler, Griffin &amp; Ross 1994; Methode nach L. Seiwert)</span></p></div>
+    </div>
+    <ul class="mk-links"><li><a href="https://besser-lernen.blog/zeitmanagement/" target="_blank" rel="noopener">Mehr zum Zeitmanagement (besser-lernen.blog)</a></li></ul>
+  </details>
+</article>
+                </div>
+            </section>
+            <section id="loslegen" class="kategorie mt-4" data-kat="loslegen" style="--k:#1971c2;--k-hell:#e7f5ff">
+                <div class="kat-kopf">
+                    <span class="kat-ico"><svg class="ic" aria-hidden="true"><use href="#i-rocket"/></svg></span>
+                    <div>
+                        <span class="kat-phase">Handeln · 5 Methoden</span>
+                        <h2>Loslegen</h2>
+                        <p class="hilft"><strong>Hilft, wenn</strong> du weißt, was zu tun ist – und trotzdem nicht anfängst.</p>
+                    </div>
+                </div>
+                <div class="mk-grid">
+<article class="mk" id="lernort" data-kat="loslegen" style="--k:#1971c2;--k-hell:#e7f5ff">
+  <div class="mk-kopf">
+    <span class="mk-ico"><svg class="ic" aria-hidden="true"><use href="#i-desk"/></svg></span>
+    <h3>Fester Lernort</h3>
+    <button type="button" class="stern" data-id="lernort" data-name="Fester Lernort" data-icon="desk" data-farbe="#1971c2" aria-pressed="false" title="In meinen Koffer packen"><svg class="ic aus" aria-hidden="true"><use href="#i-star"/></svg><svg class="ic an ic-f" aria-hidden="true"><use href="#i-star-f"/></svg><span class="stern-text">Einpacken</span></button>
+  </div>
+  <p class="mk-kurz">Ein Platz nur fürs Lernen, nicht Bett oder Sofa. Dein Gehirn verknüpft den Ort mit Arbeit, und das Anfangen geht leichter.</p>
+  <details class="mk-mehr">
+    <summary>So geht’s &amp; warum es wirkt <svg class="ic pfeil" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+    <div class="mk-teile">
+      <div><ol><li>Such dir einen festen Platz: Schreibtisch, Bibliothek oder der Küchentisch zu festen Zeiten.</li><li>Dort nur lernen – nicht zocken oder Serien schauen.</li><li>Bett und Sofa bleiben fürs Entspannen.</li></ol></div>
+      <div class="mk-warum"><h4>Warum es wirkt</h4><p>Gewohnheiten hängen stark an Orten: Der gleiche Ort löst das gleiche Verhalten aus. Ein fester Lernplatz macht das Anfangen mit der Zeit fast automatisch. <span class="quelle">(Wood &amp; Neal 2007)</span></p></div>
+    </div>
+  </details>
+</article>
+<article class="mk" id="handy" data-kat="loslegen" style="--k:#1971c2;--k-hell:#e7f5ff">
+  <div class="mk-kopf">
+    <span class="mk-ico"><svg class="ic" aria-hidden="true"><use href="#i-device-mobile-off"/></svg></span>
+    <h3>Handy raus</h3>
+    <button type="button" class="stern" data-id="handy" data-name="Handy raus" data-icon="device-mobile-off" data-farbe="#1971c2" aria-pressed="false" title="In meinen Koffer packen"><svg class="ic aus" aria-hidden="true"><use href="#i-star"/></svg><svg class="ic an ic-f" aria-hidden="true"><use href="#i-star-f"/></svg><span class="stern-text">Einpacken</span></button>
+  </div>
+  <p class="mk-kurz">Am besten in einen anderen Raum, mindestens stumm und außer Sicht. Schon das Summen einer Nachricht holt dich raus.</p>
+  <details class="mk-mehr">
+    <summary>So geht’s &amp; warum es wirkt <svg class="ic pfeil" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+    <div class="mk-teile">
+      <div><ol><li>Vor dem Lernen das Handy in einen anderen Raum legen.</li><li>Geht das nicht: stumm, umgedreht, außer Sichtweite – oder eine Fokus-App wie Forest.</li><li>Nachrichten in den Pausen gebündelt checken.</li></ol></div>
+      <div class="mk-warum"><h4>Warum es wirkt</h4><p>Schon das Summen einer Nachricht stört die Aufmerksamkeit fast so stark wie das Antworten. Liegt das Handy in einem anderen Raum, fallen Gedächtnistests im Schnitt etwas besser aus. <span class="quelle">(Stothart u. a. 2015; Ward u. a. 2017; Böttger u. a. 2023)</span></p></div>
+    </div>
+  </details>
+</article>
+<article class="mk" id="countdown" data-kat="loslegen" style="--k:#1971c2;--k-hell:#e7f5ff">
+  <div class="mk-kopf">
+    <span class="mk-ico"><svg class="ic" aria-hidden="true"><use href="#i-hourglass-high"/></svg></span>
+    <h3>Platz + Countdown</h3>
+    <button type="button" class="stern" data-id="countdown" data-name="Platz + Countdown" data-icon="hourglass-high" data-farbe="#1971c2" aria-pressed="false" title="In meinen Koffer packen"><svg class="ic aus" aria-hidden="true"><use href="#i-star"/></svg><svg class="ic an ic-f" aria-hidden="true"><use href="#i-star-f"/></svg><span class="stern-text">Einpacken</span></button>
+  </div>
+  <p class="mk-kurz">Buch auf, Stifte bereit, dann einen 3-Minuten-Countdown starten. Bei null geht’s los – ohne weitere Diskussion mit dir selbst.</p>
+  <details class="mk-mehr">
+    <summary>So geht’s &amp; warum es wirkt <svg class="ic pfeil" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+    <div class="mk-teile">
+      <div><ol><li>Buch aufschlagen, Stifte und Block hinlegen, Wasser hinstellen.</li><li>Countdown von 3 Minuten stellen (Küchenwecker, wenn das Handy schon draußen ist).</li><li>Bei null fängst du an, ohne noch einmal zu überlegen.</li></ol></div>
+      <div class="mk-warum"><h4>Warum es wirkt</h4><p>Ein fester Auslöser ersetzt die tägliche Entscheidung „jetzt oder später?“. Solche Wenn-dann-Pläne gehören zu den wirksamsten Kleinst-Strategien gegen das Aufschieben. <span class="quelle">(Gollwitzer &amp; Sheeran 2006)</span></p></div>
+    </div>
+  </details>
+</article>
+<article class="mk" id="leicht" data-kat="loslegen" style="--k:#1971c2;--k-hell:#e7f5ff">
+  <div class="mk-kopf">
+    <span class="mk-ico"><svg class="ic" aria-hidden="true"><use href="#i-feather"/></svg></span>
+    <h3>Leicht anfangen</h3>
+    <button type="button" class="stern" data-id="leicht" data-name="Leicht anfangen" data-icon="feather" data-farbe="#1971c2" aria-pressed="false" title="In meinen Koffer packen"><svg class="ic aus" aria-hidden="true"><use href="#i-star"/></svg><svg class="ic an ic-f" aria-hidden="true"><use href="#i-star-f"/></svg><span class="stern-text">Einpacken</span></button>
+  </div>
+  <p class="mk-kurz">Starte mit einer einfachen Aufgabe zum Aufwärmen, auch nach Pausen. Läuft der Kopf, kommt die schwere dran.</p>
+  <details class="mk-mehr">
+    <summary>So geht’s &amp; warum es wirkt <svg class="ic pfeil" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+    <div class="mk-teile">
+      <div><ol><li>Als Einstieg eine kurze, leichte Aufgabe wählen: Vokabeln wiederholen, Mitschrift ordnen.</li><li>Nach 5–10 Minuten zur schweren Aufgabe wechseln.</li><li>Auch nach Pausen wieder leicht einsteigen.</li></ol></div>
+      <div class="mk-warum"><h4>Warum es wirkt</h4><p>Der Start ist die größte Hürde. Ein schneller Erfolg nimmt Druck raus, und wer einmal im Arbeitsmodus ist, bleibt leichter dabei. Probier aus, ob bei dir „leicht zuerst“ oder „das Fieseste zuerst“ besser funktioniert.</p></div>
+    </div>
+  </details>
+</article>
+<article class="mk" id="fuenf" data-kat="loslegen" style="--k:#1971c2;--k-hell:#e7f5ff">
+  <div class="mk-kopf">
+    <span class="mk-ico"><svg class="ic" aria-hidden="true"><use href="#i-player-play"/></svg></span>
+    <h3>5-Minuten-Regel</h3>
+    <button type="button" class="stern" data-id="fuenf" data-name="5-Minuten-Regel" data-icon="player-play" data-farbe="#1971c2" aria-pressed="false" title="In meinen Koffer packen"><svg class="ic aus" aria-hidden="true"><use href="#i-star"/></svg><svg class="ic an ic-f" aria-hidden="true"><use href="#i-star-f"/></svg><span class="stern-text">Einpacken</span></button>
+  </div>
+  <p class="mk-kurz">Versprich dir nur fünf Minuten, danach darfst du aufhören. Meist machst du weiter – das Schwerste war der Start.</p>
+  <details class="mk-mehr">
+    <summary>So geht’s &amp; warum es wirkt <svg class="ic pfeil" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+    <div class="mk-teile">
+      <div><ol><li>Sag dir: „Ich mache genau fünf Minuten.“</li><li>Timer stellen und anfangen.</li><li>Nach fünf Minuten ehrlich entscheiden: Aufhören ist erlaubt, weitermachen auch.</li></ol></div>
+      <div class="mk-warum"><h4>Warum es wirkt</h4><p>Aufgaben wirken vor dem Start meist schlimmer als mittendrin. Fünf Minuten sind so klein, dass kaum Widerstand entsteht – und eine angefangene Aufgabe lässt sich leichter fortsetzen als eine neue beginnen.</p></div>
+    </div>
+  </details>
+</article>
+                </div>
+            </section>
+            <section id="dranbleiben" class="kategorie mt-4" data-kat="dranbleiben" style="--k:#0c8599;--k-hell:#e3fafc">
+                <div class="kat-kopf">
+                    <span class="kat-ico"><svg class="ic" aria-hidden="true"><use href="#i-run"/></svg></span>
+                    <div>
+                        <span class="kat-phase">Handeln · 5 Methoden</span>
+                        <h2>Dranbleiben</h2>
+                        <p class="hilft"><strong>Hilft, wenn</strong> du zwar anfängst, aber nach kurzer Zeit abschweifst.</p>
+                    </div>
+                </div>
+                <div class="mk-grid">
+<article class="mk" id="pomodoro" data-kat="dranbleiben" style="--k:#0c8599;--k-hell:#e3fafc">
+  <div class="mk-kopf">
+    <span class="mk-ico"><svg class="ic" aria-hidden="true"><use href="#i-alarm"/></svg></span>
+    <h3>Pomodoro</h3>
+    <button type="button" class="stern" data-id="pomodoro" data-name="Pomodoro" data-icon="alarm" data-farbe="#0c8599" aria-pressed="false" title="In meinen Koffer packen"><svg class="ic aus" aria-hidden="true"><use href="#i-star"/></svg><svg class="ic an ic-f" aria-hidden="true"><use href="#i-star-f"/></svg><span class="stern-text">Einpacken</span></button>
+  </div>
+  <p class="mk-kurz">25 Minuten konzentriert, 5 Minuten Pause, nach vier Runden eine lange Pause.</p>
+  <details class="mk-mehr">
+    <summary>So geht’s &amp; warum es wirkt <svg class="ic pfeil" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+    <div class="mk-teile">
+      <div><ol><li>Timer auf 25 Minuten, eine Aufgabe, keine Unterbrechung.</li><li>5 Minuten echte Pause.</li><li>Nach vier Runden 15–20 Minuten Pause.</li></ol></div>
+      <div class="mk-warum"><h4>Warum es wirkt</h4><p>In einer Studie mit Studierenden fühlten sich die Teilnehmenden mit festen Pausen weniger müde und motivierter als diejenigen, die nach Gefühl Pause machten – und schafften gleich viel in kürzerer Zeit. <span class="quelle">(Biwer u. a. 2023; Technik nach F. Cirillo)</span></p></div>
+    </div>
+  </details>
+</article>
+<article class="mk" id="pausen" data-kat="dranbleiben" style="--k:#0c8599;--k-hell:#e3fafc">
+  <div class="mk-kopf">
+    <span class="mk-ico"><svg class="ic" aria-hidden="true"><use href="#i-coffee"/></svg></span>
+    <h3>Echte Pausen</h3>
+    <button type="button" class="stern" data-id="pausen" data-name="Echte Pausen" data-icon="coffee" data-farbe="#0c8599" aria-pressed="false" title="In meinen Koffer packen"><svg class="ic aus" aria-hidden="true"><use href="#i-star"/></svg><svg class="ic an ic-f" aria-hidden="true"><use href="#i-star-f"/></svg><span class="stern-text">Einpacken</span></button>
+  </div>
+  <p class="mk-kurz">Aufstehen, lüften, trinken, kurz bewegen. Scrollen ist für dein Gehirn keine Pause.</p>
+  <details class="mk-mehr">
+    <summary>So geht’s &amp; warum es wirkt <svg class="ic pfeil" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+    <div class="mk-teile">
+      <div><ol><li>Vom Platz aufstehen.</li><li>Fenster auf, etwas trinken, kurz bewegen.</li><li>Den Wiedereinstieg schon vor der Pause bereitlegen.</li></ol></div>
+      <div class="mk-warum"><h4>Warum es wirkt</h4><p>Kurze Pausen von wenigen Minuten machen nachweislich wacher und weniger erschöpft. Beim Scrollen prasseln dagegen neue Reize auf dich ein – der Kopf bekommt keine Pause. <span class="quelle">(Albulescu u. a. 2022)</span></p></div>
+    </div>
+  </details>
+</article>
+<article class="mk" id="abwechslung" data-kat="dranbleiben" style="--k:#0c8599;--k-hell:#e3fafc">
+  <div class="mk-kopf">
+    <span class="mk-ico"><svg class="ic" aria-hidden="true"><use href="#i-arrows-shuffle"/></svg></span>
+    <h3>Abwechslung</h3>
+    <button type="button" class="stern" data-id="abwechslung" data-name="Abwechslung" data-icon="arrows-shuffle" data-farbe="#0c8599" aria-pressed="false" title="In meinen Koffer packen"><svg class="ic aus" aria-hidden="true"><use href="#i-star"/></svg><svg class="ic an ic-f" aria-hidden="true"><use href="#i-star-f"/></svg><span class="stern-text">Einpacken</span></button>
+  </div>
+  <p class="mk-kurz">Lernwege wechseln: schreiben, laut sprechen, Erklärvideo, App. Auch verschiedene Aufgabentypen zu mischen hält wach.</p>
+  <details class="mk-mehr">
+    <summary>So geht’s &amp; warum es wirkt <svg class="ic pfeil" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+    <div class="mk-teile">
+      <div><ol><li>Vokabeln schreiben, dann laut sprechen, dann in der App üben.</li><li>In Mathe verschiedene Aufgabentypen mischen statt zehnmal dasselbe.</li><li>Fächer wechseln – ähnliche (z. B. zwei Sprachen) aber nicht direkt hintereinander.</li></ol></div>
+      <div class="mk-warum"><h4>Warum es wirkt</h4><p>Gemischtes Üben ist anstrengender, bringt aber mehr: Du lernst nicht nur den Lösungsweg, sondern auch zu erkennen, welcher Weg gerade passt. <span class="quelle">(Brunmair &amp; Richter 2019)</span></p></div>
+    </div>
+  </details>
+</article>
+<article class="mk" id="gemeinsam" data-kat="dranbleiben" style="--k:#0c8599;--k-hell:#e3fafc">
+  <div class="mk-kopf">
+    <span class="mk-ico"><svg class="ic" aria-hidden="true"><use href="#i-users"/></svg></span>
+    <h3>Gemeinsam lernen</h3>
+    <button type="button" class="stern" data-id="gemeinsam" data-name="Gemeinsam lernen" data-icon="users" data-farbe="#0c8599" aria-pressed="false" title="In meinen Koffer packen"><svg class="ic aus" aria-hidden="true"><use href="#i-star"/></svg><svg class="ic an ic-f" aria-hidden="true"><use href="#i-star-f"/></svg><span class="stern-text">Einpacken</span></button>
+  </div>
+  <p class="mk-kurz">Mit anderen verabreden, auch per Videocall – jede:r an ihrem eigenen Stoff. Wenn jemand wartet, fängst du pünktlich an.</p>
+  <details class="mk-mehr">
+    <summary>So geht’s &amp; warum es wirkt <svg class="ic pfeil" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+    <div class="mk-teile">
+      <div><ol><li>Feste Lernzeit mit einer Freundin oder einem Freund ausmachen.</li><li>Zu Beginn sagt jede:r kurz, was sie oder er schaffen will.</li><li>Am Ende kurz berichten, was geklappt hat.</li></ol></div>
+      <div class="mk-warum"><h4>Warum es wirkt</h4><p>Die Verabredung macht aus einem Vorsatz einen Termin. Und wer sein Ziel ausspricht und am Ende berichtet, nutzt einen der wirksamsten Hebel für Durchhalten (siehe „Helfer:in einweihen“).</p></div>
+    </div>
+  </details>
+</article>
+<article class="mk" id="outfit" data-kat="dranbleiben" style="--k:#0c8599;--k-hell:#e3fafc">
+  <div class="mk-kopf">
+    <span class="mk-ico"><svg class="ic" aria-hidden="true"><use href="#i-shirt"/></svg></span>
+    <h3>Lern-Outfit</h3>
+    <button type="button" class="stern" data-id="outfit" data-name="Lern-Outfit" data-icon="shirt" data-farbe="#0c8599" aria-pressed="false" title="In meinen Koffer packen"><svg class="ic aus" aria-hidden="true"><use href="#i-star"/></svg><svg class="ic an ic-f" aria-hidden="true"><use href="#i-star-f"/></svg><span class="stern-text">Einpacken</span></button>
+  </div>
+  <p class="mk-kurz">Ein bestimmter Hoodie oder Haargummi nur fürs Lernen. Klingt albern, ist aber ein klares Startsignal: Jetzt ist Arbeitsmodus.</p>
+  <details class="mk-mehr">
+    <summary>So geht’s &amp; warum es wirkt <svg class="ic pfeil" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+    <div class="mk-teile">
+      <div><ol><li>Such dir etwas aus: Hoodie, Haargummi, Brille, Mütze.</li><li>Zieh es nur zum Lernen an.</li><li>Danach wieder aus – Feierabend.</li></ol></div>
+      <div class="mk-warum"><h4>Warum es wirkt</h4><p>Ein Ritual, kein Zaubertrick: Ein festes Startsignal markiert den Übergang von Freizeit zu Arbeit. Gerade zu Hause, wo beides am selben Ort stattfindet, hilft so eine Grenze.</p></div>
+    </div>
+  </details>
+</article>
+                </div>
+            </section>
+            <section id="gefuehl" class="kategorie mt-4" data-kat="gefuehl" style="--k:#e8590c;--k-hell:#fff4e6">
+                <div class="kat-kopf">
+                    <span class="kat-ico"><svg class="ic" aria-hidden="true"><use href="#i-brain"/></svg></span>
+                    <div>
+                        <span class="kat-phase">alle Phasen · 3 Methoden</span>
+                        <h2>Kopf &amp; Gefühl</h2>
+                        <p class="hilft"><strong>Hilft, wenn</strong> ein Gefühl im Weg steht: Angst, Ärger, Überforderung.</p>
+                    </div>
+                </div>
+                <div class="mk-grid">
+<article class="mk" id="benennen" data-kat="gefuehl" style="--k:#e8590c;--k-hell:#fff4e6">
+  <div class="mk-kopf">
+    <span class="mk-ico"><svg class="ic" aria-hidden="true"><use href="#i-message-circle-question"/></svg></span>
+    <h3>Gefühl benennen</h3>
+    <button type="button" class="stern" data-id="benennen" data-name="Gefühl benennen" data-icon="message-circle-question" data-farbe="#e8590c" aria-pressed="false" title="In meinen Koffer packen"><svg class="ic aus" aria-hidden="true"><use href="#i-star"/></svg><svg class="ic an ic-f" aria-hidden="true"><use href="#i-star-f"/></svg><span class="stern-text">Einpacken</span></button>
+  </div>
+  <p class="mk-kurz">Frag dich ehrlich: Warum schiebe ich das auf? „Ich habe Angst, es nicht zu können“ trifft es oft besser als „keine Lust“.</p>
+  <details class="mk-mehr">
+    <summary>So geht’s &amp; warum es wirkt <svg class="ic pfeil" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+    <div class="mk-teile">
+      <div><ol><li>Wenn du merkst, dass du ausweichst: kurz innehalten.</li><li>Den Satz vervollständigen: „Ich schiebe das auf, weil ich … fühle.“</li><li>Dann fragen: Was ist der kleinste Schritt, den ich trotzdem machen kann?</li></ol></div>
+      <div class="mk-warum"><h4>Warum es wirkt</h4><p>Aufschieben ist oft eine Flucht vor einem unangenehmen Gefühl, nicht vor der Arbeit. Gefühle in Worte zu fassen dämpft messbar die Reaktion im Gehirn. <span class="quelle">(Lieberman u. a. 2007; Sirois &amp; Pychyl 2013)</span></p></div>
+    </div>
+  </details>
+</article>
+<article class="mk" id="freund" data-kat="gefuehl" style="--k:#e8590c;--k-hell:#fff4e6">
+  <div class="mk-kopf">
+    <span class="mk-ico"><svg class="ic" aria-hidden="true"><use href="#i-heart-handshake"/></svg></span>
+    <h3>Freundes-Check</h3>
+    <button type="button" class="stern" data-id="freund" data-name="Freundes-Check" data-icon="heart-handshake" data-farbe="#e8590c" aria-pressed="false" title="In meinen Koffer packen"><svg class="ic aus" aria-hidden="true"><use href="#i-star"/></svg><svg class="ic an ic-f" aria-hidden="true"><use href="#i-star-f"/></svg><span class="stern-text">Einpacken</span></button>
+  </div>
+  <p class="mk-kurz">Was würdest du einer Freundin in deiner Lage sagen? Sag genau das zu dir.</p>
+  <details class="mk-mehr">
+    <summary>So geht’s &amp; warum es wirkt <svg class="ic pfeil" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+    <div class="mk-teile">
+      <div><ol><li>Stell dir vor, eine Freundin steckt genau in deiner Lage.</li><li>Was würdest du ihr sagen? Schreib es auf.</li><li>Lies es dir selbst vor – und mach den nächsten kleinen Schritt.</li></ol></div>
+      <div class="mk-warum"><h4>Warum es wirkt</h4><p>Studierende, die sich ihr Aufschieben vor einer Prüfung verziehen, schoben vor der nächsten Prüfung weniger auf. Selbstvorwürfe halten das Aufschieben dagegen eher am Laufen. <span class="quelle">(Wohl, Pychyl &amp; Bennett 2010; Sirois 2014)</span></p></div>
+    </div>
+  </details>
+</article>
+<article class="mk" id="atmen" data-kat="gefuehl" style="--k:#e8590c;--k-hell:#fff4e6">
+  <div class="mk-kopf">
+    <span class="mk-ico"><svg class="ic" aria-hidden="true"><use href="#i-wind"/></svg></span>
+    <h3>Entspannungsübung</h3>
+    <button type="button" class="stern" data-id="atmen" data-name="Entspannungsübung" data-icon="wind" data-farbe="#e8590c" aria-pressed="false" title="In meinen Koffer packen"><svg class="ic aus" aria-hidden="true"><use href="#i-star"/></svg><svg class="ic an ic-f" aria-hidden="true"><use href="#i-star-f"/></svg><span class="stern-text">Einpacken</span></button>
+  </div>
+  <p class="mk-kurz">Vor dem Start eine Minute langsam atmen: 4 Sekunden ein, 6 Sekunden aus.</p>
+  <details class="mk-mehr">
+    <summary>So geht’s &amp; warum es wirkt <svg class="ic pfeil" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+    <div class="mk-teile">
+      <div><ol><li>Aufrecht hinsetzen, Augen zu oder Blick auf einen Punkt.</li><li>4 Sekunden ein-, 6 Sekunden ausatmen.</li><li>Fünf- bis zehnmal wiederholen, dann loslegen.</li></ol></div>
+      <div class="mk-warum"><h4>Warum es wirkt</h4><p>Langsames Atmen mit betontem Ausatmen beruhigt Puls und Nervensystem und hebt die Stimmung. Das hilft, wenn Aufregung oder Ärger den Start blockieren. <span class="quelle">(Balban u. a. 2023)</span></p></div>
+    </div>
+    <ul class="mk-links"><li><a href="https://www.tk.de/techniker/magazin/life-balance/aktiv-entspannen/download-anleitung-entspannung-2006922" target="_blank" rel="noopener">Entspannungsanleitungen zum Download (Techniker Krankenkasse)</a></li></ul>
+  </details>
+</article>
+                </div>
+            </section>
+            <section id="belohnen" class="kategorie mt-4" data-kat="belohnen" style="--k:#2b8a3e;--k-hell:#ebfbee">
+                <div class="kat-kopf">
+                    <span class="kat-ico"><svg class="ic" aria-hidden="true"><use href="#i-trophy"/></svg></span>
+                    <div>
+                        <span class="kat-phase">Bewerten · 3 Methoden</span>
+                        <h2>Belohnen &amp; Unterstützen</h2>
+                        <p class="hilft"><strong>Hilft, wenn</strong> der Antrieb fehlt und das Ziel noch weit weg ist.</p>
+                    </div>
+                </div>
+                <div class="mk-grid">
+<article class="mk" id="belohnung" data-kat="belohnen" style="--k:#2b8a3e;--k-hell:#ebfbee">
+  <div class="mk-kopf">
+    <span class="mk-ico"><svg class="ic" aria-hidden="true"><use href="#i-gift"/></svg></span>
+    <h3>Kleine Belohnung</h3>
+    <button type="button" class="stern" data-id="belohnung" data-name="Kleine Belohnung" data-icon="gift" data-farbe="#2b8a3e" aria-pressed="false" title="In meinen Koffer packen"><svg class="ic aus" aria-hidden="true"><use href="#i-star"/></svg><svg class="ic an ic-f" aria-hidden="true"><use href="#i-star-f"/></svg><span class="stern-text">Einpacken</span></button>
+  </div>
+  <p class="mk-kurz">Vorher festlegen, erst nach der Etappe genießen: Lieblingssong, Kakao, eine Folge.</p>
+  <details class="mk-mehr">
+    <summary>So geht’s &amp; warum es wirkt <svg class="ic pfeil" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+    <div class="mk-teile">
+      <div><ol><li>Vor dem Lernen festlegen: Nach dieser Etappe gibt es …</li><li>Die Belohnung erst nach getaner Arbeit.</li><li>Bonus: Etwas, das du magst, nur beim Lernen erlauben – Lieblingstee oder eine Playlist ohne Gesang.</li></ol></div>
+      <div class="mk-warum"><h4>Warum es wirkt</h4><p>Lernen zahlt sich erst spät aus, Ablenkung sofort. Eine geplante Belohnung holt den Lohn nach vorne. Wer sich ein Vergnügen nur für eine ungeliebte Tätigkeit erlaubt, macht diese häufiger. <span class="quelle">(Milkman, Minson &amp; Volpp 2014)</span></p></div>
+    </div>
+  </details>
+</article>
+<article class="mk" id="spruch" data-kat="belohnen" style="--k:#2b8a3e;--k-hell:#ebfbee">
+  <div class="mk-kopf">
+    <span class="mk-ico"><svg class="ic" aria-hidden="true"><use href="#i-quote"/></svg></span>
+    <h3>Spruch oder Kraftfigur</h3>
+    <button type="button" class="stern" data-id="spruch" data-name="Spruch oder Kraftfigur" data-icon="quote" data-farbe="#2b8a3e" aria-pressed="false" title="In meinen Koffer packen"><svg class="ic aus" aria-hidden="true"><use href="#i-star"/></svg><svg class="ic an ic-f" aria-hidden="true"><use href="#i-star-f"/></svg><span class="stern-text">Einpacken</span></button>
+  </div>
+  <p class="mk-kurz">Ein Satz oder eine Figur, die dich antreibt, gut sichtbar am Lernplatz.</p>
+  <details class="mk-mehr">
+    <summary>So geht’s &amp; warum es wirkt <svg class="ic pfeil" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+    <div class="mk-teile">
+      <div><ol><li>Such einen Spruch oder ein Bild, das zu deinem Warum passt.</li><li>Gestalte es schön und häng es gut sichtbar auf.</li><li>Ab und zu austauschen, damit es nicht unsichtbar wird.</li></ol></div>
+      <div class="mk-warum"><h4>Warum es wirkt</h4><p>Eine Erinnerung an dein Warum holt dein langfristiges Ziel in den Moment, in dem die Ablenkung lockt. Wichtig ist nur, dass sie für dich etwas bedeutet.</p></div>
+    </div>
+    <ul class="mk-links"><li><a href="https://blog.cleverly.de/motivationssprueche-lernen/" target="_blank" rel="noopener">Motivationssprüche fürs Lernen (cleverly)</a></li></ul>
+  </details>
+</article>
+<article class="mk" id="helfer" data-kat="belohnen" style="--k:#2b8a3e;--k-hell:#ebfbee">
+  <div class="mk-kopf">
+    <span class="mk-ico"><svg class="ic" aria-hidden="true"><use href="#i-user-heart"/></svg></span>
+    <h3>Helfer:in einweihen</h3>
+    <button type="button" class="stern" data-id="helfer" data-name="Helfer:in einweihen" data-icon="user-heart" data-farbe="#2b8a3e" aria-pressed="false" title="In meinen Koffer packen"><svg class="ic aus" aria-hidden="true"><use href="#i-star"/></svg><svg class="ic an ic-f" aria-hidden="true"><use href="#i-star-f"/></svg><span class="stern-text">Einpacken</span></button>
+  </div>
+  <p class="mk-kurz">Erzähl jemandem von deinem Plan und lass dich nachfragen. Wer berichten muss, bleibt eher dran.</p>
+  <details class="mk-mehr">
+    <summary>So geht’s &amp; warum es wirkt <svg class="ic pfeil" aria-hidden="true"><use href="#i-chevron-down"/></svg></summary>
+    <div class="mk-teile">
+      <div><ol><li>Überleg: Wer kann dich unterstützen – Freund:in, Eltern, Geschwister, Lehrkraft?</li><li>Sag konkret, was du vorhast und bis wann.</li><li>Bitte darum, dass die Person nachfragt.</li></ol></div>
+      <div class="mk-warum"><h4>Warum es wirkt</h4><p>Fortschritt festzuhalten steigert die Chance, ein Ziel zu erreichen – laut einer Metaanalyse mit über 130 Studien besonders dann, wenn man anderen davon berichtet. <span class="quelle">(Harkin u. a. 2016)</span></p></div>
+    </div>
+  </details>
+</article>
+                </div>
+            </section>
+
+            <section id="rezepte" class="mt-4" style="scroll-margin-top: 90px">
+                <div class="chapter-header" style="border-left-color: var(--koffer)">
+                    <span class="chapter-number" style="background: var(--koffer)">Kombinieren</span>
+                    <h2>Kombi-Rezepte</h2>
+                    <p class="hilft">Methoden wirken am besten im Team. Drei Rezepte zum Nachmachen – oder misch dir dein eigenes.</p>
+                </div>
+                <div class="rezepte"><div class="rezept"><h3>Der Startschuss</h3><p>wenn du einfach nicht anfängst</p><div class="zutaten"><a class="zutat" href="#countdown" style="--k:#1971c2;--k-hell:#e7f5ff"><span class="z-ico"><svg class="ic" aria-hidden="true"><use href="#i-hourglass-high"/></svg></span><span>Platz + Countdown</span></a><span class="z-sep" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><a class="zutat" href="#fuenf" style="--k:#1971c2;--k-hell:#e7f5ff"><span class="z-ico"><svg class="ic" aria-hidden="true"><use href="#i-player-play"/></svg></span><span>5-Minuten-Regel</span></a></div></div><div class="rezept"><h3>Der Fokus-Turbo</h3><p>wenn du ständig abschweifst</p><div class="zutaten"><a class="zutat" href="#handy" style="--k:#1971c2;--k-hell:#e7f5ff"><span class="z-ico"><svg class="ic" aria-hidden="true"><use href="#i-device-mobile-off"/></svg></span><span>Handy raus</span></a><span class="z-sep" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><a class="zutat" href="#pomodoro" style="--k:#0c8599;--k-hell:#e3fafc"><span class="z-ico"><svg class="ic" aria-hidden="true"><use href="#i-alarm"/></svg></span><span>Pomodoro</span></a><span class="z-sep" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></span><a class="zutat" href="#belohnung" style="--k:#2b8a3e;--k-hell:#ebfbee"><span class="z-ico"><svg class="ic" aria-hidden="true"><use href="#i-gift"/></svg></span><span>Kleine Belohnung<small>nach 4 Runden</small></span></a></div></div><div class="rezept"><h3>Der Kopf-Entknoter</h3><p>wenn dich etwas blockiert</p><div class="zutaten"><a class="zutat" href="#benennen" style="--k:#e8590c;--k-hell:#fff4e6"><span class="z-ico"><svg class="ic" aria-hidden="true"><use href="#i-message-circle-question"/></svg></span><span>Gefühl benennen</span></a><span class="z-sep" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-arrow-right"/></svg></span><a class="zutat" href="#atmen" style="--k:#e8590c;--k-hell:#fff4e6"><span class="z-ico"><svg class="ic" aria-hidden="true"><use href="#i-wind"/></svg></span><span>Entspannungsübung</span></a><span class="z-sep" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-arrow-right"/></svg></span><a class="zutat" href="#fuenf" style="--k:#1971c2;--k-hell:#e7f5ff"><span class="z-ico"><svg class="ic" aria-hidden="true"><use href="#i-player-play"/></svg></span><span>5-Minuten-Regel<small>kleinster Schritt</small></span></a></div></div></div>
+            </section>
+
+            <section id="quellen" class="mt-4">
+                <div class="chapter-header">
+                    <span class="chapter-number">Zum Nachlesen</span>
+                    <h2>Quellen</h2>
+                </div>
+                <ul class="quellen-liste"><li>Albulescu, P. u. a. (2022): „Give me a break!“ A systematic review and meta-analysis on the efficacy of micro-breaks. <i>PLOS ONE</i> 17(8).</li><li>Balban, M. Y. u. a. (2023): Brief structured respiration practices enhance mood and reduce physiological arousal. <i>Cell Reports Medicine</i> 4(1).</li><li>Bandura, A. &amp; Schunk, D. H. (1981): Cultivating competence, self-efficacy, and intrinsic interest through proximal self-motivation. <i>Journal of Personality and Social Psychology</i> 41(3).</li><li>Biwer, F. u. a. (2023): Understanding effort regulation: Comparing „Pomodoro“ breaks and self-regulated breaks. <i>British Journal of Educational Psychology</i> 93(S2).</li><li>Böttger, T., Poschik, M. &amp; Zierer, K. (2023): Does the brain drain effect really exist? A meta-analysis. <i>Behavioral Sciences</i> 13(9).</li><li>Brunmair, M. &amp; Richter, T. (2019): Similarity matters: A meta-analysis of interleaved learning. <i>Psychological Bulletin</i> 145(11).</li><li>Buehler, R., Griffin, D. &amp; Ross, M. (1994): Exploring the „planning fallacy“. <i>Journal of Personality and Social Psychology</i> 67(3).</li><li>Gollwitzer, P. M. &amp; Sheeran, P. (2006): Implementation intentions and goal achievement. <i>Advances in Experimental Social Psychology</i> 38.</li><li>Harkin, B. u. a. (2016): Does monitoring goal progress promote goal attainment? <i>Psychological Bulletin</i> 142(2).</li><li>Lieberman, M. D. u. a. (2007): Putting feelings into words. <i>Psychological Science</i> 18(5).</li><li>Locke, E. A. &amp; Latham, G. P. (2002): Building a practically useful theory of goal setting and task motivation. <i>American Psychologist</i> 57(9).</li><li>Masicampo, E. J. &amp; Baumeister, R. F. (2011): Consider it done! Plan making can eliminate the cognitive effects of unfulfilled goals. <i>Journal of Personality and Social Psychology</i> 101(4).</li><li>Milkman, K. L., Minson, J. A. &amp; Volpp, K. G. M. (2014): Holding the Hunger Games hostage at the gym. <i>Management Science</i> 60(2).</li><li>Sirois, F. M. (2014): Procrastination and stress: Exploring the role of self-compassion. <i>Self and Identity</i> 13(2).</li><li>Sirois, F. M. &amp; Pychyl, T. A. (2013): Procrastination and the priority of short-term mood regulation. <i>Social and Personality Psychology Compass</i> 7(2).</li><li>Stothart, C., Mitchum, A. &amp; Yehnert, C. (2015): The attentional cost of receiving a cell phone notification. <i>JEP: Human Perception and Performance</i> 41(4).</li><li>Ward, A. F. u. a. (2017): Brain drain. <i>Journal of the Association for Consumer Research</i> 2(2).</li><li>Wohl, M. J. A., Pychyl, T. A. &amp; Bennett, S. H. (2010): I forgive myself, now I can study. <i>Personality and Individual Differences</i> 48(7).</li><li>Wood, W. &amp; Neal, D. T. (2007): A new look at habits and the habit–goal interface. <i>Psychological Review</i> 114(4).</li></ul>
+                <p class="quellen-liste" style="padding:0">Icons: Tabler Icons (MIT-Lizenz).</p>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/contribute.html#impressum">Impressum</a> | <a href="https://edu-mrh.de/">Startseite</a></p>
+        </div>
+    </footer>
+
+    <script>
+    (function () {
+        'use strict';
+        var KEY = 'llMethodenkoffer', KEY_WENN = 'llMethodenkofferWenn';
+        var ruhig = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        function lesen(k, leer) {
+            try { var w = JSON.parse(localStorage.getItem(k)); return w && typeof w === 'object' ? w : leer; }
+            catch (e) { return leer; }
+        }
+        function schreiben(k, w) { try { localStorage.setItem(k, JSON.stringify(w)); } catch (e) { /* privat/geblockt */ } }
+        function laden() { var w = lesen(KEY, []); return Array.isArray(w) ? w : []; }
+        function $(id) { return document.getElementById(id); }
+        function alle(sel) { return Array.prototype.slice.call(document.querySelectorAll(sel)); }
+        function scrollZu(el, block) { el.scrollIntoView({ behavior: ruhig ? 'auto' : 'smooth', block: block || 'start' }); }
+        function fett(text) { var b = document.createElement('strong'); b.textContent = text; return b; }
+
+        /* ---------- Filter über die Route ---------- */
+        var sektionen = alle('section.kategorie');
+        var stationen = alle('.station');
+        var gesamt = alle('.mk').length;
+        var filter = null;
+        function titelVon(kid) { return $(kid).querySelector('h2').textContent; }
+        function setzeFilter(kid) {
+            filter = kid;
+            sektionen.forEach(function (s) { s.hidden = !!kid && s.dataset.kat !== kid; });
+            stationen.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.filter === kid ? 'true' : 'false'); });
+            $('route').classList.toggle('gefiltert', !!kid);
+            $('filter-hinweis').hidden = !kid;
+            var status = $('filter-status');
+            status.textContent = '';
+            if (kid) {
+                var n = $(kid).querySelectorAll('.mk').length;
+                $('filter-text').textContent = '';
+                $('filter-text').append('Du siehst nur ', fett(titelVon(kid)), ' (' + n + ' Methoden).');
+                status.append(fett(titelVon(kid) + ': ' + n + ' Methoden'), ' – noch mal tippen zeigt wieder alle.');
+            } else {
+                status.append(fett('Alle ' + gesamt + ' Methoden'), ' – oder lass den Zufall entscheiden:');
+            }
+        }
+        stationen.forEach(function (b) {
+            b.addEventListener('click', function () {
+                var neu = filter === b.dataset.filter ? null : b.dataset.filter;
+                setzeFilter(neu);
+                if (neu) scrollZu($('filter-hinweis'));
+            });
+        });
+        $('alle-zeigen').addEventListener('click', function () { setzeFilter(null); scrollZu($('finden')); });
+
+        /* ---------- Zu einer Methode springen ---------- */
+        function zeigeMethode(el, aufklappen) {
+            var sek = el.closest('section.kategorie');
+            if (sek && sek.hidden) setzeFilter(null);
+            var d = el.querySelector('details');
+            if (d && aufklappen) d.open = true;
+            scrollZu(el, 'center');
+            el.classList.remove('aufblitzen'); void el.offsetWidth; el.classList.add('aufblitzen');
+            setTimeout(function () { el.classList.remove('aufblitzen'); }, 1700);
+        }
+        // Capture-Phase am window: läuft vor embed/script.js und sidebar-anker.js
+        window.addEventListener('click', function (e) {
+            var a = e.target.closest && e.target.closest('a[href^="#"]');
+            if (!a) return;
+            var id = decodeURIComponent(a.getAttribute('href').slice(1));
+            var ziel = id && document.getElementById(id);
+            if (!ziel) return;
+            var sek = ziel.closest('section.kategorie');
+            if (sek && sek.hidden) setzeFilter(null);
+            if (ziel.classList.contains('mk')) {
+                e.preventDefault(); e.stopPropagation();
+                zeigeMethode(ziel, true);
+                if (history.pushState) history.pushState(null, '', '#' + ziel.id);
+            }
+        }, true);
+        if (location.hash) {
+            var start = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+            if (start && start.classList.contains('mk')) { var d0 = start.querySelector('details'); if (d0) d0.open = true; }
+        }
+
+        /* ---------- Überrasch mich ---------- */
+        var letzte = null;
+        $('zufall').addEventListener('click', function () {
+            var pool = alle('section.kategorie:not([hidden]) .mk').filter(function (m) { return m.id !== letzte; });
+            if (!pool.length) return;
+            var m = pool[Math.floor(Math.random() * pool.length)];
+            letzte = m.id;
+            zeigeMethode(m, true);
+        });
+
+        /* ---------- Mein Koffer ---------- */
+        var knoepfe = alle('.stern');
+        var info = {};
+        knoepfe.forEach(function (b) { info[b.dataset.id] = b.dataset; });
+
+        function icon(name) {
+            var NS = 'http://www.w3.org/2000/svg';
+            var svg = document.createElementNS(NS, 'svg'); svg.setAttribute('class', 'ic'); svg.setAttribute('aria-hidden', 'true');
+            var u = document.createElementNS(NS, 'use'); u.setAttribute('href', '#i-' + name); svg.appendChild(u);
+            return svg;
+        }
+        function zeichnen() {
+            var gewaehlt = laden().filter(function (id) { return info[id]; });
+            var saetze = lesen(KEY_WENN, {});
+            knoepfe.forEach(function (b) {
+                var an = gewaehlt.indexOf(b.dataset.id) !== -1;
+                b.setAttribute('aria-pressed', an ? 'true' : 'false');
+                b.querySelector('.stern-text').textContent = an ? 'Eingepackt' : 'Einpacken';
+            });
+            var ul = $('koffer-liste');
+            ul.textContent = '';
+            gewaehlt.forEach(function (id) {
+                var d = info[id];
+                var li = document.createElement('li'); li.style.setProperty('--k', d.farbe);
+                var a = document.createElement('a'); a.className = 'koffer-name'; a.href = '#' + id;
+                var kreis = document.createElement('span'); kreis.className = 'kn-ico'; kreis.appendChild(icon(d.icon));
+                a.append(kreis, d.name);
+                var lab = document.createElement('label'); lab.className = 'wenn-feld';
+                var inp = document.createElement('input'); inp.type = 'text'; inp.maxLength = 140;
+                inp.placeholder = 'Wenn ich merke, dass … (dann diese Methode)';
+                inp.value = typeof saetze[id] === 'string' ? saetze[id] : '';
+                inp.setAttribute('aria-label', 'Wenn-dann-Satz für ' + d.name + ': Wenn ich merke, dass …');
+                inp.addEventListener('input', function () { var s = lesen(KEY_WENN, {}); s[id] = inp.value; schreiben(KEY_WENN, s); });
+                lab.append(inp);
+                var raus = document.createElement('button'); raus.type = 'button'; raus.className = 'raus';
+                raus.setAttribute('aria-label', d.name + ' wieder auspacken'); raus.title = 'Auspacken';
+                raus.appendChild(icon('x'));
+                raus.addEventListener('click', function () { umschalten(id); });
+                li.append(a, lab, raus); ul.appendChild(li);
+            });
+            ul.hidden = gewaehlt.length === 0;
+            $('koffer-zahl').textContent = gewaehlt.length;
+            $('koffer-leer').hidden = gewaehlt.length > 0;
+            $('koffer-gut').hidden = gewaehlt.length === 0 || gewaehlt.length > 3;
+            $('koffer-viel').hidden = gewaehlt.length <= 3;
+        }
+        function umschalten(id) {
+            var liste = laden();
+            var i = liste.indexOf(id);
+            if (i === -1) liste.push(id); else liste.splice(i, 1);
+            schreiben(KEY, liste);
+            zeichnen();
+            return i === -1;
+        }
+        knoepfe.forEach(function (b) {
+            b.addEventListener('click', function () {
+                if (umschalten(b.dataset.id)) { b.classList.remove('hops'); void b.offsetWidth; b.classList.add('hops'); }
+            });
+        });
+        zeichnen();
+    })();
+    </script>
+</body>
+</html>

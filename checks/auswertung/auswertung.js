@@ -11,8 +11,12 @@
    dann alle Aufgaben in der Reihenfolge und Anordnung, die die Person gesehen hat,
    mit eigener Antwort, richtiger Lösung und Punkten.
 
-   Bewertung: single = alles oder nichts; multi = max(0, richtige − falsche Kreuze)
-   ÷ Zahl der richtigen Optionen × Punkte; match = gleicher Anteil je Zeile;
+   Bewertung: single = alles oder nichts; multi = richtige Kreuze ÷ Zahl der richtigen
+   Optionen × Punkte, abgezogen wird nur für Kreuze über diese Zahl hinaus (wer höchstens so
+   viele Kreuze setzt, wie es richtige Optionen gibt, verliert für ein falsches Kreuz nichts
+   extra). Ein überzähliges Kreuz kostet mindestens einen Anteil, bei mehr als halb so vielen
+   richtigen wie möglichen Optionen n ÷ (Optionen − n) Anteile, damit „alles ankreuzen“ immer
+   0 ergibt; match = gleicher Anteil je Zeile;
    jeweils auf 0,5 gerundet. Notenpunkte: höchste Stufe, deren Prozentgrenze
    erreicht ist. Die Seite enthält selbst keine Fragen und keine Lösungen.
    Textblöcke (Schlüssel: "passages", Auslosung: draw[i].ps): Der Text steht im
@@ -28,7 +32,7 @@
             next: 'Next step: {np} NP from {pts} P ({diff} P more).', top: 'Highest grade point reached.',
             okSel: 'your answer – correct', badSel: 'your answer – wrong', miss: 'correct answer you did not choose',
             mkOk: '✓', mkBad: '✗', mkMiss: '✓ correct', noAnswer: 'no answer', correctIs: '→ ',
-            calcMulti: '({tp} right − {fp} wrong) ÷ {n} correct × {pts} P = {res} P',
+            calcMulti: '{tp} of {n} correct ticked{exTxt} → ({tp} − {pen}) ÷ {n} × {pts} P = {res} P', exEn: ', {ex} ticked too many', exK: ' (each counts {k}×)',
             calcMatch: '{r} of {n} rows right × {pts} P = {res} P', rounded: ' (rounded to 0.5)'
         },
         de: {
@@ -37,7 +41,7 @@
             next: 'Nächste Stufe: {np} NP ab {pts} P (noch {diff} P).', top: 'Höchste Notenpunktzahl erreicht.',
             okSel: 'deine Antwort – richtig', badSel: 'deine Antwort – falsch', miss: 'richtige Antwort, nicht gewählt',
             mkOk: '✓', mkBad: '✗', mkMiss: '✓ richtig', noAnswer: 'keine Antwort', correctIs: '→ ',
-            calcMulti: '({tp} richtig − {fp} falsch) ÷ {n} richtige × {pts} P = {res} P',
+            calcMulti: '{tp} von {n} richtigen angekreuzt{exTxt} → ({tp} − {pen}) ÷ {n} × {pts} P = {res} P', exEn: ', {ex} zu viel angekreuzt', exK: ' (zählt je {k}-fach)',
             calcMatch: '{r} von {n} Zeilen richtig × {pts} P = {res} P', rounded: ' (auf 0,5 gerundet)'
         }
     };
@@ -85,7 +89,13 @@
             ans = Array.isArray(ans) ? ans : [];
             e.tp = ans.filter(function (a) { return k.correct.indexOf(a) >= 0; }).length;
             e.fp = ans.length - e.tp; e.n = k.correct.length;
-            e.raw = Math.max(0, e.tp - e.fp) / e.n * k.points;
+            e.ex = Math.max(0, ans.length - e.n);   // Kreuze über die Zahl der richtigen Optionen hinaus
+            // Strafe je überzähligem Kreuz: mindestens 1 Anteil, bei mehr als halb so vielen richtigen
+            // wie möglichen Optionen so viel, dass „alles ankreuzen“ immer 0 ergibt
+            var m = k.options.length;
+            e.k = m > e.n ? Math.max(1, e.n / (m - e.n)) : 1;
+            e.pen = e.ex * e.k;
+            e.raw = Math.max(0, e.tp - e.pen) / e.n * k.points;
             e.points = half(e.raw);
         } else {
             ans = ans && typeof ans === 'object' ? ans : {};
@@ -190,18 +200,88 @@
             b.addEventListener('click', function () { printOnly(+b.dataset.one); });
         });
     }
-    function csv() {
-        var first = ROWS.filter(function (x) { return !x.err; })[0];
-        // feste Spalten zuerst (Excel-Mappe „Prüfungsabgaben“ liest Quittung, Punkte, max, NP), Aufgaben am Ende
-        var head = ['Kurs', 'Name', 'Quittung', 'Punkte', 'max', 'Prozent', 'NP', 'Zeitzuschlag (%)', 'Dauer (min)', 'erlaubt (min)', 'abgegeben', 'Quittung ok']
-            .concat(first ? first.ev.map(function (e, i) { return 'A' + (i + 1); }) : []);
-        var lines = [head.join(';')];
+    /* Alle Angaben je Abgabe als Tabelle (für CSV und „Für Excel kopieren“).
+       Spalten A–U fest, für jede Prüfung gleich (die Excel-Mappe „Prüfungsabgaben“ liest
+       Quittung = C, Punkte = D, max = E, NP = G, Quittung ok = L, Hinweis = M; U = gezogene
+       Version je Aufgabe als Liste), ab V die Punkte je Aufgabe (A1…An, je nach Prüfung
+       verschieden viele). Fehlerzeilen: L = „prüfen“, Grund in „Hinweis“. */
+    function grid() {
+        var n = ROWS.reduce(function (m, x) { return Math.max(m, x.r && x.r.draw ? x.r.draw.length : 0); }, 0);
+        var nums = []; for (var i = 1; i <= n; i++) nums.push(i);
+        var head = ['Kurs', 'Name', 'Quittung', 'Punkte', 'max', 'Prozent', 'NP', 'Zeitzuschlag (%)', 'Dauer (min)', 'erlaubt (min)', 'abgegeben', 'Quittung ok',
+            'Hinweis', 'Check-ID', 'Build', 'begonnen', 'Dauer (m:ss)', 'Zeit abgelaufen', 'beantwortet', 'Datei', 'Versionen (je Aufgabe)']
+            .concat(nums.map(function (k) { return 'A' + k; }));
+        var out = [head];
         ROWS.forEach(function (x) {
-            if (x.err) { lines.push([x.r.kurs || '', x.r.name || x.file, x.r.receipt || '', 'Fehler: ' + x.err.replace(/<[^>]+>/g, '')].join(';')); return; }
-            lines.push([x.r.kurs || '', x.r.name, x.r.receipt || '', fmt(x.pts), KEY.max, pc1(x.pct), x.g.np, x.r.zeitzuschlag || 0, pc1(took(x.r)), pc1(allowed(x.r)),
-                when(x.r.submittedAt), x.ok ? 'ok' : 'prüfen'].concat(x.ev.map(function (e) { return fmt(e.points); })).join(';'));
+            var r = x.r || {}, ok = !x.err && x.ok;
+            var hint = x.err ? 'Fehler: ' + x.err.replace(/<[^>]+>/g, '') : !x.ok ? 'Quittung passt nicht: Datei verändert?' : late(r) ? 'länger als erlaubt' : '';
+            var answered = r.draw ? r.draw.filter(function (d) { var a = (r.answers || {})[d.id]; return a && (typeof a !== 'object' || Object.keys(a).length); }).length : '';
+            var row = [tx(r.kurs || ''), tx(r.name || x.file), tx(r.receipt || ''),
+                x.err ? '' : fmt(x.pts), x.err ? '' : KEY.max, x.err ? '' : pc1(x.pct), x.err ? '' : x.g.np,
+                r.zeitzuschlag || 0, r.startedAt ? pc1(took(r)) : '', pc1(allowed(r)), r.submittedAt ? when(r.submittedAt) : '', ok ? 'ok' : 'prüfen',
+                hint, tx(r.check || ''), tx(r.build || ''), r.startedAt ? when(r.startedAt) : '', tx(r.startedAt ? mmss(took(r)) : ''),
+                r.zeitAbgelaufen ? 'ja' : 'nein', tx(answered + (r.draw ? ' / ' + r.draw.length : '')), tx(x.file),
+                tx(r.draw ? r.draw.map(function (d) { return d.id; }).join(', ') : '')];
+            for (var k = 0; k < n; k++) row.push(!x.err && x.ev[k] ? fmt(x.ev[k].points) : '');
+            out.push(row);
         });
-        download(KEY.check + '_auswertung.csv', '﻿' + lines.join('\n') + '\n', 'text/csv;charset=utf-8');
+        return out;
+    }
+    /* Excel macht sonst aus „3e1“ die Zahl 30, aus Quittung „12345678“ eine Zahl (dann passt sie
+       nicht mehr zur Abgabe) und aus „0:01“ eine Uhrzeit. Textfelder daher als ="…" (Formel mit
+       Textergebnis, sicher auch gegen Formel-Einschleusung über Namen); übrige Felder ohne
+       führendes = + - @. */
+    function tx(v) { return { t: String(v == null ? '' : v) }; }
+    function cell(v) {
+        if (v && typeof v === 'object') return v.t === '' ? '' : '="' + v.t.replace(/"/g, '""') + '"';
+        v = String(v == null ? '' : v);
+        return /^[=+\-@]/.test(v) ? ' ' + v : v;
+    }
+    function csv() {   // Semikolon, Felder mit ; , " oder Umbruch in Anführungszeichen; „sep=;“ für Excel
+        var lines = grid().map(function (row) {
+            return row.map(function (v) { v = cell(v); return /[;,"\r\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(';');
+        });
+        download(KEY.check + '_auswertung.csv', '﻿sep=;\r\n' + lines.join('\r\n') + '\r\n', 'text/csv;charset=utf-8');
+    }
+    /* Einblendung unten auf der Seite (ok = grün, sonst rot), verschwindet nach einigen Sekunden */
+    var toastTimer = null;
+    function toast(html, ok) {
+        var t = $('toast');
+        if (!t) { t = document.createElement('div'); t.id = 'toast'; t.setAttribute('role', 'status'); t.setAttribute('aria-live', 'polite'); document.body.appendChild(t); }
+        t.innerHTML = html; t.className = ok ? 'ok show' : 'bad show';
+        clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.className = t.className.replace(' show', ''); }, ok ? 6000 : 9000);
+    }
+    /* Kopieren: zuerst synchron über das copy-Ereignis (funktioniert in allen Browsern direkt im Klick,
+       ohne Berechtigung), sonst über die Clipboard-API. */
+    function copyText(text) {
+        var ok = false, handler = function (e) { e.clipboardData.setData('text/plain', text); e.preventDefault(); ok = true; };
+        document.addEventListener('copy', handler);
+        try { document.execCommand('copy'); } catch (e) { }
+        document.removeEventListener('copy', handler);
+        if (ok) return Promise.resolve();
+        if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+        return Promise.reject(new Error('Zwischenablage nicht verfügbar'));
+    }
+    function copyExcel() {   // Tabulator-getrennt: Excel verteilt das beim Einfügen immer richtig auf Spalten
+        var btn = $('xl'), rows, text;
+        try {
+            rows = grid();
+            text = rows.map(function (row) {
+                return row.map(function (v) { return cell(v).replace(/[\t\r\n]+/g, ' '); }).join('\t');
+            }).join('\r\n') + '\r\n';
+        } catch (e) {
+            toast('<b>Kopieren nicht möglich:</b> ' + esc(e.message) + '. Bitte „Tabelle als CSV“ verwenden.', false); return;
+        }
+        var n = rows.length - 1;
+        copyText(text).then(function () {
+            toast('<b>✓ In die Zwischenablage kopiert</b> (' + n + ' Abgabe' + (n === 1 ? '' : 'n') + ', ' + rows[0].length + ' Spalten).<br>' +
+                'Jetzt in der Mappe im Blatt „Auswertung“ Zelle <b>A1</b> anklicken und <b>Strg+V</b> drücken.', true);
+            $('copy-msg').innerHTML = '<b>Zuletzt kopiert: ' + n + ' Abgabe' + (n === 1 ? '' : 'n') + '.</b> Weitere Prüfungen in der Mappe einfach darunter einfügen; Kopfzeilen dürfen doppelt vorkommen.';
+            btn.textContent = '✓ Kopiert'; btn.classList.add('done');
+            setTimeout(function () { btn.textContent = 'Für Excel kopieren'; btn.classList.remove('done'); }, 2500);
+        }, function () {
+            toast('<b>Kopieren hat nicht geklappt.</b> Der Browser erlaubt den Zugriff auf die Zwischenablage nicht. Bitte „Tabelle als CSV“ verwenden.', false);
+        });
     }
 
     /* ---------------------------------------------------------------- Bericht je Person */
@@ -234,7 +314,10 @@
     function itemBlock(x, n) {
         var t = L(), d = x.r.draw[n], k = KEY.items[d.id], e = x.ev[n], a = (x.r.answers || {})[d.id];
         var rounded = e.raw != null && Math.abs(e.raw - e.points) > 1e-9 ? t.rounded : '';
-        var calc = k.type === 'multi' ? fill(t.calcMulti, { tp: e.tp, fp: e.fp, n: e.n, pts: fmt(k.points), res: fmt(e.points) }) + rounded
+        var kk = String(Math.round((e.k || 1) * 100) / 100).replace('.', L() === REP.de ? ',' : '.');
+        var pen = String(Math.round((e.pen || 0) * 100) / 100).replace('.', L() === REP.de ? ',' : '.');
+        var calc = k.type === 'multi' ? fill(t.calcMulti, { tp: e.tp, pen: pen, n: e.n, pts: fmt(k.points), res: fmt(e.points),
+            exTxt: e.ex ? fill(t.exEn, { ex: e.ex }) + (e.k > 1 ? fill(t.exK, { k: kk }) : '') : '' }) + rounded
             : k.type === 'match' ? fill(t.calcMatch, { r: e.r, n: e.n, pts: fmt(k.points), res: fmt(e.points) }) + rounded : '';
         var h = '<div class="r-it ' + e.state + '"><div class="r-prompt"><span class="r-ith"><span class="r-calc">' + calc + '</span>' +
             '<span class="r-ip">' + fmt(e.points) + ' / ' + fmt(e.max) + ' ' + t.p + '</span></span>' +
@@ -291,13 +374,20 @@
         rep.appendChild(s);
         return s.querySelector('.body');
     }
-    function over(body) { return body.scrollHeight > body.clientHeight + 1; }
+    /* Reserve: Beim Drucken setzt der Browser Schrift oft minimal breiter als am Bildschirm, dann
+       bricht eine Zeile mehr um. Deshalb bleibt beim Verteilen unten 6 % der Seite frei. */
+    var RESERVE = 0.08;
+    function over(body) {   // Unterkante des letzten Blocks (nicht scrollHeight: das ist nie kleiner als die Seite)
+        var last = body.lastElementChild; if (!last) return false;
+        var top = body.getBoundingClientRect().top, bottom = last.getBoundingClientRect().bottom;
+        return bottom - top > body.clientHeight * (1 - RESERVE);
+    }
     /* Blöcke auf Seiten verteilen; Rückgabe: Zahl der Seiten (bei limit: Abbruch, sobald überschritten) */
     function layout(rep, blocks, fs, two, limit) {
         rep.innerHTML = '';
         rep.style.setProperty('--fs', fs + 'pt');
         rep.classList.toggle('two', two);
-        var body = sheet(rep), pages = 1;
+        var body = sheet(rep), pages = 1, big = false;
         for (var i = 0; i < blocks.length; i++) {
             var tmp = document.createElement('div'); tmp.innerHTML = blocks[i];
             var el = tmp.firstChild; body.appendChild(el);
@@ -305,6 +395,11 @@
                 body.removeChild(el);
                 if (limit && pages >= limit) return pages + 1;
                 body = sheet(rep); pages++; body.appendChild(el);
+            }
+            if (over(body) && body.children.length === 1) {   // ein Block allein größer als eine Seite
+                big = true;
+                if (limit) return limit + 1;                     // kleinere Schrift versuchen
+                body.parentNode.classList.add('grow');           // sonst Seite wachsen lassen: nichts abschneiden
             }
         }
         return pages;
@@ -340,7 +435,8 @@
         var pages;
         if (best >= 0) pages = layout(rep, blocks, sizes[best], two, 0);
         else { pages = layout(rep, blocks, FS_MIN, true, 0); x.tooLong = true; }
-        while (rep.querySelectorAll('.sheet').length < 2 || rep.querySelectorAll('.sheet').length % 2) {
+        var per = duo() ? 4 : 2;   // Seitenzahl je Person auffüllen: beidseitig 2, bei 2 Seiten pro Blatt 4
+        while (rep.querySelectorAll('.sheet').length < per || rep.querySelectorAll('.sheet').length % per) {
             sheet(rep).innerHTML = '';
         }
         var all = rep.querySelectorAll('.sheet'), t = L();
@@ -352,6 +448,7 @@
         x.pages = all.length;
         return rep;
     }
+    function duo() { var c = $('duo'); return !!(c && c.checked); }
     function reports() {
         var druck = $('druck'); druck.innerHTML = '';
         var good = ROWS.filter(function (x) { return !x.err; });
@@ -379,6 +476,14 @@
     document.addEventListener('drop', function (e) { e.preventDefault(); if (e.target !== drop && !drop.contains(e.target) && e.dataTransfer.files.length) addFiles(e.dataTransfer.files); });
     $('pdf-all').addEventListener('click', function () { document.body.classList.remove('only'); window.print(); });
     $('csv').addEventListener('click', csv);
+    if ($('duo')) {
+        try { $('duo').checked = localStorage.getItem('auswertungDuo') === '1'; } catch (e) { }
+        $('duo').addEventListener('change', function () {
+            try { localStorage.setItem('auswertungDuo', this.checked ? '1' : '0'); } catch (e) { }
+            if (ROWS.length) reports();
+        });
+    }
+    $('xl').addEventListener('click', copyExcel);
     $('reset').addEventListener('click', function () {
         KEY = null; RESULTS = []; FILES = {}; ROWS = [];
         $('table').innerHTML = ''; $('druck').innerHTML = ''; $('status').textContent = ''; $('out').hidden = true;
