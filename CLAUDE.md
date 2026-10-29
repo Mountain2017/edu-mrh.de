@@ -30,7 +30,9 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
 
 ## Unverhandelbare Regeln
 
-1. **Jede Seite braucht erreichbares Impressum + Zurück-/Übersichts-Element.**
+1. **Jede Seite braucht erreichbares Impressum, Datenschutzerklärung + Zurück-/Übersichts-Element.**
+   Ziele: `https://edu-mrh.de/impressum.html` und `https://edu-mrh.de/datenschutz.html`
+   (bis 2026-10 `contribute.html#impressum`, leitet weiter).
    Standard-Layout: über die Navbar (in den Vorlagen enthalten). Freies
    Design: `<script defer src="https://edu-mrh.de/controls.js"></script>`
    vor `</body>`. **Ausnahme: Online-Checks/Tests** (`checks/check-*.html`) haben
@@ -45,7 +47,7 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
    Bilder lokal speichern (mit Bildnachweis), nicht von Wikimedia o. Ä. verlinken.
    Fremde iframes (z. B. fobizz) nur per 2-Klick: `data-zwei-klick="URL"` statt
    `src` + `<script defer src="/zwei-klick.js"></script>`; neuer Anbieter →
-   auch in der Datenschutzerklärung (`contribute.html#impressum`) ergänzen.
+   auch in der Datenschutzerklärung (`datenschutz.html`, Abschnitt je Dienst) ergänzen.
 3. **Nutzerdaten bleiben im Browser** (`localStorage`), nie zum Server.
 4. **Bestehende URLs nicht brechen**: Dateien nicht umbenennen/verschieben,
    ohne dass es der Auftrag verlangt.
@@ -308,7 +310,7 @@ Wo was liegt (Stand 2026-10). `→ AB` = LaTeX-Arbeitsblätter in `arbeitsblaett
 **Gerüst**: `index.html` (Startseite), `checks/auswertung/` (Auswertung aller Online-Checks), `style.css`, `script.js`, `controls.js`,
 `sidebar-anker.js`, `mobileMenu.js`, `baseScript.js`, `templates/`,
 `tools/` (Geheim-Ordner verknüpfen), `geheim/` (nur lokal, s. o.),
-`contribute.html`, `Online-IDE API-Documentation.txt`, `.github/workflows/`
+`contribute.html`, `impressum.html`, `datenschutz.html`, `Online-IDE API-Documentation.txt`, `.github/workflows/`
 (FTPS-Deploy aller versionierten Dateien inkl. `.md`, Online-IDE, SQL-IDE, Snap!, Pyodide).
 
 **Informatik** (`informatik/informatik.html`)
