@@ -311,7 +311,9 @@ Wo was liegt (Stand 2026-10). `→ AB` = LaTeX-Arbeitsblätter in `arbeitsblaett
 `sidebar-anker.js`, `mobileMenu.js`, `baseScript.js`, `templates/`,
 `tools/` (Geheim-Ordner verknüpfen), `geheim/` (nur lokal, s. o.),
 `contribute.html`, `impressum.html`, `datenschutz.html`, `Online-IDE API-Documentation.txt`, `.github/workflows/`
-(FTPS-Deploy aller versionierten Dateien inkl. `.md`, Online-IDE, SQL-IDE, Snap!, Pyodide).
+(FTPS-Deploy aller versionierten Dateien inkl. `.md`, Online-IDE, SQL-IDE, Snap!, Pyodide;
+`deploy-embed-basis.yml` kopiert Root-`style.css`/`script.js` nach `/embed/`, die Quelle des
+gemeinsamen Designs ist also die Root-Datei).
 
 **Informatik** (`informatik/informatik.html`)
 - 9: `9/online-ide-intro.html`

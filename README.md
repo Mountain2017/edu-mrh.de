@@ -151,6 +151,13 @@ und [`deploy-snap.yml`](.github/workflows/deploy-snap.yml) (manuell bzw. bei
 wird dabei ohne Tracker und ohne Cloud-Anbindung als `edu-snap.html`
 bereitgestellt.
 
+Das gemeinsame Design `embed/style.css` und `embed/script.js` kommt aus
+`style.css` und `script.js` im Repo-Root:
+[`deploy-embed-basis.yml`](.github/workflows/deploy-embed-basis.yml) kopiert
+beide bei jeder Änderung auf `main` nach `/embed/` und prüft danach, ob die
+Live-Dateien dem Repo entsprechen. Nicht mehr von Hand hochladen, sonst
+überschreibt der nächste Push die Änderung.
+
 ## Mit KI arbeiten
 
 Seiten lassen sich sehr gut mit KI-Unterstützung erstellen:
