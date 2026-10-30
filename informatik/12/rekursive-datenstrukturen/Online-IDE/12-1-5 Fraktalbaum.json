@@ -1,0 +1,23 @@
+{
+  "name": "12-1-5 Fraktalbaum",
+  "modules": [
+    {
+      "name": "Hauptprogramm",
+      "text": "// Station 1.5, Selbst bauen: ein Baum aus lauter kleineren Bäumen.\n// Ändere die drei Werte. Sage vorher, wie sich das Bild ändert, dann starte.\nint stufe = 6;          // Wie oft verzweigt sich der Baum?\ndouble winkel = 25;     // Wie weit spreizen sich die Äste (in Grad)?\ndouble faktor = 0.7;    // Um welchen Faktor wird jeder Ast kürzer?\n\nWorld welt = new World(800, 600);\nwelt.setBackgroundColor(Color.white);\nTurtle t = new Turtle(400, 590, false);\nt.turn(90);                         // nach oben schauen\nt.setBorderColor(Color.saddlebrown);\nFraktal.ast(t, 160, stufe, winkel, faktor);\nprintln(\"Gezeichnete Äste: \" + Fraktal.aeste);\n",
+      "identical_to_repository_version": false,
+      "repository_file_version": -1,
+      "isFolder": false
+    },
+    {
+      "name": "Fraktal",
+      "text": "/**\n * Verzweigte Rekursion als Bild: Jeder Ast trägt zwei kleinere Bäume.\n */\npublic class Fraktal {\n   public static int aeste = 0;\n\n   // Zeichnet einen Ast und darauf zwei kleinere Bäume.\n   // Danach steht die Turtle wieder genau dort, wo sie angefangen hat, und schaut in dieselbe Richtung.\n   public static void ast(Turtle t, double laenge, int stufe, double winkel, double faktor) {\n      if (stufe == 0) {                  // Abbruchbedingung\n         return;\n      }\n      aeste++;\n      t.forward(laenge);                 // ① Ast zeichnen\n      t.turn(winkel);                    // ② nach links drehen\n      ast(t, laenge * faktor, stufe - 1, winkel, faktor);   // ③ linker Baum\n      t.turn(-2 * winkel);               // ④ nach rechts drehen\n      ast(t, laenge * faktor, stufe - 1, winkel, faktor);   // ⑤ rechter Baum\n      t.turn(winkel);                    // ⑥ wieder geradeaus\n      t.forward(-laenge);                // ⑦ zurück zum Anfang des Asts\n   }\n}\n",
+      "identical_to_repository_version": false,
+      "repository_file_version": -1,
+      "isFolder": false
+    }
+  ],
+  "settings": {
+    "libraries": []
+  },
+  "isFolder": false
+}

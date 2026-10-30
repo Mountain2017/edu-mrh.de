@@ -1,0 +1,150 @@
+\documentclass[11pt,a4paper]{article}
+\def\antwortplatzacht{}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{1.5}{Rekursive Algorithmen}
+
+Ruft sich eine Methode selbst mit anderem Parameter auf, ist sie \textbf{rekursiv}. \web{Station 1.5, Labor und Projekt}
+
+\begin{aufgabe}[Hin und zurück]{1}
+\begin{minipage}[t]{0.43\linewidth}
+\vspace{0pt}
+\begin{java}[basicstyle=\ttfamily\footnotesize]
+void countdown(int n) {
+   if (n == 0) {
+      println("Start!");
+   } else {
+      println("hin " + n);
+      countdown(n - 1);
+      println("zurück " + n);
+   }
+}
+\end{java}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.54\linewidth}
+\vspace{0pt}\lueckentext
+\textbf{a)} Sage vorher, was \code{countdown(3)} ausgibt:\par
+\lsgrest{hin 3, hin 2, hin 1, Start!,}
+\lsgrest{zurück 1, zurück 2, zurück 3}
+\textbf{b)} Wenn „Start!“ erscheint, warten \lsg[2.25cm]{3} Aufrufe. Als Erstes gibt \lsg[4.6cm]{countdown(1)} „zurück“ aus.
+\end{minipage}
+\end{aufgabe}
+
+\begin{merke}[Rekursive Algorithmen]
+\textbf{Drei Fragen:} \nr{1} \textbf{Abbruchbedingung}: Wann steht die Antwort sofort fest? \nr{2} \textbf{Verkleinern}: Mit welchem kleineren Problem ruft sich die Methode auf? \nr{3} \textbf{Zusammensetzen}: Was macht sie mit der Antwort?\par
+\lueckentext Wartende Aufrufe liegen auf dem \lsg[5.25cm]{Aufrufstapel}, der zuletzt aufgerufene wird als \lsg[2.25cm]{Erster} fertig.\par
+\textbf{Linear:} höchstens \lsg[2.25cm]{ein} rekursiver Aufruf je Durchlauf, Darstellung: \lsg[5.25cm]{Aufruftabelle}.
+\textbf{Verzweigt:} \lsg[2.25cm]{mehrere} rekursive Aufrufe je Durchlauf, Darstellung: \lsg[5.25cm]{Aufrufbaum}.
+\end{merke}
+
+\begin{aufgabe}[Wenn die Rekursion nicht endet (Projekt, Klasse Experiment)]{2}
+\textbf{a)} Starte jede Fassung mit \code{n = 3} und notiere die ersten fünf Werte von \code{n}. \textbf{b)} Welche der drei Fragen \nr{1}–\nr{3} ist verletzt? Begründe kurz.\par\vspace{1mm}
+{\small\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|l|>{\ttfamily\footnotesize}l|p{3.2cm}|X|}\hline
+ & \textrm{\small Kern des Codes} & a) erste Werte von \code{n} & b) verletzt, weil … \\\hline
+A & (kein if) fassungA(n - 1) & \schreibzeile\lsgtext{3, 2, 1, 0, -1} & \lsgtext{\nr{1}: Es gibt keine Abbruchbedingung.} \\\hline
+B & if (n == 0) … fassungB(n - 2) & \schreibzeile\lsgtext{3, 1, -1, -3, -5} & \lsgtext{\nr{2}: Die 0 wird übersprungen.} \\\hline
+C & if (n == 0) … fassungC(n) & \schreibzeile\lsgtext{3, 3, 3, 3, 3} & \lsgtext{\nr{2}: n wird nicht kleiner.} \\\hline
+\end{tabularx}}\par\vspace{1mm}
+\begin{lueckentext}
+\textbf{c)} TODO 2: Fassung B endet für jede Startzahl mit \code{if (}\lsg[3.5cm]{n <= 0}\code{)}. Jeder Aufruf muss der Abbruchbedingung \lsg[5.25cm]{näher kommen}, sonst bricht Java mit einem \lsg[5.25cm]{StackOverflowError} ab.
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{aufgabe}[Aufruftabelle zum ggT]{3}
+\begin{minipage}[t]{0.37\linewidth}
+\vspace{0pt}
+\begin{java}[basicstyle=\ttfamily\footnotesize]
+int ggT(int a, int b) {
+   if (b == 0) {
+      return a;
+   }
+   return ggT(b, a % b);
+}
+\end{java}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.6\linewidth}
+\vspace{0pt}
+\textbf{a)} Fülle die Tabelle für \code{ggT(84, 36)} aus. Rückgaben von unten nach oben!\par\vspace{1mm}
+{\small\begin{tabularx}{\linewidth}{|>{\ttfamily}p{2.1cm}|*{3}{>{\centering\arraybackslash}p{0.75cm}|}>{\centering\arraybackslash}p{1.55cm}|X|}\hline
+\textrm{Aufruf} & a & b & a \% b & Abbruch? & Rückgabe \\\hline
+ggT(84, 36) & 84 & 36 & \lsgtext{12} & \lsgtext{nein} & \schreibzeile\lsgtext{12} \\\hline
+\lsgtext{ggT(36, 12)} & \lsgtext{36} & \lsgtext{12} & \lsgtext{0} & \lsgtext{nein} & \schreibzeile\lsgtext{12} \\\hline
+\lsgtext{ggT(12, 0)} & \lsgtext{12} & \lsgtext{0} & \lsgtext{–} & \lsgtext{ja} & \schreibzeile\lsgtext{12} \\\hline
+\end{tabularx}}
+\end{minipage}\par\vspace{1mm}
+\begin{lueckentext}
+\textbf{b)} \code{ggT(36, 84)} ruft als Erstes \lsg[4.5cm]{ggT(84, 36)} auf: Die Parameter werden \lsg[5.25cm]{vertauscht}. Insgesamt sind es \lsg[2.25cm]{4} Aufrufe.
+\end{lueckentext}
+\end{aufgabe}
+
+\newpage
+\begin{aufgabe}[Lineare Rekursion planen und programmieren (TODO 4a–c)]{4}
+\textbf{a)} Plane jede Methode mit den drei Fragen, bevor du sie im Projekt programmierst. Schreibe Java-Ausdrücke.\par\vspace{1mm}
+{\footnotesize\begin{tabularx}{\linewidth}{|>{\ttfamily}l|p{3.2cm}|p{4.5cm}|X|}\hline
+\textrm{Methode} & \nr{1} Abbruch: Bedingung → Antwort & \nr{2} rekursiver Aufruf & \nr{3} zusammensetzen \\\hline
+quersumme(n) & \schreibzeile\lsgtext{\code{n < 10} → \code{n}} & \lsgtext{\code{quersumme(n / 10)}} & \lsgtext{\code{n \% 10} + Antwort} \\\hline
+umrechnen(n, basis) & \schreibzeile\lsgtext{\code{n < basis} → Ziffer \code{n}} & \lsgtext{\code{umrechnen(n / basis, basis)}} & \lsgtext{Antwort + Ziffer für \code{n \% basis}} \\\hline
+umdrehen(s) & \schreibzeile\lsgtext{\code{s.length() <= 1} → \code{s}} & \lsgtext{\code{umdrehen(s.substring(1))}} & \lsgtext{Antwort + \code{s.charAt(0)}} \\\hline
+\end{tabularx}}\par\vspace{1mm}
+\begin{lueckentext}
+\textbf{b)} Trage die Werte von \code{n} in allen Aufrufen und das Ergebnis ein (Labor oder Projekt):\par
+\code{umrechnen(22, 2)}: \code{n} = \lsg[6.4cm]{22, 11, 5, 2, 1} Ergebnis \lsgrest{"10110"}
+\code{umrechnen(22, 3)}: \code{n} = \lsg[6.4cm]{22, 7, 2} Ergebnis \lsgrest{"211"}
+Je größer \code{basis}, desto \lsgrest{weniger Aufrufe und desto kürzer das Ergebnis.}
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{aufgabe}[Fibonacci: verzweigte Rekursion (TODO 5a, 5b)]{5}
+Definition: $\mathit{fib}(0) = 0$, \ $\mathit{fib}(1) = 1$, \ $\mathit{fib}(n) = \mathit{fib}(n-1) + \mathit{fib}(n-2)$ für $n \geq 2$. Folge: 0, 1, 1, 2, 3, 5, 8, …\par
+\begin{minipage}[t]{0.47\linewidth}
+\vspace{0pt}
+\textbf{a)} Ergänze den Code.
+\begin{javaluecke}[basicstyle=\linespread{1.5}\footnotesize\ttfamily]
+int fib(int n) {
+   aufrufe++;                   // TODO 5b
+   if (§\lsg[2.25cm]{n == 0}§) { return 0; }
+   if (n == 1) { return §\lsg[1.2cm]{1}§; }
+   return §\lsg[4.5cm]{fib(n - 1) + fib(n - 2)}§;
+}
+\end{javaluecke}
+\textbf{b)} Zeichne den Aufrufbaum von \code{fib(4)} und schreibe jede Rückgabe an ihren Aufruf.\par\vspace{1mm}
+\lsgkarobox{8cm}{4cm}{
+  \tikzset{fk/.style={draw,rounded corners=2pt,fill=white,font=\scriptsize\ttfamily,inner sep=1.5pt}}
+  \node[fk] (a) at (4.43,-0.45) {fib(4)=3};
+  \node[fk] (b) at (2.69,-1.4) {fib(3)=2};
+  \node[fk] (c) at (6.18,-1.4) {fib(2)=1};
+  \node[fk] (d) at (1.53,-2.35) {fib(2)=1};
+  \node[fk] (e) at (3.85,-2.35) {fib(1)=1};
+  \node[fk] (f) at (5.4,-2.35) {fib(1)=1};
+  \node[fk] (g) at (6.95,-2.35) {fib(0)=0};
+  \node[fk] (h) at (0.75,-3.3) {fib(1)=1};
+  \node[fk] (i) at (2.3,-3.3) {fib(0)=0};
+  \draw (a)--(b) (a)--(c) (b)--(d) (b)--(e) (c)--(f) (c)--(g) (d)--(h) (d)--(i);}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.5\linewidth}
+\vspace{0pt}\lueckentext
+Die beiden \code{if} sind die \lsg[5.25cm]{Abbruchbedingungen}.\par\code{fib} ist verzweigt rekursiv, weil\par\lsgrest{jeder Aufruf (außer 0, 1) zwei weitere auslöst.}
+\textbf{c)} Zähle mit dem Projekt (Abschnitt Aufgabe 5):\par\vspace{1mm}
+{\footnotesize\linespread{1}\selectfont\setlength{\tabcolsep}{3pt}\begin{tabular}{|l|*{5}{>{\centering\arraybackslash}p{1.2cm}|}}\hline
+\code{n} & 5 & 10 & 15 & 20 & 25 \\\hline
+\code{fib(n)} & \lsgtext{5} & \lsgtext{55} & \lsgtext{610} & \lsgtext{6765} & \schreibzeile\lsgtext{75025} \\\hline
+Aufrufe & \lsgtext{15} & \lsgtext{177} & \lsgtext{1973} & \lsgtext{21891} & \schreibzeile\lsgtext{242785} \\\hline
+\end{tabular}}\par\vspace{1mm}
+Wird \code{n} um 5 größer, steigt die Zahl der Aufrufe etwa auf das \lsg[2.25cm]{11}-Fache.\par
+\textbf{d)} In \code{fib(5)} wird \code{fib(2)} \lsg[2.25cm]{3}-mal berechnet.\par
+\textbf{e)} Was passiert bei \code{fib(-1)}? Begründe.\par
+\lsgrest{n wird -1, -2, -3, … und trifft}
+\lsgrest{nie 0 oder 1: Die Rekursion endet nicht,}
+\lsgrest{StackOverflowError.}
+\end{minipage}
+\end{aufgabe}
+
+\begin{aufgabe}[Der Tresor: vier Algorithmen in Reihe (TODO 6)]{6}
+\begin{lueckentext}
+Notiere die Zwischenwerte. \code{fib(17)} = \lsg[2.6cm]{1597} \ → \ Quersumme \lsg[2.25cm]{22} \ → \ im Zweiersystem \lsg[2.6cm]{"10110"} \ → \ rückwärts gelesen (Code) \lsg[2.6cm]{"01101"}\par
+Die Nachricht im Tresor lautet: \lsgrest{TRESOR OFFEN! UM REKURSION ZU VERSTEHEN,}
+\lsgrest{MUSST DU ZUERST REKURSION VERSTEHEN.}
+\end{lueckentext}
+\end{aufgabe}
+\end{document}

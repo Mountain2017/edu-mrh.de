@@ -105,7 +105,10 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
   (`println("")`); `Text.moveTo` setzt die linke obere Ecke (Kreise, Polygone:
   die Mitte); ein offenes `Polygon(false, …)` mit transparenter Füllung zeichnet
   keine Linie (Kurven aus `Line`-Stücken bauen); Zugriff auf ein `null`-Array
-  meldet „Interner Fehler … null“.
+  meldet „Interner Fehler … null“. **Endlose Rekursion** wirft keinen `StackOverflowError`, sondern
+  läuft weiter, bis der Tab abstürzt (~3 GB nach 30 s): Projekte mit Rekursions-Experimenten bekommen
+  in den Coach-Regeln `stapelGrenze` (Wächter in `12/rekursive-datenstrukturen/ide-coach.js`, liest die
+  Aufruftiefe aus internen IDE-Feldern und stoppt mit roter Meldung).
 
 ## Arbeitsblätter
 
@@ -346,7 +349,10 @@ gemeinsamen Designs ist also die Root-Datei).
   einem Generator: nach Codeänderungen Seite und beide JSON-Dateien anpassen
 - 11 sonst: `11/ki/perzeptron.html`, `11/kommunikation_in_netzwerken/` (netzwerke, filius, Übungen)
 - 12 Rekursive Datenstrukturen (neues Format, → AB): `12/rekursive-datenstrukturen/`
-  (1.1 Queue, 1.2 Interfaces, 1.3 Listen, 1.4 Kompositum; `material/` Rohmaterial, nur lokal);
+  (1.1 Queue, 1.2 Interfaces, 1.3 Listen, 1.4 Kompositum, Zusatzstation 1.5 Rekursive Algorithmen
+  `1-5-algorithmen.html`: countdown, Endlos-Fassungen, ggT, quersumme, umrechnen, umdrehen, fib,
+  Tresor-Kette, Fraktalbaum; Aufruf-Labor `algorithmen.js`; Blatt 1.5 nutzt den Antwortplatz-Block
+  der `ab-vorlage.tex` über `\def\antwortplatzacht{}`, 1.1–1.4 bleiben beim alten; `material/` Rohmaterial, nur lokal);
   älter: `12/rekursion-queue-listen/`
 - 12 sonst: `12/binaerbaeume/`, `12/tiefensuche/`, `12/nebenlaeufigkeit/`
 - 13 Formale Sprachen (neues Format, → AB): `13/formale-sprachen/`
