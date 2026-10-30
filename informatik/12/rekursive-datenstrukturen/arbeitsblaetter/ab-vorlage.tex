@@ -130,3 +130,48 @@
  morekeywords={interface,implements,abstract,extends},
  literate={ä}{{\"a}}1 {ö}{{\"o}}1 {ü}{{\"u}}1 {Ä}{{\"A}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1 {ß}{{\ss}}1 {–}{{--}}1 {„}{{\glqq}}1 {“}{{\grqq}}1 {→}{{$\to$}}1}
 \lstnewenvironment{java}[1][]{\lstset{#1}}{}
+
+% ---------- Antwortplatz nach CLAUDE.md (ab Blatt 1.5) ----------
+% Nur für Blätter, die VOR \input{ab-vorlage} \def\antwortplatzacht{} setzen. Die Blätter
+% 1.1 bis 1.4 bleiben dadurch unverändert. Makros wie informatik/10/java/arbeitsblaetter/ab-vorlage.tex:
+%  \linien{n}/\lsglinien{n}{Text}  Schreiblinien 8 mm      \linienfeld{n}/\lsgfeld{n}{Code}
+%  \luecke[l]/\lsg[l]{Text}         Lücke (Standard 6,75 cm, Fachbegriff 5,25 cm, Zahl 2,25 cm)
+%  \restzeile/\lsgrest{Text}        Lücke bis Zeilenende    \lueckentext  Absatz mit Lücken
+%  \schreibzeile                    Tabellenzelle 8 mm      \lsgtext{…}  nur in der Lösung
+%  \kariert{n}/\lsgkariert{n}{TikZ}, \karobox{b}{h}/\lsgkarobox{b}{h}{TikZ}  5-mm-Karo, ganze Kästchen
+%  javaluecke                       Listing mit 1,5-fachem Zeilenabstand für Lücken (§\luecke§)
+\ifdefined\antwortplatzacht
+\usepackage{xspace}
+\newlength{\zeilenabstand}\setlength{\zeilenabstand}{8mm}
+\newlength{\karo}\setlength{\karo}{5mm}
+\tikzset{karo/.style={draw=gray!50,line width=0.3pt},schreiblinie/.style={draw=black!65,line width=0.35pt}}
+\renewcommand{\lsg}[2][6.75cm]{\leavevmode\ifloesung\settowidth{\lsgbreite}{\,#2\,}%
+  \ifdim\lsgbreite>#1\relax\rlap{\raisebox{0.8pt}{\resizebox{#1}{!}{\lsgfarbe\,#2\,}}}%
+  \else\rlap{\raisebox{0.8pt}{\lsgfarbe\,#2}}\fi\fi\rule[-0.6ex]{#1}{0.4pt}\xspace}
+\renewcommand{\luecke}[1][6.75cm]{\lsg[#1]{}}
+\newcommand{\lsgrest}[1]{\leavevmode\unskip\hspace{1.5mm}\ifloesung\rlap{\raisebox{0.8pt}{\lsgfarbe\,#1}}\fi\leaders\hbox{\rule[-0.6ex]{0.5pt}{0.4pt}}\hfill\null\par}
+\newcommand{\restzeile}{\lsgrest{}}
+\renewcommand{\lsgtext}[1]{\ifloesung\leavevmode{\lsgfarbe#1}\fi}
+\newcommand{\lueckentext}{\linespread{1.5}\selectfont\raggedright}
+\newcommand{\schreibzeile}{\rule[-2.8mm]{0pt}{8mm}}
+\renewcommand{\lsglinien}[2]{\par\vspace{0.5mm}\noindent\begin{tikzpicture}
+  \path (0,0) (\linewidth-0.4pt,-#1\zeilenabstand-1.5mm);
+  \foreach \i in {1,...,#1}{\draw[schreiblinie] (0.2pt,-\i\zeilenabstand) -- (\linewidth-0.2pt,-\i\zeilenabstand);}
+  \ifloesung\node[overlay,anchor=north west,inner sep=0pt] at (1mm,-\zeilenabstand+1pt+5mm) {\parbox[t]{\linewidth-2mm}{\lsgfarbe\raggedright\setlength{\baselineskip}{\zeilenabstand}\rule{0pt}{5mm}#2}};\fi
+  \end{tikzpicture}\par}
+\renewcommand{\linien}[1]{\lsglinien{#1}{}}
+\newcommand{\lsgfeld}[2]{\noindent\begin{tikzpicture}
+  \draw[line width=0.4pt] (0.2pt,0) rectangle (\linewidth-0.2pt,-#1\zeilenabstand-3mm);
+  \foreach \i in {1,...,#1}{\draw[schreiblinie] (2mm,-\i\zeilenabstand) -- (\linewidth-2mm,-\i\zeilenabstand);}
+  \ifloesung\node[overlay,anchor=north west,inner sep=0pt] at (2.5mm,-\zeilenabstand+1pt+5mm) {\parbox[t]{\linewidth-5mm}{\lsgfarbe\ttfamily\small\setlength{\baselineskip}{\zeilenabstand}\rule{0pt}{5mm}#2}};\fi
+  \end{tikzpicture}}
+\newcommand{\linienfeld}[1]{\lsgfeld{#1}{}}
+\newcommand{\karoraster}[3]{\begin{tikzpicture}\draw[karo] (0,0) grid[step=\karo] (#1\karo,#2\karo);
+  \ifloesung\begin{scope}[overlay,shift={(0,#2\karo)},red!75!black,text=red!75!black,line width=0.8pt]#3\end{scope}\fi\end{tikzpicture}}
+\newcommand{\lsgkariert}[2]{\par\vspace{1.5mm}\noindent\pgfmathtruncatemacro{\karoX}{floor(\linewidth/\karo)}%
+  \makebox[\linewidth]{\karoraster{\karoX}{#1}{#2}}\par\vspace{1mm}}
+\renewcommand{\kariert}[1]{\lsgkariert{#1}{}}
+\newcommand{\lsgkarobox}[3]{\pgfmathtruncatemacro{\karoX}{round((#1)/\karo)}\pgfmathtruncatemacro{\karoY}{round((#2)/\karo)}\karoraster{\karoX}{\karoY}{#3}}
+\renewcommand{\karobox}[2]{\lsgkarobox{#1}{#2}{}}
+\lstnewenvironment{javaluecke}[1][]{\lstset{basicstyle=\linespread{1.5}\small\ttfamily,#1}}{}
+\fi

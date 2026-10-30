@@ -10,6 +10,7 @@
  *   - die Fehlerliste des Compilers (aus dem IDE-Fenster)
  * und zeigt daraus eine Fortschrittsliste der TODOs und konkrete Hinweise.
  * Lösungen verrät er nicht. Die Regeln je Projekt stehen unten in REGELN.
+ * Mit stapelGrenze in den Regeln hält er endlose Rekursion an (Stapel-Wächter, siehe unten).
  *
  * Alles läuft im Browser, nichts verlässt den Rechner, nichts wird gespeichert.
  */
@@ -353,6 +354,114 @@
         }
     };
 
+    // ===== 1.5 Projekt Rekursive Algorithmen =====
+    // stapelGrenze: Die Online-IDE kennt keinen StackOverflowError und rechnet bei endloser
+    // Rekursion weiter, bis der Browser-Tab abstürzt. Der Coach hält das Programm an,
+    // sobald mehr Aufrufe gleichzeitig warten, und meldet es wie Java (siehe Coach.waechter).
+    function zaehltJedenAufruf(rumpf) {
+        // aufrufe++ muss vor der ersten Abbruchbedingung stehen
+        var z = /aufrufe\s*(\+\+|\+=\s*1|=\s*aufrufe\s*\+\s*1)/.exec(rumpf || '');
+        var a = /\bif\s*\(/.exec(rumpf || '');
+        return !!z && (!a || z.index < a.index);
+    }
+    var UEBERLAUF_TIPP = {
+        'Experiment.fassungA': 'Schau dir die letzten Werte von n an. Gibt es überhaupt eine Stelle, an der fassungA aufhört?',
+        'Experiment.fassungB': 'Schau dir die letzten Werte von n an. Wird die Zahl, bei der fassungB aufhören soll, je genau getroffen?',
+        'Experiment.fassungC': 'Schau dir die Werte von n an. Kommt fassungC der Abbruchbedingung bei jedem Aufruf näher?',
+        'Algorithmen.quersumme': 'Wird die Zahl bei jedem Aufruf kürzer (n / 10)? Und hört quersumme bei einstelligen Zahlen auf?',
+        'Algorithmen.umrechnen': 'Teilst du n vor dem Aufruf durch basis? Und hört umrechnen auf, wenn nur noch eine Ziffer übrig ist (n < basis)?',
+        'Algorithmen.umdrehen': 'Rufst du umdrehen mit einem kürzeren Text auf (s.substring(1))? Und was passiert beim leeren Text?',
+        'Algorithmen.countdown': 'countdown hört nur bei genau 0 auf. Mit welcher Zahl hast du es gestartet?'
+    };
+    REGELN['i12-15-algorithmen'] = {
+        titel: 'Projekt Rekursive Algorithmen',
+        testdatei: 'AlgorithmenTest.java',
+        stapelGrenze: 10000,
+        tests: {
+            quersummeEinstellig: { titel: 'quersumme() einstellig', hinweis: function () { return 'Eine einstellige Zahl (n < 10) ist ihre eigene Quersumme. Das ist die Abbruchbedingung.'; } },
+            quersummeMehrstellig: { titel: 'quersumme() mehrstellig', hinweis: function () { return 'Die letzte Ziffer liefert n % 10, die Zahl ohne sie n / 10. Quersumme = letzte Ziffer + Quersumme vom Rest.'; } },
+            umrechnenBinaer: { titel: 'umrechnen() ins Zweiersystem', hinweis: function (c) {
+                var r = methode(c.datei('Algorithmen.java'), 'String\\s+umrechnen\\s*\\(');
+                if (r && /charAt\s*\(\s*n\s*%\s*basis\s*\)\s*\+\s*umrechnen/.test(r)) return 'Kommen die Ziffern verkehrt herum heraus? n % basis ist die LETZTE Ziffer. Sie gehört hinter die Ziffern des Rests.';
+                return 'Bleibt nur noch eine Ziffer (n < basis), gib sie als Text zurück. Sonst liefert umrechnen(n / basis, basis) die vorderen Ziffern und n % basis die letzte.'; } },
+            umrechnenAndereBasis: { titel: 'umrechnen() in Basis 3, 16 und 10', hinweis: function () { return 'Steht noch irgendwo eine feste 2? Verwende überall basis und für die Ziffer ziffern.charAt(…), damit auch A bis F möglich sind.'; } },
+            umdrehenKurz: { titel: 'umdrehen() von "" und "a"', hinweis: function () { return 'Ein leerer Text oder ein einzelnes Zeichen sieht umgedreht genauso aus. Das ist die Abbruchbedingung.'; } },
+            umdrehenLang: { titel: 'umdrehen() von "Regal"', hinweis: function () { return 'Dreh den Rest ab dem 2. Zeichen um (s.substring(1)) und häng das erste Zeichen (s.charAt(0)) hinten an.'; } },
+            fibAnfang: { titel: 'fib(0), fib(1), fib(2)', hinweis: function () { return 'Die beiden Abbruchbedingungen stehen direkt in der Definition: fib(0) = 0 und fib(1) = 1.'; } },
+            fibWeiter: { titel: 'fib(10) und fib(17)', hinweis: function () { return 'Für alle anderen n gilt fib(n) = fib(n - 1) + fib(n - 2): zwei rekursive Aufrufe in einer Zeile.'; } },
+            fibAufrufe: { titel: 'Aufrufe von fib zählen', hinweis: function (c) {
+                var r = methode(c.datei('Algorithmen.java'), 'int\\s+fib\\s*\\(');
+                if (!zaehltJedenAufruf(r)) return 'Zähle mit aufrufe++ als allererste Anweisung in fib, noch vor den Abbruchbedingungen. Sonst fehlen die Aufrufe, die sofort enden.';
+                return 'Wird aufrufe vielleicht auch an anderer Stelle erhöht oder zurückgesetzt? Zurücksetzen darf nur das Hauptprogramm.'; } }
+        },
+        schritte: [
+            { titel: function (c) {
+                  var n = ['A', 'B', 'C'].filter(function (x) { return c.gelaufen['Experiment.fassung' + x]; }).length;
+                  return 'Aufgabe 2: Fassungen A bis C ausprobieren (' + n + ' von 3 vom Wächter gestoppt)'; },
+              erledigt: function (c) { return ['A', 'B', 'C'].every(function (x) { return c.gelaufen['Experiment.fassung' + x]; }); } },
+            { titel: 'TODO 2: Fassung B endet für jede Startzahl', erledigt: function (c) {
+                var r = methode(c.datei('Experiment.java'), 'void\\s+fassungB\\s*\\(');
+                return !!r && /if\s*\(\s*(n\s*<=?\s*-?\d+|-?\d+\s*>=?\s*n)\s*\)/.test(r); } },
+            { titel: 'TODO 4a: quersumme()', tests: ['quersummeEinstellig', 'quersummeMehrstellig'] },
+            { titel: 'TODO 4b: umrechnen()', tests: ['umrechnenBinaer', 'umrechnenAndereBasis'] },
+            { titel: 'TODO 4c: umdrehen()', tests: ['umdrehenKurz', 'umdrehenLang'] },
+            { titel: 'TODO 5: fib() mit Aufrufzähler', tests: ['fibAnfang', 'fibWeiter', 'fibAufrufe'] },
+            { titel: 'TODO 6: Tresor öffnen', erledigt: function (c) { return !!c.gelaufen.tresor; } }
+        ],
+        nachLauf: function (c, lauf) {
+            if (lauf.ueberlauf) c.gelaufen[lauf.ueberlauf.methode] = true;
+            if (/TRESOR OFFEN/.test(lauf.output)) c.gelaufen.tresor = true;
+        },
+        hinweise: function (c) {
+            var liste = [];
+            var u = c.lauf && c.lauf.ueberlauf;
+            if (u) {
+                var tipp = UEBERLAUF_TIPP[u.methode];
+                if (u.methode === 'Algorithmen.fib') {
+                    tipp = /^-/.test(u.parameter) ? 'fib wurde mit einer negativen Zahl aufgerufen. Die Abbruchbedingungen fangen nur 0 und 1 ab: Von -1 aus geht es immer weiter nach unten.'
+                                                  : 'Werden beide Aufrufe mit einer kleineren Zahl gemacht (n - 1 und n - 2)?';
+                }
+                liste.push({ art: 'fehler', titel: 'StackOverflowError: ' + u.methode + ' endet nicht',
+                             text: 'Beim Anhalten warteten ' + u.tiefe.toLocaleString('de-DE') + ' Aufrufe gleichzeitig, zuletzt ' + u.aufruf + '. ' + (tipp || 'Wird die Abbruchbedingung irgendwann erreicht?'),
+                             mehr: 'Echtes Java bricht nach einigen Tausend wartenden Aufrufen von selbst ab, weil der Speicher für den Aufrufstapel voll ist. Die Online-IDE hat keine solche Grenze und würde weiterrechnen, bis der Browser abstürzt. Deshalb hält der Wächter dieser Seite das Programm an.' });
+            }
+            if (c.lauf && /Der Tresor bleibt zu/.test(c.lauf.output)) {
+                liste.push({ art: 'warnung', titel: 'Der Tresor bleibt zu', text: c.alleTestsGruen
+                    ? 'Deine Methoden bestehen alle Tests. Prüfe also die Kette im Hauptprogramm: Lass dir nach jedem der vier Schritte den Zwischenwert ausgeben und vergleiche mit Aufgabe 6 auf dem Blatt.'
+                    : 'Der Code stimmt nur, wenn alle vier Methoden richtig rechnen. Starte zuerst die Tests und bring TODO 4 und 5 zum Laufen.' });
+            }
+            if (c.laeuftLange) {
+                liste.push({ art: 'warnung', titel: 'Das Programm läuft sehr lange', text: 'Rechnet gerade fib mit einem großen n? Jedes n mehr kostet etwa 1,6-mal so viele Aufrufe, ab fib(30) wird es zäh. Sonst: Endet eine Schleife im Hauptprogramm nicht?' });
+            }
+            if (c.alleTestsGruen && c.gelaufen.tresor) {
+                liste.push({ art: 'ok', titel: 'Alle Tests bestanden, Tresor offen', text: 'Vier rekursive Algorithmen hintereinander, und jeder liefert dem nächsten seine Eingabe. Weiter mit „Selbst bauen“.' });
+            } else if (c.alleTestsGruen) {
+                liste.push({ art: 'ok', titel: 'Alle Tests bestanden', text: 'Jetzt fehlt noch der Tresor (TODO 6 im Hauptprogramm).' });
+            }
+            return liste;
+        }
+    };
+
+    // ===== 1.5 Selbst bauen: Fraktalbaum =====
+    REGELN['i12-15-fraktal'] = {
+        titel: 'Fraktalbaum',
+        stapelGrenze: 10000,
+        schritte: [],
+        hinweise: function (c) {
+            var liste = [];
+            var u = c.lauf && c.lauf.ueberlauf;
+            if (u) {
+                liste.push({ art: 'fehler', titel: 'StackOverflowError: ' + u.methode + ' endet nicht',
+                             text: 'Zuletzt ' + u.aufruf + '. Die Abbruchbedingung prüft stufe == 0. Wird diese Zahl je genau erreicht? Mit welcher stufe hast du gestartet, und wird sie bei jedem Aufruf kleiner?' });
+            }
+            var m = c.lauf && /Gezeichnete Äste: (\d+)/.exec(c.lauf.output);
+            if (m && !u) {
+                liste.push({ art: 'tipp', titel: m[1] + ' Äste gezeichnet', text: 'Passt die Zahl zu deiner Formel aus Aufgabe b)? Probiere mehrere Stufen aus.' });
+            }
+            return liste;
+        }
+    };
+
     // ---------- Coach-Engine ----------
     function Coach(box) {
         this.box = box;
@@ -435,6 +544,59 @@
         }
         this.leseDateien();
         setInterval(function () { self.leseDateien(); self.pruefeLaufzeit(); }, 1500);
+        if (this.regeln.stapelGrenze) this.waechter();
+    };
+
+    // ---------- Stapel-Wächter (nur bei Regeln mit stapelGrenze) ----------
+    // Die Online-IDE legt den Aufrufstapel im Speicher des Browsers an und kennt keine Grenze:
+    // Endlose Rekursion läuft weiter, bis der Tab abstürzt (gemessen: fast 3 GB nach 30 s).
+    // Der Wächter liest alle 100 ms die Aufruftiefe aus dem Interpreter, hält das Programm
+    // oberhalb der Grenze an und meldet es wie Java. Interne Felder der IDE, daher alles in try.
+    function wertText(v) {
+        if (typeof v === 'number' || typeof v === 'boolean') return String(v);
+        if (typeof v === 'string') return '"' + (v.length > 12 ? v.slice(0, 12) + '…' : v) + '"';
+        if (v && typeof v.value === 'string') return wertText(v.value);
+        return '…';
+    }
+
+    Coach.prototype.waechter = function () {
+        var self = this, grenze = this.regeln.stapelGrenze;
+        setInterval(function () {
+            if (self.gestopptUm && Date.now() - self.gestopptUm < 1500) return;
+            var i = self.intern();
+            try {
+                var threads = i.it.scheduler.runningThreads || [];
+                for (var k = 0; k < threads.length; k++) {
+                    var th = threads[k];
+                    var tiefe = th && th.programStack ? th.programStack.length : 0;
+                    if (tiefe > grenze) { self.ueberlauf(i, th, tiefe); return; }
+                }
+            } catch (e) { /* IDE noch nicht bereit oder andere Version */ }
+        }, 100);
+    };
+
+    Coach.prototype.ueberlauf = function (i, th, tiefe) {
+        var info = { tiefe: tiefe, methode: 'eine Methode', aufruf: 'unbekannt', parameter: '' };
+        try {
+            var ps = th.currentProgramState, p = ps.program;
+            info.methode = p.methodIdentifierWithClass || info.methode;
+            var start = ps.stackBase + (p.numberOfThisObjects || 0), werte = [];
+            for (var j = 0; j < (p.numberOfParameters || 0); j++) werte.push(wertText(th.s[start + j]));
+            info.parameter = werte.join(', ');
+            info.aufruf = info.methode + '(' + info.parameter + ')';
+        } catch (e) { /* Aufruf unbekannt */ }
+        this.gestopptUm = Date.now();
+        try {
+            i.it.printManager.print('\nStackOverflowError: Mehr als ' + this.regeln.stapelGrenze.toLocaleString('de-DE') +
+                ' Aufrufe warten gleichzeitig.\nZuletzt aufgerufen: ' + info.aufruf +
+                '\n(Echtes Java bricht hier selbst ab. Die Online-IDE nicht, deshalb hat der Wächter der Website das Programm angehalten.)', true, '#ff5050');
+        } catch (e) { /* Ausgabe nicht erreichbar */ }
+        try { i.am.trigger('interpreter.stop'); } catch (e) { /* nichts */ }
+        this.startZeit = null;
+        this.laeuftLange = false;
+        this.lauf = { output: '', exception: { message: 'StackOverflowError', file: null, line: null }, ueberlauf: info, zeit: Date.now() };
+        if (this.regeln.nachLauf) this.regeln.nachLauf(this.kontext(), this.lauf);
+        this.werte();
     };
 
     Coach.prototype.intern = function () {
@@ -613,7 +775,7 @@
             self.schritteEl.appendChild(li);
         });
         if (this.regeln.tests && !Object.keys(ctx.tests).length) {
-            this.schritteEl.appendChild(h('li', { cls: 'coach-info', text: 'Starte die Tests (Knopf oben oder ▶ neben „@Test“ in ListeTest.java), dann zeigt der Coach, welche Teile schon funktionieren.' }));
+            this.schritteEl.appendChild(h('li', { cls: 'coach-info', text: 'Starte die Tests (Knopf oben oder ▶ neben „@Test“ in ' + (this.regeln.testdatei || 'ListeTest.java') + '), dann zeigt der Coach, welche Teile schon funktionieren.' }));
         }
 
         // Hinweise sammeln: Compilerfehler, Projektregeln, fehlgeschlagene Tests
@@ -627,7 +789,7 @@
             hinweise.push({ art: 'fehler', titel: f.file + ', Zeile ' + f.line + ': ' + f.text, text: t || 'Lies die Meldung der IDE genau und schau dir die Zeile an.' });
         });
         try { hinweise = hinweise.concat(this.regeln.hinweise(ctx) || []); } catch (e) { /* Regel fehlerhaft */ }
-        if (this.lauf && this.lauf.exception && !hinweise.some(function (x) { return x.art === 'fehler' && /Zeile/.test(x.titel); })) {
+        if (this.lauf && this.lauf.exception && !this.lauf.ueberlauf && !hinweise.some(function (x) { return x.art === 'fehler' && /Zeile/.test(x.titel); })) {
             var e = this.lauf.exception;
             hinweise.push({ art: 'fehler', titel: (e.file || 'Programm') + (e.line ? ', Zeile ' + e.line : '') + ': ' + e.message,
                             text: NULL_MELDUNG.test(e.message) ? 'Eine Variable verweist hier auf null. Welche ist es, und warum hat sie (noch) kein Objekt?' : 'Lies die Meldung und schau dir die markierte Zeile an.' });

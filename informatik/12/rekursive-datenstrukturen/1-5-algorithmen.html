@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1.5 Rekursive Algorithmen | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Rekursive Datenstrukturen, Informatik 12, Zusatzstation: rekursive Algorithmen mit einem und mehreren Aufrufen, Aufruftabelle, Aufrufbaum, Fibonacci, endlose Rekursion und StackOverflowError, Tresor-Projekt in der Online-IDE.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/include/online-ide-embedded.css">
+    <script type="module" src="https://edu-mrh.de/embed/include/online-ide-embedded.js"></script>
+    <link rel="stylesheet" href="datenstrukturen.css">
+    <script defer src="datenstrukturen.js"></script>
+    <script defer src="algorithmen.js"></script>
+    <script defer src="ide-coach.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🔗</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="../../informatik.html#jahrgang-12" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 1.5</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#hinundzurueck">🔍 Hin und zurück</a></li>
+            <li><a href="#bausteine">📝 Drei Fragen, Aufruftabelle</a></li>
+            <li><a href="#endlos">⚠️ Wenn die Rekursion nicht endet</a></li>
+            <li><a href="#labor">🧩 Aufruf-Labor</a></li>
+            <li><a href="#projekt">✏️ Projekt mit Tresor</a></li>
+            <li><a href="#selbst">🛠️ Selbst bauen</a></li>
+            <li><a href="#anders">💡 Es geht auch anders</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Rekursive Datenstrukturen</div>
+            <ul class="sidebar-menu">
+                <li><a href="../../informatik.html#jahrgang-12">Übersicht Klasse 12</a></li>
+                <li><a href="1-1-queue.html">1.1 Warteschlange (Queue)</a></li>
+                <li><a href="1-2-interfaces.html">1.2 Interfaces</a></li>
+                <li><a href="1-3-listen.html">1.3 Listen und Rekursion</a></li>
+                <li><a href="1-4-kompositum.html">1.4 Kompositum</a></li>
+                <li><a href="1-5-algorithmen.html">1.5 Rekursive Algorithmen</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero rd-hero">
+                <h1 class="hero-title">1.5 Rekursive Algorithmen</h1>
+                <p class="hero-subtitle">Rekursive Datenstrukturen · Informatik 12 · Zusatzstation · 2–3 Stunden</p>
+                <span class="rd-kompetenz">Du kannst: rekursive Algorithmen mit einem und mit mehreren Aufrufen lesen und schreiben, ihren Ablauf in einer Aufruftabelle oder einem Aufrufbaum darstellen und begründen, warum eine Rekursion nicht endet.</span>
+                <div class="rd-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-1-5-algorithmen.pdf">📝 Arbeitsblatt 1.5 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-1-5-algorithmen.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#hinundzurueck">🔍 Einstieg</a><a class="p-note" href="#bausteine">📝 Festhalten</a><a class="p-problem" href="#endlos">⚠️ Problem</a><a class="p-investigate" href="#labor">🧩 Üben</a><a class="p-modify" href="#projekt">✏️ Verändern</a><a class="p-make" href="#selbst">🛠️ Selbst bauen</a><a class="p-idee" href="#anders">💡 Nachdenken</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="hinundzurueck" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Einstieg<small>Aufgabe 1: Hin und zurück</small></h2></div>
+                <div class="phase-body">
+                    <p>In 1.3 und 1.4 hat jeder Knoten seinen Nachfolger gefragt. Rekursion braucht aber keine Kette von Objekten: Eine Methode kann sich auch einfach selbst aufrufen, mit einem anderen Parameter. Diese Station dreht sich nur um solche <strong>rekursiven Algorithmen</strong>.</p>
+                    <pre class="jv"><span class="k">public static void</span> countdown(<span class="k">int</span> n) {
+   <span class="k">if</span> (n == 0) {                    <span class="c">// Abbruchbedingung</span>
+      println("Start!");
+   } <span class="k">else</span> {
+      println("hin " + n);
+      countdown(n - 1);             <span class="c">// rekursiver Aufruf</span>
+      println("zurück " + n);
+   }
+}</pre>
+                    <ol class="aufgaben">
+                        <li>Sage vorher, was <code>countdown(3)</code> ausgibt (Aufgabe 1a). Starte erst danach das Projekt weiter unten und vergleiche.</li>
+                        <li>Wie viele Aufrufe von <code>countdown</code> warten gleichzeitig, wenn „Start!“ erscheint? Auf welchen von ihnen wird zuerst „zurück“ ausgegeben (Aufgabe 1b)?</li>
+                    </ol>
+                    <details class="denk"><summary>Denkanstoß zu b)</summary>
+                        <p>Ein Aufruf ist erst fertig, wenn auch alles <em>hinter</em> seinem rekursiven Aufruf erledigt ist. <code>countdown(3)</code> kann „zurück 3“ also erst ausgeben, wenn <code>countdown(2)</code> ganz fertig ist. Wie in der Mensa-Schlange aus 1.3: Die letzte Person antwortet zuerst.</p>
+                    </details>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-5-algorithmen.pdf">📝 Blatt 1.5 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="bausteine" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Drei Fragen, Aufrufstapel und Aufruftabelle</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Drei Fragen an jeden rekursiven Algorithmus</h4>
+                        <ol>
+                            <li><strong>Abbruchbedingung:</strong> Wann ist das Problem so klein, dass die Antwort sofort feststeht? (<code>n == 0</code>)</li>
+                            <li><strong>Verkleinern:</strong> Mit welchem kleineren Problem ruft sich die Methode auf? Jeder Aufruf muss der Abbruchbedingung ein Stück näher kommen. (<code>countdown(n - 1)</code>)</li>
+                            <li><strong>Zusammensetzen:</strong> Was macht die Methode mit der Antwort, wenn sie zurückkommt? (bei <code>countdown</code>: „zurück n“ ausgeben)</li>
+                        </ol>
+                    </div>
+                    <div class="konzept">
+                        <h4>Hinweg, Rückweg und Aufrufstapel</h4>
+                        <p>Jeder Aufruf, der auf eine Antwort wartet, liegt auf dem <strong>Aufrufstapel</strong>, mit seinen eigenen Parametern und lokalen Variablen. Im Stapel gibt es also viermal ein <code>n</code>, jedes mit eigenem Wert. Auf dem <strong>Hinweg</strong> kommen Aufrufe oben dazu, bis die Abbruchbedingung greift. Auf dem <strong>Rückweg</strong> werden sie von oben nach unten fertig: Der jüngste Aufruf antwortet zuerst.</p>
+                    </div>
+                    <div class="konzept">
+                        <h4>Die Aufruftabelle</h4>
+                        <p>Eine Zeile je Aufruf, in der Reihenfolge der Aufrufe. Auf dem Hinweg füllst du von oben nach unten die Parameter und Zwischenwerte aus, auf dem Rückweg von unten nach oben die Rückgaben. Beispiel <code>fakultaet(n) = n · fakultaet(n − 1)</code> mit <code>fakultaet(1) = 1</code>:</p>
+                        <div class="tab-scroll">
+                            <table class="rd-tab">
+                                <thead><tr><th>Aufruf</th><th>n</th><th>Abbruch?</th><th>Rückgabe</th></tr></thead>
+                                <tbody>
+                                    <tr><td><code>fakultaet(4)</code></td><td>4</td><td>nein</td><td>4 · 6 = 24 ↑</td></tr>
+                                    <tr><td><code>&nbsp;&nbsp;fakultaet(3)</code></td><td>3</td><td>nein</td><td>3 · 2 = 6 ↑</td></tr>
+                                    <tr><td><code>&nbsp;&nbsp;&nbsp;&nbsp;fakultaet(2)</code></td><td>2</td><td>nein</td><td>2 · 1 = 2 ↑</td></tr>
+                                    <tr><td><code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fakultaet(1)</code></td><td>1</td><td>ja</td><td>1 ↑</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="code-paar">
+                        <div>
+                            <h4>Lineare Rekursion</h4>
+                            <p>In jedem Durchlauf <strong>höchstens ein</strong> rekursiver Aufruf. Die Aufrufe bilden eine Kette, die Aufruftabelle hat eine Zeile je Stufe. Beispiele: <code>countdown</code>, <code>ggT</code>, <code>quersumme</code>.</p>
+                        </div>
+                        <div>
+                            <h4>Verzweigte Rekursion</h4>
+                            <p>In einem Durchlauf <strong>mehrere</strong> rekursive Aufrufe. Aus jedem Aufruf gehen mehrere neue hervor, die Aufrufe verzweigen sich. Darstellung als <strong>Aufrufbaum</strong>. Beispiel: <code>fib</code> mit <code>fib(n − 1) + fib(n − 2)</code>.</p>
+                        </div>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Ergänze den Merkkasten auf dem Blatt.</li>
+                    </ol>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-5-algorithmen.pdf">📝 Blatt 1.5 · Merkkasten</a></p>
+                </div>
+            </section>
+
+            <section id="endlos" class="phase problem">
+                <div class="phase-head"><span class="phase-icon">⚠️</span><h2>Problem<small>Aufgabe 2: Wenn die Rekursion nicht endet</small></h2></div>
+                <div class="phase-body">
+                    <p>Drei Fassungen von <code>countdown</code>, die sich leicht vertippen lassen. Keine von ihnen endet bei <code>fassung…(3)</code>, aber jede aus einem anderen Grund. Du findest sie in der Klasse <code>Experiment</code> des Projekts.</p>
+                    <div class="code-paar">
+                        <div>
+                            <h4>Fassung A</h4>
+                            <pre class="jv"><span class="k">void</span> fassungA(<span class="k">int</span> n) {
+   println(n);
+   fassungA(n - 1);
+}</pre>
+                        </div>
+                        <div>
+                            <h4>Fassung B</h4>
+                            <pre class="jv"><span class="k">void</span> fassungB(<span class="k">int</span> n) {
+   <span class="k">if</span> (n == 0) {
+      println("Start!");
+   } <span class="k">else</span> {
+      println(n);
+      fassungB(n - 2);
+   }
+}</pre>
+                        </div>
+                        <div>
+                            <h4>Fassung C</h4>
+                            <pre class="jv"><span class="k">void</span> fassungC(<span class="k">int</span> n) {
+   <span class="k">if</span> (n == 0) {
+      println("Start!");
+   } <span class="k">else</span> {
+      println(n);
+      fassungC(n);
+   }
+}</pre>
+                        </div>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Sage für jede Fassung vorher, was passiert. Schalte dann im Hauptprogramm des Projekts (Abschnitt Aufgabe 2) immer <em>eine</em> Zeile ein und starte. Notiere die ersten fünf Werte von <code>n</code> (Aufgabe 2a).</li>
+                        <li>Welche der drei Fragen aus „Festhalten“ ist jeweils verletzt (Aufgabe 2b)?</li>
+                        <li><strong>TODO 2:</strong> Repariere Fassung B im Projekt, indem du <em>nur</em> die Abbruchbedingung änderst. Danach soll sie für jede Startzahl enden (Aufgabe 2c).</li>
+                    </ol>
+                    <div class="stolper"><strong>StackOverflowError:</strong> Jeder wartende Aufruf belegt Speicher auf dem Aufrufstapel. Java reserviert dafür nur einen begrenzten Bereich. Ist er voll, bricht das Programm mit einem <code>StackOverflowError</code> ab, meist nach einigen Tausend Aufrufen. Die Online-IDE hat keine solche Grenze: Sie würde weiterrechnen, bis der Browser abstürzt (nach 30 Sekunden belegt sie schon fast 3 GB). Deshalb passt auf dieser Seite ein <strong>Wächter</strong> auf. Er hält das Programm an, sobald mehr als 10 000 Aufrufe gleichzeitig warten, und meldet es wie Java. Auf online-ide.de gibt es den Wächter nicht. Dort musst du selbst auf ■ (Stopp) drücken.</div>
+                    <p>Im Labor siehst du dasselbe im Kleinen: Hier ist der Stapel schon bei 13 Aufrufen voll.</p>
+                    <div data-aufruflabor="fassungB"></div>
+                    <details class="denk"><summary>Denkanstoß zu c)</summary>
+                        <p>Starte Fassung B im Labor einmal mit einer geraden und einmal mit einer ungeraden Zahl. Welche Werte kann <code>n</code> annehmen, und welche davon fängt <code>n == 0</code> ab?</p>
+                    </details>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-5-algorithmen.pdf">📝 Blatt 1.5 · Aufgabe 2</a></p>
+                </div>
+            </section>
+
+            <section id="labor" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🧩</span><h2>Üben<small>Aufruf-Labor und Aufgabe 3: Was passiert in jedem Schritt?</small></h2></div>
+                <div class="phase-body">
+                    <p>Das Labor spielt einen Algorithmus Schritt für Schritt ab und baut dabei die Aufruftabelle und den Aufrufstapel auf, bei <code>fib</code> auch den Aufrufbaum. Überlege vor jedem Klick, was als Nächstes passiert. Mit <strong>„Rückgaben selbst vorhersagen“</strong> musst du jede Rückgabe eintragen, bevor das Labor sie zeigt. Für die Algorithmen, die du im Projekt selbst programmierst, steht statt Java-Code eine Regel in Worten da. Blende sie erst ein, wenn du selbst überlegt hast.</p>
+                    <div data-aufruflabor="countdown,ggT,quersumme,umrechnen,fib,fassungB" data-start="ggT"></div>
+                    <ol class="aufgaben">
+                        <li><code>ggT(84, 36)</code>: Fülle zuerst die Aufruftabelle auf dem Blatt aus (Aufgabe 3a). Prüfe dann hier mit „Rückgaben selbst vorhersagen“.</li>
+                        <li><code>ggT(36, 84)</code>: Was passiert im ersten Aufruf mit den Parametern? Wie viele Aufrufe braucht es im Vergleich zu a) (Aufgabe 3b)?</li>
+                        <li>Für welche Zahlen wird die Tabelle beim ggT besonders lang? Probiere zum Beispiel <code>ggT(89, 55)</code> und vergleiche mit den Zahlen von <code>fib</code>.</li>
+                        <li><code>umrechnen(22, 2)</code> und <code>umrechnen(22, 3)</code>: Wie beeinflusst <code>basis</code> die Zahl der Aufrufe und das Ergebnis (Aufgabe 4b)?</li>
+                        <li><code>fib(4)</code> und <code>fib(5)</code>: Welche Aufrufe kommen mehrfach vor? Zeichne den Aufrufbaum von <code>fib(4)</code> auf dem Blatt (Aufgabe 5b) und vergleiche.</li>
+                    </ol>
+                    <details class="denk"><summary>Denkanstoß zu c)</summary>
+                        <p>Bei <code>ggT(89, 55)</code> stehen im zweiten Aufruf 55 und 34, dann 34 und 21 … Kommen dir diese Zahlen bekannt vor? Aufeinanderfolgende Fibonacci-Zahlen sind für Euklid der schlimmste Fall.</p>
+                    </details>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-5-algorithmen.pdf">📝 Blatt 1.5 · Aufgabe 3</a></p>
+                </div>
+            </section>
+
+            <section id="projekt" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">✏️</span><h2>Verändern<small>Aufgaben 2 bis 6: Projekt Rekursive Algorithmen</small></h2></div>
+                <div class="phase-body">
+                    <p>Das Projekt baut nicht auf der Taxizentrale auf. In der Klasse <code>Algorithmen</code> sind <code>countdown</code> und <code>ggT</code> fertig, für die anderen Methoden stehen Platzhalter mit TODO-Nummern passend zum Blatt. Das Hauptprogramm hat für jede Aufgabe einen Abschnitt, den du einschaltest, indem du die <code>//</code> davor entfernst.</p>
+                    <div class="konzept">
+                        <h4>Neu: static</h4>
+                        <p>Alle Methoden in <code>Algorithmen</code> sind <code>static</code>. Sie gehören zur Klasse, nicht zu einem Objekt, und werden über den Klassennamen aufgerufen: <code>Algorithmen.ggT(84, 36)</code>. Das passt, weil sie nur mit ihren Parametern rechnen und kein Attribut eines Objekts brauchen. Du kennst das schon von <code>Math.random()</code>.</p>
+                    </div>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 2 (TODO 2):</strong> Fassung B in <code>Experiment</code> reparieren (siehe Problem).</li>
+                        <li><strong>Aufgabe 4 (TODO 4a–c):</strong> Plane jede Methode zuerst auf dem Blatt mit den drei Fragen, dann programmiere: <code>quersumme(n)</code>, <code>umrechnen(n, basis)</code> und <code>umdrehen(s)</code>. Alle drei sind linear rekursiv.</li>
+                        <li><strong>Aufgabe 5 (TODO 5a, 5b):</strong> <code>fib(n)</code> nach der Definition und ein Zähler, der jeden Aufruf mitzählt. Schalte den Abschnitt Aufgabe 5 ein und trage die Zahl der Aufrufe auf dem Blatt ein. Was passiert bei <code>fib(-1)</code>?</li>
+                        <li><strong>Aufgabe 6 (TODO 6):</strong> Der Tresor. Sein Code entsteht, wenn du vier deiner Algorithmen hintereinanderschaltest: Die Ausgabe des einen ist die Eingabe des nächsten.</li>
+                    </ol>
+                    <div class="kette" aria-label="Kette der vier Algorithmen">
+                        <span>fib(17)</span><span class="pfeil">→</span><span>quersumme(…)</span><span class="pfeil">→</span><span>umrechnen(…, 2)</span><span class="pfeil">→</span><span>umdrehen(…)</span><span class="pfeil">→</span><span class="ziel">tresor.oeffnen(code)</span>
+                    </div>
+                    <p>Der Tresor entschlüsselt damit eine Caesar-Nachricht (Klasse 11). Stimmt auch nur ein Zwischenwert nicht, erscheint Buchstabensalat.</p>
+                    <div class="ide-block" id="ide">
+                        <div class="ide-kopf"><h3>Projekt Rekursive Algorithmen</h3></div>
+                        <!-- IDE-START algorithmen -->
+<div class="java-online" style="width:100%;height:720px" data-java-online="{ 'id': 'i12-15-algorithmen', 'speed': 1000000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true, 'withErrorList': true, 'jsonFilename': '12-1-5 Algorithmen.json', 'enableFileAccess': true, 'enableRunExitStatusAccess': true }">
+    <script type="text/plain" title="Hauptprogramm.java">
+// Station 1.5: Rekursive Algorithmen
+// Zu jeder Aufgabe auf dem Blatt gibt es hier einen Abschnitt.
+// Abschnitt einschalten: // vor den Zeilen entfernen (Zeilen markieren, dann Strg + #).
+
+// ----- Aufgabe 1: Hin und zurück. Erst vorhersagen, dann starten! -----
+Algorithmen.countdown(3);
+
+// ----- Aufgabe 2: Wenn die Rekursion nicht endet -----
+// Immer nur EINE Zeile einschalten. Der Wächter auf der Website hält das Programm an,
+// sobald mehr als 10 000 Aufrufe gleichzeitig warten.
+// Experiment.fassungA(3);
+// Experiment.fassungB(3);
+// Experiment.fassungC(3);
+
+// ----- Aufgabe 3: Aufruftabelle zum ggT. Erst auf dem Blatt, dann hier prüfen -----
+// println("ggT(84, 36) = " + Algorithmen.ggT(84, 36));
+// println("ggT(36, 84) = " + Algorithmen.ggT(36, 84));
+
+// ----- Aufgabe 4: lineare Rekursion (TODO 4a bis 4c in Algorithmen) -----
+// println("quersumme(4711) = " + Algorithmen.quersumme(4711));
+// println("umrechnen(22, 2) = " + Algorithmen.umrechnen(22, 2));
+// println("umrechnen(22, 3) = " + Algorithmen.umrechnen(22, 3));
+// println("umdrehen(\"Regal\") = " + Algorithmen.umdrehen("Regal"));
+
+// ----- Aufgabe 5: verzweigte Rekursion (TODO 5a und 5b in Algorithmen) -----
+// for (int n = 5; n <= 25; n = n + 5) {
+//    Algorithmen.aufrufe = 0;
+//    int f = Algorithmen.fib(n);
+//    println("fib(" + n + ") = " + f + ", Aufrufe: " + Algorithmen.aufrufe);
+// }
+
+// ----- Aufgabe 6: Der Tresor (TODO 6) -----
+// Der Code entsteht in vier Schritten:
+//   (1) die Fibonacci-Zahl fib(17)
+//   (2) davon die Quersumme
+//   (3) diese Zahl im Zweiersystem
+//   (4) diese Ziffern rückwärts gelesen
+// Tresor tresor = new Tresor();
+// String code = "0";   // TODO 6: Code mit deinen Methoden berechnen
+// tresor.oeffnen(code);
+    </script>
+    <script type="text/plain" title="Algorithmen.java">
+/**
+ * Station 1.5: Rekursive Algorithmen.
+ * Alle Methoden sind static: Man ruft sie über den Klassennamen auf,
+ * z. B. Algorithmen.ggT(84, 36). Ein Objekt braucht man dafür nicht.
+ * Suche (Strg + F) nach "TODO". Die Platzhalter liefern absichtlich falsche Werte.
+ */
+public class Algorithmen {
+
+   // ===== Aufgabe 1: Hin und zurück (fertig) =====
+   public static void countdown(int n) {
+      if (n == 0) {                    // Abbruchbedingung
+         println("Start!");
+      } else {
+         println("hin " + n);
+         countdown(n - 1);             // rekursiver Aufruf
+         println("zurück " + n);
+      }
+   }
+
+   // ===== Aufgabe 3: größter gemeinsamer Teiler nach Euklid (fertig) =====
+   public static int ggT(int a, int b) {
+      if (b == 0) {                    // Abbruchbedingung
+         return a;
+      }
+      return ggT(b, a % b);            // rekursiver Aufruf mit kleineren Zahlen
+   }
+
+   // ===== Aufgabe 4: lineare Rekursion =====
+
+   // Quersumme: quersumme(4711) = 4 + 7 + 1 + 1 = 13
+   public static int quersumme(int n) {
+      return -1;      // TODO 4a (Aufgabe 4): Platzhalter ersetzen
+   }
+
+   // Zahl n (n >= 0) in der Basis basis (2 bis 16) als Text: umrechnen(22, 2) = "10110"
+   // Die Ziffer für einen Rest r liefert ziffern.charAt(r), z. B. ziffern.charAt(11) = 'B'.
+   public static String umrechnen(int n, int basis) {
+      String ziffern = "0123456789ABCDEF";
+      return "?";     // TODO 4b (Aufgabe 4): Platzhalter ersetzen
+   }
+
+   // Text rückwärts: umdrehen("Regal") = "lageR"
+   // Nützlich: s.length(), s.charAt(0), s.substring(1) (alles ab dem 2. Zeichen)
+   public static String umdrehen(String s) {
+      return "?";     // TODO 4c (Aufgabe 4): Platzhalter ersetzen
+   }
+
+   // ===== Aufgabe 5: verzweigte Rekursion =====
+
+   // Zählt, wie oft fib aufgerufen wird. Das Hauptprogramm setzt ihn vorher auf 0.
+   public static int aufrufe = 0;
+
+   // Fibonacci-Zahlen 0, 1, 1, 2, 3, 5, 8, 13, …
+   // fib(0) = 0, fib(1) = 1, fib(n) = fib(n - 1) + fib(n - 2)
+   public static int fib(int n) {
+      // TODO 5b (Aufgabe 5c): jeden Aufruf mitzählen
+      return -1;      // TODO 5a (Aufgabe 5a): Platzhalter ersetzen
+   }
+}
+    </script>
+    <script type="text/plain" title="Experiment.java">
+/**
+ * Aufgabe 2: Drei Fassungen von countdown, die nicht enden.
+ * Starte sie einzeln im Hauptprogramm und beobachte die Ausgabe.
+ * Echtes Java bricht nach einigen Tausend wartenden Aufrufen mit einem
+ * StackOverflowError ab. Die Online-IDE hat keine solche Grenze, deshalb
+ * übernimmt das hier auf der Website der Wächter.
+ */
+public class Experiment {
+
+   // Fassung A
+   public static void fassungA(int n) {
+      println(n);
+      fassungA(n - 1);
+   }
+
+   // Fassung B
+   // TODO 2 (Aufgabe 2c): Ändere nur die Abbruchbedingung,
+   // sodass die Methode für jede Startzahl endet.
+   public static void fassungB(int n) {
+      if (n == 0) {
+         println("Start!");
+      } else {
+         println(n);
+         fassungB(n - 2);
+      }
+   }
+
+   // Fassung C
+   public static void fassungC(int n) {
+      if (n == 0) {
+         println("Start!");
+      } else {
+         println(n);
+         fassungC(n);
+      }
+   }
+}
+    </script>
+    <script type="text/plain" title="Tresor.java">
+/**
+ * Aufgabe 6: Der Tresor. Diese Klasse ist fertig, du brauchst nur den Code.
+ * Die Nachricht ist mit dem Caesar-Verfahren verschlüsselt (Klasse 11).
+ * Der Schlüssel ist der Wert des Codes im Zweiersystem.
+ * Auch hier arbeiten zwei rekursive Methoden: wert und entschluesseln.
+ */
+public class Tresor {
+   private String geheim = "GERFBE BSSRA! HZ ERXHEFVBA MH IREFGRURA, ZHFFG QH MHREFG ERXHEFVBA IREFGRURA.";
+   private String abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+   public void oeffnen(String code) {
+      String text = entschluesseln(geheim, wert(code) % 26);
+      println("Code " + code + ":");
+      println(text);
+      if (!text.startsWith("TRESOR OFFEN")) {
+         println("Der Tresor bleibt zu. Prüfe die Zwischenwerte der vier Schritte!");
+      }
+   }
+
+   // Wert einer Ziffernfolge im Zweiersystem: wert("1101") = 2 * wert("110") + 1
+   public int wert(String ziffern) {
+      if (ziffern.length() == 0) {
+         return 0;
+      }
+      int letzte = 0;
+      if (ziffern.endsWith("1")) {
+         letzte = 1;
+      }
+      return 2 * wert(ziffern.substring(0, ziffern.length() - 1)) + letzte;
+   }
+
+   // Verschiebt jeden Großbuchstaben um k Stellen im Alphabet zurück, Zeichen für Zeichen
+   public String entschluesseln(String text, int k) {
+      if (text.length() == 0) {
+         return "";
+      }
+      String erstes = text.substring(0, 1);
+      int pos = abc.indexOf(erstes);
+      if (pos >= 0) {
+         erstes = abc.substring((pos - k + 26) % 26, (pos - k + 26) % 26 + 1);
+      }
+      return erstes + entschluesseln(text.substring(1), k);
+   }
+}
+    </script>
+    <script type="text/plain" title="AlgorithmenTest.java" data-online-ide="{ 'readOnly': true }">
+/**
+ * Selbsttest der rekursiven Algorithmen. Bitte nicht verändern!
+ * Starten: Klick auf das kleine Dreieck links neben "@Test"
+ * (ganz oben: alle Tests) oder auf der Website "Tests starten".
+ */
+public class AlgorithmenTest {
+
+   @Test
+   public void quersummeEinstellig() {
+      Assertions.assertEquals(7, Algorithmen.quersumme(7), "quersumme(7): Eine einstellige Zahl ist ihre eigene Quersumme.");
+      Assertions.assertEquals(0, Algorithmen.quersumme(0), "quersumme(0) muss 0 sein.");
+   }
+
+   @Test
+   public void quersummeMehrstellig() {
+      Assertions.assertEquals(13, Algorithmen.quersumme(4711), "quersumme(4711) = 4 + 7 + 1 + 1 = 13");
+      Assertions.assertEquals(1, Algorithmen.quersumme(1000), "quersumme(1000) = 1");
+      Assertions.assertEquals(22, Algorithmen.quersumme(1597), "quersumme(1597) = 22");
+   }
+
+   @Test
+   public void umrechnenBinaer() {
+      Assertions.assertEquals("10110", Algorithmen.umrechnen(22, 2), "umrechnen(22, 2) muss \"10110\" sein.");
+      Assertions.assertEquals("1", Algorithmen.umrechnen(1, 2), "umrechnen(1, 2) muss \"1\" sein.");
+      Assertions.assertEquals("0", Algorithmen.umrechnen(0, 2), "umrechnen(0, 2) muss \"0\" sein.");
+   }
+
+   @Test
+   public void umrechnenAndereBasis() {
+      Assertions.assertEquals("211", Algorithmen.umrechnen(22, 3), "umrechnen(22, 3) muss \"211\" sein.");
+      Assertions.assertEquals("FF", Algorithmen.umrechnen(255, 16), "umrechnen(255, 16) muss \"FF\" sein.");
+      Assertions.assertEquals("2026", Algorithmen.umrechnen(2026, 10), "umrechnen(2026, 10) muss \"2026\" sein.");
+   }
+
+   @Test
+   public void umdrehenKurz() {
+      Assertions.assertEquals("", Algorithmen.umdrehen(""), "umdrehen(\"\") muss \"\" sein.");
+      Assertions.assertEquals("a", Algorithmen.umdrehen("a"), "umdrehen(\"a\") muss \"a\" sein.");
+   }
+
+   @Test
+   public void umdrehenLang() {
+      Assertions.assertEquals("lageR", Algorithmen.umdrehen("Regal"), "umdrehen(\"Regal\") muss \"lageR\" sein.");
+      Assertions.assertEquals("01101", Algorithmen.umdrehen("10110"), "umdrehen(\"10110\") muss \"01101\" sein.");
+   }
+
+   @Test
+   public void fibAnfang() {
+      Assertions.assertEquals(0, Algorithmen.fib(0), "fib(0) muss 0 sein.");
+      Assertions.assertEquals(1, Algorithmen.fib(1), "fib(1) muss 1 sein.");
+      Assertions.assertEquals(1, Algorithmen.fib(2), "fib(2) = fib(1) + fib(0) = 1");
+   }
+
+   @Test
+   public void fibWeiter() {
+      Assertions.assertEquals(55, Algorithmen.fib(10), "fib(10) muss 55 sein.");
+      Assertions.assertEquals(1597, Algorithmen.fib(17), "fib(17) muss 1597 sein.");
+   }
+
+   @Test
+   public void fibAufrufe() {
+      Algorithmen.aufrufe = 0;
+      Algorithmen.fib(5);
+      Assertions.assertEquals(15, Algorithmen.aufrufe, "fib(5) ruft fib insgesamt 15-mal auf (den ersten Aufruf mitgezählt).");
+      Algorithmen.aufrufe = 0;
+      Algorithmen.fib(10);
+      Assertions.assertEquals(177, Algorithmen.aufrufe, "fib(10) ruft fib insgesamt 177-mal auf.");
+   }
+}
+    </script>
+</div>
+                        <!-- IDE-ENDE algorithmen -->
+                        <p class="ide-downloads">💾 Eigenen Stand sichern: Diskettensymbol in der IDE-Leiste („Workspace in Datei speichern“), der Name <code>12-1-5 Algorithmen.json</code> ist schon vorgeschlagen. Laden: Ordnersymbol daneben. · <a href="Online-IDE/12-1-5%20Algorithmen.json" download>Ausgangsprojekt für online-ide.de</a></p>
+                    </div>
+                    <div class="coach" data-coach="i12-15-algorithmen"></div>
+                    <div class="lw" data-loesungsweg="TODO 2: Fassung B reparieren">
+                        <template data-stufe="Tipp"><p>Bei einer ungeraden Startzahl springt <code>n</code> über die 0 hinweg: 3, 1, −1, −3 … Die Abbruchbedingung muss also auch alle Zahlen <em>unter</em> 0 auffangen.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="k">if</span> (n &lt;= 0) {      <span class="c">// fängt 0 und alle negativen Zahlen ab</span>
+   println("Start!");
+}</pre></template>
+                    </div>
+                    <div class="lw" data-loesungsweg="TODO 4a: quersumme()">
+                        <template data-stufe="Tipp 1"><p>Abbruchbedingung: Eine einstellige Zahl ist ihre eigene Quersumme. Die letzte Ziffer von <code>n</code> liefert <code>n % 10</code>, die Zahl ohne die letzte Ziffer <code>n / 10</code> (Ganzzahldivision).</p></template>
+                        <template data-stufe="Tipp 2"><p>Zusammensetzen: Quersumme von <code>n</code> = letzte Ziffer + Quersumme vom Rest. Vergleiche mit der Aufruftabelle im Labor.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="k">public static int</span> quersumme(<span class="k">int</span> n) {
+   <span class="k">if</span> (n &lt; 10) {
+      <span class="k">return</span> n;
+   }
+   <span class="k">return</span> n % 10 + quersumme(n / 10);
+}</pre></template>
+                    </div>
+                    <div class="lw" data-loesungsweg="TODO 4b: umrechnen()">
+                        <template data-stufe="Tipp 1"><p>Wie bei der Quersumme, nur mit <code>basis</code> statt 10: <code>n % basis</code> ist die letzte Ziffer, <code>n / basis</code> der Rest. Ist <code>n &lt; basis</code>, bleibt nur eine Ziffer übrig.</p></template>
+                        <template data-stufe="Tipp 2"><p>Die Ziffer für einen Rest <code>r</code> liefert <code>ziffern.charAt(r)</code>. Die letzte Ziffer gehört <em>hinter</em> die Ziffern des Rests. Im Abbruchfall machst du mit <code>"" + …</code> einen Text daraus.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="k">public static</span> String umrechnen(<span class="k">int</span> n, <span class="k">int</span> basis) {
+   String ziffern = "0123456789ABCDEF";
+   <span class="k">if</span> (n &lt; basis) {
+      <span class="k">return</span> "" + ziffern.charAt(n);
+   }
+   <span class="k">return</span> umrechnen(n / basis, basis) + ziffern.charAt(n % basis);
+}</pre></template>
+                    </div>
+                    <div class="lw" data-loesungsweg="TODO 4c: umdrehen()">
+                        <template data-stufe="Tipp"><p>Ein leerer Text oder ein einzelnes Zeichen sieht umgedreht genauso aus. Sonst: Dreh den Rest ab dem zweiten Zeichen um (<code>s.substring(1)</code>) und hänge das erste Zeichen (<code>s.charAt(0)</code>) hinten an.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="k">public static</span> String umdrehen(String s) {
+   <span class="k">if</span> (s.length() &lt;= 1) {
+      <span class="k">return</span> s;
+   }
+   <span class="k">return</span> umdrehen(s.substring(1)) + s.charAt(0);
+}</pre></template>
+                    </div>
+                    <div class="lw" data-loesungsweg="TODO 5: fib() mit Aufrufzähler">
+                        <template data-stufe="Tipp 1"><p>Übersetze die Definition Zeile für Zeile: zwei Abbruchbedingungen für 0 und 1, sonst die Summe aus zwei rekursiven Aufrufen.</p></template>
+                        <template data-stufe="Tipp 2"><p>Der Zähler <code>aufrufe++</code> muss als allererste Anweisung stehen, noch vor den Abbruchbedingungen. Sonst fehlen die Aufrufe, die sofort enden.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="k">public static int</span> fib(<span class="k">int</span> n) {
+   aufrufe++;
+   <span class="k">if</span> (n == 0) {
+      <span class="k">return</span> 0;
+   }
+   <span class="k">if</span> (n == 1) {
+      <span class="k">return</span> 1;
+   }
+   <span class="k">return</span> fib(n - 1) + fib(n - 2);
+}</pre></template>
+                    </div>
+                    <div class="lw" data-loesungsweg="TODO 6: Der Tresor">
+                        <template data-stufe="Tipp"><p>Speichere jedes Zwischenergebnis in einer eigenen Variable und gib sie mit <code>println</code> aus. So siehst du, an welcher Stelle der Kette etwas nicht stimmt. Die Zwischenwerte stehen auch auf dem Blatt (Aufgabe 6).</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv">Tresor tresor = <span class="k">new</span> Tresor();
+<span class="k">int</span> f17 = Algorithmen.fib(17);                    <span class="c">// 1597</span>
+<span class="k">int</span> summe = Algorithmen.quersumme(f17);           <span class="c">// 22</span>
+String binaer = Algorithmen.umrechnen(summe, 2);  <span class="c">// "10110"</span>
+String code = Algorithmen.umdrehen(binaer);       <span class="c">// "01101"</span>
+tresor.oeffnen(code);</pre></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-1-5-algorithmen.pdf">📝 Blatt 1.5 · Aufgaben 4 bis 6</a></p>
+                </div>
+            </section>
+
+            <section id="selbst" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Selbst bauen<small>Ein Baum aus Bäumen und drei weitere Klassiker</small></h2></div>
+                <div class="phase-body">
+                    <h3>a) Fraktalbaum: verzweigte Rekursion als Bild</h3>
+                    <p>Ein Ast trägt zwei kleinere Bäume, und jeder davon wieder zwei noch kleinere. Die Turtle zeichnet einen Ast, dreht sich, zeichnet den linken Baum, dreht sich, zeichnet den rechten Baum und läuft zurück. Ändere im Hauptprogramm <code>stufe</code>, <code>winkel</code> und <code>faktor</code>. Sage vorher, wie sich das Bild ändert.</p>
+                    <ol class="aufgaben">
+                        <li>Wie viele Äste entstehen bei <code>stufe</code> 1, 2, 3 und 6? Finde eine Formel. Wo hast du diese Zahlen schon gesehen?</li>
+                        <li>Stelle <code>winkel = 90</code> und <code>faktor = 0.5</code> ein. Was entsteht? Und bei <code>winkel = 10</code>?</li>
+                        <li>Lösche Schritt ⑦. Warum muss die Turtle am Ende zurücklaufen?</li>
+                        <li>Starte mit <code>stufe = -1</code>. Was meldet der Wächter, und warum?</li>
+                        <li>Zusatz: Ergänze einen dritten, mittleren Baum. Wie viele Äste sind es jetzt?</li>
+                    </ol>
+                    <div class="ide-block">
+                        <div class="ide-kopf"><h3>Fraktalbaum</h3></div>
+                        <!-- IDE-START fraktal -->
+<div class="java-online" style="width:100%;height:620px" data-java-online="{ 'id': 'i12-15-fraktal', 'speed': 1000000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true, 'withErrorList': true, 'jsonFilename': '12-1-5 Fraktalbaum.json', 'enableFileAccess': true, 'enableRunExitStatusAccess': true }">
+    <script type="text/plain" title="Hauptprogramm.java">
+// Station 1.5, Selbst bauen: ein Baum aus lauter kleineren Bäumen.
+// Ändere die drei Werte. Sage vorher, wie sich das Bild ändert, dann starte.
+int stufe = 6;          // Wie oft verzweigt sich der Baum?
+double winkel = 25;     // Wie weit spreizen sich die Äste (in Grad)?
+double faktor = 0.7;    // Um welchen Faktor wird jeder Ast kürzer?
+
+World welt = new World(800, 600);
+welt.setBackgroundColor(Color.white);
+Turtle t = new Turtle(400, 590, false);
+t.turn(90);                         // nach oben schauen
+t.setBorderColor(Color.saddlebrown);
+Fraktal.ast(t, 160, stufe, winkel, faktor);
+println("Gezeichnete Äste: " + Fraktal.aeste);
+    </script>
+    <script type="text/plain" title="Fraktal.java">
+/**
+ * Verzweigte Rekursion als Bild: Jeder Ast trägt zwei kleinere Bäume.
+ */
+public class Fraktal {
+   public static int aeste = 0;
+
+   // Zeichnet einen Ast und darauf zwei kleinere Bäume.
+   // Danach steht die Turtle wieder genau dort, wo sie angefangen hat, und schaut in dieselbe Richtung.
+   public static void ast(Turtle t, double laenge, int stufe, double winkel, double faktor) {
+      if (stufe == 0) {                  // Abbruchbedingung
+         return;
+      }
+      aeste++;
+      t.forward(laenge);                 // ① Ast zeichnen
+      t.turn(winkel);                    // ② nach links drehen
+      ast(t, laenge * faktor, stufe - 1, winkel, faktor);   // ③ linker Baum
+      t.turn(-2 * winkel);               // ④ nach rechts drehen
+      ast(t, laenge * faktor, stufe - 1, winkel, faktor);   // ⑤ rechter Baum
+      t.turn(winkel);                    // ⑥ wieder geradeaus
+      t.forward(-laenge);                // ⑦ zurück zum Anfang des Asts
+   }
+}
+    </script>
+</div>
+                        <!-- IDE-ENDE fraktal -->
+                        <p class="ide-downloads"><a href="Online-IDE/12-1-5%20Fraktalbaum.json" download>Projekt Fraktalbaum für online-ide.de</a></p>
+                    </div>
+                    <div class="coach" data-coach="i12-15-fraktal"></div>
+                    <div class="lw" data-loesungsweg="a) Anzahl der Äste">
+                        <template data-stufe="Tipp"><p>Zähle stufenweise: Der Stamm ist 1 Ast, auf ihm sitzen 2 Äste, auf denen 4 … Wie viele kommen auf jeder Stufe dazu?</p></template>
+                        <template data-stufe="Lösung" data-halten><p>1, 3, 7 und 63 Äste: 1 + 2 + 4 + … + 2<sup>stufe − 1</sup> = 2<sup>stufe</sup> − 1. Genau so viele Aufrufe macht jede verzweigte Rekursion mit zwei Aufrufen, die nach <code>stufe</code> Ebenen endet. Mit drittem Baum (e): 1 + 3 + 9 + … = (3<sup>stufe</sup> − 1) / 2, bei Stufe 6 also 364.</p></template>
+                    </div>
+                    <div class="lw" data-loesungsweg="c) Warum zurücklaufen?">
+                        <template data-stufe="Lösung" data-halten><p>Jeder Aufruf verspricht: Danach steht die Turtle wieder dort, wo sie angefangen hat, und schaut in dieselbe Richtung. Nur deshalb kann der Aufrufer nach dem linken Baum einfach weiterdrehen und den rechten zeichnen. Fehlt ⑦, beginnt jeder rechte Baum an der Spitze des linken.</p></template>
+                    </div>
+
+                    <h3 class="mt-4">b) Binäre Suche: halbieren statt durchlaufen</h3>
+                    <p>In einem <strong>sortierten</strong> Array musst du nicht jede Zahl ansehen. Schau in die Mitte: Ist die gesuchte Zahl kleiner, suche links weiter, sonst rechts. Ergänze in <code>Algorithmen</code>:</p>
+                    <pre class="jv"><span class="c">// Sucht gesucht in zahlen[links] … zahlen[rechts]. Rückgabe: Index oder -1</span>
+<span class="k">public static int</span> suche(<span class="k">int</span>[] zahlen, <span class="k">int</span> gesucht, <span class="k">int</span> links, <span class="k">int</span> rechts)</pre>
+                    <p>Aufruf zum Beispiel mit <code>int[] primzahlen = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31};</code> und <code>Algorithmen.suche(primzahlen, 23, 0, 10)</code>. Im Code stehen zwei rekursive Aufrufe. Ist die binäre Suche trotzdem linear rekursiv? Wie viele Aufrufe braucht sie höchstens bei 1 000 000 Zahlen?</p>
+                    <div class="lw" data-loesungsweg="b) Binäre Suche">
+                        <template data-stufe="Tipp 1"><p>Zwei Abbruchbedingungen: Der Bereich ist leer (<code>links &gt; rechts</code>, nicht gefunden) oder in der Mitte steht die gesuchte Zahl. Die Mitte ist <code>(links + rechts) / 2</code>.</p></template>
+                        <template data-stufe="Tipp 2"><p>Ist die gesuchte Zahl kleiner als die in der Mitte, suche in <code>links … mitte - 1</code> weiter, sonst in <code>mitte + 1 … rechts</code>. Die Mitte selbst ist schon geprüft.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="k">public static int</span> suche(<span class="k">int</span>[] zahlen, <span class="k">int</span> gesucht, <span class="k">int</span> links, <span class="k">int</span> rechts) {
+   <span class="k">if</span> (links &gt; rechts) {                  <span class="c">// Bereich leer: nicht gefunden</span>
+      <span class="k">return</span> -1;
+   }
+   <span class="k">int</span> mitte = (links + rechts) / 2;
+   <span class="k">if</span> (zahlen[mitte] == gesucht) {        <span class="c">// gefunden</span>
+      <span class="k">return</span> mitte;
+   }
+   <span class="k">if</span> (gesucht &lt; zahlen[mitte]) {
+      <span class="k">return</span> suche(zahlen, gesucht, links, mitte - 1);   <span class="c">// linke Hälfte</span>
+   }
+   <span class="k">return</span> suche(zahlen, gesucht, mitte + 1, rechts);      <span class="c">// rechte Hälfte</span>
+}</pre>
+<p>Linear rekursiv: In jedem Durchlauf wird höchstens <em>einer</em> der beiden Aufrufe ausgeführt. Jeder Aufruf halbiert den Bereich, bei 1 000 000 Zahlen sind es also höchstens 20 Aufrufe (2<sup>20</sup> ≈ 1 000 000).</p></template>
+                    </div>
+
+                    <h3 class="mt-4">c) Aufrufbaum als Text</h3>
+                    <p>Schreibe <code>fibProtokoll(int n, String einrueckung)</code>: wie <code>fib</code>, gibt aber bei jedem Aufruf <code>einrueckung + "fib(" + n + ")"</code> aus und vor der Rückgabe <code>einrueckung + "= " + ergebnis</code>. Jeder rekursive Aufruf bekommt drei Leerzeichen mehr Einrückung. So zeichnet das Programm seinen eigenen Aufrufbaum.</p>
+                    <div class="lw" data-loesungsweg="c) fibProtokoll">
+                        <template data-stufe="Tipp"><p>Rechne die beiden rekursiven Aufrufe in zwei eigenen Zeilen aus (<code>int links = …; int rechts = …;</code>). Dann erscheinen sie in derselben Reihenfolge wie im Labor.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="k">public static int</span> fibProtokoll(<span class="k">int</span> n, String einrueckung) {
+   println(einrueckung + "fib(" + n + ")");
+   <span class="k">int</span> ergebnis;
+   <span class="k">if</span> (n == 0 || n == 1) {
+      ergebnis = n;
+   } <span class="k">else</span> {
+      <span class="k">int</span> links = fibProtokoll(n - 1, einrueckung + "   ");
+      <span class="k">int</span> rechts = fibProtokoll(n - 2, einrueckung + "   ");
+      ergebnis = links + rechts;
+   }
+   println(einrueckung + "= " + ergebnis);
+   <span class="k">return</span> ergebnis;
+}</pre></template>
+                    </div>
+
+                    <h3 class="mt-4">d) Türme von Hanoi</h3>
+                    <p>Ein Turm aus <code>n</code> Scheiben soll von Stab A nach Stab C, Stab B hilft. Es darf immer nur eine Scheibe bewegt werden und nie eine größere auf einer kleineren liegen. Die Idee in drei Sätzen: Bring die oberen <code>n − 1</code> Scheiben nach B. Leg die größte nach C. Bring die <code>n − 1</code> Scheiben von B nach C. Schreibe <code>hanoi(int n, String von, String nach, String ueber)</code>, das alle Züge ausgibt. Wie viele Züge sind es bei 3, 4 und 10 Scheiben?</p>
+                    <div class="lw" data-loesungsweg="d) Türme von Hanoi">
+                        <template data-stufe="Tipp"><p>Abbruchbedingung: Bei 0 Scheiben gibt es nichts zu tun. Die beiden „Bring die n − 1 Scheiben …“ sind die zwei rekursiven Aufrufe, dazwischen steht eine Ausgabe. Achte darauf, welcher Stab jeweils hilft.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="k">public static void</span> hanoi(<span class="k">int</span> n, String von, String nach, String ueber) {
+   <span class="k">if</span> (n == 0) {
+      <span class="k">return</span>;
+   }
+   hanoi(n - 1, von, ueber, nach);               <span class="c">// n − 1 Scheiben aus dem Weg</span>
+   println("Scheibe " + n + ": " + von + " → " + nach);
+   hanoi(n - 1, ueber, nach, von);               <span class="c">// und wieder obendrauf</span>
+}</pre>
+<p>Aufruf: <code>Algorithmen.hanoi(3, "A", "C", "B");</code> 7, 15 und 1023 Züge: 2<sup>n</sup> − 1, wie die Äste des Fraktalbaums.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="anders" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Es geht auch anders: besprecht mündlich, warum</small></h2></div>
+                <div class="phase-body">
+                    <p>Überlegt zu zweit, was jede Variante besser und was sie schlechter macht. Die Hinweise sind zum Nachlesen <em>nach</em> dem Gespräch: Halte dazu den Knopf gedrückt.</p>
+                    <div class="idee"><strong>Fibonacci mit einer Schleife:</strong> Man kann die Folge auch von vorne aufbauen, 0, 1, 1, 2, 3 … mit zwei Variablen. Warum ist das so viel schneller?
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Die Schleife berechnet jede Zahl genau einmal: <code>fib(25)</code> in 25 Schritten statt mit 242 785 Aufrufen. Die rekursive Fassung berechnet dieselben Werte immer wieder (im Aufrufbaum von <code>fib(5)</code> steht <code>fib(2)</code> dreimal). Rekursion ist hier gut zum Verstehen, aber nicht zum Rechnen.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Fibonacci mit Gedächtnis:</strong> Ein Array merkt sich jeden schon berechneten Wert. Vor jeder Rechnung schaut <code>fib</code> zuerst dort nach.
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Dann bleibt die Rekursion, aber jeder Wert wird nur einmal berechnet: Statt Hunderttausender Aufrufe sind es nur noch etwa 2 · n. Das Verfahren heißt Memoisierung. Es braucht zusätzlichen Speicher für das Array.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Eine Abbruchbedingung genügt:</strong> Statt zweier Bedingungen könnte <code>fib</code> auch <code>if (n &lt;= 1) { return n; }</code> schreiben. Was ändert sich, auch bei <code>fib(-1)</code>?
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Für alle n ≥ 0 liefert es dasselbe, der Code wird kürzer. Bei negativem n endet die Rekursion jetzt sofort, gibt aber n zurück, also einen Wert, den die Definition gar nicht kennt. Besser als ein Absturz? Das ist Ansichtssache. Sauberer wäre es, ungültige Eingaben ausdrücklich abzulehnen.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Nichts zu tun auf dem Rückweg:</strong> <code>ggT</code> gibt die Antwort seines Aufrufs nur unverändert weiter, <code>quersumme</code> rechnet noch etwas dazu. Müssten beim <code>ggT</code> eigentlich alle Aufrufe auf dem Stapel warten?
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Nein. Steht der rekursive Aufruf ganz am Ende und wird seine Antwort nur weitergereicht (<strong>Endrekursion</strong>), braucht der Aufrufer sich nichts mehr zu merken. Manche Sprachen machen daraus automatisch eine Schleife, der Stapel wächst dann nicht. Java tut das nicht.</p></template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🌳 Binärbäume</h4>
+                            <p>Schau dir den Aufrufbaum von <code>fib</code> noch einmal an: Jeder Aufruf hat höchstens zwei Folgeaufrufe, links und rechts. Und die binäre Suche halbiert bei jedem Schritt die Möglichkeiten. Im nächsten Kapitel speicherst du Daten selbst in dieser Form, und die Methoden darauf sind, natürlich, rekursiv.</p>
+                            <a class="btn btn-primary btn-sm" href="../binaerbaeume/binbaum.html">Zu den Binärbäumen</a>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>🔁 Zwei Arten von Rekursion</h4>
+                            <p>In 1.3 und 1.4 fragt ein Objekt das nächste (Rekursion über eine Struktur). In 1.5 ruft sich eine Methode mit einem kleineren Wert auf (Rekursion über Werte). Die drei Fragen sind in beiden Fällen dieselben: Abbruchbedingung, Verkleinern, Zusammensetzen.</p>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>📝 Fit für die Klausur</h4>
+                            <p>Du bekommst einen unbekannten rekursiven Algorithmus? Benenne Abbruchbedingung und rekursive Aufrufe, entscheide: linear oder verzweigt? Erstelle eine Aufruftabelle oder einen Aufrufbaum für einen Startwert, gib das Ergebnis an und begründe, für welche Eingaben er nicht endet. Übe das an <code>fib</code> und <code>ggT</code> im Labor.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="1-4-kompositum.html">← 1.4 Kompositum</a>
+                <a class="btn btn-primary" href="../binaerbaeume/binbaum.html">Weiter: Binärbäume →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-1-5-algorithmen-lsg.pdf">Lösung Blatt 1.5 (PDF)</a> <a class="btn btn-tex btn-sm" href="Online-IDE/LSG%2012-1-5%20Algorithmen.json" download>Lösungsprojekt (JSON)</a> <a class="btn btn-outline btn-sm" href="Online-IDE/12-1-5%20Algorithmen.json" download>Ausgangsprojekt (JSON)</a> <a class="btn btn-outline btn-sm" href="Online-IDE/LSG%2012-1-5%20Fraktalbaum.json" download>Fraktalbaum mit drittem Ast (JSON)</a></p>
+                    <p><strong>Einordnung:</strong> Zusatzstation zwischen 1.4 und den Binärbäumen. Sie baut nicht auf Taxi und Liste auf, sondern übt Rekursion über Werte: linear (<code>countdown</code>, <code>ggT</code>, <code>quersumme</code>, <code>umrechnen</code>, <code>umdrehen</code>) und verzweigt (<code>fib</code>, Fraktalbaum, Hanoi). Der Tresor (Aufgabe 6) ist der Verbindungspunkt: Vier Algorithmen werden hintereinandergeschaltet, Zwischenwerte 1597 → 22 → "10110" → "01101". Der Schlüssel ist 13 (ROT13, zufällig, aber ein schöner Gesprächsanlass). Die Anknüpfung an die Binärbäume (Aufrufbaum, Halbieren bei der binären Suche) bleibt bewusst bei Abläufen, die Datenstruktur Baum kommt erst im nächsten Kapitel.</p>
+                    <p><strong>Klausur:</strong> <code>fib</code> ist als Muster für eine Analyseaufgabe angelegt (Blatt Aufgabe 5): Abbruchbedingungen und Aufrufe benennen, linear oder verzweigt, Aufrufbaum, Zahl der Aufrufe, Verhalten bei <code>fib(-1)</code>. Die Karte „Fit für die Klausur“ im Ausblick nennt das Format ohne konkrete Aufgabe.</p>
+                    <p><strong>Wächter:</strong> Die Online-IDE kennt keinen <code>StackOverflowError</code>. Bei endloser Rekursion rechnet sie weiter (gemessen: nach 30 s rund 3 GB Speicher), auf schwachen Geräten stürzt der Tab ab. Der Coach liest deshalb alle 100 ms die Aufruftiefe aus dem Interpreter, hält das Programm über 10 000 wartenden Aufrufen an und schreibt eine rote Meldung mit Methode und letztem Parameter in die Ausgabe. Er nutzt interne Felder der IDE: Ändert sich die IDE, kann er ausfallen, dann hilft nur ■ Stopp. Außerhalb dieser Seite (online-ide.de) gibt es ihn nicht.</p>
+                    <p><strong>Eigenheit der Online-IDE:</strong> Bei <code>a + b</code> wertet sie <code>b</code> zuerst aus. In <code>fib(n - 1) + fib(n - 2)</code> läuft dort also <code>fib(n - 2)</code> zuerst. Ergebnisse und Zahl der Aufrufe stimmen, nur die Reihenfolge eines Protokolls weicht ab. Blatt und Labor folgen Java (links zuerst). In „Selbst bauen c)“ verhindern zwei eigene Zeilen <code>int links = …; int rechts = …;</code> die Abweichung.</p>
+                    <p><strong>Selbsttest und Coach:</strong> <code>AlgorithmenTest.java</code> (schreibgeschützt) enthält 9 Tests zu TODO 4 und 5, alle Platzhalter liefern absichtlich falsche Werte. TODO 2 prüft der Coach am Code (Abbruchbedingung mit <code>&lt;</code> oder <code>&lt;=</code>), TODO 6 an der Ausgabe. Projekt-IDs <code>i12-15-algorithmen</code> und <code>i12-15-fraktal</code>, Bearbeitungsstand im Browser.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>
