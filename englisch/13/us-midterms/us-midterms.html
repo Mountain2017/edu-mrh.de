@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>US Midterms 2026 | English – edu-mrh.de</title>
+    <meta name="description" content="Year 13 self-paced lesson: how the US political system works, why the president's party loses midterms, the 2026 blue wave, how different media tell the story – and what it means for the rest of the world.">
+
+    <!-- Gemeinsames Framework – NICHT entfernen -->
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <!-- Seitenlogik: Sitzverteilung, Wahlkalender, Checks & Balances, Quiz, Notizen (localStorage) -->
+    <script defer src="us-midterms.js"></script>
+
+    <style>
+        /* ============================================================
+           US Midterms 2026 – page styling on top of the framework
+           Page accent = ink/parchment. Red and blue are reserved for the
+           two parties only (D = blue, R = red, always with a letter label).
+           ============================================================ */
+        :root {
+            --ink: #1f2a44;
+            --ink-soft: #3b4766;
+            --paper: #f7f3ea;
+            --gold: #a16207;
+            --gold-light: #fef3c7;
+            --dem: #2563eb;  --dem-light: #dbeafe;
+            --rep: #dc2626;  --rep-light: #fee2e2;
+            --open: #9ca3af;
+            --line: #e2e8f0;
+            --ok: #047857;   --ok-light: #d1fae5;
+            --no: #b91c1c;   --no-light: #fee2e2;
+        }
+        .lead { font-size: 1.08rem; color: var(--dark-light); max-width: 52rem; }
+        .muted { color: var(--gray); font-size: .9rem; }
+        .task-box .muted { color: rgba(255,255,255,.88); }
+        .stamp {
+            display: inline-flex; gap: .45rem; align-items: center; background: var(--gold-light);
+            color: #78350f; border-radius: var(--radius-full); padding: .3rem .9rem; font-size: .85rem; font-weight: 600;
+        }
+        .chapter-header .chapter-number { background: var(--ink); }
+        .chapter-header.bonus .chapter-number { background: var(--gold); }
+        .sub { margin: 2rem 0 .6rem; font-size: 1.2rem; color: var(--ink); }
+        .sub small { font-weight: 500; color: var(--gray); font-size: .85rem; margin-left: .4rem; }
+        .party-d { color: var(--dem); font-weight: 700; }
+        .party-r { color: var(--rep); font-weight: 700; }
+
+        /* ---------- Route (self-paced plan) ---------- */
+        .route { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: .8rem; margin: 1.2rem 0; }
+        .stop {
+            background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: .9rem 1rem;
+            position: relative; text-decoration: none; color: var(--dark); display: block; transition: var(--transition-fast);
+        }
+        .stop:hover { border-color: var(--ink); box-shadow: var(--shadow); }
+        .stop .n { display: inline-flex; width: 28px; height: 28px; border-radius: 50%; background: var(--ink); color: #fff;
+                   align-items: center; justify-content: center; font-weight: 700; font-size: .85rem; margin-right: .35rem; }
+        .stop.bonus .n { background: var(--gold); }
+        .stop strong { font-size: 1rem; }
+        .stop p { margin: .4rem 0 0; font-size: .88rem; color: var(--gray); }
+        .stop .t { font-size: .78rem; font-weight: 700; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .04em; }
+        .stop.done { background: var(--ok-light); border-color: var(--ok); }
+        .stop.done .n { background: var(--ok); }
+        .done-toggle {
+            display: inline-flex; align-items: center; gap: .4rem; margin-top: 1.2rem; padding: .45rem .9rem;
+            border-radius: var(--radius-full); border: 1px solid var(--gray-light); background: #fff; cursor: pointer;
+            font: inherit; font-size: .9rem; color: var(--dark-light);
+        }
+        .done-toggle[aria-pressed="true"] { background: var(--ok-light); border-color: var(--ok); color: var(--ok); font-weight: 600; }
+
+        /* ---------- Night in numbers ---------- */
+        .numbers { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .8rem; margin: 1rem 0; }
+        .num { background: var(--ink); color: #fff; border-radius: var(--radius-md); padding: 1rem; }
+        .num b { display: block; font-size: 2.1rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+        .num span { font-size: .85rem; color: #cbd5e1; }
+
+        /* ---------- Hemicycles ---------- */
+        .chamber-box { background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 1rem; margin: 1rem 0; }
+        .switch { display: inline-flex; border: 1px solid var(--gray-light); border-radius: var(--radius-full); overflow: hidden; }
+        .switch button { border: 0; background: #fff; padding: .45rem 1rem; font: inherit; font-size: .9rem; cursor: pointer; color: var(--dark-light); }
+        .switch button[aria-pressed="true"] { background: var(--ink); color: #fff; font-weight: 600; }
+        .chambers { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: .8rem; }
+        @media (max-width: 700px) { .chambers { grid-template-columns: 1fr; } }
+        .chamber h4 { margin: 0 0 .2rem; font-size: 1rem; }
+        .chamber svg { width: 100%; height: auto; display: block; }
+        .chamber svg circle { transition: fill .35s ease; }
+        .tally { display: flex; justify-content: space-between; font-weight: 700; font-variant-numeric: tabular-nums; font-size: .95rem; }
+        .tally .o { color: var(--gray); font-weight: 600; }
+        .verdict { margin-top: .6rem; padding: .7rem .9rem; border-radius: var(--radius); background: var(--paper); border-left: 4px solid var(--ink); font-size: .95rem; }
+
+        /* ---------- Checks & balances ---------- */
+        .cb-wrap { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 1rem; align-items: start; }
+        @media (max-width: 860px) { .cb-wrap { grid-template-columns: 1fr; } }
+        .cb-svg { width: 100%; height: auto; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); }
+        .cb-svg .path { fill: none; stroke: #cbd5e1; stroke-width: 3; transition: stroke .25s; }
+        .cb-svg .path.on { stroke: var(--gold); stroke-width: 4.5; stroke-dasharray: 10 7; animation: flow 0.9s linear infinite; }
+        @keyframes flow { to { stroke-dashoffset: -17; } }
+        @media (prefers-reduced-motion: reduce) { .cb-svg .path.on { animation: none; } .chamber svg circle { transition: none; } }
+        .cb-svg text { font-family: inherit; }
+        .cb-btns { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .7rem; }
+        .chip {
+            border: 1px solid var(--gray-light); background: #fff; border-radius: var(--radius-full); padding: .35rem .8rem;
+            font: inherit; font-size: .85rem; cursor: pointer; color: var(--dark-light);
+        }
+        .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+        .cb-panel { background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 1rem 1.1rem; min-height: 12rem; }
+        .cb-panel h4 { margin: 0 0 .3rem; }
+        .cb-panel .who { font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--gold); font-weight: 700; }
+        .cb-panel .now { margin-top: .7rem; background: var(--paper); border-radius: var(--radius); padding: .6rem .8rem; font-size: .92rem; }
+        .cb-panel .now b { color: var(--ink); }
+
+        /* ---------- Election clock ---------- */
+        .clock { background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 1rem; }
+        .clock-grid { display: grid; grid-template-columns: 88px repeat(7, minmax(0, 1fr)); gap: 8px 0; font-size: .8rem; margin-top: .8rem; }
+        .clock-grid .yr { text-align: center; font-weight: 700; color: var(--gray); padding: .2rem 0; border-radius: 6px 6px 0 0; }
+        .clock-grid .yr.sel { background: var(--gold-light); color: #78350f; }
+        .clock-grid .lbl { font-weight: 600; color: var(--dark-light); align-self: center; padding-right: .3rem; line-height: 1.15; }
+        .clock-grid .lbl small { display: block; font-weight: 400; color: var(--gray); }
+        .tbar {
+            height: 26px; border-radius: 13px; background: #e2e8f0; align-self: center; position: relative;
+            margin: 0 2px; display: flex; align-items: center; padding-left: 8px; font-size: .72rem; color: var(--dark-light);
+            white-space: nowrap; overflow: hidden; transition: background .3s, color .3s, box-shadow .3s;
+        }
+        .tbar.up { background: var(--gold); color: #fff; box-shadow: 0 0 0 3px var(--gold-light); font-weight: 700; }
+        .clock-ctrl { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+        .clock-out { margin-top: .9rem; background: var(--paper); border-radius: var(--radius); padding: .8rem 1rem; font-size: .95rem; }
+        .clock-out h4 { margin: 0 0 .3rem; }
+
+        /* ---------- Electoral college equation ---------- */
+        .eq { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin: .8rem 0; font-weight: 700; }
+        .eq .tile { background: #fff; border: 2px solid var(--ink); border-radius: var(--radius); padding: .5rem .8rem; text-align: center; min-width: 88px; }
+        .eq .tile b { display: block; font-size: 1.5rem; color: var(--ink); }
+        .eq .tile span { font-size: .75rem; font-weight: 600; color: var(--gray); }
+        .eq .tile.goal { border-color: var(--gold); background: var(--gold-light); }
+        .eq .op { font-size: 1.4rem; color: var(--gray); }
+
+        /* ---------- Comparison table ---------- */
+        .cmp { width: 100%; border-collapse: collapse; background: #fff; font-size: .92rem; }
+        .cmp th, .cmp td { border-bottom: 1px solid var(--line); padding: .55rem .6rem; text-align: left; vertical-align: top; }
+        .cmp thead th { background: var(--ink); color: #fff; }
+        .cmp tbody th { background: var(--paper); width: 22%; }
+        .table-scroll { overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--line); }
+        .falsefriend { font-size: .78rem; background: var(--gold-light); color: #78350f; border-radius: 4px; padding: 0 .3rem; font-weight: 600; white-space: nowrap; }
+
+        /* ---------- Quiz cards (myths, who-said-it, sorter) ---------- */
+        .qgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: .8rem; margin: 1rem 0; }
+        .qcard { background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: .9rem 1rem; display: flex; flex-direction: column; }
+        .qcard .q { font-weight: 600; margin-bottom: .6rem; }
+        .qcard blockquote { margin: 0 0 .6rem; font-style: italic; font-size: 1.02rem; border-left: 4px solid var(--ink); padding-left: .7rem; }
+        .qbtns { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: auto; }
+        .qbtns button { flex: 1 1 auto; border: 1px solid var(--gray-light); background: #fff; border-radius: var(--radius); padding: .4rem .6rem; font: inherit; font-size: .88rem; cursor: pointer; }
+        .qbtns button.right { background: var(--ok-light); border-color: var(--ok); color: var(--ok); font-weight: 700; }
+        .qbtns button.wrong { background: var(--no-light); border-color: var(--no); color: var(--no); text-decoration: line-through; }
+        .qfb { margin-top: .6rem; font-size: .9rem; color: var(--dark-light); display: none; }
+        .qcard.answered .qfb { display: block; }
+        .score { font-weight: 700; color: var(--ink); }
+
+        /* ---------- History bars ---------- */
+        .hist { background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: .8rem; }
+        .hist-legend { display: flex; flex-wrap: wrap; gap: 1rem; font-size: .85rem; margin-bottom: .5rem; color: var(--dark-light); }
+        .hist-legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: .3rem; vertical-align: -1px; }
+        .hrow {
+            display: grid; grid-template-columns: 112px minmax(0, 1fr) 52px; align-items: center; gap: .4rem;
+            width: 100%; border: 0; background: none; font: inherit; font-size: .82rem; padding: 2px 4px; cursor: pointer;
+            border-radius: 6px; text-align: left; color: var(--dark);
+        }
+        .hrow:hover, .hrow:focus-visible { background: var(--gray-lighter); }
+        .hrow.sel { background: var(--gold-light); }
+        .hrow .who { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .hrow .who b { font-variant-numeric: tabular-nums; }
+        .htrack { position: relative; height: 16px; }
+        .htrack .zero { position: absolute; top: -3px; bottom: -3px; width: 1px; background: var(--gray); }
+        .htrack .avg { position: absolute; top: -3px; bottom: -3px; border-left: 1px dashed var(--gold); }
+        .hbar { position: absolute; top: 2px; height: 12px; }
+        .hbar.D { background: var(--dem); } .hbar.R { background: var(--rep); }
+        .hbar.neg { border-radius: 4px 0 0 4px; } .hbar.pos { border-radius: 0 4px 4px 0; }
+        .hbar.prelim { background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.55) 0 3px, transparent 3px 7px); }
+        .hrow .val { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .hstory { margin-top: .8rem; background: var(--paper); border-radius: var(--radius); padding: .9rem 1rem; min-height: 6rem; }
+        .hstory h4 { margin: 0 0 .25rem; }
+
+        /* ---------- Poll bars ---------- */
+        .poll { display: grid; gap: .55rem; margin: .8rem 0; }
+        .prow { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) 70px; gap: .6rem; align-items: center; font-size: .9rem; }
+        @media (max-width: 600px) { .prow { grid-template-columns: 1fr 70px; } .prow .ptrack { grid-column: 1 / -1; grid-row: 2; } }
+        .ptrack { height: 12px; background: var(--gray-lighter); border-radius: 4px; overflow: hidden; }
+        .ptrack i { display: block; height: 100%; background: var(--ink); border-radius: 0 4px 4px 0; width: 0; transition: width 1s ease; }
+        .prow b { text-align: right; font-variant-numeric: tabular-nums; }
+
+        /* ---------- Ranking ---------- */
+        .rank { list-style: none; padding: 0; margin: .8rem 0; counter-reset: r; }
+        .rank li {
+            display: grid; grid-template-columns: 2rem minmax(0, 1fr) auto; gap: .6rem; align-items: start;
+            background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: .7rem .8rem; margin-bottom: .5rem;
+        }
+        .rank li::before { counter-increment: r; content: counter(r); width: 2rem; height: 2rem; border-radius: 50%; background: var(--ink); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+        .rank li:nth-child(n+4)::before { background: var(--gray-light); color: var(--dark); }
+        .rank h5 { margin: 0; font-size: 1rem; }
+        .rank p { margin: .2rem 0 0; font-size: .88rem; color: var(--dark-light); }
+        .rank .mv { display: flex; flex-direction: column; gap: .25rem; }
+        .rank .mv button { border: 1px solid var(--gray-light); background: #fff; border-radius: 6px; width: 34px; height: 30px; cursor: pointer; font-size: 1rem; }
+
+        /* ---------- Firsts ---------- */
+        .firsts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .7rem; margin: .8rem 0; }
+        .first { background: #fff; border: 1px solid var(--line); border-top: 4px solid var(--gold); border-radius: var(--radius-md); padding: .8rem .9rem; font-size: .92rem; }
+        .first b { display: block; font-size: 1rem; margin-bottom: .2rem; }
+
+        /* ---------- Headline lab ---------- */
+        .hl { background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: .8rem 1rem; margin-bottom: .6rem; }
+        .hl .src { font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--gray); font-weight: 700; }
+        .hl .words { font-size: 1.1rem; font-weight: 600; line-height: 1.6; }
+        .hl .w { cursor: pointer; border-radius: 4px; padding: 0 1px; }
+        .hl .w:hover { background: var(--gray-lighter); }
+        .hl .w.mark { background: #fde68a; box-shadow: 0 2px 0 var(--gold); }
+        .hl .w.sugg { outline: 2px dashed var(--gold); outline-offset: 1px; }
+
+        /* ---------- Source menu ---------- */
+        .lean-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: .9rem; margin: 1rem 0; }
+        .lean { background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden; }
+        .lean > h4 { margin: 0; padding: .6rem .9rem; color: #fff; font-size: .95rem; }
+        .lean.l > h4 { background: var(--dem); }
+        .lean.c > h4 { background: var(--ink-soft); }
+        .lean.r > h4 { background: var(--rep); }
+        .lean.w > h4 { background: var(--gold); }
+        .lean ul { list-style: none; margin: 0; padding: .3rem .9rem .7rem; }
+        .lean li { padding: .55rem 0; border-bottom: 1px solid var(--line); font-size: .9rem; }
+        .lean li:last-child { border-bottom: 0; }
+        .lean li a { font-weight: 600; color: var(--ink); }
+        .lean li .meta { display: block; color: var(--gray); font-size: .8rem; margin-top: .15rem; }
+        .kind { display: inline-block; font-size: .7rem; font-weight: 700; border-radius: 4px; padding: 0 .35rem; margin-right: .3rem; vertical-align: 1px; background: var(--gray-lighter); color: var(--dark-light); }
+        .kind.v { background: #ede9fe; color: #5b21b6; }
+        .kind.a { background: #dcfce7; color: #166534; }
+
+        /* ---------- Notes ---------- */
+        .notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: .8rem; }
+        .note label { display: block; font-weight: 600; font-size: .9rem; margin-bottom: .25rem; color: var(--dark-light); }
+        .note textarea, .note input {
+            width: 100%; padding: .55rem .7rem; border: 1px solid var(--gray-light); border-radius: var(--radius-sm);
+            font: inherit; font-size: .95rem; background: #fff; color: var(--dark);
+        }
+        .note textarea { min-height: 88px; resize: vertical; }
+        .note .hint { font-size: .8rem; color: var(--gray); margin-top: .2rem; }
+        .saved { font-size: .8rem; color: var(--ok); margin-left: .5rem; opacity: 0; transition: opacity .3s; }
+        .saved.show { opacity: 1; }
+
+        /* ---------- Sorter ---------- */
+        .sorter .qbtns button { flex: 1 1 30%; }
+
+        /* ---------- Ripple / world ---------- */
+        .ripple { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: .8rem; margin: 1rem 0; }
+        .rip { background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: .9rem 1rem; font-size: .92rem; }
+        .rip h4 { margin: 0 0 .3rem; font-size: 1rem; }
+        .rip q { font-style: italic; }
+        .island {
+            background: linear-gradient(135deg, #ecfdf5 0%, #fff 60%); border: 2px solid #047857; border-radius: var(--radius-lg);
+            padding: 1.2rem 1.3rem; margin: 1.2rem 0;
+        }
+        .island h3 { margin: 0 0 .4rem; color: #065f46; }
+        .island ul { margin: .4rem 0 .4rem 1.1rem; }
+        .island li { margin-bottom: .35rem; }
+
+        /* ---------- Play the machine ---------- */
+        .chapter-header.play .chapter-number { background: #7c3aed; }
+        .stop.play .n { background: #7c3aed; }
+        .blitz { background: var(--ink); color: #fff; border-radius: var(--radius-lg); padding: 1rem 1.1rem; }
+        .blitz-top { display: flex; flex-wrap: wrap; gap: 1.2rem; font-size: .95rem; }
+        .blitz .muted { color: #cbd5e1; }
+        .blitz-stat b { font-variant-numeric: tabular-nums; font-size: 1.15rem; }
+        .blitz-card {
+            margin: .9rem 0; background: #fff; color: var(--ink); border-radius: var(--radius-md); padding: 1.1rem 1.2rem;
+            font-size: 1.25rem; font-weight: 700; min-height: 5.2rem; display: flex; align-items: center; justify-content: center; text-align: center;
+        }
+        .blitz-card.flash-ok { animation: ok .35s; } .blitz-card.flash-no { animation: no .35s; }
+        @keyframes ok { 0% { background: #bbf7d0; } 100% { background: #fff; } }
+        @keyframes no { 0%, 100% { transform: none; } 25% { transform: translateX(-6px); background: #fecaca; } 75% { transform: translateX(6px); } }
+        .blitz-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; }
+        .bz { border: 0; border-radius: var(--radius-md); padding: .8rem .4rem; font: inherit; font-weight: 700; font-size: 1rem; cursor: pointer; color: var(--ink); background: #e0e7ff; }
+        .bz small { display: block; font-weight: 500; font-size: .75rem; color: var(--ink-soft); }
+        .bz.E { background: #fef3c7; } .bz.J { background: #e2e8f0; }
+        .bz:disabled { opacity: .5; cursor: default; }
+        .bz:not(:disabled):hover { filter: brightness(.95); }
+        #bz-review { margin-top: .8rem; }
+        #bz-review .rv { background: rgba(255,255,255,.08); border-radius: var(--radius); padding: .5rem .7rem; margin-bottom: .4rem; font-size: .9rem; }
+        #bz-review .rv b { color: #fde68a; }
+        #bz-review h4 { color: #fff; margin: .4rem 0; }
+
+        .ww { display: grid; grid-template-columns: 1fr 1.3fr; gap: .8rem; margin-top: .6rem; }
+        @media (max-width: 640px) { .ww { grid-template-columns: 1fr 1fr; gap: .5rem; } }
+        .ww-col { display: flex; flex-direction: column; gap: .45rem; }
+        .ww-item {
+            display: flex; align-items: center; gap: .6rem; text-align: left; border: 2px solid var(--line); background: #fff;
+            border-radius: var(--radius-md); padding: .5rem .7rem; font: inherit; font-size: .9rem; cursor: pointer; color: var(--dark); min-height: 3.2rem;
+        }
+        .ww-item:hover { border-color: var(--ink-soft); }
+        .ww-item.sel { border-color: #7c3aed; background: #f5f3ff; }
+        .ww-item.done { border-color: var(--ok); background: var(--ok-light); cursor: default; }
+        .ww-item.bad { animation: no .35s; border-color: var(--no); }
+        .ava { flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .85rem; }
+        .ava.R { background: var(--rep); } .ava.D { background: var(--dem); } .ava.N { background: var(--ink-soft); }
+        .ww-item small { display: block; color: var(--gray); font-size: .78rem; }
+        .ww-fact { margin-top: .7rem; background: var(--paper); border-left: 4px solid #7c3aed; border-radius: 0 var(--radius) var(--radius) 0; padding: .7rem .9rem; font-size: .95rem; }
+
+        .rank.succ li:nth-child(n)::before { background: #7c3aed; color: #fff; }
+        .rank.succ li.ok { border-color: var(--ok); background: var(--ok-light); }
+        .rank.succ li.wrongpos { border-color: var(--no); background: var(--no-light); }
+
+        .quest { background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 1rem; }
+        .quest-ctrl { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: .9rem 1.2rem; margin-bottom: .9rem; }
+        .qlabel { font-weight: 700; font-size: .85rem; color: var(--ink); margin-bottom: .3rem; }
+        .slide { display: grid; grid-template-columns: 4rem 1fr 2rem; align-items: center; gap: .4rem; font-size: .88rem; }
+        .slide b { text-align: right; font-variant-numeric: tabular-nums; }
+        .slide input { width: 100%; min-width: 0; margin: 0; }
+        .check input { width: auto; margin: 0; flex-shrink: 0; }
+        .rank.succ li { align-items: center; padding: .45rem .7rem; }
+        .rank.succ .mv { flex-direction: row; }
+        .check { display: flex; gap: .4rem; align-items: center; font-size: .9rem; }
+        .path { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; gap: .45rem; }
+        .path li {
+            display: grid; grid-template-columns: 2.2rem minmax(0, 1fr) auto; gap: .6rem; align-items: center; padding: .55rem .7rem;
+            border: 1px solid var(--line); border-radius: var(--radius); font-size: .92rem; opacity: .35; transition: opacity .3s, background .3s;
+        }
+        .path li .ic { font-size: 1.3rem; text-align: center; }
+        .path li .vote { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        .path li.on { opacity: 1; }
+        .path li.pass { background: var(--ok-light); border-color: var(--ok); }
+        .path li.fail { background: var(--no-light); border-color: var(--no); }
+        .path li.skip { opacity: .6; background: var(--gray-lighter); }
+        .path li small { display: block; color: var(--dark-light); font-size: .82rem; }
+        .quest-end { margin-top: .8rem; font-size: 1.15rem; font-weight: 700; text-align: center; }
+        .quest-end.law { color: var(--ok); } .quest-end.dead { color: var(--no); }
+
+        .roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: .7rem; margin: 1rem 0; }
+        .role { background: #fff; border: 1px solid var(--line); border-top: 5px solid var(--ink-soft); border-radius: var(--radius-md); padding: .8rem .9rem; font-size: .88rem; transition: box-shadow .3s, transform .3s; }
+        .role.R { border-top-color: var(--rep); } .role.D { border-top-color: var(--dem); } .role.N { border-top-color: var(--gold); }
+        .role h4 { margin: 0; font-size: 1rem; }
+        .role .holder { color: var(--gray); font-size: .8rem; margin-bottom: .4rem; }
+        .role ul { margin: .2rem 0 .3rem 1rem; padding: 0; } .role li { margin-bottom: .15rem; }
+        .role .k { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; font-weight: 700; color: var(--ink-soft); }
+        .role.hot { box-shadow: 0 0 0 3px #7c3aed, var(--shadow-lg); transform: translateY(-3px); }
+        .scene-wrap { background: var(--paper); border-radius: var(--radius-lg); padding: 1rem; }
+        .scene { margin-top: .8rem; }
+        .scene .card {
+            background: #fff; border-radius: var(--radius-md); padding: 1rem 1.1rem; box-shadow: var(--shadow);
+            animation: deal .45s ease;
+        }
+        @keyframes deal { from { transform: rotateY(90deg) scale(.95); opacity: 0; } to { transform: none; opacity: 1; } }
+        @media (prefers-reduced-motion: reduce) { .scene .card, .blitz-card { animation: none !important; } }
+        .scene .card h4 { margin: 0 0 .3rem; font-size: 1.2rem; }
+        .scene .card .tag { display: inline-block; background: #ede9fe; color: #5b21b6; border-radius: 4px; padding: 0 .4rem; font-size: .78rem; font-weight: 700; margin: 0 .25rem .25rem 0; }
+        .scene details { margin-top: .7rem; }
+        .scene summary { cursor: pointer; font-weight: 700; color: #5b21b6; }
+        .scene .real { margin-top: .5rem; }
+        .scene .ex { margin-top: .5rem; background: var(--gold-light); border-radius: var(--radius); padding: .5rem .7rem; font-size: .9rem; }
+        #sc-timer.run { background: #7c3aed; color: #fff; border-color: #7c3aed; }
+
+        /* ---------- Popcorn corner ---------- */
+        .chapter-header.popcorn .chapter-number { background: #db2777; }
+        .pop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: .7rem; margin: .5rem 0 1rem; }
+        .pop {
+            display: flex; flex-direction: column; gap: .3rem; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md);
+            padding: .8rem .9rem; text-decoration: none; color: var(--dark); font-size: .88rem; transition: var(--transition-fast);
+        }
+        .pop:hover { border-color: #db2777; box-shadow: var(--shadow); transform: translateY(-2px); }
+        .pop strong { font-size: .98rem; color: var(--ink); }
+        .pop strong::after { content: ' ↗'; color: #db2777; }
+        .pop > span:last-child { color: var(--dark-light); }
+        .pop .ch { align-self: flex-start; font-size: .72rem; font-weight: 700; border-radius: 4px; padding: .05rem .4rem; background: var(--gray-lighter); color: var(--dark-light); }
+        .pop .ch.grey { background: #1f2937; color: #fff; }
+        .pop .ch.ted { background: #fee2e2; color: #b91c1c; }
+        .pop .ch.cc { background: #fef3c7; color: #92400e; }
+
+        .sources-list { font-size: .85rem; color: var(--dark-light); columns: 2 320px; column-gap: 2rem; }
+        .sources-list li { break-inside: avoid; margin-bottom: .35rem; }
+        details.teacher { border: 1px dashed var(--gray-light); border-radius: var(--radius); padding: .6rem 1rem; background: #fff; margin-top: 1rem; }
+        details.teacher summary { cursor: pointer; font-weight: 600; color: var(--dark-light); }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="icon"><a href="https://edu-mrh.de/">🇬🇧</a></span>
+                <span>edu-mrh English</span>
+            </div>
+            <div class="nav-links">
+                <a href="../../englisch.html#jahrgang-13" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>Midterms 2026</h3>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#start">Start: the night in numbers</a></li>
+            <li><a href="#system">1 · The machine</a></li>
+            <li><a href="#play">🎲 Play the machine</a></li>
+            <li><a href="#history">2 · The iron law</a></li>
+            <li><a href="#why">3 · Why the wave?</a></li>
+            <li><a href="#spin">4 · Same night, different stories</a></li>
+            <li><a href="#ripples">Bonus · Ripple effects</a></li>
+            <li><a href="#popcorn">🍿 Popcorn corner</a></li>
+            <li><a href="#exit">Exit ticket</a></li>
+        </ul>
+    </aside>
+
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <main class="main-content">
+        <div class="container">
+
+            <section class="hero">
+                <h1 class="hero-title">US Midterms 2026: The Wave, the Machine, the Spin</h1>
+                <p class="hero-subtitle">English · Year 13 · Gymnasium Bayern</p>
+                <p class="hero-description">On 3 November 2026 American voters handed both chambers of Congress to the Democrats. Six days later, everybody is still arguing about <em>why</em>. Work through this page at your own pace: refresh how the US system works, see where 2026 sits in history, and compare how different media tell the story.</p>
+                <p><span class="stamp">🗓️ Results as of 9 November 2026 – some races are still being counted</span></p>
+            </section>
+
+            <!-- ================= ROUTE ================= -->
+            <section id="route" class="mt-4">
+                <p class="lead">Pick your own order. Each stop takes about 15–20 minutes. Tick a stop off when you're done; your progress and notes stay in <strong>this browser only</strong>.</p>
+                <div class="route" id="route-list">
+                    <a class="stop" href="#system" data-stop="system"><span class="t">≈ 20 min</span><br><span class="n">1</span><strong>The machine</strong><p>Branches, checks, election clock, Electoral College, US vs Germany vs UK.</p></a>
+                    <a class="stop play" href="#play" data-stop="play"><span class="t">≈ 15–30 min · solo or groups</span><br><span class="n">🎲</span><strong>Play the machine</strong><p>Branch Blitz, Who's who, Bill Quest, and the Gridlock role-play.</p></a>
+                    <a class="stop" href="#history" data-stop="history"><span class="t">≈ 10 min</span><br><span class="n">2</span><strong>The iron law</strong><p>Why the president's party nearly always loses – and the famous exceptions.</p></a>
+                    <a class="stop" href="#why" data-stop="why"><span class="t">≈ 15 min</span><br><span class="n">3</span><strong>Why the wave?</strong><p>Voter data, competing explanations, historic firsts.</p></a>
+                    <a class="stop" href="#spin" data-stop="spin"><span class="t">≈ 25 min</span><br><span class="n">4</span><strong>Same night, different stories</strong><p>Headlines, quotes, and two sources of your choice from opposite sides.</p></a>
+                    <a class="stop bonus" href="#ripples" data-stop="ripples"><span class="t">Bonus</span><br><span class="n">★</span><strong>Ripple effects</strong><p>What a new Congress means for the rest of the world.</p></a>
+                </div>
+            </section>
+
+            <!-- ================= START ================= -->
+            <section id="start" class="mt-4">
+                <div class="chapter-header">
+                    <span class="chapter-number">▶</span>
+                    <h2>The night in numbers</h2>
+                </div>
+                <div class="numbers" id="numbers">
+                    <div class="num"><b data-count="256">256</b><span>Democratic House seats expected in January (CBS News estimate; 218 = majority)</span></div>
+                    <div class="num"><b data-count="54" data-suffix="+">54+</b><span>Democratic Senate seats (51 = majority; Alaska &amp; Mississippi still counting)</span></div>
+                    <div class="num"><b data-count="7">7</b><span>Senate seats flipped from Republican to Democrat</span></div>
+                    <div class="num"><b data-count="4" data-suffix="+">4+</b><span>governorships flipped, including Texas and Ohio</span></div>
+                    <div class="num"><b>1974</b><span>last time a party won the House popular vote by this much (early estimates)</span></div>
+                </div>
+
+                <div class="chamber-box">
+                    <div style="display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;justify-content:space-between">
+                        <strong>Watch Congress change colour</strong>
+                        <div class="switch" role="group" aria-label="Choose Congress">
+                            <button type="button" data-congress="before" aria-pressed="true">2025–26 (119th Congress)</button>
+                            <button type="button" data-congress="after" aria-pressed="false">From Jan 2027 (120th)</button>
+                        </div>
+                    </div>
+                    <div class="chambers">
+                        <div class="chamber">
+                            <h4>House of Representatives · 435 seats</h4>
+                            <svg id="hemi-house" viewBox="0 0 200 106" role="img" aria-label="House seat distribution"></svg>
+                            <div class="tally" id="tally-house"></div>
+                        </div>
+                        <div class="chamber">
+                            <h4>Senate · 100 seats</h4>
+                            <svg id="hemi-senate" viewBox="0 0 200 106" role="img" aria-label="Senate seat distribution"></svg>
+                            <div class="tally" id="tally-senate"></div>
+                        </div>
+                    </div>
+                    <div class="verdict" id="verdict"></div>
+                    <p class="muted" style="margin:.5rem 0 0">Senate figures include the independents who vote with the Democrats. 2027 figures are projections: grey seats are not yet called.</p>
+                </div>
+            </section>
+
+            <!-- ================= 1 SYSTEM ================= -->
+            <section id="system" class="mt-4">
+                <div class="chapter-header">
+                    <span class="chapter-number">1</span>
+                    <h2>The machine: how power is split in the USA</h2>
+                </div>
+                <p class="lead">The Founding Fathers feared one thing above all: too much power in one place. So the Constitution (1787) splits power between three branches <em>and</em> makes them check each other. Midterms are the moment voters can change one of those branches without touching the President.</p>
+
+                <h3 class="sub">1a · Checks and balances <small>click a check</small></h3>
+                <div class="cb-btns" id="cb-btns"></div>
+                <div class="cb-wrap">
+                    <svg class="cb-svg" id="cb-svg" viewBox="0 0 600 370" role="img" aria-label="Diagram of the three branches and the checks between them">
+                        <defs>
+                            <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M0,0 L10,5 L0,10 z" fill="#a16207"/>
+                            </marker>
+                            <marker id="arr-off" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M0,0 L10,5 L0,10 z" fill="#cbd5e1"/>
+                            </marker>
+                        </defs>
+                        <g id="cb-paths"></g>
+                        <!-- Congress -->
+                        <g id="box-congress">
+                            <rect x="20" y="20" width="230" height="108" rx="12" fill="#fff" stroke="#1f2a44" stroke-width="2"/>
+                            <text x="135" y="42" text-anchor="middle" font-weight="700" font-size="15" fill="#1f2a44">LEGISLATIVE · Congress</text>
+                            <rect id="cb-house" x="32" y="52" width="100" height="64" rx="8" fill="#dc2626"/>
+                            <text x="82" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">House</text>
+                            <text id="cb-house-t" x="82" y="98" text-anchor="middle" font-size="12" fill="#fff">R majority</text>
+                            <rect id="cb-senate" x="138" y="52" width="100" height="64" rx="8" fill="#dc2626"/>
+                            <text x="188" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">Senate</text>
+                            <text id="cb-senate-t" x="188" y="98" text-anchor="middle" font-size="12" fill="#fff">R majority</text>
+                        </g>
+                        <!-- President -->
+                        <g id="box-pres">
+                            <rect x="350" y="20" width="230" height="108" rx="12" fill="#fff" stroke="#1f2a44" stroke-width="2"/>
+                            <text x="465" y="42" text-anchor="middle" font-weight="700" font-size="15" fill="#1f2a44">EXECUTIVE</text>
+                            <rect x="362" y="52" width="206" height="64" rx="8" fill="#dc2626"/>
+                            <text x="465" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">President (R)</text>
+                            <text x="465" y="98" text-anchor="middle" font-size="12" fill="#fff">+ Vice President, Cabinet</text>
+                        </g>
+                        <!-- Court -->
+                        <g id="box-court">
+                            <rect x="185" y="250" width="230" height="100" rx="12" fill="#fff" stroke="#1f2a44" stroke-width="2"/>
+                            <text x="300" y="272" text-anchor="middle" font-weight="700" font-size="15" fill="#1f2a44">JUDICIAL</text>
+                            <rect x="197" y="282" width="206" height="56" rx="8" fill="#e2e8f0"/>
+                            <text x="300" y="305" text-anchor="middle" font-size="13" font-weight="700" fill="#1f2a44">Supreme Court</text>
+                            <text x="300" y="325" text-anchor="middle" font-size="12" fill="#334155">9 justices, appointed for life</text>
+                        </g>
+                    </svg>
+                    <div class="cb-panel" id="cb-panel" aria-live="polite">
+                        <p class="muted">Pick a check above. Then flip the switch to see what the result of 3 November changes.</p>
+                    </div>
+                </div>
+                <div style="margin-top:.7rem" class="switch" role="group" aria-label="Choose period">
+                    <button type="button" data-cbera="before" aria-pressed="true">2025–26: trifecta</button>
+                    <button type="button" data-cbera="after" aria-pressed="false">From 2027: divided government</button>
+                </div>
+                <p class="muted" style="margin-top:.4rem"><strong>Trifecta</strong> = one party holds the presidency, the House and the Senate. <strong>Divided government</strong> = at least one chamber is held by the other party.</p>
+
+                <h3 class="sub">1b · The election clock <small>who is on the ballot when?</small></h3>
+                <div class="clock">
+                    <div class="clock-ctrl">
+                        <span class="muted">Election year:</span>
+                        <button type="button" class="chip" data-year="2024">2024</button>
+                        <button type="button" class="chip" data-year="2026" aria-pressed="true">2026</button>
+                        <button type="button" class="chip" data-year="2028">2028</button>
+                        <button type="button" class="chip" data-year="2030">2030</button>
+                        <button type="button" class="chip" id="clock-play">▶ play</button>
+                    </div>
+                    <div class="clock-grid" id="clock-grid"></div>
+                    <div class="clock-out" id="clock-out" aria-live="polite"></div>
+                </div>
+
+                <h3 class="sub">1c · The Electoral College in one line <small>for presidential elections only</small></h3>
+                <div class="eq" aria-label="435 plus 100 plus 3 equals 538 electors; 270 needed to win">
+                    <div class="tile"><b>435</b><span>House seats</span></div><span class="op">+</span>
+                    <div class="tile"><b>100</b><span>senators</span></div><span class="op">+</span>
+                    <div class="tile"><b>3</b><span>Washington, D.C.</span></div><span class="op">=</span>
+                    <div class="tile"><b>538</b><span>electors</span></div><span class="op">→</span>
+                    <div class="tile goal"><b>270</b><span>to win</span></div>
+                </div>
+                <p>Each state gets as many electors as it has members of Congress (House seats + 2 senators). In 48 states the winner of the state's popular vote takes <em>all</em> its electors (Maine and Nebraska split theirs). That is why a candidate can win the presidency while losing the national popular vote, as happened in 2000 and 2016. <strong>Midterms have nothing to do with the Electoral College</strong>: in a midterm, nobody votes for president.</p>
+
+                <h3 class="sub">1d · Who's who? USA – Germany – UK <small>short and rough</small></h3>
+                <div class="table-scroll">
+                    <table class="cmp">
+                        <thead><tr><th></th><th>🇺🇸 USA</th><th>🇩🇪 Germany</th><th>🇬🇧 UK</th></tr></thead>
+                        <tbody>
+                            <tr><th>Head of state</th><td>President</td><td>Bundespräsident</td><td>the monarch</td></tr>
+                            <tr><th>Head of government</th><td>President <em>(same person!)</em></td><td>Bundeskanzler</td><td>Prime Minister</td></tr>
+                            <tr><th>"People's" chamber</th><td>House of Representatives: 435, every 2 years</td><td>Bundestag: 630, every 4 years</td><td>House of Commons: 650, at least every 5 years</td></tr>
+                            <tr><th>Second chamber</th><td>Senate: 100, 2 per state, elected for 6 years</td><td>Bundesrat: state governments, not elected <span class="falsefriend">≠ Senate</span></td><td>House of Lords: appointed, not elected <span class="falsefriend">≠ Senate</span></td></tr>
+                            <tr><th>Top court</th><td>Supreme Court can strike down laws</td><td>Bundesverfassungsgericht can strike down laws</td><td>UK Supreme Court <em>cannot</em> strike down Acts of Parliament</td></tr>
+                            <tr><th>How the government leader gets the job</th><td>Electoral College (indirect popular vote)</td><td>elected by the Bundestag</td><td>leads the majority in the Commons</td></tr>
+                            <tr><th>Can the government fall early?</th><td>No, only via impeachment + removal</td><td>constructive vote of no confidence</td><td>vote of no confidence / early election</td></tr>
+                            <tr><th>"Midterm" feeling</th><td>Midterms every 4 years, mid-presidency</td><td>Landtagswahlen in between</td><td>by-elections, local elections</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="muted">The biggest difference: in Germany and the UK the government comes <em>out of</em> parliament and needs its majority to survive. In the US the President is elected separately and stays in office even when Congress is controlled by the other party, as it will be from January 2027.</p>
+
+                <h3 class="sub">1e · Myth or fact? <small>clear up the classics</small> <span class="score" id="myth-score"></span></h3>
+                <div class="qgrid" id="myths"></div>
+
+                <button type="button" class="done-toggle" data-done="system" aria-pressed="false">☐ Stop 1 done</button>
+            </section>
+
+            <!-- ================= 1+ PLAY ================= -->
+            <section id="play" class="mt-4">
+                <div class="chapter-header play">
+                    <span class="chapter-number">🎲</span>
+                    <h2>Play the machine</h2>
+                </div>
+                <p class="lead">Now test the machine. Every game uses the real rules and the real seat numbers. Play alone, in pairs, or as a class: the icons tell you what works best.</p>
+
+                <!-- ---------- Branch Blitz ---------- -->
+                <h3 class="sub">⚡ Branch Blitz <small>60 seconds · solo or teams</small></h3>
+                <div class="blitz" id="blitz">
+                    <div class="blitz-top">
+                        <span class="blitz-stat">⏱ <b id="bz-time">60</b> s</span>
+                        <span class="blitz-stat">✓ <b id="bz-score">0</b></span>
+                        <span class="blitz-stat">🔥 streak <b id="bz-streak">0</b></span>
+                        <span class="blitz-stat muted">best: <b id="bz-best">–</b></span>
+                    </div>
+                    <div class="blitz-card" id="bz-card" aria-live="polite"><span>Which branch does it? Press <strong>Start</strong>, then sort each power as fast as you can. Watch out for traps!</span></div>
+                    <div class="blitz-btns">
+                        <button type="button" class="bz L" data-branch="L" disabled>🏛️ Legislative<small>Congress</small></button>
+                        <button type="button" class="bz E" data-branch="E" disabled>🦅 Executive<small>President &amp; government</small></button>
+                        <button type="button" class="bz J" data-branch="J" disabled>⚖️ Judicial<small>Courts</small></button>
+                    </div>
+                    <div class="row-btns" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.7rem">
+                        <button type="button" class="btn btn-primary" id="bz-start">▶ Start</button>
+                        <span class="muted" style="align-self:center">Keyboard: 1 · 2 · 3</span>
+                    </div>
+                    <div id="bz-review"></div>
+                </div>
+                <p class="muted">👥 <strong>Class challenge:</strong> one person per team plays on the projector, the team shouts the answers. Highest score wins. Then discuss the traps you fell for.</p>
+
+                <!-- ---------- Who's who ---------- -->
+                <h3 class="sub">🪪 Who's who in Washington? <small>click a person, then their job</small> <span class="score" id="ww-score"></span></h3>
+                <div class="ww">
+                    <div class="ww-col" id="ww-people" aria-label="People"></div>
+                    <div class="ww-col" id="ww-roles" aria-label="Jobs"></div>
+                </div>
+                <div class="ww-fact" id="ww-fact" aria-live="polite"><span class="muted">Match all seven. Each correct match unlocks a fact.</span></div>
+                <button type="button" class="btn btn-outline mt-2" id="ww-reset">Shuffle &amp; restart</button>
+
+                <!-- ---------- Succession ---------- -->
+                <h3 class="sub">🪑 Who takes over? <small>put the line of succession in order</small></h3>
+                <p>If the President dies, resigns or is removed, who becomes President? Put the first five in order (no. 1 = first in line).</p>
+                <ol class="rank succ" id="succ"></ol>
+                <button type="button" class="btn btn-primary" id="succ-check">Check my order</button>
+                <div class="ww-fact" id="succ-out" aria-live="polite" hidden></div>
+
+                <!-- ---------- Bill Quest ---------- -->
+                <h3 class="sub">📜 Bill Quest <small>how a bill becomes a law, or dies trying</small></h3>
+                <div class="quest">
+                    <div class="quest-ctrl">
+                        <div>
+                            <div class="qlabel">1 · When?</div>
+                            <div class="switch" role="group" aria-label="Choose Congress">
+                                <button type="button" data-qera="before" aria-pressed="true">2025–26</button>
+                                <button type="button" data-qera="after" aria-pressed="false">From 2027</button>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="qlabel">2 · Whose bill?</div>
+                            <div class="switch" role="group" aria-label="Choose party">
+                                <button type="button" data-qparty="R" aria-pressed="true">Republican</button>
+                                <button type="button" data-qparty="D" aria-pressed="false">Democratic</button>
+                            </div>
+                            <div class="muted" id="q-billname" style="margin-top:.25rem"></div>
+                        </div>
+                        <div>
+                            <div class="qlabel">3 · How many from the <em>other</em> party vote yes?</div>
+                            <label class="slide">House <input type="range" id="q-xh" min="0" max="60" value="0"> <b id="q-xh-v">0</b></label>
+                            <label class="slide">Senate <input type="range" id="q-xs" min="0" max="20" value="0"> <b id="q-xs-v">0</b></label>
+                        </div>
+                        <div>
+                            <div class="qlabel">4 · Budget trick?</div>
+                            <label class="check"><input type="checkbox" id="q-recon"> Pass it as a budget bill ("reconciliation")</label>
+                            <div class="muted">Only for taxes and spending. No filibuster: 51 votes are enough.</div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="q-go">▶ Send the bill on its way</button>
+                    <ol class="path" id="q-path"></ol>
+                    <div class="quest-end" id="q-end" aria-live="polite"></div>
+                    <p class="muted" style="margin:.6rem 0 0">Simplified: everybody votes with their party except the "other party" members you set, and all seats are filled. 2027 Senate: Democrats 54, Republicans 46 (assuming both uncalled races go Republican).</p>
+                </div>
+                <div class="task-box mt-2">
+                    <h4>Missions</h4>
+                    <ol>
+                        <li><strong>2025–26, Republican bill:</strong> where does it die? Which trick did Republicans use in 2025 to pass their big tax-and-spending law?</li>
+                        <li><strong>From 2027, Democratic bill:</strong> how many Republicans do you need to make it a law <em>against</em> Trump's will?</li>
+                        <li>Find the "magic numbers" of American politics. Write them down: 218 · 51 · 60 · 290 · 67. What does each one unlock?</li>
+                    </ol>
+                </div>
+
+                <!-- ---------- Gridlock ---------- -->
+                <h3 class="sub">🧩 Gridlock: the Washington role-play <small>groups of 4–6 · projector</small></h3>
+                <div class="task-box">
+                    <h4>How to play (about 15 minutes)</h4>
+                    <ol>
+                        <li>Each group gets <strong>one role card</strong> and reads it (2 min). Only the powers on your card count!</li>
+                        <li>Draw a <strong>scenario</strong>. You have 60 seconds: what does your role do? Which power do you use?</li>
+                        <li>Every group announces its move in one sentence. Then reveal the <strong>reality check</strong>: who really has the power, and what happened the last time?</li>
+                    </ol>
+                </div>
+                <div class="roles" id="roles"></div>
+                <div class="scene-wrap">
+                    <div class="row-btns" style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
+                        <button type="button" class="btn btn-primary" id="sc-draw">🃏 Draw a scenario</button>
+                        <button type="button" class="btn btn-outline" id="sc-timer">⏱ 60 s</button>
+                        <span class="muted" id="sc-left"></span>
+                    </div>
+                    <div class="scene" id="scene" aria-live="polite"><p class="muted">No scenario yet. Draw one!</p></div>
+                </div>
+
+                <button type="button" class="done-toggle" data-done="play" aria-pressed="false">☐ Games done</button>
+            </section>
+
+            <!-- ================= 2 HISTORY ================= -->
+            <section id="history" class="mt-4">
+                <div class="chapter-header">
+                    <span class="chapter-number">2</span>
+                    <h2>The iron law of midterms</h2>
+                </div>
+                <p class="lead">Since 1934 the President's party has <strong>gained</strong> House seats in a midterm only <strong>three times</strong>. On average it loses about <strong id="avg-loss">27</strong> seats. Click a year to read its story.</p>
+                <div class="hist">
+                    <div class="hist-legend">
+                        <span><i style="background:var(--dem)"></i>President is a Democrat (D)</span>
+                        <span><i style="background:var(--rep)"></i>President is a Republican (R)</span>
+                        <span><i style="border-left:2px dashed var(--gold);border-radius:0;width:4px"></i>average since 1934</span>
+                        <span><i style="background:var(--rep);background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.55) 0 3px,transparent 3px 7px)"></i>preliminary</span>
+                    </div>
+                    <div id="hist-rows" role="list"></div>
+                    <div class="hstory" id="hstory" aria-live="polite"><p class="muted">Click a year. Start with 1994, 1998 and 2022.</p></div>
+                    <p class="muted" style="margin:.5rem 0 0">House seats gained or lost by the President's party. Source: American Presidency Project (UC Santa Barbara); 2026 = estimate from CBS News projections, 9 Nov 2026.</p>
+                </div>
+
+                <div class="task-box mt-4">
+                    <h4>Think: why does the President's party almost always lose?</h4>
+                    <p>Note down two ideas of your own <em>before</em> you open the box.</p>
+                    <details class="mt-2">
+                        <summary><strong>Four classic explanations</strong></summary>
+                        <ul class="concept-list mt-2">
+                            <li><strong>Referendum:</strong> the President isn't on the ballot, so voters use his party to send a message.</li>
+                            <li><strong>Surge and decline:</strong> the President's enthusiastic voters turn out for him, but many stay home two years later.</li>
+                            <li><strong>Balancing (the "thermostat"):</strong> many voters like a check on whoever is in power.</li>
+                            <li><strong>Angry voters vote more:</strong> people who are unhappy are more motivated than people who are content.</li>
+                        </ul>
+                        <p>Which of these fits 2026 best? Keep your answer for stop 3.</p>
+                    </details>
+                </div>
+
+                <button type="button" class="done-toggle" data-done="history" aria-pressed="false">☐ Stop 2 done</button>
+            </section>
+
+            <!-- ================= 3 WHY ================= -->
+            <section id="why" class="mt-4">
+                <div class="chapter-header">
+                    <span class="chapter-number">3</span>
+                    <h2>Why the wave?</h2>
+                </div>
+                <p class="lead">Election night is followed by "the battle over the narrative": every side offers its own explanation. Start with the data, then make up your own mind.</p>
+
+                <h3 class="sub">3a · What voters said <small>AP Voter Poll, about 80,000 voters</small></h3>
+                <div class="poll" id="poll"></div>
+                <p class="muted">Rounded ("about 2 in 3"). Source: AP Voter Poll for AP, ABC, CBS, CNN, Fox News, NBC and others, conducted by SSRS, 19 Oct – 3 Nov 2026.</p>
+
+                <h3 class="sub">3b · Rank the explanations <small>move them with ▲ ▼</small></h3>
+                <p>Put the explanation you find <strong>most convincing</strong> at the top. Use the evidence on each card and from stop 2. Your top three count.</p>
+                <ol class="rank" id="rank"></ol>
+                <div class="notes">
+                    <div class="note">
+                        <label for="n-rank">Why is your no. 1 on top? (2–3 sentences)</label>
+                        <textarea id="n-rank" data-note="rank" placeholder="I think the main reason was … because …"></textarea>
+                    </div>
+                </div>
+
+                <h3 class="sub">3c · Records and firsts</h3>
+                <div class="firsts">
+                    <div class="first"><b>Both chambers flipped</b>Only the 4th time since World War II that a midterm flipped the House and the Senate together (after 1946, 1994 and 2006).</div>
+                    <div class="first"><b>Kansas</b>Adam Hamilton beat Sen. Roger Marshall: Kansas's first Democratic senator elected since 1932.</div>
+                    <div class="first"><b>Texas</b>James Talarico beat Ken Paxton for the Senate (first Democratic Senate win in Texas since 1988), and Gina Hinojosa ousted Governor Greg Abbott.</div>
+                    <div class="first"><b>South Carolina</b>Annie Andrews won the Senate seat, the first Democrat to do so since 1998, called the biggest midterm upset in over 50 years.</div>
+                    <div class="first"><b>Georgia</b>Keisha Lance Bottoms became the first Black woman ever elected governor of a US state.</div>
+                    <div class="first"><b>New Mexico</b>Deb Haaland became the first Native American woman elected governor.</div>
+                    <div class="first"><b>Michigan</b>Abdul El-Sayed won a Senate seat: the first Muslim elected to the US Senate.</div>
+                    <div class="first"><b>Young voters</b>About 7 in 10 under-30s voted Democratic for the House. Two years earlier they had split roughly evenly between Trump and Harris.</div>
+                </div>
+
+                <button type="button" class="done-toggle" data-done="why" aria-pressed="false">☐ Stop 3 done</button>
+            </section>
+
+            <!-- ================= 4 SPIN ================= -->
+            <section id="spin" class="mt-4">
+                <div class="chapter-header">
+                    <span class="chapter-number">4</span>
+                    <h2>Same night, different stories</h2>
+                </div>
+                <p class="lead">The facts of election night are the same for everyone. The <em>story</em> is not. Who gets the blame? Who is quoted? Which word does the headline choose?</p>
+
+                <h3 class="sub">4a · Headline lab <small>click every word that carries an opinion or emotion</small></h3>
+                <div id="headlines"></div>
+                <button type="button" class="btn btn-outline" id="hl-compare">Compare with our suggestions</button>
+                <p class="muted mt-2">Dashed frame = our suggestion. You don't have to agree. Can you defend a word we didn't mark, or one we did?</p>
+
+                <h3 class="sub">4b · Who said it? <span class="score" id="who-score"></span></h3>
+                <div class="qgrid" id="whosaid"></div>
+
+                <h3 class="sub">4c · Go deeper: choose two sources</h3>
+                <div class="task-box">
+                    <h4>Your task</h4>
+                    <ol>
+                        <li>Choose <strong>two sources from different columns</strong>, e.g. one blue and one red, or one red and one gold. Watch or read them (videos 4–11 minutes).</li>
+                        <li>For each source, fill in the framing check below.</li>
+                        <li>Finish with one sentence: <em>"Source A presents the result as …, while source B …"</em></li>
+                    </ol>
+                    <p class="muted">The colour labels give a rough orientation, not a final verdict. Outlets are not all alike: a news report is not an opinion column, even on the same website. Some sites may show a paywall or a cookie banner; if so, just pick another source.</p>
+                </div>
+
+                <div class="lean-grid">
+                    <div class="lean l">
+                        <h4>Left-leaning / Democratic view</h4>
+                        <ul>
+                            <li><span class="kind">TEXT</span><a href="https://www.ms.now/news/democrats-sweep-house-senate-2026-midterm-election" target="_blank" rel="noopener">Democrats win House and Senate in 2026 midterms, a blow to Trump</a><span class="meta">MS NOW (formerly MSNBC) · news report</span></li>
+                            <li><span class="kind a">AUDIO</span><a href="https://www.npr.org/2026/11/04/nx-s1-6022528/democrats-midterm-election-results-senate-house-congress" target="_blank" rel="noopener">DNC chair Ken Martin on Democrats' midterm wins and mandate</a><span class="meta">NPR · interview with the Democratic Party chair · 4 Nov</span></li>
+                            <li><span class="kind">TEXT</span><a href="https://www.npr.org/2026/11/08/nx-s1-6032829/gen-z-voters-midterm-elections" target="_blank" rel="noopener">How Gen Z voters helped fuel a blue wave</a><span class="meta">NPR · about your generation · 8 Nov</span></li>
+                            <li><span class="kind">TEXT</span><a href="https://www.cnn.com/2026/11/05/politics/democrats-midterms-mandate-what-happens-2026-2028" target="_blank" rel="noopener">'We need to get to work': Democrats debate what to do with their midterm mandate</a><span class="meta">CNN · 5 Nov</span></li>
+                        </ul>
+                    </div>
+                    <div class="lean c">
+                        <h4>Centre / wire services / public media</h4>
+                        <ul>
+                            <li><span class="kind v">VIDEO</span><a href="https://www.pbs.org/newshour/show/brooks-and-capehart-on-trumps-white-house-shakeup-and-fallout-from-the-midterms" target="_blank" rel="noopener">Brooks and Capehart on … fallout from the midterms</a><span class="meta">PBS NewsHour · 11 min · a conservative and a liberal columnist side by side · 6 Nov</span></li>
+                            <li><span class="kind v">VIDEO</span><a href="https://www.pbs.org/newshour/show/the-issues-that-drove-voters-decisions-in-the-midterms" target="_blank" rel="noopener">The issues that drove voters' decisions in the midterms</a><span class="meta">PBS NewsHour · with transcript · 4 Nov</span></li>
+                            <li><span class="kind v">VIDEO</span><a href="https://www.youtube.com/watch?v=yNa5UdPbG30" target="_blank" rel="noopener">Recapping Democrats' massive wins in the 2026 midterm elections</a><span class="meta">CBS News · YouTube</span></li>
+                            <li><span class="kind">TEXT</span><a href="https://www.pbs.org/newshour/politics/how-trump-and-republicans-lost-the-2026-midterm-elections-according-to-ap-voter-poll" target="_blank" rel="noopener">How Trump and Republicans lost the 2026 midterm elections, according to AP Voter Poll</a><span class="meta">Associated Press · 4 Nov</span></li>
+                            <li><span class="kind">TEXT</span><a href="https://www.deseret.com/opinion/2026/11/06/independents-flex-muscle-blue-wave-democrats-midterms/" target="_blank" rel="noopener">Everyone called it a 'blue wave.' But were the midterms more about independents?</a><span class="meta">Deseret News (Utah) · opinion, centre-right · 6 Nov</span></li>
+                        </ul>
+                    </div>
+                    <div class="lean r">
+                        <h4>Right-leaning / Republican view</h4>
+                        <ul>
+                            <li><span class="kind">TEXT</span><a href="https://www.foxnews.com/media/conservatives-stunned-catastrophic-midterm-blue-tsunami-blame-trumps-iran-war-high-gas-prices" target="_blank" rel="noopener">Conservatives stunned by 'catastrophic' midterm blue tsunami, blame Trump's Iran war, high gas prices</a><span class="meta">Fox News · 4 Nov</span></li>
+                            <li><span class="kind">TEXT</span><a href="https://www.foxnews.com/politics/republicans-turn-trump-after-devastating-midterm-losses-hand-democrats-control-congress" target="_blank" rel="noopener">Republicans turn on Trump after devastating midterm losses</a><span class="meta">Fox News · 5 Nov</span></li>
+                            <li><span class="kind v">VIDEO</span><a href="https://www.foxnews.com/video/6407917132112" target="_blank" rel="noopener">Trump concedes GOP couldn't 'transfer the love' in midterm elections</a><span class="meta">Fox News · 3:47 min · 4 Nov</span></li>
+                            <li><span class="kind v">VIDEO</span><a href="https://www.foxnews.com/video/6407885180112" target="_blank" rel="noopener">Voters are angry and making their voices heard</a><span class="meta">Fox News · conservative podcast hosts · 3:42 min</span></li>
+                            <li><span class="kind">TEXT</span><a href="https://americanmind.org/salvo/what-happened-in-the-midterms/" target="_blank" rel="noopener">What Happened in the Midterms</a><span class="meta">The American Mind (Claremont Institute) · conservative opinion that criticises Fox's explanation · 9 Nov</span></li>
+                        </ul>
+                    </div>
+                    <div class="lean w">
+                        <h4>Outside view</h4>
+                        <ul>
+                            <li><span class="kind">TEXT</span><a href="https://www.aljazeera.com/news/2026/11/4/seismic-shift-world-reacts-to-us-midterm-election-results" target="_blank" rel="noopener">'Seismic shift': World reacts to US midterm election results</a><span class="meta">Al Jazeera (Qatar) · 4 Nov</span></li>
+                            <li><span class="kind">TEXT</span><a href="https://www.euronews.com/2026/11/04/us-midterms-what-trumps-defeat-means-for-europe-and-global-markets" target="_blank" rel="noopener">US midterms: What Trump's defeat means for Europe and global markets</a><span class="meta">Euronews · 4 Nov</span></li>
+                            <li><span class="kind">TEXT</span><a href="https://www.atlanticcouncil.org/content-series/fastthinking/what-the-midterms-will-and-wont-change-for-us-foreign-policy/" target="_blank" rel="noopener">What the midterms will (and won't) change for US foreign policy</a><span class="meta">Atlantic Council (think tank) · 4 Nov</span></li>
+                            <li><span class="kind">TEXT</span><a href="https://www.kyivpost.com/analysis/89149" target="_blank" rel="noopener">Europe upbeat on Ukraine after US midterm but cautions against reliance on Washington</a><span class="meta">Kyiv Post (Ukraine) · analysis</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 class="sub">Framing check <small>saved in this browser</small><span class="saved" id="saved-ind">✓ saved</span></h3>
+                <div class="notes">
+                    <div class="note"><label for="n-a-src">Source A (outlet + title)</label><input id="n-a-src" data-note="a-src"></div>
+                    <div class="note"><label for="n-b-src">Source B (outlet + title)</label><input id="n-b-src" data-note="b-src"></div>
+                    <div class="note"><label for="n-a-blame">A: Who or what gets the blame / the credit?</label><textarea id="n-a-blame" data-note="a-blame"></textarea></div>
+                    <div class="note"><label for="n-b-blame">B: Who or what gets the blame / the credit?</label><textarea id="n-b-blame" data-note="b-blame"></textarea></div>
+                    <div class="note"><label for="n-a-voices">A: Whose voices are quoted, and whose are missing?</label><textarea id="n-a-voices" data-note="a-voices"></textarea></div>
+                    <div class="note"><label for="n-b-voices">B: Whose voices are quoted, and whose are missing?</label><textarea id="n-b-voices" data-note="b-voices"></textarea></div>
+                    <div class="note"><label for="n-a-words">A: Three loaded words or images</label><textarea id="n-a-words" data-note="a-words"></textarea><div class="hint">e.g. "tsunami", "rebuke", "shellacking", "stunned"</div></div>
+                    <div class="note"><label for="n-b-words">B: Three loaded words or images</label><textarea id="n-b-words" data-note="b-words"></textarea></div>
+                </div>
+                <div class="notes mt-2">
+                    <div class="note"><label for="n-compare">Source A presents the result as … while source B …</label><textarea id="n-compare" data-note="compare"></textarea></div>
+                </div>
+
+                <button type="button" class="done-toggle" data-done="spin" aria-pressed="false">☐ Stop 4 done</button>
+            </section>
+
+            <!-- ================= BONUS ================= -->
+            <section id="ripples" class="mt-4">
+                <div class="chapter-header bonus">
+                    <span class="chapter-number">★</span>
+                    <h2>Bonus: ripple effects around the world</h2>
+                </div>
+                <p class="lead">An American midterm is a domestic election with global consequences. But how much can a new Congress actually change abroad? First test your instinct, then look at the reactions.</p>
+
+                <h3 class="sub">Who decides? <small>Congress, the President, or the Supreme Court</small> <span class="score" id="sort-score"></span></h3>
+                <div class="qgrid sorter" id="sorter"></div>
+
+                <h3 class="sub">Reactions from abroad</h3>
+                <div class="ripple">
+                    <div class="rip"><h4>🇩🇪 Germany</h4>Chancellor Friedrich Merz was sceptical: <q>Trump has, for the past two years, largely governed without consulting Congress. Why should things be any different now?</q> Defence minister Boris Pistorius congratulated the Democrats but said Europe must keep building its own defence.</div>
+                    <div class="rip"><h4>🇬🇧 United Kingdom</h4>A government minister stressed continuity: the relationship with the US as Britain's closest ally is <q>unwavering and unchanging</q>.</div>
+                    <div class="rip"><h4>🇪🇺 European Union</h4>European Parliament Vice-President Christel Schaldemose was <q>cautiously optimistic on Europe's behalf</q>, mainly because a Democratic Congress could support Ukraine.</div>
+                    <div class="rip"><h4>🇺🇦 Ukraine</h4>Democrats now chair the committees, and many want new aid. But the White House has held back money Congress already approved. One expert's advice to Europe: treat earmarked funds <q>as intent, not commitment</q>.</div>
+                    <div class="rip"><h4>🇮🇷 Iran</h4>Parliament speaker and chief negotiator Ghalibaf: <q>Americans said NO TO WAR, and we endorse this message.</q> Note that the result is used as a message <em>abroad</em>, too.</div>
+                    <div class="rip"><h4>💹 Trade</h4>Tariffs mostly rest on laws that let the President act alone. Congress can hold hearings and pass bills, but Trump can veto them, and an override needs two thirds.</div>
+                </div>
+
+                <div class="island">
+                    <h3>🍀 Zoom in: Ireland – a small island, big exposure</h3>
+                    <p>Some countries watch Washington more nervously than others. Ireland has about 5.4 million people, yet few European countries are as closely tied to the US:</p>
+                    <ul>
+                        <li><strong>Medicines and multinationals:</strong> many US pharma and tech companies have their European base there, and the US is its biggest export market. In April 2026 Washington announced a 100% tariff on patented medicines. EU exports are capped at 15% under the EU–US deal (<a href="https://www.irishtimes.com/business/economy/2026/04/03/trump-announces-100-tariff-on-some-patented-medicines/" target="_blank" rel="noopener">The Irish Times</a>).</li>
+                        <li><strong>Data centres:</strong> the day after the midterms, Labour leader Ivana Bacik told the Dáil the US vote was a <q>lesson for the Taoiseach</q> about tech power and data centres, which use nearly a quarter of Ireland's electricity. Taoiseach Micheál Martin replied that the result <q>is a matter for America and the people of America</q> (<a href="https://www.irishtimes.com/world/us/2026/11/04/us-midterm-elections-results-democrats-take-control-of-house-and-senate/" target="_blank" rel="noopener">Irish Times live blog, 4 Nov</a>).</li>
+                        <li><strong>EU chair:</strong> from July to December 2026 Ireland holds the presidency of the Council of the EU, so it chairs EU meetings just as the US Congress changes hands.</li>
+                        <li><strong>Family ties:</strong> more than 30 million Americans claim Irish ancestry, and Congress has long taken an interest in the Northern Ireland peace process.</li>
+                    </ul>
+                    <div class="task-box" style="margin-top:.8rem">
+                        <h4>Starter questions</h4>
+                        <ol>
+                            <li>Which of the bullet points above could a <em>Democratic Congress</em> actually change, and which depend on the President alone? Use your "Who decides?" results.</li>
+                            <li>Why might a small, open economy be more exposed to US politics than Germany?</li>
+                            <li>Look at one Irish news site (e.g. RTÉ, The Irish Times, TheJournal.ie) and find one current headline that links Ireland to Washington. What's the connection?</li>
+                        </ol>
+                    </div>
+                    <div class="notes">
+                        <div class="note"><label for="n-island">My notes</label><textarea id="n-island" data-note="island"></textarea></div>
+                    </div>
+                </div>
+
+                <button type="button" class="done-toggle" data-done="ripples" aria-pressed="false">☐ Bonus done</button>
+            </section>
+
+            <!-- ================= POPCORN ================= -->
+            <section id="popcorn" class="mt-4">
+                <div class="chapter-header popcorn">
+                    <span class="chapter-number">🍿</span>
+                    <h2>Popcorn corner: fun videos</h2>
+                </div>
+                <p class="lead">Short, funny, surprisingly deep. Optional, for the end of the lesson or at home. Pick one, watch it, then explain the main idea to your neighbour in <strong>30 seconds</strong>.</p>
+                <p class="muted">The links open YouTube in a new tab (no videos are embedded on this page). Many CGP Grey videos have been given new, more dramatic titles. The topic is what counts.</p>
+
+                <h3 class="sub">🏛️ The machine <small>fits stops 1 and 🎲</small></h3>
+                <div class="pop-grid">
+                    <a class="pop" href="https://www.youtube.com/watch?v=HuFR5XBYLfU" target="_blank" rel="noopener"><span class="ch ted">TED-Ed · 4 min</span><strong>How is power divided in the United States government?</strong><span>The three branches and their checks in under four minutes. The perfect refresher.</span></a>
+                    <a class="pop" href="https://www.youtube.com/watch?v=0bf3CwYCxXw" target="_blank" rel="noopener"><span class="ch cc">Crash Course</span><strong>Separation of Powers and Checks and Balances</strong><span>The fast-talking version, with a lot more jokes.</span></a>
+                    <a class="pop" href="https://www.youtube.com/watch?v=dDYFiq1l5Dg" target="_blank" rel="noopener"><span class="ch grey">CGP Grey</span><strong>Only One Supreme Court Justice Has Ever Been Impeached</strong><span>Justices serve for life. So how do you get rid of one, and why has it only happened once?</span></a>
+                    <a class="pop" href="https://www.youtube.com/watch?v=boezS4C_MFc" target="_blank" rel="noopener"><span class="ch grey">CGP Grey · mystery pick</span><strong>America's Worst-Designed Backup Plan</strong><span>Guess first: which "backup plan" in the US system could be the worst-designed? Then watch and see if you were right.</span></a>
+                </div>
+
+                <h3 class="sub">🗳️ The Electoral College <small>fits 1c</small></h3>
+                <div class="pop-grid">
+                    <a class="pop" href="https://www.youtube.com/watch?v=W9H3gvnN468" target="_blank" rel="noopener"><span class="ch ted">TED-Ed · 5 min</span><strong>Does your vote count? The Electoral College explained</strong><span>How your vote travels from your state to the President.</span></a>
+                    <a class="pop" href="https://www.youtube.com/watch?v=7wC42HgLA4k" target="_blank" rel="noopener"><span class="ch grey">CGP Grey</span><strong>You Can Win the Presidency With 22% of the Vote</strong><span>A classic: the maths of the Electoral College, taken to its absurd extreme.</span></a>
+                    <a class="pop" href="https://www.youtube.com/watch?v=COmW6r23zas" target="_blank" rel="noopener"><span class="ch grey">CGP Grey · ≈ 5 min</span><strong>The Electoral College Ruling That Changed Nothing</strong><span>"Faithless electors": what happens if an elector votes for someone else? On the Supreme Court ruling of 2020.</span></a>
+                    <a class="pop" href="https://www.youtube.com/watch?v=tUX-frlNBJY" target="_blank" rel="noopener"><span class="ch grey">CGP Grey · ≈ 6 min</span><strong>Your State Could Give Your Vote to the Other Side</strong><span>The National Popular Vote Compact: a sneaky plan to get rid of the Electoral College without changing the Constitution.</span></a>
+                </div>
+
+                <h3 class="sub">📊 Midterms and Congress <small>fits stops 2 and 3</small></h3>
+                <div class="pop-grid">
+                    <a class="pop" href="https://www.youtube.com/watch?v=qxiD9AEX4Hc" target="_blank" rel="noopener"><span class="ch cc">Crash Course · 9 min</span><strong>Congressional Elections</strong><span>Why members of Congress almost always get re-elected, and why midterms are different.</span></a>
+                    <a class="pop" href="https://www.youtube.com/watch?v=Mky11UJb9AY" target="_blank" rel="noopener"><span class="ch grey">CGP Grey</span><strong>Why Your Politicians Don't Fear Your Vote</strong><span>Gerrymandering: how drawing district lines can decide elections. Remember "redistricting backfired" from stop 3?</span></a>
+                </div>
+
+                <h3 class="sub">🌍 Beyond the USA <small>fits 1d and the bonus</small></h3>
+                <div class="pop-grid">
+                    <a class="pop" href="https://www.youtube.com/watch?v=s7tWHJfhiyo" target="_blank" rel="noopener"><span class="ch grey">CGP Grey</span><strong>Why Your Vote Doesn't Count</strong><span>First past the post, the system used for both the US House and the UK Commons, and why it tends to produce two big parties.</span></a>
+                    <a class="pop" href="https://www.youtube.com/watch?v=3Y3jE3B8HsE" target="_blank" rel="noopener"><span class="ch grey">CGP Grey</span><strong>The Voting System That Should Replace Every Election</strong><span>Grey's pitch for something better than first past the post. Bonus: Alaska ranks its candidates, which is why its Senate race is still being counted.</span></a>
+                    <a class="pop" href="https://www.youtube.com/watch?v=l8XOZJkozfI" target="_blank" rel="noopener"><span class="ch grey">CGP Grey</span><strong>The Voting System That's Actually Too Good for Politicians to Allow</strong><span>The single transferable vote, explained with animals. Few countries use it for their parliament. Ireland and Malta do.</span></a>
+                    <a class="pop" href="https://www.youtube.com/watch?v=rNu8XDBSn10" target="_blank" rel="noopener"><span class="ch grey">CGP Grey</span><strong>The UK Is a Country Made of Countries</strong><span>UK, Great Britain, England, and where the island of Ireland fits in. Never mix them up again.</span></a>
+                    <a class="pop" href="https://www.youtube.com/watch?v=rStL7niR7gs" target="_blank" rel="noopener"><span class="ch grey">CGP Grey · longer</span><strong>Try to Rule Fairly and You'll Be Overthrown</strong><span>"Rules for Rulers": why every leader, democratic or not, depends on the people who hold the keys to power. Mind-blowing.</span></a>
+                </div>
+            </section>
+
+            <!-- ================= EXIT ================= -->
+            <section id="exit" class="mt-4">
+                <div class="chapter-header">
+                    <span class="chapter-number">✓</span>
+                    <h2>Exit ticket</h2>
+                </div>
+                <div class="notes">
+                    <div class="note"><label for="n-exit1">One thing about the US system I had wrong (or fuzzy) before today:</label><textarea id="n-exit1" data-note="exit1"></textarea></div>
+                    <div class="note"><label for="n-exit2">Was 2026 a vote <em>for</em> the Democrats or <em>against</em> Trump and the Republicans? Two sentences with evidence:</label><textarea id="n-exit2" data-note="exit2"></textarea></div>
+                    <div class="note"><label for="n-exit3">The source that surprised me most, and why:</label><textarea id="n-exit3" data-note="exit3"></textarea></div>
+                </div>
+                <div class="row-btns mt-2" style="display:flex;flex-wrap:wrap;gap:.5rem">
+                    <button type="button" class="btn btn-primary" id="copy-all">📋 Copy all my notes</button>
+                    <button type="button" class="btn btn-outline" id="clear-all">Delete my notes</button>
+                    <span class="muted" id="copy-msg" style="align-self:center"></span>
+                </div>
+                <p class="muted mt-2">Your notes are only saved in this browser on this device. Nothing is sent anywhere. Copy them into your OneNote or document before you switch devices.</p>
+
+                <h3 class="sub">Sources</h3>
+                <ul class="sources-list">
+                    <li>AP via PBS NewsHour: <a href="https://www.pbs.org/newshour/politics/how-trump-and-republicans-lost-the-2026-midterm-elections-according-to-ap-voter-poll" target="_blank" rel="noopener">How Trump and Republicans lost …</a>; <a href="https://www.pbs.org/newshour/politics/ap-voter-poll-how-key-demographic-groups-voted-in-the-2026-midterms" target="_blank" rel="noopener">How key demographic groups voted</a>; <a href="https://www.pbs.org/newshour/politics/ap-voter-poll-the-economy-and-the-state-of-democracy-are-voters-top-issues" target="_blank" rel="noopener">Voters' top issues</a>; <a href="https://www.pbs.org/newshour/politics/takeaways-from-election-night-young-voters-hispanics-shift-away-from-the-gop-as-voters-show-unhappiness-with-trump" target="_blank" rel="noopener">4 takeaways</a>; <a href="https://www.pbs.org/newshour/politics/the-u-s-political-map-anyones-guess-after-democratic-wave" target="_blank" rel="noopener">The U.S. political map</a> (3–4 Nov 2026)</li>
+                    <li>CBS News: <a href="https://www.cbsnews.com/live-updates/midterm-election-results-2026-democrats-house-senate-trump/" target="_blank" rel="noopener">live updates</a> (seat estimates, as of 9 Nov 2026)</li>
+                    <li>Rutgers University: <a href="https://www.rutgers.edu/news/what-drove-historic-blue-wave-2026-midterms" target="_blank" rel="noopener">What drove the historic blue wave in the 2026 midterms?</a> (4 Nov 2026)</li>
+                    <li>American Presidency Project, UC Santa Barbara: <a href="https://presidency.ucsb.edu/statistics/data/seats-congress-gainedlost-the-presidents-party-mid-term-elections" target="_blank" rel="noopener">Seats gained/lost by the President's party in midterm elections</a></li>
+                    <li>Al Jazeera, Euronews, Atlantic Council, Kyiv Post (see stop 4)</li>
+                    <li>The Irish Times: live blog 4 Nov 2026; tariff report 3 Apr 2026</li>
+                    <li>Fox News and The American Mind (see stop 4), quotes from Trump, Vance, DeSantis, Eberhart</li>
+                </ul>
+
+                <details class="teacher">
+                    <summary>For teachers</summary>
+                    <p class="mt-2">Built on 9 Nov 2026. Alaska (ranked-choice count 18 Nov) and Mississippi were not yet called; the hemicycles show them in grey. If you reuse the page later, update the numbers in <code>us-midterms.js</code> (constants <code>SEATS</code> and <code>HISTORY</code>, last row). Suggested flow for one lesson: start together with "The night in numbers" (5 min), then stops 1–4 individually in any order. Exit ticket as a short plenary or homework. Stop 4 works well in pairs (one source each, then compare).</p>
+                    <p><strong>Group games ("Play the machine"):</strong> Branch Blitz as a team competition on the projector (5 min). Bill Quest works well as a whole-class prediction game: let the class guess where the bill dies before you press ▶. Gridlock: 6 groups, one role card each; draw 2–3 scenarios (about 15 min). The role cards show the situation from January 2027.</p>
+                </details>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+
+</body>
+</html>
