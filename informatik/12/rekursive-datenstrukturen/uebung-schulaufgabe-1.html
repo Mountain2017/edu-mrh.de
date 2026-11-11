@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Übung zur 1. Schulaufgabe: Rekursive Datenstrukturen | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Übungsaufgaben zur 1. Schulaufgabe Informatik 12: Warteschlange, Liste als Kompositum (Klassendiagramm, Methodenköpfe, Sequenzdiagramme), Code ordnen mit Sequenzdiagramm, Rekursion und Aufrufbaum, doppelt verkettete Liste, Stapel – mit Prüfständen und gestuften Lösungen.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="datenstrukturen.css">
+    <script defer src="datenstrukturen.js"></script>
+    <script defer src="uebung/uebung.js"></script>
+    <style>
+        .sterne { color: #d97706; letter-spacing: .1em; font-size: .95rem; white-space: nowrap; }
+        .be { font-weight: 700; white-space: nowrap; }
+        .operatoren td:first-child { font-weight: 700; white-space: nowrap; }
+        .kontext { background: #f8fafc; border-left: 5px solid var(--rd-primary); padding: .8rem 1.1rem; border-radius: 0 8px 8px 0; margin: .8rem 0; }
+        .kontext p:last-child { margin-bottom: 0; }
+        .abb { margin: .8rem 0; overflow-x: auto; background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: .6rem; }
+        .abb img { display: block; width: 100%; min-width: 560px; height: auto; }
+        .abb.schmal img { min-width: 0; max-width: 640px; margin: 0 auto; }
+        .lw-stufe .abb { margin: .5rem 0; }
+        .rd-tab code { white-space: nowrap; }
+        .rd-tab td.code { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: .86rem; white-space: pre; }
+        /* Prüfstände (uebung.js) */
+        [data-fifo] input { width: 100%; min-width: 5.5rem; padding: .3rem .45rem; border: 2px solid #cbd5e1; border-radius: 6px; font: inherit; font-family: ui-monospace, Consolas, monospace; }
+        [data-fifo] input.ok { border-color: #16a34a; background: #f0fdf4; }
+        [data-fifo] input.falsch { border-color: #dc2626; background: #fef2f2; }
+        .ue-rueck { font-weight: 600; margin: .3rem 0 .6rem; min-height: 1.2em; }
+        .ue-rueck.gut { color: #166534; }
+        .ue-rueck.offen { color: #b45309; }
+        .parsons { border: 1px solid #e5e7eb; border-radius: 10px; padding: .8rem 1rem; background: #f8fafc; margin: .8rem 0; }
+        .pa-vorrat { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: .4rem; margin: .4rem 0 .8rem; }
+        .pa-vorrat button, .pa-programm li { font-family: ui-monospace, Consolas, monospace; font-size: .86rem; text-align: left; background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; padding: .35rem .6rem; cursor: pointer; color: #1e293b; }
+        .pa-vorrat button b, .pa-programm li b { display: inline-block; min-width: 1.3rem; color: var(--rd-primary-dark); font-family: system-ui, sans-serif; }
+        .pa-vorrat button:disabled { opacity: .35; cursor: default; }
+        .pa-programm { list-style: none; margin: .2rem 0 .2rem 1.6rem; padding: 0; min-height: 2.2rem; border-left: 3px solid var(--rd-light); }
+        .pa-programm li { margin: .25rem 0 .25rem 0; width: fit-content; max-width: 100%; }
+        .pa-kopf, .pa-fuss { margin: 0; font-family: ui-monospace, Consolas, monospace; font-size: .86rem; }
+        .wf { list-style: none; padding: 0; margin: .5rem 0; }
+        .wf li { padding: .55rem .7rem; border: 1px solid #e5e7eb; border-radius: 8px; margin: .4rem 0; background: #fff; }
+        .wf li.ok { border-color: #86efac; background: #f0fdf4; }
+        .wf li.falsch { border-color: #fca5a5; background: #fef2f2; }
+        .wf-knoepfe { display: inline-flex; gap: .3rem; margin-left: .5rem; }
+        .wf-knoepfe button { border: 1px solid #94a3b8; background: #fff; border-radius: 999px; padding: .1rem .7rem; cursor: pointer; font: inherit; font-size: .85rem; }
+        .wf-erkl { display: block; margin-top: .35rem; font-size: .92rem; color: #334155; }
+        .wf-erkl::before { content: attr(data-urteil) " "; font-weight: 700; }
+        .checkliste li { margin: .25rem 0; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🔗</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="../../informatik.html#jahrgang-12" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Übung Schulaufgabe 1</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#start">🧭 So arbeitest du</a></li>
+            <li><a href="#warteschlange">🍕 1 Warteschlange</a></li>
+            <li><a href="#kompositum">🎵 2 Kompositum</a></li>
+            <li><a href="#ordnen">🧩 3 Code ordnen</a></li>
+            <li><a href="#rekursion">🗼 4 Rekursion</a></li>
+            <li><a href="#doppelt">🖼️ 5 Doppelt verkettet</a></li>
+            <li><a href="#extra">➕ 6 Extras</a></li>
+            <li><a href="#checkliste">✅ Checkliste</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Rekursive Datenstrukturen</div>
+            <ul class="sidebar-menu">
+                <li><a href="../../informatik.html#jahrgang-12">Übersicht Klasse 12</a></li>
+                <li><a href="1-1-queue.html">1.1 Warteschlange (Queue)</a></li>
+                <li><a href="1-2-interfaces.html">1.2 Interfaces</a></li>
+                <li><a href="1-3-listen.html">1.3 Listen und Rekursion</a></li>
+                <li><a href="1-4-kompositum.html">1.4 Kompositum</a></li>
+                <li><a href="1-5-algorithmen.html">1.5 Rekursive Algorithmen</a></li>
+                <li><a href="uebung-schulaufgabe-1.html">Übung zur Schulaufgabe</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero rd-hero">
+                <h1 class="hero-title">Übung zur 1. Schulaufgabe</h1>
+                <p class="hero-subtitle">Rekursive Datenstrukturen · Informatik 12 · Stationen 1.1 bis 1.5</p>
+                <span class="rd-kompetenz">Hier übst du alle Aufgabentypen: Warteschlange, Liste als Kompositum mit Klassen- und Sequenzdiagramm, Code zuordnen, ordnen und Fehler finden, Rekursion mit Aufrufbaum und die doppelt verkettete Liste. Dazu kommt ein wenig Extra. Es gibt mehr Aufgaben als in einer Schulaufgabe.</span>
+                <div class="rd-actions">
+                    <a class="btn btn-ab" href="uebung/vorlagen.pdf">🖨️ Vorlagen zum Ausdrucken (PDF)</a>
+                    <a class="btn btn-outline" href="#checkliste">✅ zur Checkliste</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-note" href="#start">🧭 Start</a><a class="p-investigate" href="#warteschlange">🍕 Warteschlange</a><a class="p-predict" href="#kompositum">🎵 Kompositum</a><a class="p-modify" href="#ordnen">🧩 Ordnen</a><a class="p-idee" href="#rekursion">🗼 Rekursion</a><a class="p-make" href="#doppelt">🖼️ Doppelt</a><a class="p-ausblick" href="#extra">➕ Extras</a>
+            </div>
+
+            <!-- ===================================================== Start -->
+            <section id="start" class="phase note">
+                <div class="phase-head"><span class="phase-icon">🧭</span><h2>So arbeitest du<small>Aufgaben wie in der Schulaufgabe</small></h2></div>
+                <div class="phase-body">
+                    <p>Die Aufgaben sind so formuliert wie in der Schulaufgabe: in der Sie-Form, mit einem <strong>Operator</strong>, der sagt, was verlangt ist, und mit <strong>Bewertungseinheiten (BE)</strong>. Die Sterne zeigen die Schwierigkeit: <span class="sterne">★</span> Grundlagen, <span class="sterne">★★</span> Anwenden, <span class="sterne">★★★</span> knifflig. Löse zuerst auf Papier und schau dann in die Hilfen: Tipps blenden sich mit einem Klick ein, die Lösung erst nach Gedrückthalten.</p>
+                    <p>Tabellen, Klassen-, Sequenz- und Objektdiagramme gibt es als <a href="uebung/vorlagen.pdf">Vorlagen zum Ausdrucken</a>. So arbeitest du wie in der Schulaufgabe direkt in die Vorlage. Code wird nirgends von null an geschrieben: Du ordnest ihn zu, bringst ihn in die richtige Reihenfolge oder findest und korrigierst Fehler.</p>
+                    <div class="tab-scroll">
+                        <table class="rd-tab operatoren">
+                            <tr><th>Operator</th><th>Was du lieferst</th></tr>
+                            <tr><td>Nennen Sie, Geben Sie an</td><td>nur das Ergebnis, ohne Begründung</td></tr>
+                            <tr><td>Bestimmen Sie</td><td>Ergebnis mit erkennbarem Weg, z. B. die Folge der Aufrufe</td></tr>
+                            <tr><td>Ergänzen Sie, Vervollständigen Sie</td><td>in die Vorlage eintragen oder einzeichnen: Datentypen, Beziehungen, Aufrufe, Rückgaben</td></tr>
+                            <tr><td>Zeichnen Sie</td><td>vollständig: im Sequenzdiagramm z. B. alle Aufrufe mit Parametern, Rückgaben gestrichelt mit Wert, Aktivierungsbalken</td></tr>
+                            <tr><td>Ordnen Sie zu, Bringen Sie in die Reihenfolge</td><td>Buchstaben, Nummern oder Klassen eintragen</td></tr>
+                            <tr><td>Korrigieren Sie</td><td>die Stelle im Code markieren und richtig stellen (Pfeil oder neu schreiben)</td></tr>
+                            <tr><td>Erklären Sie, Begründen Sie</td><td>nachvollziehbar machen, warum etwas so ist („weil …“)</td></tr>
+                            <tr><td>Beurteilen Sie</td><td>ein eigenes Urteil: Funktioniert es? Wann ja, wann nicht? Mit Gründen</td></tr>
+                        </table>
+                    </div>
+                    <div class="tipp"><strong>Grundwissen:</strong> Die Schulaufgabe beginnt mit einer Grundwissensaufgabe aus den Jahrgangsstufen 6 bis 11, zum Beispiel zu Kontrollstrukturen (Wiederholung, Verzweigung, Struktogramm). Dafür gibt es hier keine eigenen Aufgaben: Wiederhole dazu dein Grundwissen.</div>
+                </div>
+            </section>
+
+            <!-- ===================================================== 1 Warteschlange -->
+            <section id="warteschlange" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🍕</span><h2>Aufgabe 1: Warteschlange<small>Bestellungen beim Pizzadienst (Station 1.1)</small></h2></div>
+                <div class="phase-body">
+                    <div class="kontext">
+                        <p><strong>Pizzadienst.</strong> Ein Pizzadienst nimmt Bestellungen online an. Die Küche bereitet sie in der Reihenfolge zu, in der sie eingehen. Jede Bestellung ist ein Objekt der Klasse <code>Bestellung</code>. Die Bestellungen warten in einer verketteten <code>Warteschlange</code> mit den Attributen <code>anfang</code> und <code>ende</code> und den Methoden <code>add</code>, <code>poll</code>, <code>peek</code> und <code>isEmpty</code>.</p>
+                    </div>
+                    <ol class="aufgaben">
+                        <li><span class="be">(1 BE)</span> <span class="sterne">★</span> Nennen Sie zwei Gründe, warum eine verkettete Warteschlange hier besser geeignet ist als ein Array.</li>
+                        <li><span class="be">(3 BE)</span> <span class="sterne">★</span> Die Warteschlange ist anfangs leer. Die Aufrufe werden von oben nach unten ausgeführt. Ergänzen Sie in jeder Zeile die Rückgabe des Aufrufs und den Inhalt der Warteschlange nach dem Aufruf (vorne zuerst, mit Komma getrennt). Prüfe dich hier:</li>
+                    </ol>
+                    <div data-fifo>
+                        <div class="tab-scroll">
+                            <table class="rd-tab">
+                                <tr><th>Aufruf</th><th>Rückgabe</th><th>Inhalt danach (vorne → hinten)</th></tr>
+                                <tr data-rueck="true" data-inhalt="P1"><td><code>add(P1)</code></td><td><input aria-label="Rückgabe add(P1)"></td><td><input aria-label="Inhalt nach add(P1)"></td></tr>
+                                <tr data-rueck="true" data-inhalt="P1, P2"><td><code>add(P2)</code></td><td><input aria-label="Rückgabe add(P2)"></td><td><input aria-label="Inhalt nach add(P2)"></td></tr>
+                                <tr data-rueck="P1" data-inhalt="P1, P2" data-hinweis="peek() schaut nur nach, wer vorne steht."><td><code>peek()</code></td><td><input aria-label="Rückgabe peek()"></td><td><input aria-label="Inhalt nach peek()"></td></tr>
+                                <tr data-rueck="P1" data-inhalt="P2"><td><code>poll()</code></td><td><input aria-label="Rückgabe 1. poll()"></td><td><input aria-label="Inhalt nach 1. poll()"></td></tr>
+                                <tr data-rueck="true" data-inhalt="P2, P3"><td><code>add(P3)</code></td><td><input aria-label="Rückgabe add(P3)"></td><td><input aria-label="Inhalt nach add(P3)"></td></tr>
+                                <tr data-rueck="P2" data-inhalt="P3"><td><code>poll()</code></td><td><input aria-label="Rückgabe 2. poll()"></td><td><input aria-label="Inhalt nach 2. poll()"></td></tr>
+                                <tr data-rueck="P3" data-inhalt=""><td><code>poll()</code></td><td><input aria-label="Rückgabe 3. poll()"></td><td><input aria-label="Inhalt nach 3. poll() (leer: leer lassen oder leer schreiben)"></td></tr>
+                                <tr data-rueck="null" data-inhalt="" data-hinweis="Was liefert poll(), wenn niemand mehr wartet? Sieh dir die erste Abfrage in poll() an."><td><code>poll()</code></td><td><input aria-label="Rückgabe 4. poll()"></td><td><input aria-label="Inhalt nach 4. poll()"></td></tr>
+                                <tr data-rueck="true" data-inhalt=""><td><code>isEmpty()</code></td><td><input aria-label="Rückgabe isEmpty()"></td><td><input aria-label="Inhalt nach isEmpty()"></td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="lw" data-loesungsweg="1a und 1b">
+                        <template data-stufe="Tipp a"><p>Denke an Abende, an denen sehr viele Bestellungen gleichzeitig eingehen, und daran, was beim Herausnehmen der vordersten Bestellung in einem Array passiert.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) Zwei davon: Die Warteschlange hat keine feste Größe, es können beliebig viele Bestellungen warten (ein Array ist voll oder muss umkopiert werden). Es wird nur Speicher für tatsächlich wartende Bestellungen belegt. Beim Herausnehmen muss nichts aufrücken: <code>anfang</code> rückt einfach weiter.<br>b) siehe Prüfstand. Die Stolpersteine: <code>peek()</code> liefert P1, ohne es herauszunehmen; <code>poll()</code> auf die leere Schlange liefert <code>null</code>, die Schlange bleibt leer; <code>isEmpty()</code> liefert dann <code>true</code>.</p></template>
+                    </div>
+
+                    <ol class="aufgaben" start="3" style="counter-reset: aufg 2">
+                        <li><span class="be">(3 BE)</span> <span class="sterne">★★</span> Ein Mitschüler hat <code>add</code> so programmiert. In der Warteschlange warten P1 und P2 (P1 vorne). Beschreiben Sie, was beim Aufruf <code>add(P3)</code> mit den Verweisen geschieht, und geben Sie an, welche Bestellungen die Küche danach mit <code>poll()</code> bekommt. Korrigieren Sie den Fehler im Code.</li>
+                    </ol>
+<pre class="jv"><span class="k">public boolean</span> add(Bestellung b) {
+   Knoten neu = <span class="k">new</span> Knoten(b);
+   <span class="k">if</span> (isEmpty()) {
+      anfang = neu;
+      ende = neu;
+   } <span class="k">else</span> {
+      ende = neu;
+      ende.setNachfolger(neu);
+   }
+   <span class="k">return true</span>;
+}</pre>
+                    <div class="lw" data-loesungsweg="1c">
+                        <template data-stufe="Tipp"><p>Zeichne die drei Knoten und verfolge die beiden Zeilen im <code>else</code>-Teil. Auf welchen Knoten verweist <code>ende</code>, wenn <code>setNachfolger</code> aufgerufen wird? Prüfen kannst du dich in der <a href="1-1-queue.html#werkstatt">Zeiger-Werkstatt von 1.1</a> mit der Version „add mit ② und ③ vertauscht“.</p></template>
+                        <template data-stufe="Lösung" data-halten><p><code>ende</code> verweist schon auf den neuen Knoten, bevor er angehängt wird. <code>ende.setNachfolger(neu)</code> macht P3 zu seinem eigenen Nachfolger; der Knoten von P2 behält <code>null</code> als Nachfolger. Die Küche bekommt mit <code>poll()</code> nur P1 und P2, danach ist <code>anfang</code> <code>null</code> und die Schlange gilt als leer: P3 geht verloren.<br>Korrektur: Die beiden Zeilen im <code>else</code>-Teil vertauschen, also erst <code>ende.setNachfolger(neu);</code>, dann <code>ende = neu;</code>.<br><em>Bewertung:</em> 1 BE Verweise, 1 BE Folge für die Küche, 1 BE Korrektur.</p></template>
+                    </div>
+
+                    <ol class="aufgaben" start="4" style="counter-reset: aufg 3">
+                        <li><span class="be">(1 BE)</span> <span class="sterne">★</span> Eine Mitschülerin hat <code>peek()</code> so programmiert. Geben Sie an, was <code>peek()</code> liefert, wenn P1, P2 und P3 warten (P1 vorne), und korrigieren Sie den Fehler.</li>
+                    </ol>
+<pre class="jv"><span class="k">public</span> Bestellung peek() {
+   <span class="k">if</span> (isEmpty()) {
+      <span class="k">return null</span>;
+   }
+   <span class="k">return</span> ende.getDaten();
+}</pre>
+                    <ol class="aufgaben" start="5" style="counter-reset: aufg 4">
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★★★</span> Ein Mitschüler lässt in <code>poll()</code> die Zeilen <code>if (anfang == null) { ende = null; }</code> weg. Er meint: „Das ist überflüssig, <code>add</code> setzt bei einer leeren Schlange <code>ende</code> sowieso neu.“ Beurteilen Sie diese Aussage.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="1d und 1e">
+                        <template data-stufe="Tipp e"><p>Woran erkennt <code>add</code>, dass die Schlange leer ist? Und worauf verweist <code>ende</code>, nachdem die letzte Bestellung abgeholt wurde?</p></template>
+                        <template data-stufe="Lösung" data-halten><p>d) P3, also die zuletzt eingegangene Bestellung. Korrektur: <code>return anfang.getDaten();</code>.<br>e) Mit diesem <code>add</code> stimmt die Aussage zunächst: <code>isEmpty()</code> prüft <code>anfang == null</code>, und im Sonderfall werden <code>anfang</code> und <code>ende</code> neu gesetzt. Trotzdem ist die Schlange zwischendurch in einem falschen Zustand: <code>ende</code> verweist auf den Knoten einer Bestellung, die schon abgeholt ist (der Knoten wird auch nicht freigegeben). Jede Methode, die sich auf <code>ende</code> verlässt, arbeitet dann falsch, z. B. ein <code>add</code>, das mit <code>ende == null</code> auf leer prüft, oder eine Methode, die die zuletzt eingegangene Bestellung liefert. Die Zeilen gehören also hinein.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================================================== 2 Kompositum -->
+            <section id="kompositum" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🎵</span><h2>Aufgabe 2: Liste als Kompositum<small>Eine Playlist (Stationen 1.2 bis 1.4)</small></h2></div>
+                <div class="phase-body">
+                    <div class="kontext">
+                        <p><strong>Playlist.</strong> Eine Musik-App speichert jede Playlist als <code>Liste</code> nach dem Entwurfsmuster Kompositum. Jeder Song ist ein Objekt der Klasse <code>Song</code>, die das Interface <code>DatenElement</code> implementiert. Der Vertrag <code>DatenElement</code> wurde um die Methode <code>gibDauer()</code> erweitert: Sie liefert die Dauer eines Songs in Sekunden.</p>
+                    </div>
+                    <ol class="aufgaben">
+                        <li><span class="be">(5 BE)</span> <span class="sterne">★★</span> Vervollständigen Sie das Klassendiagramm: Ergänzen Sie in der Liste oben rechts die Datentypen der Attribute (1) bis (4). Tragen Sie die Nummer jedes Attributs in das Attributfeld der Klasse ein, zu der es gehört. Zeichnen Sie alle Beziehungen ein (Assoziationen mit Namen, Vererbung, Implementierung).</li>
+                        <li><span class="be">(1 BE)</span> <span class="sterne">★</span> Umranden Sie die Klassen der Struktur und die Klassen des Inhalts und nennen Sie einen Vorteil dieser Trennung.</li>
+                    </ol>
+                    <div class="abb"><img src="uebung/a-klasse.svg" alt="Klassendiagramm mit leeren Attributfeldern: Liste, abstrakte Klasse ListenElement mit laenge, gesamtdauer und add, Knoten, Abschluss, Song mit titel und dauer, Interface DatenElement mit gibSchluesselwert, istGleich und gibDauer. Daneben die Attribute (1) anfang, (2) daten, (3) name, (4) nachfolger mit leerem Datentyp." loading="lazy"></div>
+                    <div class="lw" data-loesungsweg="2a und 2b">
+                        <template data-stufe="Tipp a"><p>Welche Klasse kennt den ersten Knoten? Welche Klasse speichert einen Song? Hinter <code>anfang</code> und hinter <code>nachfolger</code> kann ein Knoten <em>oder</em> der Abschluss stehen: Welcher gemeinsame Typ passt dann?</p></template>
+                        <template data-stufe="Lösung" data-halten>
+                            <div class="abb"><img src="uebung/l-klasse.svg" alt="Lösung: Liste hat (1) anfang vom Typ ListenElement und (3) name vom Typ String, Knoten hat (2) daten vom Typ DatenElement und (4) nachfolger vom Typ ListenElement. Knoten und Abschluss erben von ListenElement, Song implementiert DatenElement, Assoziationen anfang, nachfolger, daten. Struktur blau umrandet, Inhalt grün."></div>
+                            <p>ListenElement und Abschluss haben keine Attribute. <code>nachfolger</code> und <code>anfang</code> sind vom Typ <code>ListenElement</code>, nicht <code>Knoten</code>, damit auch der Abschluss dort stehen kann (leere Liste: <code>anfang</code> ist der Abschluss).<br>b) Struktur: Liste, ListenElement, Knoten, Abschluss; Inhalt: DatenElement, Song. Vorteil: Die Strukturklassen lassen sich ohne Änderung für andere Daten verwenden, z. B. für eine Liste von Podcasts; Änderungen an <code>Song</code> betreffen die Liste nicht.</p>
+                        </template>
+                    </div>
+
+                    <ol class="aufgaben" start="3" style="counter-reset: aufg 2">
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★★</span> Die Klasse <code>Song</code> hatte schon vorher eine Methode <code>gibDauer()</code>. Begründen Sie, warum <code>gibDauer()</code> trotzdem zusätzlich im Interface <code>DatenElement</code> stehen muss, damit ein Knoten die Gesamtdauer berechnen kann.</li>
+                        <li><span class="be">(5 BE)</span> <span class="sterne">★</span> Die folgenden Methodenrümpfe stammen aus der Liste nach dem Kompositum. Geben Sie jeweils die Klasse und den vollständigen Methodenkopf an (mit Rückgabetyp und Parametern samt Datentyp).</li>
+                    </ol>
+                    <div class="tab-scroll">
+                        <table class="rd-tab">
+                            <tr><th></th><th>Methodenrumpf</th><th>Klasse</th><th>Methodenkopf</th></tr>
+                            <tr><td>(1)</td><td class="code">return false;</td><td></td><td></td></tr>
+                            <tr><td>(2)</td><td class="code">if (daten.istGleich(d)) {
+   return nachfolger;
+}
+nachfolger = nachfolger.entfernen(d);
+return this;</td><td></td><td></td></tr>
+                            <tr><td>(3)</td><td class="code">return this;</td><td></td><td></td></tr>
+                            <tr><td>(4)</td><td class="code">return anfang.laenge() == 0;</td><td></td><td></td></tr>
+                            <tr><td>(5)</td><td class="code">if (daten.istGleich(d)) {
+   return true;
+}
+return nachfolger.enthaelt(d);</td><td></td><td></td></tr>
+                        </table>
+                    </div>
+                    <div class="lw" data-loesungsweg="2c und 2d">
+                        <template data-stufe="Tipp c"><p>Von welchem Typ ist das Attribut <code>daten</code> im Knoten? Der Compiler prüft nur, ob es die Methode in <em>diesem</em> Typ gibt.</p></template>
+                        <template data-stufe="Tipp d"><p>Wer hat die Attribute <code>daten</code> und <code>nachfolger</code>, wer <code>anfang</code>, wer gar keine? Den Rückgabetyp erkennst du an der <code>return</code>-Zeile, bei <code>this</code> und <code>nachfolger</code> muss er zur abstrakten Methode in ListenElement passen.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>c) Im Knoten ist <code>daten</code> vom Typ <code>DatenElement</code>. Der Compiler erlaubt <code>daten.gibDauer()</code> nur, wenn <code>DatenElement</code> diese Methode vorschreibt; dass zur Laufzeit ein Song dahintersteckt, weiß er nicht. Steht sie im Interface, muss jede Inhaltsklasse sie haben, und die Struktur bleibt unabhängig von <code>Song</code>.</p>
+                            <div class="tab-scroll"><table class="rd-tab">
+                                <tr><th></th><th>Klasse</th><th>Methodenkopf</th></tr>
+                                <tr><td>(1)</td><td>Abschluss</td><td><code>public boolean enthaelt(DatenElement d)</code></td></tr>
+                                <tr><td>(2)</td><td>Knoten</td><td><code>public ListenElement entfernen(DatenElement d)</code></td></tr>
+                                <tr><td>(3)</td><td>Abschluss</td><td><code>public ListenElement entfernen(DatenElement d)</code></td></tr>
+                                <tr><td>(4)</td><td>Liste</td><td><code>public boolean isEmpty()</code></td></tr>
+                                <tr><td>(5)</td><td>Knoten</td><td><code>public boolean enthaelt(DatenElement d)</code></td></tr>
+                            </table></div>
+                            <p>Je Zeile ½ BE Klasse und ½ BE Kopf. Bei (3) muss der Abschluss beim Entfernen nichts tun: Er gibt sich selbst zurück, damit der Vorgänger ihn weiter als Nachfolger einträgt.</p>
+                        </template>
+                    </div>
+
+                    <ol class="aufgaben" start="5" style="counter-reset: aufg 4">
+                        <li><span class="be">(3 BE)</span> <span class="sterne">★★</span> Die App zeigt die Gesamtdauer einer Playlist an. Dafür gibt es in den Klassen der Struktur die Methode <code>gesamtdauer()</code> (Code unten). In der Liste stehen die Songs A (200 s), B (180 s) und C (240 s) in den Knoten <code>k0</code>, <code>k1</code>, <code>k2</code>. Der Player ruft <code>liste.gesamtdauer()</code> auf. Ergänzen Sie das Sequenzdiagramm mit allen Aufrufen, Rückgaben mit Wert und Aktivierungsbalken. Die Aufrufe von <code>gibDauer()</code> müssen Sie nicht einzeichnen.</li>
+                    </ol>
+<pre class="jv"><span class="c">// in der Klasse Knoten</span>
+<span class="k">public int</span> gesamtdauer() {
+   <span class="k">return</span> nachfolger.gesamtdauer() + daten.gibDauer();
+}
+<span class="c">// in der Klasse Liste</span>
+<span class="k">public int</span> gesamtdauer() {
+   <span class="k">return</span> anfang.gesamtdauer();
+}
+<span class="c">// in der Klasse Abschluss</span>
+<span class="k">public int</span> gesamtdauer() {
+   <span class="k">return</span> 0;
+}</pre>
+                    <div class="abb"><img src="uebung/a-seq-dauer.svg" alt="Sequenzdiagramm-Vorlage: Akteur Player ruft gesamtdauer() bei liste auf; Lebenslinien k0 (Song A, 200 s), k1 (Song B, 180 s), k2 (Song C, 240 s) und ab : Abschluss ohne Nachrichten." loading="lazy"></div>
+                    <ol class="aufgaben" start="6" style="counter-reset: aufg 5">
+                        <li><span class="be">(3 BE)</span> <span class="sterne">★★★</span> Der Song B wird mit <code>liste.entfernen(B)</code> aus der Playlist genommen. Die Liste ruft dazu nach einer Prüfung mit <code>enthaelt</code> die Methode <code>anfang.entfernen(d)</code> auf und trägt die Rückgabe als <code>anfang</code> ein; der Knoten arbeitet wie in Teilaufgabe d) (2). Ergänzen Sie das Sequenzdiagramm mit allen Aufrufen, Rückgaben mit Wert und Aktivierungsbalken. Die Prüfung mit <code>enthaelt</code> und die Vergleiche mit <code>istGleich</code> müssen Sie nicht einzeichnen.</li>
+                    </ol>
+                    <div class="abb"><img src="uebung/a-seq-entfernen.svg" alt="Sequenzdiagramm-Vorlage: Akteur Player ruft entfernen(B) bei liste auf; Lebenslinien k0 (Song A), k1 (Song B), k2 (Song C) und ab : Abschluss ohne Nachrichten." loading="lazy"></div>
+                    <ol class="aufgaben" start="7" style="counter-reset: aufg 6">
+                        <li><span class="be">(1 BE)</span> <span class="sterne">★★</span> Erklären Sie, warum der Abschluss in e) aufgerufen wird, in f) aber nicht.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="2e bis 2g">
+                        <template data-stufe="Tipp e"><p>Hier gibt es keine Abbruchbedingung im Knoten: Jeder Knoten fragt seinen Nachfolger. Rechne die Rückgaben von hinten: Was liefert der Abschluss, was macht <code>k2</code> daraus?</p></template>
+                        <template data-stufe="Tipp f"><p>Welcher Knoten erkennt B? Was gibt er zurück, und was trägt sein Vorgänger daraufhin als <code>nachfolger</code> ein? Rückgaben können auch Objekte sein, z. B. <code>k2</code>.</p></template>
+                        <template data-stufe="Lösung e" data-halten>
+                            <div class="abb"><img src="uebung/l-seq-dauer.svg" alt="Lösung: Aufrufe gesamtdauer() von liste über k0, k1, k2 bis ab. Rückgaben: ab 0, k2 240, k1 420, k0 620, liste 620. Aktivierungsbalken geschachtelt."></div>
+                            <p>Gezählt wird erst auf dem Rückweg: Jeder Knoten addiert die Dauer seines Songs zur Rückgabe seines Nachfolgers. <em>Bewertung:</em> 1 BE Aufrufe bis zum Abschluss, 1 BE Rückgaben 0, 240, 420, 620, 620, 1 BE Aktivierungsbalken.</p>
+                        </template>
+                        <template data-stufe="Lösung f und g" data-halten>
+                            <div class="abb"><img src="uebung/l-seq-entfernen.svg" alt="Lösung: liste ruft entfernen(B) bei k0 auf, k0 bei k1. k1 erkennt B und gibt k2 zurück. k0 setzt nachfolger = k2 und gibt k0 zurück. liste setzt anfang = k0 und gibt true zurück. k2 und ab werden nicht aufgerufen."></div>
+                            <p>f) <code>k1</code> gibt seinen Nachfolger <code>k2</code> zurück und wird so übersprungen; <code>k0</code> gibt sich selbst zurück, damit die Liste ihn weiter als <code>anfang</code> einträgt.<br>g) <code>gesamtdauer()</code> braucht die Dauer <em>aller</em> Songs, also muss jeder Knoten weiterfragen, bis der Abschluss 0 liefert. <code>entfernen(B)</code> ist fertig, sobald B gefunden ist: Der Knoten mit B ruft niemanden mehr auf.</p>
+                        </template>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================================================== 3 Code ordnen -->
+            <section id="ordnen" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">🧩</span><h2>Aufgabe 3: Code ordnen<small>Einen Song an eine Position einfügen</small></h2></div>
+                <div class="phase-body">
+                    <div class="kontext">
+                        <p>Ein Song soll an eine bestimmte Stelle der Playlist: <code>einfuegenAn(position, d)</code> fügt <code>d</code> so ein, dass er danach an der Stelle <code>position</code> steht (0 heißt ganz vorne). In <code>Liste</code> und <code>Abschluss</code> ist die Methode schon fertig: Die Liste ruft <code>anfang.einfuegenAn(position, d)</code> auf und trägt die Rückgabe als <code>anfang</code> ein; der Abschluss hängt den Song wie bei <code>add</code> hinten an. Das Sequenzdiagramm zeigt den Ablauf für die Playlist A, B und den Aufruf <code>liste.einfuegenAn(1, X)</code>. Danach lautet die Reihenfolge A, X, B.</p>
+                    </div>
+                    <div class="abb"><img src="uebung/a-seq-einfuegen.svg" alt="Sequenzdiagramm: Player ruft einfuegenAn(1, X) bei liste auf, liste ruft einfuegenAn(1, X) bei k0 auf (position ist nicht 0), k0 ruft einfuegenAn(0, X) bei k1 auf (position ist 0). k1 erzeugt neu : Knoten mit Song X und ruft neu.setNachfolger(k1) auf, gibt neu zurück. k0 setzt nachfolger = neu und gibt k0 zurück, liste setzt anfang = k0 und gibt true zurück." loading="lazy"></div>
+                    <ol class="aufgaben">
+                        <li><span class="be">(3 BE)</span> <span class="sterne">★★</span> Bringen Sie für die Methode <code>einfuegenAn</code> der Klasse <code>Knoten</code> die passenden Bausteine in die richtige Reihenfolge. Zwei Bausteine werden nicht gebraucht. (Auf Papier: Buchstaben in die Kästchen der Vorlage. Hier: Bausteine anklicken.)</li>
+                    </ol>
+                    <div class="parsons" data-parsons="F,B,H,E,D,G,A">
+                        <p class="pa-kopf">public ListenElement einfuegenAn(int position, DatenElement d) {</p>
+                        <ol class="pa-programm" aria-label="deine Methode"></ol>
+                        <p class="pa-fuss">}</p>
+                        <p><strong>Bausteine</strong> (Klick: in die Methode; Klick in der Methode: zurück)</p>
+                        <div class="pa-vorrat">
+                            <button type="button" data-id="A"><b>A</b> return this;</button>
+                            <button type="button" data-id="B"><b>B</b> Knoten neu = new Knoten(d);</button>
+                            <button type="button" data-id="C"><b>C</b> nachfolger = nachfolger.einfuegenAn(position, d);</button>
+                            <button type="button" data-id="D"><b>D</b> } else {</button>
+                            <button type="button" data-id="E"><b>E</b> return neu;</button>
+                            <button type="button" data-id="F"><b>F</b> if (position == 0) {</button>
+                            <button type="button" data-id="G"><b>G</b> nachfolger = nachfolger.einfuegenAn(position - 1, d);</button>
+                            <button type="button" data-id="H"><b>H</b> neu.setNachfolger(this);</button>
+                            <button type="button" data-id="I"><b>I</b> return nachfolger.einfuegenAn(position - 1, d);</button>
+                        </div>
+                    </div>
+                    <ol class="aufgaben" start="2" style="counter-reset: aufg 1">
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★★★</span> Eine Mitschülerin verwendet im <code>else</code>-Zweig statt G und A nur den Baustein I. Beurteilen Sie ihre Lösung für die Situation im Sequenzdiagramm. Geben Sie dazu an, welche Songs danach in der Playlist stehen.</li>
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★★★</span> Ein Mitschüler verwendet statt G den Baustein C. Beurteilen Sie seine Lösung für die Aufrufe <code>einfuegenAn(0, X)</code> und <code>einfuegenAn(1, X)</code>.</li>
+                        <li><span class="be">(1 BE)</span> <span class="sterne">★★</span> Geben Sie an, was <code>liste.einfuegenAn(5, X)</code> bei der Playlist A, B bewirkt, und begründen Sie kurz.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 3">
+                        <template data-stufe="Tipp a"><p>Lies das Diagramm Lebenslinie für Lebenslinie: <code>k0</code> (position nicht 0) reicht weiter und trägt die Rückgabe ein, <code>k1</code> (position 0) erzeugt einen Knoten und stellt ihn vor sich. Welche Zeilen gehören zu welchem Fall?</p></template>
+                        <template data-stufe="Tipp b, c"><p>Spiele die Variante im Diagramm durch: Was gibt <code>k0</code> jetzt an die Liste zurück, und was trägt die Liste als <code>anfang</code> ein? Bei c): Wird <code>position</code> auf dem Weg durch die Liste jemals 0?</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) F, B, H, E, D, G, A:</p>
+<pre class="jv"><span class="k">public</span> ListenElement einfuegenAn(<span class="k">int</span> position, DatenElement d) {
+   <span class="k">if</span> (position == 0) {
+      Knoten neu = <span class="k">new</span> Knoten(d);
+      neu.setNachfolger(<span class="k">this</span>);
+      <span class="k">return</span> neu;
+   } <span class="k">else</span> {
+      nachfolger = nachfolger.einfuegenAn(position - 1, d);
+      <span class="k">return this</span>;
+   }
+}</pre>
+                            <p>b) <code>k1</code> liefert wie bisher <code>neu</code>. <code>k0</code> trägt das nicht als Nachfolger ein, sondern gibt es direkt an die Liste weiter, und die Liste setzt <code>anfang = neu</code>. In der Playlist stehen nur noch X, B: Song A geht verloren. Richtig wäre die Variante nur bei <code>position</code> 0. Jeder Knoten, der weiterreicht, muss sich selbst zurückgeben.<br>c) Bei <code>einfuegenAn(0, X)</code> ist alles richtig, weil der <code>else</code>-Zweig nicht gebraucht wird. Bei <code>einfuegenAn(1, X)</code> wird <code>position</code> nie kleiner: Jeder Knoten reicht mit 1 weiter, bis der Abschluss X hinten anhängt. Ergebnis A, B, X statt A, X, B; es gibt keinen Absturz, aber das Ergebnis ist falsch.<br>d) X wird hinten angehängt (A, B, X): Die Position wird nie 0, also kommt der Aufruf beim Abschluss an, und der hängt an.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================================================== 4 Rekursion -->
+            <section id="rekursion" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">🗼</span><h2>Aufgabe 4: Rekursion<small>Aufrufbaum und Abbruchbedingung (Station 1.5)</small></h2></div>
+                <div class="phase-body">
+                    <div class="kontext">
+                        <p><strong>Türme von Hanoi.</strong> Ein Turm aus <code>n</code> Scheiben soll umgesetzt werden. Die Methode <code>zuege</code> berechnet, wie viele Züge man mindestens braucht: erst den Turm aus <code>n - 1</code> Scheiben zur Seite, dann die größte Scheibe, dann den kleineren Turm wieder darauf.</p>
+                    </div>
+<pre class="jv"><span class="k">public int</span> zuege(<span class="k">int</span> n) {
+   <span class="k">if</span> (n == 0) {
+      <span class="k">return</span> 0;
+   }
+   <span class="k">return</span> zuege(n - 1) + 1 + zuege(n - 1);
+}</pre>
+                    <ol class="aufgaben">
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★</span> Zeichnen Sie den Aufrufbaum für <code>zuege(3)</code>. Markieren Sie die Abbruchfälle und schreiben Sie an jeden Aufruf seine Rückgabe.</li>
+                        <li><span class="be">(1 BE)</span> <span class="sterne">★★</span> Bestimmen Sie ohne Baum, wie viele Aufrufe <code>zuege(4)</code> insgesamt auslöst.</li>
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★★★</span> Ein Mitschüler ändert die Abbruchbedingung in <code>if (n == 1) { return 1; }</code>, weil man dann weniger Aufrufe braucht. Beurteilen Sie seine Änderung.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="4a bis 4c">
+                        <template data-stufe="Tipp a"><p>Jeder Aufruf mit <code>n</code> größer als 0 hat zwei Kinder mit <code>n - 1</code>. Die Rückgabe eines Aufrufs ist die Summe seiner Kinder plus 1.</p></template>
+                        <template data-stufe="Tipp b"><p>Zähle die Aufrufe je Ebene: 1, 2, 4, … Wie viele Ebenen hat der Baum bei <code>zuege(4)</code>?</p></template>
+                        <template data-stufe="Lösung" data-halten>
+                            <div class="abb schmal"><img src="uebung/l-baum.svg" alt="Aufrufbaum: zuege(3) liefert 7, ruft zweimal zuege(2) auf (je 3), jedes ruft zweimal zuege(1) auf (je 1), jedes ruft zweimal zuege(0) auf (Abbruch, 0). 15 Aufrufe."></div>
+                            <p>a) 15 Aufrufe, Ergebnis 7, Abbruchfälle sind die acht Aufrufe <code>zuege(0)</code>.<br>b) Die Aufrufe verdoppeln sich je Ebene: 1 + 2 + 4 + 8 + 16 = 31.<br>c) Für <code>n ≥ 1</code> stimmt das Ergebnis, und es sind weniger Aufrufe (die Aufrufe mit 0 fallen weg). Aber <code>zuege(0)</code> ruft jetzt <code>zuege(-1)</code> auf, das <code>zuege(-2)</code> usw.: <code>n</code> wird nie 1, die Rekursion endet nicht. Die Änderung ist also nur richtig, wenn die Methode nie mit 0 aufgerufen wird; sicherer wäre <code>if (n &lt;= 1) { return n; }</code>.</p>
+                        </template>
+                    </div>
+
+                    <ol class="aufgaben" start="4" style="counter-reset: aufg 3">
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★★</span> Gegeben ist die Methode unten. Geben Sie die Aufrufe und Rückgaben für <code>zaehle(6)</code> an und beurteilen Sie, für welche Werte von <code>n</code> die Methode endet.</li>
+                        <li><span class="be">(1 BE)</span> <span class="sterne">★★</span> Geben Sie eine Abbruchbedingung an, mit der <code>zaehle</code> für jede ganze Zahl endet.</li>
+                    </ol>
+<pre class="jv"><span class="k">public int</span> zaehle(<span class="k">int</span> n) {
+   <span class="k">if</span> (n == 0) {
+      <span class="k">return</span> 0;
+   }
+   <span class="k">return</span> 1 + zaehle(n - 2);
+}</pre>
+                    <div class="lw" data-loesungsweg="4d und 4e">
+                        <template data-stufe="Tipp"><p>Probiere auch <code>zaehle(5)</code> und <code>zaehle(-2)</code>: Welche Werte nimmt <code>n</code> an, und wird 0 jemals getroffen?</p></template>
+                        <template data-stufe="Lösung" data-halten><p>d) <code>zaehle(6)</code> → <code>zaehle(4)</code> → <code>zaehle(2)</code> → <code>zaehle(0)</code> liefert 0, dann 1, 2, 3: Ergebnis 3. Die Methode endet nur für gerade <code>n ≥ 0</code>. Bei ungeraden <code>n</code> springt <code>n</code> über die 0 hinweg (…, 1, −1, −3, …), bei negativen <code>n</code> entfernt es sich immer weiter von 0: Die Rekursion endet nicht.<br>e) <code>if (n &lt;= 0) { return 0; }</code></p></template>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================================================== 5 Doppelt verkettet -->
+            <section id="doppelt" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🖼️</span><h2>Aufgabe 5: Doppelt verkettete Liste<small>Eine Bildergalerie</small></h2></div>
+                <div class="phase-body">
+                    <div class="kontext">
+                        <p><strong>Bildergalerie.</strong> In einer Galerie-App blättert man mit „weiter“ und „zurück“ durch die Bilder. Deshalb ist die Galerie doppelt verkettet: Jeder Knoten kennt seinen <code>nachfolger</code> und seinen <code>vorgaenger</code>, die Galerie kennt <code>anfang</code> und <code>ende</code>. Das vereinfachte Objektdiagramm zeigt drei Bilder und einen schon erzeugten Knoten <code>neu</code>.</p>
+                    </div>
+                    <div class="abb"><img src="uebung/a-doppelt.svg" alt="Objektdiagramm: galerie verweist mit anfang auf k0 (Bild 1) und mit ende auf k2 (Bild 3). k0, k1 (Bild 2), k2 sind über nachfolger und vorgaenger verkettet, k0.vorgaenger und k2.nachfolger sind null. Darunter steht neu : Knoten (Bild 4) ohne Verweise." loading="lazy"></div>
+                    <ol class="aufgaben">
+                        <li><span class="be">(3 BE)</span> <span class="sterne">★★</span> Bild 4 soll zwischen Bild 2 und Bild 3 stehen. Zeichnen Sie die Änderungen in das Objektdiagramm ein und geben Sie in einer Tabelle (Knoten, Attribut, alter Wert, neuer Wert) alle Attribute an, die sich ändern.</li>
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★★</span> Ausgehend vom ursprünglichen Diagramm (ohne a) wird Bild 1 gelöscht. Geben Sie alle Änderungen in einer Tabelle an.</li>
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★★★</span> Ein Programm fügt Bild 4 so ein: zuerst <code>k1.setNachfolger(neu)</code>, danach <code>neu.setNachfolger(k1.getNachfolger())</code>. Beurteilen Sie diese Reihenfolge.</li>
+                        <li><span class="be">(1 BE)</span> <span class="sterne">★</span> Nennen Sie je einen Vorteil und einen Nachteil der doppelten Verkettung gegenüber der einfachen.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 5">
+                        <template data-stufe="Tipp a"><p>Beim Einfügen braucht der neue Knoten zwei Verweise, und zwei bestehende Verweise müssen auf ihn umgebogen werden. <code>anfang</code> und <code>ende</code>?</p></template>
+                        <template data-stufe="Tipp b"><p>Beim Löschen des ersten Bilds ändert sich ein Verweis der Galerie und ein Verweis eines Knotens.</p></template>
+                        <template data-stufe="Lösung" data-halten>
+                            <div class="abb"><img src="uebung/l-doppelt.svg" alt="Lösung: alte Verweise k1.nachfolger auf k2 und k2.vorgaenger auf k1 durchgestrichen. Neu: k1.nachfolger auf neu, neu.nachfolger auf k2, k2.vorgaenger auf neu, neu.vorgaenger auf k1."></div>
+                            <div class="tab-scroll"><table class="rd-tab">
+                                <tr><th></th><th>Knoten</th><th>Attribut</th><th>alter Wert</th><th>neuer Wert</th></tr>
+                                <tr><td rowspan="4">a)</td><td>neu</td><td><code>nachfolger</code></td><td>null</td><td>k2</td></tr>
+                                <tr><td>neu</td><td><code>vorgaenger</code></td><td>null</td><td>k1</td></tr>
+                                <tr><td>k1</td><td><code>nachfolger</code></td><td>k2</td><td>neu</td></tr>
+                                <tr><td>k2</td><td><code>vorgaenger</code></td><td>k1</td><td>neu</td></tr>
+                                <tr><td rowspan="2">b)</td><td>galerie</td><td><code>anfang</code></td><td>k0</td><td>k1</td></tr>
+                                <tr><td>k1</td><td><code>vorgaenger</code></td><td>k0</td><td>null</td></tr>
+                            </table></div>
+                            <p>a) <code>anfang</code> und <code>ende</code> bleiben gleich. b) Die Verweise von <code>k0</code> selbst muss man nicht ändern: Auf <code>k0</code> verweist nichts mehr.<br>c) Falsch: Nach der ersten Zeile liefert <code>k1.getNachfolger()</code> schon <code>neu</code>. <code>neu</code> wird also sein eigener Nachfolger, und auf Bild 3 verweist von vorne kein Knoten mehr; „weiter“ kommt nie zu Bild 3. Richtig ist die umgekehrte Reihenfolge (oder Bild 3 vorher in einer Variablen merken).<br>d) Vorteil: Man kann in beide Richtungen blättern, und ein Knoten kann sich ohne Suche nach dem Vorgänger aushängen. Nachteil: mehr Speicher je Knoten und mehr Verweise, die bei jeder Änderung stimmen müssen (mehr Fehlerquellen).</p>
+                        </template>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===================================================== 6 Extras -->
+            <section id="extra" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">➕</span><h2>Aufgabe 6: Ein wenig extra<small>Stapel, abstrakte Klasse und Interface, Schnellcheck</small></h2></div>
+                <div class="phase-body">
+                    <p>Diese Aufgaben gehen etwas über die Stationen hinaus. Sie helfen dir, die Ideen der Warteschlange und des Kompositums auf neue Situationen zu übertragen.</p>
+                    <div class="kontext">
+                        <p><strong>Stapel (Stack).</strong> Bei einem Stapel Teller nimmt man immer den obersten, und neue Teller kommen oben drauf: Last in, first out (LIFO). Ein Stapel hat die Methoden <code>push(d)</code> (oben drauflegen), <code>pop()</code> (obersten herunternehmen und zurückgeben, bei leerem Stapel <code>null</code>) und <code>peek()</code>. Die „Rückgängig“-Funktion eines Texteditors speichert die letzten Änderungen in einem Stapel.</p>
+                    </div>
+                    <ol class="aufgaben">
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★</span> Ein leerer Stapel erhält nacheinander <code>push(T1)</code>, <code>push(T2)</code>, <code>pop()</code>, <code>push(T3)</code>, <code>pop()</code>, <code>pop()</code>, <code>pop()</code>. Geben Sie die Rückgaben der <code>pop</code>-Aufrufe und den Inhalt am Ende an.</li>
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★★</span> Ein Stapel soll verkettet umgesetzt werden. Begründen Sie, warum dafür ein Attribut <code>oben</code> genügt, während die Warteschlange <code>anfang</code> und <code>ende</code> braucht.</li>
+                        <li><span class="be">(2 BE)</span> <span class="sterne">★★</span> Begründen Sie, warum <code>ListenElement</code> eine abstrakte Klasse ist, <code>DatenElement</code> aber ein Interface.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="6a bis 6c">
+                        <template data-stufe="Tipp b"><p>An welchem Ende arbeiten <code>push</code> und <code>pop</code>? Bei der Warteschlange: An welchem Ende wird angefügt, an welchem entnommen?</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) <code>pop()</code> liefert T2, dann T3, dann T1, dann <code>null</code>; am Ende ist der Stapel leer.<br>b) <code>push</code> und <code>pop</code> arbeiten beide am selben Ende: <code>push</code> stellt den neuen Knoten vor <code>oben</code> und setzt <code>oben</code> auf ihn, <code>pop</code> rückt <code>oben</code> auf den Nachfolger weiter. Die Warteschlange fügt hinten an und entnimmt vorne, sie braucht deshalb einen Verweis auf jedes Ende (sonst müsste <code>add</code> jedes Mal bis ans Ende laufen).<br>c) Knoten und Abschluss sind beide Teile der Struktur und haben dieselben Methoden mit unterschiedlichem Verhalten; eine abstrakte Klasse fasst sie als gemeinsamen Typ zusammen (sie könnte auch Attribute oder fertige Methoden enthalten). <code>DatenElement</code> ist nur ein Vertrag für beliebige Inhaltsklassen: Ein Song kann ihn erfüllen und trotzdem von einer anderen Klasse erben, denn eine Klasse kann viele Interfaces implementieren, aber nur von einer Klasse erben.</p></template>
+                    </div>
+
+                    <h3>Schnellcheck: wahr oder falsch?</h3>
+                    <ul class="wf" data-wf>
+                        <li data-w="f">Bei einer Warteschlange liefert <code>peek()</code> das Element, das zuletzt hinzugefügt wurde.<span class="wf-erkl"><code>peek()</code> liefert wie <code>poll()</code> das vorderste Element, nimmt es aber nicht heraus.</span></li>
+                        <li data-w="w">Im Kompositum gibt es keine Abfrage auf <code>null</code>, weil am Ende der Liste immer der Abschluss steht.<span class="wf-erkl">Der Abschluss beantwortet jede Methode selbst, z. B. <code>laenge()</code> mit 0.</span></li>
+                        <li data-w="f">Von der abstrakten Klasse <code>ListenElement</code> kann man mit <code>new ListenElement()</code> Objekte erzeugen.<span class="wf-erkl">Von abstrakten Klassen gibt es keine Objekte, nur von ihren Unterklassen Knoten und Abschluss.</span></li>
+                        <li data-w="w">Gibt ein Knoten in <code>add</code> nur <code>return nachfolger.add(d);</code> zurück, können Daten verloren gehen.<span class="wf-erkl">Sein Vorgänger trägt dann den Rest der Liste als Nachfolger ein, und der Knoten selbst ist nicht mehr erreichbar.</span></li>
+                        <li data-w="f">Jede rekursive Methode braucht genau einen rekursiven Aufruf.<span class="wf-erkl"><code>zuege</code> hat zwei rekursive Aufrufe, es entsteht ein Aufrufbaum. Nötig ist eine Abbruchbedingung, die auch erreicht wird.</span></li>
+                        <li data-w="w">Im Sequenzdiagramm werden Rückgaben gestrichelt gezeichnet und mit dem Rückgabewert beschriftet.<span class="wf-erkl">Aufrufe sind durchgezogen mit gefüllter Spitze, Rückgaben gestrichelt mit offener Spitze.</span></li>
+                        <li data-w="f">Das Attribut <code>nachfolger</code> eines Knotens hat im Kompositum den Typ <code>Knoten</code>.<span class="wf-erkl">Es hat den Typ <code>ListenElement</code>, damit auch der Abschluss Nachfolger sein kann.</span></li>
+                        <li data-w="w">Polymorphie bedeutet hier: <code>nachfolger.laenge()</code> führt je nach Objekt die Methode von Knoten oder von Abschluss aus.<span class="wf-erkl">Welche Methode läuft, entscheidet das Objekt zur Laufzeit.</span></li>
+                        <li data-w="f">Beim Löschen eines Knotens aus einer doppelt verketteten Liste ändern sich immer genau zwei Attribute.<span class="wf-erkl">In der Mitte sind es zwei (Nachfolger des Vorgängers, Vorgänger des Nachfolgers). Am Anfang oder Ende ändert sich stattdessen <code>anfang</code> oder <code>ende</code>, beim einzigen Knoten sogar beide.</span></li>
+                        <li data-w="w">Ein Stapel arbeitet nach dem Prinzip „last in, first out“.<span class="wf-erkl">Das zuletzt abgelegte Element wird als Erstes wieder genommen.</span></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- ===================================================== Checkliste -->
+            <section id="checkliste" class="phase note">
+                <div class="phase-head"><span class="phase-icon">✅</span><h2>Checkliste<small>Kann ich das?</small></h2></div>
+                <div class="phase-body">
+                    <ul class="checkliste">
+                        <li>☐ Ich kann Vor- und Nachteile von Array und verketteter Struktur nennen.</li>
+                        <li>☐ Ich kann eine Folge von <code>add</code>, <code>poll</code>, <code>peek</code> und <code>isEmpty</code> durchspielen, auch bei leerer Warteschlange.</li>
+                        <li>☐ Ich finde Fehler in <code>add</code>, <code>poll</code> und <code>peek</code> (vertauschte Zeilen, falscher Verweis) und kann sie im Code korrigieren.</li>
+                        <li>☐ Ich kann das Klassendiagramm des Kompositums ergänzen: Attribute mit Typ der richtigen Klasse zuordnen, Vererbung, Implementierung, Assoziationen.</li>
+                        <li>☐ Ich kann Struktur und Inhalt unterscheiden und einen Vorteil der Trennung nennen.</li>
+                        <li>☐ Ich kann Methodenrümpfe der richtigen Klasse zuordnen und den vollständigen Methodenkopf angeben.</li>
+                        <li>☐ Ich kann ein Sequenzdiagramm zu einer rekursiven Listenmethode zeichnen: Aufrufe, Rückgaben mit Wert, Aktivierungsbalken. Ich erkenne, ob der Abschluss erreicht wird.</li>
+                        <li>☐ Ich kann eine abgewandelte Listenmethode mit Hilfe eines Sequenzdiagramms aus Bausteinen zusammensetzen und falsche Varianten beurteilen.</li>
+                        <li>☐ Ich weiß, warum ein Knoten in <code>add</code> und ähnlichen Methoden sich selbst zurückgibt.</li>
+                        <li>☐ Ich kann einen Aufrufbaum zeichnen und beurteilen, ob eine Abbruchbedingung immer erreicht wird.</li>
+                        <li>☐ Ich kann in einer doppelt verketteten Liste einfügen und löschen und alle geänderten Attribute angeben.</li>
+                    </ul>
+                    <p>Zum Nachschlagen: <a href="1-1-queue.html">1.1 Warteschlange</a> · <a href="1-2-interfaces.html">1.2 Interfaces</a> · <a href="1-3-listen.html">1.3 Listen und Rekursion</a> · <a href="1-4-kompositum.html">1.4 Kompositum</a> · <a href="1-5-algorithmen.html">1.5 Rekursive Algorithmen</a></p>
+                </div>
+            </section>
+            <div class="station-nav">
+                <a class="btn btn-outline" href="1-5-algorithmen.html">← 1.5 Rekursive Algorithmen</a>
+                <a class="btn btn-primary" href="../../informatik.html#jahrgang-12">Übersicht Klasse 12 →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>
