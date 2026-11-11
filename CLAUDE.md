@@ -378,7 +378,9 @@ Kopf, Lösungen als Hash in `data-loesung`, Hash-Werkzeug im Lehrkräfte-Bereich
 (uk-and-writing, north-south-divide), `media/narrative_lens`,
 `immigration-social-structures-identity/`, `global issues/`,
 13 `questions-on-the-text/` (→ AB, eigene Vorlage; verschlüsselter Online-Check
-`checks/check-1-questions-on-the-text.html`, unverlinkt); W-Seminar „Time“ (12/13) in
+`checks/check-1-questions-on-the-text.html`, unverlinkt), 13 `us-midterms/` (Selbstlernseite
+US-System + Midterms 2026, Stand der Zahlen 9.11.2026 in `us-midterms.js`: `SEATS`, `HISTORY`, `QSEATS`;
+Spiele-Station `#play`: Branch Blitz, Who's who, Nachfolge, Bill Quest, Rollenspiel Gridlock); W-Seminar „Time“ (12/13) in
 `englisch/w-seminar-time/` (Kursplan siehe eigener Abschnitt: `w-seminar-time.html`,
 `research-question.html`, `research-methods.html`, Viable data `data-design.html`,
 `data-refine.html`, `data-evaluate.html` (Python im Browser, Daten in `data/`),
