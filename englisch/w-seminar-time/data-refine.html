@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Viable Data 2: Refine | W-Seminar English 12 – edu-mrh.de</title>
-    <meta name="description" content="W-Seminar 'Time' (English, Year 12), viable data part 2: run a pilot, check your instrument with numbers – Cronbach's alpha, item analysis, Cohen's kappa, outliers, manipulation checks, method breaks – and fix it before the real data collection. With Python on the page.">
+    <meta name="description" content="W-Seminar 'Time' (English, Year 12), viable data part 2: run a pilot, check your instrument with numbers – Cronbach's alpha, item analysis, Cohen's kappa, outliers, manipulation checks, interview talk share, method breaks – and fix it before the real data collection. With Python on the page.">
 
     <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
     <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
@@ -462,6 +462,99 @@ for n in [8, 15, 30, 50, 64, 100]:
                     </details>
                 </div>
 
+                <!-- ---------- interview ---------- -->
+                <div class="track" data-track="interview" style="--c: var(--s6)">
+                    <h3 class="track-h">Interview <small>pilot interview with a Year 9 student – and two coders</small></h3>
+                    <p>There is no α for an interview. But a pilot interview still gives you numbers: who talks how much, which questions bring stories and which bring a “yes”. And as soon as you code, two coders show you whether your categories work.</p>
+                    <div class="grid3">
+                        <div class="panel"><h3>Talk share</h3>In a good interview the interviewee does most of the talking. If you speak more than about a quarter of all words, you are steering – or telling your own story.</div>
+                        <div class="panel"><h3>Answer length</h3>A question that gets three words back is closed, leading or unclear. A short question that gets a story works. Listen to the recording: where did <em>you</em> fill the silence?</div>
+                        <div class="panel"><h3>Coding agreement</h3>Same as for coding texts: two coders, the same segments, Cohen’s κ. Disagreements show where a category boundary in your codebook is vague.</div>
+                    </div>
+                    <div class="py-task" style="margin-top:1.25rem">
+                        <h4>In Python</h4>
+                        <ol>
+                            <li>Run step 1. Which questions get short answers – and what is wrong with each of them?</li>
+                            <li>How much of the talking does the interviewer do? Leave out the problem questions (TODO): what changes?</li>
+                            <li>Rewrite the problem questions so they would bring a story.</li>
+                            <li>Step 2: where do the two coders disagree? Write one decision rule for the codebook.</li>
+                        </ol>
+                    </div>
+                    <div class="py" data-py="refine-iv-talk" data-title="Step 1: talk share and answer length" data-files="data/interview-pilot.csv">
+<script type="text/plain">
+# Pilot interview with one Year 9 student (about 6 minutes, transcribed).
+# I = interviewer, P = participant. Who talks – and which questions work?
+import csv
+from edu import bars
+
+with open("interview-pilot.csv", encoding="utf-8") as f:
+    turns = list(csv.DictReader(f))
+
+skip = []       # TODO: leave out the questions you would rewrite, e.g. ["Q3", "Q4"]
+turns = [t for t in turns if t["question"] not in skip]
+
+words = {"I": 0, "P": 0}
+for t in turns:
+    words[t["speaker"]] += len(t["text"].split())
+share = 100 * words["I"] / (words["I"] + words["P"])
+print("interviewer %d words, participant %d words: interviewer share %.0f %%\n" % (words["I"], words["P"], share))
+
+questions = sorted(set(t["question"] for t in turns))
+answers = []
+print("question   asked with   answered with")
+for q in questions:
+    asked = sum(len(t["text"].split()) for t in turns if t["question"] == q and t["speaker"] == "I")
+    got = sum(len(t["text"].split()) for t in turns if t["question"] == q and t["speaker"] == "P")
+    answers.append(got)
+    print("%-8s   %4d words   %4d words" % (q, asked, got))
+bars(questions, answers, title="Words in the answer to each question", xlabel="question", ylabel="words")
+
+print("\nShort answers – read the question that caused them:")
+for i, t in enumerate(turns):
+    if t["speaker"] == "P" and len(t["text"].split()) < 10:
+        asked = [u["text"] for u in turns[:i] if u["speaker"] == "I" and u["question"] == t["question"]][0]
+        print("  " + t["question"] + "  I: " + asked)
+        print("       P: " + t["text"] + "\n")
+</script>
+                    </div>
+                    <div class="py" data-py="refine-iv-kappa" data-title="Step 2: two coders, 24 interview segments" data-files="data/interview-coding.csv">
+<script type="text/plain">
+# Two coders coded the same 24 segments from interviews about how a school year feels.
+# Categories: slow, fast, routine, milestone, future.
+import csv
+from collections import Counter
+
+with open("interview-coding.csv", encoding="utf-8") as f:
+    rows = list(csv.DictReader(f))
+a = [r["coder_a"] for r in rows]
+b = [r["coder_b"] for r in rows]
+n = len(rows)
+categories = sorted(set(a) | set(b))
+
+agree = sum(x == y for x, y in zip(a, b)) / n
+count_a, count_b = Counter(a), Counter(b)
+chance = sum(count_a[c] / n * count_b[c] / n for c in categories)
+kappa = (agree - chance) / (1 - chance)
+print("agreement %.0f %%, by chance %.0f %%, Cohen's kappa = %.2f\n" % (100 * agree, 100 * chance, kappa))
+
+print("Disagreements:")
+for r in rows:
+    if r["coder_a"] != r["coder_b"]:
+        print("  %s  %-55s A: %-9s B: %s" % (r["id"], r["segment"], r["coder_a"], r["coder_b"]))
+# TODO: what do most disagreements have in common? Write a rule that tells milestone and future apart.
+</script>
+                    </div>
+                    <details class="panel" style="margin-top:1rem">
+                        <summary><b>Compare with our findings</b> (after you have tried)</summary>
+                        <ul>
+                            <li><b>Q1, Q2 and Q6</b> are short and open and bring 31–118 words each. <b>Q3</b> is leading and ends with the interviewer’s own story: answer “Yeah, probably.” – that is your opinion coming back, not data. <b>Q4</b> asks two things with “Do you …?”: “Sometimes. Not really.” <b>Q5</b> puts an interpretation into the student’s mouth, who half agrees.</li>
+                            <li>The interviewer speaks <b>41 %</b> of all words. Without Q3–Q5 it is about 21 %. Rewrites: Q3 “Tell me about a time when the weeks went by especially fast.” · Q4 “How do you plan your week?” – then, separately, “How does that change how the week feels?” · Q5 use their own words: “You said every week is the same. What do you mean?” And no stories of your own.</li>
+                            <li>The coders agree on 79 % of the segments, κ ≈ 0.74. Four of the five disagreements are the same problem: coder B codes every event as <code>milestone</code>, even ones that are still ahead (Abitur, moving out, driving test).</li>
+                            <li>Rule: <code>milestone</code> = an event that has happened and structures the memory of the year; <code>future</code> = something ahead that the person waits for or plans. With this rule κ would be about 0.95 – test it on new segments before you code all transcripts. The last case (S13) is settled by the borderline rule for <code>routine</code> in part 1.</li>
+                        </ul>
+                    </details>
+                </div>
+
                 <!-- ---------- coding ---------- -->
                 <div class="track" data-track="coding" style="--c: var(--s4)">
                     <h3 class="track-h">Coding texts <small>two coders, 30 song lines, future forms</small></h3>
@@ -606,6 +699,8 @@ line(years, sleep, title="Average school-night sleep, age 15", xlabel="year", yl
                         <tr><td>negative discrimination</td><td>wrong key, ambiguous item, two right answers</td><td>fix the key or the item</td></tr>
                         <tr><td>impossible values, questions during the pilot</td><td>unclear instruction or unit</td><td>rewrite the instruction, give an example</td></tr>
                         <tr><td>manipulation check shows little difference</td><td>conditions too similar</td><td>stronger contrast between conditions</td></tr>
+                        <tr><td>interviewee answers in a few words</td><td>closed, leading or double question</td><td>open question that asks for a story (“Tell me about …”)</td></tr>
+                        <tr><td>interviewer speaks more than a quarter of the words</td><td>long questions, own opinions, interpreting for them</td><td>short questions, neutral follow-ups, wait out the silence</td></tr>
                         <tr><td>κ below 0.80, disagreements on the same kind of case</td><td>category boundary unclear</td><td>decision rule plus example in the codebook</td></tr>
                         <tr><td>takes much longer than planned</td><td>too many items, too much reading</td><td>cut items that add least (α without it barely drops)</td></tr>
                         <tr><td>jump or gap in a data series</td><td>method change, missing year</td><td>analyse periods separately, report the gap</td></tr>
@@ -633,7 +728,8 @@ line(years, sleep, title="Average school-night sleep, age 15", xlabel="year", yl
                             <tr><td>item–rest correlation</td><td>≥ 0.30</td><td>survey, test</td></tr>
                             <tr><td>item difficulty p</td><td>0.20–0.80</td><td>test</td></tr>
                             <tr><td>KR-20 of a test</td><td>≥ 0.70</td><td>test</td></tr>
-                            <tr><td>Cohen’s κ between coders</td><td>≥ 0.80</td><td>coding</td></tr>
+                            <tr><td>Cohen’s κ between coders</td><td>≥ 0.80</td><td>coding, interview</td></tr>
+                            <tr><td>interviewer’s share of the words</td><td>≤ 25 %</td><td>interview</td></tr>
                             <tr><td>manipulation check</td><td>clear difference</td><td>experiment</td></tr>
                             <tr><td>power for the expected effect</td><td>≈ 80 %</td><td>experiment, survey</td></tr>
                             <tr><td>no impossible values, no open questions in the pilot</td><td>0</td><td>all</td></tr>
@@ -690,6 +786,7 @@ print("n = %d, alpha = %.2f" % (len(rows), alpha))
                     <li>explain why Cohen’s κ is better than plain agreement</li>
                     <li>find impossible values and fix the instruction that caused them</li>
                     <li>use a manipulation check and a power simulation to plan an experiment</li>
+                    <li>check a pilot interview for talk share, short answers and leading questions</li>
                     <li>spot unit errors, gaps and method breaks in existing data</li>
                 </ul>
                 <div class="next">

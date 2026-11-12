@@ -147,6 +147,7 @@
         { t: 'Two pilot participants wrote 210 and 165 as their estimate of a 3-minute wait.', a: 2, fb: 'The unit was unclear. Rewrite the instruction with an example (“2 min 40 s”). Converting the pilot values is fine – but prevent it in the main study.' },
         { t: 'Participants rate the fast and the slow music as almost equally fast.', a: 3, fb: 'The manipulation is too weak. Choose music with a much bigger tempo difference and pilot the ratings again.' },
         { t: 'Coders keep disagreeing whether “I’m leaving” talks about the future.', a: 2, fb: 'Add a decision rule with examples to the codebook (future time marker → prog, otherwise none), then run a second agreement round.' },
+        { t: 'In the pilot interview, the student answers “Yeah, probably” to “Don’t you think the year goes faster when you’re stressed?”.', a: 0, fb: 'A leading question – the answer is your own opinion coming back. Reword it as an open question: “Tell me about a time when the weeks went by especially fast.”' },
         { t: 'Nobody solves the item that needs the past perfect – which your test isn’t about.', a: 1, fb: 'It measures something outside the blueprint (validity). Drop it or replace it with an item from the blueprint.' },
         { t: 'A survey planned for 10 minutes takes most pilot students 25 minutes.', a: [1, 3], fb: 'Cut the items that add least (α barely drops without them) – long surveys produce careless answers at the end. Shortening the procedure is also a good answer.' }
     ], FIX, $('fix-score'));
