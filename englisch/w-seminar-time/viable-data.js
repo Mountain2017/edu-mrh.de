@@ -8,7 +8,10 @@
      <button class="tcard" data-pick="survey"> picks a type; elements with
      data-fits="survey test" get the class "mine" when the chosen type is listed.
    - Python cell:       <div class="py" data-py="unique-id" data-title="…" data-files="data/a.csv data/b.csv">
+                            <div class="py-idea"> … </div>
                             <script type="text/plain"> code </script></div>
+     Every cell gets a .py-idea box (shown between title bar and code): what the cell answers,
+     the steps in plain words (naming the lines they refer to), what to look for.
      The code is editable; edits are kept per id in localStorage ('wsPy:<id>').
    - Own CSV:           <div class="py-upload"></div> → file appears in Python as my-data.csv.
    - The page script uses window.VD (quiz, spot, chart, csv, stats helpers). */
@@ -472,6 +475,8 @@
             var bar = h('div', 'py-bar', null, el);
             h('span', 'ttl', esc(el.getAttribute('data-title') || 'Python'), bar);
             if (files.length) h('span', 'files', files.map(function (f) { return '<a href="' + esc(f.path) + '" download>' + esc(f.name) + '</a>'; }).join(' · '), bar);
+            var idea = el.querySelector('.py-idea');   // "The idea" box from the markup goes between title bar and code
+            if (idea) el.insertBefore(idea, bar.nextSibling);
             var edited = h('span', 'py-edited', '', bar);
             var runBtn = h('button', 'run', '▶ Run', bar); runBtn.type = 'button'; runBtn.title = 'Run (Ctrl + Enter)';
             var stopBtn = h('button', null, '■ Stop', bar); stopBtn.type = 'button'; stopBtn.hidden = true;

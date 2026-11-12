@@ -204,11 +204,20 @@ QR-Codes (nicht löschen).
 | M1 Orientierung | Seminarregeln, Bewertung, Backups; Dimensionen von Zeit | `w-seminar-time.html`, W1–W3 | fertig |
 | M2 Forschungsfrage | Frage vs. These, Marker, Eingrenzung, 1–3 Optionen | `research-question.html`, W4 | fertig |
 | M3 Recherche | 5 Leitfragen (refinery questions), Suchstrings, Orte, Lesen/Notieren, Quellencheck | `research-methods.html`, W5, Check 1 | fertig |
-| M4 Viable data | Gütekriterien, Datentypen (Umfrage, Test, Experiment, Interview, Textcodierung, vorhandene Daten), Studiendesign, Pilot + Verfeinern (α, Itemanalyse, κ, Power, Redeanteil im Interview), Auswerten (d, Permutationstest, r, Nullbefund, Themen in Interviews) | `data-design.html`, `data-refine.html`, `data-evaluate.html`, W6 (Design your study), W7 (Refine and evaluate), Folien `material/PowerPoint/W-Seminar-Time-Session4.pptx`, Check 2 | fertig |
+| M4 Viable data | Gütekriterien, Datentypen (Umfrage, Test, Experiment, Interview inkl. Experteninterview, Textcodierung, vorhandene Daten), theoretische Arbeiten ohne Teilnehmende (`data-design.html#theory`: Studien als Daten/Forschungssynthese, Neu-Rahmung vorhandener Werke; Beispiel „Vergeht die Zeit mit dem Alter schneller?“, `data/review-age.csv`), Studiendesign, Pilot + Verfeinern (α, Itemanalyse, κ, Power, Redeanteil im Interview, Suchregel/Extraktionsbogen, Experten-Check), Auswerten (d, Permutationstest, r, Nullbefund, Studien kombinieren, Themen in Interviews); Experten als Quelle auch in M3 (`research-methods.html#expert`) | `data-design.html`, `data-refine.html`, `data-evaluate.html`, W6 (Design your study), W7 (Refine and evaluate), Folien `material/PowerPoint/W-Seminar-Time-Session4.pptx`, Check 2 | fertig |
 | M5 Statistik | Auswertung mit Python (Grundlagen-Skripte); erste Python-Zellen schon in M4 | geplant (12/2) | offen |
 | M6 Quellen einbauen | Zitieren, Paraphrasieren, MLA, Quellen in die eigene Argumentation integrieren | geplant, Check 3 | offen |
 | M7 Werkzeuge | LaTeX/Overleaf, Git, Kanban | geplant, wenn Ideen stehen | offen |
 
+- **Fragepfad über die Blätter**: Die Frage entwickelt sich sichtbar – Funke (W2/W3, Version 0) →
+  Forschungsfrage + Arbeitsthese (W4, Version 1 = „My options“) → W5 Version 2 → W6 Version 3
+  (prüfbare Behauptung/Hypothese) → W7 Version 4 (nach dem Pilot, Entwurf Thesis Statement) → These
+  in der Arbeit. Je Blatt eine Box „My question – version n“ mit „Changed since Wx – and why“;
+  Makros `\fragepfad{k}` (ganzer Pfad, W4) und `\fragepfadklein{k}` (in Boxtiteln) in `ab-vorlage.tex`.
+  Website-Gegenstück: `research-question.html#pair` („Your question grows“). Lösungsbeispiel durchgehend
+  das Musik-Warte-Experiment. Neue Blätter (M5–M7) setzen den Pfad fort.
+- **Python-Zellen**: jede Zelle hat vor dem Code eine `<div class="py-idea">` (Idee, Schritte in
+  Worten, „Look for“) – auch bei neuen Zellen.
 - Fristen: Thema/Forschungsfrage bis Ende 12/1; Präsentation 12/2; Abgabe
   2. Schultag im November (13); Prüfungsgespräch 13/1. Gewichtung
   Seminararbeit : Prüfungsgespräch = 2 : 1 (KM-Info ab Abiturjahrgang
