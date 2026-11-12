@@ -204,7 +204,7 @@ QR-Codes (nicht löschen).
 | M1 Orientierung | Seminarregeln, Bewertung, Backups; Dimensionen von Zeit | `w-seminar-time.html`, W1–W3 | fertig |
 | M2 Forschungsfrage | Frage vs. These, Marker, Eingrenzung, 1–3 Optionen | `research-question.html`, W4 | fertig |
 | M3 Recherche | 5 Leitfragen (refinery questions), Suchstrings, Orte, Lesen/Notieren, Quellencheck | `research-methods.html`, W5, Check 1 | fertig |
-| M4 Viable data | Gütekriterien, Datentypen (Umfrage, Test, Experiment, Textcodierung, vorhandene Daten), Studiendesign, Pilot + Verfeinern (α, Itemanalyse, κ, Power), Auswerten (d, Permutationstest, r, Nullbefund) | `data-design.html`, `data-refine.html`, `data-evaluate.html`, W6 (Design your study), W7 (Refine and evaluate), Folien `material/PowerPoint/W-Seminar-Time-Session4.pptx`, Check 2 | fertig |
+| M4 Viable data | Gütekriterien, Datentypen (Umfrage, Test, Experiment, Interview, Textcodierung, vorhandene Daten), Studiendesign, Pilot + Verfeinern (α, Itemanalyse, κ, Power, Redeanteil im Interview), Auswerten (d, Permutationstest, r, Nullbefund, Themen in Interviews) | `data-design.html`, `data-refine.html`, `data-evaluate.html`, W6 (Design your study), W7 (Refine and evaluate), Folien `material/PowerPoint/W-Seminar-Time-Session4.pptx`, Check 2 | fertig |
 | M5 Statistik | Auswertung mit Python (Grundlagen-Skripte); erste Python-Zellen schon in M4 | geplant (12/2) | offen |
 | M6 Quellen einbauen | Zitieren, Paraphrasieren, MLA, Quellen in die eigene Argumentation integrieren | geplant, Check 3 | offen |
 | M7 Werkzeuge | LaTeX/Overleaf, Git, Kanban | geplant, wenn Ideen stehen | offen |

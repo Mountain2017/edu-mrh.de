@@ -68,6 +68,19 @@
         { t: '<i>Do you often play games late?</i>', a: 2, fb: '“Often” and “late” are vague. Better: <i>On how many school nights last week did you play after 10 p.m.?</i> (0–5)' }
     ], FLAWS.map(function (f) { return { label: f, c: '#2563eb' }; }), $('item-score'));
 
+    /* ------------------------------------------------------------ interview: question quiz */
+    var IVQ = [{ label: 'good', c: '#059669' }, { label: 'leading', c: '#4d7c0f' }, { label: 'closed', c: '#4d7c0f' }, { label: 'two in one', c: '#4d7c0f' }, { label: 'too abstract', c: '#4d7c0f' }];
+    if ($('iv-quiz')) VD.quiz($('iv-quiz'), [
+        { t: '<i>Don’t you think the year goes faster when you’re stressed?</i>', a: 1, fb: 'It hands over the answer – most people will just agree. Better: <i>Tell me about a time when the weeks went by especially fast.</i>' },
+        { t: '<i>Do you like the summer holidays?</i>', a: 2, fb: 'Yes or no – and the conversation is over. Better: <i>Tell me about your last summer holidays. How did the time feel?</i>' },
+        { t: '<i>Tell me about a week this year that felt especially long. What happened?</i>', a: 0, fb: 'Open, concrete, invites a story. This is how each topic of the guide should start.' },
+        { t: '<i>How did the exam week feel, and how did you sleep?</i>', a: 3, fb: 'Two questions – people answer the second and forget the first. Ask them one after the other.' },
+        { t: '<i>What is time for you?</i>', a: 4, fb: 'Too abstract for a 16-year-old in an interview – you’ll get a philosophy essay or a shrug. Ask about concrete experiences, then about meaning.' },
+        { t: '<i>Can you give me an example?</i>', a: 0, fb: 'A neutral follow-up: it asks for more without suggesting anything. Use it in every interview.' },
+        { t: '<i>So basically you’re saying school is boring, right?</i>', a: 1, fb: 'You put your interpretation into their mouth. Repeat their own words instead: <i>You said the days “blur” – what do you mean?</i>' },
+        { t: '<i>Why are you always late?</i>', a: 1, fb: 'It assumes something and sounds like an accusation – people defend themselves instead of telling. Better: <i>Tell me about a typical school morning.</i>' }
+    ], IVQ, $('iv-score'));
+
     /* ------------------------------------------------------------ experiment: spot the problems */
     if ($('exp-spot')) VD.spot($('exp-spot'), [
         { t: 'The first 15 students who arrive get fast music, the rest slow music.', bad: true, why: 'Not random: early arrivers may differ (more punctual, less stressed). Assign by lot.' },
@@ -126,7 +139,7 @@
         { k: 'oper', label: 'How does it become a number or category?', small: 'operationalisation', ph: '“How long did you wait? Answer in minutes.” – after exactly 3 minutes', rows: 2 },
         { k: 'sample', label: 'Who, how many, how chosen?', ph: 'Year 10 and 11, 2 × 30 students, classes drawn by lot, randomly assigned', rows: 2 },
         { k: 'procedure', label: 'Procedure, step by step', ph: '1. same room … 2. read script … 3. …', rows: 3 },
-        { k: 'quality', label: 'How do you secure objectivity, reliability, validity?', ph: 'script, stopwatch, random assignment, manipulation check, codebook, several items …', rows: 3 },
+        { k: 'quality', label: 'How do you secure objectivity, reliability, validity?', ph: 'script, stopwatch, random assignment, manipulation check, codebook, several items, interview guide, second coder …', rows: 3 },
         { k: 'pilot', label: 'Pilot', small: 'who, when, what you check', ph: '5 students from Year 9, check time needed and whether the music feels different', rows: 2 },
         { k: 'ethics', label: 'Permission and data protection', ph: 'ask teacher and school; anonymous codes; voluntary …', rows: 2 }
     ];
@@ -170,7 +183,9 @@
         add(n > 0, 'Sample size given.', 'How many – per group, if you compare groups?');
         if (n > 0 && n < 30 && (t === 'experiment' || t === 'survey' || t === 'test'))
             tips.push([false, 'With fewer than 30 per group you will only find large effects. Part 2 shows how to estimate the number you need.']);
-        add(has('sample', /random|lot|chance|class|year|course|volunteer|all |every|chart|corpus|decade|songs|texts/i),
+        if (t === 'interview' && n > 0 && n < 6)
+            tips.push([false, 'Fewer than about six interviews rarely show a pattern. Plan 3–5 per group and say when you stop (no new categories).']);
+        add(has('sample', /random|lot|chance|class|year|course|volunteer|all |every|chart|corpus|decade|songs|texts|criteria|contrast|saturat/i),
             'You say how the sample is chosen.', 'How do you choose people (or texts)? Random, whole classes, volunteers?');
         if (t === 'experiment') add(has('procedure', /random/i) || has('quality', /random/i), 'Random assignment planned.', 'Who decides who is in which group? It should be chance.');
         if (t === 'experiment') add(has('quality', /manipulation|check|rate/i) || has('procedure', /manipulation|rate how/i), 'Manipulation check planned.', 'Add a manipulation check: did the conditions really feel different?');
@@ -180,6 +195,11 @@
         if (t === 'test') add(has('quality', /blueprint|content|cover/i), 'The test covers a defined content.', 'Make a blueprint: which content, how many items each?');
         if (t === 'coding') add(has('quality', /codebook|definition/i) || has('procedure', /codebook/i), 'Codebook planned.', 'Write a codebook: definition, counts, doesn’t count, example.');
         if (t === 'coding') add(has('quality', /two|2|second|kappa|κ|agree/i) || has('procedure', /second coder|two coders|2 coders/i), 'Second coder planned.', 'Who codes a sample a second time, independently?');
+        if (t === 'interview') add(has('quality', /guide|leitfaden|same question|open question/i) || has('procedure', /guide|leitfaden/i), 'Interview guide planned.', 'Write an interview guide: the same open questions, in the same order, for everyone.');
+        if (t === 'interview') add(has('procedure', /record|transcri/i) || has('quality', /record|transcri/i), 'Recording and transcript planned.', 'Record the interviews and transcribe them word for word – notes are not data.');
+        if (t === 'interview') add(has('quality', /codebook|categor/i) || has('procedure', /codebook|categor|cod(e|ing)/i), 'Codebook planned.', 'How do you get from transcripts to results? Plan a codebook with categories and anchor quotes.');
+        if (t === 'interview') add(has('quality', /two|2|second|kappa|κ|agree|member/i), 'Second coder or member check planned.', 'Who checks your coding? A second coder (κ) – and maybe a member check.');
+        if (t === 'interview') add(has('ethics', /record|consent|einwillig/i), 'Consent to record.', 'Recording needs written consent – and names must go from the transcripts.');
         if (t === 'existing') add(has('quality', /document|definition|method|break|unit/i), 'You check definitions and method changes.', 'Read the documentation: definitions, units, method changes over time.');
         add(has('pilot', /\w{3,}/), 'Pilot planned.', 'Plan a pilot with a few people (or texts) – part 2 shows what to check.');
         if (t !== 'existing' && t !== 'coding') add(has('ethics', /permi|consent|teacher|school|parent/i), 'Permission considered.', 'Ask your teacher and the school before you collect data from people.');

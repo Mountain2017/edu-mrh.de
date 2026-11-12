@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Viable Data 3: Evaluate | W-Seminar English 12 – edu-mrh.de</title>
-    <meta name="description" content="W-Seminar 'Time' (English, Year 12), viable data part 3: clean and describe your data, compare groups (effect size, permutation test), find relationships (correlation), track change, and diagnose results that show nothing – with Python on the page, practice data and a template for your own CSV.">
+    <meta name="description" content="W-Seminar 'Time' (English, Year 12), viable data part 3: clean and describe your data, compare groups (effect size, permutation test), find relationships (correlation), track change, find themes in interviews, and diagnose results that show nothing – with Python on the page, practice data and a template for your own CSV.">
 
     <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
     <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
@@ -195,7 +195,7 @@ boxplot(groups, title="Estimated waiting time (real wait: 3 minutes)", ylabel="m
         <section class="sec" id="choose" style="--c: var(--s4)">
             <div class="t-wrap">
                 <h2>Which analysis answers your question?</h2>
-                <p class="lead">Your research question already contains the analysis. Look at its verb: do you <em>compare</em> groups, <em>relate</em> two variables, track a <em>change</em> – or <em>count</em> categories?</p>
+                <p class="lead">Your research question already contains the analysis. Look at its verb: do you <em>compare</em> groups, <em>relate</em> two variables, track a <em>change</em>, <em>count</em> categories – or <em>explore</em> how people experience something?</p>
                 <div class="trackbar" data-label="Highlight for:"></div>
                 <div class="grid4">
                     <div class="acard" style="--cc: var(--s3)" data-fits="experiment survey test">
@@ -221,6 +221,12 @@ boxplot(groups, title="Estimated waiting time (real wait: 3 minutes)", ylabel="m
                         <div class="ask">Has the share of “gonna” grown since the 1960s?</div>
                         <dl class="kv"><dt>describe</dt><dd>counts and shares (%)</dd><dt>chart</dt><dd>bar or line chart</dd><dt>careful</dt><dd>compare shares, not raw counts</dd></dl>
                         <a href="#counts">→ count</a>
+                    </div>
+                    <div class="acard" style="--cc: var(--s6)" data-fits="interview">
+                        <b class="big">Find themes</b>
+                        <div class="ask">How do Year 5 and Year 12 students experience a school year?</div>
+                        <dl class="kv"><dt>describe</dt><dd>categories per person, “3 of 4”</dd><dt>table</dt><dd>person × category</dd><dt>evidence</dt><dd>quotes with source, cases that don’t fit</dd><dt>careful</dt><dd>no %, no p – claims about these people</dd></dl>
+                        <a href="#themes">→ themes</a>
                     </div>
                 </div>
             </div>
@@ -445,6 +451,73 @@ line(years, {m: [r["hours"] if r["method"] == m else None for r in rows] for m i
             </div>
         </section>
 
+        <!-- ============================ THEMES (INTERVIEWS) ============================ -->
+        <section class="sec" id="themes" style="--c: var(--s6)">
+            <div class="t-wrap">
+                <h2>Find themes in interviews</h2>
+                <p class="lead">Interviews don’t give you means and p-values. They give you categories, cases and quotes. Your result is a well-documented pattern: which themes come up, in whom – and where the pattern breaks.</p>
+                <div class="grid4">
+                    <div class="panel"><h3>Count people</h3>A talkative person produces many segments. Count how many <em>people</em> mention a theme: “3 of 4 Year 5 students”. No percentages of four people, no p-values.</div>
+                    <div class="panel"><h3>Person × category</h3>One row per person, one column per category. The table shows differences between groups – and the person who doesn’t fit.</div>
+                    <div class="panel"><h3>Quotes as evidence</h3>Every claim gets a short quote with its source (P3, l. 26). Choose typical quotes, not just the most colourful. Translated? Original in the appendix.</div>
+                    <div class="panel"><h3>Cases that don’t fit</h3>Look for them on purpose. Explaining a deviant case often gives you your best idea – and protects you from seeing only what you expected.</div>
+                </div>
+                <div class="py-task" style="margin-top:1.25rem">
+                    <h4>In Python</h4>
+                    <ol>
+                        <li>Look at the table. Which themes come up mainly in Year 5, which in Year 12?</li>
+                        <li>Compare segments and people for <code>routine</code>. Why would counting segments mislead you?</li>
+                        <li>Read the quotes for <code>slow</code>, then for <code>future</code> (TODO). Who doesn’t fit the pattern – and how might their quotes explain it?</li>
+                    </ol>
+                </div>
+                <div class="py" data-py="eval-themes" data-title="Eight interviews: how does a school year feel?" data-files="data/interview-main.csv">
+<script type="text/plain">
+# 8 interviews, 4 students from Year 5 and 4 from Year 12, coded with a codebook
+# (invented data, quotes translated from German). One row per coded segment.
+import csv
+from edu import table
+
+with open("interview-main.csv", encoding="utf-8") as f:
+    rows = list(csv.DictReader(f))
+codes = ["slow", "fast", "routine", "milestone", "future"]
+people = sorted(set(r["person"] for r in rows))
+year = {r["person"]: r["year"] for r in rows}
+size = {y: sum(1 for p in people if year[p] == y) for y in ["5", "12"]}
+
+# 1. Person × category: how many segments of each category per person?
+grid = []
+for p in people:
+    mine = [r["code"] for r in rows if r["person"] == p]
+    grid.append([p, "Year " + year[p]] + [mine.count(c) or "" for c in codes])
+table(grid, header=["person", "group"] + codes, title="Coded segments per person")
+
+# 2. Count segments – or count people?
+print("category    segments Y5 / Y12     people Y5 / Y12")
+for c in codes:
+    seg = [sum(1 for r in rows if r["code"] == c and r["year"] == y) for y in ["5", "12"]]
+    ppl = [len({r["person"] for r in rows if r["code"] == c and r["year"] == y}) for y in ["5", "12"]]
+    print("%-10s  %5d / %-2d           %d of %d / %d of %d" % (c, seg[0], seg[1], ppl[0], size["5"], ppl[1], size["12"]))
+
+# 3. Quotes for one category – your evidence
+CODE = "slow"          # TODO: try "future"
+print("\nQuotes for " + CODE + ":")
+for r in rows:
+    if r["code"] == CODE:
+        print('  %s (Year %s, l. %s): "%s"' % (r["person"], r["year"], r["line"], r["quote"]))
+</script>
+                </div>
+                <details class="panel" style="margin-top:1rem">
+                    <summary><b>Compare with our findings</b> (after you have tried)</summary>
+                    <ul>
+                        <li>Year 5: 3 of 4 describe the year as <code>slow</code> and 3 of 4 remember it through <code>milestone</code>s (trips, birthdays, a tournament). Year 12: 3 of 4 describe it as <code>fast</code>, and all 4 talk about the <code>future</code> (Abitur, moving out) – no Year 5 student does.</li>
+                        <li><code>routine</code>: 8 segments, 6 of them from P2 alone. Counted by segments it looks like a Year 5 theme (6 : 2); counted by people it is 1 of 4 against 2 of 4 – no pattern at all.</li>
+                        <li><b>P7</b> (Year 12) finds the year slow – and is “just waiting for the Abitur to be over”. Maybe the difference is not age but whether you <em>wait for</em> the future or <em>plan</em> it. That is a new hypothesis, not a finding: a survey could test it. Don’t hide such a case – it is the most interesting part of your discussion.</li>
+                        <li>Eight people from one school: write “three of the four Year 5 students”, never “75 % of younger students”.</li>
+                    </ul>
+                </details>
+            </div>
+        </section>
+
         <!-- ============================ NOTHING FOUND ============================ -->
         <section class="sec" id="nothing" style="--c: var(--bad)">
             <div class="t-wrap">
@@ -559,11 +632,12 @@ for name in rows[0].keys():
                 <h2>Results, discussion, limitations</h2>
                 <p class="lead">Keep three things apart: what you <em>found</em> (results), what it <em>means</em> (discussion) and what <em>limits</em> it (limitations). Mixing them is the most common weakness in empirical Seminararbeiten.</p>
                 <div class="grid3">
-                    <div class="panel"><h3>Results</h3><ul><li>n, exclusions, reliability (α, κ)</li><li>descriptive numbers per group, one chart per question</li><li>effect size + p or r – no interpretation yet</li><li>past tense: “Students estimated …”</li></ul></div>
+                    <div class="panel"><h3>Results</h3><ul><li>n, exclusions, reliability (α, κ)</li><li>descriptive numbers per group, one chart per question</li><li>effect size + p or r – no interpretation yet</li><li>interviews: how many of n people per theme, each with a quote</li><li>past tense: “Students estimated …”</li></ul></div>
                     <div class="panel"><h3>Discussion</h3><ul><li>Does it support your hypothesis?</li><li>How does it fit the studies from your background chapter?</li><li>Other explanations? Surprises?</li><li>Careful verbs: suggests, indicates, is associated with</li></ul></div>
                     <div class="panel"><h3>Limitations</h3><ul><li>sample (size, convenience, one school)</li><li>measurement (self-report, single items, pilot changes)</li><li>design (no random assignment? cross-sectional?)</li><li>what a follow-up study should do differently</li></ul></div>
                 </div>
                 <p class="model"><span>a limitation, well written</span>As the sample consisted of volunteers from one school, the results cannot be generalised to all teenagers. In addition, sleep was self-reported, which may overestimate actual sleep duration.</p>
+                <p class="model"><span>an interview result, well written</span>Three of the four Year 5 students described the school year as long and remembered it through events such as class trips (“I remember the year by the trips”, P1, l. 31), whereas three of the four Year 12 students described it as passing quickly. The one exception, P7, linked the slow passing of time to waiting for the Abitur.</p>
             </div>
         </section>
 
@@ -604,6 +678,9 @@ for name in rows[0].keys():
                     <li><a href="data/coding-round1.csv" download><code>coding-round1.csv</code></a>, <a href="data/coding-round2.csv" download><code>coding-round2.csv</code></a> – two coders, 30 lines each</li>
                     <li><a href="data/coding-decades.csv" download><code>coding-decades.csv</code></a> – future forms per decade</li>
                     <li><a href="data/existing-sleep.csv" download><code>existing-sleep.csv</code></a> – sleep series 2004–2024 with a method break</li>
+                    <li><a href="data/interview-pilot.csv" download><code>interview-pilot.csv</code></a> – pilot interview, transcript turn by turn</li>
+                    <li><a href="data/interview-coding.csv" download><code>interview-coding.csv</code></a> – two coders, 24 interview segments</li>
+                    <li><a href="data/interview-main.csv" download><code>interview-main.csv</code></a> – 8 interviews, coded segments with quotes</li>
                 </ul>
                 <div class="dl-list" style="margin-top:2rem">
                     <a href="data-design.html"><b>Viable data 1: Design</b><span>Criteria, data types, sample, data plan</span></a>
@@ -639,6 +716,7 @@ for name in rows[0].keys():
                 <li><a href="#relate">Relate two variables</a></li>
                 <li><a href="#change">Track a change</a></li>
                 <li><a href="#counts">Counts and trends</a></li>
+                <li><a href="#themes">Themes in interviews</a></li>
                 <li><a href="#nothing">Found nothing?</a></li>
                 <li><a href="#own">Your own data</a></li>
                 <li><a href="#write">Write it up</a></li>

@@ -303,6 +303,7 @@
         { id: 'survey', label: 'Survey', c: '#2563eb' },
         { id: 'test', label: 'Test', c: '#c26a06' },
         { id: 'experiment', label: 'Experiment', c: '#0f8f84' },
+        { id: 'interview', label: 'Interview', c: '#4d7c0f' },
         { id: 'coding', label: 'Coding texts', c: '#7c3aed' },
         { id: 'existing', label: 'Existing data', c: '#b83280' }
     ];
