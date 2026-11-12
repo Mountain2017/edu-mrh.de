@@ -101,6 +101,35 @@
 \newcommand{\pfeil}{\textcolor{prim}{$\rightarrow$}\ }
 \newcommand{\cb}{\raisebox{-0.2ex}{\textcolor{muted}{$\square$}}\ }   % Ankreuzkästchen
 
+% ---------- Fragepfad: vom ersten Funken zur These (W2–W7) ----------
+% Die Forschungsfrage entwickelt sich über die Blätter; jedes Blatt hat eine Box „My question – version n“.
+% \fragepfad{k}: ganzer Pfad mit Blattangaben, Stufe k hervorgehoben (frühere getönt, spätere blass)
+% \fragepfadklein{k}: kompakt, z. B. rechts in der Boxüberschrift (\hfill\fragepfadklein{3})
+\newcommand{\pfadfarben}[2]{%
+  \ifnum#1<#2\relax\def\pfc{primtint}\def\pdc{primtint}\def\ptc{prim}%
+  \else\ifnum#1=#2\relax\def\pfc{prim}\def\pdc{prim}\def\ptc{white}%
+  \else\def\pfc{white}\def\pdc{rule}\def\ptc{muted}\fi\fi}
+\newcommand{\fragepfad}[1]{%
+  \begin{tikzpicture}[x=1mm,y=1mm]
+  \foreach \t/\w [count=\i] in {spark question/W2–W3,research question/{W4 · fixed by the end of 12/1},working thesis/W4–W5,testable claim/W6–W7 · for data: your hypothesis,thesis statement/the paper · backed by your results}{%
+    \pfadfarben{\i}{#1}%
+    \node[rounded corners=1mm,fill=\pfc,draw=\pdc,minimum width=30mm,minimum height=5.5mm,inner sep=1pt,
+      text=\ptc,font=\headfont\scriptsize] (s\i) at ({(\i-1)*35},0) {\t};
+    \node[font=\tiny,text=muted,below=0.3mm of s\i,inner sep=0.5pt] {\w};
+    \ifnum\i>1 \draw[-{Stealth[length=1.3mm]},muted] ({(\i-1)*35-19.5},0) -- ({(\i-1)*35-15.5},0);\fi
+  }
+  \end{tikzpicture}}
+\newcommand{\fragepfadklein}[1]{%
+  \begin{tikzpicture}[baseline=-0.7ex,x=1mm,y=1mm]
+  \foreach \t [count=\i] in {spark,question,working thesis,testable claim,thesis}{%
+    \pfadfarben{\i}{#1}%
+    \pgfmathtruncatemacro\j{\i-1}%
+    \ifnum\i=1 \node[rounded corners=0.8mm,fill=\pfc,draw=\pdc,inner xsep=1mm,inner ysep=0.6mm,text=\ptc,font=\headfont\tiny] (k1) at (0,0) {\t};%
+    \else \node[rounded corners=0.8mm,fill=\pfc,draw=\pdc,inner xsep=1mm,inner ysep=0.6mm,text=\ptc,font=\headfont\tiny,right=2.2mm of k\j] (k\i) {\t};%
+      \draw[-{Stealth[length=1mm]},muted] (k\j) -- (k\i);\fi
+  }
+  \end{tikzpicture}}
+
 % ---------- Antwortplatz (8 mm, wie informatik/10/java) ----------
 \newif\ifloesung
 \ifdefined\mitloesung \loesungtrue \else \loesungfalse \fi

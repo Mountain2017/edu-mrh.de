@@ -81,6 +81,16 @@
         { t: '<i>Why are you always late?</i>', a: 1, fb: 'It assumes something and sounds like an accusation – people defend themselves instead of telling. Better: <i>Tell me about a typical school morning.</i>' }
     ], IVQ, $('iv-score'));
 
+    /* ------------------------------------------------------------ interview: expert – source or data? */
+    if ($('ex-quiz')) VD.quiz($('ex-quiz'), [
+        { t: 'A neuroscientist explains how the brain might time short intervals – for your paper on time perception.', a: 0, fb: 'Knowledge you need for your background chapter: a source. Check what she says against the studies she mentions.' },
+        { t: 'You interview four teachers and four sleep researchers. Your question: how do the two groups judge a later school start?', a: 1, fb: 'Here the experts’ views <em>are</em> the topic: data. Same guide for all, compare by theme.' },
+        { t: 'Your uncle, an engineer, explains why holidays feel long when you look back.', a: 2, fb: 'Interesting, but memory research is not his field. For this question he is not an expert.' },
+        { t: 'A school psychologist describes how attention tests are used in practice – for your paper on ADHD and time.', a: 0, fb: 'Practice knowledge that papers rarely describe: a good source. Say in the paper why she counts as an expert.' },
+        { t: 'An influencer with two million followers explains in a video why time flies when you are busy.', a: 2, fb: 'Reach is not expertise. At most an <em>example</em> of how the topic is talked about.' },
+        { t: 'Three translators explain how they handle tenses in time-travel novels. Your question: how do professional translators decide?', a: 1, fb: 'Their decisions are what you study: data – and they are experts for exactly this question.' }
+    ], [{ label: 'source', c: '#4d7c0f' }, { label: 'data', c: '#4d7c0f' }, { label: 'not an expert for this', c: '#b91c1c' }], $('ex-score'));
+
     /* ------------------------------------------------------------ experiment: spot the problems */
     if ($('exp-spot')) VD.spot($('exp-spot'), [
         { t: 'The first 15 students who arrive get fast music, the rest slow music.', bad: true, why: 'Not random: early arrivers may differ (more punctual, less stressed). Assign by lot.' },
@@ -183,9 +193,19 @@
         add(n > 0, 'Sample size given.', 'How many – per group, if you compare groups?');
         if (n > 0 && n < 30 && (t === 'experiment' || t === 'survey' || t === 'test'))
             tips.push([false, 'With fewer than 30 per group you will only find large effects. Part 2 shows how to estimate the number you need.']);
-        if (t === 'interview' && n > 0 && n < 6)
+        var all = FIELDS.map(function (f) { return plan[f.k] || ''; }).join(' ');
+        var expert = /expert/i.test(all), synthesis = /\bstud(y|ies)\b|meta-?anal|review|papers|articles/i.test((plan.sample || '') + ' ' + (plan.construct || ''));
+        if (t === 'interview' && expert) {
+            add(has('sample', /because|position|professor|research|publication|years|works (as|at)|clinic|lab/i), 'You say why your expert is an expert.', 'Why does this person count as an expert – for this question? Position, publications, practice.');
+            add(/literature|sources|studies|check|look up/i.test((plan.quality || '') + ' ' + (plan.procedure || '')), 'Claims checked against the literature.', 'Plan to check what the expert says against published studies – an interview is a source, not proof.');
+        }
+        if (t === 'existing' && synthesis) {
+            add(has('sample', /search|string|database|scholar|base|include|inclusion|criteria|19\d\d|20\d\d/i), 'Search rule and inclusion criteria.', 'Write down the search rule before you search: databases, search string, years, which studies count.');
+            add(/extract|form|column|table|second|two|agree/i.test((plan.quality || '') + ' ' + (plan.procedure || '')), 'Extraction form and check planned.', 'Take the same facts from every study (one form) – and let a second person extract a few.');
+        }
+        if (t === 'interview' && !expert && n > 0 && n < 6)
             tips.push([false, 'Fewer than about six interviews rarely show a pattern. Plan 3–5 per group and say when you stop (no new categories).']);
-        add(has('sample', /random|lot|chance|class|year|course|volunteer|all |every|chart|corpus|decade|songs|texts|criteria|contrast|saturat/i),
+        add(has('sample', /random|lot|chance|class|year|course|volunteer|all |every|chart|corpus|decade|songs|texts|criteria|contrast|saturat|search|inclusion|expert/i),
             'You say how the sample is chosen.', 'How do you choose people (or texts)? Random, whole classes, volunteers?');
         if (t === 'experiment') add(has('procedure', /random/i) || has('quality', /random/i), 'Random assignment planned.', 'Who decides who is in which group? It should be chance.');
         if (t === 'experiment') add(has('quality', /manipulation|check|rate/i) || has('procedure', /manipulation|rate how/i), 'Manipulation check planned.', 'Add a manipulation check: did the conditions really feel different?');

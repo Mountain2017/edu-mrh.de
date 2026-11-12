@@ -189,6 +189,7 @@
                         </ol>
                     </div>
                     <div class="py" data-py="refine-survey-items" data-title="Step 1: look at every item" data-files="data/survey-pilot.csv">
+<div class="py-idea"><p><b class="k">The idea</b>Before you calculate anything, look at each item: what is its average, how much do the answers vary, how are they spread over 1–5? An item to which everyone gives the same answer carries no information.</p><ol><li><code>csv.DictReader</code> reads the file into <code>rows</code>: one entry per student, the column names as keys (<code>r["tp1"]</code>).</li><li>For each item: mean, SD and how many students chose 1, 2, 3, 4, 5 (<code>Counter</code> counts).</li><li><code>bars(…)</code> draws the answers to one item – change <code>item</code> to look at another.</li><li>The last loop prints every comment the pilot students wrote.</li></ol><p class="look"><b>Look for:</b> an item with a tiny SD, and comments that point to a problem.</p></div>
 <script type="text/plain">
 # Pilot of a time-pressure scale (24 students, answers 1–5).
 # Look at each item before you calculate anything.
@@ -221,6 +222,7 @@ for r in rows:
 </script>
                     </div>
                     <div class="py" data-py="refine-survey-alpha" data-title="Step 2: Cronbach’s α and item–rest correlations" data-files="data/survey-pilot.csv">
+<div class="py-idea"><p><b class="k">The idea</b>If all items measure the same thing, they rise and fall together: whoever agrees with one tends to agree with the others. Cronbach’s α puts that into one number. Then each item is tested on its own: does it fit the rest, and would α rise without it?</p><ol><li><code>answers(item)</code> returns one column of answers – flipped (<code>6 - v</code>) if the item is in <code>reverse</code>.</li><li><code>alpha(item_list)</code> compares the spread of the single items with the spread of the total scores: items that agree make the totals spread a lot.</li><li>The loop prints for every item its correlation with the sum of all other items (item–rest r) and α without it.</li></ol><p class="look"><b>Look for:</b> an item with a low or negative item–rest r, and an α that rises when it is left out.</p></div>
 <script type="text/plain">
 # Do the items measure the same thing? Cronbach's alpha.
 import csv
@@ -255,6 +257,7 @@ for it in items:
 </script>
                     </div>
                     <div class="py" data-py="refine-survey-validity" data-title="Step 3: a first validity check" data-files="data/survey-pilot.csv">
+<div class="py-idea"><p><b class="k">The idea</b>Reliable is not yet valid. If the scale really measures time pressure, it should be linked to something that theory says goes with it: students under pressure sleep less.</p><ol><li><code>score(r)</code> – one time-pressure score per student: the mean of the four kept items, tp3 flipped.</li><li><code>correlation</code> between the scores and the hours of sleep (−1 … +1).</li><li><code>scatter</code> shows each student as a dot, with a trend line.</li></ol><p class="look"><b>Look for:</b> the sign of r: is the link in the expected direction?</p></div>
 <script type="text/plain">
 # People under time pressure should sleep less on school nights.
 # If the scale showed no link at all, it might not measure time pressure.
@@ -320,6 +323,7 @@ print("Minutes needed for the survey:", sorted(int(r["minutes"]) for r in rows))
                         </ol>
                     </div>
                     <div class="py" data-py="refine-test-items" data-title="Item analysis: difficulty, discrimination, KR-20" data-files="data/test-pilot.csv">
+<div class="py-idea"><p><b class="k">The idea</b>Every test item gets two numbers: how many students solved it (difficulty p) and whether the stronger students solved it more often than the weaker ones (discrimination). KR-20 then judges the whole test.</p><ol><li><code>scores(item)</code> – the 0/1 column of one item; its mean is p, the share who got it right.</li><li>Discrimination: the correlation of the item with the score on all <em>other</em> items (<code>rest</code>).</li><li><code>flag</code> marks items that are too easy, too hard or do not discriminate.</li><li><code>kr20</code> – reliability of the whole test; the scatter plot shows all items at once.</li></ol><p class="look"><b>Look for:</b> flagged items – and an item with a <em>negative</em> discrimination.</p></div>
 <script type="text/plain">
 # Pilot of a 12-item grammar test (30 students, 1 = right, 0 = wrong).
 import csv, math
@@ -388,6 +392,7 @@ scatter(difficulty, discrimination, title="Items: difficulty and discrimination"
                         </ol>
                     </div>
                     <div class="py" data-py="refine-exp-check" data-title="Outliers, groups, manipulation check" data-files="data/experiment-pilot.csv">
+<div class="py-idea"><p><b class="k">The idea</b>Three checks on the pilot data: are there impossible values, how do the groups compare, and did the conditions really feel different?</p><ol><li>Outliers: values more than 1.5 × IQR outside the middle half of all values (the usual box-plot rule) are printed with the note.</li><li><code>groups</code> sorts the estimates by condition; mean, median and a box plot per group.</li><li>Manipulation check: the mean tempo rating in each group.</li></ol><p class="look"><b>Look for:</b> the notes next to the outliers – and how close the two tempo ratings are.</p></div>
 <script type="text/plain">
 # Pilot: 16 students waited 3 minutes with fast or slow music, then estimated the wait in minutes.
 import csv
@@ -425,6 +430,7 @@ for name in groups:
 </script>
                     </div>
                     <div class="py" data-py="refine-exp-power" data-title="Power: how many people do you need?">
+<div class="py-idea"><p><b class="k">The idea</b>Power = how often your study would find an effect that really exists. Pretend it exists, simulate the experiment 1000 times with invented participants, and count how often the difference shows up clearly.</p><ol><li><code>random.gauss(mean, sd)</code> invents one estimate; the slow group gets <code>difference</code> minutes more on average.</li><li><code>finds_it</code> counts a difference as found if it is larger than about two standard errors (roughly p &lt; .05).</li><li>For each n: 1000 experiments, then the share in which the difference was found.</li></ol><p class="look"><b>Look for:</b> the first n at which the difference is found in about 80 % of the experiments.</p></div>
 <script type="text/plain">
 # Pilot (cleaned): fast ≈ 2.5 min, slow ≈ 2.9 min, SD ≈ 0.6. Pilots tend to overestimate
 # effects, so plan with a slightly smaller difference.
@@ -481,6 +487,7 @@ for n in [8, 15, 30, 50, 64, 100]:
                         </ol>
                     </div>
                     <div class="py" data-py="refine-iv-talk" data-title="Step 1: talk share and answer length" data-files="data/interview-pilot.csv">
+<div class="py-idea"><p><b class="k">The idea</b>An interview should be the interviewee’s story, not yours. Count words: who talks how much – and which questions brought long answers?</p><ol><li><code>len(text.split())</code> counts the words of each turn; they are added up per speaker (I, P).</li><li>Per question: words in the question(s) and words in the answer(s), plus a bar chart of the answers.</li><li>Every answer under 10 words is printed together with the question that caused it.</li></ol><p class="look"><b>Look for:</b> the interviewer share in % – and what the questions with short answers have in common.</p></div>
 <script type="text/plain">
 # Pilot interview with one Year 9 student (about 6 minutes, transcribed).
 # I = interviewer, P = participant. Who talks – and which questions work?
@@ -518,6 +525,7 @@ for i, t in enumerate(turns):
 </script>
                     </div>
                     <div class="py" data-py="refine-iv-kappa" data-title="Step 2: two coders, 24 interview segments" data-files="data/interview-coding.csv">
+<div class="py-idea"><p><b class="k">The idea</b>Two coders coded the same segments without talking. How often do they agree – and how much more than two people who just guess? That is Cohen’s κ.</p><ol><li><code>agree</code> – the share of segments both coded the same.</li><li><code>chance</code> – the agreement you would expect by chance, from how often each coder uses each category.</li><li><code>kappa = (agree - chance) / (1 - chance)</code>.</li><li>The loop lists every disagreement next to its segment.</li></ol><p class="look"><b>Look for:</b> a kind of segment on which the coders keep disagreeing.</p></div>
 <script type="text/plain">
 # Two coders coded the same 24 segments from interviews about how a school year feels.
 # Categories: slow, fast, routine, milestone, future.
@@ -586,6 +594,7 @@ for r in rows:
                         </ol>
                     </div>
                     <div class="py" data-py="refine-coding-kappa" data-title="Inter-coder agreement: Cohen’s κ" data-files="data/coding-round1.csv data/coding-round2.csv">
+<div class="py-idea"><p><b class="k">The idea</b>Same logic as for any coding: compare two coders line by line, correct the agreement for chance (Cohen’s κ), and look at where they disagree.</p><ol><li><code>agree</code> and <code>chance</code> as above; <code>kappa</code> from both.</li><li>The table shows coder A’s category (rows) against coder B’s (columns): the diagonal is agreement, everything else a mix-up.</li><li>The loop prints each line the coders coded differently.</li></ol><p class="look"><b>Look for:</b> the cell outside the diagonal with the most lines – then change <code>FILE</code> to round 2.</p></div>
 <script type="text/plain">
 # Two coders coded the same song lines for how they talk about the future.
 import csv
@@ -623,6 +632,10 @@ for r in rows:
                             <li>Round 2 with the rule: κ rises from about 0.71 to about 0.92. Now the codebook is ready for the whole corpus. Report both rounds in your method chapter.</li>
                         </ul>
                     </details>
+                    <div class="panel" style="margin-top:1rem">
+                        <h3>Ask an expert before you code everything</h3>
+                        <p>Two coders can agree perfectly on categories that miss the point. If your frame comes from a theory – linguistics, psychology, physics – show the codebook to someone who knows it: Are the categories right? Is one missing? Is a borderline rule wrong? That checks <b>validity</b>; κ only checks reliability. Note every change in your refinement log, then run a new agreement round.</p>
+                    </div>
                 </div>
 
                 <!-- ---------- existing ---------- -->
@@ -634,6 +647,15 @@ for r in rows:
                         <div class="panel"><h3>Gaps</h3>A missing year is information: why is it missing? Never fill it with a guess without saying so.</div>
                         <div class="panel"><h3>Method breaks</h3>If the way of measuring changes, the numbers may jump without anything changing in reality – read the documentation.</div>
                     </div>
+                    <div class="panel" style="margin-top:1rem">
+                        <h3>Combining published studies? Pilot your search and your form</h3>
+                        <ul>
+                            <li><b>Test the search string:</b> does it find the two or three key studies you already know? If not, it is too narrow – add synonyms, follow the references (snowballing).</li>
+                            <li><b>Pilot the extraction form on three studies:</b> is every column clear? What do you write if a study reports only means and no effect size – or three age groups instead of two?</li>
+                            <li><b>Second person:</b> they extract four studies on their own; compare cell by cell. Every difference is a rule your form is missing.</li>
+                            <li><b>Log it:</b> hits, studies after the abstracts, studies after full text – the numbers go into your method chapter (<a href="data-design.html#theory">worked example</a>).</li>
+                        </ul>
+                    </div>
                     <div class="py-task" style="margin-top:1.25rem">
                         <h4>In Python</h4>
                         <ol>
@@ -643,6 +665,7 @@ for r in rows:
                         </ol>
                     </div>
                     <div class="py" data-py="refine-existing-check" data-title="Check a data series before you trust it" data-files="data/existing-sleep.csv">
+<div class="py-idea"><p><b class="k">The idea</b>Before you plot a data series someone else collected, walk through it row by row and flag anything that does not fit: missing years, other units, a change of method.</p><ol><li>Each row is checked: empty value → missing; unit “min” → flagged (still to convert, TODO).</li><li>All methods used in the series are listed with their first and last year.</li><li><code>line</code> draws the series as it is – problems included.</li></ol><p class="look"><b>Look for:</b> the rows the loop prints – and what the chart does at those years.</p></div>
 <script type="text/plain">
 # Average school-night sleep of 15-year-olds, from a yearly survey (invented data).
 import csv
@@ -703,6 +726,9 @@ line(years, sleep, title="Average school-night sleep, age 15", xlabel="year", yl
                         <tr><td>interviewer speaks more than a quarter of the words</td><td>long questions, own opinions, interpreting for them</td><td>short questions, neutral follow-ups, wait out the silence</td></tr>
                         <tr><td>κ below 0.80, disagreements on the same kind of case</td><td>category boundary unclear</td><td>decision rule plus example in the codebook</td></tr>
                         <tr><td>takes much longer than planned</td><td>too many items, too much reading</td><td>cut items that add least (α without it barely drops)</td></tr>
+                        <tr><td>an expert says a category is wrong or missing</td><td>the frame doesn’t match the theory</td><td>revise the codebook, code a new round</td></tr>
+                        <tr><td>your search misses a key study you know</td><td>search string too narrow</td><td>add synonyms, follow references</td></tr>
+                        <tr><td>two people extract different numbers from one study</td><td>extraction rule unclear (which group, which measure?)</td><td>add a rule with an example to the form</td></tr>
                         <tr><td>jump or gap in a data series</td><td>method change, missing year</td><td>analyse periods separately, report the gap</td></tr>
                     </tbody>
                 </table></div>
@@ -730,6 +756,7 @@ line(years, sleep, title="Average school-night sleep, age 15", xlabel="year", yl
                             <tr><td>KR-20 of a test</td><td>≥ 0.70</td><td>test</td></tr>
                             <tr><td>Cohen’s κ between coders</td><td>≥ 0.80</td><td>coding, interview</td></tr>
                             <tr><td>interviewer’s share of the words</td><td>≤ 25 %</td><td>interview</td></tr>
+                            <tr><td>search finds the key studies you know</td><td>all of them</td><td>studies as data</td></tr>
                             <tr><td>manipulation check</td><td>clear difference</td><td>experiment</td></tr>
                             <tr><td>power for the expected effect</td><td>≈ 80 %</td><td>experiment, survey</td></tr>
                             <tr><td>no impossible values, no open questions in the pilot</td><td>0</td><td>all</td></tr>
@@ -742,6 +769,7 @@ line(years, sleep, title="Average school-night sleep, age 15", xlabel="year", yl
                     </div>
                 </div>
                 <div class="py" data-py="refine-main-alpha" data-title="Main survey: α of the refined scale" data-files="data/survey-main.csv">
+<div class="py-idea"><p><b class="k">The idea</b>The same α as in the survey pilot, now for the refined five-item scale in the main survey.</p><ol><li>Keep only students who answered all five items.</li><li>Flip p3 (<code>6 - v</code>), then α from the item columns and the totals.</li></ol><p class="look"><b>Look for:</b> whether the refined scale reaches the 0.80 the pilot aimed for.</p></div>
 <script type="text/plain">
 import csv
 from statistics import variance
@@ -787,6 +815,7 @@ print("n = %d, alpha = %.2f" % (len(rows), alpha))
                     <li>find impossible values and fix the instruction that caused them</li>
                     <li>use a manipulation check and a power simulation to plan an experiment</li>
                     <li>check a pilot interview for talk share, short answers and leading questions</li>
+                    <li>pilot a search rule and an extraction form – and use an expert to check a codebook</li>
                     <li>spot unit errors, gaps and method breaks in existing data</li>
                 </ul>
                 <div class="next">

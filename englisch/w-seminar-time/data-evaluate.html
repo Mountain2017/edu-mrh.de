@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Viable Data 3: Evaluate | W-Seminar English 12 – edu-mrh.de</title>
-    <meta name="description" content="W-Seminar 'Time' (English, Year 12), viable data part 3: clean and describe your data, compare groups (effect size, permutation test), find relationships (correlation), track change, find themes in interviews, and diagnose results that show nothing – with Python on the page, practice data and a template for your own CSV.">
+    <meta name="description" content="W-Seminar 'Time' (English, Year 12), viable data part 3: clean and describe your data, compare groups (effect size, permutation test), find relationships (correlation), track change, combine published studies, find themes in interviews, and diagnose results that show nothing – with Python on the page, practice data and a template for your own CSV.">
 
     <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
     <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
@@ -142,6 +142,7 @@
                 </div>
 
                 <div class="py" data-py="eval-clean" data-title="Clean the main survey" data-files="data/survey-main.csv">
+<div class="py-idea"><p><b class="k">The idea</b>Cleaning means applying rules you fixed <em>before</em> looking at the results – to every row in the same way – and logging every row you drop.</p><ol><li>Rows with an empty cell are skipped and logged.</li><li>Rows with impossible sleep values (outside 3–12 hours) are skipped and logged.</li><li>All other rows go into <code>clean</code>; the log is what you report in your method chapter.</li></ol><p class="look"><b>Look for:</b> who was dropped for what – and whether dropping a whole person for one missing item is fair.</p></div>
 <script type="text/plain">
 # Main survey: 126 students. Before any statistics: what is missing or impossible?
 import csv
@@ -169,6 +170,7 @@ print("\n%d of %d rows kept" % (len(clean), len(rows)))
 </script>
                 </div>
                 <div class="py" data-py="eval-describe" data-title="Describe groups: n, mean, median, SD, box plot" data-files="data/experiment-main.csv">
+<div class="py-idea"><p><b class="k">The idea</b>Describe before you test: sort the estimates into the three groups and summarise each one.</p><ol><li><code>groups</code> – one list of estimates per condition (fast, slow, silence).</li><li>n, mean, median and SD per group.</li><li>A box plot shows the middle half (box), the median (line) and the spread of each group.</li></ol><p class="look"><b>Look for:</b> how far apart the medians are compared with the height of the boxes.</p></div>
 <script type="text/plain">
 # Main experiment: 84 students waited 3 minutes – with fast music, slow music or in silence.
 import csv
@@ -228,6 +230,12 @@ boxplot(groups, title="Estimated waiting time (real wait: 3 minutes)", ylabel="m
                         <dl class="kv"><dt>describe</dt><dd>categories per person, “3 of 4”</dd><dt>table</dt><dd>person × category</dd><dt>evidence</dt><dd>quotes with source, cases that don’t fit</dd><dt>careful</dt><dd>no %, no p – claims about these people</dd></dl>
                         <a href="#themes">→ themes</a>
                     </div>
+                    <div class="acard" style="--cc: var(--s5)" data-fits="existing coding">
+                        <b class="big">Combine studies</b>
+                        <div class="ask">Does time speed up as we age – what do 14 published studies say?</div>
+                        <dl class="kv"><dt>describe</dt><dd>one row per study, effect size d</dd><dt>combine</dt><dd>mean d, weighted by n</dd><dt>frame</dt><dd>group by how it was measured</dd><dt>careful</dt><dd>small studies, big effects</dd></dl>
+                        <a href="#studies">→ studies</a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -254,6 +262,7 @@ boxplot(groups, title="Estimated waiting time (real wait: 3 minutes)", ylabel="m
                     </div>
                 </div>
                 <div class="py" data-py="eval-compare" data-title="Effect size and permutation test" data-files="data/experiment-main.csv">
+<div class="py-idea"><p><b class="k">The idea</b>Two questions: how big is the difference (Cohen’s d), and could it be chance (permutation test)? For the second, pretend the music made no difference: then the labels “fast” and “slow” are arbitrary and can be shuffled.</p><ol><li><code>d</code> – the difference of the means divided by the pooled SD.</li><li>Shuffle all values 5000 times (<code>random.shuffle(pool)</code>), split them into two fake groups, store the fake difference.</li><li><code>p</code> – the share of fake differences at least as large as the real one.</li><li>The histogram shows all fake differences – chance at work.</li></ol><p class="look"><b>Look for:</b> where the real difference would lie in the histogram – then compare slow and silence (TODO).</p></div>
 <script type="text/plain">
 import csv, random
 from statistics import mean, stdev
@@ -320,6 +329,7 @@ hist(shuffled, bins=30, title="Differences when the labels are shuffled", xlabel
                     </div>
                 </div>
                 <div class="py" data-py="eval-relate" data-title="Correlations in the main survey" data-files="data/survey-main.csv">
+<div class="py-idea"><p><b class="k">The idea</b>Does one variable go up when another goes up (or down)? Compute r for one pair, look at the scatter plot, then scan all pairs at once.</p><ol><li><code>column(name)</code> – all values of one column as numbers; <code>pressure(r)</code> – the scale score.</li><li>Pearson r and Spearman ρ (ranks) for the pair <code>x</code>, <code>y</code>, plus a scatter plot.</li><li>The last loop prints r for every pair of variables (a correlation matrix).</li></ol><p class="look"><b>Look for:</b> the strongest pair in the matrix – and whether its scatter plot looks like a straight line.</p></div>
 <script type="text/plain">
 import csv
 from statistics import correlation, mean
@@ -364,6 +374,7 @@ for n1 in names:
                 <h2>Track a change</h2>
                 <p class="lead">Before and after a lesson, a treatment, a decade. Change alone proves little: people improve the second time anyway (they know the test), and everything else changed too. A control group shows how much change happens <em>without</em> your intervention.</p>
                 <div class="py" data-py="eval-change" data-title="Before and after: lesson vs. control group" data-files="data/test-prepost.csv">
+<div class="py-idea"><p><b class="k">The idea</b>A gain only means something next to a control group: compute each student’s gain (post − pre) and compare the gains of the two classes.</p><ol><li><code>gains</code> – post minus pre, one list per group.</li><li>Mean pre, post and gain per group.</li><li>A box plot of the gains.</li></ol><p class="look"><b>Look for:</b> the control group’s gain: why isn’t it zero?</p></div>
 <script type="text/plain">
 # Grammar test (0–10 points) before and after – one class had the lesson, one didn't.
 import csv
@@ -399,6 +410,7 @@ boxplot(gains, title="Gain = post − pre (points)", ylabel="gain")
                 <h2>Count categories, follow trends</h2>
                 <p class="lead">Coded texts and existing statistics often give you counts and time series. Two rules: compare <b>shares</b>, not raw counts (when the totals differ) – and don’t draw one trend line across a method break.</p>
                 <div class="py" data-py="eval-counts" data-title="Future forms in song lyrics, 1960s–2020s" data-files="data/coding-decades.csv">
+<div class="py-idea"><p><b class="k">The idea</b>Raw counts mislead when the totals differ. Turn the counts into shares of all future references per decade, then follow the shares over time.</p><ol><li>Per decade: <code>total</code> = all coded future references.</li><li>Each form’s count ÷ total × 100 = its share in %.</li><li><code>line</code> draws one line per form.</li></ol><p class="look"><b>Look for:</b> the decade in which “gonna” overtakes “will” – if it does.</p></div>
 <script type="text/plain">
 # 40 songs per decade, every future reference coded (invented data).
 import csv
@@ -422,6 +434,7 @@ line(decades, share, title="Share of all future references", xlabel="decade", yl
 </script>
                 </div>
                 <div class="py" data-py="eval-trend" data-title="A trend across a method break" data-files="data/existing-sleep.csv">
+<div class="py-idea"><p><b class="k">The idea</b>A trend is the slope of the best straight line through the points. Compute it for all years together – and for each measuring method separately.</p><ol><li>Minutes are converted to hours; the missing year is left out.</li><li><code>linear_regression</code> gives the slope of the best line; × 60 × 10 = minutes per decade.</li><li>The chart draws the diary years and the app years as two separate lines.</li></ol><p class="look"><b>Look for:</b> how different the slope over all years is from the slopes within each method.</p></div>
 <script type="text/plain">
 # School-night sleep of 15-year-olds, 2004–2024 (invented); diary until 2014, app from 2015.
 import csv
@@ -451,6 +464,85 @@ line(years, {m: [r["hours"] if r["method"] == m else None for r in rows] for m i
             </div>
         </section>
 
+        <!-- ============================ STUDIES AS DATA ============================ -->
+        <section class="sec" id="studies" style="--c: var(--s5)">
+            <div class="t-wrap">
+                <h2>Combine published studies</h2>
+                <p class="lead">In a study of studies, each study is one row – like one participant in a survey. Two rules: give big studies more weight, and never mix what was measured in different ways. The real finding often comes from your <em>frame</em>: sorting existing results by a question their authors didn’t ask.</p>
+                <div class="grid4">
+                    <div class="panel"><h3>One row per study</h3>The same facts from every study: n, design, measure, result. The common currency is the effect size d – if a study only reports means and SDs, you can compute it (part 3, compare groups).</div>
+                    <div class="panel"><h3>Weight by size</h3>A study with 300 people tells you more than one with 24. Weighted mean: Σ(n × d) ÷ Σn. Real meta-analyses weight by precision – the same idea, a little more exact.</div>
+                    <div class="panel"><h3>Don’t count votes</h3>“6 of 14 studies found an effect” says little: small studies miss real effects, and different measures answer different questions. Compare effect sizes, grouped by your frame.</div>
+                    <div class="panel"><h3>Small study, big effect?</h3>Surprising results get published and shared more easily than dull ones (<em>publication bias</em>). Check such studies closely and report your result with and without them.</div>
+                </div>
+                <p class="small" style="margin-top:1rem">The example from <a href="data-design.html#theory">part 1</a>: 14 studies compare older and younger adults. <code>measure</code> says what people judged: how fast the <b>week</b> before went, how fast the last ten years (<b>decade</b>) went, or how long a 30-second <b>interval</b> seemed. d &gt; 0: older people say time passes faster. The studies are invented for practice – finding the real ones is the job of <a href="research-methods.html">M3</a>.</p>
+                <div class="py-task" style="margin-top:1rem">
+                    <h4>In Python</h4>
+                    <ol>
+                        <li>Run it. What does the average over all studies say – and why does it describe none of them well?</li>
+                        <li>Look at the three measures. Where does the age effect show up?</li>
+                        <li>Keep only peer-reviewed studies (TODO). Which numbers change – and why so much in the unweighted column?</li>
+                    </ol>
+                </div>
+                <div class="py" data-py="eval-review" data-title="14 studies: does time speed up with age?" data-files="data/review-age.csv">
+<div class="py-idea"><p><b class="k">The idea</b>Every study becomes one row with the same columns. Then you combine the effect sizes – first all together, then separately for each way of measuring – and compare a simple average with one that gives big studies more weight.</p><ol><li><code>studies</code> – the extraction table; the <code>table</code> shows it in full.</li><li><code>combine(group)</code> returns two averages of d: the simple one and the one weighted by n (<code>n × d</code> summed, divided by the sum of all n).</li><li>The loop splits the studies by <code>measure</code> – the new frame – and combines each part; the bar chart shows the weighted results.</li><li>Finally every study with fewer than 40 people is printed.</li></ol><p class="look"><b>Look for:</b> how far the result for all studies is from each single measure – and how much the two small studies move the simple average.</p></div>
+<script type="text/plain">
+# 14 published studies (invented): do older people feel that time passes faster?
+# One row per study: n, how the speed of time was measured, effect size d
+# (older vs. younger; d > 0 = older people say time passes faster), peer reviewed or not.
+import csv
+from edu import bars, table
+
+with open("review-age.csv", encoding="utf-8") as f:
+    studies = list(csv.DictReader(f))
+for s in studies:
+    s["n"] = int(s["n"])
+    s["d"] = float(s["d"])
+table([[s["study"], s["year"], s["n"], s["measure"], s["d"], s["peer_reviewed"]] for s in studies],
+      header=["study", "year", "n", "measure", "d", "peer reviewed"], title="The extraction table")
+
+def combine(group):
+    simple = sum(s["d"] for s in group) / len(group)
+    weighted = sum(s["n"] * s["d"] for s in group) / sum(s["n"] for s in group)
+    return simple, weighted
+
+# All studies together
+simple, weighted = combine(studies)
+print("all %d studies: mean d = %.2f, weighted by n = %.2f" % (len(studies), simple, weighted))
+
+# The new frame: one result per way of measuring
+measures = ["week", "decade", "interval"]
+result = []
+print("\nmeasure    studies   mean d   weighted d")
+for m in measures:
+    group = [s for s in studies if s["measure"] == m]
+    # TODO: keep only peer-reviewed studies:  ... if s["measure"] == m and s["peer_reviewed"] == "yes"]
+    simple, weighted = combine(group)
+    result.append(round(weighted, 2))
+    print("%-9s  %4d      %5.2f     %5.2f" % (m, len(group), simple, weighted))
+bars(measures, result, title="Weighted effect size by measure", xlabel="what people judged", ylabel="d (older vs. younger)")
+
+# Small studies with big effects?
+print("\nStudies with fewer than 40 people:")
+for s in studies:
+    if s["n"] < 40:
+        print("  %s (%s): n = %d, d = %.2f, peer reviewed: %s" % (s["study"], s["measure"], s["n"], s["d"], s["peer_reviewed"]))
+</script>
+                </div>
+                <details class="panel" style="margin-top:1rem">
+                    <summary><b>Compare with our findings</b> (after you have tried)</summary>
+                    <ul>
+                        <li>All 14 together: d ≈ 0.29 (weighted 0.20) – “a small effect”. That number describes none of the three measures.</li>
+                        <li>By measure (weighted): looking back over ten years d ≈ 0.45, a medium effect; the last week d ≈ 0.03; a 30-second interval d ≈ 0.06. In these studies older people don’t experience the present as faster – they look back on years that seem to have flown. That is what the frame adds: the answer depends on <em>which</em> time you ask about.</li>
+                        <li>Studies <b>I</b> and <b>M</b> are small (24 and 30 people), not peer reviewed and show huge effects (1.10 and 0.95). They lift the simple average of “interval” from 0.00 to 0.19 and of “decade” from 0.45 to 0.58. Weighting shrinks their influence; without them, “interval” is 0.01 (weighted). Report both versions.</li>
+                        <li>Vote counting would say: 6 of 14 studies show d &gt; 0.2 – “mixed evidence”. The pattern is clear, the votes hide it.</li>
+                    </ul>
+                </details>
+                <h3 style="margin-top:1.5rem">Write it up</h3>
+                <p class="model"><span>good</span>Across 14 studies, older adults judged the past ten years as having passed faster than younger adults did (weighted d = 0.45, five studies), whereas no age difference appeared for the past week (d = 0.03, four studies) or for estimates of short intervals (d = 0.06, five studies).</p>
+            </div>
+        </section>
+
         <!-- ============================ THEMES (INTERVIEWS) ============================ -->
         <section class="sec" id="themes" style="--c: var(--s6)">
             <div class="t-wrap">
@@ -471,6 +563,7 @@ line(years, {m: [r["hours"] if r["method"] == m else None for r in rows] for m i
                     </ol>
                 </div>
                 <div class="py" data-py="eval-themes" data-title="Eight interviews: how does a school year feel?" data-files="data/interview-main.csv">
+<div class="py-idea"><p><b class="k">The idea</b>In interviews you count <em>people</em>, not words or segments – and you keep the quotes as evidence.</p><ol><li>The table counts the coded segments per person and category.</li><li>For each category: segments and people per group (“3 of 4”) side by side.</li><li>All quotes for one category (<code>CODE</code>) with person, group and line number.</li></ol><p class="look"><b>Look for:</b> a category where segments and people tell different stories – and a person who doesn’t fit.</p></div>
 <script type="text/plain">
 # 8 interviews, 4 students from Year 5 and 4 from Year 12, coded with a codebook
 # (invented data, quotes translated from German). One row per coded segment.
@@ -550,6 +643,7 @@ for r in rows:
                 </div>
 
                 <div class="py" data-py="eval-diagnose" data-title="Three checks with the main survey" data-files="data/survey-main.csv">
+<div class="py-idea"><p><b class="k">The idea</b>Three small experiments with real data show why a study can find nothing although there is a link.</p><ol><li>Restricted range: r once for everybody, once only for the “in-between” chronotypes.</li><li>Unreliable measure: r with the 5-item scale against r with one single item.</li><li>Fishing: 20 questions filled with random numbers, each correlated with sleep.</li></ol><p class="look"><b>Look for:</b> how many of the pure-chance questions look like a real link.</p></div>
 <script type="text/plain">
 import csv, random
 from statistics import correlation, mean
@@ -597,6 +691,7 @@ print(hits, "of 20 random questions look 'significant'")
                     <div class="py-upload"></div>
                 </div>
                 <div class="py" data-py="eval-own" data-title="Overview of my-data.csv">
+<div class="py-idea"><p><b class="k">The idea</b>A first overview of your own file: Python guesses the separator, reads the rows and tries to read each column as numbers.</p><ol><li><code>csv.Sniffer</code> finds out whether your file uses commas, semicolons or tabs.</li><li>Each column: values that can be read as numbers (7,5 becomes 7.5) are described with n, mean, median, SD.</li><li>Columns that are text are named – count their categories instead.</li></ol><p class="look"><b>Look for:</b> columns with a smaller n than expected: empty cells or typos.</p></div>
 <script type="text/plain">
 # Your own data: load a CSV file above, then run this cell.
 import csv
@@ -632,7 +727,7 @@ for name in rows[0].keys():
                 <h2>Results, discussion, limitations</h2>
                 <p class="lead">Keep three things apart: what you <em>found</em> (results), what it <em>means</em> (discussion) and what <em>limits</em> it (limitations). Mixing them is the most common weakness in empirical Seminararbeiten.</p>
                 <div class="grid3">
-                    <div class="panel"><h3>Results</h3><ul><li>n, exclusions, reliability (α, κ)</li><li>descriptive numbers per group, one chart per question</li><li>effect size + p or r – no interpretation yet</li><li>interviews: how many of n people per theme, each with a quote</li><li>past tense: “Students estimated …”</li></ul></div>
+                    <div class="panel"><h3>Results</h3><ul><li>n, exclusions, reliability (α, κ)</li><li>descriptive numbers per group, one chart per question</li><li>effect size + p or r – no interpretation yet</li><li>interviews: how many of n people per theme, each with a quote</li><li>studies as data: number of studies and weighted d per group</li><li>past tense: “Students estimated …”</li></ul></div>
                     <div class="panel"><h3>Discussion</h3><ul><li>Does it support your hypothesis?</li><li>How does it fit the studies from your background chapter?</li><li>Other explanations? Surprises?</li><li>Careful verbs: suggests, indicates, is associated with</li></ul></div>
                     <div class="panel"><h3>Limitations</h3><ul><li>sample (size, convenience, one school)</li><li>measurement (self-report, single items, pilot changes)</li><li>design (no random assignment? cross-sectional?)</li><li>what a follow-up study should do differently</li></ul></div>
                 </div>
@@ -681,6 +776,7 @@ for name in rows[0].keys():
                     <li><a href="data/interview-pilot.csv" download><code>interview-pilot.csv</code></a> – pilot interview, transcript turn by turn</li>
                     <li><a href="data/interview-coding.csv" download><code>interview-coding.csv</code></a> – two coders, 24 interview segments</li>
                     <li><a href="data/interview-main.csv" download><code>interview-main.csv</code></a> – 8 interviews, coded segments with quotes</li>
+                    <li><a href="data/review-age.csv" download><code>review-age.csv</code></a> – 14 studies on age and the speed of time</li>
                 </ul>
                 <div class="dl-list" style="margin-top:2rem">
                     <a href="data-design.html"><b>Viable data 1: Design</b><span>Criteria, data types, sample, data plan</span></a>
@@ -716,6 +812,7 @@ for name in rows[0].keys():
                 <li><a href="#relate">Relate two variables</a></li>
                 <li><a href="#change">Track a change</a></li>
                 <li><a href="#counts">Counts and trends</a></li>
+                <li><a href="#studies">Combine studies</a></li>
                 <li><a href="#themes">Themes in interviews</a></li>
                 <li><a href="#nothing">Found nothing?</a></li>
                 <li><a href="#own">Your own data</a></li>
