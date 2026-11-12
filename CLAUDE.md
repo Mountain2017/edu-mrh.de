@@ -204,7 +204,7 @@ QR-Codes (nicht löschen).
 | M1 Orientierung | Seminarregeln, Bewertung, Backups; Dimensionen von Zeit | `w-seminar-time.html`, W1–W3 | fertig |
 | M2 Forschungsfrage | Frage vs. These, Marker, Eingrenzung, 1–3 Optionen | `research-question.html`, W4 | fertig |
 | M3 Recherche | 5 Leitfragen (refinery questions), Suchstrings, Orte, Lesen/Notieren, Quellencheck | `research-methods.html`, W5, Check 1 | fertig |
-| M4 Viable data | Gütekriterien, Datentypen (Umfrage, Test, Experiment, Interview inkl. Experteninterview, Textcodierung, vorhandene Daten), theoretische Arbeiten ohne Teilnehmende (`data-design.html#theory`: Studien als Daten/Forschungssynthese, Neu-Rahmung vorhandener Werke; Beispiel „Vergeht die Zeit mit dem Alter schneller?“, `data/review-age.csv`), Studiendesign, Pilot + Verfeinern (α, Itemanalyse, κ, Power, Redeanteil im Interview, Suchregel/Extraktionsbogen, Experten-Check), Auswerten (d, Permutationstest, r, Nullbefund, Studien kombinieren, Themen in Interviews); Experten als Quelle auch in M3 (`research-methods.html#expert`) | `data-design.html`, `data-refine.html`, `data-evaluate.html`, W6 (Design your study), W7 (Refine and evaluate), Folien `material/PowerPoint/W-Seminar-Time-Session4.pptx`, Check 2 | fertig |
+| M4 Viable data | Gütekriterien, Datentypen (Umfrage, Test, Experiment, Interview inkl. Experteninterview, Textcodierung, vorhandene Daten), theoretische Arbeiten ohne Teilnehmende (`data-design.html#theory`: Studien als Daten/Forschungssynthese, Neu-Rahmung vorhandener Werke; Beispiel „Vergeht die Zeit mit dem Alter schneller?“, `data/review-age.csv`), Studiendesign, Pilot + Verfeinern (α, Itemanalyse, κ, Power, Redeanteil im Interview, Suchregel/Extraktionsbogen, Experten-Check), Auswerten (d, Permutationstest, r, Nullbefund, Studien kombinieren, Themen in Interviews); Experten als Quelle auch in M3 (`research-methods.html#expert`) | `data-design.html`, `data-refine.html`, `data-evaluate.html`, W6 (Design your study), W7 (Refine and evaluate), Folien `material/PowerPoint/W-Seminar-Time-Session4.pptx` (29 Folien, Stand 2026-11-12 mit Interview, Studien als Daten, Frageversionen; Website-Änderungen dort nachziehen), Check 2 | fertig |
 | M5 Statistik | Auswertung mit Python (Grundlagen-Skripte); erste Python-Zellen schon in M4 | geplant (12/2) | offen |
 | M6 Quellen einbauen | Zitieren, Paraphrasieren, MLA, Quellen in die eigene Argumentation integrieren | geplant, Check 3 | offen |
 | M7 Werkzeuge | LaTeX/Overleaf, Git, Kanban | geplant, wenn Ideen stehen | offen |
@@ -214,7 +214,11 @@ QR-Codes (nicht löschen).
   (prüfbare Behauptung/Hypothese) → W7 Version 4 (nach dem Pilot, Entwurf Thesis Statement) → These
   in der Arbeit. Je Blatt eine Box „My question – version n“ mit „Changed since Wx – and why“;
   Makros `\fragepfad{k}` (ganzer Pfad, W4) und `\fragepfadklein{k}` (in Boxtiteln) in `ab-vorlage.tex`.
-  Website-Gegenstück: `research-question.html#pair` („Your question grows“). Lösungsbeispiel durchgehend
+  Website-Gegenstück: `research-question.html#pair` („Your question grows“). Zusammenfassung als
+  Leitfaden ohne Nummer: `arbeitsblaetter/guide-question-to-thesis.tex/.pdf` („From Topic to Thesis“,
+  Handbuch-Layout nach Vorlage der Lehrkraft – nah an deren Text bleiben: Schritte 1–4 + Key Rules,
+  sechs Marker mit FINER als zweiter Sicht, Beispiele über Facetten, Beispiel in sechs Versionen;
+  verlinkt in M2 und auf der Übersicht). Lösungsbeispiel durchgehend
   das Musik-Warte-Experiment. Neue Blätter (M5–M7) setzen den Pfad fort.
 - **Python-Zellen**: jede Zelle hat vor dem Code eine `<div class="py-idea">` (Idee, Schritte in
   Worten, „Look for“) – auch bei neuen Zellen.
