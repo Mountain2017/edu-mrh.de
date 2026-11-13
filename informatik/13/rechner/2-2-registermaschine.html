@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2.2 Die Registermaschine | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Die Registermaschine, Informatik 13: Akkumulator, Befehlsregister, Befehlszähler und Statusregister, der Befehlszyklus aus Holen, Dekodieren und Ausführen, erste Assemblerbefehle im Simulator mit sichtbaren Bussen.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="rechner.css">
+    <script defer src="rechner.js"></script>
+    <script defer src="registermaschine.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🖥️</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="rechner.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 2.2</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#vorhersagen">🔍 Vorhersagen</a></li>
+            <li><a href="#rollenspiel">🎭 Rollenspiel</a></li>
+            <li><a href="#festhalten">📝 Register und Zyklus</a></li>
+            <li><a href="#protokoll">📋 Ablauf protokollieren</a></li>
+            <li><a href="#status">🚦 Statusregister</a></li>
+            <li><a href="#selbst">🛠️ Zellen tauschen</a></li>
+            <li><a href="#nachdenken">💡 Nachdenken</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Funktionsweise eines Rechners</div>
+            <ul class="sidebar-menu">
+                <li><a href="rechner.html">Übersicht</a></li>
+                <li><a href="2-1-von-neumann.html">2.1 Von-Neumann-Architektur</a></li>
+                <li><a href="2-2-registermaschine.html">2.2 Die Registermaschine</a></li>
+                <li><a href="2-3-zuweisungen.html">2.3 Rechnen in Assembler</a></li>
+                <li><a href="2-4-verzweigungen.html">2.4 Verzweigungen</a></li>
+                <li><a href="2-5-schleifen.html">2.5 Schleifen</a></li>
+                <li><a href="2-6-programme-analysieren.html">2.6 Programme analysieren</a></li>
+                <li><a href="simulator.html">Simulator</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero rm-hero">
+                <h1 class="hero-title">2.2 Die Registermaschine</h1>
+                <p class="hero-subtitle">Funktionsweise eines Rechners · Informatik 13 · 3 Stunden</p>
+                <span class="rm-kompetenz">Du kannst: Aufbau und Funktionsweise einer Registermaschine erläutern (Akkumulator, Befehlsregister, Befehlszähler, Statusregister), den Befehlszyklus beschreiben und den Ablauf eines kurzen Programms protokollieren.</span>
+                <div class="rm-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-2-2-registermaschine.pdf">📝 Arbeitsblatt 2.2 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-2-2-registermaschine.tex">LaTeX-Quelle</a>
+                    <a class="btn btn-outline" href="simulator.html">🖥️ Simulator</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#vorhersagen">🔍 Vorhersagen</a><a class="p-investigate" href="#rollenspiel">🎭 Rollenspiel</a><a class="p-note" href="#festhalten">📝 Festhalten</a><a class="p-investigate" href="#protokoll">📋 Protokoll</a><a class="p-modify" href="#status">🚦 Statusregister</a><a class="p-make" href="#selbst">🛠️ Selbst bauen</a><a class="p-idee" href="#nachdenken">💡 Nachdenken</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="vorhersagen" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Vorhersagen<small>Aufgabe 1: Ein erstes Programm</small></h2></div>
+                <div class="phase-body">
+                    <p>Ein echter Prozessor ist zu kompliziert, um ihm zuzusehen. Die <strong>Registermaschine</strong> ist ein vereinfachtes Modell eines Von-Neumann-Rechners: Der Prozessor hat nur wenige <strong>Register</strong> (sehr schnelle Speicherplätze im Prozessor), und jeder Befehl macht genau einen kleinen Schritt. Befehle schreibt man in <strong>Assemblersprache</strong>: kurze Wörter wie <code>LOAD</code> oder <code>ADD</code> mit einer Adresse dahinter.</p>
+                    <pre class="asm" data-adr>LOAD 100     ; Inhalt von Zelle 100 in den Akkumulator laden
+ADD 101      ; Inhalt von Zelle 101 dazuaddieren
+STORE 102    ; Akkumulator in Zelle 102 speichern
+HOLD         ; anhalten</pre>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 1a:</strong> In Zelle 100 steht 7, in Zelle 101 steht 5. Was steht nach dem Programm in Zelle 102? Was steht dann im Akkumulator?</li>
+                        <li><strong>Aufgabe 1b:</strong> Lass das Programm unten mit <strong>▶ Takt</strong> Schritt für Schritt laufen. Ein Befehl braucht drei Takte. Notiere auf dem Blatt, welches Register sich in welcher Phase ändert und was auf den Bussen liegt.</li>
+                        <li><strong>Aufgabe 1c:</strong> Ändere vor dem Start die Zahlen in Zelle 100 und 101 (direkt in der Speichertabelle) und lass das Programm mit ⏵ Start laufen.</li>
+                    </ol>
+                    <div class="rm" data-rm="i13-22-summe" data-titel="Aufgabe 1: Zwei Zahlen addieren" data-zellen="100-102" data-speicher="100:7,101:5" data-nurlesen>
+<script type="text/plain">
+LOAD 100     ; Inhalt von Zelle 100 in den Akkumulator laden
+ADD 101      ; Inhalt von Zelle 101 dazuaddieren
+STORE 102    ; Akkumulator in Zelle 102 speichern
+HOLD         ; anhalten
+</script>
+                    </div>
+                    <div class="lw" data-loesungsweg="Aufgabe 1">
+                        <template data-stufe="Lösung" data-halten><p>1a: In Zelle 102 steht 12, im Akkumulator auch 12 (STORE kopiert, der Akkumulator behält seinen Wert). 1b: ① Holen: Befehlsregister (neuer Befehl) und Befehlszähler (+1); Adressbus = Befehlszähler, Steuerbus „lesen“, Datenbus = Befehl. ② Dekodieren: kein Register ändert sich. ③ Ausführen: bei LOAD und ADD der Akkumulator (und das Statusregister), über die Busse kommt der Inhalt der Datenzelle; bei STORE ändert sich die Speicherzelle, Steuerbus „schreiben“.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-2-registermaschine.pdf">📝 Blatt 2.2 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="rollenspiel" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🎭</span><h2>Rollenspiel<small>Die menschliche Registermaschine (im Unterricht)</small></h2></div>
+                <div class="phase-body">
+                    <p>Spielt die Maschine nach. Jede Rolle darf nur das tun, was auf ihrer Karte steht. So merkt ihr, wer welche Information braucht und wer sie liefert.</p>
+                    <div class="tab-scroll"><table class="rm-tab">
+                        <tr><th>Rolle</th><th>hat …</th><th>darf …</th></tr>
+                        <tr><td><strong style="color:var(--rm-steuer)">Steuerwerk</strong></td><td>Zettel „Befehlszähler“ und „Befehlsregister“</td><td>Adresse und „lesen“/„schreiben“ an den Bus geben, Befehl ins Befehlsregister schreiben, Befehlszähler um 1 erhöhen, dem Rechenwerk sagen, was es tun soll</td></tr>
+                        <tr><td><strong style="color:var(--rm-rechen)">Rechenwerk</strong></td><td>Zettel „Akkumulator“ und „Statusregister N Z O“</td><td>rechnen, Akkumulator und Statusregister neu beschreiben</td></tr>
+                        <tr><td><strong style="color:var(--rm-speicher)">Speicher</strong></td><td>nummerierte Karten (Zellen 0 bis 3 mit dem Programm, 100 bis 102 mit Daten)</td><td>auf „lesen“ den Inhalt der genannten Zelle herausgeben, auf „schreiben“ einen Inhalt in die Zelle eintragen</td></tr>
+                        <tr><td><strong style="color:var(--bus-daten)">Busse</strong> (2–3 Personen)</td><td>nichts</td><td>Adresse, Signal und Daten als Zettel zwischen den Einheiten tragen, sonst nichts</td></tr>
+                    </table></div>
+                    <p>Spielt das Programm aus Aufgabe 1 einmal langsam durch. Danach: Wer war am meisten beschäftigt? Wer hat am längsten gewartet?</p>
+                </div>
+            </section>
+
+            <section id="festhalten" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Aufbau der Registermaschine und Befehlszyklus</small></h2></div>
+                <div class="phase-body">
+                    <p>Ergänze die Merkkästen auf dem Blatt. Leitfragen: Woher weiß das Steuerwerk, welcher Befehl als Nächstes dran ist? Wo steht der Befehl, während er ausgeführt wird? Wo landet jedes Rechenergebnis? Woher weiß die Maschine später, ob das letzte Ergebnis negativ oder null war?</p>
+                    <div class="konzept">
+                        <h4>Merkkasten zum Vergleichen</h4>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Merkkasten" data-halten>
+                                <p><strong>Register der Registermaschine</strong></p>
+                                <ul>
+                                    <li><strong>Befehlszähler (BZ)</strong> im Steuerwerk: enthält die <strong>Adresse des nächsten Befehls</strong>.</li>
+                                    <li><strong>Befehlsregister (BR)</strong> im Steuerwerk: enthält den <strong>Befehl, der gerade ausgeführt wird</strong>.</li>
+                                    <li><strong>Akkumulator (A)</strong> im Rechenwerk: enthält einen <strong>Operanden</strong> und danach das <strong>Ergebnis</strong> jeder Rechnung.</li>
+                                    <li><strong>Statusregister (SR)</strong> im Rechenwerk: hält Eigenschaften des letzten Ergebnisses fest: <strong>N = 1</strong>, wenn es negativ ist, <strong>Z = 1</strong>, wenn es null ist, <strong>O = 1</strong> bei einem Überlauf.</li>
+                                </ul>
+                                <p><strong>Befehlszyklus</strong> (wiederholt sich bis HOLD):</p>
+                                <ol>
+                                    <li><strong>① Holen:</strong> Der Befehl aus der Zelle, deren Adresse im <strong>Befehlszähler</strong> steht, kommt über den Datenbus ins <strong>Befehlsregister</strong>. Der Befehlszähler wird <strong>um 1 erhöht</strong>.</li>
+                                    <li><strong>② Dekodieren:</strong> Das Steuerwerk <strong>entschlüsselt</strong> den Befehl und bereitet die Ausführung vor.</li>
+                                    <li><strong>③ Ausführen:</strong> Falls nötig wird ein Operand über die Busse geholt, das Rechenwerk rechnet, das Ergebnis kommt in den <strong>Akkumulator</strong> (oder mit STORE in den Speicher).</li>
+                                </ol>
+                            </template>
+                        </div>
+                    </div>
+                    <h3>Den Befehlszyklus ordnen</h3>
+                    <p>Der Akkumulator enthält 7, der Befehlszähler 1. In Zelle 1 steht <code>ADD 101</code>, in Zelle 101 die Zahl 5. Bringe die Schritte in die richtige Reihenfolge. Nach dem Prüfen siehst du, zu welcher Phase jeder Schritt gehört.</p>
+                    <div class="werk" data-sortieren>
+                        <ol>
+                            <li data-ph="① Holen">Das Steuerwerk legt den Befehlszähler (1) auf den Adressbus und sendet „lesen“.</li>
+                            <li data-ph="① Holen">„ADD 101“ kommt über den Datenbus ins Befehlsregister.</li>
+                            <li data-ph="① Holen">Der Befehlszähler wird auf 2 erhöht.</li>
+                            <li data-ph="② Dekodieren">Das Steuerwerk entschlüsselt: addieren, Operand aus Zelle 101.</li>
+                            <li data-ph="③ Ausführen">Das Steuerwerk legt 101 auf den Adressbus und sendet „lesen“; die 5 kommt über den Datenbus ins Rechenwerk.</li>
+                            <li data-ph="③ Ausführen">Das Rechenwerk rechnet 7 + 5 = 12, schreibt 12 in den Akkumulator und setzt N = 0, Z = 0.</li>
+                        </ol>
+                    </div>
+                    <h3>Die ersten Befehle</h3>
+                    <p>(x) bedeutet „Inhalt von Zelle x“. Befehle mit <strong>I</strong> am Ende (<em>immediate</em>, „unmittelbar“) rechnen mit der Zahl, die direkt im Befehl steht: <code>ADD 5</code> addiert den Inhalt von Zelle 5, <code>ADDI 5</code> addiert die Zahl 5.</p>
+                    <div data-rm-befehlssatz="LOAD,LOADI,STORE,ADD,ADDI,SUB,SUBI,MUL,MULI,DIV,DIVI,MOD,MODI,HOLD"></div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-2-registermaschine.pdf">📝 Blatt 2.2 · Merkkästen</a></p>
+                </div>
+            </section>
+
+            <section id="protokoll" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">📋</span><h2>Ablauf protokollieren<small>Aufgabe 2: Was steht wann wo?</small></h2></div>
+                <div class="phase-body">
+                    <p>Im Unterricht und in Prüfungen beschreibt man den Ablauf eines Programms mit einer Tabelle: eine Zeile je ausgeführtem Befehl, rechts daneben, was danach im Akkumulator, im Statusregister und im Speicher steht.</p>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 2a:</strong> Fülle die Tabelle auf dem Blatt für das Programm unten aus, <em>ohne</em> den Simulator. In Zelle 100 steht 6.</li>
+                        <li><strong>Aufgabe 2b:</strong> Prüfe mit dem Simulator: Schalte <strong>🔮 Vorhersagen</strong> ein und gib vor jedem Befehl Akkumulator und Befehlszähler ein. Mit „Protokoll“ siehst du die ganze Tabelle.</li>
+                        <li><strong>Aufgabe 2c:</strong> Nach <code>STORE 101</code> ist Z immer noch 1, obwohl nichts gerechnet wurde. Warum?</li>
+                    </ol>
+                    <div class="rm" data-rm="i13-22-protokoll" data-titel="Aufgabe 2: Protokoll" data-ansicht="kompakt" data-zellen="100-102" data-speicher="100:6" data-nurlesen>
+<script type="text/plain">
+LOAD 100
+SUBI 6
+STORE 101
+LOADI 4
+SUB 100
+MULI 3
+STORE 102
+HOLD
+</script>
+                    </div>
+                    <div class="lw" data-loesungsweg="Aufgabe 2">
+                        <template data-stufe="Tipp"><p><code>SUBI 6</code> zieht die Zahl 6 ab, <code>SUB 100</code> den Inhalt von Zelle 100. Das Statusregister beschreibt immer das <em>letzte</em> Ergebnis des Rechenwerks.</p></template>
+                        <template data-stufe="Lösung" data-halten>
+                            <div class="tab-scroll"><table class="rm-tab">
+                                <tr><th>Zelle</th><th>Befehl</th><th>A</th><th>N</th><th>Z</th><th>Speicher</th></tr>
+                                <tr><td>0</td><td>LOAD 100</td><td>6</td><td>0</td><td>0</td><td></td></tr>
+                                <tr><td>1</td><td>SUBI 6</td><td>0</td><td>0</td><td>1</td><td></td></tr>
+                                <tr><td>2</td><td>STORE 101</td><td>0</td><td>0</td><td>1</td><td>(101) = 0</td></tr>
+                                <tr><td>3</td><td>LOADI 4</td><td>4</td><td>0</td><td>0</td><td></td></tr>
+                                <tr><td>4</td><td>SUB 100</td><td>−2</td><td>1</td><td>0</td><td></td></tr>
+                                <tr><td>5</td><td>MULI 3</td><td>−6</td><td>1</td><td>0</td><td></td></tr>
+                                <tr><td>6</td><td>STORE 102</td><td>−6</td><td>1</td><td>0</td><td>(102) = −6</td></tr>
+                                <tr><td>7</td><td>HOLD</td><td>−6</td><td>1</td><td>0</td><td></td></tr>
+                            </table></div>
+                            <p>2c: STORE rechnet nicht, sondern kopiert nur. Das Statusregister bleibt, wie es nach dem letzten Rechenbefehl (SUBI 6, Ergebnis 0) war.</p>
+                        </template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-2-registermaschine.pdf">📝 Blatt 2.2 · Aufgabe 2</a></p>
+                </div>
+            </section>
+
+            <section id="status" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">🚦</span><h2>Das Statusregister<small>Aufgabe 3: N, Z und O</small></h2></div>
+                <div class="phase-body">
+                    <p>Nach jedem Rechenbefehl (und nach LOAD/LOADI) setzt das Rechenwerk die drei Bits des Statusregisters neu. In 2.4 entscheidet die Maschine mit ihnen, ob sie springt. Unsere Maschine speichert ganze Zahlen mit 16 Bit, also von −32 768 bis 32 767. Ein Ergebnis außerhalb davon „läuft über“.</p>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 3:</strong> Fülle die Tabelle auf dem Blatt aus: Was steht nach dem Befehl im Akkumulator, wie sind N, Z und O gesetzt? Prüfe jede Zeile im Flaggen-Labor: erste Zeile ändern, Befehl ändern, ⏵ Start.</li>
+                    </ol>
+                    <div class="rm" data-rm="i13-22-flaggen" data-titel="Flaggen-Labor" data-ansicht="kompakt" data-zellen="100">
+<script type="text/plain">
+LOADI 5      ; A vorher
+SUBI 8       ; Befehl aus der Tabelle
+HOLD
+</script>
+                    </div>
+                    <div class="lw" data-loesungsweg="Aufgabe 3">
+                        <template data-stufe="Lösung" data-halten><p>5 SUBI 5 → 0, N = 0, Z = 1, O = 0 · 5 SUBI 8 → −3, N = 1, Z = 0, O = 0 · −3 MULI −2 → 6, N = 0, Z = 0, O = 0 · 17 MODI 5 → 2, N = 0, Z = 0, O = 0 · 32 767 ADDI 1 → −32 768, N = 1, Z = 0, O = 1 (Überlauf: Das richtige Ergebnis 32 768 passt nicht in 16 Bit, der Akkumulator enthält einen falschen Wert).</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-2-registermaschine.pdf">📝 Blatt 2.2 · Aufgabe 3</a></p>
+                </div>
+            </section>
+
+            <section id="selbst" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Selbst bauen<small>Aufgabe 4: Zwei Zellen tauschen</small></h2></div>
+                <div class="phase-body">
+                    <p>Die Inhalte der Zellen 100 und 101 sollen vertauscht werden: Steht vorher 3 in Zelle 100 und 8 in Zelle 101, soll danach 8 in Zelle 100 und 3 in Zelle 101 stehen.</p>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 4a:</strong> Schreibe das Programm zuerst auf das Blatt. Tipp: Der Akkumulator kann immer nur <em>eine</em> Zahl halten. Zelle 102 darfst du als Hilfszelle benutzen.</li>
+                        <li><strong>Aufgabe 4b:</strong> Tippe es in den Simulator und drücke <strong>✔ Testen</strong>. Die Tests probieren mehrere Zahlenpaare aus.</li>
+                    </ol>
+                    <div class="rm" data-rm="i13-22-tausch" data-titel="Aufgabe 4: Zellen tauschen" data-ansicht="kompakt" data-zellen="100-102" data-speicher="100:3,101:8" data-tests="100=3,101=8 -> 100=8,101=3 | 100=-4,101=0 -> 100=0,101=-4 | 100=7,101=7 -> 100=7,101=7">
+<script type="text/plain">
+; Aufgabe 4: Tausche die Inhalte von Zelle 100 und 101.
+; Zelle 102 ist eine Hilfszelle.
+
+HOLD
+</script>
+                    </div>
+                    <div class="lw" data-loesungsweg="Aufgabe 4">
+                        <template data-stufe="Tipp 1"><p>Wie tauschst du den Inhalt von zwei vollen Gläsern? Du brauchst ein drittes, leeres Glas. Zuerst kommt der Inhalt von Zelle 100 in Sicherheit.</p></template>
+                        <template data-stufe="Tipp 2"><p>Jeder Kopiervorgang „Zelle → Zelle“ braucht zwei Befehle: <code>LOAD</code> von der einen, <code>STORE</code> in die andere. Du brauchst drei solche Kopien.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="asm" data-adr>LOAD 100
+STORE 102    ; hilf = a
+LOAD 101
+STORE 100    ; a = b
+LOAD 102
+STORE 101    ; b = hilf
+HOLD</pre></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-2-registermaschine.pdf">📝 Blatt 2.2 · Aufgabe 4</a></p>
+                </div>
+            </section>
+
+            <section id="nachdenken" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Besprecht mündlich</small></h2></div>
+                <div class="phase-body">
+                    <p>Überlegt zu zweit. Die Hinweise sind zum Nachlesen <em>nach</em> dem Gespräch: Halte dazu den Knopf gedrückt.</p>
+                    <div class="idee"><strong>Warum wird der Befehlszähler schon beim Holen erhöht und nicht erst nach dem Ausführen?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Dann zeigt er während der Ausführung schon auf den nächsten Befehl. Ein Sprungbefehl (2.4) muss den Befehlszähler beim Ausführen nur noch überschreiben. Würde danach erst erhöht, landete jeder Sprung eine Zelle zu weit.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Was passiert, wenn am Ende das <code>HOLD</code> fehlt? Probiert es in Aufgabe 4 aus.</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Die Maschine holt einfach den Inhalt der nächsten Zelle und versucht ihn als Befehl auszuführen. Sie kann Befehle und Daten nicht unterscheiden (Von-Neumann-Prinzip 1). Unser Simulator hält dann mit einer Meldung an, eine echte Maschine würde das Bitmuster als irgendeinen Befehl deuten.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Unsere Maschine hat nur einen Akkumulator. Echte Prozessoren haben 16 bis 32 Register für Zahlen. Wozu?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Zwischenergebnisse können in Registern bleiben, statt über den Bus in den Speicher und zurück zu wandern (Aufgabe 4 braucht für das Tauschen sechs Speicherzugriffe). Weniger Speicherzugriffe entlasten den Bus, den Von-Neumann-Flaschenhals aus 2.1.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Für Schnelle:</strong> Schreibe einen Ringtausch: Der Inhalt von 100 wandert nach 101, der von 101 nach 102 und der von 102 nach 100. Wie viele Befehle brauchst du mindestens?
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Mit einer Hilfszelle 103: <code>LOAD 102, STORE 103, LOAD 101, STORE 102, LOAD 100, STORE 101, LOAD 103, STORE 100, HOLD</code>, also 8 Befehle plus HOLD. Wichtig ist die Reihenfolge: zuerst die Zelle sichern, die als Erstes überschrieben wird.</p></template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>☕ Von Java zu Assembler</h4>
+                            <p>In 2.3 übersetzt du Java-Anweisungen wie <code>umfang = 2 * (laenge + breite);</code> in Assembler. Das ist genau die Arbeit, die ein Compiler macht.</p>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>🚦 Wofür N und Z?</h4>
+                            <p>Bisher läuft jedes Programm von oben nach unten durch. In 2.4 entscheidet die Maschine mithilfe des Statusregisters, ob sie einen Teil überspringt.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="2-1-von-neumann.html">← 2.1 Von-Neumann-Architektur</a>
+                <a class="btn btn-primary" href="2-3-zuweisungen.html">2.3 Rechnen in Assembler →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-2-2-registermaschine-lsg.pdf">Lösung Blatt 2.2 (PDF)</a></p>
+                    <div class="tab-scroll">
+                        <table>
+                            <tr><th>Aufgabe</th><th>Lösung / Hinweis</th></tr>
+                            <tr><td>1</td><td>(102) = 12, A = 12. Holen: BR und BZ ändern sich; Dekodieren: nichts; Ausführen: A und SR (LOAD, ADD) bzw. Speicherzelle (STORE).</td></tr>
+                            <tr><td>Merkkasten</td><td>BZ: Adresse des nächsten Befehls · BR: aktueller Befehl · A: Operand und Ergebnis · SR: N, Z, O des letzten Ergebnisses. Zyklus: Holen (BR ← (BZ), BZ + 1), Dekodieren, Ausführen.</td></tr>
+                            <tr><td>2</td><td>A: 6, 0, 0, 4, −2, −6, −6; N: 0, 0, 0, 0, 1, 1, 1; Z: 0, 1, 1, 0, 0, 0, 0; (101) = 0, (102) = −6. STORE ändert das SR nicht.</td></tr>
+                            <tr><td>3</td><td>0/0 1 0 · −3/1 0 0 · 6/0 0 0 · 2/0 0 0 · −32 768/1 0 1.</td></tr>
+                            <tr><td>4</td><td>LOAD 100, STORE 102, LOAD 101, STORE 100, LOAD 102, STORE 101, HOLD.</td></tr>
+                        </table>
+                    </div>
+                    <p class="mt-2"><strong>Maschinenmodell</strong> (für alle Stationen gleich, siehe auch <a href="rechner.html#lehrkraft">Übersicht</a>): ein Befehl je Speicherzelle, Programm ab Zelle 0, Daten ab Zelle 100, 16-Bit-Ganzzahlen. Register A, BR, BZ, SR (N, Z, O). LOAD/LOADI und alle Rechenbefehle setzen N, Z, O; CMP/CMPI setzen N und Z nach dem Vergleich; STORE und Sprünge lassen das SR unverändert. Der Befehlszyklus wird dreiphasig dargestellt (Holen, Dekodieren, Ausführen); das Holen des Operanden geschieht im Ausführen. Wer ein Schulbuch mit eigener Befehlsliste nutzt, kann die Namen leicht zuordnen; der Simulator akzeptiert nur die hier gezeigten Befehle.</p>
+                    <p><strong>Rollenspiel:</strong> Karten für Zellen 0–3 (Programm aus Aufgabe 1) und 100–102 vorbereiten, Busse als Läufer. Dauer etwa 15 Minuten. Es macht den Flaschenhals spürbar: Die Busläufer sind ständig unterwegs, das Rechenwerk wartet.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

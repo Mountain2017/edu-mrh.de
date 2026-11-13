@@ -1,0 +1,111 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+% Blatt:   xelatex ab-2-5-schleifen.tex
+% Lösung:  xelatex ab-2-5-schleifen-lsg.tex
+% Progression: Summe 1..n vorhersagen (Durchläufe protokollieren) -> Merkkasten Muster der Schleife ①–④
+%              -> Multiplikation durch Addition ergänzen (TODO 2a–c), Potenz als Veränderung
+%              -> Fakultät selbst bauen (Struktogramm hier, Programm im Simulator), Überlauf
+%              -> Laufzeit: Schleife gegen Gauß-Formel
+\begin{document}
+\abtitel{2.5}{Schleifen in Assembler}
+
+\begin{aufgabe}[Die Summe 1 + 2 + … + n]{1}
+\begin{minipage}[t]{0.44\linewidth}
+\vspace{0pt}
+{\small Speicherplan: \code{n} $\to$ 100, \code{i} $\to$ 101, \code{summe} $\to$ 102}
+\begin{asm}[aboveskip=1mm]
+      LOADI 0
+      STORE 102   ; summe = 0
+      LOADI 1
+      STORE 101   ; i = 1
+kopf: LOAD 101
+      CMP 100
+      JGT ende
+      LOAD 102
+      ADD 101
+      STORE 102
+      LOAD 101
+      ADDI 1
+      STORE 101
+      JMP kopf
+ende: HOLD
+\end{asm}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.52\linewidth}
+\vspace{1mm}
+\sgschleife[62]{summe = 0,i = 1}{solange i ≤ n}{summe = summe + i,i = i + 1}\\[2mm]
+\textbf{a)} Protokolliere für n = 3.\\[0.5mm]
+{\renewcommand{\arraystretch}{1}\small
+\begin{tabularx}{\linewidth}{|c|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}\hline
+\textbf{Durchlauf} & \textbf{i beim Vergleich} & \textbf{JGT springt?} & \textbf{summe danach}\\\hline
+1\schreibzeile & \lsgtext{1} & \lsgtext{nein} & \lsgtext{1}\\\hline
+2\schreibzeile & \lsgtext{2} & \lsgtext{nein} & \lsgtext{3}\\\hline
+3\schreibzeile & \lsgtext{3} & \lsgtext{nein} & \lsgtext{6}\\\hline
+4\schreibzeile & \lsgtext{4} & \lsgtext{ja} & \lsgtext{6 (Ende)}\\\hline
+\end{tabularx}}\\[1mm]
+\lueckentext
+\textbf{b)} Für beliebiges n wird Zelle 4 \lsg[2.25cm]{n + 1}-mal ausgeführt.
+\end{minipage}
+\end{aufgabe}
+
+\begin{merke}[Wiederholung mit Bedingung (while)]
+\lueckentext
+\nr{1} \textbf{Kopf} (Marke \code{kopf:}): Bedingung prüfen und mit der \lsg[5.25cm]{umgekehrten Bedingung} hinter die Schleife springen.\\
+\nr{2} \textbf{Rumpf:} die Anweisungen, die \lsg[5.25cm]{wiederholt} werden.\\
+\nr{3} \textbf{Zähler ändern.} Ohne diese Änderung entsteht eine \lsg[5.25cm]{Endlosschleife}.\\
+\nr{4} \textbf{Rücksprung} mit \lsg[3.9cm]{JMP kopf}: Die Bedingung wird erneut geprüft.\\
+Eine Schleife erkennt man an einem Sprung zu einer \lsg[3.9cm]{kleineren} Adresse (Rücksprung).
+Eine Zählschleife (\code{for}) wird genauso übersetzt.
+\end{merke}
+
+\newpage
+\begin{aufgabe}[Verändern: Multiplizieren ohne MUL \normalfont(im Simulator: TODO 2a bis 2c)]{2}
+\begin{minipage}[t]{0.40\linewidth}
+\vspace{1mm}
+{\small Speicherplan: \code{a} $\to$ 100, \code{b} $\to$ 101,\\ \code{produkt} $\to$ 102, \code{i} $\to$ 103}\\[2mm]
+\sgschleife[62]{produkt = 0,i = 0}{solange i < b}{produkt = produkt + a,i = i + 1}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.56\linewidth}
+\vspace{0pt}
+\begin{asmluecke}[aboveskip=0mm,basicstyle=\linespread{1.25}\small\ttfamily]
+      LOADI 0
+      STORE 102   ; produkt = 0
+      STORE 103   ; i = 0
+kopf: LOAD 103    ; (*\nr{1}*)
+      CMP 101
+      (*\lsg[3.2cm]{JGE ende}*)  ; TODO 2a
+      LOAD 102    ; (*\nr{2}*)
+      (*\lsg[3.2cm]{ADD 100}*)  ; TODO 2b
+      STORE 102
+      LOAD 103    ; (*\nr{3}*)
+      ADDI 1
+      STORE 103
+      (*\lsg[3.2cm]{JMP kopf}*)  ; (*\nr{4}*) TODO 2c
+ende: HOLD
+\end{asmluecke}
+\end{minipage}\\[1mm]
+\lueckentext
+\textbf{d)} Für die Potenz $a^b$: Welche Zeilen musst du ändern? Achtung, Falle in Zelle 2!
+\lsglinien{2}{Zelle 0: LOADI 1 (Startwert 1), Zelle 7: MUL 100 statt ADD 100. Vor STORE 103 zusätzlich LOADI 0, sonst ist i = 1.}
+\end{aufgabe}
+
+\begin{aufgabe}[Selbst bauen: die Fakultät \normalfont(Programm im Simulator)]{3}
+\lueckentext
+$n! = 1 \cdot 2 \cdot 3 \cdot … \cdot n$, z.\,B. $5! = 120$, außerdem $0! = 1$. Speicherplan: \code{n} $\to$ 100, \code{f} $\to$ 101, \code{i} $\to$ 102.\\
+\textbf{a)} Zeichne das Struktogramm.
+\lsgkariert{7}{\node[anchor=north west,inner sep=0pt,text=red!75!black] at (5mm,-5mm) {\lsgfarbe\sgschleife[70]{f = 1,i = 2}{solange i ≤ n}{f = f $\cdot$ i,i = i + 1}};}
+\textbf{c)} Ab n = \lsg[2.25cm]{8} ist das Ergebnis falsch. Man erkennt es an \lsgrest{O = 1 (Überlauf), negativ}
+\end{aufgabe}
+
+\begin{aufgabe}[Laufzeit: Schleife oder Formel?]{4}
+\lueckentext
+\textbf{a)} Wie viele Befehle führt das Programm aus Aufgabe 1 aus? (Simulator, Tempo „sofort“, Zähler „Befehle“)\\[0.5mm]
+{\renewcommand{\arraystretch}{1}\linespread{1}\selectfont
+\begin{tabularx}{\linewidth}{|l|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}\hline
+ & \textbf{n = 10} & \textbf{n = 100}\\\hline
+Schleife (Aufgabe 1)\schreibzeile & \lsgtext{108} & \lsgtext{1008}\\\hline
+Formel \code{summe = n * (n + 1) / 2}\schreibzeile & \lsgtext{6} & \lsgtext{6}\\\hline
+\end{tabularx}}\\[1mm]
+\textbf{b)} Allgemein braucht die Schleife \lsg[3.9cm]{10 · n + 8} Befehle, die Formel immer \lsg[2.25cm]{6}.
+\end{aufgabe}
+\end{document}

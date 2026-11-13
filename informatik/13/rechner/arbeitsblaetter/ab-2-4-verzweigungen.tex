@@ -1,0 +1,101 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+% Blatt:   xelatex ab-2-4-verzweigungen.tex
+% Lösung:  xelatex ab-2-4-verzweigungen-lsg.tex
+% Progression: Eintrittspreis vorhersagen (welche Zellen laufen?) -> Merkkasten Muster der Verzweigung,
+%              umgekehrter Sprung -> Sprünge und Statusregister -> Betrag ergänzen (einseitig)
+%              -> Maximum selbst bauen (Struktogramm + Programm, Test im Simulator)
+\begin{document}
+\abtitel{2.4}{Verzweigungen in Assembler}
+
+\code{CMP x} / \code{CMPI n} \textbf{vergleicht} den Akkumulator mit (x) bzw. n und setzt das Statusregister, der Akkumulator bleibt gleich.
+Ein \textbf{Sprungbefehl} schreibt beim Ausführen eine neue Adresse in den Befehlszähler; ein bedingter Sprung nur, wenn das Statusregister passt.
+
+\begin{aufgabe}[Der Eintrittspreis: unter 14 Jahren 5 €, sonst 9 €]{1}
+\begin{minipage}[t]{0.42\linewidth}
+\vspace{0pt}
+{\small Speicherplan: \code{alter} $\to$ 100, \code{preis} $\to$ 101}
+\begin{asm}[aboveskip=1mm]
+       LOAD 100
+       CMPI 14
+       JGE sonst
+       LOADI 5
+       STORE 101
+       JMP ende
+sonst: LOADI 9
+       STORE 101
+ende:  HOLD
+\end{asm}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.54\linewidth}
+\vspace{1mm}
+\sgwenn[70]{alter $<$ 14}{preis = 5}{preis = 9}\\[1mm]
+\lueckentext
+In welcher Reihenfolge werden die Zellen ausgeführt? Welcher Preis kommt heraus?\\
+\textbf{a)} alter = 10: \lsgrest{0, 1, 2, 3, 4, 5, 8 \quad Preis 5 €}
+\textbf{b)} alter = 14: \lsgrest{0, 1, 2, 6, 7, 8 \quad Preis 9 €}
+\textbf{c)} Bedingung: Zellen \lsg[2.25cm]{0 bis 2}\\
+Wahr-Zweig: \lsg[2.25cm]{3 bis 5} Falsch-Zweig: \lsg[2.25cm]{6 bis 7}
+\end{minipage}
+\end{aufgabe}
+
+\begin{merke}[Verzweigungen in Assembler]
+\lueckentext
+\code{CMP} setzt \textbf{N = 1}, wenn \lsg[3.9cm]{A < Vergleichswert}, und \textbf{Z = 1}, wenn \lsg[3.9cm]{A = Vergleichswert}.
+\code{JEQ} springt bei Z = 1, \code{JNE} bei Z = 0, \code{JGT} bei N = 0 und Z = 0, \code{JGE} bei N = 0, \code{JLT} bei N = 1, \code{JLE} bei N = 1 oder Z = 1.\\
+\textbf{Zweiseitige Verzweigung:} \nr{1} Bedingung prüfen (\code{LOAD}, \code{CMP}) und mit der \lsg[5.25cm]{umgekehrten Bedingung}
+zum Falsch-Zweig springen. \nr{2} Wahr-Zweig; an seinem Ende mit \lsg[2.25cm]{JMP} den Falsch-Zweig \lsg[3.9cm]{überspringen}.
+\nr{3} Falsch-Zweig. \nr{4} Ende: Hier treffen sich beide Wege.\\
+\textbf{Einseitige Verzweigung} (ohne \code{else}): Der umgekehrte Sprung führt direkt \lsg[5.25cm]{hinter den Wahr-Zweig}.\\[1mm]
+{\renewcommand{\arraystretch}{1.05}\linespread{1}\selectfont
+\begin{tabularx}{\linewidth}{|l|*{6}{>{\centering\arraybackslash}X|}}\hline
+\textbf{Bedingung} & \code{a == b} & \code{a != b} & \code{a < b} & \code{a <= b} & \code{a > b} & \code{a >= b}\\\hline
+\textbf{Sprung zum Falsch-Zweig}\schreibzeile & \lsgtext{JNE} & \lsgtext{JEQ} & \lsgtext{JGE} & \lsgtext{JGT} & \lsgtext{JLE} & \lsgtext{JLT}\\\hline
+\end{tabularx}}
+\end{merke}
+
+\newpage
+\begin{aufgabe}[Springt die Maschine? \normalfont(Sprung-Detektiv auf der Website)]{2}
+Trage N und Z nach dem Vergleich ein und entscheide für jeden Sprung: ja oder nein.\\[1mm]
+{\renewcommand{\arraystretch}{1}
+\begin{tabularx}{\linewidth}{|c|c|*{6}{>{\centering\arraybackslash}X|}}\hline
+\textbf{A} & \textbf{Befehl} & \textbf{N} & \textbf{Z} & \code{JEQ} & \code{JNE} & \code{JGT} & \code{JLE}\\\hline
+5\schreibzeile & \code{CMPI 3} & \lsgtext{0} & \lsgtext{0} & \lsgtext{nein} & \lsgtext{ja} & \lsgtext{ja} & \lsgtext{nein}\\\hline
+3\schreibzeile & \code{CMPI 3} & \lsgtext{0} & \lsgtext{1} & \lsgtext{ja} & \lsgtext{nein} & \lsgtext{nein} & \lsgtext{ja}\\\hline
+−2\schreibzeile & \code{CMPI 3} & \lsgtext{1} & \lsgtext{0} & \lsgtext{nein} & \lsgtext{ja} & \lsgtext{nein} & \lsgtext{ja}\\\hline
+\end{tabularx}}
+\end{aufgabe}
+
+\begin{aufgabe}[Verändern: der Betrag \normalfont(dann im Simulator testen)]{3}
+\begin{minipage}[t]{0.38\linewidth}
+\vspace{1mm}
+{\small Speicherplan: \code{x} $\to$ 100}\\[1.5mm]
+\sgwenn[55]{x $<$ 0}{x = −x}{–}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.58\linewidth}
+\vspace{0pt}
+\begin{asmluecke}[aboveskip=0mm]
+       LOAD 100
+       CMPI 0
+       (*\lsg[3.5cm]{JGE ende}*)   ; TODO 3a
+       (*\lsg[3.5cm]{MULI -1}*)   ; TODO 3b
+       STORE 100
+ende:  HOLD
+\end{asmluecke}
+\end{minipage}
+\end{aufgabe}
+
+\begin{aufgabe}[Selbst bauen: das Maximum \normalfont(dann im Simulator testen)]{4}
+In Zelle 102 soll die größere der Zahlen aus Zelle 100 (\code{a}) und 101 (\code{b}) stehen.\\[1mm]
+\begin{minipage}[t]{0.44\linewidth}
+\vspace{0pt}
+\textbf{a)} Struktogramm:\\[1mm]
+\lsgkarobox{75mm}{30mm}{\node[anchor=north west,inner sep=0pt] at (5mm,-5mm) {\lsgfarbe\sgwenn[62]{a $<$ b}{max = b}{max = a}};}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.52\linewidth}
+\vspace{0pt}
+\textbf{b)} Programm:\\[1mm]
+\lsgfeld{9}{\lb{}LOAD 100\\\lb{}CMP 101\\\lb{}JGE sonst\\\lb{}LOAD 101 \ ; max = b\\\lb{}STORE 102\\\lb{}JMP ende\\\lb{sonst:}LOAD 100 \ ; max = a\\\lb{}STORE 102\\\lb{ende:}HOLD}
+\end{minipage}
+\end{aufgabe}
+\end{document}

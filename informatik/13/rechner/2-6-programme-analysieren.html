@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2.6 Programme analysieren | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Assemblerprogramme analysieren, Informatik 13: Speicherplan, Sprünge deuten, Ablauf protokollieren, Struktogramm und Java-Code zum Assemblerprogramm, Rätselprogramme, Fehlersuche und ein eigenes Programm aus Java übersetzen.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="rechner.css">
+    <script defer src="rechner.js"></script>
+    <script defer src="registermaschine.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🖥️</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="rechner.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 2.6</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#raetsel-a">🔍 Rätselprogramm A</a></li>
+            <li><a href="#festhalten">📝 In vier Schritten</a></li>
+            <li><a href="#raetsel-b">🧩 Rätsel B und C</a></li>
+            <li><a href="#fehler">🐞 Fehlersuche</a></li>
+            <li><a href="#selbst">🛠️ Teiler zählen</a></li>
+            <li><a href="#nachdenken">💡 Nachdenken</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Funktionsweise eines Rechners</div>
+            <ul class="sidebar-menu">
+                <li><a href="rechner.html">Übersicht</a></li>
+                <li><a href="2-1-von-neumann.html">2.1 Von-Neumann-Architektur</a></li>
+                <li><a href="2-2-registermaschine.html">2.2 Die Registermaschine</a></li>
+                <li><a href="2-3-zuweisungen.html">2.3 Rechnen in Assembler</a></li>
+                <li><a href="2-4-verzweigungen.html">2.4 Verzweigungen</a></li>
+                <li><a href="2-5-schleifen.html">2.5 Schleifen</a></li>
+                <li><a href="2-6-programme-analysieren.html">2.6 Programme analysieren</a></li>
+                <li><a href="simulator.html">Simulator</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero rm-hero">
+                <h1 class="hero-title">2.6 Programme analysieren</h1>
+                <p class="hero-subtitle">Funktionsweise eines Rechners · Informatik 13 · 2 bis 3 Stunden</p>
+                <span class="rm-kompetenz">Du kannst: die Abarbeitung eines fremden Assemblerprogramms erläutern, den zugrunde liegenden Algorithmus als Struktogramm oder in Java beschreiben, Fehler finden und einen Algorithmus aus Java selbst übersetzen.</span>
+                <div class="rm-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-2-6-programme-analysieren.pdf">📝 Arbeitsblatt 2.6 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-2-6-programme-analysieren.tex">LaTeX-Quelle</a>
+                    <a class="btn btn-outline" href="simulator.html">🖥️ Simulator</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#raetsel-a">🔍 Rätsel A</a><a class="p-note" href="#festhalten">📝 Festhalten</a><a class="p-investigate" href="#raetsel-b">🧩 Rätsel B, C</a><a class="p-modify" href="#fehler">🐞 Fehlersuche</a><a class="p-make" href="#selbst">🛠️ Selbst bauen</a><a class="p-idee" href="#nachdenken">💡 Nachdenken</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="raetsel-a" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Rätselprogramm A<small>Aufgabe 1: Was berechnet dieses Programm?</small></h2></div>
+                <div class="phase-body">
+                    <p>Bisher hast du Programme <em>geschrieben</em>. Oft muss man aber fremden Code verstehen: Was macht er, und stimmt er? Auf Maschinenebene gibt es keine sprechenden Namen und keine Einrückung, nur Zellen, Adressen und Sprünge. In Zelle 100 steht die Eingabe.</p>
+                    <pre class="asm" data-adr>LOADI 0
+STORE 101
+LOAD 100
+CMPI 0
+JEQ 12
+MODI 10
+ADD 101
+STORE 101
+LOAD 100
+DIVI 10
+STORE 100
+JMP 2
+HOLD</pre>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 1a:</strong> Speicherplan: Welche Zelle ist Eingabe, welche Ergebnis? Gib ihnen Namen.</li>
+                        <li><strong>Aufgabe 1b:</strong> Sprünge: Welcher Sprung führt zurück, welcher nach vorne? Markiere die Schleife.</li>
+                        <li><strong>Aufgabe 1c:</strong> Protokolliere auf dem Blatt den Ablauf für (100) = 352: je Durchlauf (100) am Anfang, A nach <code>MODI 10</code> und (101) danach.</li>
+                        <li><strong>Aufgabe 1d:</strong> Schreibe den Algorithmus in Java (Variablen <code>n</code> und <code>s</code>).</li>
+                        <li><strong>Aufgabe 1e:</strong> Beschreibe in einem Satz, was das Programm berechnet.</li>
+                        <li>Erst danach: Probiere deine Vermutung im Simulator mit eigenen Zahlen aus.</li>
+                    </ol>
+                    <div class="rm" data-rm="i13-26-raetsel-a" data-titel="Rätselprogramm A" data-ansicht="kompakt" data-zellen="100-101" data-speicher="100:352" data-nurlesen>
+<script type="text/plain">
+LOADI 0
+STORE 101
+LOAD 100
+CMPI 0
+JEQ 12
+MODI 10
+ADD 101
+STORE 101
+LOAD 100
+DIVI 10
+STORE 100
+JMP 2
+HOLD
+</script>
+                    </div>
+                    <div class="lw" data-loesungsweg="Aufgabe 1">
+                        <template data-stufe="Tipp 1"><p>Zelle 100 wird gelesen und am Ende mit <code>STORE 100</code> verändert, Zelle 101 wird zuerst auf 0 gesetzt und dann immer wieder erhöht. Der Rücksprung steht in Zelle 11 und führt nach 2: Die Schleife reicht von 2 bis 11, Zelle 4 ist ihre Bedingung.</p></template>
+                        <template data-stufe="Tipp 2"><p><code>MODI 10</code> liefert die letzte Ziffer einer Zahl, <code>DIVI 10</code> schneidet die letzte Ziffer ab.</p></template>
+                        <template data-stufe="Lösung" data-halten>
+                            <div class="tab-scroll"><table class="rm-tab">
+                                <tr><th>Durchlauf</th><th>(100) am Anfang</th><th>A nach MODI 10</th><th>(101) danach</th></tr>
+                                <tr><td>1</td><td>352</td><td>2</td><td>2</td></tr>
+                                <tr><td>2</td><td>35</td><td>5</td><td>7</td></tr>
+                                <tr><td>3</td><td>3</td><td>3</td><td>10</td></tr>
+                                <tr><td>–</td><td>0</td><td colspan="2">JEQ springt nach 12: Ende</td></tr>
+                            </table></div>
+<pre class="jv">s = 0;
+<span class="k">while</span> (n != 0) {
+   s = s + n % 10;
+   n = n / 10;
+}</pre>
+                            <p>Das Programm berechnet die <strong>Quersumme</strong> der Zahl in Zelle 100 und legt sie in Zelle 101 ab. Dabei wird die Eingabe zerstört: Am Ende steht 0 in Zelle 100.</p>
+                        </template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-6-programme-analysieren.pdf">📝 Blatt 2.6 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="festhalten" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Ein Assemblerprogramm in vier Schritten analysieren</small></h2></div>
+                <div class="phase-body">
+                    <p>Ergänze den Merkkasten auf dem Blatt. Leitfragen: Womit fängst du an, bevor du rechnest? Woran erkennst du Schleifen und Verzweigungen? Welche Beispielwerte sind geschickt? Was gehört in die Antwort „Was berechnet das Programm?“</p>
+                    <div class="konzept">
+                        <h4>Merkkasten zum Vergleichen</h4>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Merkkasten" data-halten>
+                                <ol>
+                                    <li><strong>① Speicherplan:</strong> Welche Zellen liest das Programm nur (<strong>Eingabe</strong>), welche schreibt es (<strong>Ergebnis</strong>, Hilfszellen)? Gib ihnen Namen.</li>
+                                    <li><strong>② Sprünge deuten:</strong> Ein <strong>Rücksprung</strong> schließt eine <strong>Schleife</strong>, sein Ziel ist der Kopf. Ein bedingter Sprung hinter den Rücksprung ist die <strong>Schleifenbedingung</strong>. Ein bedingter Sprung nach vorn innerhalb ist eine <strong>Verzweigung</strong>, ein <code>JMP</code> nach vorn überspringt den Falsch-Zweig. Blöcke markieren.</li>
+                                    <li><strong>③ Ablauf protokollieren</strong> mit kleinen, einfachen Beispielwerten.</li>
+                                    <li><strong>④ Algorithmus aufschreiben</strong> (Struktogramm oder Java) und den <strong>Zweck</strong> in einem Satz beschreiben: Was wird aus der Eingabe?</li>
+                                </ol>
+                            </template>
+                        </div>
+                    </div>
+                    <h3>Sprünge deuten üben</h3>
+                    <p>Die folgenden Sprünge stammen aus Rätselprogramm C (unten). Was bewirkt jeder?</p>
+                    <ul class="quiz" data-quiz="rueck:Rücksprung: schließt die Schleife|bedingung:Schleifenbedingung: raus aus der Schleife|verzweigung:Verzweigung: zum Falsch-Zweig|ueber:Falsch-Zweig überspringen">
+                        <li data-loesung="rueck"><span class="frage">Zelle 18: <code>JMP 2</code></span><span class="erkl-text">Ein Sprung zu einer kleineren Adresse: Hier schließt sich die Schleife, Zelle 2 ist der Kopf.</span></li>
+                        <li data-loesung="bedingung"><span class="frage">Zelle 4: <code>JEQ 19</code></span><span class="erkl-text">Der Sprung führt hinter den Rücksprung in Zelle 18, also aus der Schleife hinaus: Das ist die (umgekehrte) Schleifenbedingung.</span></li>
+                        <li data-loesung="verzweigung"><span class="frage">Zelle 7: <code>JEQ 12</code></span><span class="erkl-text">Ein bedingter Sprung nach vorn, der innerhalb der Schleife landet: eine Verzweigung im Rumpf.</span></li>
+                        <li data-loesung="ueber"><span class="frage">Zelle 11: <code>JMP 14</code></span><span class="erkl-text">Ein unbedingter Sprung nach vorn am Ende eines Zweigs: Er überspringt den anderen Zweig (Zellen 12 und 13).</span></li>
+                    </ul>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-6-programme-analysieren.pdf">📝 Blatt 2.6 · Merkkasten</a></p>
+                </div>
+            </section>
+
+            <section id="raetsel-b" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🧩</span><h2>Rätselprogramme B und C<small>Aufgabe 2 (Blatt: B) · C für Schnelle</small></h2></div>
+                <div class="phase-body">
+                    <p>Wende die vier Schritte an. Rätsel B steht auf dem Blatt, Rätsel C ist anspruchsvoller. Rechne zuerst von Hand, bevor du den Simulator startest.</p>
+                    <div class="code-paar">
+                        <div>
+                            <h4>Rätsel B (Eingabe in Zelle 100)</h4>
+<pre class="asm" data-adr>LOADI 0
+STORE 101
+LOAD 101
+ADDI 1
+STORE 102
+MUL 102
+CMP 100
+JGT 11
+LOAD 102
+STORE 101
+JMP 2
+HOLD</pre>
+                        </div>
+                        <div>
+                            <h4>Rätsel C (Eingabe in Zelle 100)</h4>
+<pre class="asm" data-adr>LOADI 0
+STORE 101
+LOAD 100
+CMPI 1
+JEQ 19
+MODI 2
+CMPI 0
+JEQ 12
+LOAD 100
+MULI 3
+ADDI 1
+JMP 14
+LOAD 100
+DIVI 2
+STORE 100
+LOAD 101
+ADDI 1
+STORE 101
+JMP 2
+HOLD</pre>
+                        </div>
+                    </div>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 2a:</strong> Rätsel B: Protokolliere für (100) = 10 je Durchlauf: Was steht nach <code>MUL 102</code> im Akkumulator, springt <code>JGT</code>, was steht danach in Zelle 101?</li>
+                        <li><strong>Aufgabe 2b:</strong> Schreibe Rätsel B als Java-Code (Variablen <code>n</code>, <code>k</code> für Zelle 101, <code>h</code> für Zelle 102).</li>
+                        <li><strong>Aufgabe 2c:</strong> Was berechnet das Programm? Teste deine Vermutung mit 30, 36 und 0.</li>
+                        <li><strong>Für Schnelle:</strong> Rätsel C mit (100) = 6. Was zählt Zelle 101? Recherchiere „Collatz-Problem“.</li>
+                    </ol>
+                    <div class="rm" data-rm="i13-26-raetsel-b" data-titel="Rätsel B" data-ansicht="kompakt" data-zellen="100-102" data-speicher="100:10" data-nurlesen>
+<script type="text/plain">
+LOADI 0
+STORE 101
+LOAD 101
+ADDI 1
+STORE 102
+MUL 102
+CMP 100
+JGT 11
+LOAD 102
+STORE 101
+JMP 2
+HOLD
+</script>
+                    </div>
+                    <div class="lw" data-loesungsweg="Rätsel B">
+                        <template data-stufe="Tipp"><p>Zelle 102 enthält immer <code>k + 1</code>. Nach <code>MUL 102</code> steht im Akkumulator <code>(k + 1) · (k + 1)</code>. Was wird damit verglichen?</p></template>
+                        <template data-stufe="Lösung" data-halten>
+                            <p>2a: A nach MUL 102 = 1, 4, 9, 16; JGT springt erst beim vierten Durchlauf (16 &gt; 10); (101) danach = 1, 2, 3, am Ende 3.</p>
+<pre class="jv">k = 0;
+h = k + 1;
+<span class="k">while</span> (h * h &lt;= n) {
+   k = h;
+   h = k + 1;
+}</pre>
+                            <p>Das Programm berechnet die <strong>ganzzahlige Quadratwurzel</strong> von n: die größte Zahl k mit k · k ≤ n (30 → 5, 36 → 6, 0 → 0).</p>
+                        </template>
+                    </div>
+                    <div class="rm" data-rm="i13-26-raetsel-c" data-titel="Rätsel C" data-ansicht="kompakt" data-zellen="100-101" data-speicher="100:6" data-nurlesen>
+<script type="text/plain">
+LOADI 0
+STORE 101
+LOAD 100
+CMPI 1
+JEQ 19
+MODI 2
+CMPI 0
+JEQ 12
+LOAD 100
+MULI 3
+ADDI 1
+JMP 14
+LOAD 100
+DIVI 2
+STORE 100
+LOAD 101
+ADDI 1
+STORE 101
+JMP 2
+HOLD
+</script>
+                    </div>
+                    <div class="lw" data-loesungsweg="Rätsel C">
+                        <template data-stufe="Lösung" data-halten>
+<pre class="jv">schritte = 0;
+<span class="k">while</span> (n != 1) {
+   <span class="k">if</span> (n % 2 == 0) {
+      n = n / 2;
+   } <span class="k">else</span> {
+      n = 3 * n + 1;
+   }
+   schritte = schritte + 1;
+}</pre>
+                            <p>Ist n gerade, wird halbiert, sonst wird 3n + 1 gerechnet, bis 1 erreicht ist. Zelle 101 zählt die Schritte: 6 → 3 → 10 → 5 → 16 → 8 → 4 → 2 → 1, also 8 Schritte. Ob jede Startzahl irgendwann bei 1 ankommt, ist bis heute unbewiesen (Collatz-Vermutung). Nach Zelle 7 steht in A noch n mod 2, deshalb lädt Zelle 8 die Zahl n neu.</p>
+                        </template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-6-programme-analysieren.pdf">📝 Blatt 2.6 · Aufgabe 2</a></p>
+                </div>
+            </section>
+
+            <section id="fehler" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">🐞</span><h2>Fehlersuche<small>Aufgabe 3: Das falsche Maximum</small></h2></div>
+                <div class="phase-body">
+                    <p>Das Programm soll die größere der Zahlen in Zelle 100 und 101 nach Zelle 102 schreiben. Für (100) = 9 und (101) = 4 liefert es aber 4.</p>
+                    <pre class="asm" data-adr>LOAD 100
+CMP 101
+JLT 5
+LOAD 100
+STORE 102
+LOAD 101
+STORE 102
+HOLD</pre>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 3a:</strong> Welche Zellen werden für 9 und 4 ausgeführt? Erkläre den Fehler.</li>
+                        <li><strong>Aufgabe 3b:</strong> Korrigiere das Programm, indem du einen Befehl einfügst. Achtung: Dadurch verschieben sich die Adressen. Welcher andere Befehl muss sich deshalb ändern? Teste im Simulator.</li>
+                    </ol>
+                    <div class="rm" data-rm="i13-26-fehler" data-titel="Aufgabe 3: Fehlersuche" data-ansicht="kompakt" data-zellen="100-102" data-speicher="100:9,101:4" data-tests="100=9,101=4 -> 102=9 | 100=4,101=9 -> 102=9 | 100=-1,101=-6 -> 102=-1 | 100=5,101=5 -> 102=5">
+<script type="text/plain">
+LOAD 100
+CMP 101
+JLT 5
+LOAD 100
+STORE 102
+LOAD 101
+STORE 102
+HOLD
+</script>
+                    </div>
+                    <div class="lw" data-loesungsweg="Aufgabe 3">
+                        <template data-stufe="Tipp"><p>Vergleiche mit dem Muster der zweiseitigen Verzweigung aus 2.4. Was fehlt am Ende des Wahr-Zweigs?</p></template>
+                        <template data-stufe="Lösung" data-halten><p>3a: 0, 1, 2, 3, 4, 5, 6, 7. Nach Zelle 4 fehlt der Sprung über den anderen Zweig: Das Programm speichert erst 9 und überschreibt es dann mit 4.</p><pre class="asm" data-adr>LOAD 100
+CMP 101
+JLT 6         ; geändert: Ziel war 5
+LOAD 100
+STORE 102
+JMP 8         ; eingefügt
+LOAD 101
+STORE 102
+HOLD</pre><p>Mit Sprungmarken statt Zahlen (<code>JLT nimmB</code>) passiert das nicht: Deshalb schreibt man eigene Programme mit Marken. Zelle 3 (<code>LOAD 100</code>) ist übrigens überflüssig, A enthält nach CMP noch den Inhalt von 100.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-6-programme-analysieren.pdf">📝 Blatt 2.6 · Aufgabe 3</a></p>
+                </div>
+            </section>
+
+            <section id="selbst" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Selbst bauen<small>Aufgabe 4: Teiler zählen (nur im Simulator)</small></h2></div>
+                <div class="phase-body">
+                    <p>Zum Abschluss der ganze Weg vorwärts: eine Schleife mit einer Verzweigung darin. Übersetze den Java-Code. Speicherplan: <code>n</code> → 100, <code>anzahl</code> → 101, <code>t</code> → 102.</p>
+<pre class="jv">anzahl = 0;
+t = 1;
+<span class="k">while</span> (t &lt;= n) {
+   <span class="k">if</span> (n % t == 0) {
+      anzahl = anzahl + 1;
+   }
+   t = t + 1;
+}</pre>
+                    <div class="rm" data-rm="i13-26-teiler" data-titel="Aufgabe 4: Teiler zählen" data-ansicht="kompakt" data-zellen="100-102" data-speicher="100:12" data-tests="100=12 -> 101=6 | 100=7 -> 101=2 | 100=1 -> 101=1 | 100=36 -> 101=9">
+<script type="text/plain">
+; n: 100, anzahl: 101, t: 102
+
+HOLD
+</script>
+                    </div>
+                    <div class="lw" data-loesungsweg="Aufgabe 4">
+                        <template data-stufe="Tipp 1"><p>Zuerst das Gerüst der Schleife aus 2.5 (Kopf mit <code>JGT ende</code>, Zähler <code>t</code> erhöhen, <code>JMP kopf</code>). Dann in den Rumpf die einseitige Verzweigung aus 2.4.</p></template>
+                        <template data-stufe="Tipp 2"><p><code>n % t</code>: <code>LOAD 100</code>, <code>MOD 102</code>. Ist der Rest nicht 0, wird die Erhöhung von <code>anzahl</code> übersprungen: <code>JNE weiter</code>. Die Marke <code>weiter:</code> steht vor <code>t = t + 1</code>.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="asm" data-adr>        LOADI 0
+        STORE 101     ; anzahl = 0
+        LOADI 1
+        STORE 102     ; t = 1
+kopf:   LOAD 102
+        CMP 100
+        JGT ende      ; t > n -> fertig
+        LOAD 100
+        MOD 102       ; n % t (setzt Z)
+        JNE weiter    ; Rest != 0 -> kein Teiler
+        LOAD 101
+        ADDI 1
+        STORE 101     ; anzahl = anzahl + 1
+weiter: LOAD 102
+        ADDI 1
+        STORE 102     ; t = t + 1
+        JMP kopf
+ende:   HOLD</pre><p>Ein <code>CMPI 0</code> vor <code>JNE</code> schadet nicht, ist aber unnötig: <code>MOD</code> setzt das Statusregister schon.</p></template>
+                    </div>
+                    <div class="tipp"><strong>Für Schnelle:</strong> Erweitere das Programm: In Zelle 103 soll 1 stehen, wenn n eine Primzahl ist (genau zwei Teiler), sonst 0.</div>
+                </div>
+            </section>
+
+            <section id="nachdenken" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Besprecht mündlich</small></h2></div>
+                <div class="phase-body">
+                    <p>Überlegt zu zweit. Die Hinweise sind zum Nachlesen <em>nach</em> dem Gespräch: Halte dazu den Knopf gedrückt.</p>
+                    <div class="idee"><strong>Rätsel A verändert die Eingabe in Zelle 100. Warum kann das ein Problem sein, und wie verhindert man es?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Braucht das restliche Programm die Zahl noch, ist sie verloren. Abhilfe: Zuerst in eine Hilfszelle kopieren und nur mit der Kopie arbeiten. In Java passiert das automatisch, wenn man einer Methode einen <code>int</code> übergibt: Der Parameter ist eine Kopie.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>So sieht dieselbe Addition wie in 2.2 für einen echten Prozessor (x86, Intel/AMD) aus. Was erkennst du wieder, was ist anders?</strong>
+<pre class="asm">mov eax, [a]     ; LOAD a   (eax ist eines von vielen Registern)
+add eax, [b]     ; ADD b
+mov [c], eax     ; STORE c</pre>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Das Prinzip ist gleich: laden, rechnen, speichern. Anders: Es gibt viele Register (eax, ebx, …) statt eines Akkumulators, ein Befehl nennt Ziel und Quelle, und statt fester Adressen stehen Namen, die der Assembler in Adressen übersetzt. Vergleich und Sprung heißen <code>cmp</code> und <code>jge</code>, <code>jl</code> usw. Fast wie bei uns.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Auch die Assemblersprache ist eine formale Sprache (Kapitel 1). Wie könnte eine EBNF-Regel für eine Programmzeile aussehen?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Zum Beispiel: <code>Zeile = [Marke ":"] Befehl [Operand] [";" Kommentar].</code> mit <code>Operand = Zahl | Marke.</code> Der Simulator prüft genau so die Syntax deines Programms, bevor er es in den Speicher lädt. Ob es das Richtige tut (Semantik), zeigen erst die Tests.</p></template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Rückblick und wie es weitergeht</small></h2></div>
+                <div class="phase-body">
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🧭 Der ganze Weg</h4>
+                            <p>Java-Programm → Compiler → Assembler → Maschinenbefehle im Speicher → Befehlszyklus im Prozessor → Rechenwerk und Busse. Du kennst jetzt jede Stufe, vom Quelltext bis zum Bitmuster auf dem Datenbus.</p>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>🔌 Noch tiefer</h4>
+                            <p>Wie rechnet das Rechenwerk eigentlich? Es besteht aus Logikgattern (UND, ODER, NICHT), aus denen Addierer und Vergleicher gebaut werden. Das ist die nächste Ebene unter der Registermaschine.</p>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>🖥️ Frei programmieren</h4>
+                            <p>Im <a href="simulator.html">Simulator</a> findest du alle Beispiele der Sequenz und kannst eigene Programme schreiben, z. B. Primzahltest, Wechselgeld oder Schaltjahr.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="2-5-schleifen.html">← 2.5 Schleifen</a>
+                <a class="btn btn-primary" href="rechner.html">Übersicht →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-2-6-programme-analysieren-lsg.pdf">Lösung Blatt 2.6 (PDF)</a></p>
+                    <div class="tab-scroll">
+                        <table>
+                            <tr><th>Aufgabe</th><th>Lösung / Hinweis</th></tr>
+                            <tr><td>1</td><td>Eingabe n = (100), Ergebnis s = (101). Rücksprung 11 → 2 (Schleife 2–11), JEQ 12 = Schleifenbedingung. 352: (101) = 2, 7, 10. Quersumme; Eingabe wird zerstört.</td></tr>
+                            <tr><td>Merkkasten</td><td>① Speicherplan (Eingabe/Ergebnis/Hilfszellen) · ② Sprünge: Rücksprung = Schleife, Sprung dahinter = Bedingung, Vorwärtssprung innen = Verzweigung, JMP vorwärts = Falsch-Zweig überspringen · ③ Protokoll mit Beispielwerten · ④ Struktogramm/Java und Zweck in einem Satz.</td></tr>
+                            <tr><td>2</td><td>B: ganzzahlige Quadratwurzel (größtes k mit k² ≤ n); für 10: (101) = 1, 2, 3, Ende mit 3. C: Collatz-Schritte, 6 → 8.</td></tr>
+                            <tr><td>3</td><td>Fehlendes JMP nach Zelle 4; einfügen <code>JMP 8</code>, dadurch <code>JLT 6</code> statt <code>JLT 5</code>.</td></tr>
+                            <tr><td>4</td><td>Siehe Lösungsweg auf der Seite (18 Befehle + HOLD).</td></tr>
+                        </table>
+                    </div>
+                    <p class="mt-2"><strong>Einordnung:</strong> LehrplanPLUS: „erläutern die Abarbeitung eines Programms durch eine Registermaschine und beschreiben den zugrunde liegenden Algorithmus, z. B. in einer höheren Programmiersprache oder einem Struktogramm“. Die Rätselprogramme verwenden absichtlich Zahlen statt Sprungmarken (wie in Prüfungsaufgaben üblich). Aufgabe 3 zeigt, warum Sprungmarken beim Schreiben sinnvoll sind. Als Abschluss eignet sich Aufgabe 4 als Lernzielkontrolle (Testfälle im Simulator).</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

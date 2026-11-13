@@ -1,0 +1,118 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+% Blatt:   xelatex ab-2-6-programme-analysieren.tex
+% Lösung:  xelatex ab-2-6-programme-analysieren-lsg.tex
+% Progression: Rätselprogramm A (Quersumme) in vier Schritten analysieren -> Merkkasten „Analysieren in vier Schritten“
+%              -> Rätsel B (ganzzahlige Wurzel) selbstständig -> Fehlersuche (fehlendes JMP, verschobene Adressen)
+%              Teiler zählen (Java -> Assembler) nur im Simulator
+\begin{document}
+\abtitel{2.6}{Programme analysieren}
+
+\begin{aufgabe}[Rätselprogramm A: Was berechnet es? \normalfont(In Zelle 100 steht die Eingabe.)]{1}
+\begin{minipage}[t]{0.27\linewidth}
+\vspace{0pt}
+\begin{asm}[aboveskip=0mm]
+LOADI 0
+STORE 101
+LOAD 100
+CMPI 0
+JEQ 12
+MODI 10
+ADD 101
+STORE 101
+LOAD 100
+DIVI 10
+STORE 100
+JMP 2
+HOLD
+\end{asm}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.69\linewidth}
+\vspace{0pt}\lueckentext
+\textbf{a)} Speicherplan: Eingabe \code{n} in Zelle \lsg[2.25cm]{100}, Ergebnis \code{s} in Zelle \lsg[2.25cm]{101}\\
+\textbf{b)} Der Rücksprung steht in Zelle \lsg[2.25cm]{11}, die Schleife reicht von Zelle \lsg[2.25cm]{2} bis \lsg[2.25cm]{11}.
+Die Schleifenbedingung steht in Zelle \lsg[2.25cm]{4}.\\
+\textbf{c)} Protokoll für (100) = 352:\\[0.5mm]
+{\renewcommand{\arraystretch}{1}\linespread{1}\selectfont\small
+\begin{tabularx}{\linewidth}{|c|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}\hline
+\textbf{Durchlauf} & \textbf{(100) am Anfang} & \textbf{A nach MODI 10} & \textbf{(101) danach}\\\hline
+1\schreibzeile & \lsgtext{352} & \lsgtext{2} & \lsgtext{2}\\\hline
+2\schreibzeile & \lsgtext{35} & \lsgtext{5} & \lsgtext{7}\\\hline
+3\schreibzeile & \lsgtext{3} & \lsgtext{3} & \lsgtext{10}\\\hline
+\end{tabularx}}\\[1mm]
+\textbf{d)} Java-Code (Variablen \code{n}, \code{s}):\\[0.5mm]
+\lsgfeld{5}{s = 0;\\while (n != 0) \{\\\hspace*{3ex}s = s + n \% 10;\\\hspace*{3ex}n = n / 10;\\\}}\\[1mm]
+\textbf{e)} Das Programm berechnet \lsgrest{die Quersumme von n.}
+\end{minipage}
+\end{aufgabe}
+
+\begin{merke}[Ein Assemblerprogramm in vier Schritten analysieren]
+\lueckentext
+\nr{1} \textbf{Speicherplan:} Welche Zellen liest das Programm nur (\lsg[3.9cm]{Eingabe}), welche schreibt es (\lsg[3.9cm]{Ergebnis}, Hilfszellen)? Namen geben.\\
+\nr{2} \textbf{Sprünge deuten:} Ein \lsg[3.9cm]{Rücksprung} schließt eine Schleife, sein Ziel ist der Kopf. Ein bedingter Sprung hinter den Rücksprung ist die
+\lsg[5.25cm]{Schleifenbedingung}. Ein bedingter Sprung nach vorn innerhalb ist eine \lsg[3.9cm]{Verzweigung}, ein \code{JMP} nach vorn
+überspringt den \lsg[3.9cm]{Falsch-Zweig}.\\
+\nr{3} \textbf{Ablauf protokollieren} mit kleinen, einfachen \lsg[5.25cm]{Beispielwerten}.\\
+\nr{4} \textbf{Algorithmus aufschreiben} (Struktogramm oder Java) und den \lsg[3.9cm]{Zweck} in einem Satz beschreiben.
+\end{merke}
+
+\newpage
+\begin{aufgabe}[Rätselprogramm B \normalfont(Eingabe in Zelle 100; erst von Hand, dann im Simulator)]{2}
+\begin{minipage}[t]{0.27\linewidth}
+\vspace{0pt}
+\begin{asm}[aboveskip=0mm]
+LOADI 0
+STORE 101
+LOAD 101
+ADDI 1
+STORE 102
+MUL 102
+CMP 100
+JGT 11
+LOAD 102
+STORE 101
+JMP 2
+HOLD
+\end{asm}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.69\linewidth}
+\vspace{0pt}\lueckentext
+\textbf{a)} Protokoll für (100) = 10:\\[0.5mm]
+{\renewcommand{\arraystretch}{1}\linespread{1}\selectfont\small
+\begin{tabularx}{\linewidth}{|c|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}\hline
+\textbf{Durchlauf} & \textbf{A nach MUL 102} & \textbf{JGT springt?} & \textbf{(101) danach}\\\hline
+1\schreibzeile & \lsgtext{1} & \lsgtext{nein} & \lsgtext{1}\\\hline
+2\schreibzeile & \lsgtext{4} & \lsgtext{nein} & \lsgtext{2}\\\hline
+3\schreibzeile & \lsgtext{9} & \lsgtext{nein} & \lsgtext{3}\\\hline
+4\schreibzeile & \lsgtext{16} & \lsgtext{ja} & \lsgtext{3 (Ende)}\\\hline
+\end{tabularx}}\\[1mm]
+\textbf{b)} Java-Code (Variablen \code{n}, \code{k} für Zelle 101, \code{h} für Zelle 102):\\[0.5mm]
+\lsgfeld{6}{k = 0;\\h = k + 1;\\while (h * h <= n) \{\\\hspace*{3ex}k = h;\\\hspace*{3ex}h = k + 1;\\\}}\\[1mm]
+\textbf{c)} Das Programm berechnet \lsgrest{die ganzzahlige Wurzel von n.}
+\end{minipage}
+\end{aufgabe}
+
+\begin{aufgabe}[Fehlersuche: das falsche Maximum \normalfont(dann im Simulator korrigieren)]{3}
+\begin{minipage}[t]{0.27\linewidth}
+\vspace{0pt}
+\begin{asm}[aboveskip=0mm]
+LOAD 100
+CMP 101
+JLT 5
+LOAD 100
+STORE 102
+LOAD 101
+STORE 102
+HOLD
+\end{asm}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.69\linewidth}
+\vspace{0pt}\lueckentext
+Das Programm soll die größere der Zahlen aus Zelle 100 und 101 in Zelle 102 schreiben. Für (100) = 9 und (101) = 4 liefert es aber 4.\\
+\textbf{a)} Ausgeführte Zellen: \lsgrest{0, 1, 2, 3, 4, 5, 6, 7}
+Erkläre den Fehler:
+\lsglinien{2}{Nach Zelle 4 fehlt der Sprung über den anderen Zweig: 9 wird gespeichert und danach mit 4 überschrieben.}
+\textbf{b)} Korrektur: Nach Zelle 4 einfügen: \lsg[3.9cm]{JMP 8} Dadurch muss Zelle 2 lauten: \lsg[3.9cm]{JLT 6}
+\end{minipage}
+\end{aufgabe}
+\end{document}

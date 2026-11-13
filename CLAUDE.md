@@ -378,6 +378,16 @@ gemeinsamen Designs ist also die Root-Datei).
   Werkzeuge: `formale-sprachen.js` (1.1/1.2, Lösungsweg), `grammatik.js` (EBNF-Parser,
   Syntaxdiagramme, Gleisnetz-Fahrt, Baukasten, Werkstatt), `automaten.js` (Simulator,
   Automaten-Baukasten); `13/material/` Rohmaterial, nur lokal
+- 13 Funktionsweise eines Rechners (neues Format, → AB, Lernbereich 2): `13/rechner/rechner.html` (Übersicht)
+  mit 2.1 Von-Neumann-Architektur (Zuordnungs-Quiz, Bus-Spiel, Speicherhierarchie), 2.2 Registermaschine
+  (Register, Befehlszyklus ①②③, Rollenspiel), 2.3 Rechnen in Assembler (Zuweisungen), 2.4 Verzweigungen,
+  2.5 Schleifen, 2.6 Programme analysieren; freier `simulator.html`. Simulator `registermaschine.js`
+  (`<div class="rm" data-rm="id" data-speicher="100:7" data-tests="100=7 -> 101=14">`, Doku im Kopf; Befehle
+  LOAD/LOADI/STORE/ADD(I)/SUB(I)/MUL(I)/DIV(I)/MOD(I)/CMP(I)/JMP/JEQ/JNE/JGT/JGE/JLT/JLE/HOLD, 16 Bit, SR mit N/Z/O;
+  Beispielliste nur mit auf den Seiten vorgegebenen Programmen, keine Lösungen), Bausteine in `rechner.js`
+  (Quiz, Bus-Spiel, Sortieren, Lösungsweg, Assembler-Färbung `pre.asm[data-adr]`); Blätter mit eigener
+  `ab-vorlage.tex` (Listing `asm` mit Adressen als Zeilennummern, Struktogramme `\sgwenn`/`\sgschleife`).
+  Assembler-Code auf Blatt und Seite identisch halten
 
 **Makerspace** (`makerspace/makerspace.html`, Wahlkurs Unterstufe, Stationen je 3 Wochen;
 nur Robotik online): `makerspace/robotik/` LEGO SPIKE Prime – `robotik.html` (Team,
