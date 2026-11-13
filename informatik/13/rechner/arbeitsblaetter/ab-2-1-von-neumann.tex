@@ -1,0 +1,87 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+% Blatt:   xelatex ab-2-1-von-neumann.tex
+% Lösung:  xelatex ab-2-1-von-neumann-lsg.tex
+% Progression: Bauteile zuordnen (Website-Quiz) -> Modell beschriften + Bauteile eintragen
+%              -> Merkkasten Von-Neumann-Prinzipien -> Bussystem (was, wohin, Busbreite)
+%              -> Vergleich mit heutigen Rechnern, Flaschenhals
+\begin{document}
+\abtitel{2.1}{Die Von-Neumann-Architektur}
+
+Schon 1945 beschrieb John von Neumann, aus welchen Einheiten ein Rechner besteht, der jedes beliebige Programm
+ausführen kann. Seine Einteilung passt bis heute auf Laptop, Smartphone und Spielkonsole.
+
+\begin{aufgabe}[Das Modell \normalfont(nach dem Zuordnungs-Quiz auf der Website)]{1}
+Beschrifte die Einheiten und das Bussystem. Notiere die Aufgabe der beiden Teile des Prozessors und je Einheit
+Bauteile aus deinem Gerät.\\[1mm]
+\begin{tikzpicture}[x=0.955mm,y=1.12mm,font=\small]
+  % Prozessor
+  \draw[line width=1pt,rounded corners=2mm] (0,0) rectangle (66,-52);
+  \node[anchor=north west,inner sep=0pt] at (2,-3) {\lsg[5.25cm]{\textbf{Prozessor (CPU)}}};
+  \draw[steuer,line width=0.8pt,rounded corners=1.5mm,fill=steuer!5] (2.5,-9) rectangle (63.5,-25);
+  \node[anchor=north west,inner sep=0pt,text width=54mm] at (4.5,-11.5) {\lueckentext\lsg[4.5cm]{\textbf{Steuerwerk}}\\ Aufgabe:\lsgrest{holt und entschlüsselt Befehle}};
+  \draw[rechen,line width=0.8pt,rounded corners=1.5mm,fill=rechen!5] (2.5,-27) rectangle (63.5,-43);
+  \node[anchor=north west,inner sep=0pt,text width=54mm] at (4.5,-29.5) {\lueckentext\lsg[4.5cm]{\textbf{Rechenwerk}}\\ Aufgabe:\lsgrest{rechnet und vergleicht}};
+  \node[anchor=north west,inner sep=0pt,text width=58mm] at (2.5,-46.5) {\lueckentext Bauteile:\lsgrest{CPU, Grafikprozessor (GPU)}};
+  % Speicher
+  \draw[speicher,line width=1pt,rounded corners=2mm,fill=speicher!4] (70,0) rectangle (122,-52);
+  \node[anchor=north west,inner sep=0pt,text width=45mm] at (72,-3) {\lueckentext\lsg[4.5cm]{\textbf{Speicher}}\\[1mm] enthält:\lsgrest{Programm und Daten}\vspace{1mm} in nummerierten\\ Zellen, angesprochen über\\ ihre\lsgrest{Adresse}\vspace{1mm} Bauteile:\lsgrest{RAM, Cache, (SSD)}};
+  % Ein-/Ausgabe
+  \draw[ea,line width=1pt,rounded corners=2mm,fill=ea!4] (126,0) rectangle (178,-52);
+  \node[anchor=north west,inner sep=0pt,text width=45mm] at (128,-3) {\lueckentext\lsg[4.5cm]{\textbf{Ein-/Ausgabewerk}}\\[1mm] Verbindung nach außen\\[1mm] Bauteile:\lsgrest{Tastatur, Bildschirm}\vspace{0mm}\lsgrest{WLAN, Kamera}};
+  % Bussystem
+  \foreach \x in {50,96,152}{\draw[line width=1.2pt,gray] (\x,-52) -- (\x,-71);}
+  \draw[busadr,line width=2.2pt] (40,-59) -- (178,-59);
+  \draw[busdaten,line width=2.2pt] (40,-65) -- (178,-65);
+  \draw[bussteuer,line width=2.2pt] (40,-71) -- (178,-71);
+  \node[anchor=south west,inner sep=0pt] at (0,-60) {\lsg[3.6cm]{Adressbus}};
+  \node[anchor=south west,inner sep=0pt] at (0,-66) {\lsg[3.6cm]{Datenbus}};
+  \node[anchor=south west,inner sep=0pt] at (0,-72) {\lsg[3.6cm]{Steuerbus}};
+  \node[anchor=north west,inner sep=0pt] at (0,-74.5) {Alle drei zusammen: \lsg[4.5cm]{das Bussystem}\quad Bauteile: \lsg[4.5cm]{Leiterbahnen}};
+\end{tikzpicture}
+\end{aufgabe}
+
+\begin{merke}[Die Von-Neumann-Prinzipien]
+\lueckentext
+\nr{1} Programm und \lsg[3.9cm]{Daten} liegen im \lsg[5.25cm]{selben Speicher}. Beide sind binär codiert: Einer Zelle sieht man nicht an, ob ein Befehl oder eine Zahl darin steht.\\
+\nr{2} Der Speicher ist in gleich große, fortlaufend nummerierte \lsg[3.9cm]{Zellen} eingeteilt. Jede wird über ihre \lsg[3.9cm]{Adresse} angesprochen.\\
+\nr{3} Die Befehle werden \lsg[5.25cm]{nacheinander} ausgeführt. \lsg[5.25cm]{Sprungbefehle} können davon abweichen.\\
+\nr{4} Der Aufbau ist unabhängig von der Aufgabe: Für eine neue Aufgabe lädt man nur ein anderes \lsg[5.25cm]{Programm} (Universalrechner).
+\end{merke}
+
+\newpage
+\begin{aufgabe}[Das Bussystem]{2}
+\textbf{a)} Ergänze die Tabelle.\\[0.5mm]
+{\renewcommand{\arraystretch}{1.05}\small
+\begin{tabularx}{\linewidth}{|p{2.2cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{5.6cm}|}\hline
+\textbf{Bus} & \textbf{überträgt …} & \textbf{Richtung}\\\hline
+Adressbus\schreibzeile & \lsgtext{die Adresse der Speicherzelle, auf die zugegriffen wird} & \lsgtext{nur vom Prozessor weg}\\\hline
+Datenbus\schreibzeile & \lsgtext{den Inhalt der Zelle: Daten und Befehle} & \lsgtext{in beide Richtungen}\\\hline
+Steuerbus\schreibzeile & \lsgtext{Steuersignale, z.\,B. „lesen“ oder „schreiben“, Takt} & \lsgtext{vom Steuerwerk zu den Einheiten}\\\hline
+\end{tabularx}}\\[1mm]
+\lueckentext
+\textbf{b)} Der Prozessor speichert das Ergebnis 17 in Zelle 101. Adressbus: \lsg[2.25cm]{101} Steuerbus: \lsg[3.5cm]{schreiben}\\
+Datenbus: \lsg[2.25cm]{17} in Richtung \lsg[5.25cm]{Prozessor $\to$ Speicher}\\
+\textbf{c)} Ein Adressbus mit $n$ Leitungen kann $2^n$ Zellen ansprechen. Bei 32 Leitungen sind das \lsg[5.25cm]{$2^{32} = 4\,294\,967\,296$} Zellen,
+bei 1 Byte je Zelle also \lsg[2.25cm]{4 GiB}. Warum können 32-Bit-Systeme nicht mehr Arbeitsspeicher nutzen?
+\lsglinien{2}{Es gibt nur $2^{32}$ verschiedene Adressen. Zusätzlicher Speicher hätte keine Adresse und ließe sich nicht ansprechen.}
+Heutige Prozessoren nutzen 48 Adressleitungen. Damit wären \lsg[5.25cm]{$2^{48}$ Byte = 256 TiB} möglich.
+\end{aufgabe}
+
+\begin{aufgabe}[Damals und heute]{3}
+Vergleiche das Modell mit einem heutigen Rechner (Smartphone, Laptop).\\[0.5mm]
+{\renewcommand{\arraystretch}{1.05}\small
+\begin{tabularx}{\linewidth}{|p{2.5cm}|>{\raggedright\arraybackslash}p{4.4cm}|>{\raggedright\arraybackslash}X|}\hline
+\textbf{Merkmal} & \textbf{Von-Neumann-Modell} & \textbf{heutiger Rechner}\\\hline
+Prozessor\rule[-4.5mm]{0pt}{11mm} & ein Rechenwerk, ein Steuerwerk & \lsgtext{mehrere Kerne, dazu Grafikprozessor (GPU) und KI-Einheiten}\\\hline
+Speicher\rule[-4.5mm]{0pt}{11mm} & ein Speicher für Programm und Daten & \lsgtext{Hierarchie: Register, Cache (teils getrennt für Befehle/Daten), Arbeitsspeicher, SSD}\\\hline
+Verbindungen\rule[-4.5mm]{0pt}{11mm} & ein gemeinsamer Bus & \lsgtext{mehrere schnelle Verbindungen (Speicherkanäle, PCI Express, USB)}\\\hline
+Abarbeitung\rule[-4.5mm]{0pt}{11mm} & ein Befehl nach dem anderen & \lsgtext{mehrere Befehle gleichzeitig (Pipeline, mehrere Kerne)}\\\hline
+\end{tabularx}}\\[1mm]
+\lueckentext
+Weil Prozessor und Speicher über denselben Bus verbunden sind, wartet der Prozessor oft auf Daten. Man nennt
+den Bus deshalb den Von-Neumann-\lsg[5.25cm]{Flaschenhals}. Abhilfe schafft ein schneller Zwischenspeicher
+nah am Rechenwerk, der \lsg[3.9cm]{Cache}. Was ist trotz aller Erweiterungen gleich geblieben?
+\lsglinien{2}{Programm und Daten liegen im selben Arbeitsspeicher, Zugriff über Adressen, Befehle werden geholt, dekodiert und ausgeführt: Die Von-Neumann-Architektur ist die Grundlage heutiger Rechner.}
+\end{aufgabe}
+\end{document}

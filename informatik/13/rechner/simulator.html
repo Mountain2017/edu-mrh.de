@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registermaschine – Simulator | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Simulator einer Registermaschine für Informatik 13: Assemblerprogramme schreiben, Takt für Takt ausführen, Busse, Akkumulator, Befehlsregister, Befehlszähler und Statusregister beobachten. Läuft komplett im Browser.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="rechner.css">
+    <script defer src="rechner.js"></script>
+    <script defer src="registermaschine.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🖥️</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="rechner.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Simulator</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#simulator">🖥️ Simulator</a></li>
+            <li><a href="#bedienung">🎛️ Bedienung</a></li>
+            <li><a href="#befehle">📖 Befehlssatz</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Funktionsweise eines Rechners</div>
+            <ul class="sidebar-menu">
+                <li><a href="rechner.html">Übersicht</a></li>
+                <li><a href="2-1-von-neumann.html">2.1 Von-Neumann-Architektur</a></li>
+                <li><a href="2-2-registermaschine.html">2.2 Die Registermaschine</a></li>
+                <li><a href="2-3-zuweisungen.html">2.3 Rechnen in Assembler</a></li>
+                <li><a href="2-4-verzweigungen.html">2.4 Verzweigungen</a></li>
+                <li><a href="2-5-schleifen.html">2.5 Schleifen</a></li>
+                <li><a href="2-6-programme-analysieren.html">2.6 Programme analysieren</a></li>
+                <li><a href="simulator.html">Simulator</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero rm-hero">
+                <h1 class="hero-title">Registermaschine: Simulator</h1>
+                <p class="hero-subtitle">Funktionsweise eines Rechners · Informatik 13 · Werkzeug</p>
+                <p>Schreibe Assemblerprogramme und sieh zu, wie der Prozessor sie Takt für Takt abarbeitet. Dein Programm wird nur in deinem Browser gespeichert.</p>
+            </section>
+
+            <section id="simulator" class="mt-4">
+                <div class="rm" data-rm="i13-simulator" data-titel="Registermaschine" data-zellen="100-107" data-speicher="100:7,101:5" data-beispiele>
+<script type="text/plain">
+; Freies Programmieren. Beispiele: Auswahl oben rechts.
+LOAD 100
+ADD 101
+STORE 102
+HOLD
+</script>
+                </div>
+            </section>
+
+            <section id="bedienung" class="mt-4">
+                <div class="chapter-header">
+                    <span class="chapter-number">Kurzanleitung</span>
+                    <h2>Bedienung</h2>
+                </div>
+                <div class="tab-scroll"><table class="rm-tab">
+                    <tr><th>Element</th><th>Bedeutung</th></tr>
+                    <tr><td>Programm (links)</td><td>Ein Befehl je Zeile. Kommentare beginnen mit <code>;</code>. Sprungmarken: <code>kopf:</code> am Zeilenanfang, im Sprung <code>JMP kopf</code>. Die grauen Zahlen links sind die Adressen, unter denen die Befehle im Speicher stehen; ▶ zeigt den nächsten Befehl.</td></tr>
+                    <tr><td>▶ Takt</td><td>eine Phase des Befehlszyklus: ① Holen, ② Dekodieren, ③ Ausführen. Die aktiven Busse leuchten.</td></tr>
+                    <tr><td>▶▶ Befehl</td><td>einen ganzen Befehl (alle drei Phasen)</td></tr>
+                    <tr><td>⏵ Start / ⏸ Stopp</td><td>Programm im gewählten Tempo laufen lassen; „sofort“ rechnet bis HOLD durch (höchstens 100 000 Befehle)</td></tr>
+                    <tr><td>⟲ Zurücksetzen</td><td>Register auf 0, Befehlszähler auf 0, Datenzellen auf ihre Startwerte</td></tr>
+                    <tr><td>Datenzellen</td><td>vor dem Start direkt in der Speichertabelle ändern; Zellen, die das Programm benutzt, erscheinen automatisch</td></tr>
+                    <tr><td>🔮 Vorhersagen</td><td>vor jedem Befehl Akkumulator und Befehlszähler vorhersagen, dann prüfen</td></tr>
+                    <tr><td>Protokoll</td><td>Tabelle aller ausgeführten Befehle mit A, N, Z, O, Befehlszähler und Speicheränderungen; Sprünge lila</td></tr>
+                </table></div>
+            </section>
+
+            <section id="befehle" class="mt-4 mb-4">
+                <div class="chapter-header">
+                    <span class="chapter-number">Nachschlagen</span>
+                    <h2>Befehlssatz</h2>
+                </div>
+                <p>(x) heißt „Inhalt von Zelle x“. n ist eine Zahl im Befehl, z eine Sprungadresse oder Sprungmarke. Ganze Zahlen mit 16 Bit: −32 768 bis 32 767. LOAD, LOADI und alle Rechenbefehle setzen das Statusregister (N negativ, Z null, O Überlauf), CMP/CMPI setzen N und Z nach dem Vergleich, STORE und Sprünge ändern es nicht.</p>
+                <div data-rm-befehlssatz></div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

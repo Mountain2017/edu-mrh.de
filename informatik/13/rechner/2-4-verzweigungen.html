@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2.4 Verzweigungen in Assembler | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Verzweigungen in Assembler, Informatik 13: Vergleichsbefehl CMP, Statusregister, bedingte Sprünge JEQ, JNE, JGT, JGE, JLT, JLE, einseitige und zweiseitige Verzweigung vom Struktogramm in die Registermaschine übersetzen.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="rechner.css">
+    <script defer src="rechner.js"></script>
+    <script defer src="registermaschine.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🖥️</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="rechner.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 2.4</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#vorhersagen">🔍 Eintrittspreis</a></li>
+            <li><a href="#festhalten">📝 Sprünge und Muster</a></li>
+            <li><a href="#detektiv">🕵️ Sprung-Detektiv</a></li>
+            <li><a href="#veraendern">🔧 Betrag</a></li>
+            <li><a href="#selbst">🛠️ Maximum</a></li>
+            <li><a href="#nachdenken">💡 Nachdenken</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Funktionsweise eines Rechners</div>
+            <ul class="sidebar-menu">
+                <li><a href="rechner.html">Übersicht</a></li>
+                <li><a href="2-1-von-neumann.html">2.1 Von-Neumann-Architektur</a></li>
+                <li><a href="2-2-registermaschine.html">2.2 Die Registermaschine</a></li>
+                <li><a href="2-3-zuweisungen.html">2.3 Rechnen in Assembler</a></li>
+                <li><a href="2-4-verzweigungen.html">2.4 Verzweigungen</a></li>
+                <li><a href="2-5-schleifen.html">2.5 Schleifen</a></li>
+                <li><a href="2-6-programme-analysieren.html">2.6 Programme analysieren</a></li>
+                <li><a href="simulator.html">Simulator</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero rm-hero">
+                <h1 class="hero-title">2.4 Verzweigungen in Assembler</h1>
+                <p class="hero-subtitle">Funktionsweise eines Rechners · Informatik 13 · 2 bis 3 Stunden</p>
+                <span class="rm-kompetenz">Du kannst: mit Vergleich, Statusregister und bedingten Sprüngen eine ein- oder zweiseitige Verzweigung aus einem Struktogramm in Assembler umsetzen und im Simulator testen.</span>
+                <div class="rm-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-2-4-verzweigungen.pdf">📝 Arbeitsblatt 2.4 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-2-4-verzweigungen.tex">LaTeX-Quelle</a>
+                    <a class="btn btn-outline" href="simulator.html">🖥️ Simulator</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#vorhersagen">🔍 Vorhersagen</a><a class="p-note" href="#festhalten">📝 Festhalten</a><a class="p-investigate" href="#detektiv">🕵️ Sprung-Detektiv</a><a class="p-modify" href="#veraendern">🔧 Verändern</a><a class="p-make" href="#selbst">🛠️ Selbst bauen</a><a class="p-idee" href="#nachdenken">💡 Nachdenken</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="vorhersagen" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Vorhersagen<small>Aufgabe 1: Der Eintrittspreis</small></h2></div>
+                <div class="phase-body">
+                    <p>Im Freibad zahlen Kinder unter 14 Jahren 5 €, alle anderen 9 €. Speicherplan: <code>alter</code> → 100, <code>preis</code> → 101.</p>
+                    <div class="code-paar">
+                        <div>
+                            <h4>Struktogramm</h4>
+                            <div class="sg">
+                                <div class="sg-wenn">
+                                    <div class="sg-wenn-kopf"><span class="bed">alter &lt; 14</span><span class="wj">wahr</span><span class="wn">falsch</span></div>
+                                    <div class="sg-zweige">
+                                        <div class="sg-block"><div class="sg-anw">preis = 5</div></div>
+                                        <div class="sg-block"><div class="sg-anw">preis = 9</div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4>Assembler</h4>
+<pre class="asm" data-adr>        LOAD 100
+        CMPI 14
+        JGE sonst
+        LOADI 5
+        STORE 101
+        JMP ende
+sonst:  LOADI 9
+        STORE 101
+ende:   HOLD</pre>
+                        </div>
+                    </div>
+                    <p>Neu sind drei Befehle: <code>CMPI 14</code> <strong>vergleicht</strong> den Akkumulator mit 14 und setzt das Statusregister (der Akkumulator bleibt gleich). <code>JGE sonst</code> <strong>springt</strong> zur Zelle mit der Marke <code>sonst:</code>, wenn der Akkumulator größer oder gleich war (<em>jump if greater or equal</em>). <code>JMP ende</code> springt immer.</p>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 1a:</strong> Welche Zellen werden für <code>alter</code> = 10 ausgeführt, in welcher Reihenfolge? Welcher Preis kommt heraus?</li>
+                        <li><strong>Aufgabe 1b:</strong> Dieselbe Frage für <code>alter</code> = 14.</li>
+                        <li><strong>Aufgabe 1c:</strong> Ordne zu: Welche Zellen prüfen die Bedingung, welche bilden den Wahr-Zweig, welche den Falsch-Zweig? Prüfe dann im Simulator (Zelle 100 ändern, ▶▶ Befehl). Achte auf den Befehlszähler.</li>
+                    </ol>
+                    <div class="rm" data-rm="i13-24-eintritt" data-titel="Aufgabe 1: Eintrittspreis" data-zellen="100-101" data-speicher="100:10" data-nurlesen>
+<script type="text/plain">
+        LOAD 100
+        CMPI 14
+        JGE sonst
+        LOADI 5
+        STORE 101
+        JMP ende
+sonst:  LOADI 9
+        STORE 101
+ende:   HOLD
+</script>
+                    </div>
+                    <div class="lw" data-loesungsweg="Aufgabe 1">
+                        <template data-stufe="Lösung" data-halten><p>1a: 0, 1, 2, 3, 4, 5, 8; Preis 5 (10 &lt; 14: N = 1, JGE springt nicht). 1b: 0, 1, 2, 6, 7, 8; Preis 9 (14 = 14: Z = 1, N = 0, JGE springt). 1c: Bedingung Zellen 0–2, Wahr-Zweig 3–5 (mit dem Sprung über den Falsch-Zweig), Falsch-Zweig 6–7, Zelle 8 erreichen beide Wege.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-4-verzweigungen.pdf">📝 Blatt 2.4 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="festhalten" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Sprungbefehle und das Muster der Verzweigung</small></h2></div>
+                <div class="phase-body">
+                    <p>Ein Sprungbefehl schreibt im Schritt ③ Ausführen eine neue Adresse in den <strong>Befehlszähler</strong>. Ob ein bedingter Sprung ausgeführt wird, entscheidet das <strong>Statusregister</strong>, also das Ergebnis des letzten Vergleichs oder Rechenbefehls.</p>
+                    <div data-rm-befehlssatz="CMP,CMPI,JMP,JEQ,JNE,JGT,JGE,JLT,JLE"></div>
+                    <p>Ergänze den Merkkasten auf dem Blatt. Leitfragen: Warum steht im Programm <code>JGE</code>, obwohl die Bedingung <code>alter &lt; 14</code> heißt? Wozu dient <code>JMP ende</code>? Wohin springt man bei <code>a &lt;= b</code>?</p>
+                    <div class="code-paar">
+                        <div>
+                            <h4>Java</h4>
+<pre class="jv"><span class="k">if</span> (alter &lt; 14) {     <span class="c">// ①</span>
+   preis = 5;         <span class="c">// ②</span>
+} <span class="k">else</span> {
+   preis = 9;         <span class="c">// ③</span>
+}
+                      <span class="c">// ④</span></pre>
+                        </div>
+                        <div>
+                            <h4>Assembler</h4>
+<pre class="asm">        LOAD 100      ; ① Bedingung prüfen
+        CMPI 14
+        JGE sonst     ;    umgekehrt: alter >= 14 -> sonst
+        LOADI 5       ; ② Wahr-Zweig (dann)
+        STORE 101
+        JMP ende      ;    Falsch-Zweig überspringen
+sonst:  LOADI 9       ; ③ Falsch-Zweig (sonst)
+        STORE 101
+ende:   HOLD          ; ④ hier treffen sich beide Wege</pre>
+                        </div>
+                    </div>
+                    <div class="konzept">
+                        <h4>Merkkasten zum Vergleichen</h4>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Merkkasten" data-halten>
+                                <p><strong>Zweiseitige Verzweigung:</strong> ① Bedingung prüfen (<code>LOAD</code>, <code>CMP</code>), dann mit der <strong>umgekehrten Bedingung</strong> zum Falsch-Zweig springen. ② Wahr-Zweig, an seinem Ende mit <code>JMP</code> den <strong>Falsch-Zweig überspringen</strong>. ③ Falsch-Zweig. ④ Ende: Hier treffen sich beide Wege.</p>
+                                <p><strong>Einseitige Verzweigung</strong> (ohne <code>else</code>): Der umgekehrte Sprung führt direkt hinter den Wahr-Zweig; kein <code>JMP</code> nötig.</p>
+                                <div class="tab-scroll"><table class="rm-tab">
+                                    <tr><th>Bedingung</th><th>a == b</th><th>a != b</th><th>a &lt; b</th><th>a &lt;= b</th><th>a &gt; b</th><th>a &gt;= b</th></tr>
+                                    <tr><td>Sprung zum Falsch-Zweig</td><td>JNE</td><td>JEQ</td><td>JGE</td><td>JGT</td><td>JLE</td><td>JLT</td></tr>
+                                </table></div>
+                            </template>
+                        </div>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-4-verzweigungen.pdf">📝 Blatt 2.4 · Merkkasten</a></p>
+                </div>
+            </section>
+
+            <section id="detektiv" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🕵️</span><h2>Sprung-Detektiv<small>Aufgabe 2: Springt die Maschine?</small></h2></div>
+                <div class="phase-body">
+                    <p>Überlege jeweils zuerst, wie N und Z gesetzt sind. Die Aufgabe auf dem Blatt funktioniert genauso.</p>
+                    <ul class="quiz" data-quiz="ja:springt|nein:springt nicht">
+                        <li data-loesung="ja"><span class="frage">A = 5 · <code>CMPI 3</code> · <code>JGT ziel</code></span><span class="erkl-text">5 &gt; 3: N = 0, Z = 0. JGT springt bei N = 0 und Z = 0.</span></li>
+                        <li data-loesung="nein"><span class="frage">A = 3 · <code>CMPI 3</code> · <code>JGT ziel</code></span><span class="erkl-text">3 = 3: Z = 1. Gleich ist nicht größer.</span></li>
+                        <li data-loesung="ja"><span class="frage">A = 3 · <code>CMPI 3</code> · <code>JGE ziel</code></span><span class="erkl-text">JGE springt bei N = 0, Z darf 1 sein.</span></li>
+                        <li data-loesung="ja"><span class="frage">A = −2 · <code>CMPI 3</code> · <code>JLE ziel</code></span><span class="erkl-text">−2 &lt; 3: N = 1. JLE springt bei N = 1 oder Z = 1.</span></li>
+                        <li data-loesung="nein"><span class="frage">A = 7 · <code>CMPI 7</code> · <code>JNE ziel</code></span><span class="erkl-text">Gleich: Z = 1. JNE springt nur bei Z = 0.</span></li>
+                        <li data-loesung="ja"><span class="frage">A = 7 · <code>SUBI 7</code> · <code>JEQ ziel</code></span><span class="erkl-text">Auch Rechenbefehle setzen das Statusregister: 7 − 7 = 0, also Z = 1.</span></li>
+                        <li data-loesung="ja"><span class="frage">A = 4 · <code>SUBI 9</code> · <code>STORE 100</code> · <code>JLT ziel</code></span><span class="erkl-text">4 − 9 = −5 setzt N = 1. STORE verändert das Statusregister nicht.</span></li>
+                        <li data-loesung="nein"><span class="frage">A = 0 · <code>LOADI 5</code> · <code>JEQ ziel</code></span><span class="erkl-text">LOADI setzt das Statusregister nach dem geladenen Wert: 5 ist nicht 0, also Z = 0.</span></li>
+                    </ul>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-4-verzweigungen.pdf">📝 Blatt 2.4 · Aufgabe 2</a></p>
+                </div>
+            </section>
+
+            <section id="veraendern" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">🔧</span><h2>Verändern<small>Aufgabe 3: Der Betrag (einseitige Verzweigung)</small></h2></div>
+                <div class="phase-body">
+                    <p>Das Programm soll den Betrag von <code>x</code> (Zelle 100) bilden: Ist <code>x</code> negativ, wird das Vorzeichen umgedreht, sonst passiert nichts.</p>
+                    <div class="code-paar">
+                        <div>
+                            <h4>Struktogramm</h4>
+                            <div class="sg">
+                                <div class="sg-wenn">
+                                    <div class="sg-wenn-kopf"><span class="bed">x &lt; 0</span><span class="wj">wahr</span><span class="wn">falsch</span></div>
+                                    <div class="sg-zweige">
+                                        <div class="sg-block"><div class="sg-anw">x = −x</div></div>
+                                        <div class="sg-block"><div class="leer">–</div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <ol class="aufgaben">
+                                <li><strong>TODO 3a:</strong> Welcher Sprung überspringt den Wahr-Zweig, wenn <code>x</code> nicht negativ ist?</li>
+                                <li><strong>TODO 3b:</strong> Mit welchem einzigen Befehl wird aus <code>x</code> die Zahl <code>−x</code>?</li>
+                                <li>Ergänze beides im Simulator und auf dem Blatt. ✔ Testen prüft negative, positive Zahlen und 0.</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="rm" data-rm="i13-24-betrag" data-titel="Aufgabe 3: Betrag" data-ansicht="kompakt" data-zellen="100" data-speicher="100:-7" data-tests="100=-7 -> 100=7 | 100=5 -> 100=5 | 100=0 -> 100=0 | 100=-1 -> 100=1">
+<script type="text/plain">
+; x: 100. Wenn x < 0, dann x = -x (Betrag).
+        LOAD 100
+        CMPI 0
+        ; TODO 3a: wenn x >= 0, ist nichts zu tun: zu ende springen
+        ; TODO 3b: x = -x berechnen
+        STORE 100
+ende:   HOLD
+</script>
+                    </div>
+                    <div class="lw" data-loesungsweg="Aufgabe 3">
+                        <template data-stufe="Tipp"><p>Umgekehrte Bedingung zu <code>x &lt; 0</code> ist <code>x &gt;= 0</code>. Für −x: Mit welcher Zahl muss man multiplizieren?</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="asm" data-adr>        LOAD 100
+        CMPI 0
+        JGE ende      ; TODO 3a
+        MULI -1       ; TODO 3b
+        STORE 100
+ende:   HOLD</pre><p>Für x ≥ 0 wird auch <code>STORE 100</code> übersprungen; das ist richtig, denn x bleibt unverändert. Statt <code>CMPI 0</code> ginge auch gar kein Vergleich: <code>LOAD 100</code> setzt N schon nach dem Vorzeichen von x.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-4-verzweigungen.pdf">📝 Blatt 2.4 · Aufgabe 3</a></p>
+                </div>
+            </section>
+
+            <section id="selbst" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Selbst bauen<small>Aufgabe 4: Das Maximum zweier Zahlen</small></h2></div>
+                <div class="phase-body">
+                    <p>In Zelle 102 soll die größere der beiden Zahlen aus Zelle 100 (<code>a</code>) und 101 (<code>b</code>) stehen.</p>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 4a:</strong> Zeichne auf dem Blatt das Struktogramm.</li>
+                        <li><strong>Aufgabe 4b:</strong> Schreibe das Assemblerprogramm auf das Blatt und teste es im Simulator. Die Tests prüfen auch gleiche und negative Zahlen.</li>
+                    </ol>
+                    <div class="rm" data-rm="i13-24-maximum" data-titel="Aufgabe 4: Maximum" data-ansicht="kompakt" data-zellen="100-102" data-speicher="100:4,101:9" data-tests="100=4,101=9 -> 102=9 | 100=9,101=4 -> 102=9 | 100=-3,101=-3 -> 102=-3 | 100=-5,101=-8 -> 102=-5">
+<script type="text/plain">
+; a: 100, b: 101, max: 102
+
+HOLD
+</script>
+                    </div>
+                    <div class="lw" data-loesungsweg="Aufgabe 4">
+                        <template data-stufe="Tipp 1"><p>Bedingung: <code>a &lt; b</code>. Wahr-Zweig: <code>max = b</code>, Falsch-Zweig: <code>max = a</code>. Jetzt das Muster aus dem Merkkasten anwenden.</p></template>
+                        <template data-stufe="Tipp 2"><p>Für <code>a &lt; b</code> vergleichst du mit <code>LOAD 100</code> und <code>CMP 101</code> (Inhalt von Zelle 101, also ohne I). Umgekehrter Sprung: <code>JGE</code>.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="asm" data-adr>        LOAD 100
+        CMP 101
+        JGE sonst     ; a >= b -> Falsch-Zweig
+        LOAD 101      ; Wahr-Zweig: max = b
+        STORE 102
+        JMP ende
+sonst:  LOAD 100      ; Falsch-Zweig: max = a
+        STORE 102
+ende:   HOLD</pre><p>Kürzere Lösung im Nachdenken-Teil.</p></template>
+                    </div>
+                    <div class="tipp"><strong>Für Schnelle: Rabatt.</strong> In Zelle 100 steht ein Einkaufsbetrag in Euro. Ab 100 € gibt es 10 % Rabatt. In Zelle 101 soll der zu zahlende Betrag stehen (ganze Euro, abgerundet).</div>
+                    <div class="rm" data-rm="i13-24-rabatt" data-titel="Für Schnelle: Rabatt" data-ansicht="kompakt" data-zellen="100-101" data-speicher="100:150" data-tests="100=150 -> 101=135 | 100=99 -> 101=99 | 100=100 -> 101=90 | 100=0 -> 101=0">
+<script type="text/plain">
+; betrag: 100, zahlen: 101
+
+HOLD
+</script>
+                    </div>
+                    <div class="tipp"><strong>Für Profis: Schaltjahr.</strong> Ein Jahr ist ein Schaltjahr, wenn es durch 4 teilbar ist, aber nicht durch 100, oder wenn es durch 400 teilbar ist. In Zelle 101 soll 1 (Schaltjahr) oder 0 stehen. Zeichne zuerst ein Struktogramm mit verschachtelten Verzweigungen.</div>
+                    <div class="rm" data-rm="i13-24-schaltjahr" data-titel="Für Profis: Schaltjahr" data-ansicht="kompakt" data-zellen="100-101" data-speicher="100:2024" data-tests="100=2024 -> 101=1 | 100=2025 -> 101=0 | 100=1900 -> 101=0 | 100=2000 -> 101=1 | 100=2100 -> 101=0">
+<script type="text/plain">
+; jahr: 100, schaltjahr: 101 (1 = ja, 0 = nein)
+
+HOLD
+</script>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-4-verzweigungen.pdf">📝 Blatt 2.4 · Aufgabe 4</a></p>
+                </div>
+            </section>
+
+            <section id="nachdenken" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Besprecht mündlich</small></h2></div>
+                <div class="phase-body">
+                    <p>Überlegt zu zweit. Die Hinweise sind zum Nachlesen <em>nach</em> dem Gespräch: Halte dazu den Knopf gedrückt.</p>
+                    <div class="idee"><strong>Was passiert im Eintrittsprogramm, wenn man <code>JMP ende</code> vergisst?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Nach dem Wahr-Zweig läuft die Maschine einfach weiter in den Falsch-Zweig: Kinder zahlen erst 5 €, dann wird der Preis mit 9 € überschrieben. Die Maschine kennt keine Blöcke wie <code>{ }</code> in Java, nur Zellen nacheinander und Sprünge.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Man muss die Bedingung nicht umkehren: Mit <code>JLT dann</code> kann man auch direkt zum Wahr-Zweig springen. Wie sieht das Programm dann aus? Warum ist die umgekehrte Form üblicher?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Dann steht der Falsch-Zweig direkt hinter dem Sprung, der Wahr-Zweig weiter hinten: <code>LOAD 100, CMPI 14, JLT dann, LOADI 9, STORE 101, JMP ende, dann: LOADI 5, STORE 101, ende: HOLD</code>. Beides ist richtig. Die umgekehrte Form behält die Reihenfolge aus Java und Struktogramm bei; bei einer einseitigen Verzweigung braucht sie keinen zusätzlichen <code>JMP</code>.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Das Maximum geht auch mit sechs Befehlen. Wie?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Nach <code>LOAD 100</code> und <code>CMP 101</code> steht <code>a</code> noch im Akkumulator. Ist <code>a &gt;= b</code>, kann man ihn gleich speichern; sonst lädt man vorher <code>b</code>: <code>LOAD 100, CMP 101, JGE fertig, LOAD 101, fertig: STORE 102, HOLD</code>. Beide Wege teilen sich das STORE.</p></template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🔁 Zurückspringen</h4>
+                            <p>Bisher springen alle Sprünge nach vorne. Springt man zurück zu einem früheren Befehl, wird ein Programmteil wiederholt: In 2.5 baust du so Schleifen.</p>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>🧠 Alles nur Sprünge</h4>
+                            <p>Ob <code>if</code>, <code>while</code> oder <code>for</code>: Auf Maschinenebene gibt es nur Vergleiche und Sprünge. Jede Kontrollstruktur einer Hochsprache wird daraus zusammengesetzt.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="2-3-zuweisungen.html">← 2.3 Rechnen in Assembler</a>
+                <a class="btn btn-primary" href="2-5-schleifen.html">2.5 Schleifen →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-2-4-verzweigungen-lsg.pdf">Lösung Blatt 2.4 (PDF)</a></p>
+                    <div class="tab-scroll">
+                        <table>
+                            <tr><th>Aufgabe</th><th>Lösung / Hinweis</th></tr>
+                            <tr><td>1</td><td>alter = 10: 0, 1, 2, 3, 4, 5, 8 → 5 · alter = 14: 0, 1, 2, 6, 7, 8 → 9. Bedingung 0–2, Wahr 3–5, Falsch 6–7.</td></tr>
+                            <tr><td>Merkkasten</td><td>umgekehrte Bedingung → Falsch-Zweig; JMP über den Falsch-Zweig; einseitig ohne JMP. Tabelle: == JNE, != JEQ, &lt; JGE, &lt;= JGT, &gt; JLE, &gt;= JLT.</td></tr>
+                            <tr><td>2</td><td>Blatt: (5 vs. 3) N0 Z0: JEQ –, JNE ✓, JGT ✓, JLE – · (3 vs. 3) N0 Z1: JEQ ✓, JNE –, JGT –, JLE ✓ · (−2 vs. 3) N1 Z0: JEQ –, JNE ✓, JGT –, JLE ✓.</td></tr>
+                            <tr><td>3</td><td>JGE ende, MULI -1.</td></tr>
+                            <tr><td>4</td><td>Struktogramm a &lt; b ? max = b : max = a; LOAD 100, CMP 101, JGE sonst, LOAD 101, STORE 102, JMP ende, sonst: LOAD 100, STORE 102, ende: HOLD. Rabatt: LOAD 100, CMPI 100, JLT sonst, MULI 9, DIVI 10, sonst: STORE 101, HOLD.</td></tr>
+                        </table>
+                    </div>
+                    <p class="mt-2"><strong>Einordnung:</strong> Kontrollstrukturen in Assembler, Teil 1 (LehrplanPLUS: „Kontrollstrukturen in Assemblersprache“, Statusregister). Bedingte Sprünge werten im Modell nur N und Z aus; CMP setzt sie nach dem echten Vergleich (ohne Überlauf). Das Muster „umgekehrte Bedingung“ wird als Standard eingeführt, die direkte Variante nur mündlich (Nachdenken). Schaltjahr als Profi-Aufgabe ohne Lösung auf der Seite, z. B. mit MODI 400/100/4 und Sprüngen zu Marken „ja“/„nein“.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,97 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+% Blatt:   xelatex ab-2-3-zuweisungen.tex
+% Lösung:  xelatex ab-2-3-zuweisungen-lsg.tex
+% Progression: Java-Zuweisung und Assembler nebeneinander (①–④) -> Merkkasten „Zuweisung übersetzen“
+%              -> vier Zuweisungen übersetzen (d mit Hilfszelle) -> Sekunden-Umrechner (Java hier, Assembler im Simulator)
+%              -> rückwärts: Assembler -> Java (Fahrenheit/Celsius)
+\begin{document}
+\abtitel{2.3}{Rechnen in Assembler}
+
+Ein Compiler übersetzt jede Java-Anweisung in Maschinenbefehle. Die Variablen bekommen dabei feste Speicherzellen:
+den \textbf{Speicherplan}.
+
+\begin{aufgabe}[Java und Assembler]{1}
+\begin{minipage}[t]{0.47\linewidth}
+\vspace{0pt}
+Speicherplan: \code{laenge} $\to$ 100, \code{breite} $\to$ 101, \code{umfang} $\to$ 102
+\begin{java}[aboveskip=1mm]
+umfang = 2 * (laenge + breite);
+\end{java}
+\begin{asm}[aboveskip=1mm]
+LOAD 100     ; (*\nr{1}*) A = laenge
+ADD 101      ; (*\nr{2}*) A = A + breite
+MULI 2       ; (*\nr{3}*) A = A * 2
+STORE 102    ; (*\nr{4}*) umfang = A
+HOLD
+\end{asm}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}
+\vspace{0pt}\lueckentext
+\textbf{a)} Länge 4, Breite 3. Akkumulator nach\\
+\nr{1} \lsg[2.25cm]{4} \nr{2} \lsg[2.25cm]{7} \nr{3} \lsg[2.25cm]{14}\\
+\nr{4} \lsg[2.25cm]{14} \quad (102) = \lsg[2.25cm]{14}\\
+\textbf{b)} In Java steht die 2 vorne, im Programm wird sie erst in \nr{3} benutzt. Warum?
+\lsglinien{3}{Die Klammer muss zuerst berechnet werden. Der Akkumulator hält nur einen Zwischenwert; mit 2 wird danach multipliziert.}
+\end{minipage}
+\end{aufgabe}
+
+\begin{merke}[Eine Zuweisung übersetzen]
+\lueckentext
+\nr{1} \textbf{Speicherplan:} Jede Variable bekommt eine feste \lsg[5.25cm]{Speicherzelle (Adresse)}.\\
+\nr{2} \textbf{Term auswerten:} Mit \lsg[2.25cm]{LOAD} den ersten Operanden in den Akkumulator laden, dann Befehl für Befehl
+in der \lsg[5.25cm]{Rechenreihenfolge} weiterrechnen (Klammern zuerst, Punkt vor Strich).
+Zahlen im Term werden zu Befehlen mit \lsg[2.25cm]{I} (z.\,B. \code{MULI 2}), Variablen zu Befehlen mit \lsg[3.9cm]{Adresse}.\\
+\nr{3} \textbf{Ergebnis speichern:} Mit \lsg[2.25cm]{STORE} in die Zelle der Variablen \lsg[3.9cm]{links vom =}.\\
+Wird ein Zwischenergebnis später noch gebraucht, legt man es in einer \lsg[3.9cm]{Hilfszelle} ab.
+\code{DIV} liefert den ganzzahligen Anteil, \code{MOD} den \lsg[3.9cm]{Rest} der Division (wie \code{/} und \code{\%} bei \code{int}).
+\end{merke}
+
+\newpage
+\begin{aufgabe}[Übersetzen üben \normalfont(ohne HOLD)]{2}
+Speicherplan: \code{a} $\to$ 100, \code{b} $\to$ 101, \code{x} $\to$ 102, \code{y} $\to$ 103, Hilfszelle $\to$ 110\\[1mm]
+\begin{minipage}[t]{0.48\linewidth}
+\vspace{0pt}
+\textbf{a)} \code{x = x + 1;}\\[0.5mm]
+\lsgfeld{3}{LOAD 102\\ADDI 1\\STORE 102}\\[1.5mm]
+\textbf{c)} \code{y = (a + b) / 2;}\\[0.5mm]
+\lsgfeld{4}{LOAD 100\\ADD 101\\DIVI 2\\STORE 103}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}
+\vspace{0pt}
+\textbf{b)} \code{y = 3 * a - b;}\\[0.5mm]
+\lsgfeld{4}{LOAD 100\\MULI 3\\SUB 101\\STORE 103}\\[1.5mm]
+\textbf{d)} \code{y = a - b * 2;} \enspace{\small (Punkt vor Strich!)}\\[0.5mm]
+\lsgfeld{6}{LOAD 101\\MULI 2\\STORE 110 \ ; hilf = b * 2\\LOAD 100\\SUB 110\\STORE 103}
+\end{minipage}
+\end{aufgabe}
+
+\begin{aufgabe}[Selbst bauen: Sekunden umrechnen \normalfont(Assembler im Simulator)]{3}
+\lueckentext
+Eine Stoppuhr liefert 4000 Sekunden, angezeigt werden soll 1\,h 6\,min 40\,s. Speicherplan: \code{gesamt} $\to$ 100,
+\code{stunden} $\to$ 101, \code{minuten} $\to$ 102, \code{sekunden} $\to$ 103. Schreibe die Java-Zuweisungen (mit \code{/} und \code{\%}):\\
+\code{stunden \ = }\lsgrest{\code{gesamt / 3600;}}
+\code{minuten \ = }\lsgrest{\code{gesamt \% 3600 / 60;}}
+\code{sekunden = }\lsgrest{\code{gesamt \% 60;}}
+\end{aufgabe}
+
+\begin{aufgabe}[Rückwärts: Welche Zuweisung steckt darin?]{4}
+\begin{minipage}[t]{0.3\linewidth}
+\vspace{0pt}
+\begin{asm}[aboveskip=0mm]
+LOAD 100
+SUBI 32
+MULI 5
+DIVI 9
+STORE 101
+HOLD
+\end{asm}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.66\linewidth}
+\vspace{0pt}\lueckentext
+Speicherplan: \code{f} (Grad Fahrenheit) $\to$ 100, \code{celsius} $\to$ 101\\
+\textbf{a)} \code{celsius = }\lsgrest{\code{(f - 32) * 5 / 9;}}
+\textbf{b)} Für \code{f} = 212 ergibt sich \lsg[2.25cm]{100}, für \code{f} = 100 ergibt sich \lsg[2.25cm]{37}.
+\end{minipage}
+\end{aufgabe}
+\end{document}

@@ -1,0 +1,119 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+% Blatt:   xelatex ab-2-2-registermaschine.tex
+% Lösung:  xelatex ab-2-2-registermaschine-lsg.tex
+% Progression: erstes Programm vorhersagen und im Simulator Takt für Takt beobachten (Register, Busse)
+%              -> Merkkästen Register und Befehlszyklus ①②③ -> Ablauf protokollieren
+%              -> Statusregister N, Z, O -> selbst bauen: zwei Zellen tauschen (Hilfszelle)
+\begin{document}
+\abtitel{2.2}{Die Registermaschine}
+
+Die Registermaschine ist ein vereinfachtes Modell eines Von-Neumann-Rechners. (x) bedeutet „Inhalt von Zelle x“.
+Befehle mit I am Ende rechnen mit der Zahl im Befehl: \code{ADD 5} addiert (5), \code{ADDI 5} addiert die Zahl 5.
+
+\begin{aufgabe}[Ein erstes Programm]{1}
+\begin{minipage}[t]{0.36\linewidth}
+\vspace{0pt}
+\begin{asm}
+LOAD 100
+ADD 101
+STORE 102
+HOLD
+\end{asm}
+{\small Vorher: (100) = 7, (101) = 5}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.6\linewidth}
+\vspace{0pt}\lueckentext
+\textbf{a)} Nach dem Programm: (102) = \lsg[2.25cm]{12} \quad Akkumulator: \lsg[2.25cm]{12}\\
+\textbf{b)} Beobachte im Simulator den Befehl \code{ADD 101} Takt für Takt.
+Was ändert sich in welcher Phase, was liegt auf den Bussen?
+\end{minipage}\\[1mm]
+{\renewcommand{\arraystretch}{1.05}\small
+\begin{tabularx}{\linewidth}{|l|>{\raggedright\arraybackslash}X|p{2.2cm}|p{2.2cm}|p{2.6cm}|}\hline
+\textbf{Phase} & \textbf{Diese Register ändern sich} & \textbf{Adressbus} & \textbf{Steuerbus} & \textbf{Datenbus}\\\hline
+\nr{1} Holen\schreibzeile & \lsgtext{Befehlsregister (ADD 101), Befehlszähler (1 $\to$ 2)} & \lsgtext{1} & \lsgtext{lesen} & \lsgtext{ADD 101}\\\hline
+\nr{2} Dekodieren\schreibzeile & \lsgtext{keines} & \lsgtext{–} & \lsgtext{–} & \lsgtext{–}\\\hline
+\nr{3} Ausführen\schreibzeile & \lsgtext{Akkumulator (12), Statusregister} & \lsgtext{101} & \lsgtext{lesen} & \lsgtext{5}\\\hline
+\end{tabularx}}
+\end{aufgabe}
+
+\begin{merke}[Register der Registermaschine]
+{\renewcommand{\arraystretch}{1.05}
+\begin{tabularx}{\linewidth}{|l|l|>{\raggedright\arraybackslash}X|}\hline
+\textbf{Register} & \textbf{gehört zum} & \textbf{enthält}\\\hline
+Befehlszähler (BZ)\schreibzeile & Steuerwerk & \lsgtext{die Adresse des nächsten Befehls}\\\hline
+Befehlsregister (BR)\schreibzeile & Steuerwerk & \lsgtext{den Befehl, der gerade ausgeführt wird}\\\hline
+Akkumulator (A)\schreibzeile & Rechenwerk & \lsgtext{einen Operanden und danach das Ergebnis jeder Rechnung}\\\hline
+Statusregister (SR)\rule[-6.5mm]{0pt}{12mm} & Rechenwerk & \lsgtext{Eigenschaften des letzten Ergebnisses: N = 1 negativ, Z = 1 null, O = 1 Überlauf}\\\hline
+\end{tabularx}}
+\end{merke}
+
+\begin{merke}[Der Befehlszyklus (wiederholt sich bis HOLD)]
+\lueckentext
+\nr{1} \textbf{Holen:} Der Befehl aus der Zelle, deren Adresse im \lsg[5.25cm]{Befehlszähler} steht, kommt über den Datenbus
+ins \lsg[5.25cm]{Befehlsregister}. Der Befehlszähler wird \lsg[5.25cm]{um 1 erhöht}.\\
+\nr{2} \textbf{Dekodieren:} Das Steuerwerk \lsg[5.25cm]{entschlüsselt} den Befehl.\\
+\nr{3} \textbf{Ausführen:} Falls nötig wird ein Operand über die Busse geholt, das Rechenwerk rechnet, und das Ergebnis
+kommt in den \lsg[5.25cm]{Akkumulator} (bei \code{STORE} in den Speicher).
+\end{merke}
+
+\newpage
+\begin{aufgabe}[Ablauf protokollieren \normalfont(zuerst ohne Simulator)]{2}
+\begin{minipage}[t]{0.3\linewidth}
+\vspace{0pt}
+\begin{asm}
+LOAD 100
+SUBI 6
+STORE 101
+LOADI 4
+SUB 100
+MULI 3
+STORE 102
+HOLD
+\end{asm}
+{\small Vorher: (100) = 6}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.66\linewidth}
+\vspace{0pt}
+{\renewcommand{\arraystretch}{1}\small
+\begin{tabularx}{\linewidth}{|c|l|c|c|c|X|}\hline
+\textbf{Zelle} & \textbf{Befehl} & \textbf{A} & \textbf{N} & \textbf{Z} & \textbf{Speicher}\\\hline
+0 & LOAD 100\schreibzeile & \lsgtext{6} & \lsgtext{0} & \lsgtext{0} & \\\hline
+1 & SUBI 6\schreibzeile & \lsgtext{0} & \lsgtext{0} & \lsgtext{1} & \\\hline
+2 & STORE 101\schreibzeile & \lsgtext{0} & \lsgtext{0} & \lsgtext{1} & \lsgtext{(101) = 0}\\\hline
+3 & LOADI 4\schreibzeile & \lsgtext{4} & \lsgtext{0} & \lsgtext{0} & \\\hline
+4 & SUB 100\schreibzeile & \lsgtext{−2} & \lsgtext{1} & \lsgtext{0} & \\\hline
+5 & MULI 3\schreibzeile & \lsgtext{−6} & \lsgtext{1} & \lsgtext{0} & \\\hline
+6 & STORE 102\schreibzeile & \lsgtext{−6} & \lsgtext{1} & \lsgtext{0} & \lsgtext{(102) = −6}\\\hline
+\end{tabularx}}
+\end{minipage}\\[1mm]
+\lueckentext
+Nach \code{STORE 101} ist Z immer noch 1. Warum? \lsgrest{STORE rechnet nicht: Das SR bleibt wie nach SUBI 6.}
+\end{aufgabe}
+
+\begin{aufgabe}[Das Statusregister \normalfont(Prüfen im Flaggen-Labor)]{3}
+Ganze Zahlen haben 16 Bit: −32\,768 bis 32\,767. Was steht nach dem Befehl im Akkumulator, wie sind N, Z, O gesetzt?\\[1mm]
+{\renewcommand{\arraystretch}{1}\small
+\begin{tabularx}{\linewidth}{|c|c|>{\centering\arraybackslash}X|c|c|c|}\hline
+\textbf{A vorher} & \textbf{Befehl} & \textbf{A danach} & \textbf{N} & \textbf{Z} & \textbf{O}\\\hline
+5\schreibzeile & SUBI 5 & \lsgtext{0} & \lsgtext{0} & \lsgtext{1} & \lsgtext{0}\\\hline
+5\schreibzeile & SUBI 8 & \lsgtext{−3} & \lsgtext{1} & \lsgtext{0} & \lsgtext{0}\\\hline
+−3\schreibzeile & MULI −2 & \lsgtext{6} & \lsgtext{0} & \lsgtext{0} & \lsgtext{0}\\\hline
+17\schreibzeile & MODI 5 & \lsgtext{2} & \lsgtext{0} & \lsgtext{0} & \lsgtext{0}\\\hline
+32\,767\schreibzeile & ADDI 1 & \lsgtext{−32\,768 (Überlauf, falscher Wert)} & \lsgtext{1} & \lsgtext{0} & \lsgtext{1}\\\hline
+\end{tabularx}}
+\end{aufgabe}
+
+\begin{aufgabe}[Selbst bauen: zwei Zellen tauschen \normalfont(dann im Simulator testen)]{4}
+\begin{minipage}[t]{0.42\linewidth}
+\vspace{0pt}\raggedright
+Die Inhalte der Zellen 100 und 101 sollen vertauscht werden. Zelle 102 darfst du als Hilfszelle benutzen.\\[2mm]
+Warum braucht man die Hilfszelle?
+\lsglinien{3}{Der Akkumulator hält nur eine Zahl. Ohne Sicherung wäre der alte Inhalt von 100 beim ersten STORE verloren.}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.54\linewidth}
+\vspace{0pt}
+\lsgfeld{7}{LOAD 100\\STORE 102 \ \ ; hilf = a\\LOAD 101\\STORE 100 \ \ ; a = b\\LOAD 102\\STORE 101 \ \ ; b = hilf\\HOLD}
+\end{minipage}
+\end{aufgabe}
+\end{document}
