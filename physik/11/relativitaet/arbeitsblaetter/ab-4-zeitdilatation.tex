@@ -1,0 +1,126 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+% Blatt:   xelatex ab-4-zeitdilatation.tex
+% Lösung:  xelatex ab-4-zeitdilatation-lsg.tex
+% Progression: Vorhersage -> Lichtuhr, Eigen-Tick -> Messreihe + Diagramm -> Herleitung ①②③ am Dreieck
+%              -> alle Uhren (Postulat 1) -> Merkkasten -> γ im Alltag -> Rechnen mit dem Plan -> Hafele-Keating
+\begin{document}
+\abtitel{4}{Die Lichtuhr}
+\leitfrage{Gehen bewegte Uhren anders?}
+
+\begin{aufgabe}[Vorhersage und die einfachste Uhr der Welt]{1}
+\zoe{Zoes} Uhr fährt schnell an \bea{Bea} vorbei. Für Bea geht sie \ \kreuz{0} gleich schnell \ \kreuz{1} langsamer \ \kreuz{0} schneller.\\[1mm]
+\lueckentext
+Lichtuhr: Spiegelabstand $h = 1{,}5$ m. Ein Tick (hin und zurück) dauert für jemanden neben der Uhr\\
+$\Delta t_0 = $ \lsg[8cm]{$2h/c = 3\,\text{m} : (3\cdot10^8\,\text{m/s}) = 10^{-8}\,\text{s}$} $=$ \lsg[2.25cm]{10 ns}.
+\end{aufgabe}
+
+\begin{aufgabe}[Messreihe: Zoes Lichtuhr, gemessen in Beas System]{2}
+\begin{minipage}[t]{0.56\linewidth}
+\vspace{0pt}
+\lueckentext
+\textbf{a)} Der Tick dauert für Bea länger, weil \lsgrest{das Licht einen}
+\lsgrest{längeren (schrägen) Weg hat, aber auch nur mit c läuft.}
+{\renewcommand{\arraystretch}{1}\small\linespread{1}\selectfont
+\begin{tabularx}{\linewidth}{|l|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}\hline
+$v$ & \textbf{Lichtweg in m} & \textbf{Tick in ns} & \textbf{Verhältnis}\\\hline
+0\schreibzeile & \lsgtext{3,00} & \lsgtext{10,00} & \lsgtext{1,00}\\\hline
+0,3 c\schreibzeile & \lsgtext{3,14} & \lsgtext{10,48} & \lsgtext{1,05}\\\hline
+0,6 c\schreibzeile & \lsgtext{3,75} & \lsgtext{12,50} & \lsgtext{1,25}\\\hline
+0,8 c\schreibzeile & \lsgtext{5,00} & \lsgtext{16,67} & \lsgtext{1,67}\\\hline
+0,9 c\schreibzeile & \lsgtext{6,88} & \lsgtext{22,94} & \lsgtext{2,29}\\\hline
+\end{tabularx}}
+
+\vspace{1mm}
+\textbf{d)} Beas Uhr zeigt 10 Ticks, Zoes Uhr bei 0,6 c: \lsg[1.5cm]{8}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.41\linewidth}
+\vspace{0pt}\centering
+{\small \textbf{c)} Verhältnis (hoch) gegen $v$ (rechts)}\\[0.5mm]
+\begin{tikzpicture}[x=5mm,y=5mm]
+  \draw[karo] (0,0) grid (12,12);
+  \draw[-{Stealth},line width=0.7pt] (1,1) -- (11.7,1) node[below left,font=\scriptsize] {$v$};
+  \draw[-{Stealth},line width=0.7pt] (1,1) -- (1,11.7);
+  \foreach \x/\l in {1/0,3/{0,2},5/{0,4},7/{0,6},9/{0,8},11/{c}} \node[below,font=\tiny] at (\x,1) {\l};
+  \foreach \y/\l in {1/{1,0},5/{1,5},9/{2,0}} \node[left,font=\tiny] at (1,\y) {\l};
+  \ifloesung\draw[red!75!black,line width=0.9pt] plot[smooth] coordinates {(1,1) (4,1.39) (7,3) (9,6.33) (10,11.35)};
+  \foreach \p in {(1,1),(4,1.39),(7,3),(9,6.33),(10,11.35)} \fill[red!75!black] \p circle (1.6pt);\fi
+\end{tikzpicture}\\[0.5mm]
+\raggedright\small Verlauf: \lsgtext{erst kaum, dann immer steiler}
+\end{minipage}
+\end{aufgabe}
+
+\begin{aufgabe}[Herleitung: Das Dreieck kommt zurück]{3}
+\begin{minipage}[t]{0.4\linewidth}
+\vspace{0pt}\centering
+\begin{tikzpicture}[x=1cm,y=1cm,font=\small]
+  \draw[beablau,line width=1.4pt] (0,0) -- (3,0); \draw[beablau,line width=0.6pt,dashed] (3,0) -- (6,0);
+  \draw[zoeorange,line width=1.4pt] (3,0) -- (3,2.4);
+  \draw[lichtgelb,line width=1.4pt] (0,0) -- (3,2.4); \draw[lichtgelb,line width=0.6pt,dashed] (3,2.4) -- (6,0);
+  \draw (2.75,0) |- (3,0.25);
+  \node[lichtgelb,above,rotate=38.7] at (1.4,1.2) {\lsgoder{$c\cdot\Delta t/2$}{\rule{1.6cm}{0.4pt}}};
+  \node[beablau,below] at (1.5,0) {\lsgoder{$v\cdot\Delta t/2$}{\rule[-3mm]{1.6cm}{0.4pt}}};
+  \node[zoeorange,right] at (3,1.1) {\lsgoder{$c\cdot\Delta t_0/2$}{\rule{1.6cm}{0.4pt}}};
+  \node[font=\scriptsize,below] at (6,0) {Tick};
+\end{tikzpicture}\\
+{\scriptsize Ein Tick von Zoes Uhr in Beas System}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.57\linewidth}
+\vspace{0pt}\lueckentext
+Derselbe Tick dauert für \bea{Bea} $\Delta t$, für \zoe{Zoe} $\Delta t_0$.\\
+\nr{1} \textbf{Seiten} beschriften (halbe Tick-Dauer, im Bild).\\
+\nr{2} \textbf{Pythagoras:}\\ \lsgrest{$\left(c\,\frac{\Delta t}{2}\right)^2 = \left(v\,\frac{\Delta t}{2}\right)^2 + \left(c\,\frac{\Delta t_0}{2}\right)^2$}
+\nr{3} \textbf{Auflösen} nach $\Delta t$:\\ \lsgrest{$c^2\Delta t^2 - v^2\Delta t^2 = c^2\Delta t_0^2$}
+\lsgrest{$\Delta t^2\,(1 - v^2/c^2) = \Delta t_0^2$}
+$\Delta t = $ \lsg[5cm]{$\Delta t_0 / \sqrt{1 - v^2/c^2}$}
+\end{minipage}\\[1mm]
+\lueckentext
+Prüfen mit $v = 0{,}6\,c$: \lsgrest{$\sqrt{1 - 0{,}36} = 0{,}8$; \quad $\Delta t = 10$ ns : 0,8 = 12,5 ns \checkmark}
+\end{aufgabe}
+
+\newpage
+\begin{aufgabe}[Gilt das nur für Lichtuhren? \normalfont(Argumentiere mit Postulat 1)]{4}
+\lsglinien{3}{Nein. Ginge Zoes Armbanduhr anders als ihre Lichtuhr, könnte sie im geschlossenen Zug feststellen, dass sie fährt. Das verbietet Postulat 1. Also laufen alle Uhren (auch Puls, Zerfälle) im Gleichschritt.}
+\end{aufgabe}
+
+\begin{merke}[Zeitdilatation]
+\lueckentext
+Die \textbf{Eigenzeit} $\Delta t_0$ misst, für wen beide Ereignisse \lsg[5.25cm]{am selben Ort} stattfinden.\\
+In jedem anderen Inertialsystem liegt zwischen den Ereignissen eine \lsg[3.2cm]{längere} Zeit:\\
+$\Delta t = $ \lsg[3cm]{$\gamma\cdot\Delta t_0$} \quad mit dem Lorentzfaktor \quad $\gamma = $ \lsg[4.5cm]{$1/\sqrt{1 - v^2/c^2}$}\\
+$\gamma$ ist immer \lsg[1.5cm]{$\geq 1$}. Bewegte Uhren gehen \lsg[3.2cm]{langsamer}. Die Eigenzeit ist die \lsg[3.2cm]{kürzeste} Zeit.
+\end{merke}
+
+\begin{aufgabe}[Warum hat das vorher niemand bemerkt? \normalfont($\gamma$-Explorer)]{5}
+{\renewcommand{\arraystretch}{1}\small
+\begin{tabularx}{\linewidth}{|l|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}\hline
+ & \textbf{ICE} & \textbf{Flugzeug} & \textbf{ISS} & \textbf{Myon (0,995 c)}\\\hline
+$\gamma$ bzw. $\gamma - 1$\schreibzeile & \lsgtext{$1 + 3{,}8\cdot10^{-14}$} & \lsgtext{$1 + 3{,}5\cdot10^{-13}$} & \lsgtext{$1 + 3{,}3\cdot10^{-10}$} & \lsgtext{10,0}\\\hline
+Uhr geht nach pro Tag\schreibzeile & \lsgtext{3,3 ns} & \lsgtext{30 ns} & \lsgtext{28 µs} & \lsgtext{(über 21 h)}\\\hline
+\end{tabularx}}
+
+\vspace{1mm}\lueckentext
+Mein Tipp (ICE): \luecke[2.6cm] \quad $\gamma$ weicht erst ab etwa \lsg[2cm]{0,14 c} um mehr als 1\,\% von 1 ab.
+\end{aufgabe}
+
+\begin{aufgabe}[Mit dem Plan rechnen: Raumschiff mit $v = 0{,}8\,c$, Borduhr zeigt 3,0 Jahre]{6}
+\lueckentext
+\nr{1} \bea{S:} \lsg[4cm]{Erde und Station} \zoe{S$'$:} \lsg[3cm]{Raumschiff} Ereignisse: \lsg[4.6cm]{Abflug und Ankunft}\\
+\nr{2} Beide Ereignisse am selben Ort für \lsg[3.5cm]{das Raumschiff}: Eigenzeit misst die \lsg[3cm]{Borduhr}.\\
+\nr{3} $\gamma = $ \lsg[5.5cm]{$1/\sqrt{1 - 0{,}64} = 1/0{,}6 = 1{,}67$} \quad $\Delta t = $ \lsg[4.5cm]{$1{,}67\cdot 3{,}0$ a $= 5{,}0$ a}\\
+\phantom{\nr{3}} Entfernung der Station für die Erde: \lsgrest{$0{,}8\,c\cdot 5{,}0$ a $= 4{,}0$ Lichtjahre}
+\end{aufgabe}
+
+\begin{aufgabe}[Im Experiment geprüft: Atomuhren im Flugzeug (1971)]{7}
+{\small Vorhersage / Messung: ostwärts $-40 \pm 23$ ns / $-59 \pm 10$ ns; \quad westwärts $+275 \pm 21$ ns / $+273 \pm 7$ ns.}\\[0.5mm]
+\lueckentext
+\textbf{a)} Passt das zusammen? \lsgrest{Ja, die Bereiche überlappen jeweils.}
+\textbf{b)} Warum geht die Uhr im Ostflug nach, die im Westflug vor?
+\lsglinien{2}{Von außen gesehen ist die Uhr im Ostflug am schnellsten (Erddrehung plus Flug), die im Westflug am langsamsten. Die schnellste Uhr geht am langsamsten.}
+\end{aufgabe}
+
+\begin{planbox}[Plan-Karte, Stand nach Station 4 \normalfont(ins Logbuch übertragen, Annahmen-Tafel Spalte 4)]
+\lueckentext
+\textbf{\nr{2} Eigen-System:} beide Ereignisse am \lsg[3cm]{selben Ort} $\to$ Eigenzeit. \quad \textbf{\nr{3} Umrechnen:} Zeit \lsg[1.2cm]{mal} $\gamma$.
+\end{planbox}
+\end{document}

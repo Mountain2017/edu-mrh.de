@@ -414,7 +414,19 @@ Spiele-Station `#play`: Branch Blitz, Who's who, Nachfolge, Bill Quest, Rollensp
 auf `w-seminar-time.html#materials`)
 
 **Weitere Fächer**: `mathe/` (12: Exponential-/ln-Funktion, Umkehrfunktion),
-`physik/` (10 Berlinfahrt-Lernpfad, 11 Federpendel + Protokoll, 12 Lorentzkraft),
+`physik/` (10 Berlinfahrt-Lernpfad, 11 Federpendel + Protokoll, 11 Spezielle Relativitätstheorie (siehe unten), 12 Lorentzkraft),
 `franzoesisch/` (8 Québec), `Latein/` (Cicero), `psychologie/` (Grawe),
 `Stadtrallye/` (Triest), `lernen-lernen/` (Modulreihe „Fit für die Qualifikationsphase“: `lerntest/index.html` = Lerntest Modul I, `methodenkoffer/methodenkoffer.html` = Methodenkoffer Modul III; nur über QR-Codes im Schülerheft erreichbar, URLs nicht ändern; Schrift lokal in `lernen-lernen/fonts/`). Von keiner Seite verlinkt: `nutrition/` (de/en),
 `finanzen/` (Pflegevorsorge-Rechner), `dnd/`
+
+**Physik 11 Spezielle Relativitätstheorie** (neues Format, → AB, Ph11 3.2, EVA, ca. 10 Std.):
+`physik/11/relativitaet/relativitaet.html` (Übersicht) mit 1 Bezugssysteme, 2 Licht (Michelson-Morley, Postulate),
+3 Gleichzeitigkeit, 4 Zeitdilatation (Lichtuhr), 5 Längenkontraktion (Myonen), 6 Alltag (GPS), 7 Grenzen
+(„Deutsche Physik“), `produkt.html` (Erklärkarte), `quanten.html` (Zusatz). Feste Bezugsrahmen, nicht ändern:
+Bea = System S = blau, Zoe = System S′ = orange; Plan-Karte (zwei Grundregeln, Schritte ①②③, γ-Dreieck,
+`data-plan="n"` wächst von Station 1 bis 5); Annahmen-Tafel A1–A4 (`data-annahmen`); Eigenzeit über „beide
+Ereignisse am selben Ort“, Eigenlänge über „ruht im System“. Vorhersage vor Beobachtung (`data-vorhersage` sperrt
+`data-nach`, `?offen` öffnet alles), ⭐ = Vertiefung, nie Voraussetzung. Bausteine `relativitaet.js`, Simulationen
+`simulationen.js` (`data-sim`: zug, rennen, aether, lampe, lichtuhr, gamma, myonen, gps). Zahlen auf Seite, Blatt
+und in der Simulation identisch halten (Myonen: 563/h, 1917 m, 0,995 c, 1,52 µs; GPS: 3,87 km/s, −7,2/+45,7 µs).
+Blätter `ab-0-logbuch`, `ab-1` bis `ab-7`, `ab-p-erklaerkarte` mit eigener `ab-vorlage.tex`.

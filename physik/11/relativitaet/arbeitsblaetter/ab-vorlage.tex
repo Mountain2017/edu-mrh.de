@@ -1,0 +1,113 @@
+% =====================================================================
+%  Gemeinsame Vorlage der Arbeitsblätter – Spezielle Relativitätstheorie (Physik 11, Ph11 3.2)
+%  Kopf, Fuß und Boxen wie informatik/13/rechner/arbeitsblaetter/ab-vorlage.tex,
+%  Antwortplatz-Makros wie informatik/10/java/arbeitsblaetter/ab-vorlage.tex
+%  (Linien 8 mm, Karo 5 mm aus ganzen Kästchen, Lücken x 1,5).
+%  Einbinden in jedem Blatt direkt nach \documentclass: \input{ab-vorlage}
+%  Übersetzen mit XeLaTeX:
+%
+%  Blatt:   xelatex ab-4-zeitdilatation.tex
+%  Lösung:  xelatex ab-4-zeitdilatation-lsg.tex
+%           (Datei enthält nur: \def\mitloesung{}\input{ab-4-zeitdilatation})
+%  Lösungseinträge belegen nie mehr Platz als die Lücke im Blatt.
+%
+%  Antwortplatz:
+%   \luecke[l] / \lsg[l]{Text}      Lücke (Standard 6,75 cm, Fachbegriff 5,25 cm, Zahl 2,25 cm)
+%   \restzeile / \lsgrest{Text}     Lücke bis Zeilenende      \lueckentext  Absatz mit Lücken
+%   \linien{n} / \lsglinien{n}{T}   Schreiblinien 8 mm        \schreibzeile Tabellenzelle 8 mm
+%   \lsgtext{…}                     nur in der Lösung         \lsgoder{Lösung}{Blatt}
+%   \kariert{n} / \lsgkariert{n}{TikZ}, \karobox{b}{h} / \lsgkarobox{b}{h}{TikZ}
+%   \kreuz{1}                       Ankreuzfeld (1 = in der Lösung angekreuzt)
+%   \nr{1}                          Schrittnummer ① wie auf der Website
+%  Feste Farben wie auf der Website:
+%   \bea{…} blau (Bahnsteig-System S), \zoe{…} orange (Zug-System S′), \licht{…} gelb
+%   \weblink{Abschnitt}             grauer Verweis auf den Abschnitt der Stationsseite
+% =====================================================================
+\usepackage[a4paper,left=16mm,right=16mm,top=23mm,bottom=13mm,headheight=12mm,headsep=3mm,footskip=6mm]{geometry}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{helvet}
+  \renewcommand{\familydefault}{\sfdefault}
+\else
+  \usepackage{fontspec}
+  \setmainfont{texgyreheros}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,ItalicFont=*-italic,BoldItalicFont=*-bolditalic]
+\fi
+\usepackage[ngerman,shorthands=off]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor,graphicx,tabularx,array,enumitem,fancyhdr,tikz,multicol,calc,etoolbox,pifont,xspace,colortbl}
+\usepackage[most]{tcolorbox}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\usepackage[hidelinks]{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+\setlist{nosep,leftmargin=*}
+
+% ---------- Lösungsschalter ----------
+\newif\ifloesung
+\ifdefined\mitloesung\loesungtrue\fi
+\newcommand{\lsgfarbe}{\color{red!75!black}}
+
+% ---------- Farben wie auf der Website ----------
+\definecolor{beablau}{HTML}{2563EB}\definecolor{zoeorange}{HTML}{EA580C}\definecolor{lichtgelb}{HTML}{CA8A04}
+\definecolor{relgruen}{HTML}{0F766E}
+\newcommand{\bea}[1]{{\color{beablau}\bfseries #1}}
+\newcommand{\zoe}[1]{{\color{zoeorange}\bfseries #1}}
+\newcommand{\licht}[1]{{\color{lichtgelb}\bfseries #1}}
+
+% ---------- Kopf- und Fußzeile ----------
+\newcommand{\lehrkraft}{Hau}
+\newcommand{\themenbereich}{3.2 Spezielle Relativitätstheorie}
+\newcommand{\abnummer}{}
+\pagestyle{fancy}\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancyhead[L]{\small Klasse 11\\Datum:}
+\fancyhead[C]{\small Themenbereich:\\\themenbereich}
+\fancyhead[R]{\small \lehrkraft\ifloesung\\{\lsgfarbe\bfseries Lösung}\fi}
+\fancyfoot[C]{\scriptsize edu-mrh.de\,·\,Physik 11\,·\,Blatt \abnummer\ifloesung\ (Lösung)\fi\,·\,Seite \thepage}
+\newcommand{\abtitel}[2]{\renewcommand{\abnummer}{#1}\begin{center}\Large\bfseries #1\quad\underline{#2}\end{center}\vspace{-2mm}}
+\newcommand{\leitfrage}[1]{\begin{center}\vspace{-1.5mm}\itshape #1\end{center}\vspace{-1.5mm}}
+
+% ---------- Boxen ----------
+\newenvironment{aufgabe}[2][]{\begin{tcolorbox}[enhanced,breakable,colback=white,colframe=black,boxrule=0.7pt,arc=3mm,left=2mm,right=2mm,top=1mm,bottom=1.2mm,before skip=2mm,after skip=2mm]\textbf{Aufgabe #2}\ifstrempty{#1}{}{ \textit{#1}}\par\vspace{0.3mm}}{\end{tcolorbox}}
+\newtcolorbox{merke}[1][Merke]{enhanced,breakable,colback=green!5,colframe=green!40!black,boxrule=0.8pt,arc=2mm,left=2mm,right=2mm,top=1mm,bottom=1.2mm,before skip=2mm,after skip=2mm,title={#1},fonttitle=\bfseries,coltitle=white,toptitle=0.3mm,bottomtitle=0.3mm}
+\newtcolorbox{hinweis}{enhanced,breakable,colback=yellow!12,colframe=orange!70!black,boxrule=0.6pt,arc=2mm,left=2mm,right=2mm,top=1mm,bottom=1mm,before skip=2mm,after skip=2mm}
+\newtcolorbox{planbox}[1][Plan-Karte]{enhanced,breakable,colback=relgruen!5,colframe=relgruen,boxrule=0.9pt,arc=2mm,left=2mm,right=2mm,top=1mm,bottom=1.2mm,before skip=2mm,after skip=2mm,title={#1},fonttitle=\bfseries,coltitle=white,toptitle=0.3mm,bottomtitle=0.3mm}
+\newcommand{\weblink}[1]{{\small\color{gray}\textit{Website: #1}}}
+
+% ---------- Antwortplatz (wie informatik/10/java, Lücken x 1,5) ----------
+\newlength{\zeilenabstand}\setlength{\zeilenabstand}{8mm}
+\newlength{\karo}\setlength{\karo}{5mm}
+\tikzset{karo/.style={draw=gray!50,line width=0.3pt},schreiblinie/.style={draw=black!65,line width=0.35pt}}
+\newlength{\lsgbreite}
+\newcommand{\lsg}[2][6.75cm]{\leavevmode\ifloesung\settowidth{\lsgbreite}{\,#2\,}%
+  \ifdim\lsgbreite>#1\relax\rlap{\raisebox{0.8pt}{\resizebox{#1}{!}{\lsgfarbe\,#2\,}}}%
+  \else\rlap{\raisebox{0.8pt}{\lsgfarbe\,#2}}\fi\fi\rule[-0.6ex]{#1}{0.4pt}\xspace}
+\newcommand{\luecke}[1][6.75cm]{\lsg[#1]{}}
+\newcommand{\lsgrest}[1]{\leavevmode\unskip\hspace{1.5mm}\ifloesung\rlap{\raisebox{0.8pt}{\lsgfarbe\,#1}}\fi\leaders\hbox{\rule[-0.6ex]{0.5pt}{0.4pt}}\hfill\null\par}
+\newcommand{\restzeile}{\lsgrest{}}
+\newcommand{\lsgtext}[1]{\ifloesung\leavevmode{\lsgfarbe#1}\fi}
+\newcommand{\lsgoder}[2]{\ifloesung\leavevmode#1\else#2\fi}
+\newcommand{\lueckentext}{\linespread{1.5}\selectfont\raggedright}
+\newcommand{\schreibzeile}{\rule[-2.8mm]{0pt}{8mm}}
+\newcommand{\nr}[1]{\ding{\numexpr171+#1\relax}}
+\newcommand{\lsglinien}[2]{\par\vspace{0.5mm}\noindent\begin{tikzpicture}
+  \path (0,0) (\linewidth-0.4pt,-#1\zeilenabstand-1.5mm);
+  \foreach \i in {1,...,#1}{\draw[schreiblinie] (0.2pt,-\i\zeilenabstand) -- (\linewidth-0.2pt,-\i\zeilenabstand);}
+  \ifloesung\node[overlay,anchor=north west,inner sep=0pt] at (1mm,-\zeilenabstand+1pt+5mm) {\parbox[t]{\linewidth-2mm}{\lsgfarbe\raggedright\setlength{\baselineskip}{\zeilenabstand}\rule{0pt}{5mm}#2}};\fi
+  \end{tikzpicture}\par}
+\newcommand{\linien}[1]{\lsglinien{#1}{}}
+\newcommand{\karoraster}[3]{\begin{tikzpicture}\draw[karo] (0,0) grid[step=\karo] (#1\karo,#2\karo);
+  \ifloesung\begin{scope}[overlay,shift={(0,#2\karo)},red!75!black,text=red!75!black,line width=0.8pt]#3\end{scope}\fi\end{tikzpicture}}
+\newcommand{\lsgkariert}[2]{\par\vspace{1.5mm}\noindent\pgfmathtruncatemacro{\karoX}{floor(\linewidth/\karo)}%
+  \makebox[\linewidth]{\karoraster{\karoX}{#1}{#2}}\par\vspace{1mm}}
+\newcommand{\kariert}[1]{\lsgkariert{#1}{}}
+\newcommand{\lsgkarobox}[3]{\pgfmathtruncatemacro{\karoX}{round((#1)/\karo)}\pgfmathtruncatemacro{\karoY}{round((#2)/\karo)}\karoraster{\karoX}{\karoY}{#3}}
+\newcommand{\karobox}[2]{\lsgkarobox{#1}{#2}{}}
+\newcommand{\kreuz}[1]{\leavevmode\ifloesung\ifnum#1=1 {\lsgfarbe$\boxtimes$}\else$\square$\fi\else$\square$\fi}
+
+% ---------- Zeichnungen: Strichfigur (Füße im Ursprung des scope) ----------
+%  \figur{Farbe}{Name} in einer tikzpicture, vorher mit \begin{scope}[shift={(x,y)}] platzieren
+\newcommand{\figur}[2]{\draw[#1,line width=1pt,line cap=round] (0,0.62) -- (0,0.28) (0,0.28) -- (-0.12,0) (0,0.28) -- (0.12,0) (-0.15,0.48) -- (0.15,0.48);
+  \fill[#1] (0,0.74) circle (0.11); \node[#1,font=\scriptsize\bfseries,above] at (0,0.82) {#2};}
