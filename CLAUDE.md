@@ -387,7 +387,9 @@ gemeinsamen Designs ist also die Root-Datei).
   Beispielliste nur mit auf den Seiten vorgegebenen Programmen, keine Lösungen), Bausteine in `rechner.js`
   (Quiz, Bus-Spiel, Sortieren, Lösungsweg, Assembler-Färbung `pre.asm[data-adr]`); Blätter mit eigener
   `ab-vorlage.tex` (Listing `asm` mit Adressen als Zeilennummern, Struktogramme `\sgwenn`/`\sgschleife`).
-  Assembler-Code auf Blatt und Seite identisch halten
+  Assembler-Code auf Blatt und Seite identisch halten. Präsentation zur Sequenz (nur lokal):
+  `13/rechner/material/Funktionsweise-eines-Rechners.pptx`, erzeugt per python-pptx aus
+  `material/praesentation/folien.py` (Beispiele wie auf den Blättern; bei Änderungen nachziehen)
 
 **Makerspace** (`makerspace/makerspace.html`, Wahlkurs Unterstufe, Stationen je 3 Wochen;
 nur Robotik online): `makerspace/robotik/` LEGO SPIKE Prime – `robotik.html` (Team,
