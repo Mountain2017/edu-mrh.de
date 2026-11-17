@@ -115,7 +115,7 @@ benötigten Block einkommentieren.
 
 **Datenschutz-Grundsatz (DSGVO):** Keine externen CDNs, keine Google Fonts,
 keine Tracker. Bibliotheken werden über `/embed/` selbst gehostet; Schriften
-liegen als `.woff2` im Repository (Beispiel: `nutrition/assets/fonts/`).
+liegen als `.woff2` im Repository (Beispiel: `lernen-lernen/fonts/`).
 Nutzerdaten (z. B. Übungsstände) bleiben im Browser (`localStorage`) und
 erreichen nie den Server.
 
