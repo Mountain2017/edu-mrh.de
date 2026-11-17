@@ -32,6 +32,14 @@ jobs:
           # Nur was der Browser braucht (keine Node-/CLI-Dateien, keine Typdefinitionen)
           rm -f python python_cli_entry.mjs *.d.ts
           test -f pyodide.js && test -f pyodide.asm.wasm && test -f python_stdlib.zip && test -f pyodide-lock.json
+          # Lizenztexte beilegen: Pyodide (MPL-2.0) und CPython (PSF-Lizenz), Quelle unverändert
+          curl -fsSL -o LICENSE.txt "https://raw.githubusercontent.com/pyodide/pyodide/${PYODIDE_VERSION}/LICENSE"
+          curl -fsSL -o LICENSE-CPython.txt "https://raw.githubusercontent.com/python/cpython/3.13/LICENSE"
+          cat > QUELLE.txt <<TXT
+          Pyodide ${PYODIDE_VERSION} (Core-Paket, unverändert), Lizenz: Mozilla Public License 2.0 (LICENSE.txt).
+          Enthält CPython, Lizenz: PSF License Agreement (LICENSE-CPython.txt).
+          Quellcode: https://github.com/pyodide/pyodide/releases/tag/${PYODIDE_VERSION}
+          TXT
           # Richtiger MIME-Typ für WebAssembly (schneller Start per instantiateStreaming)
           # und CORS, damit Seiten auch lokal (python3 -m http.server) die Dateien laden können.
           cat > .htaccess <<'HTACCESS'

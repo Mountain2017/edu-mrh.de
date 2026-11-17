@@ -317,7 +317,7 @@ Kannst du Webseiten oder Anhänge lesen, nutze die Originale als Referenz:
 ## 1. Unverhandelbare Regeln
 
 1. Impressum, Datenschutzerklärung und Übersicht müssen erreichbar sein: über die Navbar aus Abschnitt 3 (Standard) oder bei eigenem Design über die Zeile `&lt;script defer src="https://edu-mrh.de/controls.js"&gt;&lt;/script&gt;` direkt vor `&lt;/body&gt;`.
-2. Datenschutz (DSGVO, Schule): keine externen CDNs, keine Google Fonts, keine Tracker oder Statistikdienste, keine eingebetteten fremden Inhalte (YouTube, Padlet, LearningApps, Kartendienste …). Fremde Angebote nur als normaler Link mit dem Hinweis, dass man edu-mrh.de verlässt. Bibliotheken ausschließlich von `https://edu-mrh.de/embed/…` (Liste in Abschnitt 6). Schriften: die des Grundgerüsts bzw. Systemschriften.
+2. Datenschutz (DSGVO, Schule): keine externen CDNs, keine Google Fonts, keine Tracker oder Statistikdienste, keine eingebetteten fremden Inhalte (YouTube, Padlet, LearningApps, Kartendienste …), keine Abfragen fremder Dienste per `fetch` (z. B. Zeit- oder Wetter-APIs; die Uhrzeit liefert der `Date`-Header des eigenen Servers). Fremde Angebote nur als normaler Link mit dem Hinweis, dass man edu-mrh.de verlässt. Bibliotheken ausschließlich von `https://edu-mrh.de/embed/…` (Liste in Abschnitt 6). Schriften: die des Grundgerüsts bzw. Systemschriften.
 3. Nutzerdaten bleiben im Browser: Fortschritt, Eingaben, Code nur in `localStorage`; nichts wird an einen Server gesendet, keine Formulare mit Absenden, keine Namen oder E-Mail-Adressen abfragen.
 4. Kein Framework und kein Build-Schritt: kein React, Vue, jQuery, Bootstrap, Tailwind. Reines HTML, CSS und JavaScript in einer Datei; eigenes CSS im `&lt;style&gt;`-Block im `&lt;head&gt;`, eigenes JavaScript in einem `&lt;script&gt;` am Ende des `&lt;body&gt;`.
 5. Lösungen nie offen lesbar: Tipps und Lösungen gestuft in `&lt;details&gt;` (Tipp 1 → Tipp 2 → Lösung).
@@ -517,10 +517,11 @@ var applet = new GGBApplet({
     appName: 'graphing', width: 800, height: 450, showToolBar: false, showAlgebraInput: true,
     appletOnLoad: function (api) { api.evalCommand('f(x) = 2^x'); api.evalCommand('a = Slider(-5, 5)'); }
 }, true);
+applet.setHTML5Codebase('https://edu-mrh.de/embed/GeoGebra/HTML5/5.0/web3d/');
 window.addEventListener('load', function () { applet.inject('ggb-1'); });
 &lt;/script&gt;
 ```
-Die Konstruktion per `evalCommand` aufbauen; `material_id` nur, wenn die Lehrkraft ausdrücklich ein GeoGebra-Material verlangt (lädt Inhalte von geogebra.org). Auf schmalen Bildschirmen Breite anpassen.
+Die Zeile `setHTML5Codebase` ist Pflicht: Ohne sie lädt GeoGebra die App von geogebra.org (Datenschutz). Die Konstruktion per `evalCommand` aufbauen. Kein `material_id` (lädt von geogebra.org): Soll ein fertiges GeoGebra-Material hinein, legt die Lehrkraft es als `.ggb`-Datei in den Themenordner, du lädst es mit `filename: 'datei.ggb'` statt `appletOnLoad`. Auf schmalen Bildschirmen Breite anpassen.
 
 ### 6e. Snap! (Blockprogrammierung)
 ```html

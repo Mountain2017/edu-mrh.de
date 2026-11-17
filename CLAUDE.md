@@ -48,6 +48,16 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
    Fremde iframes (z. B. fobizz) nur per 2-Klick: `data-zwei-klick="URL"` statt
    `src` + `<script defer src="/zwei-klick.js"></script>`; neuer Anbieter →
    auch in der Datenschutzerklärung (`datenschutz.html`, Abschnitt je Dienst) ergänzen.
+   Auch kein `fetch` zu fremden Diensten (Zeit-/Wetter-APIs …; Uhrzeit aus dem `Date`-Header
+   des eigenen Servers, Beispiel `dnd/energy-quest-board.html`). **GeoGebra** nur mit
+   `applet.setHTML5Codebase('https://edu-mrh.de/embed/GeoGebra/HTML5/5.0/web3d/')` (sonst lädt
+   `deployggb.js` die App von geogebra.org) und ohne `material_id`: Materialien als `.ggb` in den
+   Themenordner, Laden per `filename` (Beispiel `mathe/12/1_1_Exponentialfunktion.html`).
+   **Lizenzen**: neue Bibliothek/Schrift/fremder Beitrag → Eintrag in `impressum.html#lizenzen`;
+   Schriften (alle SIL OFL) mit `OFL.txt` im Schriftordner; Lizenztexte ohne eigenen Ablageort in
+   `lizenzen/`. Die IDE-Workflows legen GPL-Text + `QUELLE.txt` bei und brechen per „DSGVO-Wächter“
+   ab, wenn ein Build von CDNs/Trackern/den Original-Servern lädt; `deploy-snap.yml` entfernt
+   Bibliotheken, die von sich aus fremde Server ansprechen (Karten, SciSnap, TuneScope, MQTT).
 3. **Nutzerdaten bleiben im Browser** (`localStorage`), nie zum Server.
 4. **Bestehende URLs nicht brechen**: Dateien nicht umbenennen/verschieben,
    ohne dass es der Auftrag verlangt.
@@ -414,7 +424,7 @@ Spiele-Station `#play`: Branch Blitz, Who's who, Nachfolge, Bill Quest, Rollensp
 auf `w-seminar-time.html#materials`)
 
 **Weitere Fächer**: `mathe/` (12: Exponential-/ln-Funktion, Umkehrfunktion),
-`physik/` (9 Energie-Trainer `9/energie/` (Rahmenseite `energie.html` + `energie-trainer.html`), 10 Berlinfahrt-Lernpfad, 11 Federpendel + Protokoll, 11 Spezielle Relativitätstheorie (siehe unten), 11 Gravitations-Trainer `11/gravitation/` (Rahmenseite `gravitation.html` + `gravitation-trainer.html`), 12 Lorentzkraft; beide Trainer sind von Peter Sobek, als Einzeldateien übernommen – Urheberangabe in Kopf, Fußzeile und PDF-Zusammenfassung erhalten),
+`physik/` (9 Energie-Trainer `9/energie/` (Rahmenseite `energie.html` + `energie-trainer.html`), 10 Berlinfahrt-Lernpfad, 11 Federpendel + Protokoll, 11 Spezielle Relativitätstheorie (siehe unten), 11 Gravitations-Trainer `11/gravitation/` (Rahmenseite `gravitation.html` + `gravitation-trainer.html`), 12 Lorentzkraft; beide Trainer sind von Peter Sobek, als Einzeldateien übernommen – Urheberangabe in Kopf, Fußzeile und PDF-Zusammenfassung erhalten; Veröffentlichung mit seiner Genehmigung (Stand 2026-11), Vermerk in Fußzeilen und `impressum.html#lizenzen`),
 `franzoesisch/` (8 Québec), `Latein/` (Cicero), `psychologie/` (Grawe),
 `Stadtrallye/` (Triest), `lernen-lernen/` (Modulreihe „Fit für die Qualifikationsphase“: `lerntest/index.html` = Lerntest Modul I, `methodenkoffer/methodenkoffer.html` = Methodenkoffer Modul III; nur über QR-Codes im Schülerheft erreichbar, URLs nicht ändern; Schrift lokal in `lernen-lernen/fonts/`). Von keiner Seite verlinkt: `nutrition/` (de/en),
 `finanzen/` (Pflegevorsorge-Rechner), `dnd/`

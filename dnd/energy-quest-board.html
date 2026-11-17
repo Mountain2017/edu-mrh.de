@@ -496,26 +496,21 @@ async function fetchWithTimeout(url, ms) {
   try { return await fetch(url, { signal: ctrl.signal, cache: "no-store" }); }
   finally { clearTimeout(timer); }
 }
+// Uhrzeit aus dem Date-Header des eigenen Servers (keine fremden Zeitdienste, DSGVO).
+// Der Header hat Sekundengenauigkeit, das reicht für die Tageszeit des Boards.
 async function syncClock() {
-  const sources = [
-    { url: "https://worldtimeapi.org/api/ip", pick: j => j.utc_datetime, name: "worldtimeapi.org" },
-    { url: "https://timeapi.io/api/time/current/zone?timeZone=UTC", pick: j => j.dateTime + "Z", name: "timeapi.io" }
-  ];
-  for (const s of sources) {
-    try {
-      const t0 = Date.now();
-      const res = await fetchWithTimeout(s.url, 3500);
-      if (!res.ok) continue;
-      const j = await res.json();
-      const t1 = Date.now();
-      const serverMs = Date.parse(s.pick(j));
-      if (!isFinite(serverMs)) continue;
-      clockOffsetMs = serverMs - (t0 + t1) / 2;
-      clockSource = s.name;
-      return true;
-    } catch (e) { /* nächste Quelle */ }
+  try {
+    const t0 = Date.now();
+    const res = await fetchWithTimeout(location.pathname + "?zeit=" + t0, 3500);
+    const t1 = Date.now();
+    const serverMs = Date.parse(res.headers.get("Date") || "");
+    if (!isFinite(serverMs)) return false;
+    clockOffsetMs = serverMs + 500 - (t0 + t1) / 2;
+    clockSource = "Serverzeit";
+    return true;
+  } catch (e) {
+    return false;
   }
-  return false;
 }
 function renderTimeNote() {
   const el = document.getElementById("timeNote");

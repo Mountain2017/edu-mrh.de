@@ -21,6 +21,31 @@ jobs:
       - name: Patch base URL in includeIDE.js
         run: |
           sed -i 's|let base = "https://embed.learn-sql.de/include/";|let base = "https://edu-mrh.de/embed/sql-IDE-embedded/";|' dist-embedded/includeIDE.js
+          grep -q 'let base = "https://edu-mrh.de/embed/sql-IDE-embedded/";' dist-embedded/includeIDE.js
+      - name: Lizenz beilegen (GPL-3.0)
+        run: |
+          for f in LICENSE LICENSE.md LICENSE.txt COPYING; do
+            if [ -f "$f" ]; then cp "$f" dist-embedded/LICENSE.txt; break; fi
+          done
+          if [ ! -f dist-embedded/LICENSE.txt ]; then
+            echo "::warning::Keine Lizenzdatei im SQL-IDE-Repo gefunden – GPL-Text fehlt im Deploy."
+          fi
+          cat > dist-embedded/QUELLE.txt <<'TXT'
+          SQL-IDE (eingebettete Fassung) von Martin Pabst, Lizenz: GNU GPL v3 (siehe LICENSE.txt).
+          Quellcode: https://github.com/martin-pabst/SQL-IDE
+          Änderung für edu-mrh.de: Basis-URL auf diesen Server umgestellt
+          (siehe https://github.com/Mountain2017/edu-mrh.de/blob/main/.github/workflows/sql-ide-deploy.yml).
+          TXT
+      - name: Keine fremden Server (DSGVO-Wächter)
+        run: |
+          # Bricht ab, wenn der Build von CDNs, Tracking-Diensten oder den Original-Servern lädt.
+          VERBOTEN='(cdn\.jsdelivr\.net|unpkg\.com|cdnjs\.cloudflare\.com|ajax\.googleapis\.com|fonts\.googleapis\.com|fonts\.gstatic\.com|code\.jquery\.com|[a-z0-9.-]*bootstrapcdn\.com|[a-z0-9.-]*google-analytics\.com|[a-z0-9.-]*googletagmanager\.com|[a-z0-9.-]*doubleclick\.net|[a-z0-9.-]*sentry\.io|[a-z0-9.-]*matomo\.[a-z]+|[a-z0-9.-]*plausible\.io|[a-z0-9.-]*hotjar\.com|[a-z0-9.-]*clarity\.ms|embed\.learnj\.de|embed\.learn-sql\.de)'
+          ERLAUBT='cdn\.jsdelivr\.net/npm/p5@'
+          TREFFER=$(grep -rhoaE "(https?:)?//${VERBOTEN}[^\"'\` )]{0,80}" --exclude='*.map' dist-embedded | grep -vE "$ERLAUBT" | sort -u || true)
+          if [ -n "$TREFFER" ]; then
+            echo "::error::Build lädt von fremden Servern (DSGVO) – Deploy abgebrochen:"; echo "$TREFFER"; exit 1
+          fi
+          echo "Keine fremden Server im Build gefunden."
       - uses: actions/upload-artifact@v4
         with:
           name: dist-sql-ide-embedded

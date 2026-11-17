@@ -99,6 +99,28 @@ jobs:
           rm -rf .git .github docs tests *.md
           du -sh . ; find . -type f | wc -l
 
+      - name: Bibliotheken entfernen, die von sich aus fremde Server ansprechen (DSGVO)
+        run: |
+          # Bausteine mit selbst eingetippter Adresse (url, HTTP, WebSocket) bleiben – das ist wie ein Link.
+          cd snap/libraries
+          python3 - <<'PY'
+          import json
+          raus = {
+              'maps_module.xml': 'Kartenkacheln von tile.openstreetmap.org',
+              'SciSnap3Blocks.xml': 'lädt Code/Daten von emu-online.de und snapextensions.uni-goettingen.de',
+              'TuneScope.xml': 'lädt Instrumente von surikov.github.io',
+              'mqtt.xml': 'voreingestellt öffentliche MQTT-Broker (broker.emqx.io u. a.)',
+          }
+          libs = json.load(open('LIBRARIES.json', encoding='utf-8'))
+          neu = [l for l in libs if l.get('fileName') not in raus]
+          json.dump(neu, open('LIBRARIES.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=4)
+          for f, grund in raus.items():
+              status = 'entfernt' if any(l.get('fileName') == f for l in libs) else 'nicht (mehr) vorhanden'
+              print(f'{f}: {status} – {grund}')
+          PY
+          rm -rf maps_module.xml SciSnap3Blocks.xml SciSnap3Extensions.js SciSnap3Costumedata.js TuneScope.xml TuneScope mqtt.xml
+          ! grep -q -e maps_module -e SciSnap3 -e TuneScope -e '"mqtt.xml"' LIBRARIES.json
+
       - uses: actions/upload-artifact@v4
         with:
           name: snap-dist
