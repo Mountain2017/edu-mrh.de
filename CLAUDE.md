@@ -53,8 +53,10 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
    `applet.setHTML5Codebase('https://edu-mrh.de/embed/GeoGebra/HTML5/5.0/web3d/')` (sonst lädt
    `deployggb.js` die App von geogebra.org) und ohne `material_id`: Materialien als `.ggb` in den
    Themenordner, Laden per `filename` (Beispiel `mathe/12/1_1_Exponentialfunktion.html`).
-   **Lizenzen**: neue Bibliothek/Schrift → Eintrag in `impressum.html#lizenzen`; Beiträge von
+   **Lizenzen**: Eigene Inhalte stehen unter CC BY-NC-SA 4.0 (`LICENSE.md`, `impressum.html#lizenz`,
+   Fußzeile der Vorlagen mit Lizenzlink). Neue Bibliothek/Schrift → Eintrag in `impressum.html#lizenzen`; Beiträge von
    Kolleg:innen und fremdes Material (Bilder, Texte) nur mit Urheber/Quelle/Lizenz auf der jeweiligen Seite;
+   keine Schulbuchseiten, -grafiken oder eng umformulierte Buchtexte veröffentlichen;
    Schriften (alle SIL OFL) mit `OFL.txt` im Schriftordner; Lizenztexte ohne eigenen Ablageort in
    `lizenzen/`. Die IDE-Workflows legen GPL-Text + `QUELLE.txt` bei und brechen per „DSGVO-Wächter“
    ab, wenn ein Build von CDNs/Trackern/den Original-Servern lädt; `deploy-snap.yml` entfernt

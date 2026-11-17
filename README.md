@@ -179,3 +179,13 @@ Lehrkräfte stellen sich dort eigene Curricula aus einzelnen Bausteinen für
 ihre Subdomain zusammen. Alles, was hier nach den obigen Konventionen
 entsteht, lässt sich dorthin unverändert übernehmen – **die Konventionen
 einzuhalten ist also die beste Zukunftssicherung für eigene Inhalte.**
+
+## Lizenz
+
+Die eigenen Inhalte stehen unter **CC BY-NC-SA 4.0**: frei für den Unterricht
+(an allen Schulen, auch privaten), mit Namensnennung, nicht kommerziell,
+Bearbeitungen unter derselben Lizenz. Kommerzielle Nutzung nur nach Absprache.
+Beiträge von Kolleg:innen erscheinen unter ihrem Namen und unter dieser Lizenz,
+wenn auf der Seite nichts anderes steht. Fremde Software, Schriften und
+Materialien behalten ihre eigenen Lizenzen. Details: [LICENSE.md](LICENSE.md)
+und [Impressum](https://edu-mrh.de/impressum.html#lizenz).
