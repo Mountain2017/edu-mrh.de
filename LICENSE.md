@@ -36,7 +36,8 @@ Kurs-, Nachhilfe- oder Fortbildungsanbieter, den Verkauf von Material (auch
 Bezahlmodell. Anfragen an karl.haunschild@gyki.de.
 
 Die Nutzung für Text und Data Mining zu kommerziellen Zwecken (§ 44b UrhG,
-Art. 4 der Richtlinie (EU) 2019/790) behalte ich mir vor.
+Art. 4 der Richtlinie (EU) 2019/790) behalte ich mir vor. Maschinenlesbar ist
+der Vorbehalt in `robots.txt` und `.well-known/tdmrep.json` erklärt.
 
 ### Nicht von dieser Lizenz erfasst
 

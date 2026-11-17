@@ -339,7 +339,8 @@ Wo was liegt (Stand 2026-10). `→ AB` = LaTeX-Arbeitsblätter in `arbeitsblaett
 **Gerüst**: `index.html` (Startseite), `checks/auswertung/` (Auswertung aller Online-Checks), `style.css`, `script.js`, `controls.js`,
 `sidebar-anker.js`, `mobileMenu.js`, `baseScript.js`, `templates/`,
 `tools/` (Geheim-Ordner verknüpfen), `geheim/` (nur lokal, s. o.),
-`contribute.html`, `impressum.html`, `datenschutz.html`, `Online-IDE API-Documentation.txt`, `.github/workflows/`
+`contribute.html`, `impressum.html`, `datenschutz.html`, `LICENSE.md`, `robots.txt` (sperrt nur KI-Trainings-Crawler,
+maschinenlesbarer TDM-Vorbehalt, dazu `.well-known/tdmrep.json`), `Online-IDE API-Documentation.txt`, `.github/workflows/`
 (FTPS-Deploy aller versionierten Dateien inkl. `.md`, Online-IDE, SQL-IDE, Snap!, Pyodide;
 `deploy-embed-basis.yml` kopiert Root-`style.css`/`script.js` nach `/embed/`, die Quelle des
 gemeinsamen Designs ist also die Root-Datei).
@@ -428,7 +429,7 @@ auf `w-seminar-time.html#materials`)
 
 **Weitere Fächer**: `mathe/` (12: Exponential-/ln-Funktion, Umkehrfunktion),
 `physik/` (9 Energie-Trainer `9/energie/` (Rahmenseite `energie.html` + `energie-trainer.html`), 10 Berlinfahrt-Lernpfad, 11 Federpendel + Protokoll, 11 Spezielle Relativitätstheorie (siehe unten), 11 Gravitations-Trainer `11/gravitation/` (Rahmenseite `gravitation.html` + `gravitation-trainer.html`), 12 Lorentzkraft; beide Trainer sind von Peter Sobek, als Einzeldateien übernommen – Urheberangabe in Kopf, Fußzeile und PDF-Zusammenfassung erhalten; Veröffentlichung mit seiner Genehmigung (Stand 2026-11), Vermerk in den Fußzeilen),
-`franzoesisch/` (8 Québec), `Latein/` (Cicero), `psychologie/` (Grawe),
+`franzoesisch/` (8 Québec), `Latein/` (nur Fachseite, im Aufbau), `psychologie/` (Grawe),
 `Stadtrallye/` (Triest), `lernen-lernen/` (Modulreihe „Fit für die Qualifikationsphase“: `lerntest/index.html` = Lerntest Modul I, `methodenkoffer/methodenkoffer.html` = Methodenkoffer Modul III; nur über QR-Codes im Schülerheft erreichbar, URLs nicht ändern; Schrift lokal in `lernen-lernen/fonts/`).
 
 **Physik 11 Spezielle Relativitätstheorie** (neues Format, → AB, Ph11 3.2, EVA, ca. 10 Std.):
