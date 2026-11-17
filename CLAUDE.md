@@ -414,7 +414,7 @@ Spiele-Station `#play`: Branch Blitz, Who's who, Nachfolge, Bill Quest, Rollensp
 auf `w-seminar-time.html#materials`)
 
 **Weitere Fächer**: `mathe/` (12: Exponential-/ln-Funktion, Umkehrfunktion),
-`physik/` (10 Berlinfahrt-Lernpfad, 11 Federpendel + Protokoll, 11 Spezielle Relativitätstheorie (siehe unten), 12 Lorentzkraft),
+`physik/` (9 Energie-Trainer `9/energie/` (Rahmenseite `energie.html` + `energie-trainer.html`), 10 Berlinfahrt-Lernpfad, 11 Federpendel + Protokoll, 11 Spezielle Relativitätstheorie (siehe unten), 11 Gravitations-Trainer `11/gravitation/` (Rahmenseite `gravitation.html` + `gravitation-trainer.html`), 12 Lorentzkraft; beide Trainer sind von Peter Sobek, als Einzeldateien übernommen – Urheberangabe in Kopf, Fußzeile und PDF-Zusammenfassung erhalten),
 `franzoesisch/` (8 Québec), `Latein/` (Cicero), `psychologie/` (Grawe),
 `Stadtrallye/` (Triest), `lernen-lernen/` (Modulreihe „Fit für die Qualifikationsphase“: `lerntest/index.html` = Lerntest Modul I, `methodenkoffer/methodenkoffer.html` = Methodenkoffer Modul III; nur über QR-Codes im Schülerheft erreichbar, URLs nicht ändern; Schrift lokal in `lernen-lernen/fonts/`). Von keiner Seite verlinkt: `nutrition/` (de/en),
 `finanzen/` (Pflegevorsorge-Rechner), `dnd/`

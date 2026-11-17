@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Energie-Trainer | Physik – edu-mrh.de</title>
+<meta name="description" content="Physik 9 (Gymnasium Bayern): Aufgabentrainer zur kinetischen und potentiellen Energie und zur Energieerhaltung in drei Niveaus, mit Tipps, Lösungswegen und PDF-Zusammenfassung. Gebaut von Peter Sobek.">
+<link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+<style>
+:root{
+  --bg:#fbf6ef; --card:#ffffff; --ink:#22252b; --muted:#5d6370; --line:#e6ddd0;
+  --flame:#e8590c; --flame-soft:#fff0e3; --ok:#2b8a3e; --ok-soft:#e6f6ea;
+  --bad:#c92a2a; --bad-soft:#fdeaea; --tip:#1864ab; --tip-soft:#e7f1fb;
+  --l1:#2f9e44; --l2:#e67700; --l3:#c2255c;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:20px;line-height:1.5;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:1180px;margin:0 auto;padding:16px 16px 40px}
+.credit{margin-top:28px;text-align:center;font-size:.8rem;color:var(--muted);line-height:1.8}
+.credit a{color:var(--tip);white-space:nowrap}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+h1{font-size:1.45rem;margin:0;line-height:1.2}
+h1 small{display:block;font-size:.8rem;font-weight:500;color:var(--muted);margin-top:2px}
+.flamecount{display:flex;align-items:center;gap:8px;background:var(--flame-soft);border:2px solid #ffd8b5;
+  border-radius:999px;padding:6px 18px;font-weight:700;font-size:1.3rem;color:var(--flame)}
+.flamecount .fl{font-size:1.5rem}
+.pop{animation:pop .6s ease}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}
+
+.layout{display:grid;grid-template-columns:1fr;gap:16px}
+@media (min-width:980px) and (orientation:landscape){
+  .layout{grid-template-columns:minmax(0,1fr) 340px;align-items:start}
+  .side{position:sticky;top:16px}
+}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:0 2px 8px rgba(60,40,10,.05)}
+
+/* Niveauwahl */
+.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.lvl{min-height:64px;border-radius:14px;border:3px solid var(--line);background:#fff;font:inherit;font-weight:700;
+  color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px;touch-action:manipulation}
+.lvl span{font-size:.85rem;font-weight:500;line-height:1.1}
+.lvl .open{font-size:.75rem;color:var(--muted);margin-top:3px}
+.lvl.empty{opacity:.6}
+.alldone{text-align:center;padding:20px 10px}
+.alldone .big1{font-size:3rem;line-height:1.2}
+.alldone h2{margin:6px 0 10px}
+.alldone .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.alldone button{min-width:180px;background:#2d3340;color:#fff}
+.lvl[data-l="1"].on{border-color:var(--l1);background:#eaf7ed}
+.lvl[data-l="2"].on{border-color:var(--l2);background:#fff4e2}
+.lvl[data-l="3"].on{border-color:var(--l3);background:#fce8f0}
+
+/* Aufgabe */
+.taskhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.badge{display:inline-block;border-radius:999px;padding:3px 14px;font-size:.85rem;font-weight:700;color:#fff}
+.b1{background:var(--l1)}.b2{background:var(--l2)}.b3{background:var(--l3)}
+h2{font-size:1.25rem;margin:4px 0 8px}
+.tasktext{margin:0 0 6px}
+.note{color:var(--muted);font-size:.9rem;margin:6px 0 0}
+.answer{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:18px 0 6px;font-size:1.25rem}
+.answer input{font:inherit;font-size:1.3rem;width:200px;max-width:52vw;min-height:58px;padding:6px 14px;border:3px solid #cfc4b4;
+  border-radius:12px;background:#fffdf9;text-align:right}
+.answer input:focus{outline:none;border-color:var(--tip)}
+.answer input:disabled{background:#f1ede6;color:#444}
+.btns{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+button.big{font:inherit;font-weight:700;min-height:62px;border-radius:14px;border:none;cursor:pointer;padding:8px 10px;touch-action:manipulation}
+button.big:disabled{opacity:.45;cursor:default}
+.b-check{background:var(--flame);color:#fff}
+.b-tip{background:var(--tip-soft);color:var(--tip);border:2px solid #b9d5f2 !important}
+.b-new{background:#2d3340;color:#fff}
+.b-new.glow{box-shadow:0 0 0 4px #ffd8b5}
+@media (max-width:560px){.btns{grid-template-columns:1fr 1fr}.b-new{grid-column:1 / -1}}
+
+.box{border-radius:14px;padding:12px 16px;margin-top:14px}
+.tip{background:var(--tip-soft);border-left:6px solid var(--tip)}
+.tbody{display:grid;grid-template-columns:1fr;gap:10px;align-items:start}
+@media (min-width:700px){.tbody{grid-template-columns:minmax(0,1fr) 300px}}
+.sketch{background:#fffdf9;border:1px solid var(--line);border-radius:14px;padding:6px;justify-self:center;width:100%;max-width:340px}
+.sk{display:block;width:100%;height:auto;color:var(--ink)}
+.sk line,.sk path{fill:none;stroke:#3a3f4a;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sk .gr{stroke-width:2.5}.sk .ht{stroke-width:1.2;stroke:#8a8f99}
+.sk .st{stroke-width:3}.sk .st2{stroke-width:5}.sk .thin{stroke-width:1.5}
+.sk .vv{stroke:#e8590c;stroke-width:3}.sk .dd{stroke:#1864ab;stroke-width:2}.sk .kk{stroke:#5d6370;stroke-width:1.8}
+.sk .aux{stroke:#9aa0aa;stroke-width:1.2;stroke-dasharray:4 4}.sk .dash{stroke-dasharray:6 5}
+.sk .obj{fill:#ffd8b5;stroke:#3a3f4a;stroke-width:2}.sk rect.obj.dash{fill:none}
+.sk .wh{fill:#3a3f4a}.sk .wh2{fill:none;stroke:#3a3f4a;stroke-width:3}
+.sk .mt{fill:#e9e2d6;stroke:#8a7f6e;stroke-width:2}.sk .fl{fill:#c92a2a;stroke:none}
+.sk .trunk{stroke:#8a5a2b;stroke-width:7}.sk .leaf{stroke:#2f9e44;stroke-width:4}.sk .nut{fill:#8a5a2b;stroke:none}
+.sk .bld{fill:#e9e2d6;stroke:#8a7f6e}.sk .win{fill:#d0e4f5;stroke:#8a7f6e;stroke-width:1.5}
+.sk .brk{fill:#e07a5f;stroke:#3a3f4a;stroke-width:2}.sk .brk.dash{fill:none}
+.sk .ball{fill:#5c7cfa;stroke:#3a3f4a}.sk .water{fill:#a5d8ff;stroke:#4dabf7;stroke-width:1.5}
+.sk .pipe{stroke:#868e96;stroke-width:5}.sk .track{stroke:#3a3f4a;stroke-width:3.5}.sk .pole{stroke:#adb5bd;stroke-width:2}.sk .pole2{stroke:#8a5a2b;stroke-width:3}
+.sk .pt{fill:#3a3f4a;stroke:none}
+.sk text{fill:#22252b;stroke:none;font-family:"Cambria","Times New Roman",serif;font-size:18px}
+.sk .lv{font-size:19px}.sk .ls{font-size:12px;font-style:normal;font-family:"Segoe UI",system-ui,sans-serif}
+.sk .lp{font-family:"Segoe UI",system-ui,sans-serif;font-size:12px;fill:#5d6370}
+.tiprow{margin:2px 0 8px}.tiprow:last-child{margin-bottom:0}
+
+.fb-ok{background:var(--ok-soft);border-left:6px solid var(--ok);font-weight:600}
+.fb-bad{background:var(--bad-soft);border-left:6px solid var(--bad);font-weight:600}
+.fb-warn{background:#fff8db;border-left:6px solid #f08c00;font-weight:600}
+.hidden{display:none !important}
+.sol{background:#fafafa;border:2px solid var(--line)}
+.sol h3{margin:0 0 6px;font-size:1.05rem}
+.srow{display:grid;grid-template-columns:150px 1fr;gap:6px 12px;padding:8px 0;border-top:1px dashed var(--line);align-items:center}
+.srow:first-of-type{border-top:none}
+.slab{font-weight:700;color:var(--muted);font-size:.9rem}
+.smath{overflow-x:auto;padding:2px 0}
+.mline{margin:4px 0;white-space:nowrap}
+.final{background:var(--flame-soft);border-radius:10px;padding:4px 10px;display:inline-block;font-weight:700}
+@media (max-width:560px){.srow{grid-template-columns:1fr}}
+
+/* Formelsatz */
+.m{white-space:nowrap}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 .12em;line-height:1.15;text-align:center}
+.frac>.fn{padding:0 .18em .06em;border-bottom:.075em solid currentColor;width:100%;display:block;text-align:center;white-space:nowrap}
+.frac>.fd{padding:.06em .18em 0;display:block;text-align:center;white-space:nowrap}
+.answer .frac,.lvl .frac{font-size:.85em}
+.sqrt{display:inline-flex;align-items:stretch;vertical-align:middle;margin:0 .1em}
+.radw{position:relative;width:.72em;flex:none}
+.radw svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.radw path{fill:none;stroke:currentColor;stroke-width:1.5px;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.rc{border-top:1.5px solid currentColor;padding:.14em .12em .02em .08em;display:block;white-space:nowrap}
+.op{margin:0 .22em}
+.pl{font-size:1.35em;line-height:1;vertical-align:-.08em;font-weight:300}
+i{font-family:"Cambria","Times New Roman",serif;font-size:1.08em}
+sub{font-size:.68em;line-height:0}
+sup{font-size:.68em;line-height:0}
+.u{font-style:normal}
+
+/* Statistik */
+.side h2{margin-top:0}
+.bar{display:flex;height:38px;border-radius:12px;overflow:hidden;background:#ece6dc;margin:10px 0 8px}
+.bar div{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.95rem;transition:width .5s ease;white-space:nowrap;overflow:hidden}
+.bar .g{background:var(--ok)}.bar .r{background:var(--bad)}
+.bar .e{flex:1;color:var(--muted);font-weight:500;font-size:.85rem}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 14px}
+.stat{border-radius:12px;padding:8px 10px;text-align:center}
+.stat b{display:block;font-size:1.6rem;line-height:1.1}
+.stat span{font-size:.85rem;color:var(--muted)}
+.s-ok{background:var(--ok-soft)}.s-ok b{color:var(--ok)}
+.s-bad{background:var(--bad-soft)}.s-bad b{color:var(--bad)}
+.s-pct{background:#f3efe8;grid-column:1 / -1}
+.b-reset{width:100%;background:#fff;color:var(--ink);border:2px solid var(--line) !important}
+.legend{font-size:.85rem;color:var(--muted);margin-top:10px}
+.namel{display:block;font-size:.85rem;color:var(--muted);margin:0 0 4px}
+.namein{font:inherit;width:100%;min-height:52px;padding:6px 12px;border:2px solid var(--line);border-radius:12px;background:#fffdf9;margin-bottom:10px}
+.b-pdf{width:100%;background:var(--ok);color:#fff;margin-bottom:10px}
+#printArea{display:none}
+.modal{position:fixed;inset:0;background:rgba(30,25,20,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
+.mcard{background:#fff;border-radius:18px;max-width:520px;width:100%;padding:20px 22px;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+.mcard h2{margin:0 0 8px;font-size:1.25rem}.mcard p{margin:0 0 10px}.mcard .small{font-size:.85rem;color:var(--muted)}
+.mbtns{display:grid;gap:10px;margin-top:14px}
+.m-ok{background:var(--ok);color:#fff}.m-bad{background:var(--bad);color:#fff}.m-alt{background:var(--tip-soft);color:var(--tip);border:2px solid #b9d5f2 !important}
+.m-plain{background:#fff;color:var(--ink);border:2px solid var(--line) !important}
+@media print{
+  @page{size:A4;margin:14mm 14mm 16mm}
+  html,body{background:#fff}
+  body{font-size:10pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .wrap,.burst,.modal{display:none !important}
+  #printArea{display:block}
+}
+.pr h1{font-size:18pt;margin:0 0 2pt}
+.pr .meta{color:#444;font-size:10pt;margin:0 0 8pt}
+.pr .sum{display:flex;gap:10pt;flex-wrap:wrap;margin:0 0 12pt}
+.pr .sum div{border:1px solid #ccc;border-radius:6pt;padding:4pt 10pt}
+.pr .pt{border:1px solid #bbb;border-radius:8pt;padding:8pt 10pt;margin:0 0 10pt}
+.pr .ph,.pr .pbody,.pr .srow,.pr .mline{break-inside:avoid;page-break-inside:avoid}
+.pr .ph,.pr h3{break-after:avoid;page-break-after:avoid}
+.pr .ph{display:flex;justify-content:space-between;align-items:center;gap:8pt;margin-bottom:4pt}
+.pr .ph h2{font-size:13pt;margin:0}
+.pr .res{font-weight:700;border-radius:999px;padding:1pt 9pt;font-size:10pt}
+.pr .res.ok{background:#e6f6ea;color:#2b8a3e}.pr .res.bad{background:#fdeaea;color:#c92a2a}
+.pr .pbody{display:grid;grid-template-columns:1fr 150pt;gap:8pt;align-items:start}
+.pr .pbody .sk{width:150pt;border:1px solid #ddd;border-radius:6pt}
+.pr .ans{margin:6pt 0 2pt;font-size:10.5pt}
+.pr .srow{grid-template-columns:90pt 1fr;padding:3pt 0}
+.pr .slab{font-size:9.5pt}
+.pr .smath{overflow:visible}
+.pr h3{font-size:11pt;margin:6pt 0 2pt}
+.burst{position:fixed;font-size:2.6rem;pointer-events:none;animation:fly 1.1s ease-out forwards;z-index:9}
+@keyframes fly{0%{opacity:1;transform:translateY(0) scale(.8)}100%{opacity:0;transform:translateY(-140px) scale(1.4)}}
+
+/* edu-mrh-Kopfleiste (wie Navbar der Standardseiten, eigenständig gestylt) */
+.edu-nav{background:#fff;box-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -1px rgba(0,0,0,.06);position:relative;z-index:30}
+.edu-nav .en-in{max-width:1180px;margin:0 auto;padding:8px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.2}
+.edu-nav .en-brand{display:flex;align-items:center;gap:8px;font-size:22px;font-weight:700;color:#3b82f6}
+.edu-nav .en-brand a{text-decoration:none;font-size:28px}
+.edu-nav .en-links{display:flex;gap:10px;flex-wrap:wrap}
+.edu-nav .en-links a{display:inline-flex;align-items:center;padding:7px 16px;border:2px solid #3b82f6;border-radius:8px;color:#3b82f6;background:transparent;font-weight:600;font-size:15px;text-decoration:none;transition:background .15s,color .15s}
+.edu-nav .en-links a:hover{background:#3b82f6;color:#fff}
+@media (max-width:560px){.edu-nav .en-brand .t{display:none}.edu-nav .en-links{gap:6px}.edu-nav .en-links a{padding:6px 10px;font-size:13px}}
+@media print{.edu-nav{display:none !important}}
+</style>
+</head>
+<body>
+<nav class="edu-nav" aria-label="edu-mrh Navigation"><div class="en-in">
+  <div class="en-brand"><a href="https://edu-mrh.de/" title="Startseite edu-mrh.de">⚛️</a><span class="t">edu-mrh Physik</span></div>
+  <div class="en-links">
+    <a href="energie.html">Übersicht</a>
+    <a href="https://edu-mrh.de/impressum.html">Impressum</a>
+    <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a>
+  </div>
+</div></nav>
+<div class="wrap">
+  <header>
+    <h1>Dein Energie Trainer<small>Kinetische und potentielle Energie · 9. Jahrgangsstufe · gebaut von Peter Sobek</small></h1>
+    <div class="flamecount" id="flameBox" aria-label="Gesammelte Flammen"><span class="fl">🔥</span><span id="flames">0</span></div>
+  </header>
+
+  <div class="layout">
+    <main>
+      <div class="levels" role="group" aria-label="Niveau wählen">
+        <button class="lvl on" data-l="1">leicht<span>🔥 pro Aufgabe</span><span class="open" id="open1">5 von 5 offen</span></button>
+        <button class="lvl" data-l="2">mittel<span>🔥🔥 pro Aufgabe</span><span class="open" id="open2">5 von 5 offen</span></button>
+        <button class="lvl" data-l="3">schwer<span>🔥🔥🔥 pro Aufgabe</span><span class="open" id="open3">5 von 5 offen</span></button>
+      </div>
+
+      <section class="card" id="taskCard">
+        <div class="taskhead">
+          <span class="badge b1" id="badge">leicht</span>
+          <span class="note" id="tryInfo">Versuch 1 von 2</span>
+        </div>
+        <div id="taskMain">
+        <h2 id="tTitle"></h2>
+        <div class="tbody"><p class="tasktext" id="tText"></p><div class="sketch" id="tSketch"></div></div>
+
+        <div class="answer">
+          <label for="inp" id="askVar"></label>
+          <input id="inp" type="text" inputmode="decimal" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Ergebnis">
+          <span id="askUnit" class="m"></span>
+        </div>
+
+        <div class="btns">
+          <button class="big b-check" id="btnCheck">Überprüfen</button>
+          <button class="big b-tip" id="btnTip">Tipp</button>
+          <button class="big b-new" id="btnNew">Neue Aufgabe</button>
+        </div>
+
+        <div class="box tip hidden" id="tipBox"></div>
+        <div class="box hidden" id="fbBox"></div>
+        <div class="box sol hidden" id="solBox"></div>
+        </div>
+        <div class="alldone hidden" id="allDone"></div>
+      </section>
+    </main>
+
+    <aside class="side">
+      <section class="card">
+        <h2>Dein Stand</h2>
+        <div class="bar" id="bar"><div class="e">Noch keine Aufgabe bearbeitet</div></div>
+        <div class="stats">
+          <div class="stat s-ok"><b id="nOk">0</b><span>richtig</span></div>
+          <div class="stat s-bad"><b id="nBad">0</b><span>falsch</span></div>
+          <div class="stat s-pct"><b id="pct">0 %</b><span>Fehleranteil</span></div>
+        </div>
+        <label class="namel" for="sName">Dein Name (für die Zusammenfassung)</label>
+        <input id="sName" class="namein" type="text" autocomplete="off" placeholder="optional">
+        <button class="big b-pdf" id="btnPdf" disabled>Zusammenfassung als PDF</button>
+        <button class="big b-reset" id="btnReset">Stand zurücksetzen</button>
+        <p class="legend">Eine Aufgabe zählt als richtig, wenn sie beim ersten Versuch gelöst wurde.</p>
+      </section>
+    </aside>
+  </div>
+  <footer class="credit">Energie-Trainer · gebaut von <b>Peter Sobek</b><br>
+    <a href="energie.html">← Zurück zur Themenseite</a> · <a href="https://edu-mrh.de/impressum.html">Impressum</a> · <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></footer>
+</div>
+
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true"><div class="mcard"><div class="mbody"></div><div class="mbtns"></div></div></div>
+<div id="printArea" aria-hidden="true"></div>
+<script>
+"use strict";
+/* ===================== Hilfsfunktionen für Zahlen und Formelsatz ===================== */
+const G = 9.81;
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const range = (a, b, s) => { const r = []; for (let x = a; x <= b + 1e-9; x += s) r.push(Math.round(x * 1000) / 1000); return r; };
+
+function numStr(x, dec) {
+  let s = Math.abs(x).toFixed(dec);
+  let [i, f] = s.split(".");
+  if (i.length > 4) i = i.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  return (x < 0 ? "−" : "") + i + (f ? "," + f : "");
+}
+/* gegebene Werte: so viele Nachkommastellen wie nötig (max. 3) */
+function fmtG(x) {
+  let d = 0;
+  while (d < 3 && Math.abs(x * 10 ** d - Math.round(x * 10 ** d)) > 1e-9) d++;
+  return numStr(x, d);
+}
+/* Ergebnisse: ab 100 ganzzahlig, sonst sig gültige Ziffern; "=" wenn exakt, sonst "≈" */
+function res(x, sig = 3) {
+  const ax = Math.abs(x);
+  let d = 0;
+  if (ax < 100 && ax > 0) d = Math.max(0, sig - 1 - Math.floor(Math.log10(ax)));
+  const r = Math.round(x * 10 ** d) / 10 ** d;
+  const exact = Math.abs(r - x) < 1e-9;
+  return { rel: exact ? "=" : "≈", s: exact ? fmtG(x) : numStr(r, d) };
+}
+
+const F = (n, d) => `<span class="frac"><span class="fn">${n}</span><span class="fd">${d}</span></span>`;
+const SQ = x => `<span class="sqrt"><span class="radw"><svg viewBox="0 0 10 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0.5 25 L3 23 L6.3 39.5 L10 0.6"/></svg></span><span class="rc">${x}</span></span>`;
+const V = (s, sub) => `<i>${s}</i>` + (sub ? `<sub>${sub}</sub>` : "");
+const D = `<span class="op">·</span>`;
+const L = `<span class="pl">(</span>`, R = `<span class="pl">)</span>`;
+const SQR = `<sup>2</sup>`;
+const UNITS = {
+  "J": "J", "kJ": "kJ", "m": "m", "kg": "kg", "g": "g",
+  "m/s": F("m", "s"), "km/h": F("km", "h"), "N/kg": F("N", "kg"),
+  "m2/s2": F("m" + SQR, "s" + SQR), "m/s2": F("m", "s" + SQR),
+  "N": "N", "cm": "cm", "J/kg": F("J", "kg")
+};
+const U = k => `<span class="u">${UNITS[k]}</span>`;
+const Q = (x, k) => `${fmtG(x)}&#8239;${U(k)}`;      // Zahlenwert + Einheit
+const QS = (s, k) => `${s}&#8239;${U(k)}`;           // fertiger Zahlstring + Einheit
+const QG = Q(G, "N/kg");
+const M = s => `<span class="m">${s}</span>`;
+const lines = (...a) => a.map(x => `<div class="mline">${x}</div>`).join("");
+
+const EKIN = V("E", "kin"), EPOT = V("E", "pot");
+const HALF = F("1", "2");
+const UNIT_E_KIN = M(`1&#8239;kg${D}${U("m2/s2")} = 1&#8239;N${D}m = 1&#8239;J`);
+const UNIT_E_POT = M(`1&#8239;kg${D}${U("N/kg")}${D}m = 1&#8239;N${D}m = 1&#8239;J`);
+const UNIT_V = M(`1&#8239;${U("N/kg")}${D}m = 1&#8239;${U("m/s2")}${D}m = 1&#8239;${U("m2/s2")}`);
+const KMH = v => M(`${V("v")} = ${Q(v, "km/h")} = ${F(fmtG(v), "3,6")}&#8239;${U("m/s")} = ${Q(v / 3.6, "m/s")}`);
+
+/* ===================== Aufgabenvorlagen (je 5 pro Niveau) ===================== */
+// Jede Vorlage liefert: title, text, note, ask (Größe), unit, ans, tip, given, find, steps [[Bezeichnung, Formel-HTML], ...]
+
+const NAMES = ["Lena", "Ben", "Aylin", "Jonas", "Mia", "Elias", "Sofia", "Paul"];
+
+const TASKS = {
+1: [
+  function radfahrt() {
+    const n = pick(NAMES), fz = pick(["dem Fahrrad", "dem Tretroller", "dem Skateboard", "den Inlineskates"]);
+    const m = pick(range(50, 90, 5)), v = pick([3, 4, 5, 6, 7, 8]);
+    const ans = 0.5 * m * v * v, r = res(ans);
+    return {
+      title: "Unterwegs zur Schule",
+      text: `${n} ist mit ${fz} unterwegs und fährt gleichmäßig mit der Geschwindigkeit ${M(V("v") + " = " + Q(v, "m/s"))}. ${n} hat zusammen mit der Ausrüstung die Masse ${M(V("m") + " = " + Q(m, "kg"))}.<br>Berechne die kinetische Energie.`,
+      ask: EKIN, unit: "J", ans,
+      tip: `Verwende die Formel ${M(EKIN + " = " + HALF + D + V("m") + D + V("v") + SQR)}. Denk daran: Die Geschwindigkeit wird quadriert!`,
+      given: `${M(V("m") + " = " + Q(m, "kg"))}; ${M(V("v") + " = " + Q(v, "m/s"))}`, find: EKIN,
+      steps: [
+        ["Formel", M(`${EKIN} = ${HALF}${D}${V("m")}${D}${V("v")}${SQR}`)],
+        ["Einsetzen", M(`${EKIN} = ${HALF}${D}${Q(m, "kg")}${D}${L}${Q(v, "m/s")}${R}${SQR}`)],
+        ["Einheiten", UNIT_E_KIN],
+        ["Ergebnis", `<span class="final">${M(`${EKIN} ${r.rel} ${QS(r.s, "J")}`)}</span>`]
+      ]
+    };
+  },
+  function getraenkekiste() {
+    const obj = pick([["eine Getränkekiste", "Die Kiste"], ["einen Umzugskarton", "Der Karton"], ["einen Rucksack", "Der Rucksack"]]);
+    const m = pick([8, 10, 12, 14, 15, 16, 18]), h = pick([1.2, 1.4, 1.5, 1.6, 1.8, 2.0]);
+    const ans = m * G * h, r = res(ans);
+    return {
+      title: "Ab ins Regal",
+      text: `${pick(NAMES)} hebt ${obj[0]} mit der Masse ${M(V("m") + " = " + Q(m, "kg"))} vom Fußboden auf ein Regalbrett in der Höhe ${M(V("h") + " = " + Q(h, "m"))}. Das Nullniveau ist der Fußboden.<br>Berechne die potentielle Energie (Höhenenergie), die ${obj[1].toLowerCase()} auf dem Regal besitzt.`,
+      ask: EPOT, unit: "J", ans,
+      tip: `Verwende die Formel ${M(EPOT + " = " + V("m") + D + V("g") + D + V("h"))} mit ${M(V("g") + " = " + QG)}.`,
+      given: `${M(V("m") + " = " + Q(m, "kg"))}; ${M(V("h") + " = " + Q(h, "m"))}; ${M(V("g") + " = " + QG)}`, find: EPOT,
+      steps: [
+        ["Formel", M(`${EPOT} = ${V("m")}${D}${V("g")}${D}${V("h")}`)],
+        ["Einsetzen", M(`${EPOT} = ${Q(m, "kg")}${D}${QG}${D}${Q(h, "m")}`)],
+        ["Einheiten", UNIT_E_POT],
+        ["Ergebnis", `<span class="final">${M(`${EPOT} ${r.rel} ${QS(r.s, "J")}`)}</span>`]
+      ]
+    };
+  },
+  function auto() {
+    const m = pick(range(800, 1600, 100)), v = pick([36, 54, 72, 90]);
+    const vs = v / 3.6, J = 0.5 * m * vs * vs, ans = J / 1000, r = res(ans), rJ = res(J);
+    return {
+      title: "Auf der Landstraße",
+      text: `Ein Auto mit der Masse ${M(V("m") + " = " + Q(m, "kg"))} fährt mit der Geschwindigkeit ${M(V("v") + " = " + Q(v, "km/h"))}.<br>Berechne die kinetische Energie des Autos in kJ.`,
+      ask: EKIN, unit: "kJ", ans,
+      tip: `Rechne zuerst die Geschwindigkeit in ${U("m/s")} um (teilen durch 3,6). Dann hilft ${M(EKIN + " = " + HALF + D + V("m") + D + V("v") + SQR)}. Am Ende: 1&#8239;kJ = 1000&#8239;J.`,
+      given: `${M(V("m") + " = " + Q(m, "kg"))}; ${M(V("v") + " = " + Q(v, "km/h"))}`, find: EKIN + " in kJ",
+      steps: [
+        ["Umrechnen", KMH(v)],
+        ["Formel", M(`${EKIN} = ${HALF}${D}${V("m")}${D}${V("v")}${SQR}`)],
+        ["Einsetzen", M(`${EKIN} = ${HALF}${D}${Q(m, "kg")}${D}${L}${Q(vs, "m/s")}${R}${SQR} ${rJ.rel} ${QS(rJ.s, "J")}`)],
+        ["Einheiten", UNIT_E_KIN],
+        ["Ergebnis", `<span class="final">${M(`${EKIN} ${r.rel} ${QS(r.s, "kJ")}`)}</span>`]
+      ]
+    };
+  },
+  function gipfel() {
+    const m = pick(range(60, 85, 5)), h1 = pick(range(1100, 1600, 50)), dh = pick(range(300, 800, 50)), h2 = h1 + dh;
+    const J = m * G * dh, ans = J / 1000, r = res(ans), rJ = res(J);
+    const dE = "Δ" + EPOT;
+    return {
+      title: "Auf den Gipfel",
+      text: `Eine Bergsteigerin (${M(V("m") + " = " + Q(m, "kg"))} einschließlich Rucksack) wandert von einer Hütte auf ${fmtG(h1)}&#8239;m über dem Meer zum Gipfel auf ${fmtG(h2)}&#8239;m über dem Meer. Die Hütte ist das Nullniveau.<br>Berechne, um wie viel ihre potentielle Energie zunimmt. Gib das Ergebnis in kJ an.`,
+      ask: dE, unit: "kJ", ans,
+      tip: `Bestimme zuerst den Höhenunterschied ${M(V("h"))} zwischen Hütte und Gipfel. Dann gilt ${M(EPOT + " = " + V("m") + D + V("g") + D + V("h"))}.`,
+      given: `${M(V("m") + " = " + Q(m, "kg"))}; Hütte: ${Q(h1, "m")}; Gipfel: ${Q(h2, "m")}`, find: dE + " in kJ",
+      steps: [
+        ["Höhe", M(`${V("h")} = ${Q(h2, "m")} − ${Q(h1, "m")} = ${Q(dh, "m")}`)],
+        ["Formel", M(`${dE} = ${V("m")}${D}${V("g")}${D}${V("h")}`)],
+        ["Einsetzen", M(`${dE} = ${Q(m, "kg")}${D}${QG}${D}${Q(dh, "m")} ${rJ.rel} ${QS(rJ.s, "J")}`)],
+        ["Einheiten", UNIT_E_POT],
+        ["Ergebnis", `<span class="final">${M(`${dE} ${r.rel} ${QS(r.s, "kJ")}`)}</span>`]
+      ]
+    };
+  },
+  function kokosnuss() {
+    const obj = pick([["Eine Kokosnuss", "von einer Palme"], ["Ein Apfel", "von einem hohen Baum"], ["Ein Tannenzapfen", "von einer Fichte"]]);
+    const isApfel = obj[0].includes("Apfel") || obj[0].includes("Tannen");
+    const m = isApfel ? pick([0.2, 0.25, 0.3, 0.15]) : pick(range(1.2, 2.2, 0.1));
+    const h = isApfel ? pick(range(6, 15, 1)) : pick(range(12, 25, 1));
+    const ans = m * G * h, r = res(ans);
+    const EKu = V("E", "kin,unten"), EPo = V("E", "pot,oben");
+    return {
+      title: "Achtung, Absturz!",
+      text: `${obj[0]} mit der Masse ${M(V("m") + " = " + Q(m, "kg"))} löst sich in der Höhe ${M(V("h") + " = " + Q(h, "m"))} ${obj[1]} und fällt zu Boden. Das Nullniveau ist der Boden.<br>Berechne die kinetische Energie kurz vor dem Aufprall.`,
+      ask: EKu, unit: "J", ans,
+      tip: `Beim Fall wird die Höhenenergie vollständig in kinetische Energie umgewandelt: ${M(EKu + " = " + EPo)}.`,
+      given: `${M(V("m") + " = " + Q(m, "kg"))}; ${M(V("h") + " = " + Q(h, "m"))}; ${M(V("g") + " = " + QG)}`, find: EKu,
+      steps: [
+        ["Ansatz", M(`${EKu} = ${EPo} = ${V("m")}${D}${V("g")}${D}${V("h")}`)],
+        ["Einsetzen", M(`${EKu} = ${Q(m, "kg")}${D}${QG}${D}${Q(h, "m")}`)],
+        ["Einheiten", UNIT_E_POT],
+        ["Ergebnis", `<span class="final">${M(`${EKu} ${r.rel} ${QS(r.s, "J")}`)}</span>`]
+      ]
+    };
+  }
+],
+2: [
+  function fallgeschw() {
+    const obj = pick([["Ein Blumentopf", "von einem Balkon"], ["Ein Stein", "in einen tiefen Brunnen"], ["Eine Kokosnuss", "von einer Palme"]]);
+    const m = pick([0.8, 1.2, 1.5, 2.0, 2.5]), h = pick(range(5, 25, 1));
+    const v2 = 2 * G * h, ans = Math.sqrt(v2), r = res(ans), r2 = res(v2, 4);
+    const vu = V("v"), EKu = V("E", "kin,unten"), EPo = V("E", "pot,oben");
+    return {
+      title: "Freier Fall",
+      text: `${obj[0]} (${M(V("m") + " = " + Q(m, "kg"))}) fällt aus der Höhe ${M(V("h") + " = " + Q(h, "m"))} ${obj[1]}.<br>Berechne die Geschwindigkeit, mit der der Gegenstand unten auftrifft.`,
+      ask: vu, unit: "m/s", ans,
+      tip: `Energieerhaltung: ${M(EPo + " = " + EKu)}, also ${M(V("m") + D + V("g") + D + V("h") + " = " + HALF + D + V("m") + D + V("v") + SQR)}. Löse nach ${M(V("v"))} auf – die Masse kürzt sich heraus.`,
+      given: `${M(V("m") + " = " + Q(m, "kg"))}; ${M(V("h") + " = " + Q(h, "m"))}; ${M(V("g") + " = " + QG)}`, find: vu,
+      steps: [
+        ["Ansatz", M(`${EPo} = ${EKu}`)],
+        ["Umstellen", lines(
+          M(`${V("m")}${D}${V("g")}${D}${V("h")} = ${HALF}${D}${V("m")}${D}${V("v")}${SQR} &nbsp;&nbsp;| ${D}2 &nbsp;| : ${V("m")}`),
+          M(`${V("v")}${SQR} = 2${D}${V("g")}${D}${V("h")}`),
+          M(`${V("v")} = ${SQ(`2${D}${V("g")}${D}${V("h")}`)}`))],
+        ["Einsetzen", M(`${V("v")} = ${SQ(`2${D}${QG}${D}${Q(h, "m")}`)} ${r2.rel} ${SQ(QS(r2.s, "m2/s2"))}`)],
+        ["Einheiten", UNIT_V],
+        ["Ergebnis", `<span class="final">${M(`${V("v")} ${r.rel} ${QS(r.s, "m/s")}`)}</span>`]
+      ]
+    };
+  },
+  function crashtest() {
+    const v = pick([36, 54, 72, 90, 108]), vs = v / 3.6, m = pick(range(1000, 1600, 100));
+    const ans = vs * vs / (2 * G), r = res(ans);
+    return {
+      title: "Crashtest mit dem Kran",
+      text: `Der Aufprall eines Autos (${M(V("m") + " = " + Q(m, "kg"))}) mit der Geschwindigkeit ${M(V("v") + " = " + Q(v, "km/h"))} soll simuliert werden. Dazu wird das Auto mit einem Kran in die Höhe ${M(V("h"))} gehoben und dann fallen gelassen.<br>Berechne, aus welcher Höhe das Auto fallen gelassen werden muss.`,
+      ask: V("h"), unit: "m", ans,
+      tip: `Rechne ${M(V("v"))} in ${U("m/s")} um. Die Höhenenergie oben wird zur kinetischen Energie unten: ${M(V("m") + D + V("g") + D + V("h") + " = " + HALF + D + V("m") + D + V("v") + SQR)}. Löse nach ${M(V("h"))} auf.`,
+      given: `${M(V("m") + " = " + Q(m, "kg"))}; ${M(V("v") + " = " + Q(v, "km/h"))}; ${M(V("g") + " = " + QG)}`, find: V("h"),
+      steps: [
+        ["Umrechnen", KMH(v)],
+        ["Ansatz", M(`${V("E", "pot,oben")} = ${V("E", "kin,unten")}`)],
+        ["Umstellen", lines(
+          M(`${V("m")}${D}${V("g")}${D}${V("h")} = ${HALF}${D}${V("m")}${D}${V("v")}${SQR} &nbsp;&nbsp;| : ${L}${V("m")}${D}${V("g")}${R}`),
+          M(`${V("h")} = ${F(V("v") + SQR, "2" + D + V("g"))}`))],
+        ["Einsetzen", M(`${V("h")} = ${F(L + Q(vs, "m/s") + R + SQR, "2" + D + QG)} = ${F(Q(vs * vs, "m2/s2"), Q(2 * G, "m/s2"))}`)],
+        ["Einheiten", M(`${F(U("m2/s2"), U("m/s2"))} = ${F("m" + SQR, "s" + SQR)}${D}${F("s" + SQR, "m")} = m`)],
+        ["Ergebnis", `<span class="final">${M(`${V("h")} ${r.rel} ${QS(r.s, "m")}`)}</span>`]
+      ]
+    };
+  },
+  function kran() {
+    const m = pick(range(200, 900, 50)), h = pick([8, 10, 12, 15, 18, 20, 24]);
+    const Ekj = Math.round(m * G * h / 100) / 10;          // auf 0,1 kJ gerundet angegeben
+    const ans = Ekj * 1000 / (G * h), r = res(ans), rd = res(G * h, 4);
+    return {
+      title: "Baustellenkran",
+      text: `Ein Kran hebt eine Palette mit Ziegelsteinen um ${M(V("h") + " = " + Q(h, "m"))} nach oben. Dabei nimmt die potentielle Energie der Palette um ${M(EPOT + " = " + Q(Ekj, "kJ"))} zu.<br>Berechne die Masse der Palette.`,
+      ask: V("m"), unit: "kg", ans,
+      tip: `Stelle ${M(EPOT + " = " + V("m") + D + V("g") + D + V("h"))} nach ${M(V("m"))} um. Rechne kJ in J um.`,
+      given: `${M(EPOT + " = " + Q(Ekj, "kJ") + " = " + Q(Ekj * 1000, "J"))}; ${M(V("h") + " = " + Q(h, "m"))}; ${M(V("g") + " = " + QG)}`, find: V("m"),
+      steps: [
+        ["Formel", M(`${EPOT} = ${V("m")}${D}${V("g")}${D}${V("h")} &nbsp;&nbsp;| : ${L}${V("g")}${D}${V("h")}${R}`)],
+        ["Umstellen", M(`${V("m")} = ${F(EPOT, V("g") + D + V("h"))}`)],
+        ["Einsetzen", M(`${V("m")} = ${F(Q(Ekj * 1000, "J"), QG + D + Q(h, "m"))} ${rd.rel === "=" ? "=" : "≈"} ${F(Q(Ekj * 1000, "J"), QS(rd.s, "J/kg"))}`)],
+        ["Einheiten", M(`${F("J", U("N/kg") + D + "m")} = ${F("N" + D + "m", "N" + D + "m")}${D}kg = kg`)],
+        ["Ergebnis", `<span class="final">${M(`${V("m")} ${r.rel} ${QS(r.s, "kg")}`)}</span>`]
+      ]
+    };
+  },
+  function kugel() {
+    const obj = pick([["Eine Bowlingkugel", [5, 6, 7]], ["Eine Kugelstoßkugel", [4, 5]], ["Ein Medizinball", [2, 3]]]);
+    const m = pick(obj[1]), v = pick([3, 4, 5, 6, 7, 8]);
+    const E = 0.5 * m * v * v, ans = v, r = res(ans), r2 = res(2 * E / m, 4);
+    return {
+      title: "Wie schnell ist sie?",
+      text: `${obj[0]} mit der Masse ${M(V("m") + " = " + Q(m, "kg"))} besitzt die kinetische Energie ${M(EKIN + " = " + Q(E, "J"))}.<br>Berechne ihre Geschwindigkeit.`,
+      ask: V("v"), unit: "m/s", ans,
+      tip: `Stelle ${M(EKIN + " = " + HALF + D + V("m") + D + V("v") + SQR)} nach ${M(V("v"))} um. Am Schluss musst du die Wurzel ziehen.`,
+      given: `${M(V("m") + " = " + Q(m, "kg"))}; ${M(EKIN + " = " + Q(E, "J"))}`, find: V("v"),
+      steps: [
+        ["Formel", M(`${EKIN} = ${HALF}${D}${V("m")}${D}${V("v")}${SQR} &nbsp;&nbsp;| ${D}2 &nbsp;| : ${V("m")}`)],
+        ["Umstellen", lines(M(`${V("v")}${SQR} = ${F("2" + D + EKIN, V("m"))}`), M(`${V("v")} = ${SQ(F("2" + D + EKIN, V("m")))}`))],
+        ["Einsetzen", M(`${V("v")} = ${SQ(F("2" + D + Q(E, "J"), Q(m, "kg")))} = ${SQ(QS(r2.s, "m2/s2"))}`)],
+        ["Einheiten", M(`${F("J", "kg")} = ${F("kg" + D + U("m2/s2"), "kg")} = ${U("m2/s2")}`)],
+        ["Ergebnis", `<span class="final">${M(`${V("v")} ${r.rel} ${QS(r.s, "m/s")}`)}</span>`]
+      ]
+    };
+  },
+  function pumpspeicher() {
+    const m = 1000, h = pick(range(120, 450, 10));
+    const Ekj = Math.round(m * G * h / 1000);               // ganzzahlig in kJ angegeben
+    const ans = Ekj * 1000 / (m * G), r = res(ans);
+    return {
+      title: "Pumpspeicherkraftwerk",
+      text: `Ein Pumpspeicherkraftwerk pumpt Wasser vom unteren Becken in das obere Speicherbecken. Für ${M(V("m") + " = " + Q(m, "kg"))} Wasser nimmt die potentielle Energie dabei um ${M(EPOT + " = " + Q(Ekj, "kJ"))} zu.<br>Berechne den Höhenunterschied zwischen den beiden Becken.`,
+      ask: V("h"), unit: "m", ans,
+      tip: `Stelle ${M(EPOT + " = " + V("m") + D + V("g") + D + V("h"))} nach ${M(V("h"))} um. Achte auf die Umrechnung von kJ in J.`,
+      given: `${M(V("m") + " = " + Q(m, "kg"))}; ${M(EPOT + " = " + Q(Ekj, "kJ") + " = " + Q(Ekj * 1000, "J"))}; ${M(V("g") + " = " + QG)}`, find: V("h"),
+      steps: [
+        ["Formel", M(`${EPOT} = ${V("m")}${D}${V("g")}${D}${V("h")} &nbsp;&nbsp;| : ${L}${V("m")}${D}${V("g")}${R}`)],
+        ["Umstellen", M(`${V("h")} = ${F(EPOT, V("m") + D + V("g"))}`)],
+        ["Einsetzen", M(`${V("h")} = ${F(Q(Ekj * 1000, "J"), Q(m, "kg") + D + QG)} = ${F(Q(Ekj * 1000, "J"), Q(m * G, "N"))}`)],
+        ["Einheiten", M(`${F("J", "kg" + D + U("N/kg"))} = ${F("N" + D + "m", "N")} = m`)],
+        ["Ergebnis", `<span class="final">${M(`${V("h")} ${r.rel} ${QS(r.s, "m")}`)}</span>`]
+      ]
+    };
+  }
+],
+3: [
+  function achterbahn() {
+    const m = pick(range(600, 1000, 50)), hA = pick(range(18, 32, 2)), hB = pick(range(2, 8, 1));
+    const vA = pick([5, 6, 7, 8, 10]), vAk = vA * 3.6;
+    const v2 = vA * vA + 2 * G * (hA - hB), ans = Math.sqrt(v2), r = res(ans), r2 = res(v2, 4);
+    const vAv = V("v", "A"), vBv = V("v", "B"), hAv = V("h", "A"), hBv = V("h", "B");
+    return {
+      title: "Achterbahnfahrt",
+      text: `Ein Achterbahnwagen (${M(V("m") + " = " + Q(m, "kg"))}) fährt an der Stelle A in der Höhe ${M(hAv + " = " + Q(hA, "m"))} mit der Geschwindigkeit ${M(vAv + " = " + Q(vAk, "km/h"))} über eine Kuppe. Danach rollt er ohne Antrieb hinab zur Stelle B in der Höhe ${M(hBv + " = " + Q(hB, "m"))}. Nullniveau ist der Boden, Reibung wird vernachlässigt.<br>Berechne die Geschwindigkeit ${M(vBv)} an der Stelle B in ${U("m/s")}.`,
+      ask: vBv, unit: "m/s", ans,
+      tip: `An beiden Stellen hat der Wagen Höhenenergie <u>und</u> kinetische Energie: ${M(V("E", "pot,A") + " + " + V("E", "kin,A") + " = " + V("E", "pot,B") + " + " + V("E", "kin,B"))}. Rechne ${M(vAv)} zuerst in ${U("m/s")} um.`,
+      given: `${M(V("m") + " = " + Q(m, "kg"))}; ${M(hAv + " = " + Q(hA, "m"))}; ${M(vAv + " = " + Q(vAk, "km/h"))}; ${M(hBv + " = " + Q(hB, "m"))}`, find: vBv,
+      steps: [
+        ["Umrechnen", M(`${vAv} = ${Q(vAk, "km/h")} = ${F(fmtG(vAk), "3,6")}&#8239;${U("m/s")} = ${Q(vA, "m/s")}`)],
+        ["Ansatz", M(`${V("E", "pot,A")} + ${V("E", "kin,A")} = ${V("E", "pot,B")} + ${V("E", "kin,B")}`)],
+        ["Umstellen", lines(
+          M(`${V("m")}${D}${V("g")}${D}${hAv} + ${HALF}${D}${V("m")}${D}${vAv}${SQR} = ${V("m")}${D}${V("g")}${D}${hBv} + ${HALF}${D}${V("m")}${D}${vBv}${SQR} &nbsp;&nbsp;| : ${V("m")} &nbsp;| ${D}2`),
+          M(`${vBv}${SQR} = ${vAv}${SQR} + 2${D}${V("g")}${D}${L}${hAv} − ${hBv}${R}`),
+          M(`${vBv} = ${SQ(`${vAv}${SQR} + 2${D}${V("g")}${D}${L}${hAv} − ${hBv}${R}`)}`))],
+        ["Einsetzen", M(`${vBv} = ${SQ(`${L}${Q(vA, "m/s")}${R}${SQR} + 2${D}${QG}${D}${L}${Q(hA, "m")} − ${Q(hB, "m")}${R}`)} ${r2.rel} ${SQ(QS(r2.s, "m2/s2"))}`)],
+        ["Ergebnis", `<span class="final">${M(`${vBv} ${r.rel} ${QS(r.s, "m/s")}`)}</span>`]
+      ]
+    };
+  },
+  function spielzeugauto() {
+    const mg = pick(range(250, 450, 50)), h = pick([0.4, 0.5, 0.6, 0.7, 0.8]), vo = pick([2.0, 2.5, 3.0, 3.5, 4.0]);
+    const v2 = vo * vo + 2 * G * h, ans = Math.sqrt(v2), r = res(ans), r2 = res(v2, 4);
+    const vu = V("v", "u"), vov = V("v", "o");
+    return {
+      title: "Spielzeugauto am Hügel",
+      text: `Ein Spielzeugauto (${M(V("m") + " = " + Q(mg, "g"))}) rollt antriebslos mit der Geschwindigkeit ${M(vu)} auf einen kleinen Hügel der Höhe ${M(V("h") + " = " + Q(h * 100, "cm"))} zu. Oben auf dem Hügel hat es noch die Geschwindigkeit ${M(vov + " = " + Q(vo, "m/s"))}. Reibung wird vernachlässigt.<br>Berechne die Geschwindigkeit ${M(vu)} unten vor dem Hügel.`,
+      ask: vu, unit: "m/s", ans,
+      tip: `Unten hat das Auto nur kinetische Energie, oben kinetische Energie <u>und</u> Höhenenergie: ${M(V("E", "kin,u") + " = " + V("E", "kin,o") + " + " + V("E", "pot,o"))}. Rechne die Höhe in m um.`,
+      given: `${M(V("m") + " = " + Q(mg, "g") + " = " + Q(mg / 1000, "kg"))}; ${M(V("h") + " = " + Q(h, "m"))}; ${M(vov + " = " + Q(vo, "m/s"))}`, find: vu,
+      steps: [
+        ["Ansatz", M(`${V("E", "kin,u")} = ${V("E", "kin,o")} + ${V("E", "pot,o")}`)],
+        ["Umstellen", lines(
+          M(`${HALF}${D}${V("m")}${D}${vu}${SQR} = ${HALF}${D}${V("m")}${D}${vov}${SQR} + ${V("m")}${D}${V("g")}${D}${V("h")} &nbsp;&nbsp;| : ${V("m")} &nbsp;| ${D}2`),
+          M(`${vu}${SQR} = ${vov}${SQR} + 2${D}${V("g")}${D}${V("h")}`),
+          M(`${vu} = ${SQ(`${vov}${SQR} + 2${D}${V("g")}${D}${V("h")}`)}`))],
+        ["Einsetzen", M(`${vu} = ${SQ(`${L}${Q(vo, "m/s")}${R}${SQR} + 2${D}${QG}${D}${Q(h, "m")}`)} ${r2.rel} ${SQ(QS(r2.s, "m2/s2"))}`)],
+        ["Hinweis", "Die Masse kürzt sich heraus – sie wird für die Rechnung nicht gebraucht."],
+        ["Ergebnis", `<span class="final">${M(`${vu} ${r.rel} ${QS(r.s, "m/s")}`)}</span>`]
+      ]
+    };
+  },
+  function halfpipe() {
+    const m = pick(range(40, 60, 2)), vs = pick([7, 7.5, 8]), vk = vs * 3.6, hP = pick([1.0, 1.2, 1.5, 1.8, 2.0]);
+    const v2 = vs * vs - 2 * G * hP, ans = Math.sqrt(v2), r = res(ans), r2 = res(v2, 4);
+    const vP = V("v", "P"), v0 = V("v", "0"), hPv = V("h", "P");
+    const who = pick([["Skaterin", "Mia"], ["Skater", "Tom"], ["Skaterin", "Lea"], ["Skater", "Noah"]]);
+    return {
+      title: "In der Halfpipe",
+      text: `${who[0]} ${who[1]} (${M(V("m") + " = " + Q(m, "kg"))} mit Board) rollt am tiefsten Punkt einer Halfpipe mit der Geschwindigkeit ${M(v0 + " = " + Q(vk, "km/h"))} auf die Wand zu. Der tiefste Punkt ist das Nullniveau, Reibung wird vernachlässigt.<br>Berechne die Geschwindigkeit im Punkt P, der ${M(hPv + " = " + Q(hP, "m"))} über dem Nullniveau liegt.`,
+      ask: vP, unit: "m/s", ans,
+      tip: `Rechne ${M(v0)} in ${U("m/s")} um. Unten gibt es nur kinetische Energie, im Punkt P kinetische Energie <u>und</u> Höhenenergie: ${M(V("E", "kin,0") + " = " + V("E", "kin,P") + " + " + V("E", "pot,P"))}.`,
+      given: `${M(V("m") + " = " + Q(m, "kg"))}; ${M(v0 + " = " + Q(vk, "km/h"))}; ${M(hPv + " = " + Q(hP, "m"))}`, find: vP,
+      steps: [
+        ["Umrechnen", M(`${v0} = ${Q(vk, "km/h")} = ${F(fmtG(vk), "3,6")}&#8239;${U("m/s")} = ${Q(vs, "m/s")}`)],
+        ["Ansatz", M(`${V("E", "kin,0")} = ${V("E", "kin,P")} + ${V("E", "pot,P")}`)],
+        ["Umstellen", lines(
+          M(`${HALF}${D}${V("m")}${D}${v0}${SQR} = ${HALF}${D}${V("m")}${D}${vP}${SQR} + ${V("m")}${D}${V("g")}${D}${hPv} &nbsp;&nbsp;| : ${V("m")} &nbsp;| ${D}2`),
+          M(`${vP}${SQR} = ${v0}${SQR} − 2${D}${V("g")}${D}${hPv}`),
+          M(`${vP} = ${SQ(`${v0}${SQR} − 2${D}${V("g")}${D}${hPv}`)}`))],
+        ["Einsetzen", M(`${vP} = ${SQ(`${L}${Q(vs, "m/s")}${R}${SQR} − 2${D}${QG}${D}${Q(hP, "m")}`)} ${r2.rel} ${SQ(QS(r2.s, "m2/s2"))}`)],
+        ["Ergebnis", `<span class="final">${M(`${vP} ${r.rel} ${QS(r.s, "m/s")}`)}</span>`]
+      ]
+    };
+  },
+  function stunt() {
+    const vk = pick([72, 90, 108, 126, 144]), vs = vk / 3.6, h = pick(range(15, 45, 5)), m = pick(range(1200, 1800, 100));
+    const v2 = vs * vs + 2 * G * h, vu_ms = Math.sqrt(v2), ans = vu_ms * 3.6, r = res(ans), r2 = res(v2, 4), rms = res(vu_ms);
+    const vo = V("v", "o"), vu = V("v", "u");
+    return {
+      title: "Sprung von der Klippe",
+      text: `Für einen Actionfilm fährt ein Stuntfahrer mit einem Auto (${M(V("m") + " = " + Q(m, "kg"))}) mit der Geschwindigkeit ${M(vo + " = " + Q(vk, "km/h"))} über die Kante einer Klippe. Das Auto fällt ${M(V("h") + " = " + Q(h, "m"))} in die Tiefe ins Wasser. Luftwiderstand wird vernachlässigt.<br>Berechne, mit welcher Geschwindigkeit ${M(vu)} das Auto auf dem Wasser aufschlägt. Gib das Ergebnis in ${U("km/h")} an.`,
+      ask: vu, unit: "km/h", ans,
+      tip: `Oben besitzt das Auto kinetische Energie <u>und</u> Höhenenergie, unten nur kinetische Energie: ${M(V("E", "kin,o") + " + " + V("E", "pot,o") + " = " + V("E", "kin,u"))}. Rechne in ${U("m/s")} und am Ende zurück in ${U("km/h")} (mal 3,6).`,
+      given: `${M(V("m") + " = " + Q(m, "kg"))}; ${M(vo + " = " + Q(vk, "km/h"))}; ${M(V("h") + " = " + Q(h, "m"))}`, find: vu + " in " + U("km/h"),
+      steps: [
+        ["Umrechnen", M(`${vo} = ${Q(vk, "km/h")} = ${F(fmtG(vk), "3,6")}&#8239;${U("m/s")} = ${Q(vs, "m/s")}`)],
+        ["Ansatz", M(`${V("E", "kin,o")} + ${V("E", "pot,o")} = ${V("E", "kin,u")}`)],
+        ["Umstellen", lines(
+          M(`${HALF}${D}${V("m")}${D}${vo}${SQR} + ${V("m")}${D}${V("g")}${D}${V("h")} = ${HALF}${D}${V("m")}${D}${vu}${SQR} &nbsp;&nbsp;| : ${V("m")} &nbsp;| ${D}2`),
+          M(`${vu} = ${SQ(`${vo}${SQR} + 2${D}${V("g")}${D}${V("h")}`)}`))],
+        ["Einsetzen", M(`${vu} = ${SQ(`${L}${Q(vs, "m/s")}${R}${SQR} + 2${D}${QG}${D}${Q(h, "m")}`)} ${r2.rel} ${SQ(QS(r2.s, "m2/s2"))} ${rms.rel} ${QS(rms.s, "m/s")}`)],
+        ["Umrechnen", M(`${vu} ${rms.rel} ${QS(rms.s, "m/s")} = ${rms.s}${D}3,6&#8239;${U("km/h")}`)],
+        ["Ergebnis", `<span class="final">${M(`${vu} ${r.rel} ${QS(r.s, "km/h")}`)}</span>`]
+      ]
+    };
+  },
+  function stabhochsprung() {
+    const m = pick(range(55, 75, 5)), v = pick([8.0, 8.5, 9.0, 9.5]), h0 = pick([0.9, 1.0, 1.1]);
+    const dh = v * v / (2 * G), ans = h0 + dh, r = res(ans), rdh = res(dh);
+    const h0v = V("h", "0"), hmax = V("h", "max");
+    const n = pick(["Sara", "Jana", "Emil", "Luca"]);
+    return {
+      title: "Stabhochsprung",
+      text: `${n} (${M(V("m") + " = " + Q(m, "kg"))}) läuft beim Stabhochsprung mit ${M(V("v") + " = " + Q(v, "m/s"))} an. Beim Anlauf liegt der Körperschwerpunkt ${M(h0v + " = " + Q(h0, "m"))} über dem Boden. Mithilfe des Stabes wird die kinetische Energie in Höhenenergie umgewandelt; am höchsten Punkt ist die Geschwindigkeit null. Nullniveau ist der Boden.<br>Berechne, wie hoch über dem Boden der Schwerpunkt im Idealfall (ohne Energieverluste) steigen kann.`,
+      ask: hmax, unit: "m", ans,
+      tip: `Beim Anlauf hat ${n} kinetische Energie <u>und</u> Höhenenergie (Schwerpunkt bei ${Q(h0, "m")}): ${M(V("E", "kin,0") + " + " + V("E", "pot,0") + " = " + V("E", "pot,max"))}.`,
+      given: `${M(V("m") + " = " + Q(m, "kg"))}; ${M(V("v") + " = " + Q(v, "m/s"))}; ${M(h0v + " = " + Q(h0, "m"))}`, find: hmax,
+      steps: [
+        ["Ansatz", M(`${V("E", "kin,0")} + ${V("E", "pot,0")} = ${V("E", "pot,max")}`)],
+        ["Umstellen", lines(
+          M(`${HALF}${D}${V("m")}${D}${V("v")}${SQR} + ${V("m")}${D}${V("g")}${D}${h0v} = ${V("m")}${D}${V("g")}${D}${hmax} &nbsp;&nbsp;| : ${L}${V("m")}${D}${V("g")}${R}`),
+          M(`${hmax} = ${h0v} + ${F(V("v") + SQR, "2" + D + V("g"))}`))],
+        ["Einsetzen", M(`${hmax} = ${Q(h0, "m")} + ${F(L + Q(v, "m/s") + R + SQR, "2" + D + QG)} ${rdh.rel} ${Q(h0, "m")} + ${QS(rdh.s, "m")}`)],
+        ["Ergebnis", `<span class="final">${M(`${hmax} ${r.rel} ${QS(r.s, "m")}`)}</span>`]
+      ]
+    };
+  }
+]
+};
+/* ===================== Skizzen (SVG) ===================== */
+const SVGDEFS = `<defs>
+<marker id="mV" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:#e8590c;stroke:none"/></marker>
+<marker id="mD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:#1864ab;stroke:none"/></marker>
+<marker id="mK" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:#5d6370;stroke:none"/></marker></defs>`;
+const SV = inner => `<svg class="sk" viewBox="0 0 320 200" role="img" aria-label="Skizze zur Aufgabe">${SVGDEFS}${inner}</svg>`;
+const sLn = (x1, y1, x2, y2, c = "") => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="${c}"/>`;
+const sV = (x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="vv" marker-end="url(#mV)"/>`;
+const sDim = (x, y1, y2) => `<line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}" class="dd" marker-start="url(#mD)" marker-end="url(#mD)"/>`;
+const sT = (x, y, n, sub, anchor = "middle", cls = "lv") =>
+  `<text x="${x}" y="${y}" text-anchor="${anchor}" class="${cls}"><tspan font-style="italic">${n}</tspan>${sub ? `<tspan dy="4" class="ls">${sub}</tspan>` : ""}</text>`;
+const sP = (x, y, s, anchor = "middle") => `<text x="${x}" y="${y}" text-anchor="${anchor}" class="lp">${s}</text>`;
+const sGround = (y, x1 = 8, x2 = 312) => {
+  let h = sLn(x1, y, x2, y, "gr");
+  for (let x = x1 + 6; x < x2; x += 14) h += sLn(x, y, x - 8, y + 8, "ht");
+  return h;
+};
+const sCar = (x, y, w = 50) => { // x,y = links unten (Radmitte-Linie)
+  const k = w / 50;
+  return `<path class="obj" d="M${x} ${y} l0 ${-12*k} l${12*k} ${-2*k} l${8*k} ${-9*k} l${18*k} 0 l${7*k} ${9*k} l${5*k} ${2*k} l0 ${12*k} z"/>
+  <circle cx="${x + 11*k}" cy="${y}" r="${5*k}" class="wh"/><circle cx="${x + 39*k}" cy="${y}" r="${5*k}" class="wh"/>`;
+};
+const sCrane = () => sLn(55, 180, 55, 20, "st") + sLn(40, 20, 240, 20, "st") + sLn(55, 50, 85, 20, "thin") + `<rect x="30" y="20" width="20" height="12" class="obj"/>`;
+const sPerson = (x, y) => `<circle cx="${x}" cy="${y}" r="7" class="obj"/>` + sLn(x, y + 7, x, y + 28, "st") + sLn(x, y + 28, x - 8, y + 44, "st") + sLn(x, y + 28, x + 8, y + 44, "st") + sLn(x, y + 14, x + 12, y + 22, "st");
+
+const SKETCH = {
+  radfahrt: () => SV(sGround(178) +
+    `<circle cx="105" cy="155" r="22" class="wh2"/><circle cx="185" cy="155" r="22" class="wh2"/>
+     <path class="st" d="M105 155 L135 122 L178 122 L185 155 M135 122 L150 155 L105 155 M150 155 L178 122 M132 113 L140 113 M178 122 L176 108 L186 106"/>` +
+    `<circle cx="128" cy="86" r="8" class="obj"/>` + `<path class="st" d="M130 94 L135 118 L152 136 M131 100 L176 108"/>` +
+    sV(215, 110, 285, 110) + sT(250, 98, "v") + sT(110, 82, "m")),
+  getraenkekiste: () => SV(sGround(180) + sLn(205, 180, 205, 70, "st") + sLn(205, 92, 275, 92, "st2") +
+    `<rect x="225" y="62" width="38" height="30" class="obj"/><rect x="95" y="150" width="38" height="30" class="obj dash"/>` +
+    `<path d="M120 146 Q 150 60 220 70" class="kk dash" marker-end="url(#mK)"/>` +
+    sLn(263, 92, 300, 92, "aux") + sDim(296, 178, 94) + sT(310, 140, "h") + sT(244, 54, "m") + sP(40, 196, "Nullniveau", "start")),
+  auto: () => SV(sGround(176) + sCar(70, 162, 180) + sV(262, 125, 312, 125) + sT(287, 113, "v") + sT(160, 150, "m")),
+  gipfel: () => SV(`<path d="M15 180 L170 32 L310 180 Z" class="mt"/>` + sGround(180) +
+    `<path d="M68 122 L80 110 L92 122 Z M70 122 L70 132 L90 132 L90 122" class="obj"/>` +
+    sLn(170, 32, 170, 12, "st") + `<path d="M170 12 L188 17 L170 22 Z" class="fl"/>` +
+    sLn(92, 132, 300, 132, "aux") + sLn(172, 32, 300, 32, "aux") + sDim(292, 130, 34) + sT(306, 86, "h") +
+    sP(80, 104, "Hütte") + sP(145, 24, "Gipfel", "end")),
+  kokosnuss: () => SV(sGround(180) +
+    `<path d="M70 180 Q 85 115 100 55" class="trunk"/><path d="M100 55 Q 70 40 45 60 M100 55 Q 130 35 160 55 M100 55 Q 85 25 60 25 M100 55 Q 120 20 145 28" class="leaf"/>` +
+    `<circle cx="112" cy="64" r="8" class="nut"/>` + `<path d="M112 74 L112 172" class="kk dash" marker-end="url(#mK)"/>` +
+    sLn(120, 64, 215, 64, "aux") + sDim(205, 178, 66) + sT(219, 126, "h", "", "start") + sT(130, 60, "m", "", "start")),
+  fallgeschw: () => SV(sGround(180) + `<rect x="30" y="30" width="90" height="150" class="bld"/>` +
+    `<rect x="45" y="45" width="22" height="26" class="win"/><rect x="82" y="45" width="22" height="26" class="win"/><rect x="45" y="100" width="22" height="26" class="win"/><rect x="82" y="100" width="22" height="26" class="win"/>` +
+    sLn(120, 62, 160, 62, "st2") + `<path d="M132 62 L135 46 L147 46 L150 62 Z" class="obj"/>` +
+    `<path d="M141 70 L141 130" class="kk dash"/>` + sV(141, 135, 141, 175) + sT(153, 160, "v", "", "start") +
+    sLn(152, 62, 240, 62, "aux") + sDim(230, 178, 64) + sT(244, 122, "h", "", "start")),
+  crashtest: () => SV(sGround(180) + sCrane() + sLn(205, 20, 205, 62, "thin") + sCar(180, 82, 50) +
+    `<path d="M205 88 L205 140" class="kk dash"/>` + sV(205, 142, 205, 176) + sT(217, 164, "v", "", "start") +
+    sLn(232, 82, 285, 82, "aux") + sDim(276, 178, 84) + sT(290, 134, "h", "", "start")),
+  kran: () => SV(sGround(180) + sCrane() + sLn(205, 20, 205, 62, "thin") + `<rect x="185" y="62" width="40" height="22" class="brk"/>` +
+    `<rect x="185" y="158" width="40" height="22" class="brk dash"/>` + `<path d="M170 156 L170 90" class="kk dash" marker-end="url(#mK)"/>` +
+    sLn(225, 84, 285, 84, "aux") + sDim(276, 178, 86) + sT(290, 136, "h", "", "start") + sT(240, 72, "m", "", "start")),
+  kugel: () => SV(sGround(172) + `<circle cx="130" cy="150" r="21" class="ball"/>` +
+    sLn(70, 140, 95, 140, "thin") + sLn(62, 152, 92, 152, "thin") + sLn(70, 164, 95, 164, "thin") +
+    sV(165, 150, 245, 150) + sT(205, 138, "v") + sT(130, 118, "m")),
+  pumpspeicher: () => SV(`<path d="M8 180 L8 50 L130 50 L200 180 Z" class="mt"/>` + sGround(180) +
+    `<rect x="25" y="36" width="80" height="14" class="water"/>` + sLn(25, 28, 25, 50, "st") + sLn(105, 28, 105, 50, "st") +
+    `<rect x="205" y="160" width="100" height="20" class="water"/>` + sLn(205, 150, 205, 180, "st") + sLn(305, 150, 305, 180, "st") +
+    `<path d="M215 170 Q 170 110 98 44" class="pipe" />` + `<path d="M190 128 L162 94" class="kk" marker-end="url(#mK)"/>` +
+    sLn(105, 36, 290, 36, "aux") + sDim(282, 158, 38) + sT(268, 102, "h", "", "end") + sP(65, 24, "oberes Becken") + sP(255, 196, "unteres Becken")),
+  achterbahn: () => SV(sGround(180) +
+    `<path d="M10 160 C 45 160, 50 52, 85 52 C 125 52, 150 145, 205 145 L312 145" class="track"/>` +
+    sLn(240, 147, 240, 180, "pole") + sLn(40, 120, 40, 180, "pole") +
+    `<rect x="72" y="38" width="26" height="12" rx="3" class="obj"/>` + sV(102, 44, 145, 44) + sT(123, 30, "v", "A") +
+    sP(64, 40, "A", "end") + `<circle cx="240" cy="145" r="4" class="pt"/>` + sP(240, 136, "B") +
+    sDim(85, 178, 54) + sT(93, 132, "h", "A", "start") + sDim(285, 178, 147) + sT(298, 168, "h", "B", "start")),
+  spielzeugauto: () => SV(sGround(170) +
+    `<path d="M8 170 L140 170 C 170 170, 180 112, 210 112 C 240 112, 250 170, 280 170 L312 170" class="track"/>` +
+    sCar(35, 164, 36) + sV(78, 158, 128, 158) + sT(103, 148, "v", "u") + sP(52, 194, "(1)") +
+    sCar(192, 104, 36) + sV(236, 98, 280, 98) + sT(258, 84, "v", "o") + sP(210, 82, "(2)") +
+    sLn(228, 112, 305, 112, "aux") + sDim(300, 168, 114) + sT(288, 146, "h", "", "end")),
+  halfpipe: () => SV(`<path d="M40 30 C 40 175, 280 175, 280 30 L312 30 L312 192 L8 192 L8 30 Z" class="mt"/>` +
+    `<path d="M40 30 C 40 175, 280 175, 280 30" class="track"/>` + sLn(8, 30, 40, 30, "st") + sLn(280, 30, 312, 30, "st") +
+    sLn(146, 136, 176, 136, "st2") + sPerson(161, 88).replace(/<circle/, "<circle") +
+    sV(180, 126, 214, 126) + sT(197, 112, "v", "0") + `<circle cx="255" cy="100" r="4" class="pt"/>` + sP(244, 96, "P", "end") +
+    sLn(259, 100, 306, 100, "aux") + sLn(176, 139, 306, 139, "aux") + sDim(300, 137, 102) + sT(296, 160, "h", "P", "end") +
+    sP(160, 162, "Nullniveau")),
+  stunt: () => SV(`<path d="M8 60 L120 60 L120 192 L8 192 Z" class="mt"/>` + sLn(8, 60, 120, 60, "gr") +
+    `<path d="M120 172 Q 140 166 160 172 T 200 172 T 240 172 T 280 172 T 320 172 L320 192 L120 192 Z" class="water"/>` +
+    sCar(76, 54, 42) + sV(122, 46, 165, 46) + sT(144, 30, "v", "o") +
+    `<path d="M120 52 Q 195 52 236 160" class="kk dash"/>` + sV(229, 140, 240, 168) + sT(250, 150, "v", "u", "start") +
+    sLn(122, 62, 305, 62, "aux") + sDim(296, 170, 64) + sT(285, 118, "h", "", "end")),
+  stabhochsprung: () => SV(sGround(180) + sPerson(65, 112) + sLn(77, 134, 150, 176, "pole2") +
+    `<circle cx="65" cy="141" r="3.5" class="pt"/>` + sP(52, 145, "S", "end") +
+    sV(88, 112, 136, 112) + sT(114, 132, "v") +
+    sLn(235, 180, 235, 50, "st") + sLn(225, 58, 290, 58, "st2") +
+    `<path d="M68 138 Q 170 10 250 44" class="kk dash"/>` + `<circle cx="250" cy="44" r="3.5" class="pt"/>` +
+    sLn(8, 141, 60, 141, "aux") + sDim(22, 178, 143) + sT(30, 166, "h", "0", "start") +
+    sLn(254, 44, 310, 44, "aux") + sDim(302, 178, 46) + sT(292, 118, "h", "max", "end"))
+};
+
+/* Erster Umformungsschritt je Aufgabe */
+const SPLIT = s => `&nbsp;&nbsp;| ${s}`;
+const STEP1 = {
+  radfahrt: () => `${M(EKIN)} steht schon allein auf einer Seite der Formel – du musst nicht umformen und kannst direkt einsetzen.`,
+  getraenkekiste: () => `${M(EPOT)} steht schon allein auf einer Seite der Formel – du musst nicht umformen und kannst direkt einsetzen.`,
+  auto: () => `Rechne zuerst die Geschwindigkeit um: Wert in ${U("km/h")} : 3,6 = Wert in ${U("m/s")}. Danach kannst du direkt in ${M(EKIN + " = " + HALF + D + V("m") + D + V("v") + SQR)} einsetzen.`,
+  gipfel: () => `Berechne zuerst den Höhenunterschied: ${M(V("h") + " = " + V("h", "Gipfel") + " − " + V("h", "Hütte"))}.`,
+  kokosnuss: () => `Setze an: ${M(V("E", "kin,unten") + " = " + V("E", "pot,oben") + " = " + V("m") + D + V("g") + D + V("h"))}. Danach direkt einsetzen.`,
+  fallgeschw: () => `${M(`${V("m")}${D}${V("g")}${D}${V("h")} = ${HALF}${D}${V("m")}${D}${V("v")}${SQR}${SPLIT(": " + V("m"))}`)} &nbsp;→&nbsp; ${M(`${V("g")}${D}${V("h")} = ${HALF}${D}${V("v")}${SQR}`)}`,
+  crashtest: () => `${M(`${V("m")}${D}${V("g")}${D}${V("h")} = ${HALF}${D}${V("m")}${D}${V("v")}${SQR}${SPLIT(": " + V("m"))}`)} &nbsp;→&nbsp; ${M(`${V("g")}${D}${V("h")} = ${HALF}${D}${V("v")}${SQR}`)}`,
+  kran: () => `Teile beide Seiten durch ${M(L + V("g") + D + V("h") + R)}: ${M(`${EPOT} = ${V("m")}${D}${V("g")}${D}${V("h")}${SPLIT(": " + L + V("g") + D + V("h") + R)}`)}`,
+  kugel: () => `${M(`${EKIN} = ${HALF}${D}${V("m")}${D}${V("v")}${SQR}${SPLIT(D + "2")}`)} &nbsp;→&nbsp; ${M(`2${D}${EKIN} = ${V("m")}${D}${V("v")}${SQR}`)}`,
+  pumpspeicher: () => `Teile beide Seiten durch ${M(L + V("m") + D + V("g") + R)}: ${M(`${EPOT} = ${V("m")}${D}${V("g")}${D}${V("h")}${SPLIT(": " + L + V("m") + D + V("g") + R)}`)}`,
+  achterbahn: () => `${M(`${V("m")}${D}${V("g")}${D}${V("h", "A")} + ${HALF}${D}${V("m")}${D}${V("v", "A")}${SQR} = ${V("m")}${D}${V("g")}${D}${V("h", "B")} + ${HALF}${D}${V("m")}${D}${V("v", "B")}${SQR}${SPLIT(": " + V("m"))}`)}<br>→&nbsp; ${M(`${V("g")}${D}${V("h", "A")} + ${HALF}${D}${V("v", "A")}${SQR} = ${V("g")}${D}${V("h", "B")} + ${HALF}${D}${V("v", "B")}${SQR}`)}`,
+  spielzeugauto: () => `${M(`${HALF}${D}${V("m")}${D}${V("v", "u")}${SQR} = ${HALF}${D}${V("m")}${D}${V("v", "o")}${SQR} + ${V("m")}${D}${V("g")}${D}${V("h")}${SPLIT(": " + V("m"))}`)}<br>→&nbsp; ${M(`${HALF}${D}${V("v", "u")}${SQR} = ${HALF}${D}${V("v", "o")}${SQR} + ${V("g")}${D}${V("h")}`)}`,
+  halfpipe: () => `${M(`${HALF}${D}${V("m")}${D}${V("v", "0")}${SQR} = ${HALF}${D}${V("m")}${D}${V("v", "P")}${SQR} + ${V("m")}${D}${V("g")}${D}${V("h", "P")}${SPLIT(": " + V("m"))}`)}<br>→&nbsp; ${M(`${HALF}${D}${V("v", "0")}${SQR} = ${HALF}${D}${V("v", "P")}${SQR} + ${V("g")}${D}${V("h", "P")}`)}`,
+  stunt: () => `${M(`${HALF}${D}${V("m")}${D}${V("v", "o")}${SQR} + ${V("m")}${D}${V("g")}${D}${V("h")} = ${HALF}${D}${V("m")}${D}${V("v", "u")}${SQR}${SPLIT(": " + V("m"))}`)}<br>→&nbsp; ${M(`${HALF}${D}${V("v", "o")}${SQR} + ${V("g")}${D}${V("h")} = ${HALF}${D}${V("v", "u")}${SQR}`)}`,
+  stabhochsprung: () => `Teile beide Seiten durch ${M(L + V("m") + D + V("g") + R)}: ${M(`${HALF}${D}${V("m")}${D}${V("v")}${SQR} + ${V("m")}${D}${V("g")}${D}${V("h", "0")} = ${V("m")}${D}${V("g")}${D}${V("h", "max")}${SPLIT(": " + L + V("m") + D + V("g") + R)}`)}`
+};
+
+function tipHTML() {
+  return `<div class="tiprow"><b>💡 Formeln:</b> ${M(EPOT + " = " + V("m") + D + V("g") + D + V("h"))} &nbsp;mit&nbsp; ${M(V("g") + " = " + QG)} &nbsp;&nbsp;und&nbsp;&nbsp; ${M(EKIN + " = " + HALF + D + V("m") + D + V("v") + SQR)}</div>
+  <div class="tiprow"><b>Erster Schritt:</b> ${STEP1[curName]()}</div>
+  <div class="tiprow"><b>Hinweis:</b> ${task.tip}</div>`;
+}
+// TEMPLATES END
+
+/* ===================== Zustand und Oberfläche ===================== */
+const $ = id => document.getElementById(id);
+const LVLNAME = { 1: "leicht", 2: "mittel", 3: "schwer" };
+const PRAISE = [
+  "Volltreffer! Da steckt ordentlich Energie drin! ⚡",
+  "Richtig! Newton würde dir zuwinken. 🍎",
+  "Bombe! Deine Gehirnzellen haben gerade maximale kinetische Energie. 🚀",
+  "Stimmt! Das war ja potentiell genial. 😎",
+  "Richtig! Energie geht nicht verloren – dein Können auch nicht. 💪",
+  "Yes! Selbst die Achterbahn ist neidisch auf deinen Schwung. 🎢",
+  "Perfekt! Physik-Level: Superheld. 🦸",
+  "Richtig gerechnet – die Höhenenergie deiner Laune steigt! 📈",
+  "Exzellent! Einstein hätte die Zunge rausgestreckt – vor Freude. 👅",
+  "Treffer! Da qualmt der Taschenrechner. 🔥"
+];
+const SECOND = [
+  "Richtig – im zweiten Anlauf! Dranbleiben lohnt sich. 👍",
+  "Jetzt passt's! Zweiter Versuch, voller Erfolg. 🎯"
+];
+
+let curName = "", level = 1, task = null, tries = 0, done = false;
+let lastIdx = { 1: -1, 2: -1, 3: -1 };
+let stats = { ok: 0, bad: 0, flames: 0 };
+let used = new Set();   // bereits bearbeitete Aufgabenvorlagen
+let history = [];
+
+function newTask() {
+  const list = TASKS[level];
+  const free = list.map((f, k) => k).filter(k => !used.has(list[k].name));
+  updateOpen();
+  if (!free.length) { showAllDone(); return; }
+  $("taskMain").classList.remove("hidden"); $("allDone").classList.add("hidden");
+  const cand = free.length > 1 ? free.filter(k => k !== lastIdx[level]) : free;
+  const i = pick(cand);
+  lastIdx[level] = i;
+  curName = list[i].name;
+  task = list[i]();
+  task.level = level; task.sketch = SKETCH[curName](); task.answers = []; task.result = "";
+  tries = 0; done = false;
+  $("badge").textContent = LVLNAME[level];
+  $("badge").className = "badge b" + level;
+  $("tTitle").textContent = task.title;
+  $("tText").innerHTML = task.text;
+  $("tSketch").innerHTML = SKETCH[curName]();
+  $("askVar").innerHTML = M(task.ask + " =");
+  $("askUnit").innerHTML = U(task.unit);
+  const inp = $("inp"); inp.value = ""; inp.disabled = false;
+  $("btnCheck").disabled = false;
+  $("btnNew").classList.remove("glow");
+  $("tipBox").classList.add("hidden"); $("tipBox").innerHTML = "";
+  $("fbBox").classList.add("hidden");
+  $("solBox").classList.add("hidden"); $("solBox").innerHTML = "";
+  $("tryInfo").textContent = "Versuch 1 von 2";
+  $("btnTip").textContent = "Tipp";
+}
+
+function updateOpen() {
+  [1, 2, 3].forEach(l => {
+    const n = TASKS[l].filter(f => !used.has(f.name)).length;
+    $("open" + l).textContent = n ? `${n} von ${TASKS[l].length} offen` : "alle bearbeitet ✓";
+    document.querySelector(`.lvl[data-l="${l}"]`).classList.toggle("empty", !n);
+  });
+}
+
+function showAllDone() {
+  task = null; done = true;
+  $("taskMain").classList.add("hidden");
+  $("badge").textContent = LVLNAME[level];
+  $("badge").className = "badge b" + level;
+  $("tryInfo").textContent = "";
+  const others = [1, 2, 3].filter(l => l !== level && TASKS[l].some(f => !used.has(f.name)));
+  const box = $("allDone");
+  box.innerHTML = `<div class="big1">🏆</div><h2>Alle ${TASKS[level].length} Aufgaben im Niveau „${LVLNAME[level]}“ bearbeitet!</h2>
+    <p>${others.length ? "Weiter geht's mit einem anderen Niveau:" : "Du hast alle Aufgaben der App bearbeitet – stark! Lade dir jetzt deine Zusammenfassung als PDF herunter. Mit „Stand zurücksetzen“ startest du neu mit neuen Werten."}</p>
+    <div class="row">${others.map(l => `<button class="big" data-go="${l}">${LVLNAME[l]} ${"🔥".repeat(l)}</button>`).join("")}</div>`;
+  box.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => selectLevel(+b.dataset.go)));
+  box.classList.remove("hidden");
+}
+
+function selectLevel(l) {
+  document.querySelectorAll(".lvl").forEach(x => x.classList.toggle("on", +x.dataset.l === l));
+  level = l;
+  newTask();
+}
+
+function parseInput(s) {
+  s = s.trim().replace(/\s+/g, "").replace(/−/g, "-").replace(",", ".");
+  if (!/^[-+]?(\d+\.?\d*|\.\d+)$/.test(s)) return NaN;
+  return parseFloat(s);
+}
+
+function feedback(html, cls) {
+  const b = $("fbBox"); b.className = "box " + cls; b.innerHTML = html;
+}
+
+function near(a, b) { return Math.abs(a - b) <= 0.012 * Math.abs(b); }
+
+function hintFor(x, ans, unit) {
+  if (ans === 0) return "";
+  if (near(x, ans * 1000) || near(x, ans / 1000)) return "Achte auf die Einheit: J oder kJ, g oder kg?";
+  if (near(x, ans * 3.6) || near(x, ans / 3.6)) return `Überprüfe die Umrechnung zwischen ${U("m/s")} und ${U("km/h")}.`;
+  if (near(x, ans * 2) || near(x, ans / 2)) return `Hast du an den Faktor ${HALF} bzw. 2 gedacht?`;
+  if (near(x, ans * ans) || near(x * x, ans)) return "Denk an das Quadrat bzw. an die Wurzel!";
+  return "";
+}
+
+function check() {
+  if (done || !task) return;
+  const x = parseInput($("inp").value);
+  if (isNaN(x)) { feedback("Bitte gib eine Zahl ein, z. B. 12,5.", "fb-warn"); return; }
+  tries++;
+  const ok = Math.abs(x - task.ans) <= Math.max(0.07 * Math.abs(task.ans), 1e-9);
+  task.answers.push({ s: numStr(x, Math.min(4, (String($("inp").value).replace(",", ".").split(".")[1] || "").length)), ok });
+  if (tries === 1) { history.push(task); used.add(curName); updateOpen(); }
+  task.result = ok ? (tries === 1 ? "richtig" : "zweiter Versuch") : (tries === 1 ? "offen" : "falsch");
+  if (ok) {
+    done = true;
+    if (tries === 1) { stats.ok++; feedback(pick(PRAISE) + `<br><span style="font-weight:500">+ ${"🔥".repeat(level)}</span>`, "fb-ok"); }
+    else { feedback(pick(SECOND) + `<br><span style="font-weight:500">+ ${"🔥".repeat(level)}</span>`, "fb-ok"); }
+    stats.flames += level;
+    burst();
+    showSolution();
+    finish();
+  } else if (tries === 1) {
+    stats.bad++;
+    const h = hintFor(x, task.ans, task.unit);
+    feedback("Leider noch nicht richtig. Du hast noch einen zweiten Versuch!" + (h ? `<br><span style="font-weight:500">${h}</span>` : ""), "fb-bad");
+    $("tryInfo").textContent = "Versuch 2 von 2";
+    $("inp").select();
+  } else {
+    done = true;
+    feedback("Leider wieder nicht richtig – diesmal gibt es keine Flamme. Schau dir den Lösungsweg in Ruhe an:", "fb-bad");
+    showSolution();
+    finish();
+  }
+  updateStats();
+}
+
+function finish() {
+  $("inp").disabled = true;
+  $("btnCheck").disabled = true;
+  $("btnNew").classList.add("glow");
+  $("tryInfo").textContent = "Aufgabe abgeschlossen";
+}
+
+function solutionHTML(t) {
+  let h = `<h3>Lösungsweg</h3>`;
+  h += `<div class="srow"><div class="slab">Gegeben</div><div class="smath">${t.given}</div></div>`;
+  h += `<div class="srow"><div class="slab">Gesucht</div><div class="smath">${M(t.find)}</div></div>`;
+  t.steps.forEach(s => { h += `<div class="srow"><div class="slab">${s[0]}</div><div class="smath">${s[1]}</div></div>`; });
+  return h;
+}
+
+function showSolution() {
+  $("solBox").innerHTML = solutionHTML(task);
+  $("solBox").classList.remove("hidden");
+}
+
+function printSummary() {
+  if (!history.length) return;
+  const name = $("sName").value.trim();
+  const now = new Date();
+  const datum = now.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" }) + ", " + now.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) + " Uhr";
+  const t = stats.ok + stats.bad, p = t ? Math.round(stats.bad / t * 1000) / 10 : 0;
+  const esc = x => x.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  let h = `<div class="pr"><h1>Dein Energie Trainer – Zusammenfassung</h1>
+    <p class="meta">${name ? "Name: <b>" + esc(name) + "</b> · " : ""}${datum} · Kinetische und potentielle Energie · Trainer von Peter Sobek (edu-mrh.de)</p>
+    <div class="sum"><div>Bearbeitet: <b>${history.length}</b></div><div>Richtig: <b>${stats.ok}</b></div><div>Falsch: <b>${stats.bad}</b></div>
+    <div>Fehleranteil: <b>${numStr(p, p % 1 ? 1 : 0)}&#8239;%</b></div><div>Flammen: <b>${stats.flames}</b> 🔥</div></div>`;
+  history.forEach((k, n) => {
+    const sk = k.sketch.replace(/id="m([VDK])"/g, `id="p${n}m$1"`).replace(/url\(#m([VDK])\)/g, `url(#p${n}m$1)`);
+    const resTxt = { "richtig": ["richtig", "ok"], "zweiter Versuch": ["im 2. Versuch gelöst (zählt als falsch)", "bad"], "falsch": ["falsch", "bad"], "offen": ["1. Versuch falsch, nicht abgeschlossen", "bad"] }[k.result];
+    const ans = k.answers.map((a, j) => `Versuch ${j + 1}: ${M(k.ask + " = " + QS(a.s, k.unit))} ${a.ok ? "✓" : "✗"}`).join(" &nbsp;&nbsp; ");
+    h += `<div class="pt"><div class="ph"><h2>Aufgabe ${n + 1}: ${k.title} <span style="font-weight:400;font-size:10pt">(${LVLNAME[k.level]})</span></h2><span class="res ${resTxt[1]}">${resTxt[0]}</span></div>
+      <div class="pbody"><div>${k.text}<p class="ans"><b>Deine Antwort:</b> ${ans}</p></div>${sk}</div>${solutionHTML(k)}</div>`;
+  });
+  h += `</div>`;
+  $("printArea").innerHTML = h;
+  const fname = "Energie_Zusammenfassung" + (name ? "_" + name.replace(/[^\wäöüÄÖÜß-]+/g, "_") : "");
+  showModal(`<h2>📄 Deine Zusammenfassung ist fertig</h2>
+    <p>Tippe auf <b>„Drucken / Als PDF speichern“</b> und wähle im Druckfenster als Ziel <b>„Als PDF speichern“</b> (iPad: Teilen → „In Dateien sichern“).</p>
+    <p class="small">Öffnet sich kein Druckfenster, lade die Zusammenfassung als Datei herunter, öffne sie und speichere sie dort als PDF.</p>`,
+    [["Drucken / Als PDF speichern", "ok", () => { closeModal(); doPrint(fname); }],
+     ["Als Datei herunterladen", "alt", () => { downloadSummary(fname, h); }],
+     ["Schließen", "plain", closeModal]]);
+}
+
+function doPrint(fname) {
+  const oldTitle = document.title;
+  document.title = fname;
+  setTimeout(() => {
+    try { window.print(); } catch (e) { /* Drucken nicht erlaubt */ }
+    setTimeout(() => { document.title = oldTitle; }, 1500);
+  }, 150);
+}
+
+function downloadSummary(fname, inner) {
+  const css = document.querySelector("style").textContent;
+  const doc = `<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${fname}</title>
+<style>${css}
+body{background:#fff;padding:16px;font-size:16px}#printArea{display:block !important;max-width:900px;margin:0 auto}
+.pbar{max-width:900px;margin:0 auto 14px}.pbar button{font:inherit;font-weight:700;min-height:56px;padding:8px 20px;border:none;border-radius:12px;background:#2b8a3e;color:#fff;cursor:pointer}
+@media print{.pbar{display:none}body{padding:0;font-size:10pt}}</style></head>
+<body><div class="pbar"><button onclick="window.print()">Drucken / Als PDF speichern</button></div><div id="printArea">${inner}</div></body></html>`;
+  try {
+    const url = URL.createObjectURL(new Blob([doc], { type: "text/html" }));
+    const a = document.createElement("a");
+    a.href = url; a.download = fname + ".html";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  } catch (e) { alertBox("Der Download ist hier leider nicht möglich. Öffne die App direkt im Browser."); }
+}
+
+function showModal(html, buttons) {
+  const m = $("modal");
+  m.querySelector(".mbody").innerHTML = html;
+  const row = m.querySelector(".mbtns"); row.innerHTML = "";
+  buttons.forEach(([label, cls, fn]) => {
+    const b = document.createElement("button");
+    b.className = "big m-" + cls; b.textContent = label; b.addEventListener("click", fn);
+    row.appendChild(b);
+  });
+  m.classList.remove("hidden");
+}
+function closeModal() { $("modal").classList.add("hidden"); }
+function alertBox(t) { showModal(`<p>${t}</p>`, [["OK", "ok", closeModal]]); }
+
+function resetAll() {
+  stats = { ok: 0, bad: 0, flames: 0 };
+  history = [];
+  used = new Set();
+  lastIdx = { 1: -1, 2: -1, 3: -1 };
+  $("printArea").innerHTML = "";
+  updateStats();
+  newTask();
+  closeModal();
+}
+
+function toggleTip() {
+  if (!task) return;
+  const b = $("tipBox");
+  if (b.classList.contains("hidden")) { b.innerHTML = tipHTML(); b.classList.remove("hidden"); $("btnTip").textContent = "Tipp ausblenden"; }
+  else { b.classList.add("hidden"); $("btnTip").textContent = "Tipp"; }
+}
+
+function updateStats() {
+  const t = stats.ok + stats.bad;
+  $("nOk").textContent = stats.ok;
+  $("nBad").textContent = stats.bad;
+  const p = t ? Math.round(stats.bad / t * 1000) / 10 : 0;
+  $("pct").textContent = numStr(p, p % 1 ? 1 : 0) + " %";
+  $("btnPdf").disabled = !history.length;
+  const bar = $("bar");
+  if (!t) bar.innerHTML = `<div class="e">Noch keine Aufgabe bearbeitet</div>`;
+  else {
+    const g = stats.ok / t * 100, r = 100 - g;
+    bar.innerHTML = `<div class="g" style="width:${g}%">${stats.ok ? stats.ok + " ✓" : ""}</div><div class="r" style="width:${r}%">${stats.bad ? stats.bad + " ✗" : ""}</div>`;
+  }
+  const f = $("flames");
+  if (f.textContent !== String(stats.flames)) {
+    f.textContent = stats.flames;
+    const box = $("flameBox"); box.classList.remove("pop"); void box.offsetWidth; box.classList.add("pop");
+  }
+}
+
+function burst() {
+  const r = $("btnCheck").getBoundingClientRect();
+  for (let k = 0; k < level; k++) {
+    const s = document.createElement("div");
+    s.className = "burst"; s.textContent = "🔥";
+    s.style.left = (r.left + r.width / 2 - 20 + (k - (level - 1) / 2) * 44) + "px";
+    s.style.top = (r.top - 10) + "px";
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 1200);
+  }
+}
+
+document.querySelectorAll(".lvl").forEach(b => b.addEventListener("click", () => selectLevel(+b.dataset.l)));
+$("btnCheck").addEventListener("click", check);
+$("btnTip").addEventListener("click", toggleTip);
+$("btnPdf").addEventListener("click", printSummary);
+$("btnNew").addEventListener("click", newTask);
+$("inp").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); check(); } });
+$("btnReset").addEventListener("click", () => {
+  showModal(`<h2>Stand zurücksetzen?</h2><p>Richtig, falsch, Flammen und die Zusammenfassung werden gelöscht. Alle Aufgaben kommen mit neuen Werten zurück.</p>`,
+    [["Ja, zurücksetzen", "bad", resetAll], ["Abbrechen", "plain", closeModal]]);
+});
+$("modal").addEventListener("click", e => { if (e.target.id === "modal") closeModal(); });
+
+newTask();
+updateStats();
+</script>
+<script defer src="https://edu-mrh.de/controls.js"></script>
+</body>
+</html>
