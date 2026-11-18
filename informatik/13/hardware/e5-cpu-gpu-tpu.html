@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E.5 CPU, GPU, TPU | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Exkurs Hardware, Informatik 13: Aufbau von Universalprozessoren (CPU), Grafikprozessoren (GPU) und KI-Beschleunigern (TPU, NPU): Latenz und Durchsatz, ein Steuerwerk für viele Rechenwerke, systolisches Array für Matrixmultiplikation, Energie der Datenbewegung.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="../rechner/rechner.css">
+    <link rel="stylesheet" href="hardware.css">
+    <script defer src="../rechner/rechner.js"></script>
+    <script defer src="hardware.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🖥️</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="hardware.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station E.5</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#einstieg">🔍 Wer macht was?</a></li>
+            <li><a href="#cpu">🧠 Die CPU</a></li>
+            <li><a href="#gpu">🎮 Die GPU</a></li>
+            <li><a href="#rennen">🏁 Das Rennen</a></li>
+            <li><a href="#festhalten">📝 Latenz und Durchsatz</a></li>
+            <li><a href="#tpu">🤖 KI-Chips (TPU)</a></li>
+            <li><a href="#vergleich">⚖️ Der Vergleich</a></li>
+            <li><a href="#nachdenken">💡 Nachdenken</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Exkurs Hardware</div>
+            <ul class="sidebar-menu">
+                <li><a href="hardware.html">Übersicht</a></li>
+                <li><a href="e1-transistor.html">E.1 Vom Strom zum Schalter</a></li>
+                <li><a href="e2-cmos-gatter.html">E.2 Gatter aus Transistoren</a></li>
+                <li><a href="e3-addierer.html">E.3 Vom Gatter zum Addierer</a></li>
+                <li><a href="e4-alu.html">E.4 ALU und Rechenwerk</a></li>
+                <li><a href="e5-cpu-gpu-tpu.html">E.5 CPU, GPU, TPU</a></li>
+                <li><a href="e6-qubit.html">E.6 Qubits und Quantenrechner</a></li>
+                <li><a href="e7-quanten-programmieren.html">E.7 Quanten programmieren</a></li>
+                <li><a href="e8-quanten-bauarten.html">E.8 Bauarten</a></li>
+                <li><a href="werkstatt.html">Schaltungs-Werkstatt</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero rm-hero">
+                <h1 class="hero-title">E.5 CPU, GPU, TPU</h1>
+                <p class="hero-subtitle">Exkurs Hardware · Informatik 13 · 1 bis 2 Stunden</p>
+                <span class="rm-kompetenz">Du kannst: erklären, wie sich Universalprozessoren, Grafikprozessoren und KI-Beschleuniger im Aufbau unterscheiden, und begründen, welche Aufgaben auf welcher Hardware schnell laufen.</span>
+                <div class="ebenen"><span>Physik</span><span>Transistor</span><span>Gatter</span><span>Schaltnetz</span><span class="hier">Rechenwerk</span><span class="hier">Prozessor</span><span class="q">Quanten</span></div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#einstieg">🔍 Wer macht was?</a><a class="p-investigate" href="#cpu">🧠 CPU / GPU</a><a class="p-make" href="#rennen">🏁 Rennen</a><a class="p-note" href="#festhalten">📝 Festhalten</a><a class="p-investigate" href="#tpu">🤖 TPU</a><a class="p-modify" href="#vergleich">⚖️ Vergleich</a><a class="p-idee" href="#nachdenken">💡 Nachdenken</a>
+            </div>
+
+            <section id="einstieg" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Wer macht was?<small>Aufgabe 1: Drei Arten von Prozessoren</small></h2></div>
+                <div class="phase-body">
+                    <p>In einem Smartphone oder Laptop stecken heute mindestens drei Arten von Rechenwerken auf einem Chip: die <strong>CPU</strong> (central processing unit, Universalprozessor), die <strong>GPU</strong> (graphics processing unit, Grafikprozessor) und eine <strong>NPU</strong> (neural processing unit, KI-Beschleuniger; Googles Rechenzentrums-Version heißt <strong>TPU</strong>, tensor processing unit). Tippe, wer welche Aufgabe übernimmt. Am Ende der Station weißt du, warum.</p>
+                    <ul class="quiz" data-quiz="cpu:CPU|gpu:GPU|npu:NPU/TPU">
+                        <li data-loesung="cpu"><span class="icon">🗂️</span><span class="frage">Das Betriebssystem entscheidet, welche App als Nächstes Rechenzeit bekommt.</span><span class="erkl-text">Viele Entscheidungen, Verzweigungen, wenig gleichartige Daten: typische CPU-Arbeit.</span></li>
+                        <li data-loesung="gpu"><span class="icon">🎮</span><span class="frage">Ein 3D-Spiel berechnet für jedes der 8 Millionen Pixel (4K) 60-mal pro Sekunde die Farbe.</span><span class="erkl-text">Millionen gleichartige, voneinander unabhängige Rechnungen: das, wofür GPUs erfunden wurden.</span></li>
+                        <li data-loesung="npu"><span class="icon">📸</span><span class="frage">Die Kamera-App erkennt in Echtzeit Gesichter und stellt auf sie scharf.</span><span class="erkl-text">Ein neuronales Netz, also vor allem Matrixmultiplikationen mit wenig Genauigkeit: Dafür ist die NPU gebaut, sparsamer als die GPU.</span></li>
+                        <li data-loesung="cpu"><span class="icon">🌐</span><span class="frage">Der Browser führt das JavaScript einer Webseite aus.</span><span class="erkl-text">Ein gewöhnliches Programm mit vielen Sprüngen und Funktionsaufrufen, Schritt für Schritt: CPU.</span></li>
+                        <li data-loesung="gpu"><span class="icon">🧠</span><span class="frage">Ein Forschungslabor trainiert ein großes Sprachmodell über Wochen auf Tausenden Chips.</span><span class="erkl-text">Das läuft heute meist auf großen Rechenzentrums-GPUs (z. B. von Nvidia), bei Google auf TPUs. Beides wäre richtig; GPUs sind am verbreitetsten.</span></li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="cpu" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🧠</span><h2>Die CPU<small>Wenige, sehr schlaue Kerne</small></h2></div>
+                <div class="phase-body">
+                    <div class="zwei-spalten">
+                        <div>
+                            <p>Eine CPU hat heute meist 4 bis 24 <strong>Kerne</strong>. Jeder Kern ist eine vollständige Registermaschine mit eigenem Steuerwerk. Aber nur ein kleiner Teil der Chipfläche rechnet wirklich. Der Rest sorgt dafür, dass ein einzelnes Programm möglichst schnell vorankommt:</p>
+                            <ul>
+                                <li><strong>Große Caches</strong> halten Daten nah am Rechenwerk (Von-Neumann-Flaschenhals, 2.1).</li>
+                                <li><strong>Pipeline:</strong> Während ein Befehl ausgeführt wird, wird der nächste schon dekodiert und der übernächste geholt.</li>
+                                <li><strong>Sprungvorhersage:</strong> Bei <code>JLT</code> rät das Steuerwerk, ob gesprungen wird, und arbeitet schon mal weiter (meist liegt es richtig).</li>
+                                <li><strong>Umsortieren:</strong> Befehle, die nicht voneinander abhängen, werden in anderer Reihenfolge oder gleichzeitig ausgeführt.</li>
+                                <li><strong>Hoher Takt:</strong> 3 bis 6 GHz.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="klein"><strong>Grob die Fläche eines CPU-Kerns:</strong></p>
+                            <div class="kern-bild" style="grid-template-columns:repeat(4,1fr)">
+                                <div class="sw" style="grid-column:span 4;min-height:3rem">Steuerwerk: Dekodieren, Vorhersage, Umsortieren</div>
+                                <div class="rw">ALU</div><div class="rw">ALU</div><div class="rw">ALU</div><div class="rw">ALU</div>
+                                <div class="ca" style="grid-column:span 4;min-height:4rem">Caches (L1, L2)</div>
+                            </div>
+                            <p class="klein mt-2"><span style="color:var(--rm-steuer)">■</span> Steuerwerk <span style="color:var(--rm-rechen)">■</span> Rechenwerke <span style="color:var(--rm-speicher)">■</span> Speicher</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="gpu" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🎮</span><h2>Die GPU<small>Ein Steuerwerk, viele Rechenwerke</small></h2></div>
+                <div class="phase-body">
+                    <div class="zwei-spalten">
+                        <div>
+                            <p>Grafikprozessoren wurden für Bilder erfunden: Jedes Pixel wird mit demselben kleinen Programm (Shader) berechnet, nur mit anderen Daten. Wozu also jedem Rechenwerk ein eigenes, teures Steuerwerk geben? Eine GPU fasst <strong>32 Rechenwerke zu einer Gruppe</strong> zusammen, die <strong>denselben Befehl gleichzeitig</strong> auf 32 verschiedene Daten anwendet. Ein Steuerwerk holt und dekodiert, 32 ALUs rechnen.</p>
+                            <ul>
+                                <li>Eine große Grafikkarte (z. B. Nvidia RTX 4090) hat über 16 000 solcher einfachen Rechenwerke.</li>
+                                <li>Takt nur etwa 2 bis 2,5 GHz, kaum Vorhersage, kleine Caches.</li>
+                                <li>Muss eine Gruppe auf den Speicher warten, schaltet die GPU blitzschnell auf eine andere Gruppe um, statt zu warten.</li>
+                                <li>Sehr breiter Speicheranschluss: mehrere Terabyte pro Sekunde (eine CPU: etwa 0,1 TB/s).</li>
+                            </ul>
+                            <p>Fachbegriff: <strong>SIMD</strong> (single instruction, multiple data), bei Nvidia SIMT (… multiple threads).</p>
+                        </div>
+                        <div>
+                            <p class="klein"><strong>Grob die Fläche eines GPU-Blocks:</strong></p>
+                            <div class="kern-bild" style="grid-template-columns:repeat(16,1fr)">
+                                <div class="sw" style="grid-column:span 16">Steuerwerk (eins für viele)</div>
+                                <div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div>
+                                <div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div>
+                                <div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div>
+                                <div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div><div class="rw"></div>
+                                <div class="ca" style="grid-column:span 16">kleiner gemeinsamer Speicher</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="rennen" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🏁</span><h2>Das Rennen<small>Aufgabe 2: Wer ist schneller?</small></h2></div>
+                <div class="phase-body">
+                    <p>Eine CPU mit 8 starken Kernen tritt gegen eine GPU mit 512 einfachen Rechenwerken an. Ein CPU-Kern schafft einen Rechenschritt in 1 Zeiteinheit, ein GPU-Rechenwerk braucht 4 (niedriger Takt, keine Tricks). <strong>Sage vorher</strong>, wer bei welcher Aufgabe gewinnt und mit welchem Abstand. Dann starte.</p>
+                    <div data-parallel></div>
+                    <ol class="aufgaben">
+                        <li>Berechne die Zeiten beider Aufgaben selbst und vergleiche mit der Simulation.</li>
+                        <li>Ordne zu: Videos umrechnen, ein Schachprogramm, das einen Zug nach dem anderen durchdenkt, Wettervorhersage (Millionen Gitterpunkte), einen Text auf Rechtschreibung prüfen, Passwörter durchprobieren.</li>
+                        <li>Ein GPU-Programm enthält <code>if (x &lt; 0) { … } else { … }</code>. In einer Gruppe von 32 ist x bei 16 Pixeln negativ. Was muss die Gruppe tun, wenn alle 32 immer denselben Befehl ausführen?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 2">
+                        <template data-stufe="Tipp"><p>a) Bild: 1024 Pixel. Die CPU erledigt pro Runde 8, die GPU 512. Wie viele Runden, wie lang ist eine Runde?</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) Bild: CPU 1024 / 8 = 128 Runden · 1 = 128; GPU 1024 / 512 = 2 Runden · 4 = 8, also 16-mal schneller. Kette: Jeder Schritt braucht das Ergebnis des vorigen, nur ein Rechenwerk kann arbeiten: CPU 64 · 1 = 64, GPU 64 · 4 = 256. b) GPU: Video, Wetter, Passwörter (viele unabhängige gleichartige Rechnungen). CPU: Schach (viele Verzweigungen, jede Entscheidung hängt von der vorigen ab; moderne Schachprogramme nutzen für ihr neuronales Netz allerdings auch GPU/NPU), Rechtschreibung (wenig Rechnen, viele Sprünge). c) Die Gruppe führt erst den if-Teil aus (16 Rechenwerke arbeiten, 16 sind abgeschaltet), dann den else-Teil (umgekehrt). Die Hälfte der Rechenleistung ist verschenkt. Verzweigungen sind auf GPUs teuer.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="festhalten" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Latenz und Durchsatz</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Merkkasten: CPU und GPU</h4>
+                        <ul>
+                            <li><strong>Latenz:</strong> Wie lange dauert <em>eine</em> Aufgabe? <strong>Durchsatz:</strong> Wie viele Aufgaben werden pro Sekunde fertig?</li>
+                            <li>Die <strong>CPU</strong> ist auf kurze Latenz gebaut: wenige Kerne, jeder mit großem Steuerwerk, Caches und hohem Takt. Sie ist gut bei verzweigten, voneinander abhängigen Schritten.</li>
+                            <li>Die <strong>GPU</strong> ist auf hohen Durchsatz gebaut: ein Steuerwerk für viele einfache Rechenwerke, die denselben Befehl auf verschiedene Daten anwenden (SIMD). Sie ist gut bei vielen gleichartigen, unabhängigen Rechnungen.</li>
+                            <li>Beide bestehen aus denselben Bausteinen (Transistoren, Gatter, Addierer, Register); verschieden ist nur, <strong>wie viele davon wofür</strong> verwendet werden.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tpu" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🤖</span><h2>KI-Chips<small>Aufgabe 3: Das systolische Array</small></h2></div>
+                <div class="phase-body">
+                    <p>Ein neuronales Netz rechnet fast nur eines: <strong>Matrixmultiplikationen</strong>, also sehr viele „multipliziere und addiere zur Summe“ (MAC: multiply-accumulate). Google entwickelte dafür ab 2015 die <strong>TPU</strong>. Ihr Kern ist ein Feld aus 256 × 256 = 65 536 einfachen Multiplizier-Addier-Zellen ohne eigenes Steuerwerk. Die Daten werden nicht für jede Rechnung aus dem Speicher geholt, sondern <strong>fließen von Zelle zu Zelle</strong>, im Takt, wie das Blut im Herzschlag (griechisch systole). Hier ein Feld aus 3 × 3 Zellen, das C = A · B berechnet:</p>
+                    <div data-systolisch></div>
+                    <ol class="aufgaben">
+                        <li>Gehe Takt für Takt durch. Warum kommen die Zeilen von A und die Spalten von B schräg versetzt ins Feld?</li>
+                        <li>Wie viele Takte braucht ein n × n-Feld für zwei n × n-Matrizen? Prüfe deine Formel für n = 3.</li>
+                        <li>Wie oft wird jede Zahl aus A aus dem Speicher geladen? Wie oft wäre es bei einer Registermaschine, die C Zelle für Zelle mit LOAD, MUL, ADD berechnet?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 3">
+                        <template data-stufe="Tipp"><p>Zelle (i, j) muss A[i][k] und B[k][j] zur selben Zeit bekommen. A[i][k] braucht j Takte bis zur Spalte j, B[k][j] braucht i Takte bis zur Zeile i.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) Durch die Verzögerung treffen in jeder Zelle genau die passenden Paare A[i][k] und B[k][j] gleichzeitig ein. b) 3n − 2 Takte (n = 3: 7). Die Zahl der Multiplikationen wächst mit n³, die Zeit nur mit n, weil n² Zellen gleichzeitig arbeiten. c) Im Feld wird jede Zahl einmal geladen und dann weitergereicht. Die Registermaschine lädt jede Zahl aus A n-mal (einmal für jede Spalte von B). Speicherzugriffe sind viel teurer als Rechnen (siehe Tabelle), darum spart das systolische Array enorm Energie. Die echte TPU hält übrigens die Gewichte B fest in den Zellen und lässt nur A und die Teilsummen fließen; das Prinzip ist dasselbe.</p></template>
+                    </div>
+                    <h3>Rechnen ist billig, Daten bewegen ist teuer</h3>
+                    <p>Energie für einzelne Vorgänge in einem Chip (Messwerte für 45-nm-Technik, nach M. Horowitz 2014; heutige Werte sind kleiner, die Verhältnisse ähnlich):</p>
+                    <div class="tab-scroll"><table class="rm-tab">
+                        <tr><th>Vorgang</th><th>Energie</th><th>im Vergleich</th></tr>
+                        <tr><td>8-Bit-Ganzzahl addieren</td><td>0,03 pJ</td><td>1</td></tr>
+                        <tr><td>32-Bit-Ganzzahl addieren</td><td>0,1 pJ</td><td>3</td></tr>
+                        <tr><td>8-Bit-Ganzzahl multiplizieren</td><td>0,2 pJ</td><td>7</td></tr>
+                        <tr><td>32-Bit-Kommazahl multiplizieren</td><td>3,7 pJ</td><td>120</td></tr>
+                        <tr><td>32 Bit aus kleinem Cache lesen</td><td>5 pJ</td><td>170</td></tr>
+                        <tr><td>32 Bit aus dem Arbeitsspeicher lesen</td><td>640 pJ</td><td>21 000</td></tr>
+                    </table></div>
+                    <p>Deshalb rechnen KI-Chips mit <strong>wenig Genauigkeit</strong> (8 Bit oder 16 Bit statt 32 Bit): Für ein neuronales Netz ist es fast egal, ob ein Gewicht 0,4732 oder 0,47 ist, aber die Rechenwerke werden viel kleiner und sparsamer, und es passen doppelt bis viermal so viele Zahlen durch dieselbe Leitung.</p>
+                </div>
+            </section>
+
+            <section id="vergleich" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">⚖️</span><h2>Der Vergleich<small>Aufgabe 4: Spezialisierung</small></h2></div>
+                <div class="phase-body">
+                    <div class="vgl-grid">
+                        <div class="vgl-karte cpu"><h4>🧠 CPU</h4><ul><li>4–24 starke Kerne, 3–6 GHz</li><li>großes Steuerwerk je Kern, große Caches</li><li>Ziel: kurze Latenz</li><li>stark bei: Verzweigungen, Betriebssystem, gewöhnlichen Programmen</li><li>jeder Algorithmus läuft (Universalrechner)</li></ul></div>
+                        <div class="vgl-karte gpu"><h4>🎮 GPU</h4><ul><li>Tausende einfache Rechenwerke, ~2 GHz</li><li>ein Steuerwerk für je 32 Rechenwerke (SIMD)</li><li>Ziel: hoher Durchsatz</li><li>stark bei: Grafik, Simulation, KI-Training</li><li>schwach bei Verzweigungen und abhängigen Schritten</li></ul></div>
+                        <div class="vgl-karte tpu"><h4>🤖 TPU / NPU</h4><ul><li>riesiges Feld aus Multiplizier-Addier-Zellen</li><li>kaum Steuerwerk, Daten fließen durch das Feld</li><li>Ziel: Matrixmultiplikation pro Watt</li><li>stark bei: neuronalen Netzen, wenig Genauigkeit</li><li>kann fast nichts anderes</li></ul></div>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Je spezialisierter ein Chip, desto schneller und sparsamer ist er bei seiner Aufgabe. Was ist der Preis dafür?</li>
+                        <li>Ordne ein: Wo steht die Registermaschine aus Lernbereich 2? Und ein Taschenrechner-Chip?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 4">
+                        <template data-stufe="Lösung" data-halten><p>a) Er kann weniger: Neue Aufgaben (z. B. eine neue Art von KI-Modell) laufen schlecht oder gar nicht, und die Entwicklung eines Spezialchips kostet viel Geld und Jahre. Deshalb hat jedes Gerät weiterhin eine CPU, die alles steuert; die Spezialchips arbeiten ihr zu. b) Die Registermaschine ist ein (sehr einfacher) Universalprozessor wie ein CPU-Kern ohne Tricks. Ein Taschenrechner-Chip ist eher spezialisiert, aber programmierbar (der 4004 war ein solcher Chip).</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="nachdenken" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Besprecht mündlich</small></h2></div>
+                <div class="phase-body">
+                    <div class="idee"><strong>Der KI-Boom ab etwa 2012 begann, als Forschende neuronale Netze auf Grafikkarten trainierten. Warum gerade Grafikkarten?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Grafik und neuronale Netze brauchen dieselbe Art Rechnung: riesige Mengen gleichartiger Multiplikationen und Additionen. GPUs gab es dank Computerspielen schon billig in Massen. Das Netz AlexNet (2012) wurde auf zwei Spiele-Grafikkarten trainiert und gewann einen großen Bilderkennungs-Wettbewerb deutlich. Erst danach entstanden eigene KI-Chips.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>CPU, GPU und TPU sind alle Von-Neumann-Rechner. Oder?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>CPU und GPU holen Befehle und Daten aus demselben Speicher: im Kern Von Neumann, nur sehr parallel. Das systolische Array weicht davon ab: Die Rechnung steckt in der Verdrahtung, Daten fließen direkt von Rechenwerk zu Rechenwerk, und der Flaschenhals wird umgangen. Ein Quantencomputer (E.6) ist noch einmal etwas ganz anderes.</p></template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="e4-alu.html">← E.4 ALU und Rechenwerk</a>
+                <a class="btn btn-primary" href="e6-qubit.html">E.6 Qubits und Quantenrechner →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Hinweise</strong></summary>
+                    <p class="mt-2"><strong>Ablauf:</strong> Quiz als Einstieg (Vorwissen sammeln), CPU/GPU-Aufbau im Lehrervortrag mit den Flächenskizzen, Rennen mit Vorhersage, Merkkasten; TPU mit systolischem Array (Takt für Takt am Beamer), Energietabelle, Vergleich. In einer Stunde: Rennen und Vergleich, TPU nur kurz.</p>
+                    <p><strong>Zahlen:</strong> RTX 4090: 16 384 „CUDA-Kerne“ (128 Streaming-Multiprozessoren), Warp = 32 Threads. TPU v1 (Einsatz 2015, veröffentlicht 2017): 256 × 256 8-Bit-MAC-Zellen, 700 MHz, 92 TOPS. Energiewerte: M. Horowitz, „Computing's Energy Problem“, ISSCC 2014 (45 nm). Rennen: CPU 8 Kerne × 1 Zeiteinheit, GPU 512 Einheiten × 4 Zeiteinheiten (stilisiert).</p>
+                    <p><strong>Vereinfachungen:</strong> Das systolische Array ist „output stationary“ (Summen bleiben in den Zellen); die TPU ist „weight stationary“. Die Flächenskizzen sind schematisch.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de · <a href="https://edu-mrh.de/impressum.html#lizenz">CC BY-NC-SA 4.0</a> | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

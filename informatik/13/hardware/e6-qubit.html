@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E.6 Qubits und Quantenrechner | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Exkurs Hardware, Informatik 13: Was ein Qubit ist, Überlagerung, Amplituden und Messung, Quantengatter als Spiegelungen; wie klassische Elektronik und Quantenchip zusammenarbeiten; was man braucht, um ein Quantensystem zu bauen; Plattformen und Kühlung.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="../rechner/rechner.css">
+    <link rel="stylesheet" href="hardware.css">
+    <script defer src="../rechner/rechner.js"></script>
+    <script defer src="hardware.js"></script>
+    <script defer src="quanten.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🖥️</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="hardware.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station E.6</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#einstieg">🔍 Was ist schwer?</a></li>
+            <li><a href="#qubit">⚛️ Das Qubit</a></li>
+            <li><a href="#festhalten">📝 Festhalten</a></li>
+            <li><a href="#zwei">🔗 Mehrere Qubits</a></li>
+            <li><a href="#system">🧊 Quanten und Elektronik</a></li>
+            <li><a href="#bauen">🏗️ Ein Quantensystem bauen</a></li>
+            <li><a href="#plattformen">🧪 Woraus Qubits sind</a></li>
+            <li><a href="#nachdenken">💡 Nachdenken</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Exkurs Hardware</div>
+            <ul class="sidebar-menu">
+                <li><a href="hardware.html">Übersicht</a></li>
+                <li><a href="e1-transistor.html">E.1 Vom Strom zum Schalter</a></li>
+                <li><a href="e2-cmos-gatter.html">E.2 Gatter aus Transistoren</a></li>
+                <li><a href="e3-addierer.html">E.3 Vom Gatter zum Addierer</a></li>
+                <li><a href="e4-alu.html">E.4 ALU und Rechenwerk</a></li>
+                <li><a href="e5-cpu-gpu-tpu.html">E.5 CPU, GPU, TPU</a></li>
+                <li><a href="e6-qubit.html">E.6 Qubits und Quantenrechner</a></li>
+                <li><a href="e7-quanten-programmieren.html">E.7 Quanten programmieren</a></li>
+                <li><a href="e8-quanten-bauarten.html">E.8 Bauarten</a></li>
+                <li><a href="werkstatt.html">Schaltungs-Werkstatt</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero rm-hero" style="border-left-color:var(--hw-q)">
+                <h1 class="hero-title" style="color:#5b21b6">E.6 Qubits und Quantenrechner</h1>
+                <p class="hero-subtitle">Exkurs Hardware · Informatik 13 · 1 bis 2 Stunden</p>
+                <span class="rm-kompetenz" style="background:var(--hw-q-hell);color:#5b21b6">Du kannst: beschreiben, wie sich ein Qubit von einem Bit unterscheidet, was beim Messen passiert, und erklären, welche klassischen und welche Quantenbauteile ein Quantencomputer braucht und was beim Bau eines Quantensystems schwierig ist.</span>
+                <div class="ebenen"><span>Physik</span><span>Transistor</span><span>Gatter</span><span>Schaltnetz</span><span>Rechenwerk</span><span>Prozessor</span><span class="q hier">Quanten</span></div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#einstieg">🔍 Was ist schwer?</a><a class="p-investigate" href="#qubit">⚛️ Qubit</a><a class="p-note" href="#festhalten">📝 Festhalten</a><a class="p-investigate" href="#system">🧊 System</a><a class="p-make" href="#bauen">🏗️ Bauen</a><a class="p-modify" href="#plattformen">🧪 Plattformen</a><a class="p-idee" href="#nachdenken">💡 Nachdenken</a>
+            </div>
+
+            <section id="einstieg" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Was ist schwer für normale Rechner?<small>Aufgabe 1: Wo könnten Quantencomputer helfen?</small></h2></div>
+                <div class="phase-body">
+                    <p>Seit E.1 weißt du: Jeder Rechner besteht aus Schaltern, die 0 oder 1 sind. Mit Milliarden davon schafft er fast alles. Fast. Ein Quantencomputer rechnet nach einem ganz anderen Prinzip. Er ist <strong>kein schnellerer Computer für alles</strong>, sondern für ganz bestimmte Aufgaben. Tippe:</p>
+                    <ul class="quiz" data-quiz="ja:hilft wohl|nein:hilft nicht">
+                        <li data-loesung="ja"><span class="icon">🔐</span><span class="frage">Eine 600-stellige Zahl in ihre Primfaktoren zerlegen (und damit RSA knacken, Informatik 11)</span><span class="erkl-text">Der Shor-Algorithmus (1994) kann das auf einem großen, fehlerfreien Quantencomputer in Stunden bis Tagen statt Milliarden Jahren. Solche Geräte gibt es noch nicht; darum stellt man schon jetzt auf „Post-Quanten-Verschlüsselung“ um.</span></li>
+                        <li data-loesung="ja"><span class="icon">🧬</span><span class="frage">Berechnen, wie sich die Elektronen in einem neuen Medikamenten-Molekül verhalten</span><span class="erkl-text">Moleküle gehorchen selbst der Quantenphysik. Ein klassischer Rechner muss für n Elektronen-Zustände 2<sup>n</sup> Zahlen speichern, ein Quantencomputer bildet sie direkt nach. Das war Richard Feynmans Ur-Idee (1981).</span></li>
+                        <li data-loesung="nein"><span class="icon">📝</span><span class="frage">Ein Referat schreiben und formatieren</span><span class="erkl-text">Textverarbeitung ist einfach und völlig klassisch. Ein Quantencomputer wäre dafür langsamer und viel teurer.</span></li>
+                        <li data-loesung="nein"><span class="icon">📺</span><span class="frage">Ein Video streamen</span><span class="erkl-text">Daten übertragen und entpacken ist keine schwere Rechnung. Quantencomputer liefern außerdem nur wenige Bits Ergebnis pro Lauf, keine großen Datenmengen.</span></li>
+                        <li data-loesung="ja"><span class="icon">🚚</span><span class="frage">Für 500 Lieferwagen die bestmögliche Route finden</span><span class="erkl-text">Vielleicht: Für solche Optimierungsprobleme gibt es Quantenansätze (E.8), ob sie klassische Verfahren schlagen, ist aber noch offen. Ehrliche Antwort der Forschung: „Wir arbeiten daran.“</span></li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="qubit" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">⚛️</span><h2>Das Qubit<small>Aufgabe 2: Ein Zeiger statt eines Schalters</small></h2></div>
+                <div class="phase-body">
+                    <p>Ein Bit ist 0 oder 1, ein Schalter in einer von zwei Stellungen. Ein <strong>Qubit</strong> (Quantenbit) ist ein Quantensystem mit zwei Grundzuständen, die man |0⟩ und |1⟩ schreibt (sprich „Ket null“). Sein Zustand ist eine <strong>Überlagerung</strong> (Superposition):</p>
+                    <p style="text-align:center;font-size:1.15rem">|ψ⟩ = α · |0⟩ + β · |1⟩ &nbsp; mit &nbsp; α² + β² = 1</p>
+                    <p>Die Zahlen α und β heißen <strong>Amplituden</strong>. Man kann sich das Qubit als <strong>Zeiger der Länge 1</strong> vorstellen: α ist sein Anteil in Richtung |0⟩, β in Richtung |1⟩. Amplituden dürfen auch <strong>negativ</strong> sein, das wird in E.7 entscheidend.</p>
+                    <div data-qubit></div>
+                    <ol class="aufgaben">
+                        <li>Stelle |+⟩ ein und miss mehrmals einzeln (nach jeder Messung wieder |+⟩ wählen). Dann 1000-mal. Was beobachtest du? Vergleiche |+⟩ und |−⟩: Kann man sie durch Messen unterscheiden?</li>
+                        <li>Stelle den Zeiger so ein, dass bei 1000 Messungen etwa 750-mal 0 herauskommt. Welche Werte haben α und β?</li>
+                        <li>Starte bei |0⟩ und wende H an, dann noch einmal H. Was passiert? Starte bei |0⟩ und wende H, Z, H an.</li>
+                        <li>Erkläre den Unterschied zwischen einem Qubit in |+⟩ und einer Münze, die geworfen wird, aber noch verdeckt ist.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 2">
+                        <template data-stufe="Tipp"><p>b) Die Wahrscheinlichkeit für 0 ist α². Welches α ergibt 0,75?</p></template>
+                        <template data-stufe="Lösung" data-halten>
+                            <p>a) |+⟩ liefert zufällig etwa halb 0, halb 1; nach einer Messung ist das Qubit in |0⟩ oder |1⟩ und bleibt dort. |+⟩ und |−⟩ haben dieselben Wahrscheinlichkeiten (je 50 %) und lassen sich durch direktes Messen <em>nicht</em> unterscheiden. b) α = √0,75 ≈ 0,87, β = ±0,5 (Winkel 30° oder −30°).</p>
+                            <p>c) H, H führt zurück nach |0⟩: H ist eine Spiegelung, zweimal spiegeln ergibt das Original. H, Z, H führt nach |1⟩: Z hat das Vorzeichen umgedreht (|+⟩ → |−⟩), was man vorher nicht messen konnte, und das zweite H macht diesen Unterschied sichtbar. d) Bei der Münze liegt das Ergebnis schon fest, wir kennen es nur nicht. Würde man die verdeckte Münze „H-spiegeln“, bliebe sie zufällig. Das Qubit in |+⟩ dagegen hat noch kein Ergebnis. Zweimal H führt <em>sicher</em> zu 0: Die Anteile, die zu 1 führen würden, löschen sich aus. Das nennt man <strong>Interferenz</strong>.</p>
+                        </template>
+                    </div>
+                    <div class="tipp"><strong>⭐ Genauer:</strong> In der echten Quantenphysik sind α und β <em>komplexe</em> Zahlen, und der Zeiger lebt auf einer Kugel (Bloch-Kugel) statt auf einem Kreis. Für alle Gatter und Beispiele in diesem Exkurs (X, Z, H, CNOT) reichen reelle Zahlen, und das Kreismodell ist dann exakt.</div>
+                </div>
+            </section>
+
+            <section id="festhalten" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Qubit, Messung, Gatter</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Merkkasten: Das Qubit</h4>
+                        <ul>
+                            <li>Ein <strong>Qubit</strong> hat den Zustand α·|0⟩ + β·|1⟩ mit α² + β² = 1. Das ist <strong>nicht</strong> „0 und 1 gleichzeitig“ und auch nicht „0 oder 1, wir wissen es nur nicht“, sondern ein eigener Zustand, eine <strong>Überlagerung</strong>.</li>
+                            <li><strong>Messen</strong> liefert immer 0 oder 1: 0 mit Wahrscheinlichkeit α², 1 mit Wahrscheinlichkeit β². Danach <strong>ist</strong> das Qubit im gemessenen Zustand: Die Überlagerung ist zerstört. Die Amplituden selbst kann man nie direkt ablesen.</li>
+                            <li><strong>Quantengatter</strong> drehen oder spiegeln den Zeiger, ohne zu messen: X tauscht |0⟩ und |1⟩ (wie NICHT), Z dreht das Vorzeichen von β, H (Hadamard) macht aus |0⟩ die Überlagerung |+⟩ und zurück. Alle Quantengatter sind umkehrbar.</li>
+                            <li><strong>Interferenz:</strong> Amplituden können sich addieren oder (wegen der Vorzeichen) auslöschen. Quantenalgorithmen sind so gebaut, dass sich falsche Antworten auslöschen und die richtige verstärkt wird.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="zwei" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🔗</span><h2>Mehrere Qubits<small>Aufgabe 3: Warum Quantencomputer so schwer zu simulieren sind</small></h2></div>
+                <div class="phase-body">
+                    <p>Zwei Bits sind in genau einem der vier Zustände 00, 01, 10, 11. Zwei Qubits haben dagegen <strong>vier Amplituden</strong>, für jeden dieser Zustände eine:</p>
+                    <p style="text-align:center">α<sub>00</sub>·|00⟩ + α<sub>01</sub>·|01⟩ + α<sub>10</sub>·|10⟩ + α<sub>11</sub>·|11⟩</p>
+                    <p>Drei Qubits haben 8 Amplituden, n Qubits 2<sup>n</sup>. Manche dieser Zustände lassen sich nicht in „Qubit 1 ist so, Qubit 2 ist so“ zerlegen, zum Beispiel (|00⟩ + |11⟩) / √2: Misst man das erste Qubit, ist das Ergebnis zufällig, aber das zweite zeigt <strong>immer dasselbe</strong>. Solche Qubits heißen <strong>verschränkt</strong>. Du erzeugst sie in E.7 selbst.</p>
+                    <ol class="aufgaben">
+                        <li>Ein Laptop speichert jede Amplitude mit 16 Byte (zwei Kommazahlen, weil sie eigentlich komplex ist). Wie viel Speicher braucht die Simulation von 30 Qubits? Von 50 Qubits? Von 300 Qubits?</li>
+                        <li>Ein Quantencomputer mit 300 Qubits rechnet also mit mehr Zahlen, als es Atome im beobachtbaren Universum gibt (etwa 10<sup>80</sup>). Warum kann man trotzdem nicht einfach alle diese Zahlen als Ergebnis herausholen?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 3">
+                        <template data-stufe="Tipp"><p>2<sup>10</sup> ≈ 10<sup>3</sup>, also 2<sup>30</sup> ≈ 10<sup>9</sup> und 2<sup>300</sup> ≈ 10<sup>90</sup>.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) 30 Qubits: 2<sup>30</sup> · 16 B = 16 GiB, das schafft ein guter Laptop gerade noch. 50 Qubits: 2<sup>50</sup> · 16 B = 16 PiB, mehr als die größten Supercomputer an Arbeitsspeicher haben. 300 Qubits: etwa 10<sup>91</sup> Byte, unmöglich. b) Eine Messung liefert nur n Bits, also 300 Nullen und Einsen, ausgewählt nach den Wahrscheinlichkeiten. Die Amplituden selbst bleiben unsichtbar. Die Kunst ist, die Rechnung so zu bauen, dass die gesuchte Antwort am Ende mit großer Wahrscheinlichkeit gemessen wird.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="system" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🧊</span><h2>Quanten und Elektronik<small>Aufgabe 4: Der Weg eines Quantenprogramms</small></h2></div>
+                <div class="phase-body">
+                    <p>Ein Quantencomputer besteht nur zu einem winzigen Teil aus Quanten. Fast alles drumherum ist klassische Elektronik, wie du sie aus E.1 bis E.5 kennst. Verfolge, wie ein Programm auf einem Quantencomputer mit <strong>supraleitenden Qubits</strong> (wie bei IBM oder Google) läuft. Lila = Quantenteil, blau = klassisch.</p>
+                    <div data-stepper>
+                        <div class="step" data-titel="Programm" data-icon="💻" data-art="klassisch"><p>Du schreibst am Laptop eine Quantenschaltung, z. B. in Python mit der Bibliothek Qiskit (E.7), und schickst sie über das Internet an das Rechenzentrum mit dem Quantencomputer. Ein ganz normaler Rechner nimmt sie entgegen und stellt sie in eine Warteschlange.</p></div>
+                        <div class="step" data-titel="Übersetzen" data-icon="🛠️" data-art="klassisch"><p>Ein Compiler (bei Quantencomputern „Transpiler“) übersetzt deine Gatter in die Gatter, die der Chip wirklich kann, und ordnet deine Qubits den physikalischen Qubits zu, die miteinander verbunden sind. Dann wird jedes Gatter in einen genau geformten <strong>Mikrowellenpuls</strong> übersetzt: Frequenz, Stärke, Dauer. Das ist wie Assembler zu Maschinencode in 2.3.</p></div>
+                        <div class="step" data-titel="Pulse erzeugen" data-icon="📡" data-art="klassisch"><p>Schnelle Steuerelektronik (programmierbare Chips, Signalgeneratoren, Digital-Analog-Wandler) erzeugt für jedes Qubit Mikrowellenpulse mit etwa 4 bis 8 GHz, auf Nanosekunden genau. Ein Gatter dauert typisch 20 bis 100 Nanosekunden. Pro Qubit braucht man mehrere Kabel.</p></div>
+                        <div class="step" data-titel="Abwärts in die Kälte" data-icon="🧊" data-art="klassisch"><p>Die Kabel führen durch einen <strong>Verdünnungskryostaten</strong>, einen „Kronleuchter“ aus vergoldeten Platten: Jede Stufe ist kälter (etwa 50 K, 4 K, 1 K, 0,1 K) bis hinab zu rund <strong>0,01 K</strong>, kälter als der Weltraum (2,7 K). Filter und Dämpfungsglieder halten Wärme und Störsignale ab.</p></div>
+                        <div class="step" data-titel="Quantenchip" data-icon="⚛️" data-art="quanten"><p>Auf einem Chip von wenigen Zentimetern sitzen die Qubits: winzige Schwingkreise aus supraleitendem Aluminium mit <strong>Josephson-Kontakten</strong> (mehr dazu weiter unten). Die Pulse drehen ihre Zeiger, Koppler verschränken Nachbarn. Nur hier gibt es Überlagerung und Verschränkung, und nur für Mikrosekunden, bevor die Umgebung sie zerstört.</p></div>
+                        <div class="step" data-titel="Auslesen" data-icon="📏" data-art="quanten"><p>Zum Messen hängt an jedem Qubit ein Resonator. Seine Frequenz verschiebt sich ein wenig, je nachdem ob das Qubit in |0⟩ oder |1⟩ ist. Ein schwacher Mikrowellenpuls „fragt“ das ab. Spezielle Verstärker (teils selbst Quantenschaltungen, teils bei 4 K) machen das winzige Signal messbar. Hier wird aus Quanteninformation ein klassisches Signal.</p></div>
+                        <div class="step" data-titel="Digitalisieren" data-icon="🔢" data-art="klassisch"><p>Bei Raumtemperatur wandelt Elektronik das Signal in Zahlen um und entscheidet: 0 oder 1. Ein Durchlauf (englisch „shot“) liefert so für jedes Qubit ein Bit.</p></div>
+                        <div class="step" data-titel="Wiederholen und Auswerten" data-icon="📊" data-art="klassisch"><p>Weil jede Messung zufällig ist, läuft dieselbe Schaltung meist tausende Male. Ein klassischer Rechner zählt die Ergebnisse und wertet sie aus. Bei fehlerkorrigierten Quantencomputern muss ein klassischer Rechner außerdem in Echtzeit, innerhalb von Mikrosekunden, aus Kontrollmessungen errechnen, welche Fehler passiert sind.</p></div>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Welche Bauteile aus E.1 bis E.5 findest du in diesem Weg wieder?</li>
+                        <li>Warum muss es so kalt sein? Ein Qubit mit 5 GHz hat zwischen |0⟩ und |1⟩ den Energieabstand E = h · f. Die Wärmebewegung bei der Temperatur T hat Energien in der Größenordnung k · T. Vergleiche h · f mit k · T bei Raumtemperatur (300 K), bei 4 K und bei 0,015 K (h = 6,63 · 10<sup>−34</sup> Js, k = 1,38 · 10<sup>−23</sup> J/K).</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 4">
+                        <template data-stufe="Tipp"><p>Rechne beides in Hertz um: k · T / h ist die „Frequenz der Wärme“. Für 1 K sind das etwa 21 GHz.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) Klassische Rechner (Transpiler, Auswertung, Fehlerdekodierung), programmierbare Chips und Wandler aus Transistoren, Verstärker, Register und Speicher. Der Quantencomputer ist also ein <strong>Hybridsystem</strong>: Ein klassischer Rechner steuert einen Quantenchip wie ein Spezialgerät, ähnlich wie die CPU eine GPU. b) k · T / h bei 300 K ≈ 6 THz, bei 4 K ≈ 83 GHz, bei 0,015 K ≈ 0,3 GHz. Erst ganz unten ist die Wärmeenergie deutlich kleiner als der Qubit-Abstand (5 GHz). Sonst würde Wärme das Qubit ständig zufällig von |0⟩ nach |1⟩ anregen. Außerdem muss das Aluminium supraleitend sein (unter etwa 1 K), damit kein Widerstand Energie schluckt.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="bauen" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🏗️</span><h2>Ein Quantensystem bauen<small>Aufgabe 5: Was braucht man?</small></h2></div>
+                <div class="phase-body">
+                    <p>Angenommen, du sollst einen Quantencomputer bauen, der ein bestimmtes Problem löst. Der Physiker David DiVincenzo hat im Jahr 2000 aufgeschrieben, was ein brauchbares Quantensystem können muss. Vereinfacht:</p>
+                    <div class="konzept">
+                        <h4>Merkkasten: Anforderungen an einen Quantencomputer</h4>
+                        <ol>
+                            <li><strong>Klar definierte Qubits:</strong> ein System mit zwei gut unterscheidbaren Zuständen, die man nicht mit anderen verwechselt, und davon viele (skalierbar).</li>
+                            <li><strong>Startzustand:</strong> Alle Qubits lassen sich zuverlässig auf |0⟩ setzen.</li>
+                            <li><strong>Lange Kohärenz:</strong> Die Überlagerung muss viel länger halten, als ein Gatter dauert, damit viele Gatter hintereinander möglich sind.</li>
+                            <li><strong>Steuerbare Gatter:</strong> Einzelne Qubits lassen sich gezielt drehen, und je zwei lassen sich koppeln (verschränken). Damit kann man jede Quantenschaltung bauen.</li>
+                            <li><strong>Messung:</strong> Jedes Qubit lässt sich einzeln und zuverlässig auslesen.</li>
+                        </ol>
+                    </div>
+                    <p>Dazu kommen die Grundüberlegungen zum <strong>Problem</strong>:</p>
+                    <ul>
+                        <li><strong>Wie viele Qubits?</strong> Das hängt von der Problemgröße ab: Für eine Zahl mit 2048 Bit (RSA) braucht der Shor-Algorithmus einige tausend fehlerfreie Qubits.</li>
+                        <li><strong>Wie tief?</strong> Wie viele Gatter hintereinander? Die Rechnung muss fertig sein, bevor die Kohärenz verloren geht.</li>
+                        <li><strong>Wie wird das Problem eingebaut?</strong> Bei Gatter-Quantencomputern als Folge von Gattern, die eine Interferenz zur richtigen Antwort lenken (E.7). Bei Annealern als Energielandschaft, deren tiefster Punkt die Lösung ist (E.8).</li>
+                        <li><strong>Wie oft wiederholen?</strong> Ein Lauf liefert nur eine zufällige Stichprobe.</li>
+                    </ul>
+                    <ol class="aufgaben">
+                        <li>Zwischen Anforderung 3 und 4 steckt ein Dilemma. Erkläre es.</li>
+                        <li>Ein Qubit verliert seine Überlagerung nach etwa 100 µs, ein Gatter dauert 50 ns. Wie viele Gatter passen grob hintereinander? Was bedeutet das für lange Rechnungen wie Shor?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 5">
+                        <template data-stufe="Tipp"><p>a) Damit die Kohärenz lange hält, darf das Qubit möglichst nichts mit seiner Umgebung zu tun haben. Was brauchst du aber, um es zu steuern und auszulesen?</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) Ein Qubit soll von der Umgebung perfekt <strong>abgeschirmt</strong> sein (sonst zerfällt die Überlagerung, „Dekohärenz“), muss aber gleichzeitig gut <strong>ansteuerbar</strong> und messbar sein, und jede Leitung nach außen ist ein Weg für Störungen. b) 100 µs / 50 ns = 2000, praktisch eher einige hundert, weil Gatter auch selbst Fehler machen (heute etwa 1 Fehler auf 100 bis 1000 Gatter). Shor braucht Milliarden Gatter. Lösung: <strong>Quantenfehlerkorrektur</strong>: Viele fehleranfällige physikalische Qubits bilden zusammen ein zuverlässiges „logisches“ Qubit, und ständige Kontrollmessungen (ohne die Rechnung selbst zu messen) finden Fehler. Eine Schätzung von 2025 kommt für RSA-2048 auf knapp eine Million physikalische Qubits und etwa eine Woche Laufzeit. 2024 zeigte Google mit dem Chip „Willow“ (105 Qubits) erstmals, dass logische Qubits mit wachsender Größe tatsächlich besser werden.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="plattformen" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">🧪</span><h2>Woraus Qubits sind<small>Elektrotechnik trifft Atomphysik</small></h2></div>
+                <div class="phase-body">
+                    <div class="zwei-spalten">
+                        <div>
+                            <h3>Das supraleitende Qubit: ein künstliches Atom</h3>
+                            <p>Ein elektrischer <strong>Schwingkreis</strong> aus Spule (L) und Kondensator (C) schwingt mit einer Eigenfrequenz. Quantenphysikalisch darf seine Energie nur in Stufen vorkommen, und beim normalen Schwingkreis sind alle Stufen <strong>gleich weit</strong> voneinander entfernt. Dann trifft ein Puls, der |0⟩ → |1⟩ anregen soll, auch |1⟩ → |2⟩ → … : kein sauberes Qubit.</p>
+                            <p>Ersetzt man die Spule durch einen <strong>Josephson-Kontakt</strong> (zwei Supraleiter, getrennt von einer etwa 1 nm dünnen Oxidschicht, durch die Elektronenpaare tunneln), werden die Abstände <strong>ungleich</strong>. Jetzt spricht eine Frequenz nur noch die unteren beiden Stufen an: Sie bilden das Qubit. Ein Qubit, das man wie einen Chip in einer Halbleiterfabrik herstellen kann.</p>
+                        </div>
+                        <svg class="hw-svg" viewBox="0 0 320 210" role="img" aria-label="Energieleitern: links gleiche Abstände beim Schwingkreis, rechts ungleiche Abstände beim Josephson-Qubit">
+                            <text x="80" y="20" text-anchor="middle" font-size="12" font-weight="700">Schwingkreis (LC)</text>
+                            <text x="240" y="20" text-anchor="middle" font-size="12" font-weight="700">mit Josephson-Kontakt</text>
+                            <g stroke="#64748b" stroke-width="3">
+                                <line x1="40" y1="180" x2="120" y2="180"/><line x1="40" y1="140" x2="120" y2="140"/><line x1="40" y1="100" x2="120" y2="100"/><line x1="40" y1="60" x2="120" y2="60"/>
+                            </g>
+                            <g stroke="#7c3aed" stroke-width="3">
+                                <line x1="200" y1="180" x2="280" y2="180"/><line x1="200" y1="135" x2="280" y2="135"/>
+                            </g>
+                            <g stroke="#94a3b8" stroke-width="3">
+                                <line x1="200" y1="97" x2="280" y2="97"/><line x1="200" y1="66" x2="280" y2="66"/>
+                            </g>
+                            <text x="130" y="184" font-size="11">|0⟩</text><text x="130" y="144" font-size="11">|1⟩</text><text x="130" y="104" font-size="11">|2⟩</text>
+                            <text x="290" y="184" font-size="11" fill="#6b21a8" font-weight="700">|0⟩</text><text x="290" y="139" font-size="11" fill="#6b21a8" font-weight="700">|1⟩</text><text x="290" y="101" font-size="11">|2⟩</text>
+                            <text x="80" y="204" text-anchor="middle" font-size="10" fill="#475569">gleiche Abstände</text>
+                            <text x="240" y="204" text-anchor="middle" font-size="10" fill="#475569">ungleich: |0⟩, |1⟩ allein ansprechbar</text>
+                            <path d="M180,178 V137" stroke="#ea580c" stroke-width="2.5" marker-end="url(#pf)"/>
+                            <defs><marker id="pf" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#ea580c"/></marker></defs>
+                            <text x="176" y="160" text-anchor="end" font-size="10" fill="#c2410c">≈ 5 GHz</text>
+                        </svg>
+                    </div>
+                    <h3>Andere Plattformen (Stand 2025)</h3>
+                    <div class="tab-scroll"><table class="rm-tab">
+                        <tr><th>Plattform</th><th>Qubit ist …</th><th>Stärken</th><th>Schwächen</th></tr>
+                        <tr><td><strong>Supraleitend</strong> (z. B. IBM, Google)</td><td>Schwingkreis mit Josephson-Kontakt auf einem Chip</td><td>schnelle Gatter (ns), Fertigung wie Halbleiterchips</td><td>braucht ~0,01 K, kurze Kohärenz, viele Kabel</td></tr>
+                        <tr><td><strong>Ionenfalle</strong> (z. B. Quantinuum, IonQ)</td><td>einzelne geladene Atome, im Vakuum von elektrischen Feldern gehalten, mit Laser gesteuert</td><td>sehr genaue Gatter, lange Kohärenz, jedes Qubit mit jedem koppelbar</td><td>langsame Gatter, schwer auf viele Qubits zu bringen</td></tr>
+                        <tr><td><strong>Neutralatome</strong> (z. B. QuEra, Pasqal)</td><td>Atome, die in Laser-„Pinzetten“ schweben</td><td>Hunderte bis Tausende Atome, frei anordenbar</td><td>Gatter noch fehleranfälliger, Atome gehen verloren</td></tr>
+                        <tr><td><strong>Photonen</strong> (z. B. PsiQuantum, Xanadu)</td><td>Lichtteilchen in Glasfasern oder Lichtleitern auf Chips</td><td>kaum Dekohärenz, Licht läuft bei Raumtemperatur</td><td>Photonen wechselwirken kaum miteinander, gehen verloren</td></tr>
+                        <tr><td><strong>Spin-Qubits</strong> (Forschung, z. B. Intel)</td><td>Spin einzelner Elektronen in winzigen Silizium-Strukturen</td><td>sehr klein, gebaut wie Transistoren (E.1)</td><td>noch wenige Qubits, schwierige Gleichmäßigkeit</td></tr>
+                    </table></div>
+                    <p class="klein">Die größten Geräte haben heute einige hundert bis gut tausend physikalische Qubits. Zahlen ändern sich schnell; prüfe aktuelle Angaben, wenn du ein Referat hältst.</p>
+                </div>
+            </section>
+
+            <section id="nachdenken" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Besprecht mündlich</small></h2></div>
+                <div class="phase-body">
+                    <div class="idee"><strong>„Ein Qubit ist gleichzeitig 0 und 1, darum probiert ein Quantencomputer alle Lösungen gleichzeitig aus.“ Was ist an diesem häufigen Satz falsch?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Eine Überlagerung aller Antworten bringt nichts, wenn man beim Messen nur eine zufällige davon erhält. Der Vorteil entsteht erst durch <strong>Interferenz</strong>: Die Amplituden falscher Antworten müssen sich gegenseitig auslöschen. Das klappt nur bei Problemen mit passender Struktur, und darum ist ein Quantencomputer nicht für alles schneller.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>In E.1 war der Tunneleffekt ein Problem für Transistoren. Hier ist er Teil des Qubits. Wie passt das zusammen?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Beim Transistor ist Tunneln ein ungewollter Leckstrom, der die klare Trennung von 0 und 1 stört. Im Josephson-Kontakt ist es der gewollte, sauber kontrollierte Effekt, der die ungleichen Energiestufen erzeugt. Dieselbe Physik, einmal Störung, einmal Werkzeug.</p></template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="e5-cpu-gpu-tpu.html">← E.5 CPU, GPU, TPU</a>
+                <a class="btn btn-primary" href="e7-quanten-programmieren.html">E.7 Quanten programmieren →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Hinweise</strong></summary>
+                    <p class="mt-2"><strong>Ablauf:</strong> Quiz, Qubit-Zeiger mit Aufgaben 2a–c (Kern!), Merkkasten; zweite Hälfte Weg eines Quantenprogramms (gut als Gruppenpuzzle: je Gruppe 2 Schritte vorstellen), Anforderungen und Dilemma, Plattformen als Ausblick oder Referatsthemen. Bezug zur Physik: Energiestufen, Tunneleffekt, Supraleitung; siehe auch <a href="../../../physik/11/relativitaet/quanten.html">Physik 11: Relativität trifft Quanten</a> (Verschränkung).</p>
+                    <p><strong>Modell:</strong> Reelle Amplituden im Einheitskreis (|0⟩ waagrecht, |1⟩ senkrecht). X, Z und H sind dort Spiegelungen an 45°, 0° bzw. 22,5°. Globale Phase: −|0⟩ und |0⟩ sind physikalisch derselbe Zustand; die Seite zeigt sie trotzdem verschieden, darauf ggf. hinweisen.</p>
+                    <p><strong>Zahlen (Stand 2025, Größenordnungen):</strong> Transmon 4–8 GHz, Gatter 20–100 ns, Kohärenz 50–300 µs, Mischkryostat 10–20 mK; k/h ≈ 20,8 GHz/K. Gidney (2025): RSA-2048 mit weniger als einer Million verrauschter Qubits in unter einer Woche (Schätzung). Google Willow (Dez. 2024): 105 Qubits, Fehlerkorrektur unterhalb der Schwelle. NIST standardisierte 2024 die ersten Post-Quanten-Verfahren (z. B. ML-KEM).</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de · <a href="https://edu-mrh.de/impressum.html#lizenz">CC BY-NC-SA 4.0</a> | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

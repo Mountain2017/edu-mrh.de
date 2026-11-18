@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E.7 Quanten programmieren | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Exkurs Hardware, Informatik 13: Quantenschaltungen bauen und simulieren: Quantenmünze, Interferenz, CNOT und Verschränkung, Deutsch-Algorithmus als Orakel-Spiel, Grover-Suche mit zwei Qubits, Qiskit-Code, Möglichkeiten und Grenzen.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="../rechner/rechner.css">
+    <link rel="stylesheet" href="hardware.css">
+    <script defer src="../rechner/rechner.js"></script>
+    <script defer src="quanten.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🖥️</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="hardware.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station E.7</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#einstieg">🔍 Die Quantenmünze</a></li>
+            <li><a href="#festhalten">📝 Quantenschaltungen</a></li>
+            <li><a href="#verschraenkung">🔗 CNOT und Verschränkung</a></li>
+            <li><a href="#orakel">🕵️ Das Orakel-Spiel</a></li>
+            <li><a href="#grover">🔎 Suchen mit Grover</a></li>
+            <li><a href="#grenzen">📝 Möglichkeiten und Grenzen</a></li>
+            <li><a href="#nachdenken">💡 Nachdenken</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Exkurs Hardware</div>
+            <ul class="sidebar-menu">
+                <li><a href="hardware.html">Übersicht</a></li>
+                <li><a href="e1-transistor.html">E.1 Vom Strom zum Schalter</a></li>
+                <li><a href="e2-cmos-gatter.html">E.2 Gatter aus Transistoren</a></li>
+                <li><a href="e3-addierer.html">E.3 Vom Gatter zum Addierer</a></li>
+                <li><a href="e4-alu.html">E.4 ALU und Rechenwerk</a></li>
+                <li><a href="e5-cpu-gpu-tpu.html">E.5 CPU, GPU, TPU</a></li>
+                <li><a href="e6-qubit.html">E.6 Qubits und Quantenrechner</a></li>
+                <li><a href="e7-quanten-programmieren.html">E.7 Quanten programmieren</a></li>
+                <li><a href="e8-quanten-bauarten.html">E.8 Bauarten</a></li>
+                <li><a href="werkstatt.html">Schaltungs-Werkstatt</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero rm-hero" style="border-left-color:var(--hw-q)">
+                <h1 class="hero-title" style="color:#5b21b6">E.7 Quanten programmieren</h1>
+                <p class="hero-subtitle">Exkurs Hardware · Informatik 13 · 2 Stunden</p>
+                <span class="rm-kompetenz" style="background:var(--hw-q-hell);color:#5b21b6">Du kannst: einfache Quantenschaltungen aus H, X, Z und CNOT aufbauen, ihr Messergebnis vorhersagen und an kleinen Beispielen erklären, wie Interferenz einem Quantenalgorithmus seinen Vorteil verschafft.</span>
+                <div class="ebenen"><span>Physik</span><span>Transistor</span><span>Gatter</span><span>Schaltnetz</span><span>Rechenwerk</span><span>Prozessor</span><span class="q hier">Quanten</span></div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#einstieg">🔍 Münze</a><a class="p-note" href="#festhalten">📝 Schaltungen</a><a class="p-investigate" href="#verschraenkung">🔗 Verschränkung</a><a class="p-make" href="#orakel">🕵️ Orakel</a><a class="p-investigate" href="#grover">🔎 Grover</a><a class="p-note" href="#grenzen">📝 Grenzen</a><a class="p-idee" href="#nachdenken">💡 Nachdenken</a>
+            </div>
+
+            <section id="einstieg" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Die Quantenmünze<small>Aufgabe 1: Vorhersagen, dann messen</small></h2></div>
+                <div class="phase-body">
+                    <p>Ein Quantenprogramm ist eine <strong>Schaltung</strong>: Jedes Qubit ist eine waagrechte Leitung, die Zeit läuft von links nach rechts, Gatter sitzen auf den Leitungen, am Ende wird gemessen. Alle Qubits starten in |0⟩. Wähle ein Gatter in der Leiste und tippe auf eine Stelle der Leitung. Tippe auf eine Schrittnummer oben, um den Zustand dazwischen zu sehen.</p>
+                    <div data-qsim data-qubits="1" data-spalten="5" data-start="muenze" data-beispiele="muenze,hh,hzh" data-gatter="H,X,Z" data-id="e7-muenze"></div>
+                    <ol class="aufgaben">
+                        <li><strong>Vorhersage:</strong> Die geladene Schaltung „Quantenmünze“ hat nur ein H. Was kommt bei 1000 Messungen heraus? Prüfe.</li>
+                        <li><strong>Vorhersage:</strong> Eine echte Münze wirft man zweimal hintereinander. Ist das Ergebnis danach zufälliger, gleich zufällig oder gar nicht mehr zufällig? Und bei „Zweimal H“? Prüfe und schau dir die Amplituden nach Schritt 1 und 2 an.</li>
+                        <li>Lade „H, Z, H“. Was misst du? Mit welchem einzelnen Gatter erreichst du dasselbe? Setze danach noch ein Z ganz ans Ende. Ändert sich das Messergebnis? Warum (nicht)?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 1">
+                        <template data-stufe="Tipp"><p>c) In E.6 hast du gesehen: Z dreht das Vorzeichen von β um, und das macht das zweite H sichtbar.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) Etwa 500-mal 0 und 500-mal 1: echter Zufall. b) Die Münze bleibt zufällig. „Zweimal H“ liefert <strong>immer 0</strong>: Nach dem ersten H sind beide Amplituden +0,71; das zweite H addiert für |0⟩ die Anteile (0,71 + 0,71)·0,71 = 1 und subtrahiert für |1⟩: (0,71 − 0,71)·0,71 = 0. Die Wege zu 1 löschen sich aus: <strong>Interferenz</strong>. c) H, Z, H liefert sicher 1, genau wie ein einzelnes X (H·Z·H = X). Ein Z am Ende macht aus |1⟩ den Zustand −|1⟩: Die Messung zeigt weiter 1. Ein Vorzeichen allein ist nicht messbar; sichtbar wird es erst, wenn ein späteres Gatter (wie das zweite H) es in Interferenz verwandelt.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="festhalten" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Quantenschaltungen</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Merkkasten: Ein Quantenprogramm</h4>
+                        <ul>
+                            <li>Ein Quantenprogramm ist eine <strong>Quantenschaltung</strong>: Qubits starten in |0⟩, Gatter werden von links nach rechts angewandt, am Ende werden die Qubits gemessen. Das Ergebnis ist eine zufällige Bitfolge; man führt die Schaltung deshalb oft aus und wertet die Häufigkeiten aus.</li>
+                            <li>Wichtige Gatter: <strong>X</strong> (NICHT), <strong>Z</strong> (Vorzeichen von |1⟩ umdrehen), <strong>H</strong> (Überlagerung erzeugen und wieder auflösen), <strong>CNOT</strong> (gesteuertes NICHT, gleich mehr).</li>
+                            <li>In der Programmiersprache Python mit der Bibliothek <strong>Qiskit</strong> sieht eine Schaltung so aus (unter jeder Werkbank kannst du den Code zu deiner Schaltung aufklappen):</li>
+                        </ul>
+                        <pre class="qs-code"><span class="k">from</span> qiskit <span class="k">import</span> QuantumCircuit
+qc = QuantumCircuit(1)     <span class="c"># ein Qubit</span>
+qc.h(0)                    <span class="c"># Hadamard auf Qubit 0</span>
+qc.h(0)
+qc.measure_all()           <span class="c"># messen</span></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section id="verschraenkung" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🔗</span><h2>CNOT und Verschränkung<small>Aufgabe 2: Zwei Qubits</small></h2></div>
+                <div class="phase-body">
+                    <p>Das <strong>CNOT</strong>-Gatter (controlled NOT) wirkt auf zwei Qubits: Ist das <strong>Steuer-Qubit</strong> (Punkt ●) 1, wird das <strong>Ziel-Qubit</strong> (⊕) umgedreht, sonst passiert nichts. Für Bits ist das genau dein XOR aus E.3: Ziel ← Ziel ⊕ Steuer. Spannend wird es, wenn das Steuer-Qubit in Überlagerung ist. Zum Setzen: Werkzeug CNOT wählen, erst das Steuer-Qubit antippen, dann im selben Schritt das Ziel.</p>
+                    <div data-qsim data-qubits="2" data-spalten="6" data-start="bell" data-beispiele="zwei,bell" data-gatter="H,X,Z,CNOT" data-id="e7-bell"></div>
+                    <ol class="aufgaben">
+                        <li>Baue eine Schaltung, die aus |00⟩ den Zustand |11⟩ macht, mit genau einem X und einem CNOT.</li>
+                        <li>Lade „Zwei Münzen“ und führe 1000-mal aus. Dann lade „Verschränkung (Bell)“. Was ist anders? Warum kommen 01 und 10 nie vor?</li>
+                        <li>Verändere die Bell-Schaltung so, dass nur 01 und 10 vorkommen.</li>
+                        <li>Bei der Bell-Schaltung ist jedes einzelne Qubit für sich ein perfekter Zufall. Was ist trotzdem nicht zufällig?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 2">
+                        <template data-stufe="Tipp"><p>b) Schau dir die Amplituden nach Schritt 1 und nach Schritt 2 an. Was macht CNOT mit dem Anteil |10⟩?</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) X auf q0, dann CNOT mit Steuerung q0 und Ziel q1. b) Zwei Münzen: alle vier Ergebnisse je etwa 25 %. Bell: nur 00 und 11, je 50 %. Nach H ist der Zustand (|00⟩ + |10⟩)/√2; CNOT macht aus |10⟩ den Zustand |11⟩, also (|00⟩ + |11⟩)/√2. c) Ein X auf q1 vor oder nach dem CNOT. d) Der <strong>Zusammenhang</strong>: Beide Qubits zeigen immer dasselbe. Man kann den Zustand nicht als „q0 ist so, q1 ist so“ beschreiben: Die Qubits sind <strong>verschränkt</strong>. Das gilt sogar, wenn man sie weit voneinander trennt. Nachrichten lassen sich damit aber nicht übertragen, denn jedes Ergebnis für sich ist zufällig.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="orakel" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🕵️</span><h2>Das Orakel-Spiel<small>Aufgabe 3: Mit einer einzigen Frage entscheiden (Deutsch-Algorithmus)</small></h2></div>
+                <div class="phase-body">
+                    <p>Ein Orakel kennt eine geheime Funktion f, die einem Bit x ein Bit f(x) zuordnet. Es gibt nur vier Möglichkeiten: f ist <strong>konstant</strong> (f(0) = f(1) = 0 oder beide 1) oder <strong>ausgeglichen</strong> (f(0) ≠ f(1)). Deine Aufgabe: Finde heraus, ob f konstant oder ausgeglichen ist.</p>
+                    <p>Das Orakel ist als Quantengatter U<sub>f</sub> eingebaut. Es liest q0 als x und ändert q1: <strong>q1 ← q1 ⊕ f(x)</strong>. Jede Ausführung deiner Schaltung zählt als eine Frage ans Orakel.</p>
+                    <div data-qsim data-orakel data-spalten="6" data-gatter="H,X,Z,CNOT" data-id="e7-orakel"></div>
+                    <ol class="aufgaben">
+                        <li><strong>Klassisch:</strong> Setze nur U<sub>f</sub> und führe einmal aus. Was verrät dir q1? Wie viele Fragen brauchst du klassisch mindestens, um sicher zu entscheiden?</li>
+                        <li><strong>Quantisch:</strong> Baue eine Schaltung, die mit <strong>einer einzigen</strong> Ausführung entscheidet. Teste sie mit mehreren neuen geheimen Orakeln. Woran erkennst du die Antwort?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 3">
+                        <template data-stufe="Tipp 1"><p>a) Mit q0 = 0 erfährst du f(0). Für f(1) musst du q0 vorher mit X auf 1 setzen. Reicht eins von beiden?</p></template>
+                        <template data-stufe="Tipp 2"><p>b) Frage das Orakel nach beiden Eingaben gleichzeitig: Bringe q0 mit H in Überlagerung. Nach dem Orakel brauchst du Interferenz, also noch ein H auf q0.</p></template>
+                        <template data-stufe="Tipp 3"><p>b) Der Trick steckt in q1: Bereite es als |−⟩ vor (erst X, dann H). Dann wirkt „q1 ← q1 ⊕ f(x)“ wie ein Vorzeichen (−1)<sup>f(x)</sup> auf q0.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) Klassisch braucht man zwei Fragen (f(0) und f(1)); eine reicht nie. b) Schaltung: Schritt 1: X auf q1. Schritt 2: H auf q0 und H auf q1. Schritt 3: U<sub>f</sub>. Schritt 4: H auf q0. Ergebnis von q0: <strong>0 = konstant, 1 = ausgeglichen</strong>, mit Sicherheit (q1 ist egal). Warum: Nach Schritt 2 ist q0 in (|0⟩ + |1⟩)/√2 und q1 in |−⟩. Das Orakel dreht das Vorzeichen des Anteils |x⟩ um, wenn f(x) = 1 ist. Konstant: Beide Anteile bekommen dasselbe Vorzeichen, q0 bleibt |+⟩ (bis aufs Vorzeichen), H macht daraus |0⟩. Ausgeglichen: Die Anteile bekommen verschiedene Vorzeichen, q0 wird |−⟩, H macht daraus |1⟩. Diese Idee (David Deutsch, 1985) war der erste Beweis, dass ein Quantencomputer etwas mit weniger Schritten kann.</p></template>
+                    </div>
+                    <div class="tipp"><strong>Warum verbirgt die Werkbank hier die Amplituden?</strong> Sonst könntest du die geheime Funktion einfach ablesen. Ein echter Quantencomputer zeigt die Amplituden nie, nur Messergebnisse.</div>
+                </div>
+            </section>
+
+            <section id="grover" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🔎</span><h2>Suchen mit Grover<small>Aufgabe 4: Eins aus vier mit einem Blick</small></h2></div>
+                <div class="phase-body">
+                    <p>Hinter vier Türen 00, 01, 10, 11 ist ein Preis. Ein Prüfgerät (das Orakel) sagt, ob eine Tür die richtige ist. Klassisch musst du im Schnitt mehr als zwei Türen prüfen. Lov Grover fand 1996 einen Quantenalgorithmus, der bei vier Türen mit <strong>einer</strong> Prüfung auskommt:</p>
+                    <ol>
+                        <li><strong>Alle Türen gleichzeitig:</strong> H auf beide Qubits, alle vier Amplituden sind ½.</li>
+                        <li><strong>Orakel markieren:</strong> Das Orakel dreht das Vorzeichen der richtigen Tür um. Hier markiert ein CZ (gesteuertes Z) die Tür |11⟩: Es kehrt das Vorzeichen nur um, wenn beide Qubits 1 sind.</li>
+                        <li><strong>Verstärken:</strong> Eine „Spiegelung am Mittelwert“ (H, X, CZ, X, H) macht aus dem kleinen Vorzeichenunterschied eine große Wahrscheinlichkeit.</li>
+                    </ol>
+                    <div data-qsim data-qubits="2" data-spalten="10" data-start="grover" data-beispiele="grover" data-gatter="H,X,Z,CNOT,CZ" data-id="e7-grover"></div>
+                    <ol class="aufgaben">
+                        <li>Gehe Schritt für Schritt durch (Schrittnummern oben) und notiere die vier Amplituden nach Schritt 1, 2, 3 und 7. Was misst du am Ende?</li>
+                        <li>Ändere das Orakel so, dass es die Tür |01⟩ markiert (q0 = 0, q1 = 1). Prüfe, dass dann immer 01 gemessen wird.</li>
+                        <li>Bei N Türen braucht Grover etwa 0,8 · √N Orakel-Fragen, klassisch im Schnitt N/2. Vergleiche für eine Million Türen.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 4">
+                        <template data-stufe="Tipp"><p>b) Das CZ markiert nur |11⟩. Wenn du q0 vorher mit X umdrehst, wird aus |01⟩ kurz |11⟩. Danach musst du q0 wieder zurückdrehen. Dafür brauchst du zwei zusätzliche Schritte; schiebe die anderen Gatter nach rechts.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) Amplituden von |00⟩, |01⟩, |10⟩, |11⟩: nach Schritt 1: ½, ½, ½, ½. Nach 2: ½, ½, ½, −½ (markiert, aber noch nicht messbar: alle Wahrscheinlichkeiten 25 %). Nach 3: zufällig wieder ½, ½, ½, −½. Nach 7: 0, 0, 0, −1. Es wird <strong>immer 11</strong> gemessen. Das Minus ist ein gemeinsames Vorzeichen des ganzen Zustands und hat keine messbare Bedeutung. b) Schritte: H H | X auf q0 | CZ | X auf q0 | H H | X X | CZ | X X | H H. c) 0,8 · 1000 = 800 Fragen statt 500 000. Ein „quadratischer“ Vorteil: groß, aber kein Wunder. Dass Grover nicht noch schneller geht, ist bewiesen.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="grenzen" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Möglichkeiten und Grenzen</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Merkkasten: Was Quantenalgorithmen ausmacht</h4>
+                        <ul>
+                            <li><strong>Überlagerung</strong> verarbeitet viele Eingaben in einem Schritt, <strong>Verschränkung</strong> verknüpft Qubits, <strong>Interferenz</strong> löscht falsche Antworten aus und verstärkt richtige. Ohne Interferenz kein Vorteil.</li>
+                            <li>Ein Lauf liefert nur eine Messung. Ein guter Quantenalgorithmus macht die richtige Antwort sehr wahrscheinlich.</li>
+                            <li>Bekannte Beispiele: <strong>Deutsch</strong> (1 statt 2 Fragen), <strong>Grover</strong> (Suchen: √N statt N Schritte), <strong>Shor</strong> (Faktorisieren: von „Milliarden Jahren“ auf Stunden, für RSA gefährlich), <strong>Simulation</strong> von Molekülen und Materialien.</li>
+                            <li>Für die meisten Alltagsaufgaben gibt es keinen Quantenvorteil. Heutige Geräte sind zudem klein und fehleranfällig. Quantencomputer werden klassische Rechner nicht ersetzen, sondern als Spezialgerät ergänzen, wie GPU und TPU.</li>
+                        </ul>
+                    </div>
+                    <p>Mit Qiskit kann man genau solche Schaltungen über das Internet auch auf echten Quantencomputern laufen lassen (etwa bei IBM, nach Anmeldung). Dort sieht man, was Fehler bedeuten: Bei der Bell-Schaltung tauchen dann auch einige 01 und 10 auf.</p>
+                </div>
+            </section>
+
+            <section id="nachdenken" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Besprecht mündlich</small></h2></div>
+                <div class="phase-body">
+                    <div class="idee"><strong>Alle Quantengatter sind umkehrbar. Ein UND-Gatter aus E.2 ist es nicht. Warum nicht, und wie kann ein Quantencomputer trotzdem UND berechnen?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Aus Y = 0 bei UND kann man nicht zurückschließen, ob die Eingabe 00, 01 oder 10 war: Information geht verloren. Quantengatter dürfen keine Information vernichten. Darum schreibt man das Ergebnis in ein zusätzliches Qubit, wie beim CNOT (Ziel ← Ziel ⊕ Steuer) oder beim Orakel (q1 ← q1 ⊕ f(x)). Für UND gibt es das Toffoli-Gatter: Ziel ← Ziel ⊕ (A ∧ B). Damit lässt sich jede klassische Schaltung, auch ein Addierer, umkehrbar nachbauen.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Warum misst man nicht einfach zwischendurch, um zu sehen, wie weit die Rechnung ist?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Jede Messung zerstört die Überlagerung. Nach einer Messung in der Mitte von „Zweimal H“ ist das Ergebnis wieder zufällig, die Interferenz ist weg. Auch die Fehlerkorrektur misst darum nie die Rechen-Qubits selbst, sondern nur Hilfs-Qubits, die verraten, <em>ob</em> ein Fehler passiert ist, nicht <em>was</em> gerechnet wird.</p></template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="e6-qubit.html">← E.6 Qubits und Quantenrechner</a>
+                <a class="btn btn-primary" href="e8-quanten-bauarten.html">E.8 Bauarten →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Hinweise</strong></summary>
+                    <p class="mt-2"><strong>Ablauf (2 Std.):</strong> Quantenmünze mit Vorhersagen (Interferenz als Kernidee), Merkkasten, CNOT/Bell; zweite Stunde Orakel-Spiel (Partnerarbeit, Tipps gestuft), Grover am Beamer Schritt für Schritt, Merkkasten Grenzen. Die Werkbank speichert die Schaltungen je Aufgabe im Browser; „Laden“ stellt die Beispiele wieder her.</p>
+                    <p><strong>Simulation:</strong> exakter Zustandsvektor mit reellen Amplituden; Ausgabe |q0 q1⟩ mit q0 links. Qiskit schreibt Ergebnisse in umgekehrter Bitreihenfolge (q1 q0). Das Orakel im Orakel-Spiel ist zufällig eine der vier Funktionen; nach dem Orakel werden die Amplituden verborgen. Die Messung erfolgt am Ende an allen Qubits.</p>
+                    <p><strong>Grover mit 2 Qubits:</strong> Diffusion als H⊗H · X⊗X · CZ · X⊗X · H⊗H; das Ergebnis ist −|11⟩ (globale Phase −1, ohne Bedeutung). Aufgabe 1c: H·Z·H = X; ein Z am Ende ändert nur das (nicht messbare) Vorzeichen – Vorbereitung auf das Orakel, das ebenfalls mit Vorzeichen arbeitet.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de · <a href="https://edu-mrh.de/impressum.html#lizenz">CC BY-NC-SA 4.0</a> | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

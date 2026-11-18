@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E.2 Gatter aus Transistoren | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Exkurs Hardware, Informatik 13: CMOS-Technik, Inverter, NAND und NOR auf Transistorebene, Pull-up- und Pull-down-Netz, Schaltzeichen nach DIN/IEC und US-Norm, NAND als universelles Gatter, Energie beim Schalten.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="../rechner/rechner.css">
+    <link rel="stylesheet" href="hardware.css">
+    <script defer src="../rechner/rechner.js"></script>
+    <script defer src="hardware.js"></script>
+    <script defer src="logik.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🖥️</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="hardware.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station E.2</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#einstieg">🔍 Ein NICHT aus zwei Transistoren</a></li>
+            <li><a href="#festhalten">📝 Das CMOS-Prinzip</a></li>
+            <li><a href="#nand-nor">🔌 NAND und NOR</a></li>
+            <li><a href="#bauen">🛠️ Netze selbst kombinieren</a></li>
+            <li><a href="#symbole">🔣 Von Transistoren zu Symbolen</a></li>
+            <li><a href="#energie">🔥 Energie und Wärme</a></li>
+            <li><a href="#nachdenken">💡 Nachdenken</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Exkurs Hardware</div>
+            <ul class="sidebar-menu">
+                <li><a href="hardware.html">Übersicht</a></li>
+                <li><a href="e1-transistor.html">E.1 Vom Strom zum Schalter</a></li>
+                <li><a href="e2-cmos-gatter.html">E.2 Gatter aus Transistoren</a></li>
+                <li><a href="e3-addierer.html">E.3 Vom Gatter zum Addierer</a></li>
+                <li><a href="e4-alu.html">E.4 ALU und Rechenwerk</a></li>
+                <li><a href="e5-cpu-gpu-tpu.html">E.5 CPU, GPU, TPU</a></li>
+                <li><a href="e6-qubit.html">E.6 Qubits und Quantenrechner</a></li>
+                <li><a href="e7-quanten-programmieren.html">E.7 Quanten programmieren</a></li>
+                <li><a href="e8-quanten-bauarten.html">E.8 Bauarten</a></li>
+                <li><a href="werkstatt.html">Schaltungs-Werkstatt</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero rm-hero">
+                <h1 class="hero-title">E.2 Gatter aus Transistoren</h1>
+                <p class="hero-subtitle">Exkurs Hardware · Informatik 13 · 1 bis 2 Stunden</p>
+                <span class="rm-kompetenz">Du kannst: erklären, wie aus pMOS- und nMOS-Transistoren die Gatter NICHT, NAND und NOR entstehen, ihre Wahrheitstabellen angeben und Gatter mit den genormten Schaltzeichen darstellen.</span>
+                <div class="ebenen"><span>Physik</span><span class="hier">Transistor</span><span class="hier">Gatter</span><span>Schaltnetz</span><span>Rechenwerk</span><span>Prozessor</span><span class="q">Quanten</span></div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#einstieg">🔍 NICHT</a><a class="p-note" href="#festhalten">📝 CMOS</a><a class="p-investigate" href="#nand-nor">🔌 NAND/NOR</a><a class="p-make" href="#bauen">🛠️ Bauen</a><a class="p-note" href="#symbole">🔣 Symbole</a><a class="p-modify" href="#energie">🔥 Energie</a><a class="p-idee" href="#nachdenken">💡 Nachdenken</a>
+            </div>
+
+            <section id="einstieg" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Ein NICHT aus zwei Transistoren<small>Aufgabe 1: Vorhersagen, dann ausprobieren</small></h2></div>
+                <div class="phase-body">
+                    <p>Aus E.1 weißt du: Ein <strong>nMOS</strong> leitet bei 1, ein <strong>pMOS</strong> leitet bei 0. Nun schalten wir je einen davon in Reihe zwischen die Versorgungsspannung V<sub>DD</sub> (= 1) und die Masse GND (= 0). Der Ausgang Y ist der Punkt dazwischen.</p>
+                    <p><strong>Vorhersage:</strong> Welchen Wert hat Y, wenn A = 0 ist? Und wenn A = 1 ist? Überlege erst, welcher der beiden Transistoren jeweils leitet. Dann schalte A um.</p>
+                    <div data-cmos="not"></div>
+                    <div class="lw" data-loesungsweg="Aufgabe 1">
+                        <template data-stufe="Lösung" data-halten><p>A = 0: Der pMOS oben leitet, der nMOS unten sperrt. Y ist mit V<sub>DD</sub> verbunden, also Y = 1. A = 1: Jetzt leitet der nMOS und verbindet Y mit GND, Y = 0. Die Schaltung kehrt das Eingangsbit um: ein <strong>Inverter</strong> (NICHT-Gatter). Er besteht aus genau zwei Transistoren.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="festhalten" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Das CMOS-Prinzip</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Merkkasten: CMOS (complementary MOS)</h4>
+                        <ul>
+                            <li>Jedes Gatter besteht aus zwei Netzen: Das <strong>Pull-up-Netz</strong> aus pMOS-Transistoren verbindet den Ausgang mit V<sub>DD</sub> (zieht ihn auf 1), das <strong>Pull-down-Netz</strong> aus nMOS-Transistoren verbindet ihn mit GND (zieht ihn auf 0).</li>
+                            <li>Die beiden Netze sind <strong>komplementär</strong>: Für jede Eingabe leitet genau eines von beiden. Deshalb ist der Ausgang immer klar 0 oder 1.</li>
+                            <li>Weil nie beide gleichzeitig leiten, fließt im Ruhezustand kein Strom von V<sub>DD</sub> nach GND. Strom wird nur beim Umschalten gebraucht. Das macht CMOS so sparsam, und deshalb ist praktisch jeder heutige Chip in CMOS-Technik gebaut.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="nand-nor" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🔌</span><h2>NAND und NOR<small>Aufgabe 2: Zwei Eingänge, vier Transistoren</small></h2></div>
+                <div class="phase-body">
+                    <p>Mit zwei Eingängen A und B braucht jedes Netz zwei Transistoren. Sie können <strong>in Reihe</strong> (beide müssen leiten) oder <strong>parallel</strong> (einer genügt) geschaltet sein, genau wie die Schalter in E.1.</p>
+                    <h3>a) Pull-down in Reihe, Pull-up parallel</h3>
+                    <div data-cmos="nand"></div>
+                    <h3>b) Pull-down parallel, Pull-up in Reihe</h3>
+                    <div data-cmos="nor"></div>
+                    <ol class="aufgaben">
+                        <li>Schalte bei beiden Schaltungen alle vier Eingaben durch und notiere die Wahrheitstabellen im Heft.</li>
+                        <li>Vergleiche mit UND und ODER aus E.1. Warum heißen die Gatter NAND („not and“) und NOR („not or“)?</li>
+                        <li>Begründe ohne Ausprobieren: Wann leitet das Pull-down-Netz von a)? Und warum muss das Pull-up-Netz dann genau in den anderen Fällen leiten?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 2">
+                        <template data-stufe="Tipp"><p>Reihe = beide müssen leiten = UND. Das Pull-down-Netz zieht auf 0, also wird das Ergebnis umgedreht.</p></template>
+                        <template data-stufe="Lösung" data-halten>
+                            <div class="wt-reihe">
+                                <table class="wt"><tr><th>A</th><th>B</th><th class="trenn">NAND</th></tr><tr><td>0</td><td>0</td><td class="trenn eins">1</td></tr><tr><td>0</td><td>1</td><td class="trenn eins">1</td></tr><tr><td>1</td><td>0</td><td class="trenn eins">1</td></tr><tr><td>1</td><td>1</td><td class="trenn">0</td></tr></table>
+                                <table class="wt"><tr><th>A</th><th>B</th><th class="trenn">NOR</th></tr><tr><td>0</td><td>0</td><td class="trenn eins">1</td></tr><tr><td>0</td><td>1</td><td class="trenn">0</td></tr><tr><td>1</td><td>0</td><td class="trenn">0</td></tr><tr><td>1</td><td>1</td><td class="trenn">0</td></tr></table>
+                            </div>
+                            <p>NAND ist das umgekehrte UND, NOR das umgekehrte ODER. Bei a) leitet das Pull-down-Netz nur, wenn A = 1 <em>und</em> B = 1 (Reihe), dann ist Y = 0. In allen anderen Fällen muss das Pull-up-Netz leiten, also wenn A = 0 <em>oder</em> B = 0: pMOS leiten bei 0, und „oder“ heißt parallel.</p>
+                        </template>
+                    </div>
+                    <div class="stolper"><strong>Stolperstein:</strong> CMOS liefert „von selbst“ nur umkehrende Gatter (NICHT, NAND, NOR). Ein UND baut man als NAND mit nachgeschaltetem NICHT: 4 + 2 = 6 Transistoren. Ein NAND ist also kleiner und schneller als ein UND.</div>
+                </div>
+            </section>
+
+            <section id="bauen" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Selbst kombinieren<small>Aufgabe 3: Was passiert bei anderen Kombinationen?</small></h2></div>
+                <div class="phase-body">
+                    <p>Hier darfst du für beide Netze selbst wählen: in Reihe oder parallel. Die Wahrheitstabelle zeigt sofort alle vier Fälle. Untersuche alle vier Kombinationen.</p>
+                    <div data-cmos="bau"></div>
+                    <ol class="aufgaben">
+                        <li>Welche zwei Kombinationen ergeben ein brauchbares Gatter, welche nicht? Was geht bei den anderen schief?</li>
+                        <li>Formuliere eine Regel: Wie muss das Pull-up-Netz aufgebaut sein, wenn das Pull-down-Netz bekannt ist?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 3">
+                        <template data-stufe="Tipp"><p>Schau dir die Fälle A = 0, B = 1 und A = 1, B = 0 an.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>Brauchbar sind nur „Reihe unten, parallel oben“ (NAND) und „parallel unten, Reihe oben“ (NOR). Beide in Reihe: Bei A ≠ B leitet keines der Netze, der Ausgang schwebt. Beide parallel: Bei A ≠ B leiten beide, es entsteht ein Kurzschluss von V<sub>DD</sub> nach GND. <strong>Regel:</strong> Das Pull-up-Netz ist das Gegenstück (duale Netz) des Pull-down-Netzes: Was unten in Reihe liegt, liegt oben parallel und umgekehrt. Nach dieser Regel lassen sich auch größere Gatter mit drei oder vier Eingängen bauen.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="symbole" class="phase note">
+                <div class="phase-head"><span class="phase-icon">🔣</span><h2>Von Transistoren zu Symbolen<small>Abstraktion: Ab jetzt zählt nur noch die Wahrheitstabelle</small></h2></div>
+                <div class="phase-body">
+                    <p>Ein Prozessor hat Milliarden Transistoren. Niemand zeichnet sie einzeln. Stattdessen fasst man jedes Gatter zu einem <strong>Schaltzeichen</strong> zusammen und vergisst, wie es innen gebaut ist. In Europa gilt die Norm DIN EN 60617 (IEC): Rechtecke mit einem Zeichen. In den USA und in vielen englischen Texten sind die runden ANSI-Formen üblich. Ein kleiner Kreis am Ausgang bedeutet immer „umgedreht“.</p>
+                    <div class="knopfzeile"><div class="norm-wahl"></div></div>
+                    <div class="tab-scroll"><table class="rm-tab sym-tab">
+                        <tr><th>Gatter</th><th>Symbol</th><th>Term</th><th>Y = 1, wenn …</th><th>Wahrheitstabelle (AB = 00, 01, 10, 11)</th><th>Transistoren (CMOS)</th></tr>
+                        <tr><td><strong>NICHT</strong> (NOT)</td><td><span class="sym" data-symbol="NOT"></span></td><td>¬A</td><td>A = 0</td><td class="mono">A = 0 → 1, A = 1 → 0</td><td>2</td></tr>
+                        <tr><td><strong>UND</strong> (AND)</td><td><span class="sym" data-symbol="AND"></span></td><td>A ∧ B</td><td>beide 1</td><td class="mono">0 0 0 1</td><td>6</td></tr>
+                        <tr><td><strong>ODER</strong> (OR)</td><td><span class="sym" data-symbol="OR"></span></td><td>A ∨ B</td><td>mindestens einer 1</td><td class="mono">0 1 1 1</td><td>6</td></tr>
+                        <tr><td><strong>NAND</strong></td><td><span class="sym" data-symbol="NAND"></span></td><td>¬(A ∧ B)</td><td>nicht beide 1</td><td class="mono">1 1 1 0</td><td>4</td></tr>
+                        <tr><td><strong>NOR</strong></td><td><span class="sym" data-symbol="NOR"></span></td><td>¬(A ∨ B)</td><td>beide 0</td><td class="mono">1 0 0 0</td><td>4</td></tr>
+                        <tr><td><strong>XOR</strong> (exklusives ODER)</td><td><span class="sym" data-symbol="XOR"></span></td><td>A ⊕ B</td><td>genau einer 1 (verschieden)</td><td class="mono">0 1 1 0</td><td>8 bis 12</td></tr>
+                    </table></div>
+                    <div class="konzept">
+                        <h4>Merkkasten: Gatter</h4>
+                        <p>Ein <strong>Logikgatter</strong> ist eine Schaltung, die aus einem oder mehreren Eingangsbits genau ein Ausgangsbit berechnet. Es wird vollständig durch seine <strong>Wahrheitstabelle</strong> beschrieben. Das Innere (Transistoren) ist für die nächste Ebene unwichtig: Das ist <strong>Abstraktion</strong>. Mit NICHT, UND und ODER lässt sich jede Wahrheitstabelle bauen. Sogar <strong>NAND allein genügt</strong> (NAND ist universell), das probierst du in E.3 aus.</p>
+                    </div>
+                    <ul class="quiz" data-quiz="and:UND|or:ODER|xor:XOR|nand:NAND|nor:NOR">
+                        <li data-loesung="xor"><span class="frage">Ein Lämpchen soll leuchten, wenn genau eine von zwei Türen offen ist.</span><span class="erkl-text">„Genau einer“ ist das exklusive ODER.</span></li>
+                        <li data-loesung="nor"><span class="frage">Der Alarm ist nur dann aus (Y = 1 heißt „alles ruhig“), wenn weder Sensor A noch Sensor B etwas meldet.</span><span class="erkl-text">„Weder noch“ = nicht (A oder B) = NOR.</span></li>
+                        <li data-loesung="and"><span class="frage">Die Presse startet nur, wenn beide Hände des Arbeiters auf je einem Taster liegen.</span><span class="erkl-text">Zweihandschaltung: Beide Taster müssen gedrückt sein, UND.</span></li>
+                        <li data-loesung="nand"><span class="frage">Y = 0 nur dann, wenn beide Eingänge 1 sind.</span><span class="erkl-text">Das ist genau die Wahrheitstabelle von NAND (1 1 1 0).</span></li>
+                        <li data-loesung="or"><span class="frage">Die Innenbeleuchtung im Auto geht an, wenn die Fahrer- oder die Beifahrertür offen ist.</span><span class="erkl-text">Eine offene Tür reicht, also ODER.</span></li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="energie" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">🔥</span><h2>Energie und Wärme<small>Aufgabe 4: Warum Prozessoren heiß werden</small></h2></div>
+                <div class="phase-body">
+                    <p>Jeder Gatterausgang treibt Leitungen und die Gates der nächsten Transistoren. Zusammen wirkt das wie ein winziger Kondensator mit der Kapazität C. Bei jedem Umschalten von 0 auf 1 und zurück wird er geladen und entladen, dabei geht etwa die Energie <strong>E ≈ C · U²</strong> als Wärme verloren. Die Leistung eines Chips ist ungefähr</p>
+                    <p style="text-align:center;font-size:1.15rem"><strong>P ≈ a · C · U² · f</strong></p>
+                    <p>mit der Taktfrequenz f und dem Anteil a der Gatter, die pro Takt tatsächlich umschalten.</p>
+                    <ol class="aufgaben">
+                        <li>Prozessoren um 1990 arbeiteten mit 5 V, heutige mit etwa 1 V. Um welchen Faktor sinkt die Energie pro Schaltvorgang (bei gleichem C)?</li>
+                        <li>Seit etwa 2005 steigen die Taktfrequenzen kaum noch (meist 3 bis 5 GHz). Stattdessen bekommen Prozessoren immer mehr Kerne. Erkläre mit der Formel, warum.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 4">
+                        <template data-stufe="Tipp"><p>b) Eine höhere Frequenz braucht schnellere Transistoren, und die brauchen meist eine höhere Spannung. Was passiert dann mit U²?</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) (5 V / 1 V)² = 25: Die Energie sinkt auf ein Fünfundzwanzigstel. b) Die Spannung lässt sich kaum noch weiter senken, weil die Transistoren sonst zu unzuverlässig schalten und Leckströme zunehmen. Mehr Takt würde deshalb fast linear (und mit der nötigen höheren Spannung sogar noch stärker) mehr Wärme bedeuten, die nicht mehr abgeführt werden kann. Zwei Kerne mit halbem Takt schaffen dagegen bei gleicher Leistung gleich viel Arbeit, wenn sich die Aufgabe aufteilen lässt. Das ist der Weg zu Mehrkern-CPUs und GPUs (E.5).</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="nachdenken" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Besprecht mündlich</small></h2></div>
+                <div class="phase-body">
+                    <div class="idee"><strong>Warum liegt der pMOS immer oben (an V<sub>DD</sub>) und der nMOS unten (an GND), nicht umgekehrt?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Ein nMOS leitet nur, solange sein Gate deutlich höher liegt als seine Source. Oben an V<sub>DD</sub> würde er den Ausgang nur bis auf V<sub>DD</sub> minus Schwellenspannung hochziehen: eine schwache 1. Ein pMOS liefert eine saubere 1, ein nMOS eine saubere 0. Deshalb hat jedes Netz „seinen“ Transistortyp.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Die Werkstatt in E.3 zeigt nur noch Symbole. Was gewinnt man durch diese Abstraktion, was verliert man?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Gewinn: Man kann große Schaltungen überblicken und logisch prüfen, unabhängig von der Technik (dieselben Symbole galten für Relais und Röhren). Verlust: Zeit, Energie und Fläche sieht man nicht mehr. Ein UND „kostet“ 6 Transistoren, ein NAND nur 4; Chipentwickler denken deshalb oft in NAND und NOR.</p></template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="e1-transistor.html">← E.1 Vom Strom zum Schalter</a>
+                <a class="btn btn-primary" href="e3-addierer.html">E.3 Vom Gatter zum Addierer →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Hinweise</strong></summary>
+                    <p class="mt-2"><strong>Ablauf:</strong> Inverter mit Vorhersage (10 min), Merkkasten, NAND/NOR (20 min), Netze kombinieren als Entdeckungsaufgabe (15 min), Symbole und Quiz (20 min). Der Energie-Abschnitt ist optional und passt auch zu E.5.</p>
+                    <p><strong>Darstellung:</strong> Die Transistoren sind als Schalter mit Gate gezeichnet; ein geschlossener (grüner) Kanal bedeutet „leitet“. Leitet das Pull-up-Netz, ist es rot hervorgehoben, das Pull-down-Netz blau. Die Kombinationen mit schwebendem Ausgang oder Kurzschluss sind bewusst zugelassen, damit die Dualitätsregel entdeckt wird. Die gewählte Norm der Schaltzeichen (DIN/IEC oder US) gilt für alle Seiten des Exkurses und wird im Browser gemerkt.</p>
+                    <p><strong>Fachlich:</strong> Die Energie pro vollem Lade- und Entladezyklus ist C·U² (je die Hälfte beim Laden im pMOS und beim Entladen im nMOS); die übliche Formel der dynamischen Leistung ist P = α·C·U²·f. Das Ende der „Dennard-Skalierung“ um 2005 erklärt die Stagnation der Taktfrequenz.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de · <a href="https://edu-mrh.de/impressum.html#lizenz">CC BY-NC-SA 4.0</a> | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

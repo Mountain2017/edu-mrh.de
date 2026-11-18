@@ -1,0 +1,361 @@
+/* ==========================================================================
+   Exkurs Hardware (Informatik 13): Vom Transistor zum Quantencomputer
+   Ergänzt embed/style.css und ../rechner/rechner.css (Phasen, Quiz, Lösungsweg).
+   Signalfarben: 1 / Spannung = orange, 0 / Masse = schiefergrau,
+   pMOS / Pull-up = rot, nMOS / Pull-down = blau, Quanten = violett.
+   ========================================================================== */
+:root {
+    --hw-an: #ea580c;            /* Signal 1 */
+    --hw-an-hell: #ffedd5;
+    --hw-aus: #64748b;           /* Signal 0 */
+    --hw-aus-hell: #f1f5f9;
+    --hw-p: #dc2626;             /* pMOS, Pull-up, VDD */
+    --hw-p-hell: #fee2e2;
+    --hw-n: #2563eb;             /* nMOS, Pull-down, GND */
+    --hw-n-hell: #dbeafe;
+    --hw-leit: #16a34a;          /* leitet */
+    --hw-q: #7c3aed;             /* Quanten */
+    --hw-q-hell: #f3e8ff;
+    --hw-q-neg: #db2777;         /* negative Amplitude */
+}
+
+/* Ebenen-Leiste: Wo im Turm sind wir? */
+.ebenen { display: flex; flex-wrap: wrap; gap: .3rem; margin: .9rem 0 0; font-size: .82rem; }
+.ebenen span { border-radius: 999px; padding: .15rem .6rem; background: #f1f5f9; color: #475569; font-weight: 600; }
+.ebenen span.hier { background: var(--rm-primary); color: #fff; }
+.ebenen span.q.hier { background: var(--hw-q); }
+
+/* Turm der Ebenen (Übersicht) */
+.turm { display: grid; gap: .35rem; margin: 1rem 0; max-width: 46rem; }
+.turm a, .turm div { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr) auto; gap: .8rem; align-items: center; padding: .55rem .9rem; border-radius: 10px; text-decoration: none; color: #1e293b; background: #f8fafc; border: 2px solid #e2e8f0; }
+.turm a:hover { border-color: var(--rm-primary); background: var(--rm-light); }
+.turm b { color: var(--rm-primary-dark); }
+.turm small { color: var(--gray); font-size: .85rem; }
+.turm .st { font-size: .78rem; font-weight: 700; color: #fff; background: var(--rm-primary); border-radius: 999px; padding: .1rem .55rem; white-space: nowrap; }
+.turm .st.alt { background: #94a3b8; }
+.turm .q { border-color: #ddd6fe; background: var(--hw-q-hell); }
+.turm .q .st { background: var(--hw-q); }
+.station-card.quanten { border-top-color: var(--hw-q); }
+.station-card.quanten .st-nr { color: var(--hw-q); }
+.station-card.extra { border-top-color: #0891b2; }
+
+/* Bitschalter und Lämpchen (überall) */
+.bit { display: inline-flex; align-items: center; justify-content: center; min-width: 2rem; height: 2rem; border-radius: 8px; border: 2px solid var(--hw-aus); background: #fff; color: #334155; font: 700 1rem var(--mono); cursor: pointer; padding: 0 .35rem; user-select: none; }
+.bit.an { background: var(--hw-an); border-color: var(--hw-an); color: #fff; }
+.bit:focus-visible { outline: 3px solid var(--ph-modify); outline-offset: 2px; }
+.bit[disabled] { cursor: default; }
+.lampe { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: 50%; border: 2px solid #94a3b8; background: #e2e8f0; font: 700 .95rem var(--mono); color: #475569; }
+.lampe.an { background: #fde047; border-color: #ca8a04; color: #713f12; box-shadow: 0 0 12px #facc15; }
+.lampe.x { background: var(--rm-nein-hell); border-color: var(--rm-nein); color: var(--rm-nein); }
+.bits { display: inline-flex; gap: .25rem; flex-wrap: wrap; }
+.zahl { font: 700 1rem var(--mono); color: #0f172a; }
+.wert-zeile { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; margin: .35rem 0; }
+.wert-zeile > label, .wert-zeile > .lbl { font-weight: 700; min-width: 6rem; color: #334155; }
+.klein { font-size: .85rem; color: var(--gray); }
+
+/* Wahrheitstabellen */
+.wt { border-collapse: collapse; font: .9rem/1.3 var(--mono); background: #fff; margin: .4rem 0; }
+.wt th, .wt td { border: 1px solid #e2e8f0; padding: .2rem .6rem; text-align: center; }
+.wt th { background: #f1f5f9; font-family: inherit; }
+.wt td.trenn, .wt th.trenn { border-left: 3px solid #94a3b8; }
+.wt tr.akt td { background: #fef3c7; font-weight: 700; }
+.wt tr.falsch td { background: var(--rm-nein-hell); }
+.wt td.eins { color: var(--hw-an); font-weight: 700; }
+.wt-reihe { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-start; }
+
+/* Gattersymbole (Tabelle in E.2 / E.3) */
+.sym svg { width: 70px; height: 50px; vertical-align: middle; }
+.sym-tab td { vertical-align: middle; }
+.norm-wahl { display: inline-flex; gap: .3rem; flex-wrap: wrap; align-items: center; }
+.norm-wahl .klein { margin-right: .2rem; }
+
+/* Allgemeine SVG-Werkzeuge */
+.hw-svg { width: 100%; height: auto; display: block; background: #fff; border-radius: 10px; border: 1px solid #e2e8f0; }
+.hw-svg text { font-family: system-ui, sans-serif; }
+.hw-svg .mono { font-family: var(--mono); }
+.zwei-spalten { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 1rem; align-items: start; }
+.zwei-spalten.gleich { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+
+/* Schalter-Labor (E.1) */
+.sl-svg .draht { stroke: #94a3b8; stroke-width: 4; fill: none; stroke-linecap: round; }
+.sl-svg .draht.strom { stroke: var(--hw-an); stroke-dasharray: 10 8; animation: fliessen .6s linear infinite; }
+.sl-svg .schalter { cursor: pointer; }
+.sl-svg .schalter:focus-visible rect { stroke: var(--ph-modify); stroke-width: 3; }
+@keyframes fliessen { to { stroke-dashoffset: -18; } }
+
+/* Dotierung (E.1) */
+.dot-svg .atom { fill: #e2e8f0; stroke: #94a3b8; stroke-width: 2; }
+.dot-svg .atom.p { fill: #fde68a; stroke: #d97706; }
+.dot-svg .atom.b { fill: #c7d2fe; stroke: #4f46e5; }
+.dot-svg .bindung { stroke: #cbd5e1; stroke-width: 6; }
+.dot-svg .el { fill: var(--hw-n); }
+.dot-svg .loch { fill: #fff; stroke: var(--hw-p); stroke-width: 2.5; }
+
+/* MOSFET (E.1) */
+.mos-regler { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; margin: .5rem 0; }
+.mos-regler input[type="range"] { flex: 1 1 14rem; accent-color: var(--hw-an); }
+.mos-status { font-weight: 700; border-radius: 8px; padding: .3rem .7rem; display: inline-block; }
+.mos-status.an { background: var(--rm-ok-hell); color: #14532d; }
+.mos-status.aus { background: #e2e8f0; color: #334155; }
+
+/* CMOS-Labor (E.2) */
+.cmos-svg .leitung { stroke: #475569; stroke-width: 3; fill: none; }
+.cmos-svg .leitung.vdd { stroke: var(--hw-p); }
+.cmos-svg .leitung.gnd { stroke: var(--hw-n); }
+.cmos-svg .kanal { stroke-width: 5; stroke-linecap: round; }
+.cmos-svg .kanal.zu { stroke: var(--hw-leit); }
+.cmos-svg .kanal.offen { stroke: #94a3b8; }
+.cmos-svg .gate { stroke: #0f172a; stroke-width: 3; }
+.cmos-svg .netz-p { fill: var(--hw-p-hell); }
+.cmos-svg .netz-n { fill: var(--hw-n-hell); }
+.cmos-ausgabe { font-weight: 700; border-radius: 8px; padding: .35rem .7rem; margin-top: .4rem; }
+.cmos-ausgabe.eins { background: var(--hw-an-hell); color: #9a3412; }
+.cmos-ausgabe.null { background: #e2e8f0; color: #1e293b; }
+.cmos-ausgabe.kurz, .cmos-ausgabe.schwebt { background: var(--rm-nein-hell); color: #881337; }
+
+/* Schaltungs-Werkstatt (E.3, E.4, werkstatt.html) */
+.ws { background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 14px; padding: .8rem; margin: 1rem 0; }
+.ws-kopf { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: space-between; align-items: center; margin-bottom: .4rem; }
+.ws-kopf h4 { margin: 0; color: var(--rm-primary-dark); font-size: 1.05rem; }
+.ws-auftrag { font-size: .95rem; margin: 0 0 .5rem; }
+.ws-palette { display: flex; flex-wrap: wrap; gap: .35rem; align-items: center; margin-bottom: .5rem; }
+.ws-palette .klein { margin-right: .2rem; }
+.ws-palette button.teil { border: 2px solid #94a3b8; background: #fff; border-radius: 8px; padding: .15rem .55rem; font: 700 .85rem var(--mono); cursor: pointer; color: #1e293b; }
+.ws-palette button.teil:hover { background: var(--rm-light); border-color: var(--rm-primary); }
+.ws-flaeche { position: relative; }
+.ws-svg { width: 100%; height: auto; display: block; background-color: #fff; background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 20px 20px; border: 2px solid #94a3b8; border-radius: 10px; touch-action: none; user-select: none; -webkit-user-select: none; }
+.ws-svg text { font-family: system-ui, sans-serif; pointer-events: none; }
+.ws-svg .koerper { fill: #fff; stroke: #1e293b; stroke-width: 2.2; }
+.ws-svg .block .koerper { fill: #eef2ff; stroke: var(--rm-primary-dark); }
+.ws-svg .gatter { cursor: grab; }
+.ws-svg .gatter.gewaehlt .koerper { stroke: var(--ph-modify); stroke-width: 3.5; }
+.ws-svg .gatter.ziehen { cursor: grabbing; }
+.ws-svg .stummel { stroke: #1e293b; stroke-width: 2.2; }
+.ws-svg .port { fill: #fff; stroke: #1e293b; stroke-width: 1.6; }
+.ws-svg .port.eins { fill: var(--hw-an); stroke: var(--hw-an); }
+.ws-svg .port.offen { stroke: var(--rm-nein); stroke-dasharray: 2 2; stroke-width: 2; }
+.ws-svg .port.wartet { fill: #fde68a; stroke: #d97706; stroke-width: 3; }
+.ws-svg .treffer { fill: transparent; cursor: crosshair; }
+.ws-svg .draht { fill: none; stroke: var(--hw-aus); stroke-width: 3; }
+.ws-svg .draht.eins { stroke: var(--hw-an); }
+.ws-svg .draht-treffer { fill: none; stroke: transparent; stroke-width: 14; cursor: pointer; }
+.ws-svg .draht.gewaehlt { stroke-dasharray: 8 5; stroke-width: 4; }
+.ws-svg .temp { fill: none; stroke: #d97706; stroke-width: 2.5; stroke-dasharray: 6 4; pointer-events: none; }
+.ws-svg .pin rect { fill: #fff; stroke: #334155; stroke-width: 2; }
+.ws-svg .pin.eins rect { fill: var(--hw-an); stroke: var(--hw-an); }
+.ws-svg .pin.ein { cursor: pointer; }
+.ws-svg .pin.ein:focus-visible rect { stroke: var(--ph-modify); stroke-width: 4; }
+.ws-svg .pin text.wert { font-family: var(--mono); font-weight: 700; font-size: 15px; }
+.ws-svg .pin.eins text.wert { fill: #fff; }
+.ws-svg .pin circle.lampe-svg { fill: #e2e8f0; stroke: #94a3b8; stroke-width: 2; }
+.ws-svg .pin.eins circle.lampe-svg { fill: #fde047; stroke: #ca8a04; }
+.ws-svg .pin .name { font-weight: 700; font-size: 14px; fill: #0f172a; }
+.ws-svg .label { font-size: 15px; font-weight: 700; fill: #0f172a; }
+.ws-svg .label.klein { font-size: 10px; font-weight: 600; fill: #334155; }
+.ws-leiste { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; margin-top: .5rem; }
+.ws-leiste .knopf { font-size: .88rem; padding: .25rem .75rem; }
+.ws-info { font-size: .85rem; color: var(--gray); margin-left: auto; }
+.ws-zahlen { font: 600 .95rem var(--mono); background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: .3rem .6rem; margin-top: .4rem; }
+.ws-zahlen:empty { display: none; }
+.ws-ergebnis { margin-top: .5rem; }
+.ws-ergebnis:empty { display: none; }
+.ws-ergebnis .wt { font-size: .82rem; }
+.ws-tab-scroll { max-height: 22rem; overflow: auto; }
+
+/* Übertragswelle (E.3) */
+.ripple-kette { display: flex; flex-direction: row-reverse; gap: .3rem; overflow-x: auto; padding: .3rem 0; justify-content: flex-end; }
+.ripple-stufe { flex: 0 0 auto; min-width: 3.6rem; border: 2px solid #cbd5e1; border-radius: 8px; background: #fff; text-align: center; padding: .25rem .2rem; font: .8rem/1.35 var(--mono); }
+.ripple-stufe.rechnet { border-color: var(--ph-modify); background: #fffbeb; }
+.ripple-stufe .s { font-size: 1.1rem; font-weight: 800; }
+.ripple-stufe .c { color: var(--gray); }
+.ripple-stufe .c.eins { color: var(--hw-an); font-weight: 700; }
+.ripple-stufe .s.falsch { color: var(--rm-nein); }
+
+/* Zweierkomplement-Rad (E.4) */
+.zk-svg .seg { stroke: #fff; stroke-width: 2; }
+.zk-svg .zeiger { stroke: #0f172a; stroke-width: 4; stroke-linecap: round; }
+
+/* ALU-Labor (E.4) */
+.alu { background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 14px; padding: .8rem; margin: 1rem 0; }
+.alu-ops { display: flex; flex-wrap: wrap; gap: .35rem; margin: .3rem 0 .6rem; }
+.alu-ops .knopf { font-family: var(--mono); }
+.alu-bild { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .6rem; }
+.alu-einheit { background: #fff; border: 2px solid #e2e8f0; border-radius: 10px; padding: .5rem .7rem; }
+.alu-einheit h5, .alu-mux h5 { margin: 0 0 .35rem; font-size: .9rem; color: #334155; }
+.alu-einheit.gewaehlt { border-color: var(--rm-rechen); background: var(--rm-rechen-hell); }
+.alu-zeile { display: grid; grid-template-columns: 5.4rem minmax(0, 1fr); gap: .4rem; align-items: center; font: .9rem/1.6 var(--mono); }
+.alu-zeile .n { font-family: system-ui, sans-serif; font-size: .8rem; color: #475569; font-weight: 600; }
+.alu-zeile.waehlbar { border-radius: 6px; padding: 0 .3rem; }
+.alu-zeile.waehlbar.gewaehlt { background: #fed7aa; }
+.alu-mux { grid-column: 1 / -1; background: #fff; border: 2px solid var(--rm-rechen); border-radius: 10px; padding: .5rem .7rem; }
+.alu-steuer { display: flex; flex-wrap: wrap; gap: .3rem .9rem; font: .85rem var(--mono); background: var(--rm-steuer-hell); border: 2px solid var(--rm-steuer); border-radius: 10px; padding: .4rem .7rem; margin-bottom: .6rem; color: #065f46; }
+.alu-steuer b { font-family: system-ui, sans-serif; }
+.alu-flags { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .4rem; }
+.alu-flag { display: inline-flex; flex-direction: column; align-items: center; border: 2px solid #94a3b8; border-radius: 8px; background: #fff; min-width: 3.4rem; padding: .1rem .3rem; }
+.alu-flag small { font-size: .7rem; color: #475569; font-weight: 700; }
+.alu-flag span { font: 700 1rem var(--mono); }
+.alu-flag.an { background: #fde68a; border-color: #d97706; }
+.alu-verdeckt .alu-verdeck { filter: blur(6px); }
+.alu-rm { margin-top: .5rem; font-size: .9rem; }
+.alu-rm code { font-weight: 700; }
+
+/* Speicher-Glied (E.4) */
+.latch-steuer { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-top: .4rem; }
+
+/* CPU/GPU-Rennen und systolisches Array (E.5) */
+.rennen { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; margin-top: .5rem; }
+.rennen .bahn { background: #fff; border: 2px solid #e2e8f0; border-radius: 10px; padding: .5rem .7rem; }
+.rennen .bahn h5 { margin: 0 0 .3rem; font-size: .95rem; }
+.rennen canvas { width: 100%; height: auto; image-rendering: pixelated; border-radius: 6px; background: #f1f5f9; display: block; }
+.rennen .zeit { font: 700 1rem var(--mono); margin-top: .3rem; }
+.sys-raster { display: grid; gap: .35rem; margin: .5rem 0; }
+.sys-zelle { border-radius: 8px; padding: .25rem; text-align: center; font: .8rem/1.35 var(--mono); min-width: 0; }
+.sys-zelle.pe { background: #fff; border: 2px solid var(--rm-rechen); }
+.sys-zelle.pe.aktiv { background: var(--rm-rechen-hell); box-shadow: 0 0 0 3px #fed7aa; }
+.sys-zelle.pe .acc { font-size: 1.05rem; font-weight: 800; color: #9a3412; }
+.sys-zelle.ein { color: #1e40af; background: var(--rm-speicher-hell); border: 1px dashed #93c5fd; }
+.sys-zelle.leer { background: transparent; }
+.sys-zelle .ab { color: #475569; font-size: .75rem; }
+
+/* Schrittfolge (Chipfertigung, Weg eines Quantenprogramms) */
+.stepper { background: #fff; border: 2px solid #e2e8f0; border-radius: 12px; padding: .7rem .9rem; margin: 1rem 0; }
+.stepper-kette { display: flex; flex-wrap: wrap; gap: .3rem; margin-bottom: .6rem; }
+.stepper-kette button { border: 2px solid #cbd5e1; background: #fff; border-radius: 999px; padding: .15rem .6rem; font: 600 .8rem system-ui, sans-serif; cursor: pointer; color: #334155; }
+.stepper-kette button.akt { background: var(--rm-primary); border-color: var(--rm-primary); color: #fff; }
+.stepper-kette button.q { border-color: #c4b5fd; }
+.stepper-kette button.q.akt { background: var(--hw-q); border-color: var(--hw-q); }
+.stepper-kette button.gesehen { border-color: #86efac; }
+.step { display: grid; grid-template-columns: 4rem minmax(0, 1fr); gap: .8rem; align-items: start; }
+.step[hidden] { display: none; }   /* sonst überstimmt display:grid das hidden-Attribut */
+.step .gross { font-size: 2.6rem; line-height: 1; text-align: center; }
+.step h5 { margin: 0 0 .3rem; font-size: 1.05rem; color: var(--rm-primary-dark); }
+.step .art { display: inline-block; font-size: .72rem; font-weight: 700; border-radius: 999px; padding: .05rem .5rem; margin-left: .4rem; vertical-align: middle; }
+.step .art.klassisch { background: #e0e7ff; color: #3730a3; }
+.step .art.quanten { background: var(--hw-q-hell); color: #6b21a8; }
+
+/* Moore-Diagramm (E.1) */
+.moore { display: grid; gap: .3rem; margin: .6rem 0; }
+.moore-zeile { display: grid; grid-template-columns: 3.2rem 8.5rem minmax(0, 1fr) 6.5rem; gap: .5rem; align-items: center; font-size: .88rem; }
+.moore-zeile .j { font-weight: 700; color: var(--rm-primary-dark); }
+.moore-zeile .b { height: 1.05rem; border-radius: 4px; background: linear-gradient(90deg, #4338ca, #ea580c); min-width: 4px; }
+.moore-zeile .z { text-align: right; font-family: var(--mono); font-size: .82rem; }
+
+/* Qubit-Zeiger (E.6) */
+.qb { background: #faf5ff; border: 2px solid #ddd6fe; border-radius: 14px; padding: .8rem; margin: 1rem 0; }
+.qb-svg { max-width: 340px; touch-action: none; user-select: none; }
+.qb-svg .achse { stroke: #94a3b8; stroke-width: 1.5; }
+.qb-svg .kreis { fill: none; stroke: #c4b5fd; stroke-width: 2.5; }
+.qb-svg .zeiger { stroke: var(--hw-q); stroke-width: 5; stroke-linecap: round; }
+.qb-svg .griff { fill: var(--hw-q); cursor: grab; }
+.qb-svg .proj0 { stroke: #2563eb; stroke-width: 3; stroke-dasharray: 4 3; }
+.qb-svg .proj1 { stroke: #ea580c; stroke-width: 3; stroke-dasharray: 4 3; }
+.qb-werte { font: .95rem/1.6 var(--mono); }
+.qb-balken { display: grid; gap: .3rem; margin: .4rem 0; }
+.qb-b { display: grid; grid-template-columns: 3.4rem minmax(0, 1fr) 4rem; gap: .5rem; align-items: center; font: .85rem var(--mono); }
+.qb-b .bar { height: 1rem; border-radius: 4px; background: var(--hw-q); min-width: 2px; transition: width .25s; }
+.qb-b .bar.null { background: #2563eb; }
+.qb-b .bar.eins { background: #ea580c; }
+
+/* Quanten-Werkbank (E.7) */
+.qs { background: #faf5ff; border: 2px solid #ddd6fe; border-radius: 14px; padding: .8rem; margin: 1rem 0; }
+.qs-kopf { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: space-between; align-items: center; margin-bottom: .4rem; }
+.qs-kopf h4 { margin: 0; color: #6b21a8; font-size: 1.05rem; }
+.qs-palette { display: flex; flex-wrap: wrap; gap: .35rem; align-items: center; margin: .3rem 0 .5rem; }
+.qs-palette button { border: 2px solid #c4b5fd; background: #fff; border-radius: 8px; padding: .2rem .6rem; font: 700 .9rem var(--mono); cursor: pointer; color: #4c1d95; }
+.qs-palette button.aktiv { background: var(--hw-q); border-color: var(--hw-q); color: #fff; }
+.qs-palette button.orakel { border-color: #0f172a; }
+.qs-palette button.orakel.aktiv { background: #0f172a; }
+.qs-scroll { overflow-x: auto; padding-bottom: .2rem; }
+.qs-schaltung { display: grid; gap: 0; align-items: center; min-width: max-content; }
+.qs-name { font: 700 .9rem var(--mono); color: #4c1d95; padding-right: .5rem; white-space: nowrap; }
+.qs-zelle { position: relative; width: 3rem; height: 3rem; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.qs-zelle::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 2px solid #475569; }
+.qs-zelle.gewaehlt-spalte { background: rgba(124, 58, 237, .08); }
+.qs-zelle:hover { background: rgba(124, 58, 237, .14); }
+.qs-zelle:focus-visible { outline: 3px solid var(--ph-modify); outline-offset: -3px; }
+.qs-g { position: relative; z-index: 2; width: 2.2rem; height: 2.2rem; border-radius: 6px; background: #fff; border: 2px solid var(--hw-q); display: flex; align-items: center; justify-content: center; font: 800 1rem var(--mono); color: #4c1d95; }
+.qs-g.H { background: #ede9fe; }
+.qs-g.X { background: #fee2e2; border-color: #dc2626; color: #991b1b; }
+.qs-g.Z { background: #dbeafe; border-color: #2563eb; color: #1e3a8a; }
+.qs-g.U { background: #0f172a; border-color: #0f172a; color: #fff; font-size: .8rem; }
+.qs-g.ziel-x { border-radius: 50%; background: #fff; border-color: #dc2626; color: #dc2626; font-size: 1.4rem; width: 1.8rem; height: 1.8rem; }
+.qs-punkt { position: relative; z-index: 2; width: .9rem; height: .9rem; border-radius: 50%; background: #0f172a; }
+.qs-punkt.wartet { background: #d97706; box-shadow: 0 0 0 4px #fde68a; }
+.qs-steg { position: absolute; left: 50%; width: 2px; background: #0f172a; z-index: 1; transform: translateX(-1px); }
+.qs-messung { font: 700 .8rem var(--mono); color: #475569; padding-left: .4rem; white-space: nowrap; }
+.qs-kopfzeile { font: .72rem var(--mono); color: #64748b; text-align: center; cursor: pointer; padding: .1rem 0; border-radius: 4px; }
+.qs-kopfzeile.akt { background: var(--hw-q); color: #fff; }
+.qs-unten { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: .8rem; margin-top: .6rem; }
+.qs-box { background: #fff; border: 2px solid #e9d5ff; border-radius: 10px; padding: .5rem .7rem; min-width: 0; }
+.qs-box h5 { margin: 0 0 .35rem; font-size: .9rem; color: #6b21a8; }
+.qs-amp { display: grid; gap: .25rem; }
+.qs-amp-zeile { display: grid; grid-template-columns: 3.6rem minmax(0, 1fr) 4.2rem 3.6rem; gap: .4rem; align-items: center; font: .82rem var(--mono); }
+.qs-amp-achse { position: relative; height: 1.1rem; background: #f8fafc; border-radius: 3px; }
+.qs-amp-achse::before { content: ""; position: absolute; left: 50%; top: -2px; bottom: -2px; border-left: 1px solid #94a3b8; }
+.qs-amp-achse span { position: absolute; top: 2px; bottom: 2px; border-radius: 2px; background: var(--hw-q); transition: all .25s; }
+.qs-amp-achse span.neg { background: var(--hw-q-neg); }
+.qs-amp-zeile .p { color: #475569; text-align: right; }
+.qs-code { background: #1e293b; color: #e2e8f0; border-radius: 8px; padding: .6rem .8rem; font: .82rem/1.5 var(--mono); overflow-x: auto; margin: .4rem 0 0; white-space: pre; }
+.qs-code .c { color: #94a3b8; }
+.qs-code .k { color: #93c5fd; }
+.qs-hist { display: grid; gap: .25rem; }
+.qs-hist-zeile { display: grid; grid-template-columns: 3.6rem minmax(0, 1fr) 3.2rem; gap: .4rem; align-items: center; font: .82rem var(--mono); }
+.qs-hist-zeile .bar { height: .95rem; background: #a78bfa; border-radius: 3px; min-width: 1px; }
+.qs-ergebnis { font: 700 1.1rem var(--mono); color: #4c1d95; }
+.qs-hinweis { font-size: .88rem; margin-top: .4rem; }
+.qs-hinweis:empty { display: none; }
+
+/* Adiabatisches Labor (E.8) */
+.ad { background: #faf5ff; border: 2px solid #ddd6fe; border-radius: 14px; padding: .8rem; margin: 1rem 0; }
+.ad h4, .qb h4 { margin: 0 0 .5rem; color: #6b21a8; font-size: 1.05rem; }
+.ad-paare { display: grid; gap: .4rem; margin: .3rem 0 .6rem; }
+.ad-paar { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
+.ad-paar > b { min-width: 4.2rem; }
+.ad-paar select { font: inherit; font-size: .9rem; border: 2px solid #c4b5fd; border-radius: 8px; padding: .15rem .3rem; background: #fff; }
+.ad-land { display: grid; gap: .25rem; }
+.ad-land-zeile { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr) 2.8rem 3.8rem; gap: .4rem; align-items: center; font: .82rem var(--mono); }
+.ad-land-zeile .e { height: .95rem; border-radius: 3px; background: #c4b5fd; min-width: 2px; }
+.ad-land-zeile.best .e { background: var(--hw-leit); }
+.ad-land-zeile .p { text-align: right; color: #4c1d95; font-weight: 700; }
+.ad-land-zeile .wer { font-family: system-ui, sans-serif; font-size: .8rem; }
+.ad-svg { max-height: 280px; }
+.ad-svg .niveau { fill: none; stroke: #c4b5fd; stroke-width: 1.6; }
+.ad-svg .niveau.grund { stroke: var(--hw-q); stroke-width: 3; }
+.ad-svg .marke { stroke: #0f172a; stroke-width: 1.5; stroke-dasharray: 4 3; }
+.ad-svg text { font-size: 12px; fill: #334155; }
+.ad-regler { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; margin: .5rem 0; }
+.ad-regler input[type="range"] { flex: 1 1 12rem; accent-color: var(--hw-q); }
+
+/* Vergleichskarten (E.5, E.8) */
+.vgl-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .8rem; margin: .8rem 0; }
+.vgl-karte { background: #fff; border: 2px solid #e2e8f0; border-top: 6px solid var(--rm-primary); border-radius: 12px; padding: .7rem .9rem; }
+.vgl-karte h4 { margin: 0 0 .3rem; color: #0f172a; }
+.vgl-karte p, .vgl-karte li { font-size: .92rem; }
+.vgl-karte ul { margin: .2rem 0 0; padding-left: 1.1rem; }
+.vgl-karte.cpu { border-top-color: var(--rm-steuer); }
+.vgl-karte.gpu { border-top-color: var(--rm-rechen); }
+.vgl-karte.tpu { border-top-color: #0891b2; }
+.vgl-karte.q1 { border-top-color: var(--hw-q); }
+.vgl-karte.q2 { border-top-color: #db2777; }
+.vgl-karte.q3 { border-top-color: #0f766e; }
+
+/* Aufbau-Skizzen (CPU/GPU-Kerne) */
+.kern-bild { display: grid; gap: 3px; background: #e2e8f0; border-radius: 8px; padding: 4px; }
+.kern-bild div { border-radius: 3px; font-size: .62rem; text-align: center; color: #fff; display: flex; align-items: center; justify-content: center; min-height: 1.1rem; }
+.kern-bild .sw { background: var(--rm-steuer); }
+.kern-bild .rw { background: var(--rm-rechen); }
+.kern-bild .ca { background: var(--rm-speicher); }
+.kern-bild .mm { background: #0891b2; }
+
+@media (max-width: 900px) {
+    .zwei-spalten, .zwei-spalten.gleich, .qs-unten, .alu-bild, .rennen { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 640px) {
+    .turm a, .turm div { grid-template-columns: minmax(0, 1fr); gap: .2rem; }
+    .moore-zeile { grid-template-columns: 2.8rem minmax(0, 1fr) 5.6rem; }
+    .moore-zeile .n { display: none; }
+    .step { grid-template-columns: minmax(0, 1fr); }
+    .step .gross { text-align: left; font-size: 2rem; }
+    .ad-land-zeile { grid-template-columns: 6.2rem minmax(0, 1fr) 2.6rem 3.4rem; }
+    .qs-amp-zeile { grid-template-columns: 3.2rem minmax(0, 1fr) 3.8rem 3.2rem; }
+}

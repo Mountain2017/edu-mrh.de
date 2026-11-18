@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E.8 Bauarten von Quantencomputern | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Exkurs Hardware, Informatik 13: Gatterbasierte Quantencomputer, adiabatische Quantencomputer und Quanten-Annealer im Vergleich: wie sie ein Problem in ein Quantensystem übersetzen. Mit Simulation der adiabatischen Umformung (schnell gegen langsam) und Energielandschaft.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="../rechner/rechner.css">
+    <link rel="stylesheet" href="hardware.css">
+    <script defer src="../rechner/rechner.js"></script>
+    <script defer src="quanten.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🖥️</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="hardware.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station E.8</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#einstieg">🔍 Probleme als Landschaft</a></li>
+            <li><a href="#labor">🏔️ Langsam umformen</a></li>
+            <li><a href="#festhalten">📝 Der adiabatische Satz</a></li>
+            <li><a href="#bauarten">⚖️ Drei Bauarten</a></li>
+            <li><a href="#formulieren">🛠️ Ein Problem formulieren</a></li>
+            <li><a href="#tunneln">🚇 Über den Berg oder hindurch</a></li>
+            <li><a href="#nachdenken">💡 Nachdenken</a></li>
+            <li><a href="#rueckblick">🚀 Rückblick</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Exkurs Hardware</div>
+            <ul class="sidebar-menu">
+                <li><a href="hardware.html">Übersicht</a></li>
+                <li><a href="e1-transistor.html">E.1 Vom Strom zum Schalter</a></li>
+                <li><a href="e2-cmos-gatter.html">E.2 Gatter aus Transistoren</a></li>
+                <li><a href="e3-addierer.html">E.3 Vom Gatter zum Addierer</a></li>
+                <li><a href="e4-alu.html">E.4 ALU und Rechenwerk</a></li>
+                <li><a href="e5-cpu-gpu-tpu.html">E.5 CPU, GPU, TPU</a></li>
+                <li><a href="e6-qubit.html">E.6 Qubits und Quantenrechner</a></li>
+                <li><a href="e7-quanten-programmieren.html">E.7 Quanten programmieren</a></li>
+                <li><a href="e8-quanten-bauarten.html">E.8 Bauarten</a></li>
+                <li><a href="werkstatt.html">Schaltungs-Werkstatt</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero rm-hero" style="border-left-color:var(--hw-q)">
+                <h1 class="hero-title" style="color:#5b21b6">E.8 Bauarten von Quantencomputern</h1>
+                <p class="hero-subtitle">Exkurs Hardware · Informatik 13 · 1 Stunde</p>
+                <span class="rm-kompetenz" style="background:var(--hw-q-hell);color:#5b21b6">Du kannst: gatterbasierte Quantencomputer, adiabatische Quantencomputer und Quanten-Annealer unterscheiden und erklären, wie jede Bauart ein Problem in ein Quantensystem übersetzt und daraus die Lösung gewinnt.</span>
+                <div class="ebenen"><span>Physik</span><span>Transistor</span><span>Gatter</span><span>Schaltnetz</span><span>Rechenwerk</span><span>Prozessor</span><span class="q hier">Quanten</span></div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#einstieg">🔍 Landschaft</a><a class="p-investigate" href="#labor">🏔️ Umformen</a><a class="p-note" href="#festhalten">📝 Festhalten</a><a class="p-note" href="#bauarten">⚖️ Bauarten</a><a class="p-make" href="#formulieren">🛠️ Formulieren</a><a class="p-modify" href="#tunneln">🚇 Tunneln</a><a class="p-idee" href="#nachdenken">💡 Nachdenken</a>
+            </div>
+
+            <section id="einstieg" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Probleme als Landschaft<small>Aufgabe 1: Die Natur sucht den tiefsten Punkt</small></h2></div>
+                <div class="phase-body">
+                    <p>In E.7 war ein Quantenprogramm eine Folge von Gattern. Es gibt eine zweite, ganz andere Idee: Man baut ein Quantensystem, dessen <strong>Energie</strong> genau dann am kleinsten ist, wenn die Lösung des Problems erreicht ist. Dann lässt man die Physik den tiefsten Punkt suchen, so wie Wasser bergab ins tiefste Tal fließt.</p>
+                    <p>Beispiel: Drei Personen, Anna, Ben und Cem, sollen auf zwei Busse verteilt werden. Wer sich streitet, soll in verschiedene Busse, Freunde in denselben. Jeder erfüllte Wunsch senkt die Energie um 1, jeder verletzte erhöht sie um 1. Die beste Aufteilung ist die mit der <strong>niedrigsten Energie</strong>.</p>
+                    <svg class="hw-svg" viewBox="0 0 520 190" role="img" aria-label="Energielandschaft mit mehreren Tälern; eine Kugel liegt in einem Nebental fest, das tiefste Tal ist weiter rechts">
+                        <path d="M10,40 C60,40 70,120 110,120 C150,120 160,70 200,70 C240,70 250,150 290,150 C320,150 330,55 350,55 C370,55 380,175 430,175 C470,175 480,60 510,40" fill="none" stroke="#7c3aed" stroke-width="4"/>
+                        <circle cx="110" cy="109" r="10" fill="#ea580c"/>
+                        <text x="110" y="150" text-anchor="middle" font-size="12" fill="#334155">Nebental</text>
+                        <text x="290" y="175" text-anchor="middle" font-size="12" fill="#334155">besser</text>
+                        <text x="430" y="168" text-anchor="middle" font-size="12" font-weight="700" fill="#15803d">tiefstes Tal = Lösung</text>
+                        <text x="10" y="20" font-size="12" fill="#334155">Energie ↑</text>
+                        <text x="300" y="20" font-size="12" fill="#334155">alle möglichen Aufteilungen →</text>
+                    </svg>
+                    <ol class="aufgaben">
+                        <li>Eine Kugel, die einfach nur bergab rollt, bleibt im Nebental liegen. Welche Strategien fallen dir ein, um trotzdem das tiefste Tal zu finden?</li>
+                        <li>Bei 3 Personen gibt es 2<sup>3</sup> = 8 Aufteilungen, die man alle durchprobieren kann. Wie viele sind es bei 100 Personen? Wie lange bräuchte ein Rechner, der eine Milliarde Aufteilungen pro Sekunde prüft?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 1">
+                        <template data-stufe="Lösung" data-halten><p>a) Die Kugel schütteln, damit sie über Berge springt, und das Schütteln langsam verringern („abkühlen“); von vielen Startpunkten loslassen; oder, quantenmechanisch, durch den Berg tunneln (siehe unten). b) 2<sup>100</sup> ≈ 1,3 · 10<sup>30</sup> Aufteilungen; bei 10<sup>9</sup> pro Sekunde rund 4 · 10<sup>13</sup> Jahre, etwa 3000-mal das Alter des Universums.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="labor" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🏔️</span><h2>Langsam umformen<small>Aufgabe 2: Ein echtes kleines Quantensystem</small></h2></div>
+                <div class="phase-body">
+                    <p>Jede Person ist ein Qubit: |0⟩ = Bus 1, |1⟩ = Bus 2. Der Trick des <strong>adiabatischen Quantencomputers</strong>:</p>
+                    <ol>
+                        <li><strong>Start:</strong> Man bereitet das System im tiefsten Zustand (Grundzustand) eines ganz <em>einfachen</em> Energiegesetzes vor. Dessen Grundzustand ist leicht herzustellen: eine gleichmäßige Überlagerung aller 8 Aufteilungen.</li>
+                        <li><strong>Umformen:</strong> Man verwandelt das Energiegesetz ganz langsam in das Gesetz des Problems (Regler s von 0 bis 1).</li>
+                        <li><strong>Messen:</strong> Ging alles langsam genug, ist das System die ganze Zeit im Grundzustand geblieben und damit am Ende in der besten Aufteilung.</li>
+                    </ol>
+                    <p>Die Simulation rechnet die Quantenphysik der drei Qubits wirklich aus. Links legst du das Problem fest, rechts siehst du die Energiestufen des Systems während der Umformung. Die dicke Linie ist der Grundzustand.</p>
+                    <div data-adiabat></div>
+                    <ol class="aufgaben">
+                        <li>Lies in der Energielandschaft ab, welche Aufteilung die beste ist. Prüfe die Energie für sie von Hand nach.</li>
+                        <li>Forme mit T = 1, 5, 20 und 50 um und notiere jeweils, mit welcher Wahrscheinlichkeit die beste Aufteilung herauskommt. Miss auch 100 Durchläufe.</li>
+                        <li>Wo ist die „engste Lücke“? Warum ist gerade diese Stelle gefährlich, wenn man zu schnell umformt?</li>
+                        <li>Stelle alle drei Paare auf „Streit“ und nimm den Bonus für Anna weg. Was fällt in der Landschaft auf? Was misst du?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 2">
+                        <template data-stufe="Tipp"><p>c) Je näher die zweite Stufe der Grundstufe kommt, desto leichter „springt“ das System bei einer schnellen Änderung hinauf.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) A1 B2 C1: Anna und Cem (Freunde) zusammen, Ben (Streit mit beiden) im anderen Bus, Anna in Bus 1: Energie −1 −1 −1 −0,5 = −3,5. b) Etwa: T = 1: ~25 %, T = 5: ~60 %, T = 20: ~93 %, T = 50: fast 100 %. Je langsamer, desto sicherer. c) In der Mitte (s ≈ 0,5) kommen sich die unterste und die nächste Stufe am nächsten (Abstand ≈ 0,5). Ändert man das System dort schneller, als es „nachkommt“, landet es teils im angeregten Zustand, also in einer schlechteren Aufteilung. Die benötigte Zeit wächst ungefähr mit 1 / Lücke². d) Drei Streithähne lassen sich nicht auf zwei Busse verteilen, ohne dass zwei zusammensitzen („Frustration“). Es gibt sechs gleich gute Aufteilungen, und das System landet zufällig in einer von ihnen.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="festhalten" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Der adiabatische Satz</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Merkkasten: Adiabatisches Rechnen</h4>
+                        <ul>
+                            <li>Das Problem wird als <strong>Energiefunktion</strong> formuliert: Die beste Lösung hat die niedrigste Energie (den <strong>Grundzustand</strong>).</li>
+                            <li><strong>Adiabatischer Satz</strong> der Quantenphysik: Ändert man ein Quantensystem langsam genug, bleibt es in seinem Grundzustand. „Langsam genug“ hängt von der <strong>kleinsten Energielücke</strong> zwischen Grundzustand und nächstem Zustand ab.</li>
+                            <li>Man startet im leicht herstellbaren Grundzustand eines einfachen Systems, formt es langsam in das Problem-System um und misst am Ende.</li>
+                            <li>Bei schweren Problemen kann die Lücke sehr klein werden; dann braucht die Umformung sehr lange. Das ist der Haken.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="bauarten" class="phase note">
+                <div class="phase-head"><span class="phase-icon">⚖️</span><h2>Drei Bauarten<small>Wie sie Probleme lösen und das Quantensystem aufbauen</small></h2></div>
+                <div class="phase-body">
+                    <div class="vgl-grid">
+                        <div class="vgl-karte q1">
+                            <h4>🧮 Gatterbasiert</h4>
+                            <p><strong>Wie gerechnet wird:</strong> Eine Folge einzelner Gatter (Pulse) dreht und verschränkt die Qubits Schritt für Schritt, wie ein Programm. Der Algorithmus lenkt die Interferenz zur richtigen Antwort (E.7).</p>
+                            <p><strong>Aufbau:</strong> Jedes Qubit einzeln ansteuerbar und auslesbar, Kopplungen zwischen Nachbarn schaltbar; schnelle, sehr genaue Steuerelektronik.</p>
+                            <p><strong>Kann:</strong> alles, was ein Quantencomputer prinzipiell kann (universell), auch Shor und Grover; Fehlerkorrektur ist möglich.</p>
+                            <p><strong>Beispiele:</strong> IBM, Google, Quantinuum, IonQ.</p>
+                        </div>
+                        <div class="vgl-karte q2">
+                            <h4>🏔️ Adiabatisch</h4>
+                            <p><strong>Wie gerechnet wird:</strong> Das Problem steckt in einer Energiefunktion. Das System wird vom einfachen in das Problem-System umgeformt, langsam genug, um im Grundzustand zu bleiben.</p>
+                            <p><strong>Aufbau:</strong> Qubits mit einstellbaren Kopplungsstärken, die während der Rechnung kontinuierlich verändert werden; kein Takt, keine einzelnen Gatter.</p>
+                            <p><strong>Kann:</strong> theoretisch dasselbe wie gatterbasierte Rechner (bewiesen 2004), wenn man beliebige Kopplungen bauen könnte. Praktisch gibt es dafür noch keine großen Geräte.</p>
+                            <p><strong>Beispiele:</strong> vor allem Forschung.</p>
+                        </div>
+                        <div class="vgl-karte q3">
+                            <h4>❄️ Quanten-Annealer</h4>
+                            <p><strong>Wie gerechnet wird:</strong> Die praktische, eingeschränkte Form der adiabatischen Idee: Das System wird in Mikrosekunden „abgekühlt“, nicht perfekt langsam, bei kleiner, aber nicht null Temperatur. Ergebnis ist eine <strong>gute</strong> Lösung, nicht garantiert die beste; man wiederholt tausende Male.</p>
+                            <p><strong>Aufbau:</strong> Tausende supraleitende Qubits mit programmierbaren Kopplern, aber nur feste Nachbarschaften und nur Energiefunktionen einer bestimmten Form (Ising/QUBO, siehe unten).</p>
+                            <p><strong>Kann:</strong> nur Optimierungsprobleme, nicht universell; ob er klassische Verfahren schlägt, ist umstritten.</p>
+                            <p><strong>Beispiel:</strong> D-Wave (seit 2011 kommerziell, heute über 5000 Qubits).</p>
+                        </div>
+                    </div>
+                    <div class="tab-scroll"><table class="rm-tab">
+                        <tr><th></th><th>Gatterbasiert</th><th>Adiabatisch</th><th>Annealer</th></tr>
+                        <tr><td>Problem steckt in …</td><td>der Folge der Gatter (Algorithmus)</td><td>der Energiefunktion am Ende</td><td>der Energiefunktion am Ende</td></tr>
+                        <tr><td>Ablauf</td><td>diskrete Schritte</td><td>stetige, langsame Umformung</td><td>stetige, schnelle Umformung, oft wiederholt</td></tr>
+                        <tr><td>Ergebnis</td><td>Messung nach dem letzten Gatter</td><td>Grundzustand = beste Lösung</td><td>niedrige Energie = gute Lösung (Stichproben)</td></tr>
+                        <tr><td>universell?</td><td>ja</td><td>ja (theoretisch)</td><td>nein</td></tr>
+                        <tr><td>Größe heute</td><td>Dutzende bis gut 1000 Qubits</td><td>Laborsysteme</td><td>über 5000 Qubits</td></tr>
+                    </table></div>
+                </div>
+            </section>
+
+            <section id="formulieren" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Ein Problem formulieren<small>Aufgabe 3: Programmieren heißt hier Energie festlegen</small></h2></div>
+                <div class="phase-body">
+                    <p>Einen Annealer „programmiert“ man nicht mit Befehlen, sondern mit Zahlen: Jede Variable ist ein Spin s<sub>i</sub> = +1 oder −1 (ein Qubit), und man legt fest</p>
+                    <p style="text-align:center;font-size:1.1rem"><strong>E = Σ J<sub>ij</sub> · s<sub>i</sub> · s<sub>j</sub> + Σ h<sub>i</sub> · s<sub>i</sub></strong></p>
+                    <p>J<sub>ij</sub> ist die <strong>Kopplung</strong> zwischen zwei Qubits (positiv: sie wollen verschieden sein, negativ: gleich), h<sub>i</sub> ein <strong>Feld</strong>, das ein Qubit in eine Richtung schiebt. Im Labor oben war J = +1 für Streit, J = −1 für Freunde und h<sub>Anna</sub> = −0,5 (mit s = +1 für Bus 1). Die Hardware stellt diese Zahlen als Ströme in den supraleitenden Kopplern ein.</p>
+                    <ol class="aufgaben">
+                        <li>Vier Personen A, B, C, D sollen in zwei gleich wichtige Gruppen. Streit gibt es zwischen A–B, B–C, C–D und D–A. Lege die J<sub>ij</sub> fest. Wie sieht die beste Aufteilung aus, welche Energie hat sie?</li>
+                        <li>Auf dem Chip ist nicht jedes Qubit mit jedem verbunden, sondern jedes nur mit einigen Nachbarn. Was kann man tun, wenn zwei Variablen gekoppelt sein müssen, deren Qubits nicht benachbart sind?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 3">
+                        <template data-stufe="Tipp"><p>a) Die Streitpaare bilden einen Kreis A–B–C–D–A. Wer muss mit wem zusammen?</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) J<sub>AB</sub> = J<sub>BC</sub> = J<sub>CD</sub> = J<sub>DA</sub> = +1, alle anderen 0, h = 0. Beste Aufteilung: {A, C} und {B, D}; alle vier Paare verschieden, E = −4. (Die gespiegelte Aufteilung ist gleich gut.) b) Man verbindet mehrere physikalische Qubits mit einer sehr starken Kopplung J ≪ 0 zu einer <strong>Kette</strong>, die sich wie ein einziges, langes Qubit verhält. Das kostet viele Qubits: Aus über 5000 physikalischen Qubits werden oft nur einige hundert nutzbare Variablen.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tunneln" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">🚇</span><h2>Über den Berg oder hindurch?<small>Klassisches Abkühlen gegen Quanten-Annealing</small></h2></div>
+                <div class="phase-body">
+                    <div class="zwei-spalten">
+                        <div>
+                            <p>Auch klassische Computer suchen tiefste Täler. Das bekannte Verfahren <strong>Simulated Annealing</strong> (simuliertes Abkühlen, nach dem langsamen Abkühlen von Metall beim Schmieden) schüttelt die Lösung zufällig, anfangs stark, dann immer schwächer. So springt sie <strong>über</strong> Berge, solange die „Temperatur“ hoch genug ist.</p>
+                            <p>Ein Quantensystem hat eine zusätzliche Möglichkeit: Es kann durch einen Berg <strong>hindurchtunneln</strong>, wie die Elektronen im Josephson-Kontakt (E.6). Das hilft besonders bei <strong>hohen, aber schmalen</strong> Bergen. Bei breiten Bergen nützt Tunneln wenig.</p>
+                        </div>
+                        <svg class="hw-svg" viewBox="0 0 300 180" role="img" aria-label="Zwei Täler mit einem hohen, schmalen Berg dazwischen: klassisch muss die Kugel darüber, quantenmechanisch kann sie hindurchtunneln">
+                            <path d="M10,60 C50,60 60,140 100,140 C130,140 140,30 150,20 C160,30 170,160 210,160 C250,160 260,60 290,60" fill="none" stroke="#7c3aed" stroke-width="4"/>
+                            <circle cx="100" cy="129" r="9" fill="#ea580c"/>
+                            <path d="M100,118 C110,0 190,0 205,145" fill="none" stroke="#ea580c" stroke-width="2.5" stroke-dasharray="6 4"/>
+                            <text x="150" y="12" text-anchor="middle" font-size="11" fill="#c2410c">klassisch: drüber (braucht Wärme)</text>
+                            <path d="M110,132 L200,150" stroke="#7c3aed" stroke-width="2.5" stroke-dasharray="3 3"/>
+                            <text x="150" y="176" text-anchor="middle" font-size="11" fill="#6b21a8">quantisch: hindurch (Tunneln)</text>
+                        </svg>
+                    </div>
+                    <p>Ob ein Quanten-Annealer bei echten Anwendungen (Fahrpläne, Logistik, Portfolios) schneller oder besser ist als gute klassische Programme, wird seit Jahren untersucht. Für speziell konstruierte Probleme gibt es Hinweise darauf, einen allgemeinen Vorteil hat niemand gezeigt. Das ist ein gutes Beispiel dafür, dass man Werbeaussagen zu Quantencomputern kritisch prüfen sollte.</p>
+                </div>
+            </section>
+
+            <section id="nachdenken" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Besprecht mündlich</small></h2></div>
+                <div class="phase-body">
+                    <div class="idee"><strong>Ein Hersteller wirbt: „Unser Quanten-Annealer hat 5000 Qubits, der beste Gatter-Quantencomputer nur 1000.“ Ist der Annealer also fünfmal so stark?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Nein, die Zahlen sind nicht vergleichbar. Die Qubits eines Annealers sind auf eine Aufgabenart festgelegt, werden für Ketten verbraucht und nicht einzeln mit Gattern gesteuert. Ein Gatter-Quantencomputer kann beliebige Algorithmen ausführen. Wichtiger als die Zahl der Qubits sind ihre Fehlerrate, ihre Verbindungen und was man damit rechnen kann.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Was haben ein Quanten-Annealer und das systolische Array aus E.5 gemeinsam?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Beide sind Spezialgeräte, die nur eine Art Problem lösen, dafür aber in ihrer Bauweise genau zu diesem Problem passen: Die Rechnung steckt in der Verdrahtung und der Physik, nicht in einem Programm aus Befehlen. Beide brauchen einen klassischen Rechner, der sie füttert und die Ergebnisse auswertet.</p></template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="rueckblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Rückblick<small>Vom Elektron bis zum Qubit</small></h2></div>
+                <div class="phase-body">
+                    <div class="weiter-grid">
+                        <div class="weiter-karte"><h4>⚡ Unten: Physik</h4><p>Dotiertes Silizium und das elektrische Feld am Gate machen den Transistor zum Schalter (E.1). CMOS-Paare daraus sind Gatter (E.2).</p></div>
+                        <div class="weiter-karte"><h4>➕ Mitte: Logik</h4><p>Gatter werden zu Addierern (E.3), Addierer, Logikeinheit und Multiplexer zur ALU, Rückkopplung und Takt zu Registern (E.4). Darüber liegt die Registermaschine aus Lernbereich 2.</p></div>
+                        <div class="weiter-karte"><h4>🎮 Daneben: Spezialisten</h4><p>GPU und TPU verwenden dieselben Bausteine, ordnen sie aber für Durchsatz und Matrixrechnung an (E.5).</p></div>
+                        <div class="weiter-karte"><h4>⚛️ Anders: Quanten</h4><p>Qubits mit Amplituden und Interferenz statt Bits (E.6, E.7); gesteuert von klassischer Elektronik; drei Bauarten mit verschiedenen Arten, ein Problem einzubauen (E.8).</p></div>
+                    </div>
+                    <p class="mt-2">Frei weiterbauen kannst du in der <a href="werkstatt.html">Schaltungs-Werkstatt</a>, frei programmieren im <a href="../rechner/simulator.html">Registermaschinen-Simulator</a>.</p>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="e7-quanten-programmieren.html">← E.7 Quanten programmieren</a>
+                <a class="btn btn-primary" href="hardware.html">Zur Übersicht →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Hinweise</strong></summary>
+                    <p class="mt-2"><strong>Ablauf (1 Std.):</strong> Landschaft und Aufgabe 1 (5 min), Labor mit Aufgaben 2a–c in Partnerarbeit (20 min), Merkkasten und Vergleich der Bauarten (15 min), Aufgabe 3 oder Tunneln (10 min). Programmierung von Annealern und adiabatischen Rechnern wird bewusst nicht vertieft; es geht um die Grundunterschiede.</p>
+                    <p><strong>Simulation:</strong> 3 Qubits, Problem-Hamiltonoperator H<sub>P</sub> = Σ J<sub>ij</sub> z<sub>i</sub> z<sub>j</sub> − h z<sub>Anna</sub> (diagonal), Treiber H<sub>0</sub> = −Σ X<sub>i</sub>, H(s) = (1−s)H<sub>0</sub> + sH<sub>P</sub>, lineare Rampe s = t/T, ħ = 1, Runge-Kutta 4. Spektrum per Jacobi-Verfahren. Die „engste Lücke“ wird zum ersten Niveau gemessen, das am Ende keine beste Lösung ist (entartete Grundzustände dürfen zusammenlaufen). Standardproblem: Lücke ≈ 0,51 bei s ≈ 0,5; P(best) ≈ 24 % (T = 1), 56 % (T = 4), 77 % (T = 10), 93 % (T = 20), 99,8 % (T = 50).</p>
+                    <p><strong>Fachlich:</strong> Äquivalenz von adiabatischem und Gattermodell: Aharonov et al. (2004/2007). Annealer: D-Wave Advantage (über 5000 Qubits, Pegasus-Topologie mit 15 Kopplern je Qubit); Einbettung über Ketten (minor embedding). Ein „Quantenvorteil“ für Annealing ist für allgemeine Optimierungsprobleme nicht belegt.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de · <a href="https://edu-mrh.de/impressum.html#lizenz">CC BY-NC-SA 4.0</a> | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E.1 Vom Strom zum Schalter | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Exkurs Hardware, Informatik 13: Schalter als Logik, warum Computer binär rechnen, Relais, Röhre und Transistor, Halbleiter und Dotierung, der MOSFET interaktiv, Chipfertigung und Mooresches Gesetz.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="../rechner/rechner.css">
+    <link rel="stylesheet" href="hardware.css">
+    <script defer src="../rechner/rechner.js"></script>
+    <script defer src="hardware.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🖥️</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="hardware.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station E.1</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#einstieg">🔍 Schätzen</a></li>
+            <li><a href="#schalter">💡 Schalter rechnen</a></li>
+            <li><a href="#binaer">📝 Warum binär?</a></li>
+            <li><a href="#geschichte">⏳ Relais, Röhre, Transistor</a></li>
+            <li><a href="#halbleiter">🔬 Halbleiter</a></li>
+            <li><a href="#mosfet">⚡ Der MOSFET</a></li>
+            <li><a href="#chip">🏭 Vom Sand zum Chip</a></li>
+            <li><a href="#moore">📈 Immer kleiner</a></li>
+            <li><a href="#nachdenken">💡 Nachdenken</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Exkurs Hardware</div>
+            <ul class="sidebar-menu">
+                <li><a href="hardware.html">Übersicht</a></li>
+                <li><a href="e1-transistor.html">E.1 Vom Strom zum Schalter</a></li>
+                <li><a href="e2-cmos-gatter.html">E.2 Gatter aus Transistoren</a></li>
+                <li><a href="e3-addierer.html">E.3 Vom Gatter zum Addierer</a></li>
+                <li><a href="e4-alu.html">E.4 ALU und Rechenwerk</a></li>
+                <li><a href="e5-cpu-gpu-tpu.html">E.5 CPU, GPU, TPU</a></li>
+                <li><a href="e6-qubit.html">E.6 Qubits und Quantenrechner</a></li>
+                <li><a href="e7-quanten-programmieren.html">E.7 Quanten programmieren</a></li>
+                <li><a href="e8-quanten-bauarten.html">E.8 Bauarten</a></li>
+                <li><a href="werkstatt.html">Schaltungs-Werkstatt</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero rm-hero">
+                <h1 class="hero-title">E.1 Vom Strom zum Schalter</h1>
+                <p class="hero-subtitle">Exkurs Hardware · Informatik 13 · 2 Stunden</p>
+                <span class="rm-kompetenz">Du kannst: erklären, wie Schalter logische Verknüpfungen bilden, warum Rechner binär arbeiten und wie ein Feldeffekttransistor aus dotiertem Silizium als spannungsgesteuerter Schalter funktioniert.</span>
+                <div class="ebenen"><span class="hier">Physik</span><span class="hier">Transistor</span><span>Gatter</span><span>Schaltnetz</span><span>Rechenwerk</span><span>Prozessor</span><span class="q">Quanten</span></div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#einstieg">🔍 Schätzen</a><a class="p-investigate" href="#schalter">💡 Schalter</a><a class="p-note" href="#binaer">📝 Binär</a><a class="p-investigate" href="#halbleiter">🔬 Halbleiter</a><a class="p-make" href="#mosfet">⚡ MOSFET</a><a class="p-modify" href="#moore">📈 Moore</a><a class="p-idee" href="#nachdenken">💡 Nachdenken</a>
+            </div>
+
+            <section id="einstieg" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Schätzen<small>Aufgabe 1: 28 Milliarden Schalter</small></h2></div>
+                <div class="phase-body">
+                    <p>Der Prozessor in einem aktuellen Tablet oder Laptop, etwa der Apple M4 (2024), enthält rund <strong>28 Milliarden Transistoren</strong>. Jeder davon ist ein winziger elektrischer Schalter. Bevor du erfährst, wie sie funktionieren: Schätze!</p>
+                    <ul class="quiz" data-quiz="a:a|b:b|c:c|d:d">
+                        <li data-loesung="c" data-wahl="a:wie ein Haar (0,1 mm)|b:wie ein Bakterium (1 µm)|c:wie ein Virus (einige 10 nm)|d:wie ein Atom (0,2 nm)"><span class="icon">📏</span><span class="frage">Wie groß ist ein einzelner Transistor in so einem Chip?</span><span class="erkl-text">Die Steuerelektrode (das Gate) ist nur etwa 15 bis 20 Nanometer lang, das sind rund 70 Siliziumatome nebeneinander. Ein ganzer Transistor mit Anschlüssen braucht etwas mehr Platz, ist aber immer noch kleiner als die meisten Viren.</span></li>
+                        <li data-loesung="d" data-wahl="a:etwa 10-mal|b:etwa 1000-mal|c:etwa 1 Million-mal|d:einige Milliarden Mal"><span class="icon">⏱️</span><span class="frage">Wie oft pro Sekunde kann so ein Transistor schalten?</span><span class="erkl-text">Prozessoren takten mit einigen Gigahertz, also einigen Milliarden Takten pro Sekunde. Ein einzelner Transistor schaltet sogar noch schneller: in wenigen Pikosekunden (billionstel Sekunden).</span></li>
+                        <li data-loesung="b" data-wahl="a:23|b:2 300|c:2,3 Millionen|d:2,3 Milliarden"><span class="icon">🦖</span><span class="frage">Wie viele Transistoren hatte der erste Mikroprozessor, der Intel 4004 von 1971?</span><span class="erkl-text">2 300 Transistoren, jeder etwa 10 Mikrometer groß. Der 4004 war für einen Taschenrechner gedacht. Heute passen über zehn Millionen Mal so viele Transistoren auf einen Chip.</span></li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="schalter" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Schalter rechnen<small>Aufgabe 2: Logik aus Draht und Lampe</small></h2></div>
+                <div class="phase-body">
+                    <p>Ein geschlossener Stromkreis lässt Strom fließen, die Lampe leuchtet. Wir vereinbaren: <strong>Schalter geschlossen = 1</strong>, offen = 0; <strong>Lampe an = 1</strong>, aus = 0. Probiere in jedem Stromkreis alle vier Schalterstellungen aus (Schalter antippen) und beobachte die Wahrheitstabelle.</p>
+                    <h3>a) Zwei Schalter in Reihe</h3>
+                    <div data-schalter="reihe" data-name="UND (AND): Die Lampe brennt nur, wenn A und B geschlossen sind"></div>
+                    <h3>b) Zwei Schalter parallel</h3>
+                    <div data-schalter="parallel" data-name="ODER (OR): Die Lampe brennt, wenn A oder B (oder beide) geschlossen sind"></div>
+                    <h3>c) Die Treppenhaus-Schaltung</h3>
+                    <p>Im Treppenhaus kann man das Licht unten und oben schalten. Dafür nimmt man <strong>Wechselschalter</strong>, die zwischen zwei Leitungen umschalten.</p>
+                    <div data-schalter="wechsel" data-name="„A gleich B“: Die Lampe brennt, wenn beide Schalter in derselben Stellung stehen. Jeder Schalter kann den Zustand umkehren"></div>
+                    <ol class="aufgaben">
+                        <li>Notiere im Heft zu jedem Stromkreis die Wahrheitstabelle und einen Namen für die Verknüpfung.</li>
+                        <li>Wie müsste man drei Schalter anordnen, damit die Lampe nur brennt, wenn <em>alle drei</em> geschlossen sind? Und wenn <em>mindestens einer</em> geschlossen ist?</li>
+                        <li>Warum kann man mit solchen Schaltern allein noch keinen Computer bauen? Denke daran, wer die Schalter betätigt.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 2">
+                        <template data-stufe="Tipp"><p>Zu c): Ein Computer muss Ergebnisse weiterverarbeiten. Kann das Licht der Lampe einen anderen Schalter umlegen?</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) Reihe = UND, b) parallel = ODER, c) Treppenhaus = Gleichheit (XNOR, das Gegenteil von XOR). Drei Schalter: in Reihe für UND, parallel für ODER. Das Problem: Ein Mensch muss jeden Schalter von Hand umlegen. Für einen Rechner brauchen wir einen Schalter, den <strong>ein elektrisches Signal</strong> betätigt. Dann kann der Ausgang einer Schaltung den Eingang der nächsten steuern, und Schaltungen lassen sich hintereinanderhängen.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="binaer" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Spannung, Strom und warum Computer binär rechnen</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Merkkasten: Elektrische Grundbegriffe</h4>
+                        <ul>
+                            <li><strong>Strom I</strong> (Einheit Ampere, A): bewegte Ladung, in Metallen wandernde Elektronen. Strom fließt nur in einem geschlossenen Kreis.</li>
+                            <li><strong>Spannung U</strong> (Einheit Volt, V): der „Antrieb“ für den Strom, gemessen zwischen zwei Punkten. Die Batterie hält zwischen Plus- und Minuspol eine Spannung aufrecht.</li>
+                            <li><strong>Widerstand R</strong> (Einheit Ohm, Ω): wie stark ein Bauteil den Strom hemmt. Es gilt <strong>U = R · I</strong>. Ein geschlossener Schalter hat fast keinen Widerstand, ein offener einen riesigen.</li>
+                        </ul>
+                        <h4>Merkkasten: Bits als Spannungen</h4>
+                        <p>In einem Chip ist ein Bit eine <strong>Spannung</strong> an einer Leitung: nahe <strong>0 V</strong> (Masse, GND) bedeutet <strong>0</strong>, nahe der Versorgungsspannung <strong>V<sub>DD</sub></strong> (heute etwa 0,7 bis 1,2 V) bedeutet <strong>1</strong>. Spannungen dazwischen sind verboten. Weil nur zwei weit auseinanderliegende Zustände unterschieden werden müssen, stören kleine Schwankungen nicht: Ein Signal mit 0,9 V ist immer noch klar eine 1. Nach jedem Gatter wird das Signal wieder „sauber“ auf 0 V oder V<sub>DD</sub> gezogen. Deshalb rechnen Computer <strong>binär</strong>.</p>
+                    </div>
+                    <div class="tipp"><strong>Vergleich:</strong> Mit zehn Spannungsstufen (eine pro Ziffer) bräuchte man viel weniger Leitungen, aber jede Stufe läge nur 0,1 V von der nächsten entfernt. Schon ein wenig Rauschen, Wärme oder Alterung würde aus einer 7 eine 6 machen.</div>
+                </div>
+            </section>
+
+            <section id="geschichte" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">⏳</span><h2>Relais, Röhre, Transistor<small>Schalter, die Strom schaltet</small></h2></div>
+                <div class="phase-body">
+                    <p>Die Lösung aus Aufgabe 2: ein Schalter, den eine Spannung umlegt. Dafür gab es drei Generationen:</p>
+                    <div class="tab-scroll"><table class="rm-tab">
+                        <tr><th>Bauteil</th><th>Wie es schaltet</th><th>Beispiel</th><th>Schaltzeit</th></tr>
+                        <tr><td><strong>Relais</strong></td><td>Ein Elektromagnet zieht einen Metallkontakt an. Mechanisch, laut, verschleißt.</td><td>Konrad Zuses Z3 (Berlin 1941): rund 2 600 Relais, etwa 5 Rechenschritte pro Sekunde</td><td>Millisekunden</td></tr>
+                        <tr><td><strong>Elektronenröhre</strong></td><td>In einem Vakuumglas fliegen Elektronen von einer Glühkathode zur Anode; ein Gitter dazwischen lässt sie durch oder bremst sie.</td><td>ENIAC (USA 1945): etwa 17 500 Röhren, 150 Kilowatt, ständig brannte eine durch</td><td>Mikrosekunden</td></tr>
+                        <tr><td><strong>Transistor</strong></td><td>Ein Halbleiterkristall leitet oder sperrt, je nach Spannung an einem Steueranschluss. Keine beweglichen Teile, kein Glühen.</td><td>erfunden 1947 (Bell Labs); 1958/59 mehrere auf einem Chip (integrierte Schaltung); heute Milliarden</td><td>Pikosekunden</td></tr>
+                    </table></div>
+                    <p>Alle drei tun im Prinzip dasselbe: Ein <strong>Steuereingang</strong> entscheidet, ob zwischen zwei anderen Anschlüssen Strom fließen kann. Das reicht, um jede Rechnung aufzubauen. Der Transistor gewann, weil er winzig, schnell, sparsam und in riesigen Stückzahlen auf einmal herstellbar ist.</p>
+                </div>
+            </section>
+
+            <section id="halbleiter" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🔬</span><h2>Halbleiter<small>Aufgabe 3: Wie man Silizium leitend macht</small></h2></div>
+                <div class="phase-body">
+                    <p>Metalle leiten immer, Glas oder Kunststoff nie. <strong>Halbleiter</strong> wie Silizium (Si) liegen dazwischen, und man kann sehr genau einstellen, wie gut sie leiten. Der Trick heißt <strong>Dotieren</strong>: Man baut gezielt wenige Fremdatome in den Kristall ein, oft nur einige auf eine Million Siliziumatome.</p>
+                    <div data-dotierung></div>
+                    <ol class="aufgaben">
+                        <li>Schalte zwischen den drei Kristallen um, lege jeweils Spannung an und beschreibe im Heft, was sich bewegt.</li>
+                        <li>Warum leitet n-dotiertes Silizium, obwohl das Phosphoratom elektrisch neutral ist?</li>
+                        <li>Ein Loch ist eigentlich „nichts“. Warum darf man trotzdem sagen, ein Loch wandert und trägt positive Ladung?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 3">
+                        <template data-stufe="Tipp"><p>Zähle die Außenelektronen: Si hat 4, P hat 5, B hat 3. Jede Bindung zwischen zwei Atomen braucht 2 Elektronen.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>Das fünfte Elektron des Phosphors passt in keine Bindung. Es ist nur schwach an seinen Atomrumpf gebunden und löst sich schon bei Raumtemperatur: ein freier, negativer Ladungsträger (n wie negativ). Zurück bleibt ein fest eingebautes, positiv geladenes P-Ion; insgesamt bleibt der Kristall neutral. Beim Bor fehlt ein Elektron in einer Bindung. Springt ein Nachbarelektron hinein, entsteht das Loch an dessen alter Stelle. Elektronen springen in die eine Richtung, das Loch wandert in die Gegenrichtung, also verhält es sich wie eine positive Ladung (p wie positiv).</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="mosfet" class="phase make">
+                <div class="phase-head"><span class="phase-icon">⚡</span><h2>Der MOSFET<small>Aufgabe 4: Ein Schalter ohne bewegliche Teile</small></h2></div>
+                <div class="phase-body">
+                    <p>Fast alle Transistoren in Prozessoren sind <strong>MOSFETs</strong> (Metall-Oxid-Halbleiter-Feldeffekttransistoren). Ein MOSFET hat drei Anschlüsse: <strong>Source</strong> (Quelle) und <strong>Drain</strong> (Abfluss), zwischen denen der Strom fließen soll, und das <strong>Gate</strong> (Tor), das darüber entscheidet. Das Gate ist durch eine hauchdünne Oxidschicht vom Silizium getrennt: Es berührt den Kanal nicht, es wirkt nur durch sein <strong>elektrisches Feld</strong>.</p>
+                    <div data-mosfet></div>
+                    <ol class="aufgaben">
+                        <li>Stelle den n-Kanal-Transistor ein. Ab welcher Gate-Spannung leitet er? Was passiert unter dem Gate, wenn du die Spannung langsam erhöhst?</li>
+                        <li>Wechsle zum p-Kanal-Transistor. Bei welchem Eingang (0 V oder 1 V) leitet er?</li>
+                        <li>Fülle im Heft aus: Ein nMOS leitet, wenn am Gate eine ___ anliegt. Ein pMOS leitet, wenn am Gate eine ___ anliegt.</li>
+                        <li>Warum verbraucht ein MOSFET fast keinen Strom, solange er nicht umschaltet? Denke an das Oxid.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 4">
+                        <template data-stufe="Tipp"><p>Gate, Oxid und Silizium bilden zusammen einen winzigen Kondensator: zwei leitende Flächen, getrennt durch einen Isolator.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) Ab der Schwellenspannung (hier 0,35 V) bildet sich unter dem Gate ein leitender Kanal aus Elektronen; vorher werden nur die Löcher verdrängt. b) Der pMOS leitet bei 0 V am Gate. c) nMOS leitet bei <strong>1</strong>, pMOS leitet bei <strong>0</strong>. d) Durch das Oxid fließt kein Strom. Das Gate wird nur einmal umgeladen, wie ein Kondensator. Strom fließt also nur beim Umschalten, danach hält das Feld den Zustand.</p></template>
+                    </div>
+                    <div class="konzept">
+                        <h4>Merkkasten: Transistor als Schalter</h4>
+                        <div class="tab-scroll"><table class="rm-tab">
+                            <tr><th></th><th>nMOS</th><th>pMOS</th></tr>
+                            <tr><td>Aufbau</td><td>n-Gebiete in p-Silizium, Kanal aus Elektronen</td><td>p-Gebiete in n-Silizium, Kanal aus Löchern</td></tr>
+                            <tr><td>Gate = 1 (V<sub>DD</sub>)</td><td><strong>leitet</strong> (Schalter zu)</td><td>sperrt (Schalter offen)</td></tr>
+                            <tr><td>Gate = 0 (0 V)</td><td>sperrt</td><td><strong>leitet</strong></td></tr>
+                            <tr><td>Schaltzeichen (vereinfacht)</td><td>Gate ohne Kreis</td><td>Gate mit kleinem Kreis (= „bei 0 aktiv“)</td></tr>
+                        </table></div>
+                        <p>Von hier an reicht dieses <strong>Schaltermodell</strong>: Ein Transistor ist ein Schalter, den ein Bit umlegt. Die Physik darunter brauchen wir erst wieder bei den Quanten.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="chip" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🏭</span><h2>Vom Sand zum Chip<small>Wie man Milliarden Transistoren auf einmal baut</small></h2></div>
+                <div class="phase-body">
+                    <p>Transistoren werden nicht einzeln gebaut, sondern alle gleichzeitig, Schicht für Schicht, ähnlich wie man Fotos belichtet. Klicke dich durch die Fertigung:</p>
+                    <div data-stepper>
+                        <div class="step" data-titel="Sand" data-icon="🏖️"><p>Ausgangsstoff ist Quarz (Siliziumdioxid, SiO₂), also im Grunde sehr reiner Sand. Daraus gewinnt man Rohsilizium und reinigt es, bis auf eine Milliarde Siliziumatome höchstens ein Fremdatom kommt (99,9999999 %).</p></div>
+                        <div class="step" data-titel="Einkristall" data-icon="🔥"><p>Das Silizium wird bei 1414 °C geschmolzen. Ein kleiner Impfkristall wird langsam drehend herausgezogen; die Schmelze erstarrt daran als <strong>ein einziger Kristall</strong>: ein Stab mit 30 cm Durchmesser und bis zu 2 m Länge, in dem jedes Atom an seinem Gitterplatz sitzt.</p></div>
+                        <div class="step" data-titel="Wafer" data-icon="💿"><p>Der Stab wird in knapp 1 mm dünne Scheiben gesägt und spiegelglatt poliert. Auf einer solchen <strong>Wafer</strong> entstehen später Hunderte Chips gleichzeitig.</p></div>
+                        <div class="step" data-titel="Belichten" data-icon="💡"><p>Die Wafer wird mit lichtempfindlichem Lack beschichtet und durch eine Maske belichtet, stark verkleinert wie mit einem Diaprojektor rückwärts. Für die feinsten Strukturen nutzt man extremes Ultraviolett (EUV) mit 13,5 nm Wellenlänge. Diese Maschinen sind so groß wie ein Bus und kosten weit über 100 Millionen Euro.</p></div>
+                        <div class="step" data-titel="Ätzen und Dotieren" data-icon="🧪"><p>Wo der Lack weg ist, wird geätzt oder es werden Fremdatome eingeschossen (Ionenimplantation): So entstehen n- und p-Gebiete, Oxid und Gates. Belichten, Ätzen, Dotieren und Beschichten wiederholen sich hunderte Male; ein Chip braucht Wochen bis Monate.</p></div>
+                        <div class="step" data-titel="Verdrahten" data-icon="🔗"><p>Über den Transistoren liegen über zehn Schichten aus feinsten Kupferleitungen. Sie verbinden die Transistoren zu Gattern, Rechenwerken und Speicher, ein Straßennetz in vielen Stockwerken.</p></div>
+                        <div class="step" data-titel="Testen und Verpacken" data-icon="✂️"><p>Jeder Chip wird noch auf der Wafer getestet, dann wird die Wafer zersägt. Chips mit kleinen Fehlern werden oft mit abgeschalteten Kernen als günstigere Variante verkauft. Zum Schluss kommt der Chip in ein Gehäuse mit Anschlüssen. Das alles geschieht in Reinräumen, die viele tausend Mal staubärmer sind als ein Operationssaal: Ein Staubkorn ist größer als Tausende Transistoren.</p></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="moore" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">📈</span><h2>Immer kleiner<small>Aufgabe 5: Das Mooresche Gesetz</small></h2></div>
+                <div class="phase-body">
+                    <p>Gordon Moore, Mitgründer von Intel, sagte 1965 voraus, dass sich die Zahl der Transistoren auf einem Chip regelmäßig verdoppelt. Seit 1975 lautet die Faustregel: <strong>etwa alle zwei Jahre</strong>. Erstaunlich lange stimmte das:</p>
+                    <div class="moore" role="list">
+                        <div class="moore-zeile" role="listitem"><span class="j">1971</span><span class="n">Intel 4004</span><div class="b" style="width:4%"></div><span class="z">2 300</span></div>
+                        <div class="moore-zeile" role="listitem"><span class="j">1978</span><span class="n">Intel 8086</span><div class="b" style="width:17%"></div><span class="z">29 000</span></div>
+                        <div class="moore-zeile" role="listitem"><span class="j">1985</span><span class="n">Intel 80386</span><div class="b" style="width:29%"></div><span class="z">275 000</span></div>
+                        <div class="moore-zeile" role="listitem"><span class="j">1993</span><span class="n">Intel Pentium</span><div class="b" style="width:42%"></div><span class="z">3,1 Mio.</span></div>
+                        <div class="moore-zeile" role="listitem"><span class="j">2000</span><span class="n">Pentium 4</span><div class="b" style="width:55%"></div><span class="z">42 Mio.</span></div>
+                        <div class="moore-zeile" role="listitem"><span class="j">2006</span><span class="n">Core 2 Duo</span><div class="b" style="width:65%"></div><span class="z">291 Mio.</span></div>
+                        <div class="moore-zeile" role="listitem"><span class="j">2013</span><span class="n">Apple A7 (Handy)</span><div class="b" style="width:71%"></div><span class="z">1 Mrd.</span></div>
+                        <div class="moore-zeile" role="listitem"><span class="j">2020</span><span class="n">Apple M1</span><div class="b" style="width:86%"></div><span class="z">16 Mrd.</span></div>
+                        <div class="moore-zeile" role="listitem"><span class="j">2024</span><span class="n">Apple M4</span><div class="b" style="width:89%"></div><span class="z">28 Mrd.</span></div>
+                        <div class="moore-zeile" role="listitem"><span class="j">2024</span><span class="n">Nvidia B200 (KI-GPU)</span><div class="b" style="width:99%"></div><span class="z">208 Mrd.</span></div>
+                    </div>
+                    <p class="klein">Balken in logarithmischem Maßstab: Jeder gleich lange Abschnitt bedeutet „mal zehn“. Eine gerade Linie in diesem Maßstab heißt exponentielles Wachstum.</p>
+                    <ol class="aufgaben">
+                        <li>Rechne nach: Wie viele Transistoren sagt die Regel „Verdopplung alle zwei Jahre“ ausgehend vom 4004 für das Jahr 2021 voraus? (2021 gab es Chips mit gut 50 Milliarden.)</li>
+                        <li>Das Gate eines modernen Transistors ist etwa 16 nm lang, der Abstand zweier Siliziumatome im Kristall beträgt 0,235 nm. Wie viele Atome sind das hintereinander?</li>
+                        <li>Warum kann das Mooresche Gesetz nicht ewig weitergehen?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 5">
+                        <template data-stufe="Tipp"><p>a) Von 1971 bis 2021 sind es 50 Jahre, also 25 Verdopplungen. 2<sup>10</sup> ≈ 1000.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) 2 300 · 2<sup>25</sup> ≈ 2 300 · 33,5 Mio. ≈ 77 Milliarden: dieselbe Größenordnung wie die Wirklichkeit. b) 16 nm : 0,235 nm ≈ 68, also rund 70 Atome. c) Irgendwann besteht ein Bauteil aus so wenigen Atomen, dass Quanteneffekte stören: Elektronen „tunneln“ durch Isolierschichten, die nur noch wenige Atome dick sind, und es fließen Leckströme. Außerdem wird die Wärme pro Fläche zum Problem, und die Fabriken werden immer teurer. Seit etwa 2010 verlangsamt sich die Verkleinerung; dafür baut man in die Höhe (Kanäle als senkrechte Finnen oder gestapelte Bänder, die das Gate von mehreren Seiten umschließt) und stapelt ganze Chips übereinander.</p></template>
+                    </div>
+                    <div class="tipp"><strong>Achtung, Werbesprache:</strong> „3-nm-Prozess“ ist heute nur noch ein Name für eine Technologie-Generation. Keine Struktur auf dem Chip ist wirklich 3 nm lang. Der Abstand zweier benachbarter Gates liegt eher bei 50 nm.</div>
+                </div>
+            </section>
+
+            <section id="nachdenken" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Besprecht mündlich</small></h2></div>
+                <div class="phase-body">
+                    <p>Überlegt zu zweit. Die Hinweise sind zum Nachlesen <em>nach</em> dem Gespräch: Halte dazu den Knopf gedrückt.</p>
+                    <div class="idee"><strong>Ein Relais und ein Transistor tun logisch dasselbe. Welche Rechnung, die heute auf einem Handy in einer Sekunde läuft, hätte die Z3 wie lange beschäftigt?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Ein Handy schafft grob 10<sup>11</sup> bis 10<sup>12</sup> einfache Rechenschritte pro Sekunde, die Z3 etwa 5. Das ist ein Faktor von 10<sup>10</sup> bis 10<sup>11</sup>: Eine Sekunde Handyrechnung hätte die Z3 Hunderte bis Tausende Jahre beschäftigt. Am Prinzip „Schalter steuert Schalter“ hat sich nichts geändert, nur an Größe, Tempo und Energie.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Warum ist es so wichtig, dass ein Transistor von einer Spannung gesteuert wird und selbst wieder eine Spannung liefert?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Eingang und Ausgang „sprechen dieselbe Sprache“. Der Ausgang eines Transistors kann direkt das Gate des nächsten steuern. Nur so lassen sich Millionen Schaltungen hintereinanderhängen, ohne dass ein Mensch dazwischen etwas umrechnen muss.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Moore stößt an Quanteneffekte. Könnte man diese Effekte nicht umgekehrt zum Rechnen nutzen?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Genau diese Idee hatte der Physiker Richard Feynman 1981. Daraus wurde der Quantencomputer, der in E.6 bis E.8 dran ist. Er nutzt Überlagerung und Interferenz bewusst, statt sie als Störung zu bekämpfen.</p></template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="hardware.html">← Übersicht</a>
+                <a class="btn btn-primary" href="e2-cmos-gatter.html">E.2 Gatter aus Transistoren →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Hinweise</strong></summary>
+                    <p class="mt-2"><strong>Ablauf (2 Std.):</strong> 1. Stunde Schätzen, Schalter-Labor (gern zusätzlich mit echtem Steckbrett: Batterie, Taster, LED), Merkkasten binär, Relais/Röhre/Transistor. 2. Stunde Halbleiter und MOSFET, Fertigung als Schrittfolge oder Kurzvortrag, Moore mit Rechenaufgabe. Wenn Zeit knapp ist: Halbleiter und Fertigung überspringen und direkt vom Schaltermodell (Merkkasten MOSFET) nach E.2.</p>
+                    <p><strong>Vereinfachungen:</strong> Technische Stromrichtung wird nicht thematisiert. Das Bändermodell fehlt bewusst; Dotierung wird im Bindungsmodell erklärt. Die MOSFET-Animation zeigt eine idealisierte quadratische Kennlinie ab U<sub>th</sub> = 0,35 V bei V<sub>DD</sub> = 1 V, ohne Unterschwellstrom. Moderne Transistoren sind FinFETs bzw. Gate-all-around-Transistoren; das Prinzip (Feld steuert Kanal) ist gleich.</p>
+                    <p><strong>Zahlen:</strong> Z3 1941 mit rund 2 600 Relais und etwa 5 Hz; ENIAC rund 17 500 Röhren, 150 kW; 4004 (1971) 2 300 Transistoren; Apple M4 rund 28 Mrd.; Nvidia B200 208 Mrd. (zwei Dies). Gate-Länge im „3-nm“-Knoten etwa 15–20 nm, Gate-Abstand etwa 48–50 nm; Si-Si-Bindungslänge 0,235 nm. EUV-Wellenlänge 13,5 nm.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de · <a href="https://edu-mrh.de/impressum.html#lizenz">CC BY-NC-SA 4.0</a> | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

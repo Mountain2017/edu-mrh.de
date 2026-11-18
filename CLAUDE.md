@@ -404,6 +404,18 @@ gemeinsamen Designs ist also die Root-Datei).
   Assembler-Code auf Blatt und Seite identisch halten. Präsentation zur Sequenz (nur lokal):
   `13/rechner/material/Funktionsweise-eines-Rechners.pptx`, erzeugt per python-pptx aus
   `material/praesentation/folien.py` (Beispiele wie auf den Blättern; bei Änderungen nachziehen)
+- 13 Exkurs „Vom Transistor zum Quantencomputer“ (interaktiv, **ohne Arbeitsblätter**, über den Lehrplan
+  hinaus; verlinkt in `rechner.html`, 2.6-Ausblick, `informatik.html`): `13/hardware/hardware.html` (Übersicht,
+  Turm der Ebenen) mit E.1 Transistor (Schalter-Labor, Dotierung, MOSFET, Chipfertigung, Moore), E.2 CMOS-Gatter
+  (Inverter/NAND/NOR, Netze kombinieren, Schaltzeichen DIN/IEC ↔ US), E.3 Addierer (Werkstatt-Aufgaben HA, VA,
+  4 Bit, MUX, Vergleicher, Mehrheit, nur NAND; Übertragswelle), E.4 ALU (Zweierkomplement, ALU-Labor mit
+  Flags N/Z/C/O passend zur Registermaschine, Addier-Subtrahier-Werk, RS-Flipflop/Register, ADD 101 sortieren),
+  E.5 CPU/GPU/TPU (Rennen, systolisches Array), E.6 Qubit (Zeiger mit reellen Amplituden, Weg eines
+  Quantenprogramms, DiVincenzo, Plattformen), E.7 Quanten programmieren (Werkbank, Bell, Deutsch-Orakel, Grover,
+  Qiskit-Code), E.8 Bauarten (Gatter/adiabatisch/Annealer, adiabatisches Labor mit echter Zeitentwicklung),
+  freie `werkstatt.html`. Skripte: `logik.js` (Symbole, Werkstatt mit Aufgaben in `AUFGABEN`, Übertragswelle),
+  `hardware.js` (E.1–E.5), `quanten.js` (E.6–E.8); Stil `hardware.css` auf `../rechner/rechner.css`, Quiz und
+  Lösungsweg aus `../rechner/rechner.js`. Schaltzeichen-Norm in `localStorage 'hwNorm'`
 
 **Makerspace** (`makerspace/makerspace.html`, Wahlkurs Unterstufe, Stationen je 3 Wochen;
 nur Robotik online): `makerspace/robotik/` LEGO SPIKE Prime – `robotik.html` (Team,

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E.3 Vom Gatter zum Addierer | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Exkurs Hardware, Informatik 13: Binär addieren, Halbaddierer, Volladdierer und 4-Bit-Addierer in einer Schaltungs-Werkstatt selbst bauen, Übertragswelle (Ripple Carry), Multiplexer, Vergleicher, Mehrheitsentscheider und Schaltungen nur aus NAND.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="../rechner/rechner.css">
+    <link rel="stylesheet" href="hardware.css">
+    <script defer src="../rechner/rechner.js"></script>
+    <script defer src="logik.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🖥️</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="hardware.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station E.3</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#einstieg">🔍 Binär addieren</a></li>
+            <li><a href="#werkstatt">🔧 Die Werkstatt</a></li>
+            <li><a href="#halbaddierer">➕ Halbaddierer</a></li>
+            <li><a href="#volladdierer">➕ Volladdierer</a></li>
+            <li><a href="#vierbit">🧱 4-Bit-Addierer</a></li>
+            <li><a href="#festhalten">📝 Festhalten</a></li>
+            <li><a href="#welle">🌊 Die Übertragswelle</a></li>
+            <li><a href="#weitere">🛠️ Weitere Schaltnetze</a></li>
+            <li><a href="#nachdenken">💡 Nachdenken</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Exkurs Hardware</div>
+            <ul class="sidebar-menu">
+                <li><a href="hardware.html">Übersicht</a></li>
+                <li><a href="e1-transistor.html">E.1 Vom Strom zum Schalter</a></li>
+                <li><a href="e2-cmos-gatter.html">E.2 Gatter aus Transistoren</a></li>
+                <li><a href="e3-addierer.html">E.3 Vom Gatter zum Addierer</a></li>
+                <li><a href="e4-alu.html">E.4 ALU und Rechenwerk</a></li>
+                <li><a href="e5-cpu-gpu-tpu.html">E.5 CPU, GPU, TPU</a></li>
+                <li><a href="e6-qubit.html">E.6 Qubits und Quantenrechner</a></li>
+                <li><a href="e7-quanten-programmieren.html">E.7 Quanten programmieren</a></li>
+                <li><a href="e8-quanten-bauarten.html">E.8 Bauarten</a></li>
+                <li><a href="werkstatt.html">Schaltungs-Werkstatt</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero rm-hero">
+                <h1 class="hero-title">E.3 Vom Gatter zum Addierer</h1>
+                <p class="hero-subtitle">Exkurs Hardware · Informatik 13 · 2 Stunden</p>
+                <span class="rm-kompetenz">Du kannst: aus Logikgattern einen Halbaddierer, einen Volladdierer und einen Mehrbit-Addierer zusammensetzen, Schaltnetze mit Wahrheitstabellen prüfen und erklären, warum lange Überträge Zeit kosten.</span>
+                <div class="ebenen"><span>Physik</span><span>Transistor</span><span class="hier">Gatter</span><span class="hier">Schaltnetz</span><span>Rechenwerk</span><span>Prozessor</span><span class="q">Quanten</span></div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#einstieg">🔍 Binär addieren</a><a class="p-make" href="#halbaddierer">➕ Halb-/Volladdierer</a><a class="p-make" href="#vierbit">🧱 4 Bit</a><a class="p-note" href="#festhalten">📝 Festhalten</a><a class="p-investigate" href="#welle">🌊 Welle</a><a class="p-modify" href="#weitere">🛠️ Weitere</a><a class="p-idee" href="#nachdenken">💡 Nachdenken</a>
+            </div>
+
+            <section id="einstieg" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Binär addieren<small>Aufgabe 1: Was passiert in einer Spalte?</small></h2></div>
+                <div class="phase-body">
+                    <p>Binär addiert man wie im Dezimalsystem schriftlich von rechts nach links, nur dass schon 1 + 1 einen Übertrag erzeugt: 1 + 1 = 10<sub>2</sub>. Beispiel 6 + 7:</p>
+                    <pre class="jv">    0 1 1 0      (6)
+  + 0 1 1 1      (7)
+  Ü 1 1 0 0      (Überträge)
+  ─────────
+    1 1 0 1      (13)</pre>
+                    <ol class="aufgaben">
+                        <li>Rechne im Heft schriftlich: 1011<sub>2</sub> + 0110<sub>2</sub>. Kontrolliere im Dezimalsystem.</li>
+                        <li>Schau dir eine einzelne Spalte an: Wie viele Bits gehen hinein, wie viele kommen heraus? Gibt es einen Unterschied zwischen der rechten Spalte und den anderen?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 1">
+                        <template data-stufe="Lösung" data-halten><p>a) 1011 + 0110 = 10001<sub>2</sub> (11 + 6 = 17). b) In jede Spalte gehen <strong>drei</strong> Bits hinein (eine Stelle von A, eine von B und der Übertrag aus der Spalte rechts), heraus kommen <strong>zwei</strong> (die Summenstelle und der Übertrag nach links). Nur die rechte Spalte hat keinen Übertrag von rechts: Dort reichen zwei Eingänge. Genau dafür bauen wir gleich den <strong>Halbaddierer</strong> (2 Eingänge) und den <strong>Volladdierer</strong> (3 Eingänge).</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="werkstatt" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🔧</span><h2>Die Werkstatt<small>So baust du Schaltungen</small></h2></div>
+                <div class="phase-body">
+                    <ul>
+                        <li><strong>Bauteil holen:</strong> Knopf in der Leiste antippen, dann das Bauteil an seinen Platz ziehen.</li>
+                        <li><strong>Verbinden:</strong> Von einem Ausgang (rechts am Bauteil oder an einem Eingangsschalter) zu einem Eingang (links am Bauteil oder an einer Lampe) ziehen. Oder: beide Anschlüsse nacheinander antippen. Ein Eingang kann nur einen Draht haben, ein Ausgang beliebig viele.</li>
+                        <li><strong>Löschen:</strong> Bauteil oder Draht antippen, dann „Auswahl löschen“ (am Computer auch Entf-Taste).</li>
+                        <li><strong>Testen:</strong> Eingänge links (oder unter der Fläche) umschalten. Orange = 1, grau = 0. „Prüfen“ testet alle Fälle und vergleicht mit dem Auftrag.</li>
+                    </ul>
+                    <p>Deine Schaltungen bleiben in deinem Browser gespeichert. Die Schaltzeichen kannst du oben in jeder Werkstatt zwischen DIN/IEC und US-Norm umstellen.</p>
+                    <div class="ws" data-werkstatt="erkunden"></div>
+                    <p class="klein">Zum Warmwerden: Hole ein XOR, verbinde A und B mit seinen Eingängen und seinen Ausgang mit Y. Vergleiche die Wahrheitstabelle mit der Spalte „Summe“ beim Addieren zweier Bits.</p>
+                </div>
+            </section>
+
+            <section id="halbaddierer" class="phase make">
+                <div class="phase-head"><span class="phase-icon">➕</span><h2>Der Halbaddierer<small>Aufgabe 2: Zwei Bits addieren</small></h2></div>
+                <div class="phase-body">
+                    <p>Fülle zuerst im Heft die Tabelle aus: A + B ergibt die zweistellige Binärzahl C S (Übertrag, Summe).</p>
+                    <table class="wt"><tr><th>A</th><th>B</th><th class="trenn">C</th><th>S</th></tr><tr><td>0</td><td>0</td><td class="trenn">?</td><td>?</td></tr><tr><td>0</td><td>1</td><td class="trenn">?</td><td>?</td></tr><tr><td>1</td><td>0</td><td class="trenn">?</td><td>?</td></tr><tr><td>1</td><td>1</td><td class="trenn">?</td><td>?</td></tr></table>
+                    <p>Vergleiche die Spalten C und S mit den Gattern aus E.2. Dann baue die Schaltung:</p>
+                    <div class="ws" data-werkstatt="ha"></div>
+                    <div class="lw" data-loesungsweg="Halbaddierer">
+                        <template data-stufe="Tipp 1"><p>S ist genau dann 1, wenn A und B verschieden sind. C ist nur bei 1 + 1 gleich 1.</p></template>
+                        <template data-stufe="Lösung" data-halten><p><strong>S = A ⊕ B</strong> (XOR) und <strong>C = A ∧ B</strong> (UND). Zwei Gatter, beide bekommen A und B als Eingang.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="volladdierer" class="phase make">
+                <div class="phase-head"><span class="phase-icon">➕</span><h2>Der Volladdierer<small>Aufgabe 3: Drei Bits addieren</small></h2></div>
+                <div class="phase-body">
+                    <p>Ab der zweiten Spalte kommt der Übertrag C<sub>in</sub> von rechts dazu. Drei Bits ergeben eine Summe von 0 bis 3, also wieder zwei Ausgangsbits S und C<sub>out</sub>. Du darfst deinen Halbaddierer jetzt als fertigen Baustein <strong>HA</strong> benutzen: Abstraktion wie bei den Gattern.</p>
+                    <div class="ws" data-werkstatt="va"></div>
+                    <div class="lw" data-loesungsweg="Volladdierer">
+                        <template data-stufe="Tipp 1"><p>Addiere in zwei Schritten: erst A + B, dann zum Ergebnis noch C<sub>in</sub>. Jeder Schritt ist ein Halbaddierer.</p></template>
+                        <template data-stufe="Tipp 2"><p>Beide Halbaddierer können einen Übertrag erzeugen. Können beide gleichzeitig 1 sein? Wie fasst du sie zu C<sub>out</sub> zusammen?</p></template>
+                        <template data-stufe="Lösung" data-halten><p>HA1 bekommt A und B; seine Summe geht zusammen mit C<sub>in</sub> in HA2. Die Summe von HA2 ist S. C<sub>out</sub> = (Übertrag HA1) ∨ (Übertrag HA2). Beide Überträge sind nie gleichzeitig 1, darum würde statt ODER auch XOR funktionieren. In Gattern: S = A ⊕ B ⊕ C<sub>in</sub>, C<sub>out</sub> = (A ∧ B) ∨ (C<sub>in</sub> ∧ (A ⊕ B)): fünf Gatter.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="vierbit" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🧱</span><h2>Der 4-Bit-Addierer<small>Aufgabe 4: Volladdierer verketten</small></h2></div>
+                <div class="phase-body">
+                    <p>Jetzt wird der Volladdierer zum Baustein <strong>VA</strong>. Baue einen Addierer für zwei 4-Bit-Zahlen. Die Eingänge sind nach Stellen sortiert: A0 und B0 sind die Einerstellen, A3 und B3 die Achterstellen. Unter der Fläche siehst du die Zahlen dezimal.</p>
+                    <div class="ws" data-werkstatt="add4"></div>
+                    <ol class="aufgaben">
+                        <li>Teste mit 6 + 7, mit 15 + 1 und mit 15 + 15. Was zeigt C4 an?</li>
+                        <li>Wie viele Gatter (aus E.2) und wie viele Transistoren stecken ungefähr in deinem 4-Bit-Addierer? Und in einem 64-Bit-Addierer?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="4-Bit-Addierer">
+                        <template data-stufe="Tipp"><p>Jede Stelle i bekommt einen VA mit Ai und Bi. Der Übertrag-Ausgang Cout von Stelle i wird zum Cin von Stelle i + 1. Was ist mit Cin der Stelle 0? (Offene Eingänge zählen als 0, schöner ist ein HA oder die Konstante 0.)</p></template>
+                        <template data-stufe="Lösung" data-halten><p>VA0 (A0, B0, Cin = 0) → S0, Cout → Cin von VA1 → … → VA3 → S3, Cout = C4. C4 = 1 bedeutet: Das Ergebnis passt nicht mehr in 4 Bit (bei 15 + 1 = 16 = 10000<sub>2</sub>). Ein VA hat 5 Gatter mit zusammen etwa 30 bis 40 Transistoren; 4 Bit also etwa 20 Gatter und 150 Transistoren, 64 Bit etwa 320 Gatter und über 2 000 Transistoren.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="festhalten" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Schaltnetze und Addierer</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Merkkasten: Addierer</h4>
+                        <ul>
+                            <li>Ein <strong>Schaltnetz</strong> ist eine Schaltung aus Gattern ohne Rückkopplung: Die Ausgänge hängen nur von den <em>aktuellen</em> Eingängen ab. Es wird durch seine Wahrheitstabelle beschrieben.</li>
+                            <li><strong>Halbaddierer</strong> (2 Eingänge): S = A ⊕ B, C = A ∧ B.</li>
+                            <li><strong>Volladdierer</strong> (3 Eingänge): zwei Halbaddierer und ein ODER: S = A ⊕ B ⊕ C<sub>in</sub>, C<sub>out</sub> = (A ∧ B) ∨ (C<sub>in</sub> ∧ (A ⊕ B)).</li>
+                            <li><strong>n-Bit-Addierer</strong> (Ripple-Carry-Addierer): n Volladdierer in einer Kette, der Übertrag jeder Stelle geht in die nächste.</li>
+                            <li>Jede Ebene benutzt die vorige als <strong>Baustein</strong>: Transistor → Gatter → Halbaddierer → Volladdierer → Addierer.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="welle" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🌊</span><h2>Die Übertragswelle<small>Aufgabe 5: Wie lange dauert eine Addition?</small></h2></div>
+                <div class="phase-body">
+                    <p>In der Werkstatt erscheint das Ergebnis sofort. In echten Chips braucht jedes Gatter eine winzige <strong>Laufzeit</strong> (einige Pikosekunden), bis sein Ausgang auf den neuen Eingang reagiert. Ein Volladdierer kennt seinen Übertrag erst, wenn der Übertrag von rechts angekommen ist. Hier siehst du ein 8-Bit-Addierwerk in Zeitlupe:</p>
+                    <div data-ripple="8"></div>
+                    <ol class="aufgaben">
+                        <li>Lade den schlimmsten Fall (255 + 1) und den harmlosen Fall. Wie viele Stufenlaufzeiten dauert es jeweils, bis das Ergebnis stimmt? Was ist das Besondere am schlimmsten Fall?</li>
+                        <li>Ein 64-Bit-Addierer: Wie viele Gatterlaufzeiten braucht er im schlimmsten Fall? Rechne mit 10 ps pro Gatter. Passt das in einen Takt eines 4-GHz-Prozessors (0,25 ns)?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 5">
+                        <template data-stufe="Lösung" data-halten><p>a) Schlimmster Fall: 8 Stufen. Der Übertrag muss von ganz rechts nach ganz links durch jede Stelle laufen, weil jede Stelle 1 + 0 + Übertrag rechnet. Harmlos: Die Überträge sind schon nach einer Stufe fertig. Zwischendurch steht am Ausgang ein falsches Ergebnis! b) 64 Stufen · 2 = 128 Gatterlaufzeiten · 10 ps ≈ 1,3 ns, also mehr als fünf Takte. Darum benutzen echte Prozessoren <strong>Carry-Lookahead-Addierer</strong>: Mit zusätzlichen Gattern wird für Gruppen von Stellen vorausberechnet, ob sie einen Übertrag erzeugen oder nur weiterreichen. Dann braucht man nur noch etwa log<sub>2</sub>(64) = 6 Stufen. Mehr Gatter, weniger Zeit: ein typischer Tausch in der Hardware.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="weitere" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Weitere Schaltnetze<small>Aufgabe 6: Wähle aus</small></h2></div>
+                <div class="phase-body">
+                    <p>Addierer sind nur ein Beispiel. Jede Wahrheitstabelle lässt sich als Schaltnetz bauen. Wähle mindestens zwei Aufgaben. Die <strong>Weiche (Multiplexer)</strong> brauchst du in E.4 für die ALU.</p>
+                    <details open>
+                        <summary><strong>🔀 Weiche (Multiplexer)</strong>: ein Steuerbit wählt, welcher Eingang durchkommt</summary>
+                        <div class="ws" data-werkstatt="mux"></div>
+                        <div class="lw" data-loesungsweg="Multiplexer">
+                            <template data-stufe="Tipp"><p>Lass A nur durch, wenn S = 0 ist (A ∧ ¬S), und B nur, wenn S = 1 ist. Dann fasse beide Wege zusammen.</p></template>
+                            <template data-stufe="Lösung" data-halten><p>Y = (A ∧ ¬S) ∨ (B ∧ S): ein NICHT, zwei UND, ein ODER.</p></template>
+                        </div>
+                    </details>
+                    <details>
+                        <summary><strong>🟰 Vergleicher</strong>: Sind zwei 2-Bit-Zahlen gleich?</summary>
+                        <div class="ws" data-werkstatt="gleich"></div>
+                        <div class="lw" data-loesungsweg="Vergleicher">
+                            <template data-stufe="Tipp"><p>Ein XOR meldet 1, wenn zwei Bits <em>verschieden</em> sind. Die Zahlen sind gleich, wenn an keiner Stelle ein Unterschied ist.</p></template>
+                            <template data-stufe="Lösung" data-halten><p>G = ¬((A1 ⊕ B1) ∨ (A0 ⊕ B0)): zwei XOR und ein NOR. Genauso arbeitet der Vergleich in einem Prozessor: Er bildet A − B und prüft, ob alle Bits 0 sind (Z-Flag, E.4).</p></template>
+                        </div>
+                    </details>
+                    <details>
+                        <summary><strong>🗳️ Mehrheitsentscheider</strong>: mindestens zwei von drei</summary>
+                        <div class="ws" data-werkstatt="mehrheit"></div>
+                        <div class="lw" data-loesungsweg="Mehrheit">
+                            <template data-stufe="Tipp"><p>Mehrheit heißt: A und B, oder A und C, oder B und C. Geht es mit weniger als 5 Gattern?</p></template>
+                            <template data-stufe="Lösung" data-halten><p>M = (A ∧ B) ∨ (A ∧ C) ∨ (B ∧ C) mit 5 Gattern, kürzer M = (A ∧ B) ∨ (C ∧ (A ∨ B)) mit 4. Übrigens: Das ist genau C<sub>out</sub> eines Volladdierers! Ein Übertrag entsteht, wenn mindestens zwei der drei Bits 1 sind.</p></template>
+                        </div>
+                    </details>
+                    <details>
+                        <summary><strong>🧩 Alles aus NAND</strong>: NICHT, UND, ODER und XOR nur aus NAND-Gattern</summary>
+                        <p>NAND ist universell: Man kann jede Schaltung nur aus NANDs bauen. Probiere es in vier Stufen.</p>
+                        <div class="ws" data-werkstatt="nand-not"></div>
+                        <div class="ws" data-werkstatt="nand-and"></div>
+                        <div class="ws" data-werkstatt="nand-or"></div>
+                        <div class="ws" data-werkstatt="nand-xor"></div>
+                        <div class="lw" data-loesungsweg="Nur NAND">
+                            <template data-stufe="Tipp"><p>NICHT: Was liefert ein NAND, wenn an beiden Eingängen dasselbe Bit liegt?</p></template>
+                            <template data-stufe="Lösung" data-halten><p>NICHT A = NAND(A, A). UND = NICHT(NAND(A, B)): 2 NAND. ODER = NAND(¬A, ¬B): 3 NAND. XOR mit 4 NAND: N = NAND(A, B), Y = NAND(NAND(A, N), NAND(B, N)).</p></template>
+                        </div>
+                    </details>
+                </div>
+            </section>
+
+            <section id="nachdenken" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Besprecht mündlich</small></h2></div>
+                <div class="phase-body">
+                    <div class="idee"><strong>Der Volladdierer ist ein Baustein, der Addierer auch. Kennst du dieses Prinzip aus der Programmierung?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Methoden und Klassen: Man ruft <code>volladdierer(a, b, c)</code> auf, ohne an die Gatter darin zu denken. Hardware-Entwickler schreiben Schaltungen heute tatsächlich als Programmtext in Hardware-Beschreibungssprachen wie VHDL oder Verilog, und Werkzeuge erzeugen daraus die Transistoren.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Die Werkstatt meldet eine Rückkopplung als Fehler. Gibt es Schaltungen, bei denen eine Rückkopplung nützlich ist?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Ja: Wenn ein Ausgang auf einen eigenen Eingang zurückwirkt, kann die Schaltung einen Zustand <em>halten</em>. Damit baut man Speicher (Flipflops). Solche Schaltungen heißen Schaltwerke, sie kommen in E.4.</p></template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="e2-cmos-gatter.html">← E.2 Gatter aus Transistoren</a>
+                <a class="btn btn-primary" href="e4-alu.html">E.4 ALU und Rechenwerk →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Hinweise</strong></summary>
+                    <p class="mt-2"><strong>Ablauf (2 Std.):</strong> Schriftliche Addition, Werkstatt erklären (am Beamer vormachen: Bauteil holen, Draht ziehen, Prüfen), Halbaddierer und Volladdierer in Partnerarbeit, 4-Bit-Addierer; zweite Stunde Übertragswelle und Wahlaufgaben (Multiplexer verpflichtend, weil E.4 ihn braucht). Die Werkstatt prüft automatisch alle Eingabekombinationen und nennt die Mindestzahl an Bauteilen.</p>
+                    <p><strong>Lösungen:</strong> HA: XOR + UND. VA: 2 HA + ODER (Minimum 3 Bausteine). 4 Bit: 4 VA verkettet (offener C<sub>in</sub> zählt als 0). MUX: NICHT, 2 UND, ODER. Vergleicher: 2 XOR + NOR (oder 2 XNOR + UND). Mehrheit: 4 Gatter. NAND: 1/2/3/4.</p>
+                    <p><strong>Technik:</strong> Offene Eingänge werden als 0 gewertet und rot gestrichelt markiert. Rückkopplungen werden simuliert; kommt die Schaltung nicht zur Ruhe, meldet die Werkstatt das. Die Laufzeit in der Übertragswelle ist pauschal eine „Stufe“ ≈ 2 Gatterlaufzeiten pro Volladdierer; die Angabe 10 ps je Gatter ist eine Größenordnung.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de · <a href="https://edu-mrh.de/impressum.html#lizenz">CC BY-NC-SA 4.0</a> | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

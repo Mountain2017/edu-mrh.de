@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E.4 ALU und Rechenwerk | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Exkurs Hardware, Informatik 13: Subtraktion mit dem Zweierkomplement, Aufbau einer ALU mit Addierwerk, Logikeinheit, Multiplexer und Flags N, Z, C, O, Flipflop, Register und Takt, was bei ADD in der Registermaschine auf Gatterebene passiert.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="../rechner/rechner.css">
+    <link rel="stylesheet" href="hardware.css">
+    <script defer src="../rechner/rechner.js"></script>
+    <script defer src="hardware.js"></script>
+    <script defer src="logik.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🖥️</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="hardware.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station E.4</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#einstieg">🔍 Subtrahieren mit einem Addierer?</a></li>
+            <li><a href="#zk">📝 Das Zweierkomplement</a></li>
+            <li><a href="#alu">🧮 Die ALU</a></li>
+            <li><a href="#selbst">🛠️ Addier-Subtrahier-Werk</a></li>
+            <li><a href="#speicher">💾 Speichern und Takt</a></li>
+            <li><a href="#datenpfad">⚙️ ADD 101 auf Gatterebene</a></li>
+            <li><a href="#multiplizieren">✖️ Multiplizieren</a></li>
+            <li><a href="#nachdenken">💡 Nachdenken</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Exkurs Hardware</div>
+            <ul class="sidebar-menu">
+                <li><a href="hardware.html">Übersicht</a></li>
+                <li><a href="e1-transistor.html">E.1 Vom Strom zum Schalter</a></li>
+                <li><a href="e2-cmos-gatter.html">E.2 Gatter aus Transistoren</a></li>
+                <li><a href="e3-addierer.html">E.3 Vom Gatter zum Addierer</a></li>
+                <li><a href="e4-alu.html">E.4 ALU und Rechenwerk</a></li>
+                <li><a href="e5-cpu-gpu-tpu.html">E.5 CPU, GPU, TPU</a></li>
+                <li><a href="e6-qubit.html">E.6 Qubits und Quantenrechner</a></li>
+                <li><a href="e7-quanten-programmieren.html">E.7 Quanten programmieren</a></li>
+                <li><a href="e8-quanten-bauarten.html">E.8 Bauarten</a></li>
+                <li><a href="werkstatt.html">Schaltungs-Werkstatt</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero rm-hero">
+                <h1 class="hero-title">E.4 ALU und Rechenwerk</h1>
+                <p class="hero-subtitle">Exkurs Hardware · Informatik 13 · 2 Stunden</p>
+                <span class="rm-kompetenz">Du kannst: erklären, wie eine ALU mit einem Addierer auch subtrahiert, wie Steuerleitungen die Operation auswählen, wie die Flags entstehen und wie Register mit dem Takt Ergebnisse speichern.</span>
+                <div class="ebenen"><span>Physik</span><span>Transistor</span><span>Gatter</span><span class="hier">Schaltnetz</span><span class="hier">Rechenwerk</span><span class="hier">Prozessor</span><span class="q">Quanten</span></div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#einstieg">🔍 Minus?</a><a class="p-note" href="#zk">📝 Zweierkomplement</a><a class="p-investigate" href="#alu">🧮 ALU</a><a class="p-make" href="#selbst">🛠️ Bauen</a><a class="p-investigate" href="#speicher">💾 Speichern</a><a class="p-modify" href="#datenpfad">⚙️ ADD 101</a><a class="p-idee" href="#nachdenken">💡 Nachdenken</a>
+            </div>
+
+            <section id="einstieg" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Subtrahieren mit einem Addierer?<small>Aufgabe 1: Ein Zahlenrad</small></h2></div>
+                <div class="phase-body">
+                    <p>Die Registermaschine kennt <code>ADD</code> und <code>SUB</code>, und das Statusregister meldet negative Ergebnisse (N). Im Rechenwerk gibt es aber nur Addierer. Wie geht das? Die Antwort: <strong>Negative Zahlen werden so dargestellt, dass Subtrahieren dasselbe ist wie Addieren.</strong></p>
+                    <p>Mit 4 Bit gibt es 16 Muster. Im Zahlenrad bekommt jedes Muster eine Zahl von −8 bis 7. Probiere aus:</p>
+                    <div data-zk="4"></div>
+                    <ol class="aufgaben">
+                        <li>Stelle 0011 (= 3) ein und drücke ① und dann ②. Welche Zahl erhältst du? Wiederhole mit 5 und mit −2.</li>
+                        <li>Zähle von 0 aus mit „weiterzählen“ einmal ganz herum. Wo passiert etwas Seltsames?</li>
+                        <li>Rechne im Heft 0101 + 1101 mit dem schriftlichen Verfahren aus E.3 und lass den Übertrag ganz links weg. Welche Rechnung ist das dezimal?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 1">
+                        <template data-stufe="Tipp"><p>c) Lies 1101 im Zahlenrad ab.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) Umdrehen + 1 liefert immer die Gegenzahl: 3 → −3 (1101), 5 → −5 (1011), −2 → 2. b) Nach 7 (0111) kommt 1000 = −8: Überlauf. Nach −1 (1111) kommt 0 (0000), das ist korrekt. c) 0101 + 1101 = 1 0010; ohne den Übertrag 0010 = 2. Dezimal: 5 + (−3) = 2. Die Addition des Zweierkomplements <em>ist</em> die Subtraktion 5 − 3.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="zk" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Zweierkomplement und Subtraktion</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Merkkasten: Zweierkomplement</h4>
+                        <ul>
+                            <li>Bei n Bit zählt das höchste Bit <strong>−2<sup>n−1</sup></strong> statt +2<sup>n−1</sup>. Mit 4 Bit: −8 bis 7, mit 16 Bit (Registermaschine): −32 768 bis 32 767.</li>
+                            <li>Ist das höchste Bit 1, ist die Zahl negativ. Genau dieses Bit liefert das Flag <strong>N</strong>.</li>
+                            <li><strong>Gegenzahl:</strong> alle Bits umdrehen und 1 addieren: −x = ¬x + 1.</li>
+                            <li><strong>Subtraktion:</strong> A − B = A + ¬B + 1. Das Umdrehen erledigen XOR-Gatter (B ⊕ 1 = ¬B), die „+ 1“ der Übertrag-Eingang C<sub>in</sub> des ersten Volladdierers. Ein Addierer kann also mit einer einzigen Steuerleitung <strong>SUB</strong> beides.</li>
+                            <li>Verlässt ein Ergebnis den Bereich (7 + 1 = −8), ist ein <strong>Überlauf</strong> passiert: Flag <strong>O</strong>.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="alu" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🧮</span><h2>Die ALU<small>Aufgabe 2: Arithmetisch-logische Einheit</small></h2></div>
+                <div class="phase-body">
+                    <p>Das Rechenwerk der Registermaschine heißt in echten Prozessoren <strong>ALU</strong> (arithmetic logic unit). Sie bekommt zwei Operanden A und B und vom Steuerwerk über <strong>Steuerleitungen</strong> den Auftrag, was sie tun soll. Hier eine vollständige 4-Bit-ALU. Schalte die Bits der Operanden um und wähle Befehle:</p>
+                    <div data-alu></div>
+                    <ol class="aufgaben">
+                        <li>Wähle nacheinander ADD, SUB, AND. Welche Teile der ALU rechnen jeweils, welche Steuerleitungen ändern sich?</li>
+                        <li>Hake „Ergebnis verdecken“ an. Sage für A = 0101, B = 0011 die Ergebnisse und alle Flags von ADD, SUB und CMP voraus, dann decke auf. Wiederhole mit A = 0011, B = 0101.</li>
+                        <li>Finde eine Addition zweier positiver Zahlen, bei der O = 1 wird. Was zeigt das Ergebnis dann an?</li>
+                        <li>Mit welchen Gattern berechnet die ALU das Flag Z aus den vier Ergebnisbits?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 2">
+                        <template data-stufe="Tipp"><p>b) SUB rechnet A + ¬B + 1. CMP rechnet genau dasselbe, aber das Ergebnis wird nicht übernommen.</p></template>
+                        <template data-stufe="Lösung" data-halten>
+                            <p>a) Addierwerk und Logikeinheit rechnen <strong>immer alle gleichzeitig</strong>, das ist für Hardware gratis. Der <strong>Multiplexer</strong> (die Weiche aus E.3) lässt je nach Steuerleitung „Auswahl“ nur ein Ergebnis durch. SUB = 1 dreht B um und setzt den ersten Übertrag auf 1.</p>
+                            <p>b) 5 + 3 = 8 = 1000: als Zahl mit Vorzeichen −8, also N = 1, Z = 0, C = 0, O = 1 (Überlauf). 5 − 3 = 0010 = 2: N = 0, Z = 0, C = 1 (kein „Borgen“), O = 0. CMP: dieselben Flags wie SUB, Akkumulator unverändert. 3 − 5 = 1110 = −2: N = 1, C = 0.</p>
+                            <p>c) z. B. 4 + 4 = 1000 oder 7 + 1: Zwei positive Zahlen ergeben ein Muster mit führender 1, das als negative Zahl gelesen würde. Das Ergebnis ist falsch, O warnt davor. d) Z = NOR aller Ergebnisbits: Z = ¬(R3 ∨ R2 ∨ R1 ∨ R0).</p>
+                        </template>
+                    </div>
+                    <div class="konzept">
+                        <h4>Merkkasten: ALU</h4>
+                        <ul>
+                            <li>Die ALU besteht aus einem <strong>Addierwerk</strong> (mit XOR-Gattern vor B für die Subtraktion), einer <strong>Logikeinheit</strong> (bitweise UND, ODER, XOR …) und einem <strong>Multiplexer</strong>, der das gewünschte Ergebnis auswählt.</li>
+                            <li>Das <strong>Steuerwerk</strong> wählt die Operation über Steuerleitungen (hier SUB, Auswahl, Übernehmen). Ein Befehl wie <code>ADD</code> ist im Maschinencode nur ein Bitmuster (Opcode), das in genau diese Leitungen übersetzt wird.</li>
+                            <li>Die <strong>Flags</strong> entstehen nebenbei aus dem Ergebnis: <strong>N</strong> = höchstes Bit, <strong>Z</strong> = NOR aller Bits, <strong>C</strong> = Übertrag aus der höchsten Stelle, <strong>O</strong> = Überlauf (Übertrag in die höchste Stelle ⊕ Übertrag aus ihr). Unsere Registermaschine verwendet N, Z und O; echte Prozessoren haben zusätzlich C.</li>
+                            <li><code>CMP</code> ist eine Subtraktion, deren Ergebnis verworfen wird: Nur die Flags bleiben, und auf sie reagieren die bedingten Sprünge (2.4).</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="selbst" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Selbst bauen<small>Aufgabe 3: Ein Addier-Subtrahier-Werk</small></h2></div>
+                <div class="phase-body">
+                    <p>Baue das Herz der ALU selbst: Zwei Volladdierer und zwei XOR-Gatter genügen für 2 Bit. Ist SUB = 0, soll die Schaltung A + B rechnen, bei SUB = 1 dagegen A − B.</p>
+                    <div class="ws" data-werkstatt="addsub2"></div>
+                    <div class="lw" data-loesungsweg="Aufgabe 3">
+                        <template data-stufe="Tipp 1"><p>Jedes B-Bit geht nicht direkt in den Volladdierer, sondern erst durch ein XOR mit SUB.</p></template>
+                        <template data-stufe="Tipp 2"><p>Woher kommt die „+ 1“? Schau dir den Eingang Cin des Volladdierers für die Einerstelle an.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>XOR(B0, SUB) und XOR(B1, SUB) erzeugen B oder ¬B. VA0 bekommt A0, XOR(B0, SUB) und Cin = SUB; seine Summe ist E0. Sein Cout geht in VA1 (A1, XOR(B1, SUB)); dessen Summe ist E1.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="speicher" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">💾</span><h2>Speichern und Takt<small>Aufgabe 4: Wo bleibt das Ergebnis?</small></h2></div>
+                <div class="phase-body">
+                    <p>Die ALU ist ein Schaltnetz: Sobald sich ihre Eingänge ändern, ändert sich das Ergebnis. Für den Akkumulator brauchen wir aber etwas, das einen Wert <strong>festhält</strong>. Der Trick ist eine <strong>Rückkopplung</strong>: Zwei NOR-Gatter, deren Ausgänge sich gegenseitig als Eingang dienen.</p>
+                    <div data-latch></div>
+                    <ol class="aufgaben">
+                        <li>Setze S kurz auf 1 und wieder auf 0. Was zeigt Q danach? Dann dasselbe mit R. Erkläre, warum Q den Wert „behält“.</li>
+                        <li>Im Register übernehmen die Flipflops den Wert nur bei der Taktflanke. Warum ist das wichtig, wenn das Ergebnis der ALU wieder in den Akkumulator zurückfließt, aus dem die ALU gerade liest?</li>
+                        <li>Ein Prozessor taktet mit 4 GHz. Wie lange dauert ein Takt? Wie weit kommt Licht in dieser Zeit?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 4">
+                        <template data-stufe="Tipp"><p>b) Stell dir vor, der Akkumulator würde das neue Ergebnis sofort übernehmen: A + 5 ergibt einen neuen Akkumulator, und die ALU rechnet sofort wieder damit …</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) S = 1 setzt Q = 1; danach S = 0: Q bleibt 1, weil Q = 1 das untere NOR auf Q̄ = 0 zwingt und Q̄ = 0 zusammen mit R = 0 das obere NOR auf Q = 1 hält. Die Schaltung stützt sich selbst. b) Ohne Takt liefe das Ergebnis im Kreis: ALU → Akkumulator → ALU → … und würde sich immer wieder verändern. Mit Takt hat die ALU einen ganzen Takt Zeit, bis ihr Ergebnis stabil ist (auch die Übertragswelle aus E.3 muss durch!), und erst dann wird es auf einen Schlag übernommen. c) 1 / 4 GHz = 0,25 ns. Licht legt in 0,25 ns nur 7,5 cm zurück; elektrische Signale in Leitungen auf dem Chip sind noch deutlich langsamer. Der längste Weg durch die Schaltung (der kritische Pfad) bestimmt, wie hoch man takten kann.</p></template>
+                    </div>
+                    <div class="konzept">
+                        <h4>Merkkasten: Schaltwerk</h4>
+                        <p>Ein <strong>Schaltwerk</strong> enthält Rückkopplungen und damit <strong>Speicher</strong>: Seine Ausgänge hängen auch von früheren Eingaben ab. Ein <strong>Flipflop</strong> speichert 1 Bit, ein <strong>Register</strong> aus n Flipflops speichert n Bit (z. B. Akkumulator, Befehlszähler, Statusregister). Der <strong>Takt</strong> legt fest, wann alle Register gleichzeitig neue Werte übernehmen. Zwischen zwei Taktflanken rechnen die Schaltnetze.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="datenpfad" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">⚙️</span><h2>ADD 101 auf Gatterebene<small>Aufgabe 5: Alles zusammen</small></h2></div>
+                <div class="phase-body">
+                    <p>In <a href="../rechner/2-2-registermaschine.html">Station 2.2</a> hast du den Befehlszyklus kennengelernt. Jetzt kennst du die Bauteile darunter. Bringe die Schritte für den Befehl <code>ADD 101</code> in die richtige Reihenfolge:</p>
+                    <div data-sortieren>
+                        <ol>
+                            <li data-ph="① Holen">Der Befehlszähler liegt auf dem Adressbus, der Speicher liefert den Befehl über den Datenbus ins Befehlsregister.</li>
+                            <li data-ph="② Dekodieren">Ein Schaltnetz im Steuerwerk (der Dekodierer) erkennt am Opcode „ADD“ und setzt SUB = 0, Auswahl = Addierwerk, Übernehmen = 1.</li>
+                            <li data-ph="③ Ausführen">Das Steuerwerk legt 101 auf den Adressbus und „lesen“ auf den Steuerbus; der Inhalt der Zelle kommt an den Eingang B der ALU.</li>
+                            <li data-ph="③ Ausführen">Die XOR-Gatter lassen B unverändert, die Übertragswelle läuft durch die Volladdierer.</li>
+                            <li data-ph="③ Ausführen">Der Multiplexer lässt die Summe durch; NOR- und weitere Gatter berechnen die Flags N, Z, O.</li>
+                            <li data-ph="③ Ausführen">Taktflanke: Akkumulator und Statusregister übernehmen gleichzeitig die neuen Werte; der Befehlszähler wird um 1 erhöht.</li>
+                        </ol>
+                    </div>
+                    <div class="tipp"><strong>Das Steuerwerk ist ein Automat:</strong> Es durchläuft die Zustände Holen → Dekodieren → Ausführen → Holen … und schaltet abhängig vom Opcode und den Flags die Steuerleitungen. Das ist ein endlicher Automat wie in <a href="../formale-sprachen/1-5-endliche-automaten.html">Formale Sprachen 1.5</a>, gebaut aus Flipflops (Zustand) und Gattern (Übergänge und Ausgaben).</div>
+                </div>
+            </section>
+
+            <section id="multiplizieren" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">✖️</span><h2>Und multiplizieren?<small>Aufgabe 6: Schieben und Addieren</small></h2></div>
+                <div class="phase-body">
+                    <p>Die ALU oben kann nicht multiplizieren. Binär geht das wie die schriftliche Multiplikation, nur einfacher: Jede Stelle des zweiten Faktors ist 0 oder 1. Man <strong>schiebt</strong> den ersten Faktor je Stelle um eins nach links und <strong>addiert</strong> ihn, wenn die Stelle 1 ist. Beispiel 6 · 5 = 110 · 101:</p>
+                    <pre class="jv">      1 1 0   · 1 0 1
+      ─────
+      1 1 0          Stelle 0 von 101 ist 1: 110 addieren
+    0 0 0            Stelle 1 ist 0: nichts
+  1 1 0              Stelle 2 ist 1: 110, zweimal geschoben
+  ─────────
+  1 1 1 1 0     = 30</pre>
+                    <ol class="aufgaben">
+                        <li>Rechne 7 · 3 = 111 · 11 im Heft auf diese Weise.</li>
+                        <li>Wie viele Additionen braucht man für zwei 16-Bit-Zahlen höchstens? Warum ist es trotzdem schneller als in Station 2.5, wo du mit einer Schleife multipliziert hast?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 6">
+                        <template data-stufe="Lösung" data-halten><p>a) 111 + 1110 = 10101 = 21. b) Höchstens 16 Additionen (eine pro Stelle des zweiten Faktors), egal wie groß die Zahlen sind. Die Schleife aus 2.5 addierte den ersten Faktor so oft, wie der zweite groß ist, also bis zu 32 767-mal. Moderne Prozessoren haben ein eigenes <strong>Multiplizierwerk</strong>: alle verschobenen Teilprodukte werden gleichzeitig von einem großen Netz aus Addierern zusammengezählt, in wenigen Takten. Das kostet viele Gatter, ist aber schnell. Division ist schwieriger und braucht meist zehn bis einige Dutzend Takte.</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="nachdenken" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Besprecht mündlich</small></h2></div>
+                <div class="phase-body">
+                    <div class="idee"><strong>Die ALU berechnet bei jedem Befehl alle Ergebnisse und wirft fast alle weg. Ist das nicht Verschwendung?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>In Hardware rechnen alle Gatter ohnehin gleichzeitig, sobald Strom anliegt. Erst auszuwählen und dann zu rechnen wäre langsamer. Energie kostet allerdings jedes Umschalten (E.2). Stromsparende Chips schalten deshalb ganze Einheiten ab, die gerade nicht gebraucht werden.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Warum gilt für vorzeichenlose und vorzeichenbehaftete Zahlen derselbe Addierer, aber verschiedene Flags (C und O)?</strong>
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Das Bitmuster des Ergebnisses ist in beiden Deutungen dasselbe, das ist der Clou des Zweierkomplements. Nur die Frage „Passt das Ergebnis noch?“ hat zwei Antworten: Ohne Vorzeichen meldet C den Überlauf über 15 hinaus, mit Vorzeichen meldet O das Verlassen von −8 bis 7. Welche Deutung gilt, entscheidet das Programm durch die Wahl des Sprungbefehls.</p></template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="e3-addierer.html">← E.3 Vom Gatter zum Addierer</a>
+                <a class="btn btn-primary" href="e5-cpu-gpu-tpu.html">E.5 CPU, GPU, TPU →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Hinweise</strong></summary>
+                    <p class="mt-2"><strong>Ablauf (2 Std.):</strong> 1. Stunde Zahlenrad, Merkkasten, ALU-Labor mit Vorhersage. 2. Stunde Addier-Subtrahier-Werk in der Werkstatt, RS-Flipflop und Register, Sortieraufgabe ADD 101 als Zusammenfassung; Multiplikation optional.</p>
+                    <p><strong>Bezug zur Registermaschine:</strong> Die Maschine aus Lernbereich 2 rechnet mit 16 Bit und Flags N, Z, O; LOAD setzt dort ebenfalls die Flags (über die ALU durchgereicht), STORE und Sprünge nicht. CMP setzt N und Z nach der Subtraktion. Die 4-Bit-ALU hier verwendet zusätzlich C (Carry), wie reale Prozessoren; Opcodes sind frei gewählt.</p>
+                    <p><strong>Fachlich:</strong> O = c<sub>3</sub> ⊕ c<sub>4</sub> (Übertrag in und aus der höchsten Stelle). Bei SUB bedeutet C = 1 „kein Borgen“ (A ≥ B vorzeichenlos), wie bei ARM; x86 invertiert das Carry bei Subtraktion. Das RS-Flipflop ist zustandsgesteuert; das Register mit Takt steht für taktflankengesteuerte D-Flipflops.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de · <a href="https://edu-mrh.de/impressum.html#lizenz">CC BY-NC-SA 4.0</a> | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>
