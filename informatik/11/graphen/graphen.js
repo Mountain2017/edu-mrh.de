@@ -481,8 +481,8 @@
    orange = aktuell besuchter Knoten, blau = fertig, Schritt k = der k-te Knoten
    wird orange; Karten W O R L D aus Aufgabe 3.
 
-     <div data-route></div>                     Routenplaner zum Freibad (Aufgabe 1)
-     <div data-dj="freibad,deutschland" data-dj-modus="zeigen | rechnen | beide"></div>
+     <div data-route></div>                     Routenplaner zum Kino (Aufgabe 1)
+     <div data-dj="kino,paket" data-dj-modus="zeigen | rechnen | beide"></div>
                                                 Werkstatt: Vorführung Schritt für Schritt
                                                 und/oder Trainer „Selbst rechnen“
                                                 (Graphen siehe DJ_GRAPHEN; zeigen: n heißt:
@@ -499,26 +499,27 @@
     function K(a, b, w, gerichtet) { return { a: a, b: b, gewicht: w, gerichtet: !!gerichtet }; }
 
     var DJ_GRAPHEN = {
-        freibad: {
-            titel: 'Freibad (Aufgabe 2)', start: 'H', ziel: 'F', zeigen: 2, form: 'kreis', vb: '0 0 620 390',
+        kino: {
+            titel: 'Ins Kino (Aufgabe 2)', start: 'H', ziel: 'K', zeigen: 2, form: 'kreis', vb: '0 0 620 390',
             knoten: {
-                H: { x: 80, y: 195, lab: [-44, 0] }, K: { x: 340, y: 325, lab: [0, 42] },
-                W: { x: 235, y: 75, lab: [0, -40] }, E: { x: 445, y: 75, lab: [0, -40] },
-                F: { x: 560, y: 195, lab: [0, 42] }
+                H: { x: 80, y: 213, lab: [-44, 0] }, B: { x: 241, y: 330, lab: [0, 42] },
+                P: { x: 241, y: 96, lab: [0, -40] }, S: { x: 413, y: 96, lab: [0, -40] },
+                K: { x: 563, y: 213, lab: [0, 42] }
             },
-            kanten: [K('H', 'W', 9), K('H', 'K', 2), K('W', 'E', 5), K('W', 'K', 5), K('K', 'E', 12), K('E', 'F', 3), K('K', 'F', 15)]
+            kanten: [K('H', 'P', 4), K('H', 'B', 1), K('B', 'P', 2), K('P', 'S', 3), K('B', 'S', 7), K('S', 'K', 2), K('B', 'K', 11)]
         },
-        deutschland: {
-            titel: 'Paketdienst (Aufgabe 4)', start: 'Frankfurt', ziel: 'München', zeigen: 0, form: 'rechteck',
+        paket: {
+            titel: 'Paketdienst (Aufgabe 4)', start: 'Ahornheim', ziel: 'Wolkenried', zeigen: 0, stoppAmZiel: true, form: 'rechteck',
             breite: 104, vb: '0 0 700 420', einheit: '',
             knoten: {
-                Frankfurt: { x: 320, y: 60 }, Mannheim: { x: 100, y: 115 }, 'Würzburg': { x: 480, y: 130 },
-                Karlsruhe: { x: 150, y: 250 }, Erfurt: { x: 620, y: 45 }, Augsburg: { x: 330, y: 320 },
-                'Nürnberg': { x: 620, y: 245 }, 'München': { x: 540, y: 375, lab: [0, -30] }
+                Ahornheim: { x: 108, y: 171 }, Bachwies: { x: 252, y: 40 }, 'Mühlhafen': { x: 260, y: 220 },
+                'Krähfeld': { x: 492, y: 40 }, 'Salzbrück': { x: 428, y: 294 }, Glimmerau: { x: 156, y: 384, lab: [0, -30] },
+                Fuchsmoor: { x: 644, y: 140 }, Wolkenried: { x: 588, y: 384, lab: [0, -30] }
             },
-            kanten: [K('Frankfurt', 'Mannheim', 85), K('Frankfurt', 'Würzburg', 119), K('Würzburg', 'Erfurt', 193),
-                K('Würzburg', 'Nürnberg', 109), K('Würzburg', 'Augsburg', 150), K('Mannheim', 'Karlsruhe', 70),
-                K('Karlsruhe', 'Augsburg', 230), K('Augsburg', 'München', 80), K('Nürnberg', 'München', 170)]
+            kanten: [K('Ahornheim', 'Bachwies', 40), K('Ahornheim', 'Mühlhafen', 70), K('Bachwies', 'Mühlhafen', 25),
+                K('Bachwies', 'Krähfeld', 60), K('Mühlhafen', 'Salzbrück', 50), K('Mühlhafen', 'Glimmerau', 110),
+                K('Krähfeld', 'Wolkenried', 90), K('Krähfeld', 'Fuchsmoor', 70), K('Salzbrück', 'Wolkenried', 30),
+                K('Salzbrück', 'Glimmerau', 40)]
         },
         rad: {
             titel: 'Übung 1: Radtour', start: 'A', ziel: 'F', form: 'kreis', vb: '0 0 620 390',
@@ -669,12 +670,17 @@
             z.pruef = [];
             z.fertig.push(u);
             z.aktuell = null;
+            var amZiel = g.stoppAmZiel && u === g.ziel;
             bild('<p class="dj-schritt">Schritt ' + z.schritt + '</p><p><b class="karte-b">D</b> <b>' + name(g, u) + '</b> ist fertig (blau). Seine Pfadlänge ' + fmt(z.dist[u]) +
-                ' ändert sich nicht mehr. ' + (z.fertig.length < reihe.length ? 'Weiter mit dem nächsten Schritt.' : '') + '</p>', 'fertig');
+                ' ändert sich nicht mehr. ' + (amZiel ? 'Das ist das Ziel: Du kannst aufhören.' : z.fertig.length < reihe.length ? 'Weiter mit dem nächsten Schritt.' : '') + '</p>', 'fertig');
+            if (amZiel) break;
         }
 
         var rest = reihe.filter(function (n) { return !enthaelt(z.fertig, n); });
-        var text = '<p><b>Fertig!</b> ' + (rest.length ? 'Alle erreichbaren Knoten sind blau. <b>' + rest.map(function (n) { return name(g, n); }).join(', ') +
+        var vorzeitig = g.stoppAmZiel && enthaelt(z.fertig, g.ziel) && rest.length;
+        var text = '<p><b>Fertig!</b> ' + (vorzeitig ? 'Das Ziel <b>' + name(g, g.ziel) + '</b> ist blau, seine Pfadlänge steht fest. <b>' +
+            rest.map(function (n) { return name(g, n); }).join(', ') + '</b> ' + (rest.length === 1 ? 'muss' : 'müssen') + ' nicht mehr fertig werden.' :
+            rest.length ? 'Alle erreichbaren Knoten sind blau. <b>' + rest.map(function (n) { return name(g, n); }).join(', ') +
             '</b> ' + (rest.length === 1 ? 'ist' : 'sind') + ' von ' + name(g, g.start) + ' aus nicht erreichbar und ' + (rest.length === 1 ? 'behält' : 'behalten') + ' die Pfadlänge ∞.' :
             'Alle Knoten sind blau.') + '</p>';
         if (g.ziel && z.dist[g.ziel] < INF) {
@@ -797,7 +803,7 @@
     // Werkstatt: Zeigen (Vorführung) und Selbst rechnen (Trainer)
     // ------------------------------------------------------------------
     function werkstatt(box) {
-        var liste = (box.getAttribute('data-dj') || 'freibad').split(',').map(function (s) { return s.trim(); });
+        var liste = (box.getAttribute('data-dj') || 'kino').split(',').map(function (s) { return s.trim(); });
         var modi = box.getAttribute('data-dj-modus') || 'beide';
         box.classList.add('dj');
         box.innerHTML =
@@ -999,6 +1005,11 @@
             var u = t.aktuell;
             t.fertig.push(u);
             if (t.fertig.length === ids(g).length) return ende('<p>✔ Richtig! <b class="karte-b">D</b> ' + name(g, u) + ' ist fertig (blau).</p>');
+            if (g.stoppAmZiel && u === g.ziel) {
+                var offenRest = ids(g).filter(function (n) { return !enthaelt(t.fertig, n); });
+                return ende('<p>✔ Richtig! <b class="karte-b">D</b> ' + name(g, u) + ' ist fertig (blau). Das ist das Ziel: Du kannst aufhören. ' +
+                    offenRest.map(function (n) { return name(g, n); }).join(', ') + (offenRest.length === 1 ? ' muss' : ' müssen') + ' nicht mehr fertig werden.</p>');
+            }
             t.phase = 'waehlen';
             zeigeRechnen('<p>✔ Richtig! <b class="karte-b">D</b> ' + name(g, u) + ' ist jetzt fertig (blau).</p>' +
                 '<p class="dj-schritt">Schritt ' + (t.zeilen.length + 1) + '</p><p><b class="karte-b">L</b> Welcher Knoten wird als Nächstes orange? Klicke ihn an.</p>');
@@ -1036,7 +1047,7 @@
         function ende(meldung) {
             if (g.ziel && g.ziel !== g.start && t.dist[g.ziel] < INF) {
                 t.phase = 'weg';
-                zeigeRechnen(meldung + '<p><b>Alle Pfadlängen stehen fest.</b> Wie verläuft der kürzeste Weg von ' + name(g, g.start) + ' nach ' + name(g, g.ziel) +
+                zeigeRechnen(meldung + '<p><b>Die Pfadlänge von ' + name(g, g.ziel) + ' steht fest.</b> Wie verläuft der kürzeste Weg von ' + name(g, g.start) + ' nach ' + name(g, g.ziel) +
                     ' (Länge ' + fmt(t.dist[g.ziel]) + ')? Gib die Knoten der Reihe nach ein.</p><p class="dj-klein">Tipp: Lies rückwärts. Über welchen Knoten bekam ' +
                     name(g, g.ziel) + ' seine endgültige Pfadlänge?</p>');
             } else {
@@ -1093,27 +1104,33 @@
     }
 
     // ------------------------------------------------------------------
-    // Routenplaner zum Freibad (Aufgabe 1)
+    // Routenplaner zum Kino (Aufgabe 1); in b) ist der Weg Park – Sportplatz gesperrt
     // ------------------------------------------------------------------
     var KARTE = {
         knoten: {
-            H: { x: 85, y: 195, name: '🏠 Haus' }, W: { x: 240, y: 70, name: '🌲 Wald' }, E: { x: 460, y: 70, name: '🍦 Eisdiele' },
-            K: { x: 340, y: 330, name: '⛪ Kirche' }, F: { x: 545, y: 200, name: '🏊 Freibad' }
+            H: { x: 85, y: 195, name: '🏠 Haus' }, P: { x: 245, y: 70, name: '🌳 Park' }, B: { x: 245, y: 330, name: '🥖 Bäckerei' },
+            S: { x: 440, y: 70, name: '⚽ Sportplatz' }, K: { x: 555, y: 200, name: '🎬 Kino' }
         },
-        kanten: DJ_GRAPHEN.freibad.kanten
+        kanten: DJ_GRAPHEN.kino.kanten
     };
+    var GESPERRT = ['P', 'S'];
 
     function routenplaner(box) {
         box.classList.add('route');
-        box.innerHTML = '<div class="werkstatt-knoepfe" role="group" aria-label="Aufgabe"><button type="button" data-ra="a">a) kürzester Weg</button>' +
-            '<button type="button" data-ra="b">b) Samstag: über den Wald</button></div>' +
-            '<div class="dj-haupt"><div class="dj-bild"><svg class="graph-svg" viewBox="0 0 630 380" role="img" aria-label="Karte mit Haus, Wald, Eisdiele, Kirche und Freibad"></svg></div>' +
+        box.innerHTML = '<div class="werkstatt-knoepfe" role="group" aria-label="Aufgabe"><button type="button" data-ra="a">a) schnellster Weg</button>' +
+            '<button type="button" data-ra="b">b) Samstag: Park – Sportplatz gesperrt</button></div>' +
+            '<div class="dj-haupt"><div class="dj-bild"><svg class="graph-svg" viewBox="0 0 630 380" role="img" aria-label="Karte mit Haus, Park, Bäckerei, Sportplatz und Kino"></svg></div>' +
             '<div class="dj-seite"><div class="dj-text" aria-live="polite"></div><div class="dj-steuer werkstatt-knoepfe"></div>' +
             '<div class="route-versuche"></div></div></div>';
         var svg = box.querySelector('svg'), text = box.querySelector('.dj-text'), steuer = box.querySelector('.dj-steuer');
         var versucheBox = box.querySelector('.route-versuche');
         var route, aufgabe = 'a', versuche = { a: [], b: [] };
+        var BESTZEIT = { a: 8, b: 10 };
 
+        function karte() {
+            if (aufgabe !== 'b') return KARTE;
+            return { knoten: KARTE.knoten, kanten: KARTE.kanten.filter(function (k) { return !kantePasst(k, GESPERRT); }) };
+        }
         function laenge(r) {
             var l = 0;
             for (var i = 0; i + 1 < r.length; i++) {
@@ -1121,17 +1138,17 @@
             }
             return l;
         }
-        function nachbarnVon(n) { return nachbarn(KARTE, n).map(function (x) { return x.v; }); }
+        function nachbarnVon(n) { return nachbarn(karte(), n).map(function (x) { return x.v; }); }
         function txt(r) { return r.map(function (n) { return KARTE.knoten[n].name.replace(/^\S+ /, ''); }).join(' → '); }
 
         function zeige(meldung) {
-            var letzter = route[route.length - 1], fertig = letzter === 'F' && route.length > 1;
+            var letzter = route[route.length - 1], fertig = letzter === 'K' && route.length > 1;
             var klassen = {};
             if (!fertig) nachbarnVon(letzter).forEach(function (n) { klassen[n] = 'dj-klickbar'; });
             var hl = [];
             for (var i = 0; i + 1 < route.length; i++) hl.push([route[i], route[i + 1]]);
-            window.Graphen.zeichne(svg, KARTE, { breite: 118, hoehe: 40, gewichte: true, einheit: ' km', hlKanten: hl, hlKnoten: route, klassen: klassen });
-            text.innerHTML = '<p><b>Route:</b> ' + txt(route) + '</p><p><b>Länge:</b> ' + laenge(route) + ' km</p>' + (meldung || '');
+            window.Graphen.zeichne(svg, karte(), { breite: 118, hoehe: 40, gewichte: true, einheit: ' min', hlKanten: hl, hlKnoten: route, klassen: klassen });
+            text.innerHTML = '<p><b>Route:</b> ' + txt(route) + '</p><p><b>Fahrzeit:</b> ' + laenge(route) + ' min</p>' + (meldung || '');
             steuer.innerHTML = '';
             if (!fertig) {
                 var s = document.createElement('span');
@@ -1158,16 +1175,14 @@
 
         function gehe(n) {
             route.push(n);
-            if (n !== 'F') return zeige();
+            if (n !== 'K') return zeige();
             var l = laenge(route), m;
-            if (aufgabe === 'b' && route.indexOf('W') === -1) {
-                m = '<p class="dj-warn">Felix muss am Samstag erst noch in den Wald!</p>';
-            } else if (l === 15) {
-                m = '<p class="dj-ok">✔ Kürzer geht es nicht!</p><p>Aber woher weißt du das sicher? Hast du alle anderen Wege ausprobiert?</p>';
+            if (l === BESTZEIT[aufgabe]) {
+                m = '<p class="dj-ok">✔ Schneller geht es nicht!</p><p>Aber woher weißt du das sicher? Hast du alle anderen Wege ausprobiert?</p>';
             } else {
-                m = '<p class="dj-warn">Am Freibad! Es gibt aber noch einen kürzeren Weg' + (aufgabe === 'b' ? ' über den Wald' : '') + '.</p>';
+                m = '<p class="dj-warn">Am Kino! Es gibt aber noch einen schnelleren Weg' + (aufgabe === 'b' ? ' ohne die gesperrte Strecke' : '') + '.</p>';
             }
-            var eintrag = txt(route) + ': ' + l + ' km';
+            var eintrag = txt(route) + ': ' + l + ' min';
             if (versuche[aufgabe].indexOf(eintrag) === -1) versuche[aufgabe].push(eintrag);
             zeige(m);
         }
@@ -1175,7 +1190,7 @@
         function neu() {
             route = ['H'];
             box.querySelectorAll('[data-ra]').forEach(function (k) { k.setAttribute('aria-pressed', k.getAttribute('data-ra') === aufgabe ? 'true' : 'false'); });
-            zeige('<p>' + (aufgabe === 'a' ? 'Klicke Ort für Ort an, bis du am Freibad bist.' : 'Am Samstag muss Felix zuerst in den Wald, dann ins Freibad.') + '</p>');
+            zeige('<p>' + (aufgabe === 'a' ? 'Klicke Ort für Ort an, bis du am Kino bist.' : 'Am Samstag ist der Weg zwischen Park und Sportplatz wegen eines Stadtfests gesperrt. Er fehlt deshalb auf der Karte.') + '</p>');
         }
 
         box.querySelectorAll('[data-ra]').forEach(function (k) {
@@ -1185,7 +1200,7 @@
             var k = e.target.closest('g.knoten');
             if (!k) return;
             var n = k.getAttribute('data-id'), letzter = route[route.length - 1];
-            if (!(letzter === 'F' && route.length > 1) && nachbarnVon(letzter).indexOf(n) !== -1) gehe(n);
+            if (!(letzter === 'K' && route.length > 1) && nachbarnVon(letzter).indexOf(n) !== -1) gehe(n);
         });
         neu();
     }

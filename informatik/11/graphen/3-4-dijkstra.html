@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3.4 Dijkstra-Algorithmus | Informatik – edu-mrh.de</title>
-    <meta name="description" content="Graphen, Informatik 11 (NTG): kürzeste Wege mit dem Dijkstra-Algorithmus – Freibad-Einstieg, Schritt-für-Schritt-Vorführung passend zu Blatt 3.4, Trainer zum Selbstrechnen, Grenzen des Verfahrens und weitere Übungsaufgaben.">
+    <meta name="description" content="Graphen, Informatik 11 (NTG): kürzeste Wege mit dem Dijkstra-Algorithmus – Kino-Einstieg, Schritt-für-Schritt-Vorführung passend zu Blatt 3.4, Trainer zum Selbstrechnen, Grenzen des Verfahrens und weitere Übungsaufgaben.">
     <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
     <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
     <script defer src="https://edu-mrh.de/embed/script.js"></script>
@@ -26,7 +26,7 @@
     <aside class="sidebar">
         <div class="sidebar-header"><h3>Station 3.4</h3></div>
         <ul class="sidebar-menu">
-            <li><a href="#freibad">🏊 Ab ins Freibad</a></li>
+            <li><a href="#kino">🎬 Ab ins Kino</a></li>
             <li><a href="#schritte">🧩 Schritt für Schritt</a></li>
             <li><a href="#algorithmus">📝 Der Algorithmus</a></li>
             <li><a href="#paketdienst">✏️ Paketdienst</a></li>
@@ -60,18 +60,18 @@
             </section>
 
             <div class="phase-bar">
-                <a class="p-predict" href="#freibad">🏊 Einstieg</a><a class="p-investigate" href="#schritte">🧩 Schritt für Schritt</a><a class="p-note" href="#algorithmus">📝 Festhalten</a><a class="p-modify" href="#paketdienst">✏️ Anwenden</a><a class="p-problem" href="#grenzen">⚠️ Grenzen</a><a class="p-make" href="#training">🏋️ Üben</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+                <a class="p-predict" href="#kino">🎬 Einstieg</a><a class="p-investigate" href="#schritte">🧩 Schritt für Schritt</a><a class="p-note" href="#algorithmus">📝 Festhalten</a><a class="p-modify" href="#paketdienst">✏️ Anwenden</a><a class="p-problem" href="#grenzen">⚠️ Grenzen</a><a class="p-make" href="#training">🏋️ Üben</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
             </div>
 
-            <section id="freibad" class="phase predict">
-                <div class="phase-head"><span class="phase-icon">🏊</span><h2>Einstieg<small>Aufgabe 1: Ab ins Freibad</small></h2></div>
+            <section id="kino" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🎬</span><h2>Einstieg<small>Aufgabe 1: Ab ins Kino</small></h2></div>
                 <div class="phase-body">
-                    <p>Felix will mit seinen Freunden ins Freibad gehen. Einige von ihnen sind bereits da. Bei der Breitensuche (3.3) hat jede Kante gleich viel gezählt. Jetzt stehen Kilometer an den Wegen: Der Weg mit den wenigsten Kanten ist nicht unbedingt der kürzeste.</p>
-                    <p>Probiere Routen aus: Klicke Ort für Ort an, bis du am Freibad bist.</p>
+                    <p>Tara fährt mit dem Rad ins Kino, wo ihre Freundinnen schon warten. Bei der Breitensuche (3.3) hat jede Kante gleich viel gezählt. Jetzt stehen Fahrzeiten in Minuten an den Wegen: Der Weg mit den wenigsten Kanten ist nicht unbedingt der schnellste.</p>
+                    <p>Probiere Routen aus: Klicke Ort für Ort an, bis du am Kino bist.</p>
                     <div data-route></div>
                     <ol class="aufgaben">
-                        <li>Bestimme die kürzeste Weglänge vom Haus zum Freibad. Trage Weg und Länge auf dem Blatt ein.</li>
-                        <li>Am Samstag muss Felix zuvor noch in den Wald, um seinem Opa zu helfen. Wie lang ist sein Weg jetzt? Was fällt dir auf?</li>
+                        <li>Bestimme die kürzeste Fahrzeit vom Haus zum Kino. Trage Weg und Zeit auf dem Blatt ein.</li>
+                        <li>Am Samstag ist der Weg zwischen Park und Sportplatz wegen eines Stadtfests gesperrt. Wie lange braucht Tara jetzt? Welchen Umweg nimmt sie?</li>
                         <li><strong>Zum Nachdenken (mündlich):</strong> Woher weißt du sicher, dass es keinen kürzeren Weg gibt? Bei fünf Orten kann man noch alle Wege ausprobieren. Wie wäre das bei allen Orten in Deutschland?</li>
                     </ol>
                     <p><a class="ab-verweis" href="arbeitsblaetter/ab-3-4-dijkstra.pdf">📝 Blatt 3.4 · Aufgabe 1</a></p>
@@ -81,22 +81,22 @@
             <section id="schritte" class="phase investigate">
                 <div class="phase-head"><span class="phase-icon">🧩</span><h2>Schritt für Schritt<small>Aufgabe 2: Die Tabelle</small></h2></div>
                 <div class="phase-body">
-                    <p>Statt alle Wege auszuprobieren, geht man <strong>systematisch</strong> vor. Dazu bekommen die Orte Buchstaben (H, K, W, E, F) und jeder Knoten eine <strong>Pfadlänge</strong>: die Länge des kürzesten Weges von H, den man bisher kennt. Am Anfang kennt man nur H selbst (0). Alle anderen stehen auf ∞.</p>
+                    <p>Statt alle Wege auszuprobieren, geht man <strong>systematisch</strong> vor. Dazu bekommen die Orte Buchstaben (H, B, P, S, K) und jeder Knoten eine <strong>Pfadlänge</strong>: die Länge des kürzesten Weges von H, den man bisher kennt. Am Anfang kennt man nur H selbst (0). Alle anderen stehen auf ∞.</p>
                     <div class="konzept">
                         <h4>So liest du Bild und Tabelle (wie auf dem Blatt)</h4>
-                        <p>🟧 <strong>Orange</strong> ist der aktuell besuchte Knoten. Nur über seine <strong>direkten</strong> Kanten (dick) darfst du Pfadlängen updaten: Pfadlänge des orangen Knotens + Kantengewicht. Ist das kleiner als der bisherige Wert, streichst du den alten durch (<s>9</s> <b style="color:#15803d">7</b>).<br>
+                        <p>🟧 <strong>Orange</strong> ist der aktuell besuchte Knoten. Nur über seine <strong>direkten</strong> Kanten (dick) darfst du Pfadlängen updaten: Pfadlänge des orangen Knotens + Kantengewicht. Ist das kleiner als der bisherige Wert, streichst du den alten durch (<s>4</s> <b style="color:#15803d">3</b>).<br>
                         🟦 <strong>Blau</strong> sind fertige Knoten. Ihre Pfadlänge ändert sich nicht mehr.<br>
                         Jede Tabellenzeile ist ein Schritt. In jedem Schritt wird genau ein neuer Knoten orange.</p>
                     </div>
                     <p>Klicke dich mit <strong>Weiter ▶</strong> durch Schritt 1 und 2. Sie stehen auch auf dem Blatt. Ab Schritt 3 bist du dran. Mit <strong>✍️ Selbst rechnen</strong> kontrollierst du deine Tabelle Zeile für Zeile.</p>
-                    <div data-dj="freibad" data-dj-modus="beide"></div>
+                    <div data-dj="kino" data-dj-modus="beide"></div>
                     <ol class="aufgaben">
-                        <li>Vergleiche Schritt 1 und 2 mit dem Blatt. Warum steht bei W in Schritt 2 eine 7 statt der 9? Über welchen Weg kommt man auf 7?</li>
+                        <li>Vergleiche Schritt 1 und 2 mit dem Blatt. Warum steht bei P in Schritt 2 eine 3 statt der 4? Über welchen Weg kommt man auf 3?</li>
                         <li><strong>Blatt, Aufgabe 2:</strong> Fülle die Tabellen für Schritt 3 bis 5 aus. Färbe in Schritt 4 und 5 die Kopfzeile selbst ein (orange bzw. blau).</li>
-                        <li>Kontrolliere mit <strong>✍️ Selbst rechnen</strong>. Am Ende fragt dich der Trainer nach dem kürzesten Weg von H nach F.</li>
+                        <li>Kontrolliere mit <strong>✍️ Selbst rechnen</strong>. Am Ende fragt dich der Trainer nach dem kürzesten Weg von H nach K.</li>
                     </ol>
-                    <details class="denk"><summary>Denkanstoß: Warum ist in Schritt 3 W dran und nicht E?</summary>
-                        <p>Nach Schritt 2 haben W (7), E (14) und F (17) eine Pfadlänge. Könnte E später noch kürzer als 14 werden? Und W kürzer als 7? Überlege, welche Kanten dafür noch übrig wären.</p>
+                    <details class="denk"><summary>Denkanstoß: Warum ist in Schritt 3 P dran und nicht S?</summary>
+                        <p>Nach Schritt 2 haben P (3), S (8) und K (12) eine Pfadlänge. Könnte S später noch kürzer als 8 werden? Und P kürzer als 3? Überlege, welche Kanten dafür noch übrig wären.</p>
                     </details>
                     <p><a class="ab-verweis" href="arbeitsblaetter/ab-3-4-dijkstra.pdf">📝 Blatt 3.4 · Aufgabe 2</a></p>
                 </div>
@@ -138,13 +138,13 @@
             <section id="paketdienst" class="phase modify">
                 <div class="phase-head"><span class="phase-icon">✏️</span><h2>Anwenden<small>Aufgabe 4a: Paketdienst</small></h2></div>
                 <div class="phase-body">
-                    <p>Ein Transportunternehmen muss seine Pakete möglichst schnell ausliefern. Ermittle auf dem Blatt mit dem Dijkstra-Algorithmus die kürzeste Verbindung zwischen Frankfurt und München und gib die Besuchsreihenfolge an. Die Tabelle hat diesmal eine Zeile pro Schritt. Färbe in jeder Zeile den orangen und die blauen Knoten.</p>
+                    <p>Ein Paketdienst liefert vom Lager in Ahornheim aus, ein Eilpaket muss nach Wolkenried. Ermittle auf dem Blatt mit dem Dijkstra-Algorithmus die kürzeste Strecke und gib die Besuchsreihenfolge an. Die Tabelle hat diesmal eine Zeile pro Schritt. Färbe in jeder Zeile den orangen und die blauen Knoten. Hör auf, sobald die kürzeste Strecke feststeht: Müssen dafür wirklich alle Orte blau werden?</p>
                     <p>Erst rechnen, dann kontrollieren: Für diesen Graphen gibt es keine Vorführung, nur den Trainer.</p>
-                    <div data-dj="deutschland" data-dj-modus="rechnen"></div>
+                    <div data-dj="paket" data-dj-modus="rechnen"></div>
                     <div class="lw" data-loesungsweg="Aufgabe 4a">
-                        <template data-stufe="Tipp 1"><p>Von Frankfurt aus sind nur Mannheim (85) und Würzburg (119) direkt erreichbar. Alle anderen Städte bleiben in Zeile 1 bei ∞.</p></template>
-                        <template data-stufe="Tipp 2"><p>Nach Würzburg haben Erfurt, Augsburg und Nürnberg eine Pfadlänge. Achte auf München: Es wird zuerst über Nürnberg erreicht. Prüfe, ob es über Augsburg kürzer geht. Karlsruhe → Augsburg lohnt sich übrigens nicht.</p></template>
-                        <template data-stufe="Lösung" data-halten><p>Besuchsreihenfolge: Frankfurt, Mannheim, Würzburg, Karlsruhe, Nürnberg, Augsburg, Erfurt, München.<br>München bekommt über Nürnberg zuerst 398 und dann über Augsburg 349.<br>Kürzeste Strecke: <strong>Frankfurt – Würzburg – Augsburg – München, 349 km</strong>.</p></template>
+                        <template data-stufe="Tipp 1"><p>Von Ahornheim aus sind nur Bachwies (40) und Mühlhafen (70) direkt erreichbar. Alle anderen Orte bleiben in Zeile 1 bei ∞. Achte schon in Zeile 2 auf Mühlhafen: Geht es über Bachwies kürzer?</p></template>
+                        <template data-stufe="Tipp 2"><p>Nach Mühlhafen ist Krähfeld dran, obwohl es gar kein Nachbar von Mühlhafen ist. Das ist richtig so: Man <em>springt</em> immer zu dem nicht fertigen Ort mit der kleinsten Pfadlänge, egal wo er liegt. Wolkenried wird zuerst über Krähfeld erreicht. Prüfe, ob es über Salzbrück kürzer geht.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>Besuchsreihenfolge: Ahornheim, Bachwies, Mühlhafen, Krähfeld, Salzbrück, Wolkenried. Nach Schritt 6 ist Wolkenried fertig: Hier darf man aufhören, Glimmerau (155) und Fuchsmoor (170) müssen nicht mehr fertig werden.<br>Mühlhafen bekommt erst 70 und dann über Bachwies 65. Wolkenried bekommt über Krähfeld zuerst 190 und dann über Salzbrück 145, Glimmerau erst 175 und dann 155.<br>Kürzeste Strecke: <strong>Ahornheim – Bachwies – Mühlhafen – Salzbrück – Wolkenried, 145 km</strong>.</p></template>
                     </div>
                     <p><a class="ab-verweis" href="arbeitsblaetter/ab-3-4-dijkstra.pdf">📝 Blatt 3.4 · Aufgabe 4a</a></p>
                 </div>
@@ -209,15 +209,15 @@
                     </div>
 
                     <div class="uebung">
-                        <h3>Übung 5: Bergauf zur Kirche</h3>
-                        <p>Zurück zum Freibad-Graphen aus Aufgabe 2. Felix fährt jetzt mit dem Rad. Die Kirche liegt auf einem Hügel, deshalb braucht er auf allen Wegen von und zur Kirche doppelt so lange. Die Gewichte sind jetzt Minuten: H–K 4, W–K 10, K–E 24, K–F 30, alle anderen wie bisher (H–W 9, W–E 5, E–F 3).</p>
+                        <h3>Übung 5: Bergauf zur Bäckerei</h3>
+                        <p>Zurück zum Kino-Graphen aus Aufgabe 2. Die Bäckerei liegt oben auf einem Hügel. Tara braucht deshalb auf allen Wegen von und zur Bäckerei doppelt so lange: H–B 2, B–P 4, B–S 14, B–K 22, alle anderen wie bisher (H–P 4, P–S 3, S–K 2).</p>
                         <ol class="aufgaben">
                             <li>Führe den Dijkstra-Algorithmus von H aus mit einer Tabelle auf Papier durch.</li>
-                            <li>Welcher Weg ist jetzt der schnellste? Vergleiche mit Aufgabe 1: Was ändert sich, wenn die Gewichte etwas anderes bedeuten?</li>
+                            <li>Welcher Weg ist jetzt der schnellste? Vergleiche mit Aufgabe 1: Was ändert sich, wenn sich die Gewichte ändern?</li>
                         </ol>
                         <div class="lw" data-loesungsweg="Übung 5">
-                            <template data-stufe="Tipp"><p>Schritt 1: K bekommt 4, W bekommt 9. Schritt 2 (K orange): Über K wäre W bei 4 + 10 = 14. Ist das besser als 9?</p></template>
-                            <template data-stufe="Lösung" data-halten><p>Reihenfolge H, K, W, E, F. Endwerte: H 0, K 4, W 9, E 14 (K bot erst 28), F 17 (K bot erst 34).<br>Schnellster Weg: H – W – E – F mit 17 Minuten. Der Umweg über die Kirche lohnt sich nicht mehr. Der Algorithmus bleibt gleich, nur die Bedeutung der Gewichte ändert sich.</p></template>
+                            <template data-stufe="Tipp"><p>Schritt 1: B bekommt 2, P bekommt 4. Schritt 2 (B orange): Über B wäre P bei 2 + 4 = 6. Ist das besser als 4?</p></template>
+                            <template data-stufe="Lösung" data-halten><p>Reihenfolge H, B, P, S, K. Endwerte: H 0, B 2, P 4 (B bot nur 6), S 7 (B bot erst 16), K 9 (B bot erst 24).<br>Schnellster Weg: H – P – S – K mit 9 Minuten. Der Umweg über die Bäckerei lohnt sich nicht mehr. Der Algorithmus bleibt gleich, nur die Gewichte sind andere.</p></template>
                         </div>
                     </div>
 
@@ -277,18 +277,18 @@
                 <details>
                     <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
                     <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-3-4-dijkstra-lsg.pdf">Lösung Blatt 3.4 (PDF)</a>
-                        <a class="btn btn-outline btn-sm" href="3-4 Dijkstra.pdf">Altes Blatt 3-4 (PDF)</a></p>
-                    <p><strong>Aufbau wie im bisherigen Blatt 3-4:</strong> A0 Freibad wird Aufgabe 1, A1 Tabellen Schritt 1 bis 5 wird Aufgabe 2, A2 Karten „Hello WORLD“ wird Aufgabe 3, A3 Paketdienst wird Aufgabe 4. Graphen, Zahlen und Farben (orange aktuell, blau fertig) sind unverändert. Schritt 1 und 2 sind vorgegeben, die Kopfzeilen von Schritt 4 und 5 färben die Schüler:innen selbst ein.</p>
+</p>
+                    <p><strong>Aufbau:</strong> Aufgabe 1 Weg zum Kino (Routenplaner, b mit gesperrtem Weg), Aufgabe 2 Tabellen Schritt 1 bis 5, Aufgabe 3 Karten „Hello WORLD“, Aufgabe 4 Paketdienst. Farben: orange aktuell, blau fertig. Schritt 1 und 2 sind vorgegeben, die Kopfzeilen von Schritt 4 und 5 färben die Schüler:innen selbst ein. Im Kino-Graphen wird in jedem Schritt eine Länge kürzer (Umweg schlägt direkten Weg). Im Paketdienst muss man zweimal zu einem Knoten <em>springen</em>, der kein Nachbar des letzten orangen Knotens ist (Mühlhafen → Krähfeld → Salzbrück), und nach Schritt 6 ist Wolkenried fertig, obwohl Glimmerau und Fuchsmoor noch offen sind. Der Trainer endet dort ebenfalls.</p>
                     <table>
                         <thead><tr><th>Änderung</th><th>Grund</th></tr></thead>
                         <tbody>
                             <tr><td>Karte L enthält jetzt auch „wähle den nicht fertigen Knoten mit der kleinsten Pfadlänge“, Karte D „markiere als fertig, wiederhole“.</td><td>Auf den alten Karten fehlte die Auswahlregel, also der Kern des Algorithmus. Das Lösungswort bleibt WORLD.</td></tr>
                             <tr><td>Bilder je Schritt zeigen die dicken Kanten, die geprüft werden.</td><td>Veranschaulicht „nur direkte Kanten vom aktuellen Knoten“.</td></tr>
-                            <tr><td>Aufgabe 4 hat 8 statt 9 Zeilen, eine pro Schritt.</td><td>Wie in Aufgabe 2. Die alte 9. Zeile (alles blau) brachte nichts Neues.</td></tr>
-                            <tr><td>Lösung 4: Tabellenkopf „ausgehend von Frankfurt“ (alt: München). Lösung 4b(i): gerichtete Graphen gehen ohne Zusatzbedingung (alt: „muss stark zusammenhängend sein“).</td><td>Fehler in der alten Lösung. Nicht erreichbare Knoten behalten einfach ∞, siehe (iii).</td></tr>
+                            <tr><td>Aufgabe 4 hat 7 Zeilen, eine pro Schritt und eine Reserve. Gebraucht werden 6.</td><td>Die Schüler:innen sollen selbst merken, wann sie aufhören dürfen.</td></tr>
+                            <tr><td>Lösung 4b(i): gerichtete Graphen gehen ohne Zusatzbedingung.</td><td>Nicht erreichbare Knoten behalten einfach ∞, siehe (iii).</td></tr>
                         </tbody>
                     </table>
-                    <p class="mt-2"><strong>Website:</strong> Die Vorführung des Freibad-Graphen stoppt nach Schritt 2 (wie auf dem Blatt vorgegeben). Schritt 3 bis 5 und der Paketdienst sind nur über den Trainer „Selbst rechnen“ prüfbar: Er meldet richtig/falsch je Zelle, zeigt aber keine Werte. Lösungen zu 4a/4b und zu den Übungen stehen gestuft hinter Tipps und erscheinen erst nach 1,5 s Gedrückthalten. Bei Gleichstand akzeptiert der Trainer jeden Knoten mit kleinster Pfadlänge. Die Vorführung nimmt dann den weiter links stehenden.</p>
+                    <p class="mt-2"><strong>Website:</strong> Die Vorführung des Kino-Graphen stoppt nach Schritt 2 (wie auf dem Blatt vorgegeben). Schritt 3 bis 5 und der Paketdienst sind nur über den Trainer „Selbst rechnen“ prüfbar: Er meldet richtig/falsch je Zelle, zeigt aber keine Werte. Lösungen zu 4a/4b und zu den Übungen stehen gestuft hinter Tipps und erscheinen erst nach 1,5 s Gedrückthalten. Bei Gleichstand akzeptiert der Trainer jeden Knoten mit kleinster Pfadlänge. Die Vorführung nimmt dann den weiter links stehenden.</p>
                     <p><strong>Grenzen (4b):</strong> Die Vorführungen „Einbahnstraßen“, „Negative Kante“ (Gegenbeispiel aus der alten Lösung: A → B 1, B → C 1, A → D 4, D → C −3) und „Zwei Inseln“ machen (i) bis (iii) sichtbar. Bei der negativen Kante wird der Moment hervorgehoben, in dem ein schon fertiger Knoten verbessert werden müsste.</p>
                 </details>
             </section>

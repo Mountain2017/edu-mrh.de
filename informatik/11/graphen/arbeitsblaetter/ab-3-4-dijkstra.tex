@@ -1,9 +1,9 @@
 \documentclass[11pt,a4paper]{article}
 \input{ab-vorlage}
 
-% ---------- Freibad-Graph (Aufgabe 2), klein, ein Bild je Schritt ----------
+% ---------- Kino-Graph (Aufgabe 2), klein, ein Bild je Schritt ----------
 % \fbgraph{aktueller Knoten}{fertige Knoten}{Kanten, die geprüft werden}{Beschriftungen}
-% Beschriftungen mit \lH{…}, \lK{…}, \lW{…}, \lE{…}, \lF{…} (Pfadlänge am Knoten)
+% Beschriftungen mit \lH{…}, \lB{…}, \lP{…}, \lS{…}, \lK{…} (Pfadlänge am Knoten)
 \tikzset{
   dj/.style={draw,circle,minimum size=5.6mm,inner sep=0pt,font=\scriptsize\bfseries,fill=white},
   djkante/.style={gray!70!black,line width=0.6pt},
@@ -12,23 +12,23 @@
   djl/.style={font=\scriptsize\bfseries,text=blue!60!black,inner sep=1pt},
 }
 \newcommand{\lH}[1]{\node[djl,anchor=east] at (H.west) {#1};}
-\newcommand{\lK}[1]{\node[djl,anchor=north] at (K.south) {#1};}
-\newcommand{\lW}[1]{\node[djl,anchor=south] at (W.north) {#1};}
-\newcommand{\lE}[1]{\node[djl,anchor=south] at (E.north) {#1};}
-\newcommand{\lF}[1]{\node[djl,anchor=north] at (F.south) {#1};}
-\newcommand{\fbgraph}[4]{\begin{tikzpicture}[x=1.05cm,y=0.68cm,baseline=(current bounding box.center)]
-  \foreach \n/\x/\y in {H/0/0.75, W/1.35/1.55, E/2.75/1.55, K/2.2/0, F/3.85/0.75} {\coordinate (\n) at (\x,\y);}
-  \foreach \a/\b/\w/\p in {H/W/9/left, H/K/2/below, W/E/5/above, W/K/5/left, K/E/12/right, E/F/3/above right, K/F/15/below right} {\draw[djkante] (\a) -- node[djgew,\p,pos=0.5] {\w} (\b);}
+\newcommand{\lB}[1]{\node[djl,anchor=north] at (B.south) {#1};}
+\newcommand{\lP}[1]{\node[djl,anchor=south] at (P.north) {#1};}
+\newcommand{\lS}[1]{\node[djl,anchor=south] at (S.north) {#1};}
+\newcommand{\lK}[1]{\node[djl,anchor=west] at (K.east) {#1};}
+\newcommand{\fbgraph}[4]{\begin{tikzpicture}[x=0.9cm,y=0.62cm,baseline=(current bounding box.center)]
+  \foreach \n/\x/\y in {H/0/0.9, P/1.35/1.8, B/1.35/0, S/2.75/1.8, K/4.0/0.9} {\coordinate (\n) at (\x,\y);}
+  \foreach \a/\b/\w/\p in {H/P/4/above left, H/B/1/below left, B/P/2/left, P/S/3/above, B/S/7/right, S/K/2/above right, B/K/11/below right} {\draw[djkante] (\a) -- node[djgew,\p,pos=0.5] {\w} (\b);}
   \foreach \a/\b in {#3} {\draw[djpruef] (\a) -- (\b);}
-  \foreach \n in {H,W,E,K,F} {\node[dj] (\n) at (\n) {\n};}
+  \foreach \n in {H,B,P,S,K} {\node[dj] (\n) at (\n) {\n};}
   \foreach \n in {#2} {\node[dj,fill=djfertig] at (\n) {\n};}
   \ifstrempty{#1}{}{\node[dj,fill=djaktuell,draw=orange!80!black,line width=1pt] at (#1) {#1};}
   #4
 \end{tikzpicture}}
-% Tabelle eines Schritts: \fbtab{Farben H K W E F}{H}{K}{W}{E}{F}
+% Tabelle eines Schritts: \fbtab{Farben H B P S K}{H}{B}{P}{S}{K}
 % Farbe je Knoten: a = aktuell (orange), f = fertig (blau), {} = ohne
 \newcommand{\fbfarbe}[1]{\ifstrequal{#1}{a}{\cellcolor{djaktuell}}{\ifstrequal{#1}{f}{\cellcolor{djfertig}}{}}}
-\newcommand{\fbkopf}[5]{\fbfarbe{#1}\textbf{H} & \fbfarbe{#2}\textbf{K} & \fbfarbe{#3}\textbf{W} & \fbfarbe{#4}\textbf{E} & \fbfarbe{#5}\textbf{F}}
+\newcommand{\fbkopf}[5]{\fbfarbe{#1}\textbf{H} & \fbfarbe{#2}\textbf{B} & \fbfarbe{#3}\textbf{P} & \fbfarbe{#4}\textbf{S} & \fbfarbe{#5}\textbf{K}}
 \newcommand{\fbtab}[6]{{\renewcommand{\arraystretch}{1}\setlength{\tabcolsep}{2pt}%
   \begin{tabularx}{\linewidth}{|*{5}{>{\centering\arraybackslash}X|}}\hline
   \expandafter\fbkopf#1\\\hline
@@ -42,42 +42,42 @@
 % ---------- Icons für die Karte (Aufgabe 1) ----------
 \newcommand{\ihaus}{\begin{tikzpicture}[scale=0.32,orange!85!black,line width=0.6pt]\draw (0,0) rectangle (1.2,0.9); \draw (-0.15,0.85) -- (0.6,1.45) -- (1.35,0.85); \draw (0.45,0) rectangle (0.75,0.45);\end{tikzpicture}}
 \newcommand{\iwald}{\begin{tikzpicture}[scale=0.32,green!40!black,line width=0.6pt]\foreach \x/\h in {0/1.1,0.75/1.5,1.5/1.1}{\draw (\x-0.35,0.2) -- (\x,0.2+\h) -- (\x+0.35,0.2) -- cycle; \draw (\x,0) -- (\x,0.2);}\end{tikzpicture}}
-\newcommand{\ikirche}{\begin{tikzpicture}[scale=0.32,black!80,line width=0.6pt]\draw (0,0) rectangle (1.2,0.8); \draw (-0.1,0.75) -- (0.6,1.3) -- (1.3,0.75); \draw (0.6,1.3) -- (0.6,1.75) (0.4,1.55) -- (0.8,1.55); \draw (0.45,0) rectangle (0.75,0.45);\end{tikzpicture}}
-\newcommand{\ieis}{\begin{tikzpicture}[scale=0.32,brown!70!black,line width=0.6pt]\draw (0.25,0.8) -- (0.6,-0.2) -- (0.95,0.8); \draw (0.4,1.05) circle (0.27); \draw (0.8,1.05) circle (0.27); \draw (0.6,1.4) circle (0.27);\end{tikzpicture}}
-\newcommand{\ibad}{\begin{tikzpicture}[scale=0.32,cyan!60!black,line width=0.6pt]\foreach \y in {0,0.35}{\draw (0,\y) sin (0.25,\y+0.15) cos (0.5,\y) sin (0.75,\y+0.15) cos (1,\y) sin (1.25,\y+0.15) cos (1.5,\y);} \draw (1.1,0.7) -- (1.1,1.3) -- (1.5,1.3); \draw (0.2,0.9) -- (0.9,1.3);\end{tikzpicture}}
+\newcommand{\ibaeck}{\begin{tikzpicture}[scale=0.32,brown!70!black,line width=0.6pt]\draw (0,0.15) .. controls (0,1.0) and (1.5,1.0) .. (1.5,0.15) -- cycle; \draw (0.35,0.35) -- (0.5,0.7) (0.7,0.3) -- (0.85,0.72) (1.05,0.35) -- (1.15,0.65);\end{tikzpicture}}
+\newcommand{\isport}{\begin{tikzpicture}[scale=0.32,green!45!black,line width=0.6pt]\draw (0,0) rectangle (1.6,1.05); \draw (0.8,0) -- (0.8,1.05); \draw (0.8,0.525) circle (0.24); \draw (0,0.3) rectangle (0.2,0.75) (1.4,0.3) rectangle (1.6,0.75);\end{tikzpicture}}
+\newcommand{\ikino}{\begin{tikzpicture}[scale=0.32,violet!70!black,line width=0.6pt]\draw (0,0) rectangle (1.6,1.05); \foreach \x in {0.12,0.5,0.88,1.26} {\draw (\x,0.08) rectangle (\x+0.2,0.24); \draw (\x,0.81) rectangle (\x+0.2,0.97);} \draw (0.65,0.36) -- (0.65,0.69) -- (0.98,0.525) -- cycle;\end{tikzpicture}}
 \tikzset{ort/.style={draw,rounded corners=2pt,minimum width=11mm,minimum height=8.5mm,inner sep=1pt,fill=white},
          ortname/.style={font=\scriptsize,inner sep=1pt}}
 
-% ---------- Städte (Aufgabe 4) ----------
+% ---------- Orte (Aufgabe 4) ----------
 \tikzset{stadt/.style={draw,ellipse,inner sep=1.2pt,font=\scriptsize,fill=white}}
 
 \begin{document}
 \abtitel{3.4}{Der Dijkstra-Algorithmus}
 
-\begin{aufgabe}[Ab ins Freibad]{1}
+\begin{aufgabe}[Ab ins Kino]{1}
 \begin{minipage}[t]{0.55\linewidth}
 \vspace{0pt}\raggedright
-Felix will mit seinen Freunden ins Freibad gehen. Einige von ihnen sind bereits da.\\[1mm]
-\textbf{a)} Bestimme die kürzeste Weglänge vom Haus zum Freibad.\\[3.5mm]
-Weg: \lsg[3.9cm]{H – K – W – E – F}\enspace Länge: \lsg[1.5cm]{15}\,km\\[1.5mm]
-\textbf{b)} Am Samstag muss Felix zuvor noch in den Wald, um seinem Opa zu helfen. Wie lang ist sein Weg jetzt?\\[3.5mm]
-Weg: \lsg[3.9cm]{H – K – W – E – F}\enspace Länge: \lsg[1.5cm]{15}\,km
+Tara fährt mit dem Rad ins Kino, wo ihre Freundinnen schon warten. An den Wegen steht die Fahrzeit in Minuten.\\[1mm]
+\textbf{a)} Bestimme die kürzeste Fahrzeit vom Haus zum Kino.\\[3.5mm]
+Weg: \lsg[3.9cm]{H – B – P – S – K}\enspace Zeit: \lsg[1.5cm]{8}\,min\\[1.5mm]
+\textbf{b)} Am Samstag ist der Weg zwischen Park und Sportplatz wegen eines Stadtfests gesperrt. Wie lange braucht Tara jetzt?\\[3.5mm]
+Weg: \lsg[3.9cm]{H – B – S – K}\enspace Zeit: \lsg[1.5cm]{10}\,min
 \end{minipage}\hfill
 \begin{minipage}[t]{0.43\linewidth}
 \vspace{0pt}\centering
 \begin{tikzpicture}[x=1cm,y=1cm]
-  \node[ort,draw=orange!85!black] (H) at (0,1.2) {\ihaus};
-  \node[ort] (W) at (1.7,2.35) {\iwald};
-  \node[ort] (E) at (4.3,2.35) {\ieis};
-  \node[ort,draw=cyan!60!black] (F) at (5.6,1.2) {\ibad};
-  \node[ort] (K) at (2.9,0) {\ikirche};
-  \foreach \a/\b/\w/\p in {H/W/9 km/above left, H/K/2 km/below left, W/E/5 km/above, W/K/5 km/left, K/E/12 km/right, E/F/3 km/above right, K/F/15 km/below right}
-    {\draw[djkante] (\a) -- node[djgew,\p,pos=0.42] {\w} (\b);}
+  \node[ort,draw=orange!85!black] (H) at (0,1.25) {\ihaus};
+  \node[ort] (P) at (1.7,2.5) {\iwald};
+  \node[ort] (B) at (1.7,0) {\ibaeck};
+  \node[ort] (S) at (4.1,2.5) {\isport};
+  \node[ort,draw=violet!70!black] (K) at (5.7,1.25) {\ikino};
+  \foreach \a/\b/\w/\p in {H/P/4 min/above left, H/B/1 min/above right, B/P/2 min/left, P/S/3 min/above, B/S/7 min/below right, S/K/2 min/above right, B/K/11 min/below right}
+    {\draw[djkante] (\a) -- node[djgew,\p,pos=0.5] {\w} (\b);}
   \node[ortname,below=0pt of H] {Haus (H)};
-  \node[ortname,above=0pt of W] {Wald (W)};
-  \node[ortname,above=0pt of E] {Eisdiele (E)};
-  \node[ortname,below=0pt of F] {Freibad (F)};
-  \node[ortname,below=0pt of K] {Kirche (K)};
+  \node[ortname,above=0pt of P] {Park (P)};
+  \node[ortname,below=0pt of B] {Bäckerei (B)};
+  \node[ortname,above=0pt of S] {Sportplatz (S)};
+  \node[ortname,below=0pt of K] {Kino (K)};
 \end{tikzpicture}
 \end{minipage}
 \end{aufgabe}
@@ -87,20 +87,20 @@ Weg: \lsg[3.9cm]{H – K – W – E – F}\enspace Länge: \lsg[1.5cm]{15}\,km
 Notiere den Ablauf in den Tabellen. Knoten H ist der Startpunkt, Schritt 1 und 2 sind schon eingetragen. Du kannst in jedem Schritt nur die Knoten bzw. die Länge zu ihnen (ausgehend von H) updaten, wenn es eine \underline{direkte} Kante ausgehend vom aktuell besuchten Knoten gibt (dicke Kanten im Bild). Wird eine Länge kleiner, streiche die alte durch.\\[1mm]
 {\small\colorbox{djaktuell}{\strut orange} aktuell besuchter Knoten\qquad
 \colorbox{djfertig}{\strut blau} fertiger Knoten\qquad
-\alt{9}~\neu{7} alte und neue Länge}
+\alt{4}~\neu{3} alte und neue Länge}
 \end{aufgabe}
 \vspace{-1mm}
 \noindent\hspace*{5.3cm}{\small\textbf{Knoten und Pfadlänge ausgehend von H}}\hfill\web{Schritt für Schritt}\par\vspace{0.5mm}
-\schritt{1}{\fbgraph{H}{}{H/W,H/K}{\lH{0}\lK{2}\lW{9}}}
-  {\fbtab{a{}{}{}{}}{0}{2}{9}{$\infty$}{$\infty$}}
-\schritt{2}{\fbgraph{K}{H}{K/W,K/E,K/F}{\lH{0}\lK{2}\lW{\alt{9}\,\neu{7}}\lE{14}\lF{17}}}
-  {\fbtab{fa{}{}{}}{0}{2}{\alt{9}\ \neu{7}}{14}{17}}
-\schritt{3}{\fbgraph{W}{H,K}{W/E}{\lH{0}\lK{2}\lW{7}\ifloesung\lE{\lsgfarbe\sout{14}\,12}\lF{\lsgfarbe 17}\fi}}
-  {\fbtab{ffa{}{}}{0}{2}{\lsgtext{7}}{\lsgtext{\sout{14}\ 12}}{\lsgtext{17}}}
-\schritt{4}{\fbgraph{E}{H,K,W}{E/F}{\lH{0}\lK{2}\lW{7}\ifloesung\lE{\lsgfarbe 12}\lF{\lsgfarbe\sout{17}\,15}\fi}}
-  {\fbtab{\fbvier}{\lsgtext{0}}{\lsgtext{2}}{\lsgtext{7}}{\lsgtext{12}}{\lsgtext{\sout{17}\ 15}}}
-\schritt{5}{\fbgraph{F}{H,K,W,E}{}{\lH{0}\lK{2}\lW{7}\ifloesung\lE{\lsgfarbe 12}\lF{\lsgfarbe 15}\fi}}
-  {\fbtab{\fbfuenf}{\lsgtext{0}}{\lsgtext{2}}{\lsgtext{7}}{\lsgtext{12}}{\lsgtext{15}}}
+\schritt{1}{\fbgraph{H}{}{H/P,H/B}{\lH{0}\lB{1}\lP{4}}}
+  {\fbtab{a{}{}{}{}}{0}{1}{4}{$\infty$}{$\infty$}}
+\schritt{2}{\fbgraph{B}{H}{B/P,B/S,B/K}{\lH{0}\lB{1}\lP{\alt{4}\,\neu{3}}\lS{8}\lK{12}}}
+  {\fbtab{fa{}{}{}}{0}{1}{\alt{4}\ \neu{3}}{8}{12}}
+\schritt{3}{\fbgraph{P}{H,B}{P/S}{\lH{0}\lB{1}\lP{3}\ifloesung\lS{\lsgfarbe\sout{8}\,6}\lK{\lsgfarbe 12}\fi}}
+  {\fbtab{ffa{}{}}{0}{1}{\lsgtext{3}}{\lsgtext{\sout{8}\ 6}}{\lsgtext{12}}}
+\schritt{4}{\fbgraph{S}{H,B,P}{S/K}{\lH{0}\lB{1}\lP{3}\ifloesung\lS{\lsgfarbe 6}\lK{\lsgfarbe\sout{12}\,8}\fi}}
+  {\fbtab{\fbvier}{\lsgtext{0}}{\lsgtext{1}}{\lsgtext{3}}{\lsgtext{6}}{\lsgtext{\sout{12}\ 8}}}
+\schritt{5}{\fbgraph{K}{H,B,P,S}{}{\lH{0}\lB{1}\lP{3}\ifloesung\lS{\lsgfarbe 6}\lK{\lsgfarbe 8}\fi}}
+  {\fbtab{\fbfuenf}{\lsgtext{0}}{\lsgtext{1}}{\lsgtext{3}}{\lsgtext{6}}{\lsgtext{8}}}
 
 \newpage
 \begin{aufgabe}[Der Algorithmus]{3}
@@ -119,42 +119,41 @@ Bringe die Schritte des Dijkstra-Algorithmus in eine sinnvolle Reihenfolge. Die 
 \begin{aufgabe}[Paketdienst]{4}
 \begin{minipage}[t]{0.55\linewidth}
 \vspace{0pt}\raggedright
-Ein Transportunternehmen muss seine Pakete möglichst schnell ausliefern.\\[0.5mm]
-\textbf{a)} Ermittle mithilfe des Dijkstra-Algorithmus die kürzeste Verbindungsstrecke zwischen Frankfurt und München. Gib auch die Besuchsreihenfolge an.\\[0.5mm]
-\textbf{b)} Recherchiere im Internet oder probiere auf der Website aus, ob der Algorithmus bei der jeweiligen Eigenschaft ausführbar ist:
-(i) gerichteter Graph, (ii) negative Kantengewichte, (iii) nicht zusammenhängender Graph.
+Ein Paketdienst liefert vom Lager in Ahornheim aus. Ein Eilpaket muss nach Wolkenried.\\[0.5mm]
+\textbf{a)} Ermittle mit dem Dijkstra-Algorithmus die kürzeste Strecke von Ahornheim nach Wolkenried und die Besuchsreihenfolge. Hör auf, sobald die kürzeste Strecke feststeht.\\[0.5mm]
+\textbf{b)} Recherchiere oder probiere auf der Website aus, ob der Algorithmus ausführbar ist bei: (i) gerichtetem Graph, (ii) negativen Kantengewichten, (iii) nicht zusammenhängendem Graph.
 \end{minipage}\hfill
 \begin{minipage}[t]{0.43\linewidth}
 \vspace{0pt}\centering
-\begin{tikzpicture}[x=0.9cm,y=0.78cm]
-  \foreach \n/\t/\x/\y in {Fr/Frankfurt/2.5/3.3, Ma/Mannheim/0.4/2.6, Wu/Würzburg/4.6/2.75, Er/Erfurt/6.6/3.9, Ka/Karlsruhe/1.2/1.35, Nu/Nürnberg/6.3/1.45, Au/Augsburg/3.3/0.55, Mu/München/5.7/-0.05}
+\begin{tikzpicture}[x=0.755cm,y=0.72cm]
+  \foreach \n/\t/\x/\y in {A/Ahornheim/0.6/3.2, B/Bachwies/2.4/4.4, M/Mühlhafen/2.5/2.2, K/Krähfeld/5.4/4.4, S/Salzbrück/4.6/1.3, G/Glimmerau/1.2/0.2, F/Fuchsmoor/7.3/3.2, W/Wolkenried/6.6/0.2}
     {\coordinate (\n) at (\x,\y);}
-  \foreach \a/\b/\w/\p in {Fr/Ma/85/above left, Fr/Wu/119/below left, Wu/Er/193/below right, Wu/Nu/109/right, Wu/Au/150/left, Ma/Ka/70/left, Ka/Au/230/below left, Au/Mu/80/below left, Nu/Mu/170/right}
+  \foreach \a/\b/\w/\p in {A/B/40/above left, A/M/70/below left, B/M/25/right, B/K/60/above, M/S/50/above right, M/G/110/left, K/W/90/left, K/F/70/above right, S/W/30/below left, S/G/40/below right}
     {\draw[djkante] (\a) -- node[djgew,\p,pos=0.5] {\w\,km} (\b);}
-  \foreach \n/\t/\x/\y in {Fr/Frankfurt/2.5/3.3, Ma/Mannheim/0.4/2.6, Wu/Würzburg/4.6/2.75, Er/Erfurt/6.6/3.9, Ka/Karlsruhe/1.2/1.35, Nu/Nürnberg/6.3/1.45, Au/Augsburg/3.3/0.55, Mu/München/5.7/-0.05}
+  \foreach \n/\t/\x/\y in {A/Ahornheim/0.6/3.2, B/Bachwies/2.4/4.4, M/Mühlhafen/2.5/2.2, K/Krähfeld/5.4/4.4, S/Salzbrück/4.6/1.3, G/Glimmerau/1.2/0.2, F/Fuchsmoor/7.3/3.2, W/Wolkenried/6.6/0.2}
     {\node[stadt] at (\n) {\t};}
 \end{tikzpicture}
 \end{minipage}\par\vspace{1mm}
-\textbf{a)}\hfill{\small\textbf{Knoten und Pfadlänge ausgehend von Frankfurt}}\hfill\null\par\vspace{0.5mm}
+\textbf{a)}\hfill{\small\textbf{Knoten und Pfadlänge ausgehend von Ahornheim}}\hfill\null\par\vspace{0.5mm}
 {\setlength{\tabcolsep}{1.5pt}\renewcommand{\arraystretch}{1}\small
 \newcommand{\z}[8]{\schreibzeile #1 & #2 & #3 & #4 & #5 & #6 & #7 & #8\\\hline}
 \newcommand{\A}{\cellcolor{djaktuell}}\newcommand{\F}{\cellcolor{djfertig}}
 \newcommand{\Al}{\ifloesung\cellcolor{djaktuell}\fi}\newcommand{\Fl}{\ifloesung\cellcolor{djfertig}\fi}
 \newcommand{\W}[1]{\lsgtext{#1}}\newcommand{\I}{\lsgtext{$\infty$}}
 \begin{tabularx}{\linewidth}{|*{8}{>{\centering\arraybackslash}X|}}\hline
-\textbf{Frankfurt} & \textbf{Mannheim} & \textbf{Würzburg} & \textbf{Karlsruhe} & \textbf{Erfurt} & \textbf{Augsburg} & \textbf{Nürnberg} & \textbf{München}\\\hline
-\z{\A\W{0}}{\W{85}}{\W{119}}{\I}{\I}{\I}{\I}{\I}
-\z{\F\W{0}}{\A\W{85}}{\W{119}}{\W{155}}{\I}{\I}{\I}{\I}
-\z{\Fl\W{0}}{\Fl\W{85}}{\Al\W{119}}{\W{155}}{\W{312}}{\W{269}}{\W{228}}{\I}
-\z{\Fl\W{0}}{\Fl\W{85}}{\Fl\W{119}}{\Al\W{155}}{\W{312}}{\W{269}}{\W{228}}{\I}
-\z{\Fl\W{0}}{\Fl\W{85}}{\Fl\W{119}}{\Fl\W{155}}{\W{312}}{\W{269}}{\Al\W{228}}{\W{398}}
-\z{\Fl\W{0}}{\Fl\W{85}}{\Fl\W{119}}{\Fl\W{155}}{\W{312}}{\Al\W{269}}{\Fl\W{228}}{\W{\sout{398}\ 349}}
-\z{\Fl\W{0}}{\Fl\W{85}}{\Fl\W{119}}{\Fl\W{155}}{\Al\W{312}}{\Fl\W{269}}{\Fl\W{228}}{\W{349}}
-\z{\Fl\W{0}}{\Fl\W{85}}{\Fl\W{119}}{\Fl\W{155}}{\Fl\W{312}}{\Fl\W{269}}{\Fl\W{228}}{\Al\W{349}}
+\textbf{Ahornheim} & \textbf{Bachwies} & \textbf{Mühlhafen} & \textbf{Krähfeld} & \textbf{Salzbrück} & \textbf{Glimmerau} & \textbf{Fuchsmoor} & \textbf{Wolkenried}\\\hline
+\z{\A\W{0}}{\W{40}}{\W{70}}{\I}{\I}{\I}{\I}{\I}
+\z{\F\W{0}}{\A\W{40}}{\W{\sout{70}\ 65}}{\W{100}}{\I}{\I}{\I}{\I}
+\z{\Fl\W{0}}{\Fl\W{40}}{\Al\W{65}}{\W{100}}{\W{115}}{\W{175}}{\I}{\I}
+\z{\Fl\W{0}}{\Fl\W{40}}{\Fl\W{65}}{\Al\W{100}}{\W{115}}{\W{175}}{\W{170}}{\W{190}}
+\z{\Fl\W{0}}{\Fl\W{40}}{\Fl\W{65}}{\Fl\W{100}}{\Al\W{115}}{\W{\sout{175}\ 155}}{\W{170}}{\W{\sout{190}\ 145}}
+\z{\Fl\W{0}}{\Fl\W{40}}{\Fl\W{65}}{\Fl\W{100}}{\Fl\W{115}}{\W{155}}{\W{170}}{\Al\W{145}}
+\z{}{}{}{}{}{}{}{}
 \end{tabularx}}\\[1.5mm]
 {\lueckentext
-Besuchsreihenfolge:\lsgrest{\small Frankfurt, Mannheim, Würzburg, Karlsruhe, Nürnberg, Augsburg, Erfurt, München}
-Kürzeste Strecke: \lsg[8cm]{Frankfurt – Würzburg – Augsburg – München}\quad Länge: \lsg[2cm]{349}\,km\par
+Besuchsreihenfolge:\lsgrest{\small Ahornheim, Bachwies, Mühlhafen, Krähfeld, Salzbrück, Wolkenried}
+Kürzeste Strecke: \lsg[9cm]{\small Ahornheim – Bachwies – Mühlhafen – Salzbrück – Wolkenried}\quad Länge: \lsg[2.25cm]{145}\,km\par
+Aufhören nach Schritt \lsg[2.25cm]{6}, weil\lsgrest{\small Wolkenried fertig ist (Glimmerau, Fuchsmoor bleiben offen).}
 \textbf{b)} (i) gerichtet:\lsgrest{ja, Kanten werden nur in Pfeilrichtung benutzt.}
 (ii) negative Gewichte:\lsgrest{nein, ein fertiger Knoten könnte später noch kürzer werden.}
 (iii) nicht zusammenhängend:\lsgrest{ja, nicht erreichbare Knoten behalten die Pfadlänge $\infty$.}
