@@ -3,60 +3,60 @@
 \begin{document}
 \abtitel{2.6}{Arrays durchsuchen}
 
-Im Rahmen des Schul-Fußballturniers sollen Statistiken erstellt werden. Janina ergänzt daher für jeden Spieler bzw. jede Spielerin die Anzahl der bisher erzielten Tore. Die Personen einer Mannschaft sind wie bisher in der \code{spielerliste} gespeichert.
+Beim Spendenlauf der Schule zählt jedes Laufteam Runden: Jede Runde bringt Geld von Sponsoren. Fenja ergänzt daher für jede Läuferin und jeden Läufer die Anzahl der bisher gelaufenen Runden und den Betrag, den die Sponsoren pro Runde zahlen. Die Personen eines Teams sind in der \code{laeuferliste} gespeichert.
 
 \begin{center}
 \begin{tikzpicture}[x=1cm,y=1cm]
-\foreach \i/\n/\t/\z in {0/Yusuf/4/45,1/Marie/6/90,2/Luca/0/90,3/Tom/0/45} {
+\foreach \i/\n/\t/\z in {0/Ida/8/2,1/Malik/12/1,2/Frieda/0/3,3/Jonas/0/2} {
   \node[draw=red!60,fill=red!8,minimum width=34mm,minimum height=13mm,anchor=west] at (\i*3.6,0) {};
   \node[fill=red!70,text=white,font=\bfseries,minimum size=5mm,anchor=north west] at (\i*3.6+0.05,0.6) {\i};
-  \node[anchor=north west,font=\ttfamily\scriptsize,align=left,inner sep=1pt] at (\i*3.6+0.6,0.62) {\n\\ Tore: \t\\ Min.: \z};
+  \node[anchor=north west,font=\ttfamily\scriptsize,align=left,inner sep=1pt] at (\i*3.6+0.6,0.62) {\n\\ Runden: \t\\ Euro/Runde: \z};
 }
 \end{tikzpicture}
 \end{center}
 
-Beschreibe in Worten (noch kein Java), wie mithilfe der \code{spielerliste} berechnet werden kann, wie viele Tore die Mannschaft insgesamt geschossen hat. Die Nummern findest du später im Code wieder.
+Beschreibe in Worten (noch kein Java), wie mithilfe der \code{laeuferliste} berechnet werden kann, wie viele Runden das Team insgesamt gelaufen ist. Die Nummern findest du später im Code wieder.
 
 {\lueckentext
 \nr{1} Vorher:\lsgrest{eine Hilfsvariable \code{summe} mit 0 anlegen}
-\nr{2} Wiederhole für\lsgrest{jeden Spieler der \code{spielerliste} (Index 0 bis Länge $-$ 1)}
-\nr{3} In jedem Durchlauf:\lsgrest{die Tore dieses Spielers zu \code{summe} addieren}
+\nr{2} Wiederhole für\lsgrest{jede Person der \code{laeuferliste} (Index 0 bis Länge $-$ 1)}
+\nr{3} In jedem Durchlauf:\lsgrest{die Runden dieser Person zu \code{summe} addieren}
 \nr{4} Am Ende:\lsgrest{\code{summe} zurückgeben}\par}
-Überlegt zu zweit: Welche weiteren Tor-Statistiken könnten aus der \code{spielerliste} erstellt werden?
-\lsglinien{2}{z.\,B. beste Torschützin / bester Torschütze, Tore pro Spielminute, Durchschnitt pro Spieler, Anzahl der Spieler ohne Tor}
+Überlegt zu zweit: Welche weiteren Statistiken könnten aus der \code{laeuferliste} erstellt werden?
+\lsglinien{2}{z.\,B. Spendensumme (Runden $\cdot$ Euro pro Runde), meiste Runden, Durchschnitt pro Person, Anzahl der Personen ohne Runde}
 
-\begin{aufgabe}[Projekt Tore]{1}
-\textbf{a)} Ergänze in \code{Mannschaft} die Methode \code{gibToreGesamt()} und gib das Ergebnis im Hauptprogramm aus. Warum geht \code{spielerliste[i].tore} nicht, und was nimmst du stattdessen?
-\lsglinien{1}{\code{tore} ist \code{private} (Station 2.4). Stattdessen den Getter: \code{spielerliste[i].gibTore()}}
+\begin{aufgabe}[Projekt Runden]{1}
+\textbf{a)} Ergänze in \code{Laufteam} die Methode \code{gibRundenGesamt()} und gib das Ergebnis im Hauptprogramm aus. Warum geht \code{laeuferliste[i].runden} nicht, und was nimmst du stattdessen?
+\lsglinien{1}{\code{runden} ist \code{private} (Station 2.4). Stattdessen den Getter: \code{laeuferliste[i].gibRunden()}}
 \end{aufgabe}
 
 \begin{merke}[Bedingungen an Elemente im Array stellen]\lueckentext
-Die Kombination von \lsg[4.5cm]{Wiederholung (Schleife)} und \lsg[4.5cm]{bedingter Anweisung} kann genutzt werden, um Bedingungen an die Elemente eines Arrays zu stellen: Eine Anweisung wird nur ausgeführt, wenn die Bedingung für das aktuelle Element erfüllt ist. So lassen sich etwa nur die bisher torlosen Spieler ausgeben.
+Die Kombination von \lsg[4.5cm]{Wiederholung (Schleife)} und \lsg[4.5cm]{bedingter Anweisung} kann genutzt werden, um Bedingungen an die Elemente eines Arrays zu stellen: Eine Anweisung wird nur ausgeführt, wenn die Bedingung für das aktuelle Element erfüllt ist. So lassen sich etwa nur die Personen ausgeben, die noch keine Runde gelaufen sind.
 \end{merke}
 
-\begin{aufgabe}[Projekt Tore]{1}
+\begin{aufgabe}[Projekt Runden]{1}
 \textbf{b)} Fülle die Lücken und übertrage den Code ins Hauptprogramm (TODO 2).
 \end{aufgabe}
 \begin{javaluecke}
-for (int i = (*\lsg[1.5cm]{0}*); i < (*\lsg[5cm]{spielerliste.length}*); i(*\lsg[1.5cm]{++}*)) {
-   if (spielerliste[i].(*\lsg[4.5cm]{gibTore()}*) == 0) {
-      println((*\lsg[6cm]{spielerliste[i]}*));
+for (int i = (*\lsg[1.5cm]{0}*); i < (*\lsg[5cm]{laeuferliste.length}*); i(*\lsg[1.5cm]{++}*)) {
+   if (laeuferliste[i].(*\lsg[4.5cm]{gibRunden()}*) == 0) {
+      println((*\lsg[6cm]{laeuferliste[i]}*));
    }
 }
 \end{javaluecke}
 
 \newpage
-\begin{aufgabe}[Projekt Sportarten]{2}
-\textbf{a)} Ergänze in \code{Spieler} die Methode \code{ersetzeSportartTennis()} und teste sie im Hauptprogramm.\\
-\textbf{b)} Ergänze \code{spieltSportart(String sportart)} mit sinnvollem Rückgabetyp: \lsg[3cm]{\code{boolean}}. Zeichne zuerst das Struktogramm:
+\begin{aufgabe}[Projekt AGs]{2}
+\textbf{a)} Die Theater-AG führt dieses Jahr ein Musical auf und heißt deshalb jetzt Musical-AG. Ergänze in \code{Laeufer} die Methode \code{ersetzeAgTheater()} und teste sie im Hauptprogramm.\\
+\textbf{b)} Ergänze \code{besuchtAg(String ag)} mit sinnvollem Rückgabetyp: \lsg[3cm]{\code{boolean}}. Zeichne zuerst das Struktogramm:
 \end{aufgabe}
 \lsgkariert{18}{\begin{scope}[shift={(10mm,-12mm)},font=\small]
-\node[anchor=south west] at (0,1mm) {\code{boolean spieltSportart(String sportart)}};
+\node[anchor=south west] at (0,1mm) {\code{boolean besuchtAg(String ag)}};
 \draw (0,0) rectangle (130mm,-62mm);
 \draw (0,-8mm) -- (130mm,-8mm); \node[anchor=west] at (2mm,-4mm) {\code{ergebnis = false}};
-\draw (8mm,-54mm) -- (8mm,-16mm) -- (130mm,-16mm); \node[anchor=west] at (2mm,-12mm) {Wiederhole für \code{i} von 0 bis \code{sportarten.length - 1}};
+\draw (8mm,-54mm) -- (8mm,-16mm) -- (130mm,-16mm); \node[anchor=west] at (2mm,-12mm) {Wiederhole für \code{i} von 0 bis \code{ags.length - 1}};
 \draw (8mm,-16mm) -- (69mm,-30mm) -- (130mm,-16mm); \draw (8mm,-30mm) -- (130mm,-30mm); \draw (69mm,-30mm) -- (69mm,-54mm);
-\node at (69mm,-21mm) {\code{sportarten[i].equals(sportart)}}; \node at (13mm,-27.5mm) {wahr}; \node at (125mm,-27.5mm) {falsch};
+\node at (69mm,-21mm) {\code{ags[i].equals(ag)}}; \node at (13mm,-27.5mm) {wahr}; \node at (125mm,-27.5mm) {falsch};
 \node at (38.5mm,-42mm) {\code{ergebnis = true}}; \draw (69mm,-30mm) -- (130mm,-54mm);
 \draw (0,-54mm) -- (130mm,-54mm); \node[anchor=west] at (2mm,-58mm) {gib \code{ergebnis} zurück};
 \end{scope}}

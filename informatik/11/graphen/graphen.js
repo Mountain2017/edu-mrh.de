@@ -121,21 +121,21 @@
     // ------------------------------------------------------------------
     var DOERFER = {
         knoten: {
-            A: { x: 440, y: 45, name: 'Altdorf' },
-            W: { x: 130, y: 85, name: 'Weiler' },
-            F: { x: 500, y: 180, name: 'Fischbach' },
-            Z: { x: 290, y: 180, name: 'Ziegelstein' },
-            N: { x: 100, y: 285, name: 'Neustadt' },
-            B: { x: 430, y: 300, name: 'Burg' },
-            R: { x: 260, y: 350, name: 'Rain' }
+            E: { x: 120, y: 60, name: 'Eulenhain' },
+            S: { x: 330, y: 50, name: 'Sternwies' },
+            K: { x: 520, y: 110, name: 'Kieselfurt' },
+            F: { x: 250, y: 190, name: 'Funkenau' },
+            H: { x: 480, y: 250, name: 'Haselbruck' },
+            N: { x: 90, y: 300, name: 'Nebelried' },
+            T: { x: 320, y: 340, name: 'Tannzapf' }
         },
         // Richtung a -> b gilt im gerichteten Modus
         kanten: [
-            { a: 'A', b: 'W', gewicht: 12 }, { a: 'F', b: 'A', gewicht: 10 },
-            { a: 'W', b: 'F', gewicht: 25 }, { a: 'W', b: 'Z', gewicht: 5 },
-            { a: 'Z', b: 'F', gewicht: 8 },  { a: 'Z', b: 'N', gewicht: 25 },
-            { a: 'B', b: 'Z', gewicht: 30 }, { a: 'F', b: 'B', gewicht: 15 },
-            { a: 'N', b: 'R', gewicht: 20 }, { a: 'B', b: 'R', gewicht: 10 }
+            { a: 'E', b: 'S', gewicht: 9 },  { a: 'E', b: 'F', gewicht: 14 },
+            { a: 'S', b: 'F', gewicht: 4 },  { a: 'S', b: 'K', gewicht: 11 },
+            { a: 'F', b: 'K', gewicht: 6 },  { a: 'F', b: 'N', gewicht: 7 },
+            { a: 'K', b: 'H', gewicht: 5 },  { a: 'H', b: 'F', gewicht: 13 },
+            { a: 'N', b: 'T', gewicht: 22 }, { a: 'H', b: 'T', gewicht: 8 }
         ]
     };
 
@@ -148,30 +148,30 @@
     var MODI = {
         start: { text: '<p>Wähle oben einen Begriff. Der Graph zeigt dir ein Beispiel dazu.</p>' +
             '<p>Die Dörfer sind die Knoten, die Straßen die Kanten.</p>' },
-        pfad: { folge: ['N', 'Z', 'W', 'F', 'Z', 'B'],
-            text: '<p><strong>Ein Pfad:</strong> Neustadt → Ziegelstein → Weiler → Fischbach → Ziegelstein → Burg.</p>' +
+        pfad: { folge: ['N', 'F', 'S', 'K', 'F', 'H'],
+            text: '<p><strong>Ein Pfad:</strong> Nebelried → Funkenau → Sternwies → Kieselfurt → Funkenau → Haselbruck.</p>' +
                 '<p>Aufeinanderfolgende Knoten sind durch Kanten verbunden, keine Kante wird doppelt benutzt.</p>' +
                 '<p>🤔 Welcher Knoten kommt zweimal vor?</p>' },
-        einfach: { folge: ['A', 'W', 'Z', 'N', 'R'],
-            text: '<p><strong>Ein einfacher Pfad:</strong> Altdorf → Weiler → Ziegelstein → Neustadt → Rain.</p>' +
+        einfach: { folge: ['E', 'S', 'K', 'H', 'T'],
+            text: '<p><strong>Ein einfacher Pfad:</strong> Eulenhain → Sternwies → Kieselfurt → Haselbruck → Tannzapf.</p>' +
                 '<p>Was ist hier anders als beim Pfad davor?</p>' +
                 '<p>🤔 Wie lang ist dieser Pfad, wenn man die Kanten zählt?</p>' },
-        zyklus: { folge: ['W', 'Z', 'F', 'W'],
-            text: '<p><strong>Ein Zyklus:</strong> Weiler → Ziegelstein → Fischbach → Weiler.</p>' +
+        zyklus: { folge: ['S', 'F', 'K', 'S'],
+            text: '<p><strong>Ein Zyklus:</strong> Sternwies → Funkenau → Kieselfurt → Sternwies.</p>' +
                 '<p>Ein Graph, der mindestens einen Zyklus enthält, heißt <em>zyklisch</em>, sonst <em>azyklisch</em>.</p>' +
                 '<p>🤔 Findest du einen Zyklus mit vier Knoten?</p>' },
-        keinpfad: { fehlt: [['A', 'B']],
-            text: '<p><strong>Kein Pfad:</strong> Altdorf → Burg.</p>' +
-                '<p>Zwischen Altdorf und Burg gibt es keine Kante. Trotzdem kommt man von Altdorf nach Burg.</p>' +
+        keinpfad: { fehlt: [['E', 'T']],
+            text: '<p><strong>Kein Pfad:</strong> Eulenhain → Tannzapf.</p>' +
+                '<p>Zwischen Eulenhain und Tannzapf gibt es keine Kante. Trotzdem kommt man von Eulenhain nach Tannzapf.</p>' +
                 '<p>🤔 Wie? Gibt es in diesem Graphen zwei Dörfer, zwischen denen es überhaupt keinen Pfad gibt?</p>' },
         gerichtet: { gerichtet: true,
             text: '<p><strong>Gerichtet:</strong> Jetzt sind alle Straßen Einbahnstraßen. Eine Kante (A, B) darf man nur von A nach B entlanggehen.</p>' +
-                '<p>Von Weiler aus kommt man immer noch überall hin.</p>' +
-                '<p>🤔 Und von Rain aus? Ist der Graph <em>stark</em> oder nur <em>schwach</em> zusammenhängend?</p>' },
+                '<p>Von Eulenhain aus kommt man immer noch überall hin.</p>' +
+                '<p>🤔 Und von Tannzapf aus? Ist der Graph <em>stark</em> oder nur <em>schwach</em> zusammenhängend?</p>' },
         gewichtet: { gewichte: true,
             text: '<p><strong>Gewichtet:</strong> An den Kanten stehen Fahrzeiten in Minuten.</p>' +
                 '<p>Die Länge eines Pfades ist jetzt die Summe der Gewichte, nicht mehr die Anzahl der Kanten.</p>' +
-                '<p>🤔 Wie lang ist Altdorf → Weiler → Ziegelstein → Neustadt → Rain jetzt?</p>' }
+                '<p>🤔 Wie lang ist Eulenhain → Sternwies → Kieselfurt → Haselbruck → Tannzapf jetzt?</p>' }
     };
 
     function explorer(box) {
@@ -448,15 +448,15 @@
         folgen: {
             graph: {
                 knoten: {
-                    Leon: { x: 110, y: 60 }, Letifa: { x: 330, y: 40 }, Luise: { x: 420, y: 150 },
-                    Hamza: { x: 250, y: 220 }, Sabine: { x: 80, y: 200 }
+                    Mira: { x: 250, y: 45 }, Ole: { x: 420, y: 95 }, Zeynep: { x: 350, y: 220 },
+                    Finn: { x: 110, y: 170 }, Paula: { x: 80, y: 50 }
                 },
                 kanten: [
-                    { a: 'Leon', b: 'Letifa', gerichtet: true, beide: true },
-                    { a: 'Letifa', b: 'Luise', gerichtet: true },
-                    { a: 'Leon', b: 'Luise', gerichtet: true },
-                    { a: 'Leon', b: 'Hamza', gerichtet: true, beide: true },
-                    { a: 'Hamza', b: 'Luise', gerichtet: true }
+                    { a: 'Mira', b: 'Ole', gerichtet: true, beide: true },
+                    { a: 'Ole', b: 'Zeynep', gerichtet: true },
+                    { a: 'Zeynep', b: 'Mira', gerichtet: true },
+                    { a: 'Mira', b: 'Finn', gerichtet: true, beide: true },
+                    { a: 'Finn', b: 'Zeynep', gerichtet: true }
                 ]
             },
             optionen: { breite: 96 }
