@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8 Experimente mit Daten und Hyperparametern | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Künstliche Intelligenz, Informatik 13: Einfluss von Trainingsdaten und Hyperparametern (Schichten, Neuronen, Aktivierung, Lernrate) auf den Lernerfolg. Netz-Spielplatz, Forschungsaufträge und Ziffernerkennung mit Python im Browser; unausgewogene Daten.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="ki.css">
+    <script defer src="ki.js"></script>
+    <script defer src="netz.js"></script>
+    <script defer src="python.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🤖</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="ki.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 8</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#einstieg">🔮 Hypothesen</a></li>
+            <li><a href="#spielplatz">🧪 Netz-Spielplatz</a></li>
+            <li><a href="#auftraege">🔬 Forschungsaufträge</a></li>
+            <li><a href="#ziffern">🔢 Ziffern erkennen (Python)</a></li>
+            <li><a href="#festhalten">📝 Festhalten</a></li>
+            <li><a href="#ethik">⚖️ Ethik: Bias in, bias out</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Künstliche Intelligenz</div>
+            <ul class="sidebar-menu">
+                <li><a href="ki.html">Übersicht</a></li>
+                <li><a href="1-lernarten.html">1 Wie lernen Maschinen?</a></li>
+                <li><a href="2-merkmalsraum.html">2 Merkmalsraum und k-NN</a></li>
+                <li><a href="3-k-means.html">3 k-Means</a></li>
+                <li><a href="4-perzeptron.html">4 Das Perzeptron</a></li>
+                <li><a href="5-schichten.html">5 Perzeptronen zusammenschalten</a></li>
+                <li><a href="6-trainieren.html">6 Trainieren und Grenzen</a></li>
+                <li><a href="7-neuronales-netz.html">7 Das neuronale Netz</a></li>
+                <li><a href="8-experimente.html">8 Experimente</a></li>
+                <li><a href="9-architekturen.html">9 CNN und Transformer</a></li>
+                <li><a href="10-ethik.html">10 Ethik</a></li>
+                <li><a href="python-einrichten.html">Python einrichten</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero ki-hero">
+                <h1 class="hero-title">8 Experimente: Daten und Hyperparameter</h1>
+                <p class="hero-subtitle">Künstliche Intelligenz · Informatik 13 · <span class="niveau-tag beide">gA + eA</span> · 2 Stunden (eA: 3) · Netz-Spielplatz und Python</p>
+                <span class="ki-kompetenz">Du kannst: mit einer Software den Einfluss von Trainingsdaten und Hyperparametern (Zahl der Schichten und Neuronen, Aktivierungsfunktion, Lernrate) auf den Lernerfolg eines neuronalen Netzes analysieren.</span>
+                <div class="ki-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-8-experimente.pdf">📝 Arbeitsblatt 8 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-8-experimente.tex">LaTeX-Quelle</a>
+                    <a class="btn btn-outline" href="notebooks/8-experimente.ipynb" download>📓 Notebook (für Jupyter)</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#einstieg">🔮 Hypothesen</a><a class="p-investigate" href="#spielplatz">🧪 Spielplatz</a><a class="p-make" href="#auftraege">🔬 Forschen</a><a class="p-modify" href="#ziffern">🔢 Ziffern</a><a class="p-note" href="#festhalten">📝 Festhalten</a><a class="p-ethik" href="#ethik">⚖️ Ethik</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="einstieg" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔮</span><h2>Hypothesen<small>Aufgabe 1: Was macht ein gutes Netz aus?</small></h2></div>
+                <div class="phase-body">
+                    <p>Die Gewichte lernt das Netz selbst. Andere Größen legt der Mensch <em>vor</em> dem Training fest: die Zahl der verdeckten Schichten und Neuronen, die Aktivierungsfunktion, die Lernrate, die Zahl der Epochen, die Auswahl der Trainingsdaten. Sie heißen <strong>Hyperparameter</strong>. Ob sie gut gewählt sind, kann man nur durch Ausprobieren herausfinden, wie in einem naturwissenschaftlichen Experiment.</p>
+                    <div class="vorhersage" data-vorhersage="mehr" data-wahl="j:Ja, mehr ist immer besser.|n:Nein, ab einer gewissen Größe bringt es nichts mehr oder schadet.|w:Weiß ich nicht.">
+                        <h4>Wird ein Netz immer besser, je mehr Neuronen es hat?</h4>
+                    </div>
+                    <p>Notiere auf dem Blatt (Aufgabe 1) zu jedem Hyperparameter eine Vermutung.</p>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-8-experimente.pdf">📝 Blatt 8 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="spielplatz" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🧪</span><h2>Netz-Spielplatz<small>Lernen zum Zusehen</small></h2></div>
+                <div class="phase-body">
+                    <p>Ein vollständiges neuronales Netz, das du einstellen und beim Lernen beobachten kannst. Es lernt mit Backpropagation und Gradientenabstieg (Station 7). Hohle Punkte sind Testdaten, sie werden beim Lernen nicht benutzt. Unten links siehst du, was jedes Neuron der ersten verdeckten Schicht „sieht“: Jedes zieht eine weiche Grenze, die Ausgabe setzt sie zusammen.</p>
+                    <div data-spielplatz></div>
+                    <div class="tipp"><strong>Bedienung:</strong> Nach jeder Änderung an Daten, Schichten, Neuronen, Rauschen oder Trainingsanteil startet ein neues Netz mit zufälligen Gewichten. Lernrate und Aktivierung kannst du vorher wählen. Lass jedes Experiment mindestens 1000 Epochen laufen und wiederhole es zwei- bis dreimal: Wegen der zufälligen Startgewichte fällt das Ergebnis nicht immer gleich aus.</div>
+                </div>
+            </section>
+
+            <section id="auftraege" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🔬</span><h2>Forschungsaufträge<small>Aufgabe 2: in Gruppen, je ein Auftrag</small></h2></div>
+                <div class="phase-body">
+                    <p>Jede Gruppe untersucht eine Frage: Hypothese aufschreiben, nur <strong>eine</strong> Einstellung verändern, Ergebnis notieren (Kosten und richtig auf Training und Test, Form der Region), deuten. Danach stellt jede Gruppe ihr Ergebnis in einer Minute vor.</p>
+                    <div class="tab-scroll"><table class="ki-tab">
+                        <tr><th>Nr.</th><th>Frage</th><th>Versuchsaufbau</th></tr>
+                        <tr><td>F1</td><td>Wie viele Neuronen braucht die Spirale?</td><td>Spirale, 1 verdeckte Schicht, tanh, Lernrate 0,8; Neuronen 1, 2, 4, 8</td></tr>
+                        <tr><td>F2</td><td>Mehr Schichten oder mehr Neuronen?</td><td>Spirale, 8 Neuronen insgesamt: 1 Schicht × 8 gegen 2 Schichten × 4; dann 3 Schichten × 4</td></tr>
+                        <tr><td>F3</td><td>Wie viele Daten braucht das Netz?</td><td>Kern im Ring, Rauschen 6, 2 Schichten × 8; Trainingsanteil 10 %, 30 %, 50 %, 90 %. Vergleiche Trainings- und Testkosten.</td></tr>
+                        <tr><td>F4</td><td>Was macht Rauschen?</td><td>Zwei Monde, 1 Schicht × 8, Trainingsanteil 30 %; Rauschen 0, 3, 6, 10</td></tr>
+                        <tr><td>F5</td><td>Welche Aktivierung lernt am besten?</td><td>XOR, 1 Schicht × 4, Lernrate 0,8; Sigmoid, tanh, ReLU, linear</td></tr>
+                        <tr><td>F6</td><td>Welche Lernrate?</td><td>Kern im Ring, 1 Schicht × 6, tanh; Lernrate 0,05, 0,5, 1,5, 3</td></tr>
+                    </table></div>
+                    <div class="lw" data-loesungsweg="Forschungsaufträge">
+                        <template data-stufe="Was man typischerweise beobachtet" data-halten>
+                            <ul>
+                                <li><strong>F1:</strong> Mit 1 oder 2 Neuronen bleibt die Grenze grob (Unteranpassung); erst mit etwa 8 Neuronen entsteht eine gewundene Grenze, und auch dann oft erst nach vielen Epochen.</li>
+                                <li><strong>F2:</strong> Zwei Schichten mit je 4 Neuronen schaffen die Spirale meist besser als eine Schicht mit 8: Die zweite Schicht kombiniert die Grenzen der ersten zu krummeren Formen. Mehr Schichten lernen aber langsamer und unzuverlässiger.</li>
+                                <li><strong>F3:</strong> Mit 10 % Trainingsdaten fallen die Trainingskosten fast auf 0, die Testkosten bleiben hoch oder steigen (Überanpassung). Mit mehr Daten liegen beide Kurven nah beieinander.</li>
+                                <li><strong>F4:</strong> Mit viel Rauschen und wenig Daten lernt das Netz die zufälligen Ausreißer mit: zerklüftete Region, Testkosten höher als Trainingskosten.</li>
+                                <li><strong>F5:</strong> tanh und ReLU lernen XOR meist schnell, Sigmoid langsamer. „linear“ scheitert immer: Ohne Nichtlinearität ist das Netz ein einziges Neuron mit gerader Grenze (Station 7).</li>
+                                <li><strong>F6:</strong> 0,05: sehr langsam. 0,5 bis 1,5: gut. 3: Die Kosten springen oder bleiben hängen.</li>
+                            </ul>
+                        </template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-8-experimente.pdf">📝 Blatt 8 · Aufgabe 2 (Versuchsprotokoll)</a></p>
+                </div>
+            </section>
+
+            <section id="ziffern" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">🔢</span><h2>Ziffern erkennen mit Python<small>Aufgabe 3: echte Daten, echtes Netz</small></h2></div>
+                <div class="phase-body">
+                    <p>Jetzt echte Daten: 1797 handgeschriebene Ziffern, eingescannt und auf 8 × 8 Graustufen verkleinert. Jedes Bild ist ein Punkt in einem 64-dimensionalen Merkmalsraum. Das Netz hat 64 Eingaben, eine verdeckte Schicht und 10 Ausgaben, eine je Ziffer; erkannt wird die Ziffer mit der größten Ausgabe.</p>
+                    <div class="py" data-py="ki8-ansehen" data-titel="Die Ziffern ansehen" data-files="data/ziffern.csv">
+                        <div class="py-idea">
+                            <p><b class="k">Idee:</b> Die Daten kennenlernen, bevor man ein Netz darauf loslässt.</p>
+                            <ol><li>Jede Zeile der Datei: 64 Pixelwerte (0 = weiß bis 16 = schwarz) und die Ziffer.</li><li>Die ersten 12 Bilder werden gezeichnet, Bild 0 auch als Zahlen ausgegeben.</li></ol>
+                            <p><b class="k">Achte auf:</b> Wie viele Bilder gibt es von jeder Ziffer? Erkennst du im Zahlenblock die Form der Ziffer?</p>
+                        </div>
+<script type="text/plain">
+import csv
+from collections import Counter
+import ki
+
+zeilen = list(csv.reader(open("ziffern.csv")))[1:]
+bilder = [[int(v) for v in z[:64]] for z in zeilen]
+ziffern = [int(z[64]) for z in zeilen]
+print(len(bilder), "Bilder, je 8 x 8 = 64 Pixel (0 = weiß, 16 = schwarz)")
+ki.ziffern(bilder[:12], ziffern[:12], titel="Die ersten 12 Bilder")
+print("Bild 0 (eine", ziffern[0], ") als Zahlen:")
+for r in range(8):
+    print(" ".join("%2d" % v for v in bilder[0][r * 8:(r + 1) * 8]))
+print("Bilder je Ziffer:", sorted(Counter(ziffern).items()))
+</script>
+                    </div>
+                    <div class="py" data-py="ki8-netz" data-titel="Ein Netz lernt Ziffern" data-files="data/ziffern.csv">
+                        <div class="py-idea">
+                            <p><b class="k">Idee:</b> Dasselbe Netz wie in Station 7, nur größer: 64 Eingaben, <code>VERDECKT</code> verdeckte Neuronen, 10 Ausgaben. Trainiert wird mit den ersten <code>TRAINING</code> Bildern, getestet mit dem Rest.</p>
+                            <ol><li>Die Einstellungen stehen oben im Kasten: hier experimentierst du.</li><li>Nach jeder Epoche: richtig auf Training und Test.</li><li>Am Ende: Lernkurve und eine Tabelle, welche Ziffern verwechselt werden.</li></ol>
+                            <p><b class="k">Achte auf:</b> Ändere jeweils <em>einen</em> Wert und vergleiche: <code>VERDECKT</code> = 2, 4, 12, 32 und <code>TRAINING</code> = 50, 200, 600, 1200. Wann klaffen Training und Test auseinander?</p>
+                        </div>
+<script type="text/plain">
+import csv, math, random, time
+import ki
+
+random.seed(2)
+zeilen = list(csv.reader(open("ziffern.csv")))[1:]
+daten = [([int(v) / 16 for v in z[:64]], int(z[64])) for z in zeilen]
+random.shuffle(daten)
+
+# ---------- Einstellungen für deine Experimente ----------
+VERDECKT = 12      # Neuronen in der verdeckten Schicht
+TRAINING = 600     # Zahl der Trainingsbilder (der Rest bis 1797 sind Testdaten)
+EPOCHEN = 8
+ETA = 0.5          # Lernrate
+# ---------------------------------------------------------
+train, test = daten[:TRAINING], daten[TRAINING:]
+
+def sigmoid(z):
+    if z < -60:
+        return 0.0
+    return 1 / (1 + math.exp(-z))
+
+class Netz:
+    def __init__(self, groessen):
+        self.W = []
+        for l in range(1, len(groessen)):
+            self.W.append([[random.uniform(-0.5, 0.5) for i in range(groessen[l - 1] + 1)] for j in range(groessen[l])])
+
+    def vorwaerts(self, x):
+        a = [x]
+        for schicht in self.W:
+            vorher = a[-1]
+            a.append([sigmoid(w[0] + sum(wi * ai for wi, ai in zip(w[1:], vorher))) for w in schicht])
+        return a
+
+    def rueckwaerts(self, x, ziel, eta):
+        a = self.vorwaerts(x)
+        delta = [[2 * (y - t) * y * (1 - y) for y, t in zip(a[-1], ziel)]]
+        for l in range(len(self.W) - 1, 0, -1):
+            delta.insert(0, [sum(self.W[l][k][j + 1] * delta[0][k] for k in range(len(self.W[l]))) * a[l][j] * (1 - a[l][j]) for j in range(len(self.W[l - 1]))])
+        for l, schicht in enumerate(self.W):
+            for j, w in enumerate(schicht):
+                d = eta * delta[l][j]
+                w[0] -= d
+                for i, ai in enumerate(a[l]):
+                    w[i + 1] -= d * ai
+
+    def erkenne(self, x):
+        y = self.vorwaerts(x)[-1]
+        return y.index(max(y))
+
+def genauigkeit(netz, menge):
+    return sum(1 for x, z in menge if netz.erkenne(x) == z) / len(menge)
+
+netz = Netz([64, VERDECKT, 10])
+start = time.time()
+kurve_train, kurve_test = [], []
+for e in range(1, EPOCHEN + 1):
+    for x, z in train:
+        netz.rueckwaerts(x, [1 if k == z else 0 for k in range(10)], ETA)
+    kurve_train.append(100 * genauigkeit(netz, train))
+    kurve_test.append(100 * genauigkeit(netz, test))
+    print("Epoche", e, "  richtig: Training", round(kurve_train[-1]), "%   Test", round(kurve_test[-1]), "%")
+print("Zeit:", round(time.time() - start, 1), "s   Gewichte im Netz:", sum(len(w) for s in netz.W for w in s))
+ki.linie(range(1, EPOCHEN + 1), {"Training": kurve_train, "Test": kurve_test}, titel="Richtig erkannt (%)", xname="Epoche", yname="%")
+
+verwechselt = {}
+for x, z in test:
+    e = netz.erkenne(x)
+    if e != z:
+        verwechselt[(z, e)] = verwechselt.get((z, e), 0) + 1
+oft = sorted(verwechselt.items(), key=lambda p: -p[1])[:6]
+ki.tabelle([[z, e, n] for (z, e), n in oft], ["Ziffer", "erkannt als", "wie oft"], titel="Häufigste Verwechslungen (Testdaten)")
+</script>
+                    </div>
+                    <div class="lw" data-loesungsweg="Aufgabe 3">
+                        <template data-stufe="Ergebnisse zum Vergleichen" data-halten>
+                            <div class="tab-scroll"><table class="ki-tab">
+                                <tr><th>VERDECKT</th><th>TRAINING</th><th class="zahl">richtig Training</th><th class="zahl">richtig Test</th><th>Deutung</th></tr>
+                                <tr><td>2</td><td>600</td><td class="zahl">41 %</td><td class="zahl">38 %</td><td>zu wenige Neuronen: Unteranpassung</td></tr>
+                                <tr><td>4</td><td>600</td><td class="zahl">84 %</td><td class="zahl">84 %</td><td>schon brauchbar</td></tr>
+                                <tr><td>12</td><td>600</td><td class="zahl">98 %</td><td class="zahl">94 %</td><td>gut</td></tr>
+                                <tr><td>32</td><td>600</td><td class="zahl">98 %</td><td class="zahl">94 %</td><td>mehr Neuronen bringen hier nichts mehr, kosten aber Rechenzeit</td></tr>
+                                <tr><td>12</td><td>50</td><td class="zahl">80 %</td><td class="zahl">57 %</td><td>zu wenige Daten: Überanpassung</td></tr>
+                                <tr><td>12</td><td>200</td><td class="zahl">95 %</td><td class="zahl">87 %</td><td>besser</td></tr>
+                                <tr><td>12</td><td>1200</td><td class="zahl">98 %</td><td class="zahl">95 %</td><td>mehr Daten helfen am meisten</td></tr>
+                            </table></div>
+                            <p>Werte nach 8 Epochen mit <code>random.seed(2)</code>. Mehr Daten verbessern das Ergebnis zuverlässiger als ein größeres Netz.</p>
+                        </template>
+                    </div>
+                    <div class="ea-box">
+                        <h4>Größere Experimente mit numpy</h4>
+                        <p>Im <a href="notebooks/8-experimente.ipynb" download>Notebook</a> stehen dieselben Zellen. Am eigenen Rechner (siehe <a href="python-einrichten.html">Python einrichten</a>) kannst du das Netz mit numpy schreiben und damit viel größere Versuche fahren: zwei verdeckte Schichten, 50 Epochen, alle Kombinationen aus Neuronenzahl und Trainingsmenge als Tabelle. Plane die Versuche als Projekt (Station P): Welche Einstellung ist die beste, und wie sicher ist dein Ergebnis, wenn du mit verschiedenen <code>random.seed</code> wiederholst?</p>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-8-experimente.pdf">📝 Blatt 8 · Aufgabe 3</a></p>
+                </div>
+            </section>
+
+            <section id="festhalten" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Aufgabe 4: Was beeinflusst den Lernerfolg?</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Hyperparameter und Trainingsdaten</h4>
+                        <ul>
+                            <li><strong>Zahl der Neuronen und Schichten:</strong> Zu wenige: Das Netz kann die Form der Daten nicht darstellen (Unteranpassung). Mehr Neuronen und Schichten erlauben verwickeltere Grenzen, brauchen aber mehr Daten und Rechenzeit und können sich überanpassen.</li>
+                            <li><strong>Aktivierungsfunktion:</strong> muss nichtlinear sein; tanh und ReLU lernen oft schneller als Sigmoid.</li>
+                            <li><strong>Lernrate und Epochen:</strong> zu kleine Lernrate: langsam; zu große: Springen; zu wenige Epochen: nicht fertig gelernt.</li>
+                            <li><strong>Trainingsdaten:</strong> Menge, Qualität (Rauschen, falsche Etiketten) und Zusammensetzung entscheiden oft mehr als das Netz selbst. Wenige oder verrauschte Daten führen zu Überanpassung; was in den Daten selten ist, lernt das Netz schlecht.</li>
+                            <li>Beurteilt wird immer mit <strong>Testdaten</strong>; Experimente werden mit verschiedenen Startwerten wiederholt.</li>
+                        </ul>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-8-experimente.pdf">📝 Blatt 8 · Aufgabe 4</a></p>
+                </div>
+            </section>
+
+            <section id="ethik" class="phase ethik">
+                <div class="phase-head"><span class="phase-icon">⚖️</span><h2>Ethik-Impuls: Bias in, bias out<small>Aufgabe 5: Was das Netz nicht gesehen hat</small></h2></div>
+                <div class="phase-body">
+                    <p>Was passiert, wenn eine Ziffer in den Trainingsdaten kaum vorkommt? Die Zelle entfernt aus den 600 Trainingsbildern alle Achten bis auf <code>ACHTEN</code> Stück.</p>
+                    <div class="vorhersage" data-vorhersage="acht" data-wahl="g:fast wie die anderen Ziffern|s:etwas schlechter|n:fast gar nicht">
+                        <h4>Mit nur 5 Achten im Training: Wie gut erkennt das Netz die 8?</h4>
+                    </div>
+                    <div data-nach="acht">
+                        <div class="py" data-py="ki8-bias" data-titel="Unausgewogene Trainingsdaten" data-files="data/ziffern.csv">
+                            <div class="py-idea">
+                                <p><b class="k">Idee:</b> Dasselbe Netz, aber von der Ziffer 8 bleiben im Training nur wenige Bilder übrig. Danach wird für jede Ziffer einzeln gemessen, wie oft sie in den Testdaten richtig erkannt wird.</p>
+                                <p><b class="k">Achte auf:</b> Vergleiche „richtig insgesamt“ mit dem Balken der 8. Ändere <code>ACHTEN</code> auf 15 und 56 (alle).</p>
+                            </div>
+<script type="text/plain">
+import csv, math, random
+import ki
+
+random.seed(2)
+zeilen = list(csv.reader(open("ziffern.csv")))[1:]
+daten = [([int(v) / 16 for v in z[:64]], int(z[64])) for z in zeilen]
+random.shuffle(daten)
+train, test = daten[:600], daten[600:]
+
+ACHTEN = 5         # so viele Achten bleiben im Training (von 56)
+achten = [d for d in train if d[1] == 8]
+train = [d for d in train if d[1] != 8] + achten[:ACHTEN]
+random.seed(5)
+random.shuffle(train)
+
+def sigmoid(z):
+    if z < -60:
+        return 0.0
+    return 1 / (1 + math.exp(-z))
+
+random.seed(2)
+W = [[[random.uniform(-0.5, 0.5) for i in range(65)] for j in range(12)],
+     [[random.uniform(-0.5, 0.5) for i in range(13)] for j in range(10)]]
+
+def vorwaerts(x):
+    h = [sigmoid(w[0] + sum(wi * xi for wi, xi in zip(w[1:], x))) for w in W[0]]
+    y = [sigmoid(w[0] + sum(wi * hi for wi, hi in zip(w[1:], h))) for w in W[1]]
+    return h, y
+
+def lerne(x, ziffer, eta=0.5):
+    h, y = vorwaerts(x)
+    d_aus = [2 * (y[k] - (1 if k == ziffer else 0)) * y[k] * (1 - y[k]) for k in range(10)]
+    d_ver = [sum(W[1][k][j + 1] * d_aus[k] for k in range(10)) * h[j] * (1 - h[j]) for j in range(12)]
+    for k, w in enumerate(W[1]):
+        w[0] -= eta * d_aus[k]
+        for j in range(12):
+            w[j + 1] -= eta * d_aus[k] * h[j]
+    for j, w in enumerate(W[0]):
+        w[0] -= eta * d_ver[j]
+        for i in range(64):
+            w[i + 1] -= eta * d_ver[j] * x[i]
+
+def erkenne(x):
+    y = vorwaerts(x)[1]
+    return y.index(max(y))
+
+for epoche in range(8):
+    for x, z in train:
+        lerne(x, z)
+
+je_ziffer = []
+for ziffer in range(10):
+    menge = [x for x, z in test if z == ziffer]
+    je_ziffer.append(round(100 * sum(1 for x in menge if erkenne(x) == ziffer) / len(menge)))
+gesamt = sum(1 for x, z in test if erkenne(x) == z) / len(test)
+print("Achten im Training:", ACHTEN, "  richtig insgesamt:", round(100 * gesamt), "%")
+print("richtig je Ziffer (%):", je_ziffer)
+ki.balken(range(10), je_ziffer, titel="Richtig erkannt je Ziffer (Testdaten, %)", xname="Ziffer", yname="%")
+</script>
+                        </div>
+                    </div>
+                    <ul>
+                        <li>„Insgesamt 87 % richtig“ klingt gut. Was verschweigt diese Zahl?</li>
+                        <li>Übertrage auf Menschen: Ein Gesichtserkennungssystem wurde vor allem mit Fotos hellhäutiger Männer trainiert. Was erwartest du für andere Gruppen? Welche Zahlen müsste ein Hersteller veröffentlichen?</li>
+                    </ul>
+                    <div class="lw" data-loesungsweg="Aufgabe 5">
+                        <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Mit 5 Achten erkennt das Netz die 8 in den Testdaten <strong>gar nicht mehr</strong> (0 %), alle anderen Ziffern zu über 90 %; insgesamt sind trotzdem 87 % richtig. Eine Gesamtgenauigkeit kann ein völliges Versagen bei einer seltenen Gruppe verdecken. Genau das zeigte die Studie „Gender Shades“ (Buolamwini und Gebru 2018): Kommerzielle Gesichtsanalyse-Systeme lagen bei hellhäutigen Männern fast immer richtig, bei dunkelhäutigen Frauen in bis zu einem Drittel der Fälle falsch. Deshalb müssen Fehlerraten <em>je Gruppe</em> geprüft und veröffentlicht werden.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-8-experimente.pdf">📝 Blatt 8 · Aufgabe 5</a></p>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="uebergang"><strong>Die Frage für Station 9:</strong> Unser Ziffernnetz hat 64 Eingaben und rund 900 Gewichte. Ein Handyfoto hat 12 Millionen Pixel, ein Sprachmodell liest ganze Bücher. Wie müssen Netze gebaut sein, damit sie Bilder und Sprache verarbeiten können?</div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="7-neuronales-netz.html">← 7 Das neuronale Netz</a>
+                <a class="btn btn-primary" href="9-architekturen.html">9 Bild- und Sprach-KI →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-8-experimente-lsg.pdf">Lösung Blatt 8 (PDF)</a> <a class="btn btn-tex btn-sm" href="notebooks/8-experimente.ipynb" download>Notebook</a></p>
+                    <p><strong>Einordnung:</strong> Kompetenz „analysieren mithilfe einer Software den Einfluss von Trainingsdaten und Hyperparametern (z. B. Anzahl der Schichten und Neuronen) auf den Lernerfolg“ (gA LB 4, eA LB 2). Der Spielplatz ist eine eigene Umsetzung im Stil bekannter Online-Spielplätze, läuft ganz im Browser und verwendet dieselbe Rechnung wie Station 7 (Sigmoid-Ausgabe, mittlerer quadratischer Fehler, Gradientenabstieg über alle Trainingspunkte je Schritt).</p>
+                    <p><strong>Stundenvorschlag:</strong> 1. Stunde: Hypothesen, Spielplatz frei, Forschungsaufträge in Gruppen. 2. Stunde: Kurzberichte, Ziffern in Python, Festhalten, Ethik-Impuls. eA: zusätzliche Stunde für eigene Versuchsreihen im Notebook (Vorbereitung auf Station P).</p>
+                    <p><strong>Daten:</strong> Ziffern: E. Alpaydin, C. Kaynak (1998), Optical Recognition of Handwritten Digits, UCI Machine Learning Repository, CC BY 4.0; Testteil mit 1797 Bildern (dieselben wie <code>sklearn.datasets.load_digits</code>), als <a href="data/ziffern.csv">data/ziffern.csv</a>. Ergebnisse (8 Epochen, seed 2) siehe Lösung zu Aufgabe 3; mit 5 statt 56 Achten: 8 zu 0 % erkannt, insgesamt 87 %. Gender Shades: J. Buolamwini, T. Gebru (2018), Proceedings of Machine Learning Research 81.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de · <a href="https://edu-mrh.de/impressum.html#lizenz">CC BY-NC-SA 4.0</a> | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a> · Ziffern: UCI Optical Recognition of Handwritten Digits (Alpaydin &amp; Kaynak), CC BY 4.0 · Python im Browser: Pyodide (MPL 2.0)</p>
+        </div>
+    </footer>
+</body>
+</html>

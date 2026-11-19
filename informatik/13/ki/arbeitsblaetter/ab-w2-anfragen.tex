@@ -1,0 +1,63 @@
+\documentclass[11pt]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{W2}{Anfragen an eine Wissensbasis \niveauEA}
+
+\begin{aufgabe}[Anfragen mit Variablen (Website: Kolonie)]{1}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|p{7.2cm}|X|}\hline
+\textbf{Anfrage} & \textbf{Antwort(en)} \\\hline
+\code{?- art(pia, adelie).}\schreibzeile & \lsgklein{ja} \\\hline
+\code{?- art(X, adelie).}\schreibzeile & \lsgklein{X = pia, X = kim} \\\hline
+\code{?- frisst(X, krill), insel(X, dream).}\schreibzeile & \lsgklein{X = lou} \\\hline
+\code{?- nachbarn(tim, N).}\schreibzeile & \lsgklein{N = pia} \\\hline
+\lsgklein{?- art(X, adelie), frisst(X, fisch).}\schreibzeile & \lsgklein{X = kim} \\\hline
+\end{tabularx}\par\vspace{1mm}
+Die letzte Zeile: Formuliere die Anfrage „Welche Adéliepinguine fressen Fisch?“ und notiere die Antwort.
+\end{aufgabe}
+
+\begin{aufgabe}[Landkarte färben (Website)]{2}
+\begin{minipage}[t]{0.45\linewidth}\vspace{0pt}
+\begin{tikzpicture}[x=1cm,y=1cm,font=\small\bfseries]
+  \path (0.6,4.2) node[circle,draw,fill=white,minimum size=11mm] (ufr) {UFR}
+        (3.0,4.2) node[circle,draw,fill=white,minimum size=11mm] (ofr) {OFR}
+        (2.1,2.7) node[circle,draw,fill=white,minimum size=11mm] (mfr) {MFR}
+        (4.6,3.0) node[circle,draw,fill=white,minimum size=11mm] (opf) {OPF}
+        (5.6,1.5) node[circle,draw,fill=white,minimum size=11mm] (nb) {NB}
+        (3.6,0.8) node[circle,draw,fill=white,minimum size=11mm] (ob) {OB}
+        (0.6,0.8) node[circle,draw,fill=white,minimum size=11mm] (schw) {SCHW};
+  \foreach \a/\b in {ufr/ofr,ufr/mfr,ofr/mfr,ofr/opf,mfr/opf,mfr/schw,mfr/ob,opf/nb,opf/ob,nb/ob,schw/ob}{\draw[line width=1pt,gray!70] (\a) -- (\b);}
+  \ifloesung
+    \foreach \n/\f in {ob/red,nb/green,opf/blue,ofr/red,mfr/green,ufr/blue,schw/blue}{\fill[\f,opacity=.35] (\n) circle (5.5mm);}
+    \node[red!75!black,font=\scriptsize,align=left,anchor=north west] at (4.3,4.7) {rot: OB, OFR\\grün: NB, MFR\\blau: OPF, UFR, SCHW};
+  \fi
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.52\linewidth}\vspace{0pt}
+a) Färbe die Bezirke mit der ersten Antwort der Wissensbasis.\par\vspace{1mm}
+\begin{lueckentext}
+b) Die Wissensbasis findet \lsg[2.25cm]{6} Färbungen.\\
+c) Mit nur zwei Farben antwortet sie \lsg[2.25cm]{nein}, weil \lsgrest{OB, OPF und MFR alle}
+\lsgrest{aneinandergrenzen (Dreieck).}
+\end{lueckentext}
+d) Baden-Württemberg grenzt an UFR, MFR und SCHW. Was musst du in der Regel ergänzen?
+\lsglinien{2}{BW in den Kopf, farbe(BW) und BW \textbackslash= UFR, BW \textbackslash= MFR, BW \textbackslash= SCHW in den Rumpf.}
+\end{minipage}
+\end{aufgabe}
+
+\begin{aufgabe}[Ein Logikrätsel (Website)]{3}
+\begin{lueckentext}
+Lösung: Pia frisst \lsg[3cm]{Sardine}, Tim frisst \lsg[3cm]{Krill}, Lou frisst \lsg[3cm]{Hering}.
+Ohne die Bedingung „Lou frisst Hering“ gibt es \lsg[2.25cm]{3} Lösungen. Ein gutes Rätsel hat\\
+\lsgrest{genau eine Lösung.}
+\end{lueckentext}
+Mein eigenes Rätsel (Personen, Eigenschaften, Hinweise):
+\lsglinien{3}{z.\,B. Pia, Tim und Lou wohnen auf verschiedenen Inseln (Biscoe, Dream, Torgersen). Tim wohnt nicht auf Dream. Pia wohnt auf Torgersen. Lou wohnt nicht auf Biscoe. → Lou Dream, Tim Biscoe.}
+\end{aufgabe}
+
+\begin{aufgabe}[Beschreiben statt programmieren]{4}
+\begin{lueckentext}
+In Java beschreibt man, \lsg[3.6cm]{wie} eine Lösung berechnet wird (\lsg[3.6cm]{imperativ}). In einer Wissensbasis beschreibt man, \lsg[3.6cm]{was} gilt (\lsg[3.6cm]{deklarativ}); den Lösungsweg sucht \lsgrest{die Inferenzmaschine selbst.}
+\end{lueckentext}
+\end{aufgabe}
+\end{document}

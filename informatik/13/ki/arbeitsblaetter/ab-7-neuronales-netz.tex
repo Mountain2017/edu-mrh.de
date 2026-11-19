@@ -1,0 +1,78 @@
+\documentclass[11pt]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{7}{Das neuronale Netz: vorwärts rechnen, rückwärts lernen}
+
+\begin{aufgabe}[Weiche Stufen (Website: Teil A)]{1}
+a) Lies die Sigmoidfunktion $\sigma(z) = \dfrac{1}{1 + e^{-z}}$ ab (3 Nachkommastellen):\par\vspace{1mm}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\linewidth}{|l|X|X|X|X|X|X|X|}\hline
+$z$ & $-6$ & $-2$ & $-1{,}53$ & $0$ & $1{,}05$ & $2$ & $6$ \\\hline
+$\sigma(z)$\schreibzeile & \lsgklein{0,002} & \lsgklein{0,119} & \lsgklein{0,178} & \lsgklein{0,5} & \lsgklein{0,740} & \lsgklein{0,881} & \lsgklein{0,998} \\\hline
+\end{tabularx}\par\vspace{1mm}
+b) Zwei Neuronen \emph{ohne} Aktivierungsfunktion: $h = 2 + 3x$ und $y = 1 - 4h$.
+\begin{lueckentext}
+Eingesetzt: $y = $ \lsg[4.5cm]{$1 - 4(2 + 3x) = -7 - 12x$}. Folgerung: \lsgrest{Ohne Aktivierung bleibt alles linear,}
+\lsgrest{mehrere Schichten wirken wie ein einziges Neuron.}
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{aufgabe}[Forward Propagation mit Sigmoid]{2}
+$h_1 = \sigma(-2 + 4x_1 + 4x_2)$,\quad $h_2 = \sigma(6 - 4x_1 - 4x_2)$,\quad $y = \sigma(-6 + 4h_1 + 4h_2)$. Werte von $\sigma$ aus Aufgabe 1.\par\vspace{1mm}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|c|X|c|X|c|X|c|}\hline
+$x$ & $z_1$ & $h_1$ & $z_2$ & $h_2$ & $z$ (Ausgabe) & $y$ \\\hline
+$(1\,|\,0)$\schreibzeile & \lsgklein{$-2 + 4 = 2$} & \lsgklein{0,881} & \lsgklein{$6 - 4 = 2$} & \lsgklein{0,881} & \lsgklein{$-6 + 4\cdot0{,}881 \cdot 2 = 1{,}05$} & \lsgklein{0,740} \\\hline
+$(1\,|\,1)$\schreibzeile & \lsgklein{6} & \lsgklein{0,998} & \lsgklein{$-2$} & \lsgklein{0,119} & \lsgklein{$-6 + 3{,}99 + 0{,}48 = -1{,}53$} & \lsgklein{0,178} \\\hline
+\end{tabularx}
+\end{aufgabe}
+
+\begin{aufgabe}[Die Kostenfunktion]{3}
+\begin{lueckentext}
+Die Kostenfunktion „mittlerer quadratischer Fehler“ lautet $K = $ \lsg[4.5cm]{$\frac1n \sum (y - \text{Ziel})^2$}. Für das XOR-Netz (Ausgaben 0,178; 0,740; 0,740; 0,178, Ziele 0; 1; 1; 0) ergibt sich $K = $ \lsg[6.75cm]{$(0{,}0315 + 0{,}0676 + 0{,}0676 + 0{,}0315)/4 \approx 0{,}0495$}. Man quadriert, weil \lsgrest{sich sonst Fehler nach oben und unten aufheben;}
+\lsgrest{große Fehler zählen stärker.}
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{aufgabe}[Gradientenabstieg (Website: Kugel)]{4}
+\begin{lueckentext}
+Regel für jedes Gewicht: $w_{\text{neu}} = $ \lsg[4.5cm]{$w - \eta \cdot K'(w)$}. Bei $w = -2{,}2$ ist die Steigung $K'(w) \approx -4{,}32$. Mit $\eta = 0{,}1$ ist $w_{\text{neu}} = $ \lsg[4.5cm]{$-2{,}2 + 0{,}432 \approx -1{,}77$}.\\
+Ist die Lernrate zu klein, \lsgrest{lernt das Netz sehr langsam;}
+ist sie zu groß, \lsgrest{springt das Gewicht über das Tal hinaus.}
+Der Abstieg kann in einem \lsg[5.25cm]{lokalen Minimum} stecken bleiben, weil \lsgrest{nur die Steigung zählt.}
+\end{lueckentext}
+\end{aufgabe}
+
+\newpage
+\begin{aufgabe}[Backpropagation (Website: Teil C)]{5}
+a) Ordne die Schritte eines Lernschritts (Nummern \nr{1} bis \nr{4} eintragen):\par\vspace{1mm}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|c|X|}\hline
+\lsgtext{\nr{3}}\schreibzeile & Die Schuld wird über die Gewichte rückwärts auf die verdeckten Neuronen verteilt. \\\hline
+\lsgtext{\nr{1}}\schreibzeile & Die Eingabe wird vorwärts durch das Netz gerechnet, alle Zwischenwerte werden gemerkt. \\\hline
+\lsgtext{\nr{4}}\schreibzeile & Jedes Gewicht wird ein Stück entgegen seiner Steigung geändert. \\\hline
+\lsgtext{\nr{2}}\schreibzeile & Der Fehler am Ausgang ($y - \text{Ziel}$) wird bestimmt. \\\hline
+\end{tabularx}\par\vspace{1mm}
+b) Beschreibe die Zielsetzung der Backpropagation (Fehlerrückführung). Gehe auf die verdeckten Neuronen ein.
+\lsglinien{3}{Für jedes Gewicht, auch in verdeckten Schichten, mit einem Rückwärtsdurchgang bestimmen, wie stark es zum Fehler beitrug und in welche Richtung es sich ändern muss, damit die Kosten sinken. So bekommen auch verdeckte Neuronen ein Fehlersignal.}
+c) Warum ist Backpropagation viel schneller als das Wackeln an jedem einzelnen Gewicht?
+\lsglinien{2}{Wackeln braucht für jedes Gewicht zwei neue Durchgänge durch das Netz; Backpropagation liefert alle Steigungen mit einem Durchgang vorwärts und einem rückwärts.}
+\end{aufgabe}
+
+\begin{aufgabe}[\niveauEA\ Die Kettenregel für ein Gewicht]{6}
+Für das Beispiel $x = (1\,|\,0)$ mit Ziel 1 ist $K = (y - 1)^2$ mit $y = \sigma(z)$, $z = -6 + w_7 \cdot h_1 + 4h_2$ und $w_7 = 4$, $h_1 = h_2 = 0{,}881$, $y = 0{,}740$. Es gilt $\sigma'(z) = y\,(1 - y)$.
+\begin{lueckentext}
+Kette: $w_7 \to z \to y \to K$. \quad $\dfrac{dK}{dy} = $ \lsg[3.6cm]{$2(y - 1) = -0{,}520$}, \quad $\dfrac{dy}{dz} = $ \lsg[3.6cm]{$y(1-y) = 0{,}192$}, \quad $\dfrac{dz}{dw_7} = $ \lsg[2.6cm]{$h_1 = 0{,}881$}\\
+Steigung $\dfrac{dK}{dw_7} = $ \lsg[6cm]{$-0{,}520 \cdot 0{,}192 \cdot 0{,}881 \approx -0{,}088$}. Also muss $w_7$ \lsg[3.6cm]{größer} werden.
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{merke}[Merkkasten]
+\begin{lueckentext}
+\textbf{Forward Propagation:} Die Eingabe wird \lsgrest{Schicht für Schicht zur Ausgabe verrechnet.}
+\textbf{Kostenfunktion:} misst, \lsgrest{wie weit die Ausgaben insgesamt vom Ziel entfernt sind.}
+\textbf{Gradientenabstieg:} \lsgrest{jedes Gewicht ein Stück entgegen der Steigung ändern.}
+\textbf{Backpropagation:} \lsgrest{Fehler rückwärts verteilen, Steigungen aller Gewichte.}
+\end{lueckentext}
+\end{merke}
+\end{document}

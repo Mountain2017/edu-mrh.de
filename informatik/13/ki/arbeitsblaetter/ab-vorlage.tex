@@ -1,0 +1,138 @@
+% =====================================================================
+%  Gemeinsame Vorlage der Arbeitsblätter – Künstliche Intelligenz (Q13, gA LB 4 / eA LB 2)
+%  Kopf, Fuß und Antwortplatz wie informatik/13/rechner/arbeitsblaetter/ab-vorlage.tex
+%  (Linien 8 mm, Karo 5 mm aus ganzen Kästchen, Lücken seit 2026-10 x 1,5).
+%  Einbinden in jedem Blatt direkt nach \documentclass: \input{ab-vorlage}
+%  Übersetzen mit XeLaTeX (oder Tectonic):
+%
+%  Blatt:   xelatex ab-3-k-means.tex
+%  Lösung:  xelatex ab-3-k-means-lsg.tex
+%           (Datei enthält nur: \def\mitloesung{}\input{ab-3-k-means})
+%  Lösungseinträge belegen nie mehr Platz als die Lücke im Blatt.
+%
+%  Antwortplatz:
+%   \luecke[l] / \lsg[l]{Text}      Lücke (Standard 6,75 cm, Fachbegriff 5,25 cm, Zahl 2,25 cm)
+%   \restzeile / \lsgrest{Text}     Lücke bis Zeilenende      \lueckentext  Absatz mit Lücken
+%   \linien{n} / \lsglinien{n}{T}   Schreiblinien 8 mm        \linienfeld{n} / \lsgfeld{n}{Code}
+%   \schreibzeile                   Tabellenzelle 8 mm        \lsgtext{…}  nur in der Lösung
+%   \kariert{n} / \lsgkariert{n}{TikZ}, \karobox{b}{h} / \lsgkarobox{b}{h}{TikZ}
+%   \kreuz{0|1}                     Ankreuzfeld (1 = in der Lösung angekreuzt)
+%  KI:
+%   java / javaluecke               Listings (Lücken mit (*\lsg[3cm]{…}*))
+%   \nr{1}                          Schrittnummer ① wie auf der Website und in der IDE
+%   \niveauEA                       Kennzeichen „eA“ für Aufgaben des erhöhten Niveaus
+%   Farben: adelie, zuegel, esels (Pinguinarten), klnull, kleins (Klassen 0/1), cA … cF (Cluster)
+% =====================================================================
+\usepackage[a4paper,left=16mm,right=16mm,top=23mm,bottom=13mm,headheight=12mm,headsep=3mm,footskip=6mm]{geometry}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{helvet}
+  \usepackage[scaled=0.86]{beramono}
+  \renewcommand{\familydefault}{\sfdefault}
+\else
+  \usepackage{fontspec}
+  \setmainfont{texgyreheros}[Extension=.otf,UprightFont=*-regular,BoldFont=*-bold,ItalicFont=*-italic,BoldItalicFont=*-bolditalic]
+  \setmonofont{DejaVuSansMono}[Extension=.ttf,UprightFont=*,BoldFont=*-Bold,ItalicFont=*-Oblique,BoldItalicFont=*-BoldOblique,Scale=0.86]
+\fi
+\usepackage[ngerman,shorthands=off]{babel}
+\usepackage{amssymb}
+\usepackage{xcolor,graphicx,tabularx,array,enumitem,fancyhdr,tikz,multicol,calc,etoolbox,pifont,xspace,listings}
+\usepackage[most]{tcolorbox}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,decorations.pathreplacing}
+\usepackage[hidelinks]{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+\setlist{nosep,leftmargin=*}
+
+% ---------- Lösungsschalter ----------
+\newif\ifloesung
+\ifdefined\mitloesung\loesungtrue\fi
+\newcommand{\lsgfarbe}{\color{red!75!black}}
+
+% ---------- Kopf- und Fußzeile ----------
+\newcommand{\lehrkraft}{Hau}
+\newcommand{\themenbereich}{Künstliche Intelligenz}
+\newcommand{\abnummer}{}
+\pagestyle{fancy}\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancyhead[L]{\small Klasse 13\\Datum:}
+\fancyhead[C]{\small Themenbereich:\\\themenbereich}
+\fancyhead[R]{\small \lehrkraft\ifloesung\\{\lsgfarbe\bfseries Lösung}\fi}
+\fancyfoot[C]{\scriptsize edu-mrh.de\,·\,Informatik 13\,·\,Blatt \abnummer\ifloesung\ (Lösung)\fi\,·\,Seite \thepage}
+\newcommand{\abtitel}[2]{\renewcommand{\abnummer}{#1}\begin{center}\Large\bfseries #1\quad\underline{#2}\end{center}\vspace{-2mm}}
+
+% ---------- Boxen ----------
+\newenvironment{aufgabe}[2][]{\begin{tcolorbox}[enhanced,breakable,colback=white,colframe=black,boxrule=0.7pt,arc=3mm,left=2mm,right=2mm,top=1mm,bottom=1.2mm,before skip=2mm,after skip=2mm]\textbf{Aufgabe #2}\ifstrempty{#1}{}{ \textit{#1}}\par\vspace{0.3mm}}{\end{tcolorbox}}
+\newtcolorbox{merke}[1][Merke]{enhanced,breakable,colback=green!5,colframe=green!40!black,boxrule=0.8pt,arc=2mm,left=2mm,right=2mm,top=1mm,bottom=1.2mm,before skip=2mm,after skip=2mm,title={#1},fonttitle=\bfseries,coltitle=white,toptitle=0.3mm,bottomtitle=0.3mm}
+\newtcolorbox{hinweis}{enhanced,breakable,colback=yellow!12,colframe=orange!70!black,boxrule=0.6pt,arc=2mm,left=2mm,right=2mm,top=1mm,bottom=1mm,before skip=2mm,after skip=2mm}
+\newcommand{\web}[1]{{\small\color{gray}\textit{Website: #1}}}
+\newcommand{\code}[1]{\texttt{#1}}
+
+% ---------- Antwortplatz (wie informatik/10/java, Lücken x 1,5) ----------
+\newlength{\zeilenabstand}\setlength{\zeilenabstand}{8mm}
+\newlength{\karo}\setlength{\karo}{5mm}
+\tikzset{karo/.style={draw=gray!50,line width=0.3pt},schreiblinie/.style={draw=black!65,line width=0.35pt}}
+\newlength{\lsgbreite}
+\newcommand{\lsg}[2][6.75cm]{\leavevmode\ifloesung\settowidth{\lsgbreite}{\,#2\,}%
+  \ifdim\lsgbreite>#1\relax\rlap{\raisebox{0.8pt}{\resizebox{#1}{!}{\lsgfarbe\,#2\,}}}%
+  \else\rlap{\raisebox{0.8pt}{\lsgfarbe\,#2}}\fi\fi\rule[-0.6ex]{#1}{0.4pt}\xspace}
+\newcommand{\luecke}[1][6.75cm]{\lsg[#1]{}}
+\newcommand{\lsgrest}[1]{\leavevmode\unskip\hspace{1.5mm}\ifloesung\rlap{\raisebox{0.8pt}{\lsgfarbe\,#1}}\fi\leaders\hbox{\rule[-0.6ex]{0.5pt}{0.4pt}}\hfill\null\par}
+\newcommand{\restzeile}{\lsgrest{}}
+\newcommand{\lsgtext}[1]{\ifloesung\leavevmode{\lsgfarbe#1}\fi}
+\newcommand{\lsgoder}[2]{\ifloesung\leavevmode#1\else#2\fi}
+\newenvironment{lueckentext}{\par\linespread{1.5}\selectfont\raggedright}{\par}
+\newcommand{\schreibzeile}{\rule[-2.8mm]{0pt}{8mm}}
+% Tabellenzelle für n Zeilen Handschrift (Lösungstext darin kleiner setzen: \lsgklein{…})
+\newcommand{\schreibzeilen}[1]{\rule[\dimexpr-#1\zeilenabstand+5.2mm\relax]{0pt}{\dimexpr#1\zeilenabstand\relax}}
+\newcommand{\lsgklein}[1]{\lsgtext{\footnotesize\raggedright #1}}
+\newcommand{\nr}[1]{\ding{\numexpr171+#1\relax}}
+\newcommand{\lsglinien}[2]{\par\vspace{0.5mm}\noindent\begin{tikzpicture}
+  \path (0,0) (\linewidth-0.4pt,-#1\zeilenabstand-1.5mm);
+  \foreach \i in {1,...,#1}{\draw[schreiblinie] (0.2pt,-\i\zeilenabstand) -- (\linewidth-0.2pt,-\i\zeilenabstand);}
+  \ifloesung\node[overlay,anchor=north west,inner sep=0pt] at (1mm,-\zeilenabstand+1pt+5mm) {\parbox[t]{\linewidth-2mm}{\lsgfarbe\raggedright\setlength{\baselineskip}{\zeilenabstand}\rule{0pt}{5mm}#2}};\fi
+  \end{tikzpicture}\par}
+\newcommand{\linien}[1]{\lsglinien{#1}{}}
+\newcommand{\lsgfeld}[2]{\noindent\begin{tikzpicture}
+  \draw[line width=0.4pt] (0.2pt,0) rectangle (\linewidth-0.2pt,-#1\zeilenabstand-3mm);
+  \foreach \i in {1,...,#1}{\draw[schreiblinie] (2mm,-\i\zeilenabstand) -- (\linewidth-2mm,-\i\zeilenabstand);}
+  \ifloesung\node[overlay,anchor=north west,inner sep=0pt] at (2.5mm,-\zeilenabstand+1pt+5mm) {\parbox[t]{\linewidth-5mm}{\lsgfarbe\ttfamily\small\setlength{\baselineskip}{\zeilenabstand}\rule{0pt}{5mm}#2}};\fi
+  \end{tikzpicture}}
+\newcommand{\linienfeld}[1]{\lsgfeld{#1}{}}
+\newcommand{\karoraster}[3]{\begin{tikzpicture}\draw[karo] (0,0) grid[step=\karo] (#1\karo,#2\karo);
+  \ifloesung\begin{scope}[overlay,shift={(0,#2\karo)},red!75!black,text=red!75!black,line width=0.8pt]#3\end{scope}\fi\end{tikzpicture}}
+\newcommand{\lsgkariert}[2]{\par\vspace{1.5mm}\noindent\pgfmathtruncatemacro{\karoX}{floor(\linewidth/\karo)}%
+  \makebox[\linewidth]{\karoraster{\karoX}{#1}{#2}}\par\vspace{1mm}}
+\newcommand{\kariert}[1]{\lsgkariert{#1}{}}
+\newcommand{\lsgkarobox}[3]{\pgfmathtruncatemacro{\karoX}{round((#1)/\karo)}\pgfmathtruncatemacro{\karoY}{round((#2)/\karo)}\karoraster{\karoX}{\karoY}{#3}}
+\newcommand{\karobox}[2]{\lsgkarobox{#1}{#2}{}}
+% Ankreuzfeld: \kreuz{1} = angekreuzt (nur in der Lösung)
+\newcommand{\kreuz}[1]{\leavevmode\ifloesung\ifnum#1=1 {\lsgfarbe$\boxtimes$}\else$\square$\fi\else$\square$\fi}
+
+% ---------- Listings: Java und Python ----------
+\lstset{basicstyle=\ttfamily\small,keywordstyle=\bfseries,commentstyle=\color{gray!80!black},stringstyle=\color{black},showstringspaces=false,columns=flexible,keepspaces=true,tabsize=3,frame=single,framerule=0.4pt,rulecolor=\color{black},xleftmargin=2mm,framexleftmargin=1mm,aboveskip=1.5mm,belowskip=1.5mm,breaklines=true,escapeinside={(*}{*)},
+ literate={ä}{{\"a}}1 {ö}{{\"o}}1 {ü}{{\"u}}1 {Ä}{{\"A}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1 {ß}{{\ss}}1 {–}{{--}}1 {…}{{\dots}}1 {≤}{{$\le$}}1 {≥}{{$\ge$}}1 {≠}{{$\ne$}}1 {·}{{$\cdot$}}1 {①}{{\nr{1}}}1 {②}{{\nr{2}}}1 {③}{{\nr{3}}}1 {④}{{\nr{4}}}1}
+\lstnewenvironment{java}[1][]{\lstset{language=Java,#1}}{}
+\lstnewenvironment{javaluecke}[1][]{\lstset{language=Java,basicstyle=\linespread{1.5}\small\ttfamily,#1}}{}
+\lstnewenvironment{python}[1][]{\lstset{language=Python,#1}}{}
+\lstnewenvironment{pythonluecke}[1][]{\lstset{language=Python,basicstyle=\linespread{1.5}\small\ttfamily,#1}}{}
+\lstnewenvironment{prolog}[1][]{\lstset{morecomment=[l]{\%},#1}}{}
+\lstnewenvironment{prologluecke}[1][]{\lstset{morecomment=[l]{\%},basicstyle=\linespread{1.5}\small\ttfamily,#1}}{}
+
+\newcommand{\niveauEA}{\tikz[baseline=(t.base)]\node[fill=orange!20,draw=orange!70!black,rounded corners=1.5mm,inner sep=1pt,font=\scriptsize\bfseries,text=orange!50!black](t){\,eA\,};}
+
+% ---------- TikZ-Stile ----------
+\tikzset{
+  neuron/.style={circle,draw=black,line width=0.7pt,minimum size=8mm,inner sep=0pt,font=\small},
+  eingabe/.style={neuron,fill=gray!12},
+  kante/.style={-{Stealth[length=2mm]},line width=0.6pt},
+  gew/.style={font=\scriptsize,fill=white,inner sep=0.6pt},
+  pt/.style={circle,inner sep=0pt,minimum size=2.2mm,draw=white,line width=0.3pt},
+}
+% ---------- Farben wie auf der Website ----------
+\definecolor{adelie}{HTML}{EA580C}\definecolor{zuegel}{HTML}{9333EA}\definecolor{esels}{HTML}{0E7490}
+\definecolor{klnull}{HTML}{2563EB}\definecolor{kleins}{HTML}{DC2626}
+\definecolor{cA}{HTML}{2563EB}\definecolor{cB}{HTML}{DC2626}\definecolor{cC}{HTML}{16A34A}\definecolor{cD}{HTML}{D97706}\definecolor{cE}{HTML}{9333EA}\definecolor{cF}{HTML}{0891B2}
+\setlength{\unitlength}{1mm}

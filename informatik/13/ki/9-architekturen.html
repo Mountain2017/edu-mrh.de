@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>9 Bild- und Sprach-KI: CNN und Transformer | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Künstliche Intelligenz, Informatik 13: Wie Bild- und Sprach-KI aufgebaut sind. Faltungsnetze (CNN) mit Filtern und geteilten Gewichten, Sprachmodelle, die das nächste Wort vorhersagen, Aufmerksamkeit im Transformer, die drei Trainingsphasen eines Chatbots.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="ki.css">
+    <script defer src="ki.js"></script>
+    <script defer src="architekturen.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🤖</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="ki.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 9</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#einstieg">📸 Zu viele Gewichte</a></li>
+            <li><a href="#cnn">🖼️ Faltungsnetze (CNN)</a></li>
+            <li><a href="#sprache">💬 Sprachmodelle</a></li>
+            <li><a href="#transformer">🔦 Aufmerksamkeit</a></li>
+            <li><a href="#phasen">🏗️ Wie ein Chatbot entsteht</a></li>
+            <li><a href="#festhalten">📝 Überblick</a></li>
+            <li><a href="#ethik">⚖️ Ethik</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Künstliche Intelligenz</div>
+            <ul class="sidebar-menu">
+                <li><a href="ki.html">Übersicht</a></li>
+                <li><a href="1-lernarten.html">1 Wie lernen Maschinen?</a></li>
+                <li><a href="2-merkmalsraum.html">2 Merkmalsraum und k-NN</a></li>
+                <li><a href="3-k-means.html">3 k-Means</a></li>
+                <li><a href="4-perzeptron.html">4 Das Perzeptron</a></li>
+                <li><a href="5-schichten.html">5 Perzeptronen zusammenschalten</a></li>
+                <li><a href="6-trainieren.html">6 Trainieren und Grenzen</a></li>
+                <li><a href="7-neuronales-netz.html">7 Das neuronale Netz</a></li>
+                <li><a href="8-experimente.html">8 Experimente</a></li>
+                <li><a href="9-architekturen.html">9 CNN und Transformer</a></li>
+                <li><a href="10-ethik.html">10 Ethik</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero ki-hero">
+                <h1 class="hero-title">9 Bild- und Sprach-KI: CNN und Transformer</h1>
+                <p class="hero-subtitle">Künstliche Intelligenz · Informatik 13 · <span class="niveau-tag beide">gA + eA</span> · 1 Stunde (eA: 2)</p>
+                <span class="ki-kompetenz">Du kannst: an Beispielen erläutern, wie Faltungsnetze Bilder und Transformer Texte verarbeiten, und die Trainingsphasen eines Sprachmodells den Lernarten zuordnen.</span>
+                <div class="ki-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-9-architekturen.pdf">📝 Arbeitsblatt 9 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-9-architekturen.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#einstieg">📸 Einstieg</a><a class="p-investigate" href="#cnn">🖼️ CNN</a><a class="p-modify" href="#sprache">💬 Sprache</a><a class="p-modify" href="#transformer">🔦 Aufmerksamkeit</a><a class="p-idee" href="#phasen">🏗️ Chatbot</a><a class="p-note" href="#festhalten">📝 Überblick</a><a class="p-ethik" href="#ethik">⚖️ Ethik</a>
+            </div>
+
+            <section id="einstieg" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">📸</span><h2>Zu viele Gewichte<small>Aufgabe 1: ein Handyfoto als Eingabe</small></h2></div>
+                <div class="phase-body">
+                    <p>Das Ziffernnetz aus Station 8 hatte 64 Eingaben und 12 verdeckte Neuronen, also 64 · 12 = 768 Gewichte in der ersten Schicht. Ein Handyfoto hat etwa 12 Millionen Pixel (mal 3 Farben).</p>
+                    <div class="vorhersage" data-vorhersage="foto" data-wahl="m:etwa eine Million|mr:etwa eine Milliarde|b:mehr als 30 Milliarden">
+                        <h4>Wie viele Gewichte hätte die erste Schicht, wenn jedes der 36 Millionen Farbwerte mit 1000 verdeckten Neuronen verbunden wäre?</h4>
+                    </div>
+                    <div data-nach="foto">
+                        <p>36 000 000 · 1000 = 36 Milliarden Gewichte, nur für die erste Schicht, und das Netz wüsste nicht einmal, dass benachbarte Pixel zusammengehören. Eine Katze links oben müsste es getrennt von einer Katze rechts unten lernen. Für Bilder und Texte braucht man Netze mit einem besonderen <strong>Aufbau</strong> (Architektur).</p>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-9-architekturen.pdf">📝 Blatt 9 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="cnn" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🖼️</span><h2>Faltungsnetze (CNN)<small>Aufgabe 2: ein kleiner Filter, überall dieselben Gewichte</small></h2></div>
+                <div class="phase-body">
+                    <p>Ein <strong>Faltungsnetz</strong> (convolutional neural network, CNN) verbindet ein Neuron nicht mit allen Pixeln, sondern nur mit einem kleinen Ausschnitt, z. B. 3 × 3 Pixeln. Die 9 Gewichte bilden einen <strong>Filter</strong>. Derselbe Filter wird über das ganze Bild geschoben (<strong>Faltung</strong>): an jeder Stelle Gewichte mal Pixel, alles addieren. Heraus kommt eine <strong>Merkmalskarte</strong>, die zeigt, <em>wo</em> im Bild das Muster des Filters vorkommt.</p>
+                    <div data-filter></div>
+                    <ol class="aufgaben">
+                        <li>Wähle beim Haus den Filter „senkrechte Kanten“. Wo leuchtet die Ausgabe rot, wo blau? Tippe ein rotes Feld an und vollziehe die Rechnung nach.</li>
+                        <li>Welcher Filter findet das Dach am besten? Probiere auch die Ziffer 7.</li>
+                        <li>Baue einen eigenen Filter, der nur die waagrechten Striche des Kreuzes findet. Zeichne ein eigenes Bild.</li>
+                        <li>Wie viele Gewichte hat ein Filter? Wie viele Gewichte bräuchte eine vollständig verbundene Schicht von 16 × 16 Eingaben auf 14 × 14 Ausgaben?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 2">
+                        <template data-stufe="Lösung" data-halten><p>a) Rot an der linken Hauswand und den linken Kanten (dunkel rechts vom hellen Bereich ergibt positive Summe), blau an den rechten Kanten. b) Das Dach (schräge Kanten) findet keiner der beiden Kantenfilter allein gut; die „Ecke“ reagiert auf Ecken; ein CNN lernt deshalb Dutzende Filter gleichzeitig. c) z. B. die Gewichte von „waagrechte Kanten“, oder [[−1, −1, −1], [2, 2, 2], [−1, −1, −1]] für waagrechte Linien. d) Ein Filter hat 9 Gewichte (für jede Stelle dieselben, „geteilte Gewichte“). Vollständig verbunden: 256 · 196 = 50 176 Gewichte. In einem CNN lernen die ersten Schichten Filter für Kanten, spätere Schichten setzen daraus Formen und schließlich Objekte zusammen (Auge, Ohr, Katze).</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-9-architekturen.pdf">📝 Blatt 9 · Aufgabe 2</a></p>
+                </div>
+            </section>
+
+            <section id="sprache" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">💬</span><h2>Sprachmodelle: das nächste Wort raten<small>Aufgabe 3: ein Sprachmodell zum Anfassen</small></h2></div>
+                <div class="phase-body">
+                    <p>Ein Sprachmodell hat eine einzige Aufgabe: zu einem Textanfang das <strong>nächste Wort</strong> (genauer: Wortteil, Token) vorherzusagen, als Wahrscheinlichkeit für jedes mögliche Wort. Dann wird ein Wort ausgewählt, angehängt und wieder von vorn. Das Mini-Modell unten macht das ganz einfach: Es zählt im Lerntext, welches Wort wie oft auf die letzten 1 bis 3 Wörter folgt.</p>
+                    <div data-sprachmodell></div>
+                    <ol class="aufgaben">
+                        <li>Lass mit „2 Wörtern Kontext“ 20 Wörter erzeugen. Klingt der Text sinnvoll? Woher kommen die Sätze?</li>
+                        <li>Stelle die Temperatur auf 0,1 und auf 2. Was ändert sich an den Wahrscheinlichkeiten und am Text?</li>
+                        <li>Gib als Anfang „Der grüne“ ein. Was passiert? Was würde ein großes Sprachmodell anders machen?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 3">
+                        <template data-stufe="Lösung" data-halten><p>a) Die Sätze klingen ordentlich, sind aber zusammengestückelt aus Teilen des Lerntexts, manchmal mit unsinnigem Inhalt (der Fisch bringt den Pinguin nach Hause). Das Modell „versteht“ nichts, es kennt nur Häufigkeiten. b) Niedrige Temperatur: das häufigste Wort fast immer, der Text wiederholt sich. Hohe Temperatur: auch seltene Wörter, der Text wird abwechslungsreicher, aber wirrer. Auch große Chatbots haben einen solchen Regler. c) „Der grüne“ kommt im Lerntext nicht vor, das Modell weiß nicht weiter. Ein großes Sprachmodell rechnet mit einem neuronalen Netz statt mit einer Zähltabelle: Es hat Wörter als Punkte in einem Merkmalsraum gelernt (ähnliche Wörter liegen nah beieinander, wie die Pinguine in Station 2) und kann deshalb auch mit nie gesehenen Kombinationen umgehen.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-9-architekturen.pdf">📝 Blatt 9 · Aufgabe 3</a></p>
+                </div>
+            </section>
+
+            <section id="transformer" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">🔦</span><h2>Aufmerksamkeit: die Idee des Transformers<small>Aufgabe 4: Wer ist „er“?</small></h2></div>
+                <div class="phase-body">
+                    <p>Unser Mini-Modell schaut nur auf die letzten zwei Wörter. In „Der Pinguin frisst den Fisch, weil er Hunger hat“ muss man aber weit zurückschauen, um zu wissen, wer „er“ ist. Ein <strong>Transformer</strong> (das T in „GPT“) löst das mit <strong>Aufmerksamkeit</strong> (attention): Jedes Wort berechnet für jedes andere Wort im Text, wie wichtig es gerade ist, und mischt deren Informationen entsprechend in sich hinein. So entsteht für jedes Wort eine Bedeutung, die vom ganzen Satz abhängt.</p>
+                    <div data-attention></div>
+                    <ol class="aufgaben">
+                        <li>Vergleiche Satz 1 und Satz 2. Warum achtet „er“ einmal auf „Pinguin“ und einmal auf „Fisch“?</li>
+                        <li>Vergleiche Satz 3 und 4. Was bedeutet „Bank“ jeweils, und welches Wort hilft?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 4">
+                        <template data-stufe="Lösung" data-halten><p>a) Hunger hat, wer frisst: der Pinguin. Schlecht riechen tut, was gefressen werden soll: der Fisch. Erst das Ende des Satzes entscheidet, wer „er“ ist; Aufmerksamkeit kann über den ganzen Satz hinweg wirken. b) Satz 3: Sitzbank (Hinweis: Ufer), Satz 4: Geldinstitut (Hinweis: Kredit). Das Wort „Bank“ bekommt je nach Umgebung eine andere Bedeutung. Ein Transformer berechnet solche Aufmerksamkeiten in vielen Schichten und „Köpfen“ gleichzeitig, mit Milliarden gelernter Gewichte.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-9-architekturen.pdf">📝 Blatt 9 · Aufgabe 4</a></p>
+                </div>
+            </section>
+
+            <section id="phasen" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">🏗️</span><h2>Wie ein Chatbot entsteht<small>Aufgabe 5: drei Phasen, drei Lernarten</small></h2></div>
+                <div class="phase-body">
+                    <p>Ein Chatbot wie ChatGPT, Claude oder Gemini entsteht in drei Phasen. Ordne jeder Phase die Lernart aus Station 1 zu.</p>
+                    <ul class="quiz" data-quiz="ue:überwacht|un:unüberwacht|be:bestärkend">
+                        <li data-loesung="ue"><span class="icon">📚</span><span class="frage">1. Vortraining: Das Modell liest Billionen Wörter aus Büchern und dem Internet und sagt jeweils das nächste Wort voraus. Die richtige Antwort steht im Text.</span><span class="erkl-text">Jedes Beispiel hat eine richtige Antwort (das tatsächliche nächste Wort), die niemand von Hand vergeben muss: selbstüberwachtes Lernen, eine Form des überwachten Lernens. Danach kann das Modell Texte fortsetzen, aber noch nicht gut auf Fragen antworten.</span></li>
+                        <li data-loesung="ue"><span class="icon">✍️</span><span class="frage">2. Feinabstimmung: Menschen schreiben Zehntausende Beispiel-Gespräche mit guten Antworten; das Modell lernt, so zu antworten.</span><span class="erkl-text">Beispiele mit von Menschen vorgegebenen richtigen Antworten: überwachtes Lernen.</span></li>
+                        <li data-loesung="be"><span class="icon">👍</span><span class="frage">3. Menschen vergleichen jeweils zwei Antworten des Modells und wählen die bessere. Daraus wird eine Belohnung, mit der das Modell weiter trainiert wird.</span><span class="erkl-text">Nur eine Bewertung, keine fertige richtige Antwort: bestärkendes Lernen aus menschlicher Rückmeldung (RLHF). So lernt das Modell, hilfreich, ehrlich und höflich zu antworten und manche Anfragen abzulehnen.</span></li>
+                    </ul>
+                    <div class="ea-box">
+                        <h4>Größenordnungen und Grenzen</h4>
+                        <p>Große Sprachmodelle haben Hunderte Milliarden Gewichte und werden mit Billionen Wörtern trainiert, auf Tausenden Grafikprozessoren über Wochen (siehe Exkurs <a href="../hardware/e5-cpu-gpu-tpu.html">CPU, GPU, TPU</a>). Trotzdem bleibt das Prinzip: das nächste Token so wahrscheinlich wie möglich machen. Daraus folgen typische Grenzen: <strong>Halluzinationen</strong> (flüssige, aber falsche Aussagen, weil „wahrscheinlich klingend“ nicht „wahr“ heißt), Wissen nur bis zum Trainingsstand, Verzerrungen aus den Trainingstexten. Bildgeneratoren (Diffusionsmodelle) lernen ähnlich aus Milliarden Bild-Text-Paaren, ein Bild aus Rauschen schrittweise „herauszurechnen“.</p>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-9-architekturen.pdf">📝 Blatt 9 · Aufgabe 5</a></p>
+                </div>
+            </section>
+
+            <section id="festhalten" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Überblick: Netzarten<small>Festhalten</small></h2></div>
+                <div class="phase-body">
+                    <div class="tab-scroll"><table class="ki-tab">
+                        <tr><th>Netzart</th><th>Eingabe</th><th>Idee</th><th>Beispiele</th></tr>
+                        <tr><td>vollständig verbundenes Netz (Station 5 bis 8)</td><td>feste Zahl von Merkmalen</td><td>jedes Neuron mit allen der Schicht davor verbunden</td><td>Pinguine, kleine Ziffernbilder, Tabellendaten</td></tr>
+                        <tr><td>Faltungsnetz (CNN)</td><td>Bilder</td><td>kleine Filter mit geteilten Gewichten, über das Bild geschoben; Schicht für Schicht von Kanten zu Objekten</td><td>Gesichtserkennung, Röntgenbilder, autonomes Fahren</td></tr>
+                        <tr><td>Transformer</td><td>Folgen von Token (Text, auch Bildstücke, Töne)</td><td>Aufmerksamkeit: jedes Token gewichtet alle anderen; Vorhersage des nächsten Tokens</td><td>Chatbots, Übersetzung, Programmierhilfen</td></tr>
+                        <tr><td>Diffusionsmodell</td><td>Rauschen und Textbeschreibung</td><td>lernt, Rauschen schrittweise zu entfernen</td><td>Bildgeneratoren</td></tr>
+                    </table></div>
+                    <p>Alle diese Netze lernen wie in Station 7: Forward Propagation, Kostenfunktion, Backpropagation und Gradientenabstieg. Neu ist nur, wie die Neuronen verbunden sind.</p>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-9-architekturen.pdf">📝 Blatt 9 · Aufgabe 6</a></p>
+                </div>
+            </section>
+
+            <section id="ethik" class="phase ethik">
+                <div class="phase-head"><span class="phase-icon">⚖️</span><h2>Ethik-Impuls: große Modelle, große Fragen<small>Besprecht mündlich, je Gruppe eine Frage</small></h2></div>
+                <div class="phase-body">
+                    <ul>
+                        <li><strong>Halluzination:</strong> Ein Chatbot nennt eine Quelle, die es nicht gibt. Wer ist verantwortlich, wenn jemand sich darauf verlässt?</li>
+                        <li><strong>Urheberrecht:</strong> Die Trainingstexte und -bilder stammen von Menschen, die nicht gefragt wurden. Ist das in Ordnung, wenn das Modell sie nicht wörtlich wiedergibt? (Diese Seite sperrt übrigens KI-Trainings-Crawler aus.)</li>
+                        <li><strong>Energie:</strong> Das Training der größten Modelle braucht nach Schätzungen so viel Strom wie Tausende Haushalte in einem Jahr, dazu kommt der Strom für jede einzelne Anfrage. Wofür ist das gerechtfertigt?</li>
+                        <li><strong>Deepfakes:</strong> Mit Bild- und Stimmgeneratoren lassen sich täuschend echte Videos von Personen erzeugen. Was sollte erlaubt sein, was nicht?</li>
+                    </ul>
+                    <p>Notiere die wichtigsten Gedanken für Station 10.</p>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="8-experimente.html">← 8 Experimente</a>
+                <a class="btn btn-primary nur-ga" href="10-ethik.html">10 Ethik →</a>
+                <a class="btn btn-primary nur-ea" href="p-projekt.html">P Projekt (eA) →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-9-architekturen-lsg.pdf">Lösung Blatt 9 (PDF)</a></p>
+                    <p><strong>Einordnung:</strong> CNN und Transformer stehen nicht im Lehrplan; die Station zeigt, dass heutige Systeme auf denselben Grundlagen beruhen (Neuron, Gewichte, Backpropagation, Lernarten), und bereitet die Ethik-Station mit konkreten Anwendungen vor. Mathematik der Faltung und der Aufmerksamkeit (Skalarprodukte, Softmax) wird bewusst nicht ausgeführt. Im gA-Kurs reicht eine Stunde (Einstieg, Filter-Labor, Sprachmodell, Quiz der Phasen); im eA-Kurs zusätzlich Aufmerksamkeit, Größenordnungen und Grenzen.</p>
+                    <p><strong>Werkzeuge:</strong> Filter-Labor mit 16 × 16-Bild und 3 × 3-Filtern (Sobel-Filter für Kanten, ohne Rand, daher 14 × 14 Ausgabe). Das Mini-Sprachmodell ist ein n-Gramm-Modell (Zählen der Nachfolger) mit Temperatur; der Lerntext ist für die Seite geschrieben, eigener Text bleibt im Browser. Die Aufmerksamkeitsgewichte sind ausgedacht und als solche gekennzeichnet.</p>
+                    <p><strong>Ethik:</strong> Aktuelle Zahlen zu Energieverbrauch und Rechtslage (Urheberrecht, EU-KI-Verordnung) ändern sich schnell; vor dem Unterricht kurz aktualisieren. Station 10 greift die Fragen auf.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de · <a href="https://edu-mrh.de/impressum.html#lizenz">CC BY-NC-SA 4.0</a> | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

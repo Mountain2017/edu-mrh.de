@@ -1,0 +1,47 @@
+\documentclass[11pt]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{W1}{Wissensbasis: Fakten und Regeln \niveauEA}
+
+\begin{aufgabe}[Wissen aufschreiben (Website: Stammbaum)]{1}
+Welche Aussagen musst du einem Computer mindestens geben, damit er Fragen wie „Wer ist die Oma von Lou?“ beantworten kann? Warum ist es ungünstig, jede Großeltern-Beziehung einzeln aufzuschreiben?
+\lsglinien{3}{Nur die Grundaussagen: wer Elternteil von wem ist und wer weiblich/männlich ist. Mutter, Oma, Geschwister folgen aus Regeln. Jede Beziehung einzeln aufzuschreiben ist viel Arbeit und fehleranfällig: Bei jedem neuen Kind müsste man viele Aussagen nachtragen.}
+\end{aufgabe}
+
+\begin{aufgabe}[Prädikat, Fakt, Regel]{2}
+\begin{prolog}
+elternteil(oskar, pia).
+mutter(M, K) :- elternteil(M, K), weiblich(M).
+\end{prolog}
+\begin{lueckentext}
+Die erste Zeile ist ein \lsg[3.6cm]{Fakt}, die zweite eine \lsg[3.6cm]{Regel}. \code{elternteil} ist ein \lsg[3.6cm]{Prädikat} mit \lsg[2.25cm]{zwei} Stellen. \code{M} und \code{K} sind \lsg[3.6cm]{Variablen}, erkennbar am \lsgrest{Großbuchstaben.}
+\code{mutter(M, K)} ist der \lsg[3.6cm]{Kopf}, alles nach \code{:-} der \lsg[3.6cm]{Rumpf}; das Komma bedeutet \lsg[2.25cm]{und}.
+Was nicht aus der Wissensbasis folgt, gilt als \lsg[3.6cm]{falsch} (geschlossene Welt).
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{aufgabe}[Regeln schreiben (Website: Werkstatt)]{3}
+a) \code{vater(V, K)}: V ist Vater von K.\par
+\lsgfeld{1}{vater(V, K) :- elternteil(V, K), maennlich(V).}\par\vspace{1mm}
+b) \code{grosselternteil(G, E)}: G ist Großelternteil von E.\par
+\lsgfeld{1}{grosselternteil(G, E) :- elternteil(G, X), elternteil(X, E).}\par\vspace{1mm}
+c) \code{geschwister(A, B)}: A und B haben einen gemeinsamen Elternteil.\par
+\lsgfeld{1}{geschwister(A, B) :- elternteil(E, A), elternteil(E, B), A \textbackslash= B.}\par\vspace{1mm}
+Warum braucht man in c) die Bedingung \code{A \textbackslash= B}, und warum erscheint Tia bei \code{?- geschwister(tim, B).} zweimal?
+\lsglinien{2}{Ohne A \textbackslash= B wäre jeder sein eigenes Geschwister. Tia erscheint zweimal, weil es zwei Wege gibt: über Pia und über Kurt.}
+\end{aufgabe}
+
+\newpage
+\begin{aufgabe}[Rekursive Regeln]{4}
+Ergänze die rekursive Regel „X ist Vorfahre von Y“.
+\begin{prologluecke}
+vorfahre(X, Y) :- (*\lsg[4.2cm]{elternteil(X, Y)}*).                   % Abbruch
+vorfahre(X, Y) :- elternteil(X, (*\lsg[1.2cm]{Z}*)), (*\lsg[4.2cm]{vorfahre(Z, Y)}*).   % Rekursion
+\end{prologluecke}
+\begin{lueckentext}
+Zwei Regeln mit demselben Kopf bedeuten \lsg[2.25cm]{oder}. Ohne die erste Regel \lsgrest{gibt es keine Antwort.}
+\end{lueckentext}
+Schreibe \code{nachfahre(N, V)} mithilfe von \code{vorfahre}.\par
+\lsgfeld{1}{nachfahre(N, V) :- vorfahre(V, N).}
+\end{aufgabe}
+\end{document}

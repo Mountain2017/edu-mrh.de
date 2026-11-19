@@ -417,6 +417,23 @@ gemeinsamen Designs ist also die Root-Datei).
   `hardware.js` (E.1–E.5), `quanten.js` (E.6–E.8); Stil `hardware.css` auf `../rechner/rechner.css`, Quiz und
   Lösungsweg aus `../rechner/rechner.js`. Schaltzeichen-Norm in `localStorage 'hwNorm'`
 
+- 13 Künstliche Intelligenz (neues Format, → AB, **eine Sequenz für gA (LB 4, 18 Std.) und eA (LB 2, 34 Std.)**):
+  `13/ki/ki.html` (Übersicht mit Niveau-Schalter, `localStorage 'kiNiveau'`, Links `ki.html?niveau=ga|ea`; in
+  `informatik.html` eigener Block). Kern 1–10 für beide: 1 Lernarten („Sei die KI“), 2 Merkmalsraum/k-NN,
+  3 k-Means (Java 3D `Online-IDE/13-KI-3 k-Means.json` + Coach), 4 Perzeptron (Java 3D, Ebene), 5 Schichten
+  (Zaun-Baukasten, Java 3D „Raum abstecken“), 6 Trainieren (Train/Test, Wackel-Experiment Stufe vs. Sigmoid),
+  7 Neuronales Netz (Forward/Kosten/Abstieg/Backprop, Python-Zellen), 8 Experimente (Netz-Spielplatz, Ziffern),
+  9 CNN/Transformer, 10 Ethik (Positionslinie, Fallkarten, KI-Verordnung, Stellungnahme). Nur eA: W1–W3
+  wissensbasierte Systeme (eigener Prolog-Interpreter `wissen.js` mit Ableitungsprotokoll), P Projekt. eA-Kästen
+  `.ea-box`, `.nur-ea`/`.nur-ga`. Bausteine: `ki.js` (Basis, `KI.Punktwelt`, Quiz, Vorhersage, Niveau), `lernarten.js`,
+  `cluster.js`, `perzeptron.js`, `netz.js` (`KI.Netz`, Spielplatz), `architekturen.js`, `ethik.js`, `wissen.js`,
+  `python.js` + `py-worker.js` (Pyodide wie W-Seminar, Modul `ki` für Diagramme), `ide-coach.js`; Notebooks in
+  `notebooks/`, Anleitung `python-einrichten.html`. **Alles generiert aus `13/material/ki/generator/`** (nur lokal):
+  `gen_daten.py` (Pinguine CC0, UCI-Ziffern CC BY 4.0, erfundene Sätze → `data/*.csv`, `ki-daten.js`), `gen_ide.py`
+  (Java-Quellen → JSON + IDE-Block zwischen `<!-- IDE-START x -->`), `gen_notebooks.py`, `gen_projekt.py`.
+  Zahlen in Seiten, Blättern, IDE und Folien hängen an diesen Daten (Liste in `13/material/ki/planung-ki-sequenz.md`);
+  Code nur im Generator ändern. Folien D1–D4 (pptxgenjs) in `13/material/ki/praesentation/folien.js`
+
 **Makerspace** (`makerspace/makerspace.html`, Wahlkurs Unterstufe, Stationen je 3 Wochen;
 nur Robotik online): `makerspace/robotik/` LEGO SPIKE Prime – `robotik.html` (Team,
 Lernpfad, Akku, Abzeichen, Spickzettel, Lehrkräfte-Werkzeuge mit PIN – Klartext in

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2 Merkmalsraum und k-nächste Nachbarn | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Künstliche Intelligenz, Informatik 13: Objekte als Punkte im Merkmalsraum, Ähnlichkeit als Abstand, das Verfahren der k nächsten Nachbarn (k-NN) mit den Palmer-Pinguinen, Normierung, Verzerrung durch unausgewogene Daten.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="ki.css">
+    <script defer src="ki.js"></script>
+    <script defer src="ki-daten.js"></script>
+    <script defer src="cluster.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🤖</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="ki.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 2</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#einstieg">🐧 Welche Art?</a></li>
+            <li><a href="#festhalten">📝 Merkmalsraum und Abstand</a></li>
+            <li><a href="#labor">🔬 k-NN-Labor</a></li>
+            <li><a href="#normieren">⚖️ Normieren</a></li>
+            <li><a href="#ethik">⚖️ Ethik: Nachbarn</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Künstliche Intelligenz</div>
+            <ul class="sidebar-menu">
+                <li><a href="ki.html">Übersicht</a></li>
+                <li><a href="1-lernarten.html">1 Wie lernen Maschinen?</a></li>
+                <li><a href="2-merkmalsraum.html">2 Merkmalsraum und k-NN</a></li>
+                <li><a href="3-k-means.html">3 k-Means</a></li>
+                <li><a href="4-perzeptron.html">4 Das Perzeptron</a></li>
+                <li><a href="5-schichten.html">5 Perzeptronen zusammenschalten</a></li>
+                <li><a href="6-trainieren.html">6 Trainieren und Grenzen</a></li>
+                <li><a href="7-neuronales-netz.html">7 Das neuronale Netz</a></li>
+                <li><a href="8-experimente.html">8 Experimente</a></li>
+                <li><a href="9-architekturen.html">9 CNN und Transformer</a></li>
+                <li><a href="10-ethik.html">10 Ethik</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero ki-hero">
+                <h1 class="hero-title">2 Merkmalsraum und k-nächste Nachbarn</h1>
+                <p class="hero-subtitle">Künstliche Intelligenz · Informatik 13 · <span class="niveau-tag beide">gA + eA</span> · 1 Stunde</p>
+                <span class="ki-kompetenz">Du kannst: Objekte als Punkte in einem Merkmalsraum darstellen, Ähnlichkeit als Abstand berechnen und mit dem Verfahren der k nächsten Nachbarn neue Objekte einordnen.</span>
+                <div class="ki-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-2-merkmalsraum.pdf">📝 Arbeitsblatt 2 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-2-merkmalsraum.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#einstieg">🐧 Welche Art?</a><a class="p-note" href="#festhalten">📝 Festhalten</a><a class="p-investigate" href="#labor">🔬 Labor</a><a class="p-modify" href="#normieren">⚖️ Normieren</a><a class="p-ethik" href="#ethik">⚖️ Ethik</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="einstieg" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🐧</span><h2>Welche Art ist das?<small>Pinguine von der Palmer-Station</small></h2></div>
+                <div class="phase-body">
+                    <p>Auf drei Inseln der Antarktis haben Forschende der Palmer-Station von 2007 bis 2009 Pinguine vermessen: 342 Tiere aus drei Arten. Von jedem Tier kennen wir die <strong>Schnabellänge</strong>, die <strong>Schnabeltiefe</strong> (Höhe des Schnabels), die <strong>Flossenlänge</strong> und das <strong>Gewicht</strong>.</p>
+                    <div class="tab-scroll"><table class="ki-tab">
+                        <tr><th>Art</th><th class="zahl">Tiere</th><th class="zahl">Schnabellänge</th><th class="zahl">Schnabeltiefe</th><th class="zahl">Flossenlänge</th><th class="zahl">Gewicht</th></tr>
+                        <tr><td><span style="color:var(--art-adelie);font-weight:800">●</span> Adéliepinguin</td><td class="zahl">151</td><td class="zahl">32 bis 46 mm</td><td class="zahl">15,5 bis 21,5 mm</td><td class="zahl">172 bis 210 mm</td><td class="zahl">2850 bis 4775 g</td></tr>
+                        <tr><td><span style="color:var(--art-zuegel);font-weight:800">▲</span> Zügelpinguin</td><td class="zahl">68</td><td class="zahl">41 bis 58 mm</td><td class="zahl">16,4 bis 20,8 mm</td><td class="zahl">178 bis 212 mm</td><td class="zahl">2700 bis 4800 g</td></tr>
+                        <tr><td><span style="color:var(--art-esels);font-weight:800">■</span> Eselspinguin</td><td class="zahl">123</td><td class="zahl">41 bis 60 mm</td><td class="zahl">13,1 bis 17,3 mm</td><td class="zahl">203 bis 231 mm</td><td class="zahl">3950 bis 6300 g</td></tr>
+                    </table></div>
+                    <p>Ein neuer Pinguin wird vermessen: <strong>Schnabellänge 44 mm, Schnabeltiefe 17,5 mm</strong>. Mit der Tabelle allein ist das schwer zu entscheiden, die Bereiche überlappen. Wie würdest du vorgehen?</p>
+                    <div class="vorhersage" data-vorhersage="neu" data-wahl="a:Adélie|z:Zügel|e:Esels|w:Weiß ich nicht">
+                        <h4>Welche Art ist der neue Pinguin? Tippe, bevor du das Diagramm ansiehst.</h4>
+                    </div>
+                    <div data-nach="neu">
+                        <p>Hier sind alle 342 Pinguine als Punkte: nach rechts die Schnabellänge, nach oben die Schnabeltiefe. Klicke dorthin, wo der neue Pinguin hingehört (44 | 17,5).</p>
+                        <div data-knn data-k="1"></div>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-merkmalsraum.pdf">📝 Blatt 2 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="festhalten" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Merkmalsraum, Abstand, k-NN</small></h2></div>
+                <div class="phase-body">
+                    <p>Jedes Objekt wird durch seine Merkmale beschrieben, ein Pinguin zum Beispiel durch (Schnabellänge, Schnabeltiefe, Flossenlänge) = (45,5 | 17,0 | 196). Diese Zahlenliste heißt <strong>Merkmalsvektor</strong>; man kann sie als Punkt in einem Koordinatensystem sehen, dem <strong>Merkmalsraum</strong>. Mit zwei Merkmalen ist er eine Ebene, mit drei ein Raum, mit 784 (Pixel eines Ziffernbilds) kann man ihn sich nicht mehr vorstellen, aber genauso rechnen.</p>
+                    <p>„Ähnlich“ heißt dann: <strong>nah beieinander</strong>. Den Abstand zweier Punkte berechnet man mit dem Satz des Pythagoras (euklidischer Abstand):</p>
+                    <p class="formel">d(P, Q) = √((x<sub>P</sub> − x<sub>Q</sub>)² + (y<sub>P</sub> − y<sub>Q</sub>)²) &nbsp; bzw. im Raum &nbsp; √((x<sub>P</sub> − x<sub>Q</sub>)² + (y<sub>P</sub> − y<sub>Q</sub>)² + (z<sub>P</sub> − z<sub>Q</sub>)²)</p>
+                    <div class="konzept">
+                        <h4>Das Verfahren der k nächsten Nachbarn (k-NN)</h4>
+                        <p>Gegeben sind viele Beispiele mit bekannter Klasse (überwachtes Lernen) und ein neuer Punkt N.</p>
+                        <ol>
+                            <li><span class="schritt">①</span> Berechne den Abstand von N zu jedem Beispiel.</li>
+                            <li><span class="schritt">②</span> Wähle die k Beispiele mit dem kleinsten Abstand.</li>
+                            <li><span class="schritt">③</span> N bekommt die Klasse, die unter diesen k Nachbarn am häufigsten vorkommt (Mehrheit).</li>
+                        </ol>
+                        <p>k-NN „lernt“ eigentlich nichts: Es merkt sich alle Beispiele und rechnet erst, wenn eine Frage kommt.</p>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-merkmalsraum.pdf">📝 Blatt 2 · Aufgaben 2 und 3 (von Hand)</a></p>
+                </div>
+            </section>
+
+            <section id="labor" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🔬</span><h2>k-NN-Labor<small>Aufgabe 4: Welche Rolle spielt k?</small></h2></div>
+                <div class="phase-body">
+                    <div data-knn data-k="3"></div>
+                    <ol class="aufgaben">
+                        <li>Setze den neuen Pinguin (44 | 17,5), am genauesten über die Eingabefelder, und bestimme die Vorhersage für k = 1, 3, 5 und 15. Trage sie auf dem Blatt ein. Warum ändert sie sich?</li>
+                        <li>Setze Pinguine mitten in eine „Wolke“, z. B. (38 | 18,5) oder (48 | 15). Spielt k dort eine Rolle?</li>
+                        <li>Schalte die Entscheidungsregionen ein und vergleiche k = 1 mit k = 15. Wie sehen die Grenzen jeweils aus?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 4">
+                        <template data-stufe="Tipp"><p>Der Punkt (44 | 17,5) liegt genau dort, wo sich alle drei Arten treffen. Zähle die Nachbarn je Art.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) k = 1: Esels (der nächste Nachbar ist ein Eselspinguin); k = 3: je ein Nachbar jeder Art, Gleichstand, der nächste entscheidet: Esels; k = 5: 2 Adélie, 2 Zügel, 1 Esels, Gleichstand, der nächste der beiden ist ein Adélie: Adélie; k = 15: 12 Zügel: Zügel. Am Rand zwischen den Arten hängt das Ergebnis stark von k ab. b) In einer Wolke sind alle Nachbarn von derselben Art, k spielt kaum eine Rolle. c) Bei k = 1 sind die Grenzen zerklüftet, einzelne Ausreißer bekommen eigene „Inseln“. Bei k = 15 sind sie glatt, dafür werden kleine Gruppen am Rand überstimmt.</p></template>
+                    </div>
+                    <div class="tipp"><strong>Gleichstand:</strong> Haben zwei Arten gleich viele Stimmen, entscheidet hier der nächste Nachbar unter ihnen. Andere Programme würfeln oder nehmen ein ungerades k. Man kann darüber diskutieren, was fairer ist.</div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-merkmalsraum.pdf">📝 Blatt 2 · Aufgabe 4</a></p>
+                </div>
+            </section>
+
+            <section id="normieren" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">⚖️</span><h2>Normieren<small>Aufgabe 5: Gramm gegen Millimeter</small></h2></div>
+                <div class="phase-body">
+                    <p>Wähle im Labor unten für x die <strong>Schnabeltiefe (mm)</strong> und für y das <strong>Gewicht (g)</strong> und schalte „normieren“ <strong>aus</strong>. Setze den Pinguin (17,5 mm | 4200 g) mit k = 5. Schau dir genau an, welche Nachbarn gewählt werden.</p>
+                    <div data-knn data-wahl data-merkmale="schnabeltiefe,gewicht" data-normiert="nein" data-k="5"></div>
+                    <ol class="aufgaben">
+                        <li>Welche Nachbarn werden ohne Normierung gewählt? Was haben sie gemeinsam?</li>
+                        <li>Schalte „normieren“ ein. Was ändert sich und warum?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 5">
+                        <template data-stufe="Tipp"><p>Ein Unterschied von 1 mm Schnabeltiefe ist für Pinguine viel, 1 g Gewicht nichts. Für die Abstandsformel sind beides nur Zahlen.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) Ohne Normierung haben die Nachbarn fast genau 4200 g, ihre Schnabeltiefe ist beliebig (19,4 mm, 14,6 mm, 13,9 mm …): 3 von 5 sind Eselspinguine. Die Gewichtsunterschiede (Hunderte Gramm) sind viel größere Zahlen als die Schnabelunterschiede (wenige Millimeter) und bestimmen den Abstand allein. b) Normiert man jedes Merkmal auf 0 bis 1, zählen beide gleich: Die Nachbarn liegen ringsum, Vorhersage Adélie (3 Adélie, 2 Zügel).</p></template>
+                    </div>
+                    <div class="konzept">
+                        <h4>Min-Max-Normierung</h4>
+                        <p class="formel">x<sub>normiert</sub> = (x − min) / (max − min)</p>
+                        <p>Jedes Merkmal liegt danach zwischen 0 und 1, der kleinste Wert wird 0, der größte 1. Beispiel Gewicht: min = 2700 g, max = 6300 g, ein Pinguin mit 4200 g bekommt (4200 − 2700) / 3600 ≈ 0,42.</p>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-merkmalsraum.pdf">📝 Blatt 2 · Aufgabe 5</a></p>
+                </div>
+            </section>
+
+            <section id="ethik" class="phase ethik">
+                <div class="phase-head"><span class="phase-icon">⚖️</span><h2>Ethik-Impuls: Deine Nachbarn bestimmen dich<small>Besprecht mündlich</small></h2></div>
+                <div class="phase-body">
+                    <p>Eine Bank entscheidet mit k-NN über Kredite: Wer den bisherigen Kunden ähnelt, die ihren Kredit zurückgezahlt haben, bekommt einen. Die (erfundenen) Daten enthalten zwei Gruppen: 150 Personen aus Gruppe A und nur 24 aus Gruppe B. In Gruppe B zahlen Menschen schon bei niedrigeren Werten zuverlässig zurück, etwa weil ihr Einkommen anders erfasst wird.</p>
+                    <div data-knn data-satz="kredit" data-k="5"></div>
+                    <ol class="aufgaben">
+                        <li>Prüfe mit dem Knopf „Fairness prüfen“, wie oft k-NN in jeder Gruppe richtig liegt. Wer wird zu Unrecht abgelehnt?</li>
+                        <li>Das Verfahren behandelt alle gleich: Es rechnet für jeden dieselbe Formel. Ist es deshalb fair?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Ethik-Impuls">
+                        <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Mit k = 5 liegt k-NN in Gruppe A zu 89 % richtig, in Gruppe B nur zu 67 %; 8 von 16 Personen aus B, die zurückgezahlt hätten, werden abgelehnt. Grund: Die meisten Nachbarn einer Person aus B stammen aus der großen Gruppe A, deren Muster anders ist. Gleiche Formel heißt nicht gleiche Behandlung: Wer in den Daten selten ist, wird nach dem Muster der Mehrheit beurteilt. Mögliche Abhilfen: mehr und bessere Daten aus Gruppe B, Fehlerraten je Gruppe prüfen, Menschen entscheiden lassen. In der EU gilt Kreditwürdigkeitsprüfung durch KI als Hochrisiko-Anwendung (Station 10).</p></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="uebergang"><strong>Die Frage für Station 3:</strong> k-NN braucht Beispiele, deren Art schon bekannt ist. Was, wenn niemand die Arten kennt? Kann ein Algorithmus die Gruppen in den Punkten selbst finden, wie du mit den Wesen vom Mond?</div>
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🎯 Gruppen ohne Etiketten</h4>
+                            <p>In Station 3 lernst du k-Means kennen und programmierst es in Java, mit den Pinguinen in einem drehbaren 3D-Raum.</p>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>📐 Grenzen statt Nachbarn</h4>
+                            <p>k-NN muss sich alle Beispiele merken. Ab Station 4 lernt ein Perzeptron stattdessen eine Grenze, die man sich mit wenigen Zahlen merken kann.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="1-lernarten.html">← 1 Wie lernen Maschinen?</a>
+                <a class="btn btn-primary" href="3-k-means.html">3 k-Means →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-2-merkmalsraum-lsg.pdf">Lösung Blatt 2 (PDF)</a></p>
+                    <p><strong>Einordnung:</strong> k-NN ist nicht Lehrplaninhalt, schafft aber die Grundlage für k-Means (Abstand, Merkmalsraum) und das Perzeptron (Entscheidungsgrenze). Es ist zugleich das einfachste Beispiel überwachten Lernens. Die Station kann auf 30 Minuten gekürzt werden (Einstieg, Festhalten, Aufgabe 4).</p>
+                    <p><strong>Daten:</strong> Palmer Penguins (CC0), Abstände im Labor im min-max-normierten Raum (Schnabellänge 32,1 bis 59,6 mm, Schnabeltiefe 13,1 bis 21,5 mm, Flossenlänge 172 bis 231 mm, Gewicht 2700 bis 6300 g). Gleichstand: der nächste Nachbar unter den gleich starken Klassen entscheidet. Werte für (44 | 17,5): k = 1 Esels, 3 Esels (1:1:1), 5 Adélie (2:2:1), 15 Zügel (12:2:1).</p>
+                    <p><strong>Ethik-Impuls:</strong> Erfundener Datensatz <code>data/kredit.csv</code> (A: 150 Personen, Rückzahlung bei x + y &gt; 1,0; B: 24 Personen, Rückzahlung schon bei x + y &gt; 0,75). Fairness-Prüfung als „leave one out“: Jede Person wird mit allen übrigen vorhergesagt. k = 5: A 134/150 = 89 %, B 16/24 = 67 %, abgelehnt trotz Rückzahlung: A 3 von 72, B 8 von 16.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de · <a href="https://edu-mrh.de/impressum.html#lizenz">CC BY-NC-SA 4.0</a> | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a> · Pinguindaten: Palmer Penguins (Horst, Hill &amp; Gorman 2020, Palmer Station LTER), CC0</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7 Das neuronale Netz | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Künstliche Intelligenz, Informatik 13: Forward Propagation mit Sigmoid, Aktivierungsfunktionen, Kostenfunktion, Gradientenabstieg und die Idee der Backpropagation (Fehlerrückführung). Mit Python im Browser.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="ki.css">
+    <script defer src="ki.js"></script>
+    <script defer src="netz.js"></script>
+    <script defer src="python.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🤖</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="ki.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 7</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#aktivierung">〰️ A Weiche Stufen</a></li>
+            <li><a href="#vorwaerts">➡️ A Forward Propagation</a></li>
+            <li><a href="#kosten">📉 B Kostenfunktion</a></li>
+            <li><a href="#abstieg">⛰️ B Gradientenabstieg</a></li>
+            <li><a href="#rueckwaerts">⬅️ C Backpropagation</a></li>
+            <li><a href="#festhalten">📝 Festhalten</a></li>
+            <li><a href="#ethik">⚖️ Ethik: Was kostet ein Fehler?</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Künstliche Intelligenz</div>
+            <ul class="sidebar-menu">
+                <li><a href="ki.html">Übersicht</a></li>
+                <li><a href="1-lernarten.html">1 Wie lernen Maschinen?</a></li>
+                <li><a href="2-merkmalsraum.html">2 Merkmalsraum und k-NN</a></li>
+                <li><a href="3-k-means.html">3 k-Means</a></li>
+                <li><a href="4-perzeptron.html">4 Das Perzeptron</a></li>
+                <li><a href="5-schichten.html">5 Perzeptronen zusammenschalten</a></li>
+                <li><a href="6-trainieren.html">6 Trainieren und Grenzen</a></li>
+                <li><a href="7-neuronales-netz.html">7 Das neuronale Netz</a></li>
+                <li><a href="8-experimente.html">8 Experimente</a></li>
+                <li><a href="9-architekturen.html">9 CNN und Transformer</a></li>
+                <li><a href="10-ethik.html">10 Ethik</a></li>
+                <li><a href="python-einrichten.html">Python einrichten</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero ki-hero">
+                <h1 class="hero-title">7 Das neuronale Netz: vorwärts rechnen, rückwärts lernen</h1>
+                <p class="hero-subtitle">Künstliche Intelligenz · Informatik 13 · <span class="niveau-tag beide">gA + eA</span> · 3 Stunden (eA: 4) · Python im Browser</p>
+                <span class="ki-kompetenz">Du kannst: den Aufbau eines künstlichen neuronalen Netzes erklären, die Forward Propagation an einfachen Beispielen durchführen, die Kostenfunktion berechnen und die Zielsetzung der Fehlerrückführung (Backpropagation) beschreiben.</span>
+                <div class="ki-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-7-neuronales-netz.pdf">📝 Arbeitsblatt 7 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-7-neuronales-netz.tex">LaTeX-Quelle</a>
+                    <a class="btn btn-outline" href="notebooks/7-neuronales-netz.ipynb" download>📓 Notebook (für Jupyter)</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#aktivierung">〰️ Weiche Stufen</a><a class="p-investigate" href="#vorwaerts">➡️ Vorwärts</a><a class="p-modify" href="#kosten">📉 Kosten</a><a class="p-modify" href="#abstieg">⛰️ Abstieg</a><a class="p-make" href="#rueckwaerts">⬅️ Rückwärts</a><a class="p-note" href="#festhalten">📝 Festhalten</a><a class="p-ethik" href="#ethik">⚖️ Ethik</a>
+            </div>
+
+            <p>In Station 6 haben wir drei Dinge gefordert: <span class="schritt">①</span> eine Aktivierungsfunktion ohne Sprünge, <span class="schritt">②</span> ein Maß für den Fehler, <span class="schritt">③</span> für jedes Gewicht eine Richtung, in der der Fehler kleiner wird. Diese Station löst die drei Forderungen in drei Teilen: <strong>A</strong> vorwärts rechnen, <strong>B</strong> Kosten und Abstieg, <strong>C</strong> rückwärts lernen.</p>
+
+            <section id="aktivierung" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">〰️</span><h2>A · Weiche Stufen: Aktivierungsfunktionen<small>Aufgabe 1: Welche Funktion soll ein Neuron benutzen?</small></h2></div>
+                <div class="phase-body">
+                    <p>Ein Neuron eines echten Netzes rechnet wie das Perzeptron z = w<sub>0</sub> + w<sub>1</sub>x<sub>1</sub> + w<sub>2</sub>x<sub>2</sub> + …, gibt aber nicht 0 oder 1 weiter, sondern f(z) mit einer <strong>Aktivierungsfunktion</strong> f ohne Sprünge. Die bekanntesten:</p>
+                    <ul>
+                        <li><strong>Sigmoid</strong> σ(z) = 1 / (1 + e<sup>−z</sup>): eine weiche Stufe von 0 bis 1.</li>
+                        <li><strong>tanh</strong>: eine weiche Stufe von −1 bis 1.</li>
+                        <li><strong>ReLU</strong> (rectified linear unit) f(z) = max(0, z): unten 0, oben die Gerade. Einfach zu rechnen und in großen Netzen heute am häufigsten.</li>
+                    </ul>
+                    <div data-aktivierung></div>
+                    <ol class="aufgaben">
+                        <li>Lies die Werte σ(−2), σ(0), σ(2) und σ(6) ab und trage sie auf dem Blatt in die Tabelle ein.</li>
+                        <li>Welche Steigung hat die Stufe, welche die Sigmoidfunktion bei z = 0? Warum ist das für das Lernen wichtig?</li>
+                        <li>Schalte „linear (keine)“ ein. Warum wäre ein Netz <em>ohne</em> Aktivierungsfunktion nutzlos? Tipp: Was kommt heraus, wenn man eine lineare Funktion in eine lineare Funktion einsetzt?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 1">
+                        <template data-stufe="Tipp zu c"><p>Zwei Neuronen ohne Aktivierung: h = 2 + 3x und y = 1 − 4h. Setze h in y ein.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) σ(−2) ≈ 0,119; σ(0) = 0,5; σ(2) ≈ 0,881; σ(6) ≈ 0,998. b) Die Stufe hat überall die Steigung 0 (außer am Sprung), die Sigmoidfunktion bei z = 0 die Steigung 0,25. Nur wo es eine Steigung gibt, verrät ein kleines Drehen an den Gewichten, in welche Richtung der Fehler kleiner wird. c) y = 1 − 4 · (2 + 3x) = −7 − 12x ist wieder linear. Egal wie viele Schichten ohne Aktivierung man hintereinanderschaltet, heraus kommt eine einzige lineare Funktion, also nur eine Gerade (ein einzelnes Neuron). Erst die Nichtlinearität macht die zusätzlichen Schichten nützlich.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-7-neuronales-netz.pdf">📝 Blatt 7 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="vorwaerts" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">➡️</span><h2>A · Forward Propagation mit Sigmoid<small>Aufgabe 2: das XOR-Netz mit weichen Stufen</small></h2></div>
+                <div class="phase-body">
+                    <p>Dasselbe Netz wie in Station 5, aber mit Sigmoid statt Stufe und größeren Gewichten: h<sub>1</sub> = σ(−2 + 4x<sub>1</sub> + 4x<sub>2</sub>), h<sub>2</sub> = σ(6 − 4x<sub>1</sub> − 4x<sub>2</sub>), y = σ(−6 + 4h<sub>1</sub> + 4h<sub>2</sub>). Rechne zuerst von Hand (Blatt, Aufgabe 2) und prüfe dann mit dem Vorwärts-Rechner.</p>
+                    <div data-vorwaerts></div>
+                    <div class="py" data-py="ki7-vorwaerts" data-titel="Forward Propagation">
+                        <div class="py-idea">
+                            <p><b class="k">Idee:</b> Das XOR-Netz Schicht für Schicht ausrechnen, für alle vier Eingaben.</p>
+                            <ol><li><code>neuron(w, eingaben)</code> rechnet z = w<sub>0</sub> + w<sub>1</sub> · e<sub>1</sub> + w<sub>2</sub> · e<sub>2</sub> und gibt σ(z) zurück.</li><li>① Die verdeckte Schicht bekommt die Eingabe x, ② das Ausgabeneuron bekommt [h1, h2].</li></ol>
+                            <p><b class="k">Achte auf:</b> Stimmen die Werte mit deiner Rechnung auf dem Blatt überein? Wie nah liegt y bei 0 bzw. 1? Ändere die Gewichte von w_y auf [-12, 8, 8]: Was passiert?</p>
+                        </div>
+<script type="text/plain">
+import math
+
+def sigmoid(z):
+    return 1 / (1 + math.exp(-z))
+
+# Gewichte wie auf Blatt 7: [w0, w1, w2], w0 ist der Bias
+w_h1 = [-2, 4, 4]
+w_h2 = [6, -4, -4]
+w_y = [-6, 4, 4]
+
+def neuron(w, eingaben):
+    z = w[0] + w[1] * eingaben[0] + w[2] * eingaben[1]
+    return sigmoid(z)
+
+def vorwaerts(x):
+    h1 = neuron(w_h1, x)          # ① verdeckte Schicht
+    h2 = neuron(w_h2, x)
+    y = neuron(w_y, [h1, h2])     # ② Ausgabeschicht
+    return h1, h2, y
+
+for x in [(0, 0), (0, 1), (1, 0), (1, 1)]:
+    h1, h2, y = vorwaerts(x)
+    print(x, "  h1 =", round(h1, 3), "  h2 =", round(h2, 3), "  y =", round(y, 3))
+</script>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-7-neuronales-netz.pdf">📝 Blatt 7 · Aufgabe 2</a></p>
+                </div>
+            </section>
+
+            <section id="kosten" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">📉</span><h2>B · Die Kostenfunktion<small>Aufgabe 3: Wie falsch ist das Netz?</small></h2></div>
+                <div class="phase-body">
+                    <p>Das Netz gibt für (0 | 1) etwa 0,74 aus, das Ziel ist 1. Das ist nicht falsch, aber auch nicht ganz richtig. Die <strong>Kostenfunktion</strong> fasst zusammen, wie weit das Netz über alle Trainingsbeispiele daneben liegt. Häufig nimmt man den <strong>mittleren quadratischen Fehler</strong>:</p>
+                    <p class="formel">K = (1/n) · Σ (y − Ziel)²</p>
+                    <p>Quadriert wird, damit sich Fehler nach oben und unten nicht aufheben und große Fehler stärker zählen. Lernen heißt dann: <strong>Gewichte so ändern, dass K kleiner wird.</strong></p>
+                    <div class="py" data-py="ki7-kosten" data-titel="Kostenfunktion">
+                        <div class="py-idea">
+                            <p><b class="k">Idee:</b> Für jedes Beispiel (y − Ziel)² berechnen, alles addieren, durch die Zahl der Beispiele teilen.</p>
+                            <ol><li>Ergänze in <code>kosten</code> die Zeile mit dem Pfeil: statt <code>0</code> den quadrierten Fehler <code>(y - ziel) ** 2</code>.</li><li>Ausführen und mit deiner Rechnung auf dem Blatt vergleichen.</li></ol>
+                            <p><b class="k">Achte auf:</b> Welches Beispiel trägt am meisten zu den Kosten bei? Ändere w_y auf [-12, 8, 8]: Werden die Kosten kleiner?</p>
+                        </div>
+<script type="text/plain">
+import math
+
+def sigmoid(z):
+    return 1 / (1 + math.exp(-z))
+
+w_h1 = [-2, 4, 4]
+w_h2 = [6, -4, -4]
+w_y = [-6, 4, 4]
+
+def neuron(w, eingaben):
+    return sigmoid(w[0] + w[1] * eingaben[0] + w[2] * eingaben[1])
+
+def vorwaerts(x):
+    h1 = neuron(w_h1, x)
+    h2 = neuron(w_h2, x)
+    return neuron(w_y, [h1, h2])
+
+daten = [((0, 0), 0), ((0, 1), 1), ((1, 0), 1), ((1, 1), 0)]   # (Eingabe, Ziel)
+
+def kosten(daten):
+    summe = 0
+    for x, ziel in daten:
+        y = vorwaerts(x)
+        summe = summe + 0          # ← hier statt 0 den quadrierten Fehler (y - ziel) ** 2
+    return summe / len(daten)
+
+for x, ziel in daten:
+    y = vorwaerts(x)
+    print(x, "Ziel", ziel, "  y =", round(y, 3), "  (y - Ziel)² =", round((y - ziel) ** 2, 4))
+print("Kosten K =", round(kosten(daten), 4))
+</script>
+                    </div>
+                    <div class="lw" data-loesungsweg="Aufgabe 3">
+                        <template data-stufe="Lösung" data-halten><p>(y − Ziel)² ≈ 0,0315; 0,0676; 0,0676; 0,0315, Summe 0,198, also K ≈ 0,0495. Am meisten tragen (0 | 1) und (1 | 0) bei. Mit w_y = [−12, 8, 8] sinken die Kosten (die Ausgaben liegen näher an 0 bzw. 1).</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-7-neuronales-netz.pdf">📝 Blatt 7 · Aufgabe 3</a></p>
+                </div>
+            </section>
+
+            <section id="abstieg" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">⛰️</span><h2>B · Gradientenabstieg: im Nebel bergab<small>Aufgabe 4: die Lernrate</small></h2></div>
+                <div class="phase-body">
+                    <p>Stell dir die Kosten als Gebirge vor: jede Richtung ein Gewicht, die Höhe die Kosten. Du stehst im Nebel und siehst nur den Boden unter deinen Füßen, also die <strong>Steigung</strong>. Der Plan: einen Schritt dorthin, wo es bergab geht, und wiederholen. Für jedes Gewicht:</p>
+                    <p class="formel">w<sub>neu</sub> = w − η · (Steigung der Kosten nach w)</p>
+                    <p>Die Lernrate η bestimmt die Schrittweite. Die Steigungen aller Gewichte zusammen heißen <strong>Gradient</strong>, das Verfahren <strong>Gradientenabstieg</strong>.</p>
+                    <div data-abstieg="1d"></div>
+                    <ol class="aufgaben">
+                        <li>Starte bei w = −2,2 mit η = 0,1 und mache 10 Schritte. Wo landet die Kugel? Ist das das tiefste Tal?</li>
+                        <li>Probiere η = 0,02 und η = 1. Was passiert jeweils?</li>
+                        <li>Starte bei w = 1 und bei w = 2. In welchem Tal landest du jeweils?</li>
+                    </ol>
+                    <div data-abstieg="2d"></div>
+                    <ol class="aufgaben" start="4">
+                        <li>Mit zwei Gewichten: Vergleiche η = 0,1 und η = 0,24. Wie sieht der Weg aus? Warum zickzack?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 4">
+                        <template data-stufe="Lösung" data-halten><p>a) Die Kugel rollt in das linke Tal (w ≈ −1,1, Kosten 1,38) und bleibt dort, obwohl rechts (w ≈ 3,6, Kosten 1,24) ein tieferes Tal liegt: ein <strong>lokales Minimum</strong>. Der Gradientenabstieg sieht nur die Steigung vor Ort. b) η = 0,02: sehr kleine Schritte, langsam. η = 1: zu große Schritte, die Kugel springt über den Berg ins andere Tal und pendelt dort hin und her (zwischen etwa 3,0 und 4,0). c) Von w = 1 aus rollt sie noch ins linke Tal, von w = 2 aus ins rechte, tiefere Tal (w ≈ 3,64), denn der Gipfel dazwischen liegt bei w ≈ 1,2. Der Startwert entscheidet mit, wo man landet (wie die Startzentren bei k-Means). d) Der Kessel ist in Richtung w<sub>2</sub> viel steiler. Mit großem η schießt der Schritt in dieser Richtung über die Talsohle hinaus und pendelt hin und her (Zickzack), während er in Richtung w<sub>1</sub> nur langsam vorankommt.</p></template>
+                    </div>
+                    <div class="py" data-py="ki7-wackeln" data-titel="Lernen durch Wackeln (numerischer Gradient)">
+                        <div class="py-idea">
+                            <p><b class="k">Idee:</b> Das XOR-Netz soll seine 9 Gewichte selbst finden. Für jedes Gewicht messen wir die Steigung, indem wir es ein bisschen größer und kleiner machen (wie im Wackel-Experiment), und gehen dann bergab.</p>
+                            <ol><li><code>steigung(g, i)</code> wackelt Gewicht i um ± 0,001 und vergleicht die Kosten.</li><li>Jeder Schritt: alle 9 Steigungen messen, jedes Gewicht um −η · Steigung ändern.</li><li>Alle 100 Schritte werden die Kosten notiert und am Ende gezeichnet.</li></ol>
+                            <p><b class="k">Achte auf:</b> Fällt die Kostenkurve? Wie oft wird <code>kosten</code> aufgerufen? Ändere <code>random.seed(3)</code> auf andere Zahlen: Klappt es immer?</p>
+                        </div>
+<script type="text/plain">
+import math, random
+import ki
+
+random.seed(3)
+
+def sigmoid(z):
+    return 1 / (1 + math.exp(-z))
+
+daten = [((0, 0), 0), ((0, 1), 1), ((1, 0), 1), ((1, 1), 0)]
+
+# alle 9 Gewichte in einer Liste: h1 = g[0..2], h2 = g[3..5], y = g[6..8]
+g = [random.uniform(-1, 1) for i in range(9)]
+
+def vorwaerts(g, x):
+    h1 = sigmoid(g[0] + g[1] * x[0] + g[2] * x[1])
+    h2 = sigmoid(g[3] + g[4] * x[0] + g[5] * x[1])
+    return sigmoid(g[6] + g[7] * h1 + g[8] * h2)
+
+aufrufe = 0
+def kosten(g):
+    global aufrufe
+    aufrufe = aufrufe + 1
+    return sum((vorwaerts(g, x) - ziel) ** 2 for x, ziel in daten) / len(daten)
+
+def steigung(g, i, eps=0.001):
+    plus = g[:]
+    plus[i] = plus[i] + eps
+    minus = g[:]
+    minus[i] = minus[i] - eps
+    return (kosten(plus) - kosten(minus)) / (2 * eps)
+
+eta = 2.0
+verlauf = []
+for schritt in range(3000):
+    if schritt % 100 == 0:
+        verlauf.append(kosten(g))
+    s = [steigung(g, i) for i in range(9)]
+    g = [g[i] - eta * s[i] for i in range(9)]       # bergab
+
+print("Kosten am Anfang:", round(verlauf[0], 4), "  am Ende:", round(kosten(g), 4))
+for x, ziel in daten:
+    print(x, "Ziel", ziel, "  y =", round(vorwaerts(g, x), 3))
+print("Aufrufe von kosten:", aufrufe)
+ki.linie(range(0, 3000, 100), verlauf, titel="Kosten beim Lernen", xname="Schritt", yname="Kosten")
+</script>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-7-neuronales-netz.pdf">📝 Blatt 7 · Aufgabe 4</a></p>
+                </div>
+            </section>
+
+            <section id="rueckwaerts" class="phase make">
+                <div class="phase-head"><span class="phase-icon">⬅️</span><h2>C · Backpropagation: die Schuld rückwärts verteilen<small>Aufgabe 5: Wozu dient die Fehlerrückführung?</small></h2></div>
+                <div class="phase-body">
+                    <p>Wackeln funktioniert, ist aber teuer: Für jedes Gewicht muss das ganze Netz zweimal neu gerechnet werden. Ein Sprachmodell hat Milliarden Gewichte. Die <strong>Backpropagation</strong> (Fehlerrückführung) bestimmt alle Steigungen mit <em>einem</em> Durchgang rückwärts:</p>
+                    <ol>
+                        <li><span class="schritt">①</span> <strong>vorwärts</strong> rechnen und sich alle Zwischenwerte merken,</li>
+                        <li><span class="schritt">②</span> den <strong>Fehler am Ausgang</strong> bestimmen (y − Ziel),</li>
+                        <li><span class="schritt">③</span> die <strong>Schuld rückwärts</strong> verteilen: Jedes verdeckte Neuron bekommt so viel Schuld, wie es über sein Gewicht zum Fehler beigetragen hat (großes Gewicht, viel Schuld),</li>
+                        <li><span class="schritt">④</span> jedes Gewicht ein Stück <strong>bergab</strong> ändern: proportional zur Schuld des Neurons dahinter und zum Wert, der über das Gewicht kam.</li>
+                    </ol>
+                    <p>Das löst das Problem aus Station 6: Auch die verdeckten Neuronen bekommen ein Fehlersignal, obwohl für sie kein Ziel bekannt ist.</p>
+                    <div data-rueckwaerts></div>
+                    <ol class="aufgaben">
+                        <li>Gehe die Schritte ① bis ④ einmal durch. Welches verdeckte Neuron bekommt mehr Schuld, und warum?</li>
+                        <li>Klicke „500 Trainingsschritte“. Lernt das Netz XOR? Probiere mehrere neue Netze.</li>
+                    </ol>
+                    <div class="py" data-py="ki7-backprop" data-titel="Backpropagation: Kern im Ring" data-files="data/ring.csv">
+                        <div class="py-idea">
+                            <p><b class="k">Idee:</b> Ein Netz mit 8 verdeckten Neuronen lernt per Backpropagation, den roten Kern vom blauen Ring zu trennen (das Level 5 aus dem Zaun-Baukasten, jetzt ohne Handarbeit).</p>
+                            <ol><li><code>vorwaerts</code> merkt sich die Werte aller Schichten (①).</li><li><code>rueckwaerts</code>: Fehler am Ausgang (②), Schuld <code>delta</code> Schicht für Schicht zurück (③), Gewichte bergab (④).</li><li>300 Epochen: jedes Beispiel einmal pro Epoche.</li></ol>
+                            <p><b class="k">Achte auf:</b> Wie schnell sinken die Kosten im Vergleich zum Wackeln? Wie sieht die gelernte Region aus? Ändere die Zahl der verdeckten Neuronen (<code>Netz([2, 8, 1])</code>) auf 2 oder 3.</p>
+                        </div>
+<script type="text/plain">
+import math, random, csv
+import ki
+
+random.seed(1)
+
+def sigmoid(z):
+    return 1 / (1 + math.exp(-z))
+
+class Netz:
+    def __init__(self, groessen):
+        # W[l][j] = [w0, w1, ...]: Bias und Gewichte von Neuron j in Schicht l
+        self.W = []
+        for l in range(1, len(groessen)):
+            self.W.append([[random.uniform(-1, 1) for i in range(groessen[l - 1] + 1)] for j in range(groessen[l])])
+
+    def vorwaerts(self, x):                                     # ①
+        a = [list(x)]
+        for schicht in self.W:
+            a.append([sigmoid(w[0] + sum(wi * ai for wi, ai in zip(w[1:], a[-1]))) for w in schicht])
+        return a
+
+    def rueckwaerts(self, x, ziel, eta):
+        a = self.vorwaerts(x)
+        y = a[-1][0]
+        delta = [[2 * (y - ziel) * y * (1 - y)]]                 # ② Fehler am Ausgang
+        for l in range(len(self.W) - 1, 0, -1):                 # ③ Schuld rückwärts
+            d = []
+            for j in range(len(self.W[l - 1])):
+                schuld = sum(self.W[l][k][j + 1] * delta[0][k] for k in range(len(self.W[l])))
+                d.append(schuld * a[l][j] * (1 - a[l][j]))
+            delta.insert(0, d)
+        for l, schicht in enumerate(self.W):                    # ④ Gewichte bergab
+            for j, w in enumerate(schicht):
+                w[0] = w[0] - eta * delta[l][j]
+                for i in range(len(w) - 1):
+                    w[i + 1] = w[i + 1] - eta * delta[l][j] * a[l][i]
+        return (y - ziel) ** 2
+
+daten = [((float(z["x"]), float(z["y"])), int(z["klasse"])) for z in csv.DictReader(open("ring.csv"))]
+netz = Netz([2, 8, 1])
+verlauf = []
+for epoche in range(300):
+    random.shuffle(daten)
+    k = sum(netz.rueckwaerts(x, ziel, 1.0) for x, ziel in daten) / len(daten)
+    if epoche % 10 == 0:
+        verlauf.append(k)
+
+richtig = sum(1 for x, ziel in daten if (netz.vorwaerts(x)[-1][0] >= 0.5) == (ziel == 1))
+print("Kosten am Anfang:", round(verlauf[0], 4), "  am Ende:", round(k, 4))
+print("richtig:", richtig, "von", len(daten))
+ki.linie(range(0, 300, 10), verlauf, titel="Kosten je Epoche", xname="Epoche", yname="Kosten")
+ki.region(lambda a, b: netz.vorwaerts((a, b))[-1][0], [x for x, _ in daten], [z for _, z in daten], titel="Gelernte Region (rot = Kern)")
+</script>
+                    </div>
+                    <div class="lw" data-loesungsweg="Aufgabe 5">
+                        <template data-stufe="Lösung" data-halten><p>a) Mehr Schuld bekommt das verdeckte Neuron mit dem betragsmäßig größeren Gewicht zum Ausgang (und dessen Sigmoid nicht gerade ganz bei 0 oder 1 liegt): Es hat den Fehler stärker beeinflusst. b) Meist ja, die Ausgaben gehen gegen 0, 1, 1, 0. Manchmal bleiben die Kosten hängen (lokales Minimum); dann hilft ein neues Netz mit anderen Startgewichten. Ziel der Backpropagation: für <em>jedes</em> Gewicht, auch in den verdeckten Schichten, mit einem Rückwärtsdurchgang bestimmen, in welche Richtung und wie stark es geändert werden muss, damit die Kosten sinken.</p></template>
+                    </div>
+                    <div class="ea-box">
+                        <h4>Die Kettenregel hinter der Schuld</h4>
+                        <p>Warum steht in <code>rueckwaerts</code> das Produkt <code>2 * (y - ziel) * y * (1 - y)</code>? Die Kosten hängen über eine Kette von dem Gewicht w ab: w → z → y → K. Nach der Kettenregel (Mathematik 11) ist die Steigung von K nach w das Produkt der einzelnen Steigungen:</p>
+                        <p class="formel">K′(w) = 2(y − Ziel) · σ′(z) · h &nbsp;&nbsp; mit σ′(z) = σ(z) · (1 − σ(z)) = y(1 − y)</p>
+                        <p>Für ein Gewicht der verdeckten Schicht wird die Kette länger (w → z<sub>h</sub> → h → z → y → K): Der hintere Teil der Kette ist die Schuld des Ausgangs, sie wird mit dem Gewicht zwischen h und y und mit σ′(z<sub>h</sub>) multipliziert. Genau das macht Schritt ③. Prüfe auf dem Blatt (Aufgabe 6) für ein Gewicht, dass Kettenregel und Wackeln dieselbe Steigung liefern.</p>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-7-neuronales-netz.pdf">📝 Blatt 7 · Aufgaben 5 und 6 (eA)</a></p>
+                </div>
+            </section>
+
+            <section id="festhalten" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Wie ein neuronales Netz lernt</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Lernen im neuronalen Netz</h4>
+                        <ul>
+                            <li><strong>Forward Propagation:</strong> Die Eingabe wird Schicht für Schicht verrechnet: In jedem Neuron z = w<sub>0</sub> + Σ w<sub>i</sub> · x<sub>i</sub>, dann a = f(z) mit einer Aktivierungsfunktion f (z. B. Sigmoid, ReLU).</li>
+                            <li><strong>Aktivierungsfunktion:</strong> Sie muss nichtlinear sein (sonst entspricht das ganze Netz einem einzigen Neuron) und sollte keine Sprünge haben (sonst fehlt die Richtung zum Lernen).</li>
+                            <li><strong>Kostenfunktion:</strong> misst, wie weit die Ausgaben über alle Trainingsbeispiele vom Ziel entfernt sind, z. B. K = (1/n) Σ (y − Ziel)².</li>
+                            <li><strong>Gradientenabstieg:</strong> Jedes Gewicht wird ein Stück entgegen der Steigung der Kosten geändert: w<sub>neu</sub> = w − η · Steigung. Die Lernrate η bestimmt die Schrittweite (zu klein: langsam, zu groß: Springen). Man kann in einem lokalen Minimum landen.</li>
+                            <li><strong>Backpropagation (Fehlerrückführung):</strong> <em>Ziel</em> ist, für alle Gewichte, auch die der verdeckten Schichten, in einem Rückwärtsdurchgang zu bestimmen, wie stark sie zum Fehler beigetragen haben und in welche Richtung sie geändert werden müssen. Dazu wird der Fehler vom Ausgang über die Gewichte rückwärts auf die Neuronen verteilt.</li>
+                        </ul>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-7-neuronales-netz.pdf">📝 Blatt 7 · Merkkasten</a></p>
+                </div>
+            </section>
+
+            <section id="ethik" class="phase ethik">
+                <div class="phase-head"><span class="phase-icon">⚖️</span><h2>Ethik-Impuls: Was kostet ein Fehler?<small>Besprecht mündlich</small></h2></div>
+                <div class="phase-body">
+                    <p>In der Kostenfunktion zählt jeder Fehler gleich viel. Ein Netz soll auf Röntgenbildern Tumore erkennen. Es gibt zwei Arten von Fehlern: Ein Tumor wird <em>übersehen</em>, oder ein gesunder Mensch bekommt einen <em>Fehlalarm</em>.</p>
+                    <ul>
+                        <li>Sind beide Fehler gleich schlimm? Wie müsste man die Kostenfunktion ändern, wenn nicht?</li>
+                        <li>Wer sollte entscheiden, wie viel ein übersehener Tumor „kostet“: die Programmiererin, die Ärztin, die Krankenkasse, die Patientin?</li>
+                        <li>Wo steckt in anderen Anwendungen (Spamfilter, Betrugserkennung, Gesichtserkennung bei der Polizei) eine ähnliche Abwägung?</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="uebergang"><strong>Die Frage für Station 8:</strong> Wie viele Schichten und Neuronen braucht ein Netz, welche Aktivierung, welche Lernrate, und wie viele Daten? Das probierst du im Netz-Spielplatz und an echten handgeschriebenen Ziffern aus.</div>
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>📓 Am eigenen Rechner</h4>
+                            <p>Dieselben Programme gibt es als Jupyter-Notebook, am Ende auch in der Fassung mit numpy, wie man es in echten Bibliotheken schreibt. Anleitung: <a href="python-einrichten.html">Python einrichten</a>.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="6-trainieren.html">← 6 Trainieren und Grenzen</a>
+                <a class="btn btn-primary" href="8-experimente.html">8 Experimente →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-7-neuronales-netz-lsg.pdf">Lösung Blatt 7 (PDF)</a> <a class="btn btn-tex btn-sm" href="notebooks/7-neuronales-netz.ipynb" download>Notebook</a></p>
+                    <p><strong>Einordnung:</strong> Kern des Lehrplans (gA LB 4, eA LB 2): „erklären den Aufbau eines künstlichen neuronalen Netzes, führen die Forward Propagation an einfachen Beispielen durch und beschreiben die Zielsetzung der Fehlerrückführung“; Inhalte Forward Propagation, Backpropagation, Kostenfunktion. Verlangt ist die <em>Zielsetzung</em> der Fehlerrückführung, nicht die Herleitung; die Kettenregel steht deshalb im eA-Kasten. Gradientenabstieg und Aktivierungsfunktionen sind nicht ausdrücklich genannt, aber für das Verständnis der Kostenfunktion nötig; sie werden anschaulich (Steigung, Differenzenquotient) behandelt.</p>
+                    <p><strong>Stundenvorschlag:</strong> 1. Stunde: Teil A (Aktivierungsfunktionen, Forward Propagation von Hand, Python-Zelle 1). 2. Stunde: Teil B (Kosten von Hand und in Python, Gradientenabstieg mit Kugel, Wackel-Training). 3. Stunde: Teil C (Backpropagation Schritt für Schritt, Python-Zelle Ring), Festhalten, Ethik. eA: 4. Stunde Kettenregel (Blatt Aufgabe 6) und Notebook mit numpy.</p>
+                    <p><strong>Zahlen:</strong> XOR-Netz mit Sigmoid (Gewichte h<sub>1</sub> (−2 | 4 | 4), h<sub>2</sub> (6 | −4 | −4), y (−6 | 4 | 4)): Ausgaben 0,178; 0,740; 0,740; 0,178; Kosten 0,0495. Kostenkurve des Abstiegs-Werkzeugs: K(w) = 0,05w⁴ − 0,25w³ − 0,1w² + w + 2,2 (lokales Minimum bei w ≈ −1,12 mit K ≈ 1,38, globales bei w ≈ 3,65 mit K ≈ 1,24, Maximum dazwischen bei w ≈ 1,22).</p>
+                    <p><strong>Technik:</strong> Python läuft im Browser (Pyodide, selbst gehostet unter /embed/pyodide/, nur Standardbibliothek, Modul <code>ki</code> für Diagramme). Nichts wird an einen Server geschickt. Die erste Ausführung lädt etwa 12 MB.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de · <a href="https://edu-mrh.de/impressum.html#lizenz">CC BY-NC-SA 4.0</a> | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a> · Python im Browser: Pyodide (MPL 2.0)</p>
+        </div>
+    </footer>
+</body>
+</html>

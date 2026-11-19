@@ -1,0 +1,64 @@
+\documentclass[11pt]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{6}{Trainieren und seine Grenzen}
+
+\begin{aufgabe}[Kann das Netz selbst lernen?]{1}
+Die Delta-Lernregel $\Delta w_i = \eta \cdot (\text{Ziel} - \text{Ausgabe}) \cdot x_i$ funktioniert für ein einzelnes Perzeptron. Warum lässt sie sich im Weide-Netz nicht auf die verdeckten Neuronen $h_1, h_2, h_3$ anwenden?
+\lsglinien{2}{Für die verdeckten Neuronen gibt es kein Ziel: In den Trainingsdaten steht nur, ob ein Schaf innen ist (Ziel der Ausgabe), nicht, was h1, h2, h3 sagen sollen.}
+\end{aufgabe}
+
+\begin{aufgabe}[Trainings- und Testdaten (Website: Trainings-Labor)]{2}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|c|c|c|X|}\hline
+$k$ & \textbf{richtig: Training} & \textbf{richtig: Test} & \textbf{Wie sehen die Grenzen aus?} \\\hline
+1\schreibzeilen{1} & \lsgklein{100 \%} & \lsgklein{79 \%} & \lsgklein{zerklüftet, Inseln um falsche Punkte} \\\hline
+5\schreibzeilen{1} & \lsgklein{92 \%} & \lsgklein{83 \%} & \lsgklein{folgt der Mondform, glatt} \\\hline
+25\schreibzeilen{1} & \lsgklein{88 \%} & \lsgklein{79 \%} & \lsgklein{zu glatt, trifft die Monde nicht mehr} \\\hline
+\end{tabularx}\par\vspace{1mm}
+Warum ist das Modell mit $k = 1$ auf den Trainingsdaten perfekt, auf den Testdaten aber nicht?
+\lsglinien{2}{Jeder Trainingspunkt ist sein eigener nächster Nachbar: Das Modell hat alles auswendig gelernt, auch die 10 \% falschen Etiketten, und überträgt diese Fehler auf neue Punkte.}
+\end{aufgabe}
+
+\begin{aufgabe}[Merkkasten]{3}
+\begin{lueckentext}
+Ob ein Modell gut gelernt hat, prüft man mit \lsg[4.5cm]{Testdaten}, die beim Lernen \lsg[3.6cm]{nicht} benutzt wurden. Passt sich ein Modell den Trainingsdaten mit all ihren Zufällen zu genau an, spricht man von \lsg[5.25cm]{Überanpassung}; ist es zu grob, von \lsg[5.25cm]{Unteranpassung}. Gut ist ein Modell, das \lsgrest{verallgemeinert.}
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{aufgabe}[Wer ist schuld? Das Wackel-Experiment (Website)]{4}
+\begin{minipage}[t]{0.5\linewidth}\vspace{0pt}
+\textbf{a)} mit Stufe (Fehleranteil)\par\vspace{1mm}
+\begin{tikzpicture}[x=5mm,y=5mm]
+  \draw[karo] (0,0) grid (16,7);
+  \draw[-{Stealth[length=2mm]},line width=0.6pt] (0,0) -- (16.6,0) node[below left,font=\footnotesize]{Gewicht};
+  \draw[-{Stealth[length=2mm]},line width=0.6pt] (0,0) -- (0,7.6) node[right,font=\footnotesize]{Fehler};
+  \ifloesung
+    \draw[red!75!black,line width=1pt] (0,6) -- (3,6) -- (3,5) -- (5,5) -- (5,3.5) -- (7,3.5) -- (7,2) -- (9,2) -- (9,0.6) -- (11,0.6) -- (11,0.2) -- (16,0.2);
+  \fi
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\linewidth}\vspace{0pt}
+\textbf{b)} mit weicher Stufe (Kosten)\par\vspace{1mm}
+\begin{tikzpicture}[x=5mm,y=5mm]
+  \draw[karo] (0,0) grid (15,7);
+  \draw[-{Stealth[length=2mm]},line width=0.6pt] (0,0) -- (15.6,0) node[below left,font=\footnotesize]{Gewicht};
+  \draw[-{Stealth[length=2mm]},line width=0.6pt] (0,0) -- (0,7.6) node[right,font=\footnotesize]{Kosten};
+  \ifloesung
+    \draw[red!75!black,line width=1pt] (0,6.2) .. controls (4,5.5) and (6,1.2) .. (9,0.8) .. controls (11,0.6) and (13,1.6) .. (15,2.6);
+  \fi
+\end{tikzpicture}
+\end{minipage}\par\vspace{1mm}
+Skizziere die Kurven qualitativ. Erkläre, warum man aus Kurve a) beim kleinen Wackeln nichts lernt, aus Kurve b) aber schon.
+\lsglinien{3}{a) Treppe: Ein kleines Wackeln ändert meist gar nichts, die Kurve ist flach; man erfährt keine Richtung. b) glatt: An jeder Stelle gibt es eine Steigung; sie zeigt, ob man das Gewicht vergrößern oder verkleinern muss, damit die Kosten sinken (bergab).}
+\end{aufgabe}
+
+\begin{aufgabe}[Was wir brauchen (Website: Folgerung)]{5}
+\begin{lueckentext}
+\nr{1}~ein Maß für den Fehler, die \lsgrest{Kostenfunktion (mittl. quadr. Fehler)}
+\nr{2}~eine Aktivierungsfunktion ohne \lsgrest{Sprünge (weiche Stufe, z. B. Sigmoid)}
+\nr{3}~für jedes Gewicht, auch in verdeckten Schichten:\\
+\lsgrest{die Richtung, in der die Kosten sinken (Backpropagation)}
+\end{lueckentext}
+\end{aufgabe}
+\end{document}

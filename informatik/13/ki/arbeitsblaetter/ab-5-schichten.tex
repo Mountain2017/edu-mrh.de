@@ -1,0 +1,86 @@
+\documentclass[11pt]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{5}{Perzeptronen zusammenschalten}
+
+\begin{aufgabe}[Das Zaun-Problem]{1}
+\begin{lueckentext}
+Eine dreieckige Weide braucht mindestens \lsg[2.25cm]{3} gerade Zäune (Grenz-Neuronen). Ein Schaf steht innen, wenn \lsgrest{alle drei Grenz-Neuronen 1 sagen.}
+Das entscheidet ein weiteres Perzeptron mit den Gewichten $1, 1, 1$ und dem Bias $w_0 = $ \lsg[2.25cm]{$-2{,}5$}, denn nur bei \lsg[2.25cm]{drei} Einsen ist $z \ge 0$.
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{aufgabe}[Zaun-Baukasten (Website)]{2}
+a) Level 3 (XOR): Beschreibe, wie deine zwei Grenzen liegen und warum UND reicht.
+\lsglinien{2}{Zwei parallele schräge Grenzen bilden einen Streifen; die roten Punkte (links oben, rechts unten) liegen zwischen ihnen, also auf der 1-Seite beider Grenzen.}
+b) Level 4 (zwei Inseln): Warum reicht ein einziges UND über alle Grenzen nicht? Was leistet die zusätzliche Schicht?
+\lsglinien{3}{UND über alle acht Grenzen verlangt, dass ein Punkt auf beiden Inseln zugleich liegt: unmöglich. Die zweite verdeckte Schicht bildet je Insel ein UND, die Ausgabe verbindet beide mit ODER.}
+\end{aufgabe}
+
+\begin{aufgabe}[Aufbau eines neuronalen Netzes]{3}
+\begin{minipage}[t]{0.55\linewidth}\vspace{0pt}
+\begin{tikzpicture}[x=1cm,y=1cm,font=\small]
+  \node[eingabe] (x1) at (0,2) {$x_1$}; \node[eingabe] (x2) at (0,0.5) {$x_2$};
+  \node[neuron,fill=klnull!12] (h1) at (2.6,2.6) {$h_1$}; \node[neuron,fill=klnull!12] (h2) at (2.6,1.25) {$h_2$}; \node[neuron,fill=klnull!12] (h3) at (2.6,-0.1) {$h_3$};
+  \node[neuron,fill=kleins!12] (y) at (5,1.25) {$y$};
+  \foreach \a in {x1,x2}{\foreach \b in {h1,h2,h3}{\draw[kante] (\a) -- (\b);}}
+  \foreach \b in {h1,h2,h3}{\draw[kante] (\b) -- (y);}
+  \draw[-{Stealth[length=2mm]},gray] (1.0,3.25) node[above,black,font=\footnotesize]{\nr{4}} -- (1.25,2.35);
+  \node[font=\footnotesize] at (0,-1.0) {\nr{1}};
+  \node[font=\footnotesize] at (2.6,-1.0) {\nr{2}};
+  \node[font=\footnotesize] at (5,-1.0) {\nr{3}};
+  \draw[decorate,decoration={brace,amplitude=4pt,mirror},gray] (-0.45,-0.55) -- (0.45,-0.55);
+  \draw[decorate,decoration={brace,amplitude=4pt,mirror},gray] (2.15,-0.65) -- (3.05,-0.65);
+  \draw[decorate,decoration={brace,amplitude=4pt,mirror},gray] (4.55,-0.55) -- (5.45,-0.55);
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.43\linewidth}\vspace{0pt}
+Beschrifte mit den Fachbegriffen:
+\begin{lueckentext}
+\nr{1} \lsg[5cm]{Eingabeschicht}\\
+\nr{2} \lsg[5cm]{verdeckte Schicht}\\
+\nr{3} \lsg[5cm]{Ausgabeschicht}\\
+\nr{4} \lsg[5cm]{Gewicht (einer Verbindung)}
+\end{lueckentext}
+Wie viele Gewichte (ohne Bias) hat dieses Netz? \lsg[2.25cm]{9}
+\end{minipage}
+\end{aufgabe}
+
+\begin{aufgabe}[Forward Propagation von Hand: das XOR-Netz (Website)]{4}
+$h_1 = \text{Stufe}(-0{,}5 + x_1 + x_2)$,\quad $h_2 = \text{Stufe}(1{,}5 - x_1 - x_2)$,\quad $y = \text{Stufe}(-1{,}5 + h_1 + h_2)$\par\vspace{1mm}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|c|c|X|c|X|c|X|c|}\hline
+$x_1$ & $x_2$ & $z_1$ & $h_1$ & $z_2$ & $h_2$ & $z$ & $y$ \\\hline
+0 & 0\schreibzeile & \lsgklein{$-0{,}5$} & \lsgklein{0} & \lsgklein{1,5} & \lsgklein{1} & \lsgklein{$-0{,}5$} & \lsgklein{0} \\\hline
+0 & 1\schreibzeile & \lsgklein{0,5} & \lsgklein{1} & \lsgklein{0,5} & \lsgklein{1} & \lsgklein{0,5} & \lsgklein{1} \\\hline
+1 & 0\schreibzeile & \lsgklein{0,5} & \lsgklein{1} & \lsgklein{0,5} & \lsgklein{1} & \lsgklein{0,5} & \lsgklein{1} \\\hline
+1 & 1\schreibzeile & \lsgklein{1,5} & \lsgklein{1} & \lsgklein{$-0{,}5$} & \lsgklein{0} & \lsgklein{$-0{,}5$} & \lsgklein{0} \\\hline
+\end{tabularx}\par\vspace{1mm}
+\begin{lueckentext}
+$h_1$ berechnet \lsg[3.6cm]{ODER}, $h_2$ berechnet \lsg[3.6cm]{NICHT-UND}, $y$ berechnet \lsg[3.6cm]{UND}.
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{aufgabe}[Einen Raum abstecken (Online-IDE, TODO 4a bis 4c)]{5}
+\begin{javaluecke}
+public int vorwaerts(double[] x) {
+   double[] h = new double[verdeckt.length];
+   for (int i = 0; i < verdeckt.length; i++) { h[i] = (*\lsg[4.5cm]{verdeckt[i].ausgabe(x)}*); }   // (*\nr{1}*)
+   return (*\lsg[3.8cm]{ausgabe.ausgabe(h)}*);                                                   // (*\nr{2}*)
+}
+// UND für n Eingaben: alle Gewichte 1, w[0] = (*\lsg[3cm]{-(n - 0.5)}*)
+g[1] = neuron((*\lsg[1.6cm]{xMax}*), (*\lsg[1.2cm]{-1}*), 0, 0);       // x1 <= xMax
+g[4] = neuron((*\lsg[1.6cm]{-zMin}*), 0, 0, (*\lsg[1.2cm]{1}*));       // x3 >= zMin
+\end{javaluecke}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|X|c|c|}\hline
+\textbf{Netz} & \textbf{verdeckte Neuronen} & \textbf{Abweichungen von der Kugel} \\\hline
+Quader 0,2 bis 0,8\schreibzeile & \lsgklein{6} & \lsgklein{164} \\\hline
+dein bester Quader: \lsgklein{0,25 bis 0,75}\schreibzeile & \lsgklein{6} & \lsgklein{54} \\\hline
+Oktaeder $r = 0{,}5$\schreibzeile & \lsgklein{8} & \lsgklein{58} \\\hline
+Quader 0,2--0,8 und Oktaeder 0,5 (beide)\schreibzeile & \lsgklein{14} & \lsgklein{32} \\\hline
+\end{tabularx}\par\vspace{1mm}
+Was folgt daraus für die Zahl der Neuronen in der verdeckten Schicht?
+\lsglinien{1}{Mehr Neuronen = mehr Ebenen = feinere, rundere Grenze.}
+\end{aufgabe}
+\end{document}

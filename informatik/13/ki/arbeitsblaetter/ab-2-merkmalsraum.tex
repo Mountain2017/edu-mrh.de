@@ -1,0 +1,87 @@
+\documentclass[11pt]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{2}{Merkmalsraum und k-nächste Nachbarn}
+
+\begin{aufgabe}[Pinguine als Punkte]{1}
+\begin{lueckentext}
+Ein Pinguin wird durch seine Merkmale beschrieben, z.\,B. (Schnabellänge \textbar\ Schnabeltiefe \textbar\ Flossenlänge) = (45,5 \textbar\ 17,0 \textbar\ 196). Diese Zahlenliste heißt \lsg[5.25cm]{Merkmalsvektor}. Man kann sie als \lsg[5.25cm]{Punkt} in einem Koordinatensystem sehen, dem \lsg[5.25cm]{Merkmalsraum}. Bei drei Merkmalen ist er \lsg[5.25cm]{dreidimensional (ein Raum)}. Zwei Objekte sind ähnlich, wenn ihr \lsg[5.25cm]{Abstand} klein ist.
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{aufgabe}[Abstände berechnen]{2}
+\begin{minipage}[t]{0.46\linewidth}\vspace{0pt}
+\begin{tikzpicture}[x=5mm,y=5mm]
+  \draw[karo] (0,0) grid (14,10);
+  \draw[-{Stealth[length=2mm]},line width=0.6pt] (0,0) -- (14.6,0) node[below left,font=\footnotesize]{$x$};
+  \draw[-{Stealth[length=2mm]},line width=0.6pt] (0,0) -- (0,10.6) node[below left,font=\footnotesize]{$y$};
+  \foreach \v in {2,4,...,12}{\node[font=\tiny,below] at (\v,0) {\pgfmathparse{int(\v/2)}\pgfmathresult};}
+  \foreach \v in {2,4,...,8}{\node[font=\tiny,left] at (0,\v) {\pgfmathparse{int(\v/2)}\pgfmathresult};}
+  \fill (8,6) circle (2.6pt) node[above right,font=\small]{N};
+  \fill (2,8) circle (2pt) node[above,font=\small]{A};
+  \fill (12,8) circle (2pt) node[above,font=\small]{B};
+  \fill (14,2) circle (2pt) node[left,font=\small]{C};
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.52\linewidth}\vspace{0pt}
+Eine Kästchenlänge im Bild ist 0,5. Berechne die Abstände von N(4\,\textbar\,3) zu A, B und C mit
+\[ d(P,Q)=\sqrt{(x_P-x_Q)^2+(y_P-y_Q)^2}. \]
+\begin{lueckentext}
+$d(N,A) = $ \lsg[4.5cm]{$\sqrt{3^2+1^2}=\sqrt{10}\approx 3{,}16$}\\
+$d(N,B) = $ \lsg[4.5cm]{$\sqrt{2^2+1^2}=\sqrt{5}\approx 2{,}24$}\\
+$d(N,C) = $ \lsg[4.5cm]{$\sqrt{3^2+2^2}=\sqrt{13}\approx 3{,}61$}\\
+N ist am ähnlichsten zu \lsg[2.25cm]{B}.
+\end{lueckentext}
+\end{minipage}
+\end{aufgabe}
+
+\begin{aufgabe}[k-NN von Hand]{3}
+\begin{minipage}[t]{0.40\linewidth}\vspace{0pt}
+\begin{tikzpicture}[x=5mm,y=5mm]
+  \draw[karo] (0,0) grid (11,10);
+  \draw[-{Stealth[length=2mm]},line width=0.6pt] (0,0) -- (11.6,0);
+  \draw[-{Stealth[length=2mm]},line width=0.6pt] (0,0) -- (0,10.6);
+  \foreach \v in {2,4,...,10}{\node[font=\tiny,below] at (\v,0) {\v};}
+  \foreach \v in {2,4,...,8}{\node[font=\tiny,left] at (0,\v) {\v};}
+  \foreach \p in {(4,4),(5,3),(3,6),(2,2)}{\fill[klnull] \p circle (3.2pt);}
+  \foreach \p in {(6,5),(8,4),(8,7),(7,8),(9,6)}{\node[kleins,regular polygon,regular polygon sides=3,fill,inner sep=0pt,minimum size=2.8mm] at \p {};}
+  \node[draw,star,star points=5,fill=yellow!70,inner sep=0pt,minimum size=3.8mm] at (5,5) {};
+  \node[font=\small,above left] at (5,5) {N};
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.57\linewidth}\vspace{0pt}
+\textcolor{klnull}{$\bullet$}~Kreise und \textcolor{kleins}{$\blacktriangle$}~Dreiecke sind bekannte Beispiele. Welche Klasse bekommt der neue Punkt N(5\,\textbar\,5)? Bestimme die Nachbarn mit dem Zirkel oder durch Rechnen.\par\vspace{1.5mm}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{|c|p{3.3cm}|p{1.8cm}|}\hline
+$k$ & Nachbarn (Anzahl je Klasse) & Klasse von N \\\hline
+1\schreibzeile & \lsgklein{1 Dreieck} & \lsgklein{Dreieck} \\\hline
+3\schreibzeile & \lsgklein{1 Dreieck, 2 Kreise} & \lsgklein{Kreis} \\\hline
+5\schreibzeile & \lsgklein{2 Dreiecke, 3 Kreise} & \lsgklein{Kreis} \\\hline
+7\schreibzeile & \lsgklein{4 Dreiecke, 3 Kreise} & \lsgklein{Dreieck} \\\hline
+\end{tabular}
+\end{minipage}
+\end{aufgabe}
+
+\newpage
+\begin{aufgabe}[Welche Rolle spielt $k$? (Website: k-NN-Labor)]{4}
+Neuer Pinguin: Schnabellänge 44\,mm, Schnabeltiefe 17,5\,mm.\par\vspace{1mm}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|c|X|p{3.4cm}|}\hline
+$k$ & Nachbarn je Art & Vorhersage \\\hline
+1\schreibzeile & \lsgklein{1 Esels} & \lsgklein{Eselspinguin} \\\hline
+3\schreibzeile & \lsgklein{1 Esels, 1 Adélie, 1 Zügel (Gleichstand, der nächste entscheidet)} & \lsgklein{Eselspinguin} \\\hline
+5\schreibzeile & \lsgklein{1 Esels, 2 Adélie, 2 Zügel} & \lsgklein{Adéliepinguin} \\\hline
+15\schreibzeile & \lsgklein{1 Esels, 2 Adélie, 12 Zügel} & \lsgklein{Zügelpinguin} \\\hline
+\end{tabularx}\par\vspace{1mm}
+Warum hängt die Vorhersage hier so stark von $k$ ab, für den Pinguin (48\,\textbar\,15) aber nicht?
+\lsglinien{2}{(44 | 17,5) liegt am Rand, wo sich alle drei Arten treffen; je nach k überwiegt eine andere Art. (48 | 15) liegt mitten in der Wolke der Eselspinguine: Alle Nachbarn sind Esels.}
+\end{aufgabe}
+
+\begin{aufgabe}[Normieren (Website)]{5}
+Mit den Merkmalen Schnabeltiefe (mm) und Gewicht (g) wählt k-NN ohne Normierung fast nur Pinguine mit nahezu gleichem Gewicht als Nachbarn. Erkläre.
+\lsglinien{2}{Gewichtsunterschiede sind Hunderte Gramm, Schnabelunterschiede wenige Millimeter. In der Abstandsformel sind beides nur Zahlen, also bestimmt das Gewicht den Abstand fast allein.}
+\begin{lueckentext}
+Normierung: $x_{\text{normiert}} = $ \lsg[4.5cm]{$\dfrac{x-\min}{\max-\min}$}. Ein Pinguin mit 4200\,g (min 2700\,g, max 6300\,g) hat den normierten Wert \lsg[3cm]{$1500/3600\approx 0{,}42$}.
+\end{lueckentext}
+\end{aufgabe}
+\end{document}

@@ -1,0 +1,68 @@
+\documentclass[11pt]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{W3}{Die Inferenzmaschine \niveauEA}
+
+\begin{aufgabe}[Selbst Inferenzmaschine sein]{1}
+\begin{prolog}
+1  elternteil(oskar, pia).     4  vorfahre(X, Y) :- elternteil(X, Y).
+2  elternteil(pia, tim).       5  vorfahre(X, Y) :- elternteil(X, Z), vorfahre(Z, Y).
+3  elternteil(tim, kim).
+\end{prolog}
+Anfrage \code{?- vorfahre(oskar, kim).} Notiere die ersten Schritte.\par\vspace{1mm}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{4.2cm}|c|X|c|}\hline
+\textbf{Ziel} & \textbf{Klausel} & \textbf{Belegung / neue Ziele} & \textbf{Ergebnis} \\\hline
+\code{vorfahre(oskar, kim)}\schreibzeile & \lsgklein{4} & \lsgklein{X = oskar, Y = kim; neues Ziel elternteil(oskar, kim)} & \lsgklein{weiter} \\\hline
+\lsgklein{elternteil(oskar, kim)}\schreibzeile & \lsgklein{1–3} & \lsgklein{kein Fakt passt} & \lsgklein{\ding{55} zurück} \\\hline
+\lsgklein{vorfahre(oskar, kim)}\schreibzeile & \lsgklein{5} & \lsgklein{neue Ziele elternteil(oskar, Z), vorfahre(Z, kim)} & \lsgklein{weiter} \\\hline
+\lsgklein{elternteil(oskar, Z)}\schreibzeile & \lsgklein{1} & \lsgklein{Z = pia} & \lsgklein{\ding{51}} \\\hline
+\lsgklein{vorfahre(pia, kim)}\schreibzeile & \lsgklein{4, dann 5} & \lsgklein{wie oben: über Z = tim zu vorfahre(tim, kim), Klausel 4 mit Fakt 3} & \lsgklein{ja} \\\hline
+\end{tabularx}
+\end{aufgabe}
+
+\begin{aufgabe}[Der Ableitungsbaum]{2}
+Zeichne den Ableitungsbaum für \code{?- vorfahre(oskar, kim).}: Knoten = Ziele, Kanten = verwendete Klausel. Markiere Sackgassen mit \ding{55} und die Antwort mit $\bigstar$.
+\lsgkariert{11}{
+  \begin{scope}[font=\scriptsize,yscale=-1,inner sep=1.5pt]
+  \node[draw,fill=white] (a) at (8.5,0.5) {vorfahre(oskar, kim)};
+  \node[draw,fill=white] (b) at (3.5,1.3) {elternteil(oskar, kim) \ding{55}};
+  \node[draw,fill=white] (c) at (12,1.3) {elternteil(oskar, Z), vorfahre(Z, kim)};
+  \node[draw,fill=white] (d) at (12,2.1) {vorfahre(pia, kim)};
+  \node[draw,fill=white] (e) at (7.5,2.9) {elternteil(pia, kim) \ding{55}};
+  \node[draw,fill=white] (f) at (13.2,2.9) {elternteil(pia, Z2), vorfahre(Z2, kim)};
+  \node[draw,fill=white] (g) at (13.2,3.7) {vorfahre(tim, kim)};
+  \node[draw,fill=white] (hh) at (10,4.6) {elternteil(tim, kim) $\bigstar$};
+  \draw (a) -- node[above] {4} (b); \draw (a) -- node[above] {5} (c); \draw (c) -- node[right] {1: Z = pia} (d);
+  \draw (d) -- node[above] {4} (e); \draw (d) -- node[right] {5} (f); \draw (f) -- node[right] {2: Z2 = tim} (g); \draw (g) -- node[above] {4} (hh);
+  \end{scope}}
+\end{aufgabe}
+
+\begin{aufgabe}[Merkkasten]{3}
+\begin{lueckentext}
+Die Inferenzmaschine bearbeitet immer das \lsg[2.6cm]{erste} Ziel und sucht die Klauseln von \lsg[4.2cm]{oben nach unten} ab. Ziel und Klauselkopf werden durch \lsg[4.2cm]{Unifikation} gleich gemacht, dabei werden Variablen belegt. Bei einer Regel wird das Ziel durch den \lsg[2.6cm]{Rumpf} ersetzt. Scheitert ein Ziel, geht sie zur letzten Wahlmöglichkeit zurück: \lsg[4.2cm]{Backtracking}. Den Ableitungsbaum durchsucht sie so als \lsg[4.2cm]{Tiefensuche}.
+\end{lueckentext}
+\end{aufgabe}
+
+\newpage
+\begin{aufgabe}[Die Reihenfolge zählt (Website: Landkarte)]{4}
+\begin{lueckentext}
+Erst alle Farben, dann prüfen: \lsg[2.25cm]{7295} Schritte. Jede Prüfung so früh wie möglich: \lsg[2.25cm]{230} Schritte. Die Antworten \lsgrest{bleiben gleich (6 Färbungen).}
+\end{lueckentext}
+Erkläre, warum die frühe Prüfung so viel Arbeit spart.
+\lsglinien{3}{Ist schon eine falsche Kombination gewählt (z. B. OB gleich NB), merkt die frühe Fassung das sofort und geht zurück. Die späte Fassung probiert vorher noch alle Farben der übrigen Bezirke durch (3 hoch 5 = 243 Möglichkeiten), die alle scheitern.}
+\end{aufgabe}
+
+\begin{aufgabe}[Endlose Rekursion (Website)]{5}
+\begin{prolog}
+vorfahre(X, Y) :- vorfahre(Z, Y), elternteil(X, Z).
+\end{prolog}
+Diese Regel ist logisch richtig. Warum wird die Inferenzmaschine trotzdem nicht fertig? Wie schreibt man rekursive Regeln richtig?
+\lsglinien{4}{Sobald der Abbruchfall nichts mehr liefert, ruft die Regel als erstes Ziel wieder vorfahre(Z, Y) auf, ohne vorher einen Schritt zu gehen: Das Problem wird nie kleiner, die Suche endet nicht. Richtig: Abbruchfall zuerst, und vor dem rekursiven Aufruf ein Ziel, das das Problem verkleinert (erst elternteil, dann vorfahre), wie bei rekursiven Methoden in Java.}
+\end{aufgabe}
+
+\begin{aufgabe}[Grenzen wissensbasierter Systeme]{6}
+Nenne eine Aufgabe, für die sich eine Wissensbasis gut eignet, und eine, für die nicht. Begründe.
+\lsglinien{4}{Gut: Stammbaum, Fahrplan, Steuerregeln – das System ist abgeschlossen, das Wissen klar formulierbar, jede Antwort ist erklärbar. Schlecht: eine handgeschriebene 7 auf einem Bild erkennen – niemand kann die Regeln vollständig aufschreiben, Wahrnehmung ist unscharf. Dafür lernt man aus Beispielen (maschinelles Lernen).}
+\end{aufgabe}
+\end{document}

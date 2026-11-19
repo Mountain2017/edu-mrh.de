@@ -1,0 +1,85 @@
+\documentclass[11pt]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{4}{Das Perzeptron: eine Grenze im Raum}
+
+\begin{aufgabe}[Nettoeingabe und Ausgabe]{1}
+Ein Perzeptron hat die Gewichte $w_0 = -0{,}5$, $w_1 = -1$, $w_2 = 1{,}5$. Es gilt $z = w_0\cdot 1 + w_1 x_1 + w_2 x_2$ und Ausgabe 1, wenn $z \ge 0$, sonst 0.\par\vspace{1mm}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|c|c|X|c|}\hline
+$x_1$ & $x_2$ & Nettoeingabe $z$ (mit Rechnung) & Ausgabe \\\hline
+0,2 & 0,8\schreibzeile & \lsgklein{$-0{,}5 - 0{,}2 + 1{,}2 = 0{,}5$} & \lsgklein{1} \\\hline
+0,7 & 0,3\schreibzeile & \lsgklein{$-0{,}5 - 0{,}7 + 0{,}45 = -0{,}75$} & \lsgklein{0} \\\hline
+0,4 & 0,6\schreibzeile & \lsgklein{$-0{,}5 - 0{,}4 + 0{,}9 = 0$ (genau auf der Grenze)} & \lsgklein{1} \\\hline
+0,5 & 0,5\schreibzeile & \lsgklein{$-0{,}5 - 0{,}5 + 0{,}75 = -0{,}25$} & \lsgklein{0} \\\hline
+\end{tabularx}
+\end{aufgabe}
+
+\begin{aufgabe}[Die Grenze zeichnen (Website: Labor)]{2}
+\begin{minipage}[t]{0.41\linewidth}\vspace{0pt}
+\begin{tikzpicture}[x=5mm,y=5mm]
+  \draw[karo] (0,0) grid (12,12);
+  \draw[-{Stealth[length=2mm]},line width=0.6pt] (0,0) -- (12.6,0) node[below left,font=\footnotesize]{$x_1$};
+  \draw[-{Stealth[length=2mm]},line width=0.6pt] (0,0) -- (0,12.6) node[below left,font=\footnotesize]{$x_2$};
+  \foreach \v/\t in {2/0{,}2,4/0{,}4,6/0{,}6,8/0{,}8,10/1}{\node[font=\tiny,below] at (\v,0) {\t}; \node[font=\tiny,left] at (0,\v) {\t};}
+  \ifloesung
+    \begin{scope}[red!75!black,line width=0.9pt]
+      \draw (0,3.333) -- (12,11.333);
+      \draw[-{Stealth[length=2.5mm]},line width=1.2pt] (5,6.667) -- (3.61,8.75) node[left,font=\small]{$\vec w$};
+      \node[font=\small] at (2,10) {1};
+      \node[font=\small] at (8,3) {0};
+    \end{scope}
+  \fi
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.57\linewidth}\vspace{0pt}
+a) Für die Grenze gilt $z = 0$. Löse nach $x_2$ auf und zeichne die Grenze links ein (1 Kästchen = 0,1).
+\begin{lueckentext}
+$x_2 = $ \lsg[4.5cm]{$\frac{0{,}5 + x_1}{1{,}5} = \frac13 + \frac23 x_1$}
+\end{lueckentext}
+b) Zeichne den Vektor $\vec w = (w_1 \,|\, w_2) = (-1 \,|\, 1{,}5)$ an die Grenze und markiere die Seite mit Ausgabe 1.\par\vspace{1mm}
+c) Was passiert mit der Grenze, wenn $w_0$ größer wird? Was, wenn sich $w_1$ ändert?
+\lsglinien{3}{w0 größer: Grenze verschiebt sich parallel, die 1-Seite wächst. w1 ändern: w dreht sich und mit ihm die Grenze (w steht senkrecht auf ihr).}
+\end{minipage}
+\end{aufgabe}
+
+\begin{aufgabe}[Merkkasten]{3}
+\begin{lueckentext}
+Die Nettoeingabe $z$ wird an eine \lsg[5.25cm]{Aktivierungsfunktion} weitergegeben, beim Perzeptron die \lsg[5.25cm]{Stufenfunktion}. Die Punkte mit $z = 0$ bilden die \lsg[5.25cm]{Entscheidungsgrenze}: bei zwei Merkmalen eine \lsg[3.6cm]{Gerade}, bei drei eine \lsg[3.6cm]{Ebene}. Ein Perzeptron kann daher nur \lsg[4.5cm]{linear} trennen. Der Gewichtsvektor steht \lsg[4.5cm]{senkrecht} auf der Grenze, der Bias $w_0$ \lsgrest{verschiebt die Grenze.}
+\end{lueckentext}
+\end{aufgabe}
+
+\newpage
+\begin{aufgabe}[Ein Lernschritt von Hand]{4}
+Gewichte $(w_0 \,|\, w_1 \,|\, w_2) = (0{,}5 \,|\, 1 \,|\, -1)$, Lernrate $\eta = 0{,}1$. Der Punkt $x = (0{,}6 \,|\, 0{,}2)$ hat das Ziel 0. Lernregel: $\Delta w_i = \eta \cdot (\text{Ziel} - \text{Ausgabe}) \cdot x_i$ mit $x_0 = 1$.
+\begin{lueckentext}
+$z = $ \lsg[4.5cm]{$0{,}5 + 0{,}6 - 0{,}2 = 0{,}9$}, Ausgabe \lsg[2.25cm]{1}, Ziel $-$ Ausgabe $=$ \lsg[2.25cm]{$-1$}\\
+$\Delta w_0 = $ \lsg[3cm]{$-0{,}1$}, \quad $\Delta w_1 = $ \lsg[3cm]{$-0{,}06$}, \quad $\Delta w_2 = $ \lsg[3cm]{$-0{,}02$}\\
+neue Gewichte: $(w_0 \,|\, w_1 \,|\, w_2) = $ \lsg[5.25cm]{$(0{,}4 \,|\, 0{,}94 \,|\, -1{,}02)$}
+\end{lueckentext}
+In der Online-IDE (TODO 3d): Ergänze die Lernregel.
+\begin{javaluecke}
+public boolean lerne(double[] x, int ziel) {
+   int fehler = (*\lsg[3.6cm]{ziel - ausgabe(x)}*);
+   if (fehler == 0) { return false; }
+   gewichte[0] = gewichte[0] + (*\lsg[4.2cm]{lernrate * fehler}*);
+   for (int i = 0; i < x.length; i++) {
+      gewichte[i + 1] = gewichte[i + 1] + (*\lsg[5.2cm]{lernrate * fehler * x[i]}*);
+   }
+   return true;
+}
+\end{javaluecke}
+\end{aufgabe}
+
+\begin{aufgabe}[Verändern (Online-IDE und Website)]{5}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|X|p{3.2cm}|}\hline
+\textbf{Einstellung (Java, Esels gegen Adélie)} & \textbf{Epochen bis fehlerfrei} \\\hline
+Start $\{0{,}5;\,-1;\,1;\,-1\}$, $\eta = 0{,}1$\schreibzeile & \lsgklein{10} \\\hline
+Start $\{0;\,0;\,0;\,0\}$, $\eta = 0{,}1$\schreibzeile & \lsgklein{9} \\\hline
+Start $\{0{,}5;\,-1;\,1;\,-1\}$, $\eta = 1$\schreibzeile & \lsgklein{6} \\\hline
+\end{tabularx}\par\vspace{1mm}
+Bei Zügel- gegen Adéliepinguinen und bei XOR hört die Lernregel nie auf zu korrigieren. Erkläre.
+\lsglinien{2}{Die Klassen überlappen bzw. liegen über Kreuz: Es gibt keine Gerade/Ebene, die fehlerfrei trennt. Jede Korrektur macht einen anderen Punkt falsch.}
+\end{aufgabe}
+\end{document}

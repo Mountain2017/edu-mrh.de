@@ -1,0 +1,69 @@
+\documentclass[11pt]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{8}{Experimente: Daten und Hyperparameter}
+
+\begin{aufgabe}[Hypothesen]{1}
+\begin{lueckentext}
+Größen, die vor dem Training festgelegt und nicht gelernt werden, heißen \lsg[5.25cm]{Hyperparameter}.
+\end{lueckentext}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{4.6cm}|X|}\hline
+\textbf{Hyperparameter / Daten} & \textbf{Meine Vermutung: Was passiert, wenn er größer wird?} \\\hline
+Zahl der Neuronen\schreibzeile & \lsgklein{z.\,B. feinere Grenzen, aber ab einer Größe kein Gewinn mehr} \\\hline
+Zahl der verdeckten Schichten\schreibzeile & \lsgklein{z.\,B. krummere Formen möglich, lernt langsamer} \\\hline
+Lernrate\schreibzeile & \lsgklein{z.\,B. schneller, ab einer Größe Springen} \\\hline
+Menge der Trainingsdaten\schreibzeile & \lsgklein{z.\,B. besser auf Testdaten, weniger Überanpassung} \\\hline
+Rauschen in den Daten\schreibzeile & \lsgklein{z.\,B. schlechter, Netz lernt Ausreißer mit} \\\hline
+\end{tabularx}
+\end{aufgabe}
+
+\begin{aufgabe}[Versuchsprotokoll (Website: Forschungsauftrag)]{2}
+\begin{lueckentext}
+Unsere Frage (F1 bis F6): \lsgrest{F3: Wie viele Daten braucht das Netz?}
+Hypothese: \lsgrest{Mit wenigen Daten lernt es sie auswendig (Test schlechter).}
+Fest eingestellt: \lsgrest{Kern im Ring, Rauschen 6, 2 Schichten × 8, tanh, Lernrate 0,8}
+Verändert wird nur: \lsgrest{der Trainingsanteil}
+\end{lueckentext}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|p{2.2cm}|p{2.4cm}|p{2.4cm}|p{2.2cm}|X|}\hline
+\textbf{Wert} & \textbf{Kosten Train.} & \textbf{Kosten Test} & \textbf{richtig Test} & \textbf{Beobachtung (Form der Region)} \\\hline
+\lsgklein{10 \%}\schreibzeile & \lsgklein{fast 0} & \lsgklein{hoch} & \lsgklein{niedrig} & \lsgklein{Region umschließt einzelne Punkte} \\\hline
+\lsgklein{30 \%}\schreibzeile & \lsgklein{klein} & \lsgklein{mittel} & \lsgklein{mittel} & \lsgklein{zerklüftet} \\\hline
+\lsgklein{50 \%}\schreibzeile & \lsgklein{klein} & \lsgklein{klein} & \lsgklein{hoch} & \lsgklein{fast rund} \\\hline
+\lsgklein{90 \%}\schreibzeile & \lsgklein{klein} & \lsgklein{ähnlich klein} & \lsgklein{hoch} & \lsgklein{rund} \\\hline
+\end{tabularx}\par\vspace{1mm}
+Ergebnis und Deutung:
+\lsglinien{2}{Mit wenigen Trainingsdaten sinken die Trainingskosten fast auf 0, die Testkosten bleiben hoch: Überanpassung. Mehr Daten bringen Training und Test zusammen.}
+\end{aufgabe}
+
+\newpage
+\begin{aufgabe}[Ziffern erkennen (Website: Python)]{3}
+Notiere nach 8 Epochen die Anteile richtig erkannter Ziffern.\par\vspace{1mm}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|c|c|c|c|X|}\hline
+\code{VERDECKT} & \code{TRAINING} & \textbf{richtig Training} & \textbf{richtig Test} & \textbf{Deutung} \\\hline
+2 & 600\schreibzeile & \lsgklein{41 \%} & \lsgklein{38 \%} & \lsgklein{zu wenige Neuronen: Unteranpassung} \\\hline
+12 & 600\schreibzeile & \lsgklein{98 \%} & \lsgklein{94 \%} & \lsgklein{gut} \\\hline
+32 & 600\schreibzeile & \lsgklein{98 \%} & \lsgklein{94 \%} & \lsgklein{kein Gewinn mehr, nur mehr Rechenzeit} \\\hline
+12 & 50\schreibzeile & \lsgklein{80 \%} & \lsgklein{57 \%} & \lsgklein{zu wenige Daten: Überanpassung} \\\hline
+12 & 1200\schreibzeile & \lsgklein{98 \%} & \lsgklein{95 \%} & \lsgklein{mehr Daten helfen} \\\hline
+\end{tabularx}\par\vspace{1mm}
+Wann klaffen die Werte für Training und Test weit auseinander, und was bedeutet das?
+\lsglinien{2}{Bei wenigen Trainingsdaten (50 Bilder: 80 \% gegen 57 \%): Das Netz hat die Trainingsbilder auswendig gelernt und verallgemeinert schlecht (Überanpassung).}
+\end{aufgabe}
+
+\begin{aufgabe}[Merkkasten]{4}
+\begin{lueckentext}
+Hat ein Netz zu wenige Neuronen, kann es die Form der Daten nicht darstellen: \lsg[5.25cm]{Unteranpassung}. Mehr Neuronen und Schichten erlauben \lsg[5.25cm]{verwickeltere Grenzen}, brauchen aber mehr \lsg[3.6cm]{Daten} und Rechenzeit. Wenige oder verrauschte Trainingsdaten führen zu \lsg[5.25cm]{Überanpassung}. Ob ein Netz gut ist, zeigt sich nur an den \lsg[3.6cm]{Testdaten}. Weil die Startgewichte zufällig sind, \lsgrest{wiederholt man Versuche.}
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{aufgabe}[Bias in, bias out (Website: Ethik)]{5}
+\begin{lueckentext}
+Mit nur 5 Achten im Training erkennt das Netz die 8 in den Testdaten zu \lsg[2.25cm]{0 \%}, insgesamt sind \lsg[2.25cm]{87 \%} richtig.
+\end{lueckentext}
+Warum ist die Gesamtgenauigkeit hier irreführend? Was sollte man stattdessen angeben?
+\lsglinien{3}{Sie verdeckt, dass eine seltene Gruppe (die 8) überhaupt nicht erkannt wird, weil diese Gruppe nur einen kleinen Teil der Testdaten ausmacht. Man muss die Fehlerraten je Gruppe (je Ziffer, bei Menschen je Bevölkerungsgruppe) prüfen und angeben.}
+\end{aufgabe}
+\end{document}

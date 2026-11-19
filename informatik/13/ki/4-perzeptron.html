@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4 Das Perzeptron | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Künstliche Intelligenz, Informatik 13: das Perzeptron aus Klasse 11 geometrisch gesehen. Gewichte, Nettoeingabe und Stufenfunktion als Gerade bzw. Ebene, der Gewichtsvektor steht senkrecht auf der Grenze; die Delta-Lernregel dreht eine Ebene durch den 3D-Raum der Pinguine (Java-Projekt).">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/include/online-ide-embedded.css">
+    <script type="module" src="https://edu-mrh.de/embed/include/online-ide-embedded.js"></script>
+    <link rel="stylesheet" href="ki.css">
+    <script defer src="ki.js"></script>
+    <script defer src="ki-daten.js"></script>
+    <script defer src="perzeptron.js"></script>
+    <script defer src="ide-coach.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🤖</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="ki.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 4</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#einstieg">🔮 Erinnerung und Vorhersage</a></li>
+            <li><a href="#labor">🔬 Perzeptron-Labor</a></li>
+            <li><a href="#festhalten">📝 Das Perzeptron als Grenze</a></li>
+            <li><a href="#ide">☕ Selbst bauen (Java 3D)</a></li>
+            <li><a href="#veraendern">🔧 Verändern</a></li>
+            <li><a href="#ethik">⚖️ Ethik: Erklärbarkeit</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Künstliche Intelligenz</div>
+            <ul class="sidebar-menu">
+                <li><a href="ki.html">Übersicht</a></li>
+                <li><a href="1-lernarten.html">1 Wie lernen Maschinen?</a></li>
+                <li><a href="2-merkmalsraum.html">2 Merkmalsraum und k-NN</a></li>
+                <li><a href="3-k-means.html">3 k-Means</a></li>
+                <li><a href="4-perzeptron.html">4 Das Perzeptron</a></li>
+                <li><a href="5-schichten.html">5 Perzeptronen zusammenschalten</a></li>
+                <li><a href="6-trainieren.html">6 Trainieren und Grenzen</a></li>
+                <li><a href="7-neuronales-netz.html">7 Das neuronale Netz</a></li>
+                <li><a href="8-experimente.html">8 Experimente</a></li>
+                <li><a href="9-architekturen.html">9 CNN und Transformer</a></li>
+                <li><a href="10-ethik.html">10 Ethik</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero ki-hero">
+                <h1 class="hero-title">4 Das Perzeptron: eine Grenze im Raum</h1>
+                <p class="hero-subtitle">Künstliche Intelligenz · Informatik 13 · <span class="niveau-tag beide">gA + eA</span> · 2 Stunden · Java-Projekt in 3D</p>
+                <span class="ki-kompetenz">Du kannst: Aufbau und Arbeitsweise eines Perzeptrons (Eingaben, Gewichte, Nettoeingabe, Aktivierungsfunktion) erklären, seine Entscheidungsgrenze als Gerade bzw. Ebene deuten und die Delta-Lernregel anwenden.</span>
+                <div class="ki-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-4-perzeptron.pdf">📝 Arbeitsblatt 4 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-4-perzeptron.tex">LaTeX-Quelle</a>
+                    <a class="btn btn-outline" href="../../11/ki/perzeptron.html">Perzeptron in Klasse 11</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#einstieg">🔮 Vorhersage</a><a class="p-investigate" href="#labor">🔬 Labor</a><a class="p-note" href="#festhalten">📝 Festhalten</a><a class="p-make" href="#ide">☕ Selbst bauen</a><a class="p-modify" href="#veraendern">🔧 Verändern</a><a class="p-ethik" href="#ethik">⚖️ Ethik</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="einstieg" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔮</span><h2>Erinnerung und Vorhersage<small>Aufgabe 1: Was kannst du noch aus Klasse 11?</small></h2></div>
+                <div class="phase-body">
+                    <p>k-NN muss sich alle Beispiele merken, um zu entscheiden. Ein <strong>Perzeptron</strong> merkt sich nur ein paar Zahlen, die <strong>Gewichte</strong>. In Klasse 11 hast du es so kennengelernt:</p>
+                    <svg class="netzbild" viewBox="0 0 620 200" role="img" aria-label="Perzeptron: Eingaben 1, x1 und x2 mit Gewichten w0, w1, w2 führen zu einer Summe z, dann Stufenfunktion, dann Ausgabe 0 oder 1">
+                        <defs><marker id="pf4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#334155"/></marker></defs>
+                        <g font-size="16" text-anchor="middle">
+                            <circle cx="60" cy="40" r="24" fill="#f1f5f9" stroke="#334155" stroke-width="2"/><text x="60" y="46">1</text>
+                            <circle cx="60" cy="100" r="24" fill="#f1f5f9" stroke="#334155" stroke-width="2"/><text x="60" y="106">x₁</text>
+                            <circle cx="60" cy="160" r="24" fill="#f1f5f9" stroke="#334155" stroke-width="2"/><text x="60" y="166">x₂</text>
+                            <line x1="84" y1="44" x2="262" y2="92" stroke="#334155" stroke-width="2" marker-end="url(#pf4)"/><text x="170" y="56" fill="#b45309" font-weight="700">w₀</text>
+                            <line x1="84" y1="100" x2="260" y2="100" stroke="#334155" stroke-width="2" marker-end="url(#pf4)"/><text x="170" y="92" fill="#b45309" font-weight="700">w₁</text>
+                            <line x1="84" y1="156" x2="262" y2="108" stroke="#334155" stroke-width="2" marker-end="url(#pf4)"/><text x="170" y="158" fill="#b45309" font-weight="700">w₂</text>
+                            <circle cx="300" cy="100" r="36" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2.5"/><text x="300" y="96" font-size="22">Σ</text><text x="300" y="120" font-size="13">z</text>
+                            <line x1="336" y1="100" x2="400" y2="100" stroke="#334155" stroke-width="2" marker-end="url(#pf4)"/>
+                            <rect x="404" y="70" width="80" height="60" rx="8" fill="#fff" stroke="#1d4ed8" stroke-width="2.5"/>
+                            <path d="M414 118 H444 V82 H474" fill="none" stroke="#dc2626" stroke-width="3"/>
+                            <line x1="484" y1="100" x2="548" y2="100" stroke="#334155" stroke-width="2" marker-end="url(#pf4)"/>
+                            <text x="584" y="106" font-weight="700">0 / 1</text>
+                            <text x="300" y="166" font-size="13" fill="#475569">Nettoeingabe</text><text x="444" y="152" font-size="13" fill="#475569">Stufe</text><text x="584" y="130" font-size="13" fill="#475569">Ausgabe</text>
+                        </g>
+                    </svg>
+                    <p class="formel">z = w<sub>0</sub> · 1 + w<sub>1</sub> · x<sub>1</sub> + w<sub>2</sub> · x<sub>2</sub> &nbsp;&nbsp; Ausgabe = 1, wenn z ≥ 0, sonst 0</p>
+                    <p>Rechne auf dem Blatt (Aufgabe 1) die Nettoeingabe und die Ausgabe für vier Punkte aus. Dann eine Vorhersage: Im Labor unten gehört zu den Gewichten eine Gerade, die Grenze zwischen Ausgabe 0 und 1.</p>
+                    <div class="vorhersage" data-vorhersage="w0" data-wahl="v:Die Gerade verschiebt sich parallel.|d:Die Gerade dreht sich.|n:Nichts, w0 hängt an keinem Merkmal.">
+                        <h4>Was passiert mit der Grenze, wenn du nur w<sub>0</sub> (den Bias) vergrößerst?</h4>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-4-perzeptron.pdf">📝 Blatt 4 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="labor" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🔬</span><h2>Perzeptron-Labor<small>Aufgabe 2: Gewichte von Hand, dann die Lernregel</small></h2></div>
+                <div class="phase-body">
+                    <div data-nach="w0">
+                        <p>Esels- (Ziel 1) und Adéliepinguine (Ziel 0), Merkmale Schnabeltiefe und Flossenlänge, beide normiert auf 0 bis 1. Die rote Seite hat Ausgabe 1. Der orange Pfeil ist der <strong>Gewichtsvektor</strong> w = (w<sub>1</sub> | w<sub>2</sub>).</p>
+                        <div data-perzeptron data-satz="esels-adelie" data-start="0.5,1,-1"></div>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Prüfe deine Vorhersage: Bewege nur w<sub>0</sub>. Bewege dann nur w<sub>1</sub> oder w<sub>2</sub>. Was macht der Pfeil?</li>
+                        <li>Stelle die Gewichte von Hand so ein, dass kein Pinguin mehr falsch eingeordnet ist. Notiere deine Gewichte.</li>
+                        <li>Klicke „Neustart“ und dann mehrmals „Ein Lernschritt“. Wie bewegt sich die Gerade nach einer Korrektur, im Vergleich zum korrigierten Punkt?</li>
+                        <li>„Neustart“, dann „Bis fehlerfrei“: Nach wie vielen Epochen ist die Lernregel fertig (η = 0,1)?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 2">
+                        <template data-stufe="Tipp"><p>Eselspinguine haben flache Schnäbel (kleine Schnabeltiefe) und lange Flossen. Welches Vorzeichen brauchen dann w<sub>1</sub> und w<sub>2</sub>, damit z für sie positiv wird?</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) w<sub>0</sub> verschiebt die Gerade parallel, der Pfeil bleibt gleich gerichtet; w<sub>1</sub> und w<sub>2</sub> drehen den Pfeil und mit ihm die Gerade. Der Pfeil steht immer senkrecht auf der Geraden und zeigt zur Seite mit Ausgabe 1. b) Zum Beispiel w<sub>0</sub> = −0,5, w<sub>1</sub> = −1, w<sub>2</sub> = 1,5 (es gibt viele Lösungen). c) Ein Punkt mit Ziel 1, der auf der falschen Seite liegt, zieht die Gerade zu sich hin, bis er auf der roten Seite liegt; ein Punkt mit Ziel 0 schiebt sie weg. d) Vom Start (0,5 | 1 | −1) aus 9 Epochen; Korrekturen je Epoche 18, 11, 7, 5, 4, 3, 2, 1, 0.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-4-perzeptron.pdf">📝 Blatt 4 · Aufgabe 2</a></p>
+                </div>
+            </section>
+
+            <section id="festhalten" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Das Perzeptron, geometrisch gesehen</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Perzeptron und Entscheidungsgrenze</h4>
+                        <ul>
+                            <li>Ein Perzeptron berechnet die <strong>Nettoeingabe</strong> z = w<sub>0</sub> + w<sub>1</sub>x<sub>1</sub> + … + w<sub>n</sub>x<sub>n</sub> und gibt sie an eine <strong>Aktivierungsfunktion</strong> weiter. Beim Perzeptron ist das die <strong>Stufenfunktion</strong>: Ausgabe 1 ab z ≥ 0, sonst 0.</li>
+                            <li>Die <strong>Entscheidungsgrenze</strong> ist die Menge aller Punkte mit z = 0. Bei zwei Merkmalen ist sie eine <strong>Gerade</strong>, bei drei eine <strong>Ebene</strong>, bei mehr eine „Hyperebene“. Ein Perzeptron kann also nur <strong>linear trennen</strong>.</li>
+                            <li>Der Gewichtsvektor (w<sub>1</sub> | … | w<sub>n</sub>) steht <strong>senkrecht</strong> auf der Grenze und zeigt zur Seite mit Ausgabe 1. Der Bias w<sub>0</sub> verschiebt die Grenze.</li>
+                            <li><strong>Delta-Lernregel</strong> für ein Beispiel x mit Ziel t: Δw<sub>i</sub> = η · (t − Ausgabe) · x<sub>i</sub> mit x<sub>0</sub> = 1 und Lernrate η. Nur falsch eingeordnete Beispiele ändern etwas. Sind die Daten linear trennbar, findet die Regel nach endlich vielen Epochen eine trennende Grenze.</li>
+                        </ul>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-4-perzeptron.pdf">📝 Blatt 4 · Aufgabe 3 (Merkkasten)</a></p>
+                </div>
+            </section>
+
+            <section id="ide" class="phase make">
+                <div class="phase-head"><span class="phase-icon">☕</span><h2>Selbst bauen: eine Ebene im Pinguinraum<small>Aufgabe 4: TODO 3a bis 3d</small></h2></div>
+                <div class="phase-body">
+                    <p>Mit drei Merkmalen (Schnabellänge, Schnabeltiefe, Flossenlänge) ist die Grenze eine <strong>Ebene</strong>. Du programmierst die Klasse <code>Perzeptron</code>; <code>Raum3d</code> zeichnet die Pinguine und die orange Ebene. Falsch eingeordnete Pinguine werden schwarz. Die Gewichte stehen in einem Array: <code>gewichte[0]</code> ist w<sub>0</sub>, <code>gewichte[1]</code> gehört zum ersten Merkmal <code>x[0]</code> und so weiter.</p>
+                    <div class="tab-scroll"><table class="ki-tab">
+                        <tr><th>TODO</th><th>Methode</th><th>Was sie tun soll</th></tr>
+                        <tr><td>3a</td><td><code>double netto(double[] x)</code></td><td>z = w<sub>0</sub> + w<sub>1</sub>·x[0] + w<sub>2</sub>·x[1] + …</td></tr>
+                        <tr><td>3b</td><td><code>int aktivierung(double z)</code></td><td>Stufe: 1, wenn z ≥ 0, sonst 0</td></tr>
+                        <tr><td>3c</td><td><code>int ausgabe(double[] x)</code></td><td>Aktivierung der Nettoeingabe</td></tr>
+                        <tr><td>3d</td><td><code>boolean lerne(double[] x, int ziel)</code></td><td>Delta-Lernregel; <code>true</code>, wenn korrigiert wurde</td></tr>
+                    </table></div>
+                    <div class="ide-block" id="ide-projekt">
+                        <div class="ide-kopf"><h3>Projekt Perzeptron</h3></div>
+                        <div class="java-online" style="width:100%;height:700px" data-java-online="{ 'id': 'i13-ki4-perzeptron', 'speed': 1000000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true, 'withErrorList': true, 'jsonFilename': '13-KI-4 Perzeptron.json', 'enableFileAccess': true, 'enableRunExitStatusAccess': true }">
+<!-- IDE-START perzeptron -->
+<script type="text/plain" title="Hauptprogramm.java">
+// Station 4: Ein Perzeptron trennt Eselspinguine (Ziel 1) von Adéliepinguinen (Ziel 0)
+// Merkmale (normiert): x = Schnabellänge, y = Schnabeltiefe, z = Flossenlänge
+// Starte erst, wenn TODO 3a bis 3d in Perzeptron erledigt sind (Tests: PerzeptronTest).
+Punkt[] daten = Datensatz.nur(Datensatz.pinguine(), "Esels", "Adelie");
+Raum3d raum = new Raum3d();
+raum.zeige(daten);
+
+Perzeptron p = new Perzeptron(3, 0.1);
+double[] start = {0.5, -1, 1, -1};      // Aufgabe 4: andere Startgewichte
+p.setGewichte(start);
+raum.zeigeEbene(p.getGewichte());
+raum.markiere(daten, p, "Esels");
+raum.warte(2000);
+
+int epoche = 0;
+int korrekturen = 1;
+while (korrekturen > 0 && epoche < 50) {
+   korrekturen = p.epoche(daten, "Esels");
+   epoche++;
+   println("Epoche " + epoche + ": " + korrekturen + " Korrekturen");
+   raum.zeigeEbene(p.getGewichte());
+   raum.markiere(daten, p, "Esels");
+   raum.warte(700);
+}
+println("Gewichte w0 | w1 | w2 | w3: " + Raum3d.text(p.getGewichte()));
+</script>
+<script type="text/plain" title="Perzeptron.java">
+/**
+ * Ein Perzeptron (Station 4), Schreibweise wie in Klasse 11:
+ * Nettoeingabe z = w0 · 1 + w1 · x1 + w2 · x2 + … , Ausgabe 1, wenn z >= 0, sonst 0.
+ * gewichte[0] ist w0 (Bias), gewichte[1] ist w1 für das erste Merkmal x[0], usw.
+ */
+public class Perzeptron {
+   private double[] gewichte;
+   private double lernrate;
+
+   public Perzeptron(int anzahlEingaben, double lernrate) {
+      gewichte = new double[anzahlEingaben + 1];
+      this.lernrate = lernrate;
+   }
+
+   public double[] getGewichte() {
+      return gewichte;
+   }
+
+   public void setGewichte(double[] neu) {
+      for (int i = 0; i < gewichte.length; i++) {
+         gewichte[i] = neu[i];
+      }
+   }
+
+   // TODO 3a: Nettoeingabe z = w0 · 1 + w1 · x[0] + w2 · x[1] + …
+   public double netto(double[] x) {
+      return 0;
+   }
+
+   // TODO 3b: Aktivierungsfunktion (Stufe): 1, wenn z >= 0, sonst 0
+   public int aktivierung(double z) {
+      return 0;
+   }
+
+   // TODO 3c: Ausgabe des Perzeptrons für die Eingabe x
+   public int ausgabe(double[] x) {
+      return 0;
+   }
+
+   // TODO 3d: Delta-Lernregel für ein Beispiel: Δwi = lernrate · (ziel − ausgabe) · xi  (mit x0 = 1)
+   //          Rückgabe: true, wenn die Gewichte geändert wurden (das Beispiel war falsch eingeordnet)
+   public boolean lerne(double[] x, int ziel) {
+      // Fehler = ziel - ausgabe(x). Ist er 0, ändert sich nichts.
+      // Sonst: gewichte[0] um lernrate · fehler ändern, jedes weitere Gewicht um lernrate · fehler · x[i].
+      return false;
+   }
+
+   // Eine Epoche: jedes Beispiel einmal der Reihe nach lernen (fertig). Ziel 1 für artEins, sonst 0.
+   // Rückgabe: Zahl der Korrekturen in dieser Epoche
+   public int epoche(Punkt[] daten, String artEins) {
+      int korrekturen = 0;
+      for (int i = 0; i < daten.length; i++) {
+         int ziel = 0;
+         if (daten[i].getArt().equals(artEins)) {
+            ziel = 1;
+         }
+         if (lerne(daten[i].getWerte(), ziel)) {
+            korrekturen++;
+         }
+      }
+      return korrekturen;
+   }
+}
+</script>
+<script type="text/plain" title="Punkt.java" data-online-ide="{ 'readOnly': true }">
+/**
+ * Ein Datenpunkt im Merkmalsraum: seine Merkmalswerte (normiert auf 0 bis 1),
+ * die wahre Art (nur zum Vergleichen, k-Means kennt sie nicht!) und die Nummer seines Clusters.
+ * Muss nicht verändert werden.
+ */
+public class Punkt {
+   private double[] werte;
+   private String art;
+   private int cluster;
+
+   public Punkt(double[] werte, String art) {
+      this.werte = werte;
+      this.art = art;
+      cluster = -1;            // -1: noch keinem Cluster zugeordnet
+   }
+
+   public double[] getWerte() {
+      return werte;
+   }
+
+   public double getWert(int i) {
+      return werte[i];
+   }
+
+   public int getAnzahlMerkmale() {
+      return werte.length;
+   }
+
+   public String getArt() {
+      return art;
+   }
+
+   public int getCluster() {
+      return cluster;
+   }
+
+   public void setCluster(int cluster) {
+      this.cluster = cluster;
+   }
+}
+</script>
+<script type="text/plain" title="Raum3d.java" data-online-ide="{ 'readOnly': true }">
+/**
+ * Zeichnet Pinguine, eine Entscheidungsebene und Probepunkte in einem drehbaren 3D-Würfel (Kantenlänge 10).
+ * Achsen: x (rot) = Schnabellänge, y (grün) = Schnabeltiefe, z (blau) = Flossenlänge, jeweils normiert (0 bis 1).
+ * Farben: Esels petrol, Adélie orange, Zügel violett; falsch eingeordnete Pinguine schwarz.
+ * Drehen: im Grafikfenster mit der Maus ziehen, zoomen: Mausrad. Muss nicht verändert werden.
+ */
+public class Raum3d {
+   private World3d welt;
+   private Sphere3d[] kugeln;
+   private Plane3d ebene;
+   private double s = 10;
+
+   public Raum3d() {
+      welt = new World3d();
+      welt.setBackgroundColor(0xf8fafc);
+      Box3d rahmen = new Box3d(s, s, s);
+      rahmen.setMaterial(new BasicMaterial3d(0x94a3b8, true));
+      rahmen.moveTo(s / 2, s / 2, s / 2);
+      welt.getCamera().moveTo(s * 1.55, s * 1.15, s * 1.75);
+      welt.getCamera().lookAt(s / 2, s / 2, s / 2, new Vector3(0, 1, 0), true);
+      kugeln = new Sphere3d[0];
+   }
+
+   private int artFarbe(String art) {
+      if (art.equals("Adelie")) {
+         return 0xea580c;
+      }
+      if (art.equals("Zuegel")) {
+         return 0x9333ea;
+      }
+      return 0x0e7490;
+   }
+
+   // Zeigt alle Pinguine als Kugeln in der Farbe ihrer Art.
+   public void zeige(Punkt[] punkte) {
+      kugeln = new Sphere3d[punkte.length];
+      for (int i = 0; i < punkte.length; i++) {
+         Sphere3d kugel = new Sphere3d(0.13, 8, 6);
+         kugel.setMaterial(new LambertMaterial3d(artFarbe(punkte[i].getArt())));
+         kugel.moveTo(s * punkte[i].getWert(0), s * punkte[i].getWert(1), s * punkte[i].getWert(2));
+         kugeln[i] = kugel;
+      }
+   }
+
+   // Färbt falsch eingeordnete Pinguine schwarz (Ziel 1 = artEins), alle anderen in ihrer Art.
+   public void markiere(Punkt[] punkte, Perzeptron p, String artEins) {
+      for (int i = 0; i < punkte.length; i++) {
+         int ziel = 0;
+         if (punkte[i].getArt().equals(artEins)) {
+            ziel = 1;
+         }
+         if (p.ausgabe(punkte[i].getWerte()) != ziel) {
+            kugeln[i].getMaterial().setColor(0x0f172a);
+         } else {
+            kugeln[i].getMaterial().setColor(artFarbe(punkte[i].getArt()));
+         }
+      }
+   }
+
+   // Zeigt die Ebene w0 + w1 · x1 + w2 · x2 + w3 · x3 = 0 (w = Gewichte des Perzeptrons, w[0] = Bias).
+   public void zeigeEbene(double[] w) {
+      if (ebene == null) {
+         ebene = new Plane3d(16, 16);
+         BasicMaterial3d m = new BasicMaterial3d(0xd97706, false);
+         m.setAlpha(0.35);
+         m.setTransparent(true);
+         ebene.setMaterial(m);
+         ebene.enableFrontBackSide(true, true);
+      }
+      double n2 = w[1] * w[1] + w[2] * w[2] + w[3] * w[3];
+      if (n2 < 0.000001) {
+         ebene.setVisible(false);
+         return;
+      }
+      ebene.setVisible(true);
+      // Punkt der Ebene, der der Würfelmitte (0,5 | 0,5 | 0,5) am nächsten liegt
+      double t = (w[0] + 0.5 * (w[1] + w[2] + w[3])) / n2;
+      double px = 0.5 - t * w[1];
+      double py = 0.5 - t * w[2];
+      double pz = 0.5 - t * w[3];
+      ebene.moveTo(s * px, s * py, s * pz);
+      ebene.lookAt(s * (px + w[1]), s * (py + w[2]), s * (pz + w[3]), new Vector3(0, 1, 0));
+   }
+
+   // Ein kleiner Probepunkt (normierte Koordinaten), z. B. für das Abstecken eines Raums in Station 5.
+   public void probe(double x, double y, double z, boolean innen) {
+      Sphere3d k = new Sphere3d(0.1, 6, 4);
+      if (innen) {
+         k.setMaterial(new LambertMaterial3d(0x16a34a));
+      } else {
+         LambertMaterial3d m = new LambertMaterial3d(0xcbd5e1);
+         m.setAlpha(0.25);
+         m.setTransparent(true);
+         k.setMaterial(m);
+      }
+      k.moveTo(s * x, s * y, s * z);
+   }
+
+   public void warte(int millisekunden) {
+      SystemTools.pause(millisekunden);
+   }
+
+   // Gewichte gerundet als Text, z. B. "(0.12 | -1.3 | 0.4 | 2.0)"
+   public static String text(double[] w) {
+      String t = "(";
+      for (int i = 0; i < w.length; i++) {
+         if (i > 0) {
+            t = t + " | ";
+         }
+         t = t + Math.round(w[i] * 1000) / 1000.0;
+      }
+      return t + ")";
+   }
+}
+</script>
+<script type="text/plain" title="Datensatz.java" data-online-ide="{ 'readOnly': true }">
+/**
+ * Die 342 Pinguine der Palmer-Station (Palmer Penguins, Horst, Hill & Gorman 2020, CC0).
+ * Merkmale min-max-normiert auf 0 bis 1: Schnabellänge (32.1 bis 59.6 mm), Schnabeltiefe (13.1 bis 21.5 mm),
+ * Flossenlänge (172 bis 231 mm). Arten: A = Adelie, Z = Zuegel, E = Esels.
+ * Muss nicht verändert werden (erzeugt aus data/pinguine.csv).
+ */
+public class Datensatz {
+
+   public static Punkt[] pinguine() {
+      double[][] w = {
+         {0.255, 0.667, 0.153}, {0.269, 0.512, 0.237}, {0.298, 0.583, 0.39}, {0.167, 0.738, 0.356}, {0.262, 0.893, 0.305}, {0.247, 0.56, 0.153},
+         {0.258, 0.774, 0.39}, {0.073, 0.595, 0.356}, {0.36, 0.845, 0.305}, {0.207, 0.476, 0.237}, {0.207, 0.5, 0.136}, {0.327, 0.536, 0.169},
+         {0.236, 0.964, 0.322}, {0.091, 0.952, 0.441}, {0.164, 0.56, 0.22}, {0.24, 0.702, 0.39}, {0.378, 0.905, 0.424}, {0.084, 0.631, 0.203},
+         {0.505, 1, 0.373}, {0.207, 0.619, 0.034}, {0.204, 0.667, 0.136}, {0.138, 0.726, 0.288}, {0.222, 0.595, 0.22}, {0.244, 0.488, 0.136},
+         {0.116, 0.69, 0.254}, {0.309, 0.655, 0.186}, {0.305, 0.571, 0.254}, {0.211, 0.655, 0}, {0.305, 0.69, 0.136}, {0.269, 0.429, 0.102},
+         {0.185, 0.595, 0.102}, {0.269, 0.56, 0.271}, {0.32, 0.69, 0.203}, {0.156, 0.464, 0.39}, {0.258, 0.952, 0.407}, {0.244, 0.821, 0.305},
+         {0.367, 0.643, 0.136}, {0.2, 0.738, 0.153}, {0.28, 0.714, 0.203}, {0.16, 0.583, 0.169}, {0.316, 0.631, 0.39}, {0.142, 0.643, 0.237},
+         {0.436, 0.786, 0.407}, {0.178, 0.452, 0.22}, {0.273, 0.679, 0.305}, {0.327, 0.702, 0.169}, {0.196, 0.69, 0.119}, {0.142, 0.571, 0.305},
+         {0.371, 0.964, 0.322}, {0.273, 0.548, 0.237}, {0.291, 0.69, 0.271}, {0.105, 0.571, 0.305}, {0.36, 0.762, 0.475}, {0.087, 0.595, 0.254},
+         {0.338, 0.655, 0.322}, {0.251, 0.524, 0.237}, {0.309, 0.679, 0.356}, {0.16, 0.417, 0.153}, {0.2, 0.714, 0.373}, {0.131, 0.452, 0.22},
+         {0.335, 0.952, 0.39}, {0.2, 0.464, 0.22}, {0.327, 0.607, 0.339}, {0.156, 0.476, 0.203}, {0.345, 0.583, 0.339}, {0.124, 0.369, 0.39},
+         {0.327, 0.714, 0.271}, {0.138, 0.417, 0.305}, {0.353, 0.75, 0.441}, {0.051, 0.702, 0.305}, {0.276, 0.631, 0.305}, {0.273, 0.488, 0.407},
+         {0.498, 0.69, 0.424}, {0.124, 0.524, 0.305}, {0.389, 0.643, 0.39}, {0.32, 0.44, 0.322}, {0.185, 0.75, 0.203}, {0.149, 0.357, 0.254},
+         {0.364, 0.714, 0.39}, {0.091, 0.488, 0.288}, {0.393, 0.536, 0.407}, {0.167, 0.679, 0.254}, {0.109, 0.75, 0.356}, {0.189, 0.56, 0.322},
+         {0.335, 0.857, 0.373}, {0.153, 0.762, 0.305}, {0.175, 0.655, 0.288}, {0.225, 0.726, 0.288}, {0.247, 0.679, 0.305}, {0.131, 0.583, 0.508},
+         {0.327, 0.595, 0.559}, {0.069, 0.476, 0.22}, {0.273, 0.595, 0.237}, {0.149, 0.5, 0.254}, {0.316, 0.69, 0.61}, {0.218, 0.655, 0.305},
+         {0.298, 0.643, 0.407}, {0.036, 0.357, 0.102}, {0.404, 0.643, 0.339}, {0.105, 0.571, 0.339}, {0.324, 0.821, 0.525}, {0.204, 0.345, 0.186},
+         {0.207, 0.821, 0.305}, {0.211, 0.655, 0.356}, {0.276, 0.69, 0.203}, {0.236, 0.488, 0.458}, {0.222, 0.821, 0.305}, {0.218, 0.464, 0.153},
+         {0.404, 0.702, 0.424}, {0.218, 0.405, 0.441}, {0.491, 0.857, 0.322}, {0.276, 0.548, 0.356}, {0.367, 0.762, 0.424}, {0.273, 0.905, 0.322},
+         {0.385, 0.619, 0.407}, {0.236, 0.464, 0.271}, {0.189, 0.881, 0.458}, {0.131, 0.464, 0.288}, {0.327, 0.655, 0.288}, {0.149, 0.488, 0.254},
+         {0.204, 0.798, 0.441}, {0.295, 0.464, 0.068}, {0.338, 0.643, 0.508}, {0.113, 0.333, 0.237}, {0.309, 0.702, 0.458}, {0.244, 0.536, 0.322},
+         {0.342, 0.619, 0.39}, {0.251, 0.476, 0.322}, {0.436, 0.583, 0.644}, {0.233, 0.571, 0.305}, {0.4, 0.726, 0.424}, {0.171, 0.643, 0.356},
+         {0.196, 0.643, 0.458}, {0.218, 0.536, 0.254}, {0.327, 0.524, 0.305}, {0.127, 0.524, 0.322}, {0.295, 0.833, 0.475}, {0.178, 0.405, 0.22},
+         {0.276, 0.571, 0.356}, {0.295, 0.476, 0.356}, {0.309, 0.488, 0.254}, {0, 0.286, 0.271}, {0.313, 0.464, 0.305}, {0.189, 0.44, 0.339},
+         {0.251, 0.667, 0.22}, {0.258, 0.655, 0.305}, {0.164, 0.631, 0.203}, {0.142, 0.56, 0.39}, {0.207, 0.595, 0.356}, {0.142, 0.476, 0.254},
+         {0.342, 0.643, 0.492}, {0.509, 0.012, 0.661}, {0.651, 0.381, 0.983}, {0.604, 0.119, 0.644}, {0.651, 0.25, 0.78}, {0.564, 0.167, 0.729},
+         {0.524, 0.048, 0.644}, {0.484, 0.179, 0.661}, {0.531, 0.262, 0.797}, {0.407, 0.036, 0.627}, {0.535, 0.274, 0.729}, {0.32, 0.071, 0.712},
+         {0.615, 0.357, 0.746}, {0.487, 0.071, 0.712}, {0.593, 0.179, 0.695}, {0.498, 0.179, 0.644}, {0.625, 0.31, 0.763}, {0.36, 0.048, 0.644},
+         {0.622, 0.25, 0.831}, {0.513, 0.167, 0.627}, {0.604, 0.238, 0.847}, {0.658, 0.143, 0.78}, {0.473, 0.167, 0.729}, {0.524, 0.167, 0.695},
+         {0.516, 0.321, 0.729}, {0.393, 0, 0.729}, {0.509, 0.238, 0.729}, {0.451, 0.143, 0.746}, {0.571, 0.226, 0.729}, {0.585, 0.143, 0.644},
+         {0.651, 0.262, 0.814}, {0.553, 0.262, 0.847}, {0.389, 0.131, 0.627}, {0.473, 0.167, 0.593}, {1, 0.464, 0.983}, {0.618, 0.202, 0.814},
+         {0.593, 0.381, 0.814}, {0.382, 0.071, 0.695}, {0.447, 0.5, 0.797}, {0.433, 0.06, 0.61}, {0.604, 0.31, 0.61}, {0.385, 0.071, 0.61},
+         {0.636, 0.345, 0.898}, {0.48, 0.071, 0.644}, {0.636, 0.226, 0.746}, {0.669, 0.333, 0.847}, {0.418, 0.095, 0.763}, {0.487, 0.095, 0.644},
+         {0.669, 0.333, 0.898}, {0.465, 0.024, 0.695}, {0.476, 0.321, 0.729}, {0.527, 0.131, 0.644}, {0.596, 0.119, 0.814}, {0.473, 0.155, 0.644},
+         {0.655, 0.226, 0.898}, {0.524, 0.155, 0.763}, {0.469, 0.274, 0.814}, {0.425, 0.095, 0.61}, {0.487, 0.226, 0.814}, {0.404, 0.167, 0.61},
+         {0.665, 0.262, 0.881}, {0.48, 0.083, 0.61}, {0.513, 0.214, 0.831}, {0.495, 0.095, 0.712}, {0.807, 0.31, 1}, {0.498, 0.131, 0.797},
+         {0.644, 0.44, 0.983}, {0.513, 0.155, 0.712}, {0.633, 0.369, 0.966}, {0.415, 0.131, 0.814}, {0.676, 0.226, 0.864}, {0.567, 0.226, 0.746},
+         {0.52, 0.298, 0.831}, {0.585, 0.298, 0.831}, {0.524, 0.202, 0.763}, {0.52, 0.226, 0.746}, {0.6, 0.345, 0.983}, {0.56, 0.131, 0.627},
+         {0.691, 0.381, 0.814}, {0.476, 0.083, 0.729}, {0.476, 0.393, 0.864}, {0.618, 0.167, 0.678}, {0.742, 0.298, 0.831}, {0.556, 0.179, 0.678},
+         {0.651, 0.333, 0.881}, {0.465, 0.083, 0.678}, {0.68, 0.5, 0.949}, {0.411, 0.155, 0.78}, {0.698, 0.131, 0.78}, {0.56, 0.107, 0.678},
+         {0.727, 0.464, 0.983}, {0.56, 0.226, 0.78}, {0.731, 0.476, 0.949}, {0.487, 0.167, 0.678}, {0.633, 0.357, 0.881}, {0.451, 0.19, 0.712},
+         {0.68, 0.31, 0.915}, {0.629, 0.321, 0.746}, {0.538, 0.179, 0.847}, {0.593, 0.155, 0.525}, {0.691, 0.405, 0.898}, {0.596, 0.226, 0.797},
+         {0.865, 0.464, 0.949}, {0.549, 0.286, 0.729}, {0.618, 0.226, 0.949}, {0.553, 0.083, 0.746}, {0.535, 0.357, 0.729}, {0.349, 0.19, 0.644},
+         {0.775, 0.321, 0.797}, {0.407, 0.107, 0.61}, {0.582, 0.238, 0.627}, {0.669, 0.25, 0.746}, {0.644, 0.333, 0.966}, {0.415, 0.25, 0.695},
+         {0.705, 0.381, 0.983}, {0.513, 0.119, 0.763}, {0.836, 0.345, 0.983}, {0.451, 0.31, 0.763}, {0.607, 0.369, 0.847}, {0.549, 0.071, 0.712},
+         {0.535, 0.143, 0.729}, {0.665, 0.31, 0.847}, {0.476, 0.202, 0.678}, {0.647, 0.357, 0.695}, {0.524, 0.571, 0.339}, {0.651, 0.762, 0.407},
+         {0.698, 0.726, 0.356}, {0.484, 0.667, 0.271}, {0.749, 0.798, 0.424}, {0.476, 0.56, 0.441}, {0.509, 0.607, 0.102}, {0.698, 0.607, 0.424},
+         {0.505, 0.69, 0.39}, {0.698, 0.81, 0.441}, {0.527, 0.56, 0.356}, {0.713, 0.857, 0.373}, {0.542, 0.5, 0.22}, {0.724, 0.595, 0.492},
+         {0.502, 0.476, 0.305}, {0.669, 0.774, 0.492}, {0.662, 0.821, 0.424}, {0.942, 0.56, 0.153}, {0.52, 0.655, 0.305}, {0.622, 0.607, 0.39},
+         {0.375, 0.5, 0.153}, {0.596, 0.524, 0.322}, {0.404, 0.417, 0.254}, {0.673, 0.75, 0.356}, {0.531, 0.571, 0.39}, {0.724, 0.702, 0.424},
+         {0.669, 0.631, 0.475}, {0.633, 0.702, 0.475}, {0.52, 0.56, 0.322}, {0.753, 0.821, 0.559}, {0.32, 0.417, 0.254}, {0.804, 0.917, 0.492},
+         {0.378, 0.429, 0.254}, {0.687, 0.679, 0.525}, {0.64, 0.655, 0.39}, {0.56, 0.44, 0.458}, {0.564, 0.619, 0.39}, {0.724, 0.905, 0.644},
+         {0.538, 0.417, 0.339}, {0.778, 0.81, 0.559}, {0.615, 0.762, 0.644}, {0.513, 0.524, 0.254}, {0.684, 0.714, 0.407}, {0.487, 0.464, 0.407},
+         {0.684, 0.571, 0.407}, {0.68, 0.643, 0.492}, {0.655, 0.571, 0.305}, {0.615, 0.774, 0.678}, {0.705, 0.667, 0.254}, {0.644, 0.5, 0.441},
+         {0.582, 0.393, 0.458}, {0.702, 0.702, 0.492}, {0.495, 0.5, 0.356}, {0.676, 0.786, 0.525}, {0.378, 0.5, 0.254}, {0.731, 0.679, 0.424},
+         {0.476, 0.417, 0.322}, {0.625, 0.81, 0.525}, {0.658, 0.679, 0.508}, {0.491, 0.75, 0.373}, {0.72, 0.762, 0.576}, {0.535, 0.405, 0.288},
+         {0.495, 0.464, 0.39}, {0.862, 0.798, 0.593}, {0.415, 0.595, 0.508}, {0.636, 0.607, 0.356}, {0.68, 0.702, 0.644}, {0.658, 0.667, 0.441}
+      };
+      String arten = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+         + "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE"
+         + "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
+         + "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"
+         + "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
+      Punkt[] p = new Punkt[w.length];
+      for (int i = 0; i < w.length; i++) {
+         p[i] = new Punkt(w[i], artName(arten.charAt(i)));
+      }
+      return p;
+   }
+
+   // nur die Punkte der beiden angegebenen Arten, z. B. nur(pinguine(), "Esels", "Adelie")
+   public static Punkt[] nur(Punkt[] alle, String art1, String art2) {
+      int n = 0;
+      for (int i = 0; i < alle.length; i++) {
+         if (alle[i].getArt().equals(art1) || alle[i].getArt().equals(art2)) {
+            n++;
+         }
+      }
+      Punkt[] p = new Punkt[n];
+      int j = 0;
+      for (int i = 0; i < alle.length; i++) {
+         if (alle[i].getArt().equals(art1) || alle[i].getArt().equals(art2)) {
+            p[j] = alle[i];
+            j++;
+         }
+      }
+      return p;
+   }
+
+   private static String artName(char c) {
+      if (c == 'A') {
+         return "Adelie";
+      }
+      if (c == 'Z') {
+         return "Zuegel";
+      }
+      return "Esels";
+   }
+}
+</script>
+<script type="text/plain" title="PerzeptronTest.java" data-online-ide="{ 'readOnly': true }">
+/**
+ * Tests für Perzeptron. Starten: Klick auf das kleine Dreieck links neben "@Test"
+ * oder auf den Knopf "Alle Tests starten" in der Leiste.
+ */
+public class PerzeptronTest {
+
+   private boolean fastGleich(double x, double y) {
+      return Math.abs(x - y) < 0.000001;
+   }
+
+   @Test
+   public void nettoeingabe() {
+      Perzeptron p = new Perzeptron(2, 0.1);
+      double[] w = {-1, 2, 0.5};
+      p.setGewichte(w);
+      double[] x = {3, 4};
+      Assertions.assertTrue(fastGleich(p.netto(x), 7), "TODO 3a: z = -1 + 2 · 3 + 0,5 · 4 = 7, berechnet: " + p.netto(x));
+      Perzeptron q = new Perzeptron(3, 0.1);
+      double[] v = {0.5, 1, -1, 2};
+      q.setGewichte(v);
+      double[] y = {1, 1, 1};
+      Assertions.assertTrue(fastGleich(q.netto(y), 2.5), "TODO 3a: Mit drei Eingaben: z = 0,5 + 1 - 1 + 2 = 2,5, berechnet: " + q.netto(y));
+   }
+
+   @Test
+   public void stufenfunktion() {
+      Perzeptron p = new Perzeptron(2, 0.1);
+      Assertions.assertEquals(1, p.aktivierung(2), "TODO 3b: aktivierung(2) muss 1 sein.");
+      Assertions.assertEquals(0, p.aktivierung(-0.5), "TODO 3b: aktivierung(-0,5) muss 0 sein.");
+      Assertions.assertEquals(1, p.aktivierung(0), "TODO 3b: Bei z = 0 ist die Ausgabe 1 (z >= 0).");
+   }
+
+   @Test
+   public void ausgabeBerechnen() {
+      Perzeptron p = new Perzeptron(2, 0.1);
+      double[] w = {-1, 1, 1};
+      p.setGewichte(w);
+      double[] innen = {0.8, 0.9};
+      double[] aussen = {0.2, 0.3};
+      Assertions.assertEquals(1, p.ausgabe(innen), "TODO 3c: Für (0,8 | 0,9) ist z = 0,7, also Ausgabe 1.");
+      Assertions.assertEquals(0, p.ausgabe(aussen), "TODO 3c: Für (0,2 | 0,3) ist z = -0,5, also Ausgabe 0.");
+   }
+
+   @Test
+   public void lerneKorrigiert() {
+      Perzeptron p = new Perzeptron(2, 0.1);
+      double[] x = {1, 2};
+      Assertions.assertTrue(p.lerne(x, 0), "TODO 3d: Mit Gewichten 0 ist die Ausgabe 1, das Ziel 0: lerne muss korrigieren und true liefern.");
+      double[] w = p.getGewichte();
+      Assertions.assertTrue(fastGleich(w[0], -0.1) && fastGleich(w[1], -0.1) && fastGleich(w[2], -0.2),
+         "TODO 3d: Nach der Korrektur müssen die Gewichte (-0,1 | -0,1 | -0,2) sein, sind (" + w[0] + " | " + w[1] + " | " + w[2] + ").");
+   }
+
+   @Test
+   public void lerneOhneFehler() {
+      Perzeptron p = new Perzeptron(2, 0.1);
+      double[] w = {-1, 1, 1};
+      p.setGewichte(w);
+      double[] x = {0.8, 0.9};
+      Assertions.assertFalse(p.lerne(x, 1), "TODO 3d: Das Beispiel ist richtig eingeordnet, lerne muss false liefern.");
+      Assertions.assertTrue(fastGleich(p.getGewichte()[0], -1) && fastGleich(p.getGewichte()[1], 1), "TODO 3d: Richtig eingeordnet: Die Gewichte dürfen sich nicht ändern.");
+   }
+
+   @Test
+   public void trenntPinguine() {
+      Punkt[] daten = Datensatz.nur(Datensatz.pinguine(), "Esels", "Adelie");
+      Perzeptron p = new Perzeptron(3, 0.1);
+      double[] start = {0.5, -1, 1, -1};
+      p.setGewichte(start);
+      int epoche = 0;
+      int korrekturen = 1;
+      while (korrekturen > 0 && epoche < 50) {
+         korrekturen = p.epoche(daten, "Esels");
+         epoche++;
+      }
+      Assertions.assertEquals(0, korrekturen, "Esels- und Adéliepinguine sind trennbar: Nach höchstens 50 Epochen darf es keine Korrektur mehr geben.");
+   }
+}
+</script>
+<!-- IDE-ENDE perzeptron -->
+                        </div>
+                        <div class="coach" data-coach="i13-ki4-perzeptron"></div>
+                    </div>
+                    <p>Wenn alle Tests grün sind: Starte das Hauptprogramm. Die Ebene startet falsch herum und dreht sich Epoche für Epoche. Drehe den Würfel so, dass du genau auf die Kante der Ebene schaust.</p>
+                    <div class="lw" data-loesungsweg="Aufgabe 4">
+                        <template data-stufe="Tipp 3a"><p><code>double z = gewichte[0];</code> und dann für jedes <code>i</code> von 0 bis <code>x.length - 1</code>: <code>z = z + gewichte[i + 1] * x[i];</code></p></template>
+                        <template data-stufe="Tipp 3d"><p><code>int fehler = ziel - ausgabe(x);</code> Ist der Fehler 0: <code>return false;</code>. Sonst <code>gewichte[0]</code> um <code>lernrate * fehler</code> ändern und in einer Schleife jedes <code>gewichte[i + 1]</code> um <code>lernrate * fehler * x[i]</code>.</p></template>
+                        <template data-stufe="Ergebnis zum Vergleichen" data-halten><p>Korrekturen je Epoche: 17, 14, 10, 7, 5, 3, 2, 2, 1, 0. Gewichte am Ende (gerundet): (0 | −0,035 | −0,415 | 0,31). Die Schnabeltiefe hat das größte Gewicht (negativ: flacher Schnabel spricht für Esels), dann die Flossenlänge (positiv).</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-4-perzeptron.pdf">📝 Blatt 4 · Aufgabe 4</a></p>
+                </div>
+            </section>
+
+            <section id="veraendern" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">🔧</span><h2>Verändern<small>Aufgabe 5: Startwerte, Lernrate und schwierige Daten</small></h2></div>
+                <div class="phase-body">
+                    <ol class="aufgaben">
+                        <li>Ändere in Java die Startgewichte auf <code>{0, 0, 0, 0}</code> und die Lernrate auf 0,5 oder 1. Wie viele Epochen braucht das Perzeptron jetzt?</li>
+                        <li>Ersetze in Java <code>"Esels"</code> überall durch <code>"Zuegel"</code> (Zügel- gegen Adéliepinguine). Was beobachtest du?</li>
+                        <li>Wähle im Labor unten die Daten „Zügel gegen Adélie“ und „XOR“ und klicke „Bis fehlerfrei“. Woran liegt es?</li>
+                    </ol>
+                    <div data-perzeptron data-satz="zuegel-adelie" data-satzwahl></div>
+                    <div class="lw" data-loesungsweg="Aufgabe 5">
+                        <template data-stufe="Lösung" data-halten><p>a) Start 0, η = 0,1: 9 Epochen; vom ursprünglichen Start mit η = 0,5: 7, mit η = 1: 6 Epochen. Startwerte und Lernrate ändern den Weg, aber nicht, dass am Ende eine trennende Ebene gefunden wird. b) Auch nach 50 Epochen gibt es noch 2 bis 4 Korrekturen je Epoche, die Ebene springt hin und her. c) Zügel- und Adéliepinguine überlappen; bei XOR liegen die Klassen über Kreuz. In beiden Fällen gibt es <strong>keine</strong> Gerade bzw. Ebene, die fehlerfrei trennt. Die Lernregel hört dann nie auf zu korrigieren.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-4-perzeptron.pdf">📝 Blatt 4 · Aufgabe 5</a></p>
+                </div>
+            </section>
+
+            <section id="ethik" class="phase ethik">
+                <div class="phase-head"><span class="phase-icon">⚖️</span><h2>Ethik-Impuls: Kann man die Entscheidung erklären?<small>Besprecht mündlich</small></h2></div>
+                <div class="phase-body">
+                    <p>Am Perzeptron kann man ablesen, <em>warum</em> es entscheidet: Das Gewicht der Schnabeltiefe ist groß und negativ, also spricht ein flacher Schnabel für „Eselspinguin“. Ein Perzeptron ist <strong>erklärbar</strong>.</p>
+                    <ul>
+                        <li>Stell dir vor, ein Perzeptron entscheidet über Bewerbungen mit den Merkmalen Note, Berufserfahrung und Postleitzahl. Welches Gewicht würdest du dir genau ansehen wollen?</li>
+                        <li>Große Netze haben Milliarden Gewichte. Was geht verloren, wenn niemand mehr erklären kann, wie eine Entscheidung zustande kommt? Wer darf eine Erklärung verlangen?</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="uebergang"><strong>Die Frage für Station 5:</strong> Eine einzelne Gerade kann XOR nicht trennen, und auch keine Insel mitten in den Daten. Wie umzäunt man ein Gebiet, wenn man nur gerade Zäune hat?</div>
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🧱 Viele Zäune</h4>
+                            <p>In Station 5 schaltest du mehrere Perzeptronen hintereinander: Jedes zieht eine Grenze, ein weiteres kombiniert sie. Das ist schon ein kleines neuronales Netz.</p>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>📐 Vektoren aus Mathe</h4>
+                            <p>Die Ebene w<sub>0</sub> + w<sub>1</sub>x<sub>1</sub> + w<sub>2</sub>x<sub>2</sub> + w<sub>3</sub>x<sub>3</sub> = 0 ist eine Ebene in Koordinatenform; (w<sub>1</sub> | w<sub>2</sub> | w<sub>3</sub>) ist ihr Normalenvektor.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="3-k-means.html">← 3 k-Means</a>
+                <a class="btn btn-primary" href="5-schichten.html">5 Perzeptronen zusammenschalten →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-4-perzeptron-lsg.pdf">Lösung Blatt 4 (PDF)</a> <a class="btn btn-tex btn-sm" href="Online-IDE/13-KI-4 Perzeptron.json">Ausgangsprojekt (JSON)</a> <a class="btn btn-tex btn-sm" href="Online-IDE/LSG 13-KI-4 Perzeptron.json">Lösungsprojekt (JSON)</a></p>
+                    <p><strong>Einordnung:</strong> Das Perzeptron steht nicht im Lehrplan der Jahrgangsstufe 13, ist aber aus Klasse 11 bekannt und bereitet den Aufbau eines neuronalen Netzes vor (Gewichte, Aktivierungsfunktion, Forward Propagation in Station 5). Schreibweise wie in <code>informatik/11/ki/perzeptron.html</code>: w<sub>0</sub> als Bias mit Eingabe 1, Heaviside-Stufe, Δw = η(y − Ausgabe)x. Neu ist die geometrische Deutung (Gewichtsvektor = Normalenvektor, Bezug zur Koordinatenform der Ebene aus der Mathematik).</p>
+                    <p><strong>Die Aktivierungsfunktion</strong> wird hier nur benannt. Dass die Stufe ein Problem ist, zeigt sich erst beim Trainieren mehrerer Schichten (Station 6); Sigmoid, ReLU und Gradientenabstieg folgen in Station 7.</p>
+                    <p><strong>Zahlen (geprüft):</strong> Labor (2 Merkmale, auf 3 Stellen normiert), Start (0,5 | 1 | −1), η = 0,1: 9 Epochen (18, 11, 7, 5, 4, 3, 2, 1, 0). Java (3 Merkmale), Start {0,5; −1; 1; −1}, η = 0,1: 10 Epochen (17, 14, 10, 7, 5, 3, 2, 2, 1, 0), Ende (0 | −0,035 | −0,415 | 0,31); Start 0: 9 Epochen; η = 0,5: 7; η = 1: 6. Zügel/Adélie: nach 50 Epochen weiter 2 bis 4 Korrekturen je Epoche.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de · <a href="https://edu-mrh.de/impressum.html#lizenz">CC BY-NC-SA 4.0</a> | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a> · Pinguindaten: Palmer Penguins (Horst, Hill &amp; Gorman 2020, Palmer Station LTER), CC0 · Online-IDE von Martin Pabst (GPL)</p>
+        </div>
+    </footer>
+</body>
+</html>

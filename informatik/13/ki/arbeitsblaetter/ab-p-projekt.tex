@@ -1,0 +1,53 @@
+\documentclass[11pt]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{P}{Projekt: ein Lernverfahren anwenden \niveauEA}
+
+\begin{aufgabe}[Projektplan]{1}
+\begin{lueckentext}
+Gruppe: \lsgrest{Beispiel}
+Unsere Frage: \lsgrest{Mit welchen Merkmalen bestimmt k-NN die Pinguinart am zuverlässigsten?}
+\lsgrest{Reichen zwei Merkmale?}
+Verfahren und Begründung: \lsgrest{k-NN (überwacht), weil die Arten bekannt sind}
+\lsgrest{und ein neuer Pinguin eingeordnet werden soll.}
+Daten (Datei, Merkmale, Zeilen): \lsgrest{pinguine.csv; Schnabellänge, -tiefe, Flossenlänge,}
+\lsgrest{Gewicht; alle 342 vollständigen Zeilen}
+Vorbereitung (Normieren, Aufteilen): \lsgrest{min-max-normiert; 70 \% Training, 30 \% Test}
+Was wir variieren: \lsgrest{Merkmalskombination und k; jede Einstellung mit seed 1, 2, 3}
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{aufgabe}[Versuchsprotokoll]{2}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|c|X|p{2cm}|p{2.6cm}|p{3.4cm}|}\hline
+\textbf{Nr.} & \textbf{Einstellung} & \textbf{seed} & \textbf{Ergebnis} & \textbf{Beobachtung} \\\hline
+1\schreibzeile & \lsgklein{nur Schnabellänge, k = 5} & \lsgklein{1} & \lsgklein{73 \%} & \lsgklein{Zügel/Esels verwechselt} \\\hline
+2\schreibzeile & \lsgklein{Schnabellänge + -tiefe, k = 5} & \lsgklein{1} & \lsgklein{93 \%} & \lsgklein{großer Sprung} \\\hline
+3\schreibzeile & \lsgklein{Schnabellänge + -tiefe, k = 5} & \lsgklein{2} & \lsgklein{(selbst messen)} & \lsgklein{Schwankung prüfen} \\\hline
+4\schreibzeile & \lsgklein{drei Maße, k = 1} & \lsgklein{1} & \lsgklein{98 \%} & \lsgklein{} \\\hline
+5\schreibzeile & \lsgklein{drei Maße, k = 5} & \lsgklein{1} & \lsgklein{96 \%} & \lsgklein{k kaum wichtig} \\\hline
+6\schreibzeile & \lsgklein{vier Maße, k = 1} & \lsgklein{1} & \lsgklein{99 \%} & \lsgklein{Gewicht bringt wenig} \\\hline
+7\schreibzeile & & & & \\\hline
+8\schreibzeile & & & & \\\hline
+\end{tabularx}
+\end{aufgabe}
+
+\newpage
+\begin{aufgabe}[Ergebnis darstellen]{3}
+Skizziere euer wichtigstes Ergebnis als Diagramm (Achsen beschriften).
+\lsgkariert{11}{\begin{scope}[yscale=-1,red!75!black,line width=0.8pt]
+  \draw[->] (1,5) -- (16,5) node[below left,font=\scriptsize]{Zahl der Merkmale}; \draw[->] (1,5) -- (1,0.3) node[right,font=\scriptsize]{richtig (\%)};
+  \foreach \x/\y/\t in {3/3.6/1,7/1.4/2,11/0.8/3,15/0.7/4}{\fill (\x,\y) circle (2pt); \node[below,font=\scriptsize] at (\x,5) {\t};}
+  \draw (3,3.6) -- (7,1.4) -- (11,0.8) -- (15,0.7);
+  \end{scope}}
+\end{aufgabe}
+
+\begin{aufgabe}[Interpretation und Bewertung]{4}
+a) Was zeigen eure Ergebnisse? Beantwortet eure Frage.
+\lsglinien{3}{Ein Merkmal reicht nicht (rund 70 \%). Schnabellänge und -tiefe zusammen trennen die drei Arten schon zu über 90 \%, mit drei Maßen fast fehlerfrei. Das Gewicht bringt danach kaum noch etwas.}
+b) Wie sicher ist euer Ergebnis? (Wiederholungen, Größe der Testdaten, Schwankungen)
+\lsglinien{3}{Nur 103 Testpinguine: Ein Fehler mehr oder weniger ändert das Ergebnis um 1 Prozentpunkt. Mit anderen seeds schwanken die Werte um einige Prozentpunkte; die Reihenfolge der Kombinationen bleibt aber gleich.}
+c) Grenzen und Verantwortung: Was dürfte man aus euren Ergebnissen \emph{nicht} schließen?
+\lsglinien{3}{Die Daten stammen von drei Inseln und drei Jahren; für Pinguine anderer Kolonien oder andere Messverfahren gilt das Ergebnis nicht unbedingt. Seltene Arten (Zügel) werden öfter verwechselt.}
+\end{aufgabe}
+\end{document}

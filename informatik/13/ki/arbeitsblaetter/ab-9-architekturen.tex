@@ -1,0 +1,83 @@
+\documentclass[11pt]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{9}{Bild- und Sprach-KI: CNN und Transformer}
+
+\begin{aufgabe}[Zu viele Gewichte]{1}
+\begin{lueckentext}
+36 Millionen Farbwerte, vollständig verbunden mit 1000 Neuronen: \lsg[5.25cm]{36 Milliarden} Gewichte. Außerdem müsste ein solches Netz \lsgrest{jedes Muster an jeder Bildstelle neu lernen.}
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{aufgabe}[Ein Filter von Hand (Faltung)]{2}
+\begin{minipage}[t]{0.33\linewidth}\vspace{0pt}
+Bildausschnitt (1 = schwarz):\par\vspace{1mm}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{|c|c|c|c|c|}\hline
+0&0&1&1&0\\\hline 0&0&1&1&0\\\hline 0&0&1&1&0\\\hline 0&0&1&1&0\\\hline 0&0&1&1&0\\\hline
+\end{tabular}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.25\linewidth}\vspace{0pt}
+Filter „senkrechte Kanten“:\par\vspace{1mm}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{|c|c|c|}\hline
+$-1$&0&1\\\hline $-2$&0&2\\\hline $-1$&0&1\\\hline
+\end{tabular}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.38\linewidth}\vspace{0pt}
+Lege den Filter oben links, in der Mitte und rechts auf die ersten drei Zeilen. Gewichte mal Pixel, alles addieren:\par\vspace{1mm}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{|c|c|c|}\hline
+\lsgklein{4}\schreibzeile\hspace{8mm} & \lsgklein{4}\hspace{8mm} & \lsgklein{$-4$}\hspace{8mm} \\\hline
+\end{tabular}
+\end{minipage}\par\vspace{1mm}
+\begin{lueckentext}
+Der Filter reagiert positiv, wo \lsgrest{rechts dunkel und links hell ist (linke Kante des Strichs),}
+negativ, wo \lsgrest{links dunkel und rechts hell ist (rechte Kante).}
+Ein CNN schiebt \lsg[3.6cm]{denselben} Filter über das ganze Bild (geteilte Gewichte) und lernt in den ersten Schichten \lsg[3.6cm]{Kanten}, in späteren \lsgrest{Formen und ganze Objekte.}
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{aufgabe}[Ein Sprachmodell zum Anfassen (Website)]{3}
+Im Lerntext folgt auf „das Wasser“ zweimal „ist“, einmal „kalt“ und einmal „ruhig“.
+\begin{lueckentext}
+Wahrscheinlichkeiten für das nächste Wort: „ist“ \lsg[2.25cm]{50 \%}, „kalt“ \lsg[2.25cm]{25 \%}, „ruhig“ \lsg[2.25cm]{25 \%}.\\
+Bei niedriger Temperatur \lsgrest{wird fast immer das häufigste Wort gewählt (Wiederholungen),}
+bei hoher Temperatur \lsgrest{auch seltene Wörter (abwechslungsreicher, aber wirrer).}
+\end{lueckentext}
+Warum kann ein Sprachmodell flüssig klingende, aber falsche Aussagen machen?
+\lsglinien{2}{Es wählt das wahrscheinlichste nächste Wort nach dem Muster der Trainingstexte, nicht das wahre. „Klingt passend“ heißt nicht „stimmt“ (Halluzination).}
+\end{aufgabe}
+
+\begin{aufgabe}[Aufmerksamkeit (Website)]{4}
+\begin{lueckentext}
+„Der Pinguin frisst den Fisch, weil er Hunger hat.“ „er“ = \lsg[3.6cm]{der Pinguin}. \quad „… weil er schlecht riecht.“ „er“ = \lsg[3.6cm]{der Fisch}.\\
+Ein Transformer berechnet für jedes Wort, \lsgrest{wie stark es jedes andere Wort im Text beachten soll.}
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{aufgabe}[Wie ein Chatbot entsteht]{5}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|X|p{4.2cm}|}\hline
+\textbf{Phase} & \textbf{Lernart} \\\hline
+Vortraining: nächstes Wort in Billionen Wörtern vorhersagen\schreibzeile & \lsgklein{(selbst-)überwacht} \\\hline
+Feinabstimmung mit von Menschen geschriebenen Beispielantworten\schreibzeile & \lsgklein{überwacht} \\\hline
+Menschen wählen die bessere von zwei Antworten (RLHF)\schreibzeile & \lsgklein{bestärkend} \\\hline
+\end{tabularx}
+\end{aufgabe}
+
+\begin{aufgabe}[Überblick: Welche Netzart passt?]{6}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|X|c|c|c|}\hline
+\textbf{Anwendung} & \textbf{vollst. verbunden} & \textbf{CNN} & \textbf{Transformer} \\\hline
+Tumor auf einem Röntgenbild finden & \kreuz{0} & \kreuz{1} & \kreuz{0} \\\hline
+Einen Text ins Englische übersetzen & \kreuz{0} & \kreuz{0} & \kreuz{1} \\\hline
+Pinguinart aus drei Messwerten bestimmen & \kreuz{1} & \kreuz{0} & \kreuz{0} \\\hline
+Programmcode vervollständigen & \kreuz{0} & \kreuz{0} & \kreuz{1} \\\hline
+Gesichter in einem Video erkennen & \kreuz{0} & \kreuz{1} & \kreuz{0} \\\hline
+\end{tabularx}\par\vspace{1mm}
+\begin{lueckentext}
+Gemeinsam ist allen: Sie lernen mit \lsgrest{Kostenfunktion, Backpropagation und Gradientenabstieg.}
+\end{lueckentext}
+\end{aufgabe}
+\end{document}

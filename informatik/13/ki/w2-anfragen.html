@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>W2 Anfragen an eine Wissensbasis | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Künstliche Intelligenz, Informatik 13, erhöhtes Niveau: Anfragen mit Variablen an eine Wissensbasis, Landkarten färben (Regierungsbezirke Bayerns), ein Logikrätsel lösen lassen. Beschreiben statt programmieren.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="ki.css">
+    <script defer src="ki.js"></script>
+    <script defer src="wissen.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🤖</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="ki.html?niveau=ea" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station W2 (eA)</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#anfragen">❓ Anfragen mit Variablen</a></li>
+            <li><a href="#karte">🗺️ Landkarte färben</a></li>
+            <li><a href="#raetsel">🧩 Ein Logikrätsel</a></li>
+            <li><a href="#festhalten">📝 Beschreiben statt programmieren</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Teil A · Wissen von Hand (eA)</div>
+            <ul class="sidebar-menu">
+                <li><a href="ki.html?niveau=ea">Übersicht</a></li>
+                <li><a href="w1-wissensbasis.html">W1 Wissensbasis</a></li>
+                <li><a href="w2-anfragen.html">W2 Anfragen</a></li>
+                <li><a href="w3-inferenz.html">W3 Inferenzmaschine</a></li>
+                <li><a href="1-lernarten.html">weiter: 1 Wie lernen Maschinen?</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero ki-hero">
+                <h1 class="hero-title">W2 Anfragen an eine Wissensbasis</h1>
+                <p class="hero-subtitle">Künstliche Intelligenz · Informatik 13 · <span class="niveau-tag ea">nur eA</span> · 2 Stunden</p>
+                <span class="ki-kompetenz">Du kannst: mithilfe eines Softwaresystems Anfragen an eine Wissensbasis entwerfen, z. B. um Landkarten zu färben oder logische Rätsel zu lösen.</span>
+                <div class="ki-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-w2-anfragen.pdf">📝 Arbeitsblatt W2 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-w2-anfragen.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-investigate" href="#anfragen">❓ Anfragen</a><a class="p-make" href="#karte">🗺️ Landkarte</a><a class="p-modify" href="#raetsel">🧩 Rätsel</a><a class="p-note" href="#festhalten">📝 Festhalten</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="anfragen" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">❓</span><h2>Anfragen mit Variablen<small>Aufgabe 1: Ja/Nein-Fragen und Wer-Fragen</small></h2></div>
+                <div class="phase-body">
+                    <p>Eine Anfrage beginnt mit <code>?-</code>. Ohne Variablen ist sie eine Ja/Nein-Frage, mit Variablen eine Wer- oder Was-Frage: Die Inferenzmaschine sucht <em>alle</em> Belegungen, für die die Anfrage aus der Wissensbasis folgt. Mehrere Ziele mit Komma müssen alle gleichzeitig gelten.</p>
+                    <div data-wissen="w2-kolonie" data-hoehe="12">
+<script type="text/plain" data-art="basis">
+% Pinguine der Kolonie: art(Name, Art), frisst(Name, Futter), insel(Name, Insel)
+art(pia, adelie).    art(tim, esels).    art(lou, zuegel).   art(kim, adelie).
+frisst(pia, krill).  frisst(tim, fisch). frisst(lou, krill). frisst(kim, fisch).
+insel(pia, biscoe).  insel(tim, biscoe). insel(lou, dream).  insel(kim, dream).
+
+nachbarn(A, B) :- insel(A, I), insel(B, I), A \= B.
+</script>
+<script type="text/plain" data-art="anfragen">
+?- art(pia, adelie).
+?- art(X, adelie).
+?- frisst(X, krill), insel(X, dream).
+?- nachbarn(tim, N).
+?- art(X, A), frisst(X, fisch).
+</script>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Stelle die Beispielanfragen und notiere die Antworten auf dem Blatt.</li>
+                        <li>Formuliere selbst: Welche Adéliepinguine fressen Fisch? Welche Art lebt auf Biscoe? Wer frisst dasselbe wie Pia (aber ist nicht Pia)?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 1">
+                        <template data-stufe="Lösung" data-halten><p><code>?- art(X, adelie), frisst(X, fisch).</code> → X = kim. <code>?- insel(X, biscoe), art(X, A).</code> → A = adelie, A = esels. <code>?- frisst(pia, F), frisst(X, F), X \= pia.</code> → X = lou. Wichtig: dieselbe Variable F in beiden Zielen erzwingt dasselbe Futter.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-w2-anfragen.pdf">📝 Blatt W2 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="karte" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🗺️</span><h2>Landkarte färben<small>Aufgabe 2: Bayerns Regierungsbezirke mit drei Farben</small></h2></div>
+                <div class="phase-body">
+                    <p>Eine Landkarte soll so gefärbt werden, dass benachbarte Gebiete verschiedene Farben haben. Du beschreibst nur, <em>was</em> gelten soll, nicht, <em>wie</em> man es findet: Jedes Gebiet hat eine Farbe, und Nachbarn haben verschiedene Farben.</p>
+                    <svg class="netzbild karte-bayern" viewBox="0 0 560 340" role="img" aria-label="Schema der Nachbarschaften der sieben Regierungsbezirke Bayerns">
+                        <g stroke="#475569" stroke-width="3">
+                            <line x1="150" y1="70" x2="300" y2="70"/><line x1="150" y1="70" x2="250" y2="170"/><line x1="300" y1="70" x2="250" y2="170"/>
+                            <line x1="300" y1="70" x2="420" y2="150"/><line x1="250" y1="170" x2="420" y2="150"/><line x1="250" y1="170" x2="150" y2="290"/>
+                            <line x1="250" y1="170" x2="360" y2="290"/><line x1="420" y1="150" x2="490" y2="250"/><line x1="420" y1="150" x2="360" y2="290"/>
+                            <line x1="490" y1="250" x2="360" y2="290"/><line x1="150" y1="290" x2="360" y2="290"/>
+                        </g>
+                        <g font-size="14" text-anchor="middle" font-weight="700">
+                            <circle cx="150" cy="70" r="40" fill="#fff" stroke="#1e293b" stroke-width="2"/><text x="150" y="75">UFR</text>
+                            <circle cx="300" cy="70" r="40" fill="#fff" stroke="#1e293b" stroke-width="2"/><text x="300" y="75">OFR</text>
+                            <circle cx="250" cy="170" r="40" fill="#fff" stroke="#1e293b" stroke-width="2"/><text x="250" y="175">MFR</text>
+                            <circle cx="420" cy="150" r="40" fill="#fff" stroke="#1e293b" stroke-width="2"/><text x="420" y="155">OPF</text>
+                            <circle cx="490" cy="250" r="40" fill="#fff" stroke="#1e293b" stroke-width="2"/><text x="490" y="255">NB</text>
+                            <circle cx="360" cy="290" r="40" fill="#fff" stroke="#1e293b" stroke-width="2"/><text x="360" y="295">OB</text>
+                            <circle cx="150" cy="290" r="40" fill="#fff" stroke="#1e293b" stroke-width="2"/><text x="150" y="295">SCHW</text>
+                        </g>
+                    </svg>
+                    <p style="font-size:.85rem;color:var(--gray);text-align:center">Linie = gemeinsame Grenze. UFR Unterfranken, OFR Oberfranken, MFR Mittelfranken, OPF Oberpfalz, NB Niederbayern, OB Oberbayern, SCHW Schwaben.</p>
+                    <div data-wissen="w2-karte" data-hoehe="12">
+<script type="text/plain" data-art="basis">
+farbe(rot). farbe(gruen). farbe(blau).
+
+% bayern(...) gilt für jede gültige Färbung der sieben Regierungsbezirke
+bayern(OB, NB, OPF, OFR, MFR, UFR, SCHW) :-
+    farbe(OB), farbe(NB), farbe(OPF), farbe(OFR), farbe(MFR), farbe(UFR), farbe(SCHW),
+    OB \= NB, OB \= OPF, OB \= MFR, OB \= SCHW,
+    NB \= OPF, OPF \= OFR, OPF \= MFR,
+    OFR \= MFR, OFR \= UFR, MFR \= UFR, MFR \= SCHW.
+</script>
+<script type="text/plain" data-art="anfragen">
+?- bayern(OB, NB, OPF, OFR, MFR, UFR, SCHW).
+?- bayern(rot, NB, OPF, OFR, MFR, UFR, gruen).
+</script>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Prüfe am Schema, ob in der Regel alle 11 Nachbarschaften stehen. Wie viele Färbungen gibt es? Färbe das Schema auf dem Blatt mit der ersten Antwort.</li>
+                        <li>Lösche die Farbe <code>blau</code>. Was antwortet die Wissensbasis, und warum? Erkläre mit dem Schema.</li>
+                        <li>Füge Baden-Württemberg (BW) hinzu. Es grenzt an Unterfranken, Mittelfranken und Schwaben.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 2">
+                        <template data-stufe="Lösung" data-halten><p>a) 6 Färbungen (die Farben lassen sich auf 3 · 2 · 1 Arten vertauschen); die erste: OB rot, NB grün, OPF blau, OFR rot, MFR grün, UFR blau, SCHW blau. b) Mit zwei Farben keine Antwort: OB, OPF und MFR grenzen alle drei aneinander (Dreieck), dafür braucht man drei Farben. c) Variable BW in den Kopf, <code>farbe(BW)</code> und <code>BW \= UFR, BW \= MFR, BW \= SCHW</code> in den Rumpf; es gibt weiterhin Färbungen mit drei Farben.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-w2-anfragen.pdf">📝 Blatt W2 · Aufgabe 2</a></p>
+                </div>
+            </section>
+
+            <section id="raetsel" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">🧩</span><h2>Ein Logikrätsel<small>Aufgabe 3: Wer frisst was?</small></h2></div>
+                <div class="phase-body">
+                    <p><strong>Rätsel:</strong> Pia, Tim und Lou fressen je ein anderes Futter: Hering, Krill oder Sardine. Pia mag keinen Krill. Tim frisst keine Sardine. Lou frisst Hering. Wer frisst was?</p>
+                    <div data-wissen="w2-raetsel" data-hoehe="8">
+<script type="text/plain" data-art="basis">
+futter(hering). futter(krill). futter(sardine).
+
+raetsel(Pia, Tim, Lou) :-
+    futter(Pia), futter(Tim), futter(Lou),
+    Pia \= Tim, Pia \= Lou, Tim \= Lou,       % jeder frisst etwas anderes
+    Pia \= krill,                             % Pia mag keinen Krill
+    Tim \= sardine,                           % Tim frisst keine Sardine
+    Lou = hering.                             % Lou frisst Hering
+</script>
+<script type="text/plain" data-art="anfragen">
+?- raetsel(Pia, Tim, Lou).
+</script>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Löse das Rätsel zuerst im Kopf, dann mit der Wissensbasis.</li>
+                        <li>Lösche die Bedingung „Lou frisst Hering“. Wie viele Lösungen gibt es jetzt?</li>
+                        <li>Erfinde selbst ein Rätsel mit drei Personen und drei Eigenschaften (z. B. Insel) und lass es lösen. Tausche mit deinem Nachbarn.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 3">
+                        <template data-stufe="Lösung" data-halten><p>a) Lou Hering, also bleiben Krill und Sardine für Pia und Tim. Pia mag keinen Krill → Pia Sardine, Tim Krill (Tim frisst ja keine Sardine). b) Ohne die letzte Bedingung gibt es 3 Lösungen. Ein Rätsel ist gut gestellt, wenn genau eine Lösung bleibt.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-w2-anfragen.pdf">📝 Blatt W2 · Aufgabe 3</a></p>
+                </div>
+            </section>
+
+            <section id="festhalten" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Beschreiben statt programmieren<small>Festhalten</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Deklarativ und imperativ</h4>
+                        <ul>
+                            <li>In Java schreibst du auf, <strong>wie</strong> eine Lösung berechnet wird: Schritt für Schritt (imperativ).</li>
+                            <li>In einer Wissensbasis beschreibst du, <strong>was</strong> gilt (deklarativ). Den Lösungsweg sucht die Inferenzmaschine selbst.</li>
+                            <li>Eine <strong>Anfrage</strong> mit Variablen fragt nach allen Belegungen, die aus der Wissensbasis folgen. Gibt es keine, lautet die Antwort „nein“ (false).</li>
+                            <li>Bei Problemen wie dem Färben von Landkarten oder Logikrätseln beschreibt man die Bedingungen; die Inferenzmaschine probiert systematisch alle Möglichkeiten durch (Suche mit Backtracking).</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="uebergang"><strong>Die Frage für W3:</strong> Wie genau findet die Inferenzmaschine die Antworten? Und warum braucht sie für die Landkarte über 7000 Schritte, obwohl es nur 7 Bezirke sind?</div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="w1-wissensbasis.html">← W1 Wissensbasis</a>
+                <a class="btn btn-primary" href="w3-inferenz.html">W3 Inferenzmaschine →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-w2-anfragen-lsg.pdf">Lösung Blatt W2 (PDF)</a></p>
+                    <p><strong>Einordnung:</strong> eA LB 2: „entwerfen mithilfe eines Softwaresystems Anfragen an eine Wissensbasis (z. B. Landkarten färben, logische Rätsel)“.</p>
+                    <p><strong>Zahlen (geprüft mit dem Interpreter):</strong> Landkarte: 6 Färbungen, 7295 Schritte; mit zwei Farben 0 Lösungen (376 Schritte); Rätsel: genau 1 Lösung (Pia Sardine, Tim Krill, Lou Hering), 84 Schritte, ohne „Lou frisst Hering“ 3 Lösungen. Nachbarschaften der Regierungsbezirke vereinfacht als Schema (11 gemeinsame Grenzen).</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de · <a href="https://edu-mrh.de/impressum.html#lizenz">CC BY-NC-SA 4.0</a> | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

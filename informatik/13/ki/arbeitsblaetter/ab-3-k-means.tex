@@ -1,0 +1,112 @@
+\documentclass[11pt]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{3}{k-Means: Ordnung ohne Lehrer}
+
+\begin{aufgabe}[k-Means von Hand, $k=3$]{1}
+\begin{minipage}[t]{0.6\linewidth}\vspace{0pt}
+\begin{tikzpicture}[x=5mm,y=5mm]
+  \draw[karo] (0,0) grid (19,19);
+  \draw[-{Stealth[length=2mm]},line width=0.6pt] (0,0) -- (19.6,0) node[below left,font=\footnotesize]{$x$};
+  \draw[-{Stealth[length=2mm]},line width=0.6pt] (0,0) -- (0,19.6) node[below left,font=\footnotesize]{$y$};
+  \foreach \v in {1,...,9}{\node[font=\tiny,below] at (2*\v,0) {\v}; \node[font=\tiny,left] at (0,2*\v) {\v};}
+  \foreach \n/\x/\y in {A/1/2,B/2/1,C/2/3,D/3/2,E/7/8,F/8/7,G/8/9,H/9/8,I/6/2,J/8/1,K/9/3,L/5/6}{
+    \fill (2*\x,2*\y) circle (2.4pt); \node[font=\scriptsize,above right,inner sep=1pt] at (2*\x,2*\y) {\n};}
+  \ifloesung
+    \begin{scope}[red!75!black,line width=0.9pt]
+      \foreach \x/\y/\t in {2/3/1,9/8/2,8/1/3}{\draw (2*\x-0.5,2*\y-0.5) -- (2*\x+0.5,2*\y+0.5) (2*\x-0.5,2*\y+0.5) -- (2*\x+0.5,2*\y-0.5);}
+      \draw[dashed,-{Stealth}] (4,6) -- (5.2,5.6); \draw[dashed,-{Stealth}] (5.2,5.6) -- (4,4);
+      \draw[dashed,-{Stealth}] (18,16) -- (16,16); \draw[dashed,-{Stealth}] (16,16) -- (14.8,15.2);
+      \draw[dashed,-{Stealth}] (16,2) -- (15.33,4);
+      \foreach \x/\y in {4/4,14.8/15.2,15.33/4}{\draw[line width=1.3pt] (\x-0.55,\y-0.55) -- (\x+0.55,\y+0.55) (\x-0.55,\y+0.55) -- (\x+0.55,\y-0.55);}
+    \end{scope}
+  \fi
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.38\linewidth}\vspace{0pt}
+Startzentren: Z1 = C(2\,\textbar\,3), Z2 = H(9\,\textbar\,8), Z3 = J(8\,\textbar\,1).\par\vspace{1mm}
+\nr{1}~Jeder Punkt geht zum nächsten Zentrum.\\
+\nr{2}~Jedes Zentrum wandert in die Mitte seiner Punkte.\\
+\nr{3}~Wiederholen, bis sich nichts mehr ändert.\par\vspace{1.5mm}
+Zeichne die Zentren als Kreuz ein und ihre Wege als Pfeile.\par\vspace{1.5mm}
+Nur bei L ist es knapp. Berechne im 2.~Durchgang die Abstände von L zu Z1 und Z2:
+\begin{lueckentext}
+$d(L,Z1) = $ \lsg[4.2cm]{$\sqrt{2{,}4^2+3{,}2^2}=4$}\\
+$d(L,Z2) = $ \lsg[4.2cm]{$\sqrt{3^2+2^2}\approx 3{,}61$}\\
+L gehört dann zu \lsg[2.25cm]{Z2}.
+\end{lueckentext}
+\end{minipage}\par\vspace{2mm}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|c|X|X|X|p{4.7cm}|}\hline
+\textbf{Durchgang} & \textbf{Punkte bei Z1} & \textbf{Punkte bei Z2} & \textbf{Punkte bei Z3} & \textbf{neue Zentren (\nr{2})} \\\hline
+1\schreibzeilen{2} & \lsgklein{A, B, C, D, L} & \lsgklein{E, F, G, H} & \lsgklein{I, J, K} & \lsgklein{Z1(2,6\,|\,2,8), Z2(8\,|\,8),\\ Z3(7,67\,|\,2)} \\\hline
+2\schreibzeilen{2} & \lsgklein{A, B, C, D} & \lsgklein{E, F, G, H, L} & \lsgklein{I, J, K} & \lsgklein{Z1(2\,|\,2), Z2(7,4\,|\,7,6),\\ Z3(7,67\,|\,2)} \\\hline
+3\schreibzeilen{1} & \lsgklein{A, B, C, D} & \lsgklein{E, F, G, H, L} & \lsgklein{I, J, K} & \lsgklein{keine Änderung: fertig} \\\hline
+\end{tabularx}
+\end{aufgabe}
+
+\begin{aufgabe}[Der Algorithmus (Website: Festhalten)]{2}
+\begin{lueckentext}
+k-Means ist ein Verfahren des \lsg[5.25cm]{unüberwachten} Lernens: Die Punkte haben keine \lsg[5.25cm]{Etiketten (Klassen)}. Vorgegeben wird nur die Zahl \lsg[2.25cm]{$k$} der Cluster. \nr{1}~Jeder Punkt wird dem Zentrum mit dem kleinsten \lsg[4.5cm]{Abstand} zugeordnet. \nr{2}~Jedes Zentrum wird auf den \lsg[5.25cm]{Mittelwert} seiner Punkte gesetzt. \nr{3}~Beides wird wiederholt, bis sich \lsgrest{beim Zuordnen nichts mehr ändert.}
+Die Streuung (Summe der quadrierten Abstände zum eigenen Zentrum) wird dabei nie \lsg[4.5cm]{größer}.
+\end{lueckentext}
+\end{aufgabe}
+
+\newpage
+\begin{aufgabe}[Selbst bauen (Online-IDE, TODO 3b und 3d)]{3}
+Ergänze die Lücken in den Kernzeilen von \code{zuordnen()} und \code{lauf()}.
+\begin{javaluecke}
+for (int i = 0; i < punkte.length; i++) {                    // (*\nr{1}*) zuordnen()
+   int bester = 0;  double kleinster = abstand(punkte[i].getWerte(), zentren[0]);
+   for (int c = 1; c < k; c++) {
+      double d = abstand(punkte[i].getWerte(), (*\lsg[2.8cm]{zentren[c]}*));
+      if ((*\lsg[3.6cm]{d < kleinster}*)) { kleinster = d;  bester = c; }
+   }
+   if (punkte[i].getCluster() != bester) { (*\lsg[5.2cm]{punkte[i].setCluster(bester);}*) geaendert = true; }
+}
+while ((*\lsg[2.8cm]{zuordnen()}*)) { (*\lsg[4.4cm]{zentrenVerschieben();}*) durchgaenge++; }     // (*\nr{3}*) lauf()
+\end{javaluecke}
+\end{aufgabe}
+
+\begin{aufgabe}[Startpunkte (Online-IDE)]{4}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|p{2.8cm}|p{1.9cm}|p{1.9cm}|X|}\hline
+\textbf{Start} & \textbf{Durchg.} & \textbf{Streuung} & \textbf{Was fällt auf?} \\\hline
+\{0, 200, 300\}\schreibzeilen{2} & \lsgklein{3} & \lsgklein{13,55} & \lsgklein{Esels fast perfekt in einem Cluster; Adélie und Zügel nur teilweise getrennt (11 Adélie bei den Zügeln).} \\\hline
+\{150, 160, 170\}\schreibzeilen{2} & \lsgklein{5} & \lsgklein{18,41} & \lsgklein{Esels auf zwei Cluster geteilt, Adélie und Zügel zusammen: schlechtere Lösung (lokales Minimum).} \\\hline
+\end{tabularx}\par\vspace{1mm}
+Wie kann man vermeiden, dass k-Means in einer schlechten Lösung hängen bleibt?
+\lsglinien{1}{Mehrmals mit verschiedenen Starts rechnen, das Ergebnis mit der kleinsten Streuung nehmen.}
+\end{aufgabe}
+
+\begin{aufgabe}[Wie viele Cluster? Der Ellbogen (Online-IDE, TODO 5)]{5}
+\begin{minipage}[t]{0.5\linewidth}\vspace{0pt}
+\begin{tikzpicture}[x=5mm,y=5mm]
+  \draw[karo] (0,0) grid (14,10);
+  \draw[-{Stealth[length=2mm]},line width=0.6pt] (0,0) -- (14.6,0) node[below left,font=\footnotesize]{$k$};
+  \draw[-{Stealth[length=2mm]},line width=0.6pt] (0,0) -- (0,10.6) node[right,font=\footnotesize]{Streuung};
+  \foreach \v in {1,...,6}{\node[font=\tiny,below] at (2*\v,0) {\v};}
+  \foreach \v in {10,20,...,50}{\node[font=\tiny,left] at (0,\v/5.5) {\v};}
+  \ifloesung
+    \draw[red!75!black,line width=0.9pt] (2,9.39) -- (4,3.81) -- (6,2.46) -- (8,2.01) -- (10,1.59) -- (12,1.36);
+    \foreach \x/\y in {2/9.39,4/3.81,6/2.46,8/2.01,10/1.59,12/1.36}{\fill[red!75!black] (\x,\y) circle (2.2pt);}
+  \fi
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.47\linewidth}\vspace{0pt}
+Trage die Streuung für $k = 1$ bis 6 ein und verbinde die Punkte.
+\begin{lueckentext}
+Der Knick liegt bei $k = $ \lsg[2.25cm]{3}.
+Begründung: \lsgrest{Danach bringt jedes}
+\lsgrest{weitere Cluster nur noch wenig.}
+\end{lueckentext}
+Warum ist das $k$ mit der kleinsten Streuung nicht das beste?
+\lsglinien{2}{Sie sinkt mit jedem Cluster; bei k = 342 wäre sie 0 (jeder Pinguin allein): nutzlos.}
+\end{minipage}
+\end{aufgabe}
+
+\begin{aufgabe}[Grenzen (Website)]{6}
+Bei den „zwei Monden“ und beim „Ring um Kern“ findet k-Means nicht die Gruppen, die ein Mensch sieht. Erkläre mit der Lage der Grenze zwischen zwei Zentren.
+\lsglinien{2}{Die Grenze zwischen zwei Zentren ist eine Gerade (Mittelsenkrechte). Gebogene oder ineinanderliegende Gruppen trennt sie nicht; k-Means passt zu runden Gruppen.}
+\end{aufgabe}
+\end{document}

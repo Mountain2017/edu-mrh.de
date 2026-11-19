@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6 Trainieren und seine Grenzen | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Künstliche Intelligenz, Informatik 13: Trainings- und Testdaten, Überanpassung und Unteranpassung, Rauschen; warum sich ein Netz aus Perzeptronen mit Stufenfunktion nicht trainieren lässt: Wer ist schuld am Fehler, und in welche Richtung soll ein Gewicht sich ändern?">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="ki.css">
+    <script defer src="ki.js"></script>
+    <script defer src="ki-daten.js"></script>
+    <script defer src="perzeptron.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🤖</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="ki.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 6</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#einstieg">🔮 Kann das Netz selbst lernen?</a></li>
+            <li><a href="#testdaten">🧪 Trainings- und Testdaten</a></li>
+            <li><a href="#festhalten">📝 Verallgemeinern</a></li>
+            <li><a href="#schuld">🕵️ Wer ist schuld?</a></li>
+            <li><a href="#folgerung">💡 Was wir brauchen</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Künstliche Intelligenz</div>
+            <ul class="sidebar-menu">
+                <li><a href="ki.html">Übersicht</a></li>
+                <li><a href="1-lernarten.html">1 Wie lernen Maschinen?</a></li>
+                <li><a href="2-merkmalsraum.html">2 Merkmalsraum und k-NN</a></li>
+                <li><a href="3-k-means.html">3 k-Means</a></li>
+                <li><a href="4-perzeptron.html">4 Das Perzeptron</a></li>
+                <li><a href="5-schichten.html">5 Perzeptronen zusammenschalten</a></li>
+                <li><a href="6-trainieren.html">6 Trainieren und Grenzen</a></li>
+                <li><a href="7-neuronales-netz.html">7 Das neuronale Netz</a></li>
+                <li><a href="8-experimente.html">8 Experimente</a></li>
+                <li><a href="9-architekturen.html">9 CNN und Transformer</a></li>
+                <li><a href="10-ethik.html">10 Ethik</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero ki-hero">
+                <h1 class="hero-title">6 Trainieren und seine Grenzen</h1>
+                <p class="hero-subtitle">Künstliche Intelligenz · Informatik 13 · <span class="niveau-tag beide">gA + eA</span> · 1 Stunde</p>
+                <span class="ki-kompetenz">Du kannst: zwischen Trainings- und Testdaten unterscheiden, Über- und Unteranpassung erkennen und erklären, warum sich ein Netz mit Stufenfunktion nicht mit der Delta-Lernregel trainieren lässt.</span>
+                <div class="ki-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-6-trainieren.pdf">📝 Arbeitsblatt 6 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-6-trainieren.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#einstieg">🔮 Vorhersage</a><a class="p-investigate" href="#testdaten">🧪 Testdaten</a><a class="p-note" href="#festhalten">📝 Festhalten</a><a class="p-modify" href="#schuld">🕵️ Wer ist schuld?</a><a class="p-idee" href="#folgerung">💡 Folgerung</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="einstieg" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔮</span><h2>Kann das Netz selbst lernen?<small>Aufgabe 1: Delta-Regel für ein ganzes Netz</small></h2></div>
+                <div class="phase-body">
+                    <p>Ein einzelnes Perzeptron lernt mit der Delta-Lernregel: Δw<sub>i</sub> = η · (Ziel − Ausgabe) · x<sub>i</sub>. Im Weide-Netz aus Station 5 sitzen aber vier Perzeptronen: drei Zäune h<sub>1</sub>, h<sub>2</sub>, h<sub>3</sub> und das UND-Neuron. Ein Schaf wird falsch eingeordnet.</p>
+                    <div class="vorhersage" data-vorhersage="delta" data-wahl="ja:Ja, jedes Neuron wendet die Delta-Regel an.|aus:Nur das Ausgabeneuron kann lernen.|nein:Gar keines kann lernen.">
+                        <h4>Kann man die Delta-Regel einfach auf alle vier Neuronen anwenden?</h4>
+                    </div>
+                    <div class="lw" data-loesungsweg="Aufgabe 1">
+                        <template data-stufe="Tipp"><p>Was braucht die Delta-Regel? Das <em>Ziel</em> des Neurons. Wer kennt das Ziel von h<sub>2</sub>?</p></template>
+                        <template data-stufe="Lösung" data-halten><p>Nur für das Ausgabeneuron ist das Ziel bekannt (das Etikett: innen oder außen). Für die verdeckten Neuronen gibt es kein Ziel, niemand hat in die Trainingsdaten geschrieben, auf welcher Seite des linken Zauns ein Schaf liegen „soll“. Die Delta-Regel lässt sich auf sie nicht anwenden. Genau daran scheiterte die KI-Forschung in den 1960er-Jahren.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-6-trainieren.pdf">📝 Blatt 6 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="testdaten" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🧪</span><h2>Trainings- und Testdaten<small>Aufgabe 2: Wann hat ein Modell gut gelernt?</small></h2></div>
+                <div class="phase-body">
+                    <p>Bevor wir das Problem lösen, eine zweite Frage: Woran erkennt man überhaupt, ob ein Modell gut gelernt hat? Hier dient k-NN als Modell, gelernt wird aus 98 <strong>Trainingsdaten</strong>; 42 <strong>Testdaten</strong> (hohl) bleiben beim Lernen außen vor. Bei 10 % der Punkte ist die Klasse absichtlich falsch („Rauschen“, wie Messfehler oder falsch gesetzte Etiketten).</p>
+                    <div data-training></div>
+                    <ol class="aufgaben">
+                        <li>Stelle k = 1 ein. Warum sind auf den Trainingsdaten 100 % richtig? Wie gut ist das Modell auf den Testdaten?</li>
+                        <li>Bei welchem k ist das Modell auf den Testdaten am besten? Wie sehen die Grenzen bei k = 1 und bei k = 25 aus?</li>
+                        <li>Stelle das Rauschen auf 0 %. Was ändert sich bei k = 1?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 2">
+                        <template data-stufe="Lösung" data-halten><p>a) Bei k = 1 ist jeder Trainingspunkt sein eigener nächster Nachbar: Das Modell hat die Daten <strong>auswendig gelernt</strong>, auch die falschen Etiketten. Auf den Testdaten nur 79 %. b) Am besten auf den Testdaten bei k = 3 bis 6 (83 %, Training etwa 92 %). Bei k = 1 zerklüftete Grenzen mit Inseln um jeden falschen Punkt, bei k = 25 zu glatte Grenzen, die die Mondform nicht mehr treffen (Test 79 %). c) Ohne Rauschen gibt es nichts Falsches auswendig zu lernen: 100 % auch auf den Testdaten.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-6-trainieren.pdf">📝 Blatt 6 · Aufgabe 2</a></p>
+                </div>
+            </section>
+
+            <section id="festhalten" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Lernen heißt verallgemeinern</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Trainingsdaten, Testdaten, Über- und Unteranpassung</h4>
+                        <ul>
+                            <li>Mit den <strong>Trainingsdaten</strong> wird ein Modell gelernt. Ob es gut ist, zeigt sich erst an <strong>Testdaten</strong>, die es beim Lernen nie gesehen hat.</li>
+                            <li><strong>Überanpassung</strong> (overfitting): Das Modell passt sich den Trainingsdaten zu genau an, auch ihren Zufällen und Fehlern. Sehr gut auf den Trainingsdaten, schlechter auf neuen Daten.</li>
+                            <li><strong>Unteranpassung</strong> (underfitting): Das Modell ist zu grob für die Struktur der Daten. Schlecht auf beiden.</li>
+                            <li>Gut ist ein Modell, das <strong>verallgemeinert</strong>: auf neuen Daten ähnlich gut wie auf den Trainingsdaten.</li>
+                        </ul>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-6-trainieren.pdf">📝 Blatt 6 · Aufgabe 3</a></p>
+                </div>
+            </section>
+
+            <section id="schuld" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">🕵️</span><h2>Wer ist schuld, und in welche Richtung?<small>Aufgabe 4: das Wackel-Experiment</small></h2></div>
+                <div class="phase-body">
+                    <p>Zurück zum Weide-Netz. Der untere Zaun h<sub>1</sub> steht zu hoch, 6 Schafe werden falsch eingeordnet. Stell dir vor, du bist der Lernalgorithmus und weißt nicht, welcher Zaun falsch steht. Eine Idee: Jedes Gewicht ein kleines bisschen verändern („wackeln“) und schauen, ob der Fehler kleiner wird.</p>
+                    <div data-schuld></div>
+                    <ol class="aufgaben">
+                        <li>Wackle am Bias w<sub>0</sub> von h<sub>1</sub> nur ganz wenig (Pfeiltasten am Regler). Wie verändert sich die Zahl der Fehler? Skizziere die Fehlerkurve auf dem Blatt.</li>
+                        <li>Schalte die <strong>weiche Stufe</strong> ein. Statt „richtig oder falsch“ wird jetzt der mittlere quadratische Fehler gemessen (die <strong>Kosten</strong>). Wie sieht die Kurve jetzt aus? Was verrät sie an jeder Stelle?</li>
+                        <li>Wähle ein anderes Gewicht. Gibt es Gewichte, an denen sich (fast) nichts ändert? Was heißt das?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 4">
+                        <template data-stufe="Tipp"><p>Achte auf die Meldung unter dem Regler: „Änderung, wenn das Gewicht um 0,1 wächst“.</p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) Mit der Stufe ist die Fehlerkurve eine <strong>Treppe</strong>: Meist ändert ein kleines Wackeln gar nichts (flach), und manchmal springt der Fehler, wenn ein Schaf die Seite wechselt. Aus „nichts ändert sich“ lernt man nicht, in welche Richtung man drehen soll. b) Mit der weichen Stufe (Sigmoid) ist die Kurve <strong>glatt</strong> und hat an jeder Stelle eine Steigung. Sie zeigt: Gewicht vergrößern macht die Kosten kleiner, also bergab gehen. c) Gewichte, die kaum Einfluss haben (z. B. das von h<sub>1</sub> zu x<sub>1</sub>, das 0 ist und den Zaun nur kippt), sind „weniger schuld“: Die Steigung misst, wie stark ein Gewicht am Fehler beteiligt ist.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-6-trainieren.pdf">📝 Blatt 6 · Aufgabe 4</a></p>
+                </div>
+            </section>
+
+            <section id="folgerung" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Was wir brauchen<small>Aufgabe 5: drei Folgerungen</small></h2></div>
+                <div class="phase-body">
+                    <p>Sammelt, was ein Lernverfahren für ein ganzes Netz braucht. Die Hinweise sind zum Nachlesen nach dem Gespräch.</p>
+                    <div class="lw lw-kurz" data-loesungsweg="">
+                        <template data-stufe="Hinweis zum Nachlesen" data-halten>
+                            <ol>
+                                <li><strong>Ein Maß für den Fehler</strong>, das nicht nur „richtig/falsch“ zählt, sondern auch „ein bisschen daneben“ erkennt: die <strong>Kostenfunktion</strong>.</li>
+                                <li><strong>Eine Aktivierungsfunktion ohne Sprünge</strong>, damit kleine Änderungen an den Gewichten kleine Änderungen der Ausgabe bewirken: statt der Stufe eine weiche Stufe wie die Sigmoidfunktion.</li>
+                                <li><strong>Eine Richtung für jedes Gewicht</strong>, auch in den verdeckten Schichten: Wie stark und in welche Richtung beeinflusst es die Kosten? Gewicht für Gewicht zu wackeln ist bei Millionen Gewichten viel zu langsam. Die Lösung heißt <strong>Backpropagation</strong> (Station 7).</li>
+                            </ol>
+                        </template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-6-trainieren.pdf">📝 Blatt 6 · Aufgabe 5</a></p>
+                </div>
+            </section>
+
+            <div class="ethik-impuls">
+                <strong>Was hat das Modell eigentlich gelernt?</strong>
+                <p>In einem bekannten Experiment (Ribeiro u. a. 2016) sollte ein Modell Huskys von Wölfen unterscheiden. Die Forschenden wählten die Trainingsbilder absichtlich so, dass auf allen Wolfsbildern Schnee lag. Das Modell lag oft richtig, hatte aber Schnee erkannt, nicht Wölfe. Sichtbar wurde das erst mit einem Verfahren, das zeigt, auf welche Bildteile ein Modell achtet. In echten Daten passiert so etwas unabsichtlich. Erinnert dich das an die Glimme und Zorks aus Station 1? Wie kann man so etwas bemerken, bevor ein System eingesetzt wird?</p>
+            </div>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <div class="uebergang"><strong>Die Frage für Station 7:</strong> Wie misst man den Fehler genau, wie findet man mit der Steigung den Weg bergab, und wie erfährt jedes Gewicht, auch tief in den verdeckten Schichten, seinen Anteil an der Schuld?</div>
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🧠 Das echte neuronale Netz</h4>
+                            <p>Station 7: Sigmoid und ReLU statt Stufe, Kostenfunktion, Gradientenabstieg und Backpropagation, in Python im Browser.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="5-schichten.html">← 5 Perzeptronen zusammenschalten</a>
+                <a class="btn btn-primary" href="7-neuronales-netz.html">7 Das neuronale Netz →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-6-trainieren-lsg.pdf">Lösung Blatt 6 (PDF)</a></p>
+                    <p><strong>Einordnung:</strong> Vorbereitung der Kompetenz „analysieren den Einfluss von Trainingsdaten und Hyperparametern auf den Lernerfolg“ (Station 8) und Wendepunkt zur Fehlerrückführung: Hier entsteht die Frage, die Kostenfunktion, Aktivierungsfunktionen und Backpropagation in Station 7 beantworten. Historisch: Minsky und Papert (1969) zeigten die Grenzen des einschichtigen Perzeptrons; Backpropagation wurde 1986 durch Rumelhart, Hinton und Williams bekannt.</p>
+                    <p><strong>Zahlen (geprüft):</strong> Trainings-Labor mit den „Monden“ (140 Punkte, 98 Training, 42 Test, 10 % vertauschte Etiketten, fester Zufall): k = 1: 100 % / 79 %; k = 3 bis 6: 91–93 % / 83 % (bestes Testergebnis); k = 15: 90 % / 81 %; k = 25: 88 % / 79 %; ohne Rauschen k = 1: 100 % / 100 %. Wackel-Experiment: Weide-Netz mit h<sub>1</sub> bei y = 0,325 (Bias −3,25), 6 von 140 falsch; mit Bias −2 fehlerfrei; Sigmoid-Ausgabe σ(6 · (h<sub>1</sub> + h<sub>2</sub> + h<sub>3</sub> − 2,5)).</p>
+                    <p><strong>Ethik-Impuls:</strong> M. T. Ribeiro, S. Singh, C. Guestrin (2016): „Why Should I Trust You?“ Explaining the Predictions of Any Classifier. Dort wurde der Husky/Wolf-Klassifikator absichtlich mit Schnee als Störmerkmal gebaut, um Erklärverfahren zu testen. Es ist also ein Lehrbeispiel, kein Unfall.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de · <a href="https://edu-mrh.de/impressum.html#lizenz">CC BY-NC-SA 4.0</a> | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

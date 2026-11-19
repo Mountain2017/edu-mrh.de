@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>W3 Die Inferenzmaschine | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Künstliche Intelligenz, Informatik 13, erhöhtes Niveau: die automatisierte Ableitung durch eine Inferenzmaschine untersuchen. Unifikation, Tiefensuche, Backtracking, Ableitungsbaum, Reihenfolge der Ziele, endlose Rekursion und Grenzen wissensbasierter Systeme.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="ki.css">
+    <script defer src="ki.js"></script>
+    <script defer src="wissen.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🤖</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="ki.html?niveau=ea" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station W3 (eA)</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#einstieg">🔮 Wie findet sie das?</a></li>
+            <li><a href="#ableitung">🔍 Ableitung Schritt für Schritt</a></li>
+            <li><a href="#festhalten">📝 Unifikation und Backtracking</a></li>
+            <li><a href="#reihenfolge">⏱️ Die Reihenfolge zählt</a></li>
+            <li><a href="#endlos">♾️ Endlose Rekursion</a></li>
+            <li><a href="#grenzen">🧱 Grenzen</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Teil A · Wissen von Hand (eA)</div>
+            <ul class="sidebar-menu">
+                <li><a href="ki.html?niveau=ea">Übersicht</a></li>
+                <li><a href="w1-wissensbasis.html">W1 Wissensbasis</a></li>
+                <li><a href="w2-anfragen.html">W2 Anfragen</a></li>
+                <li><a href="w3-inferenz.html">W3 Inferenzmaschine</a></li>
+                <li><a href="1-lernarten.html">weiter: 1 Wie lernen Maschinen?</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero ki-hero">
+                <h1 class="hero-title">W3 Die Inferenzmaschine</h1>
+                <p class="hero-subtitle">Künstliche Intelligenz · Informatik 13 · <span class="niveau-tag ea">nur eA</span> · 3 Stunden</p>
+                <span class="ki-kompetenz">Du kannst: die automatisierte Ableitung durch eine Inferenzmaschine untersuchen und beschreiben (Unifikation, Tiefensuche, Backtracking) und Grenzen wissensbasierter Systeme benennen.</span>
+                <div class="ki-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-w3-inferenz.pdf">📝 Arbeitsblatt W3 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-w3-inferenz.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#einstieg">🔮 Vorhersage</a><a class="p-investigate" href="#ableitung">🔍 Ableitung</a><a class="p-note" href="#festhalten">📝 Festhalten</a><a class="p-modify" href="#reihenfolge">⏱️ Reihenfolge</a><a class="p-make" href="#endlos">♾️ Endlos</a><a class="p-idee" href="#grenzen">🧱 Grenzen</a>
+            </div>
+
+            <section id="einstieg" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔮</span><h2>Wie findet sie das?<small>Aufgabe 1: selbst Inferenzmaschine sein</small></h2></div>
+                <div class="phase-body">
+                    <p>Gegeben ist diese Wissensbasis (nummeriert):</p>
+<pre class="py">1  elternteil(oskar, pia).
+2  elternteil(pia, tim).
+3  elternteil(tim, kim).
+4  vorfahre(X, Y) :- elternteil(X, Y).
+5  vorfahre(X, Y) :- elternteil(X, Z), vorfahre(Z, Y).</pre>
+                    <p>Beantworte <code>?- vorfahre(oskar, kim).</code> wie eine Maschine: Welche Klausel probierst du zuerst? Was musst du für X und Y einsetzen? Was ist dann die nächste Frage? Notiere jeden Schritt auf dem Blatt (Aufgabe 1).</p>
+                    <div class="vorhersage" data-vorhersage="w3" data-wahl="4:Klausel 4 klappt sofort.|5:Erst Klausel 4, die scheitert, dann Klausel 5.|beide:Beide gleichzeitig.">
+                        <h4>Was passiert mit dem ersten Ziel vorfahre(oskar, kim)?</h4>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-w3-inferenz.pdf">📝 Blatt W3 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="ableitung" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Ableitung Schritt für Schritt<small>Aufgabe 2: das Protokoll der Inferenzmaschine lesen</small></h2></div>
+                <div class="phase-body">
+                    <div data-nach="w3">
+                        <p>Klicke „Schritt für Schritt“. Bedeutung der Zeichen: <strong>?</strong> neues Ziel, <strong>→</strong> passende Klausel gefunden (mit den Bindungen der Variablen), <strong>✗</strong> passt nicht, <strong>✓</strong> eingebaute Prüfung erfüllt, <strong>↩</strong> zurück zur letzten Wahlmöglichkeit (Backtracking), <strong>★</strong> Antwort. Die Einrückung zeigt die Tiefe im Ableitungsbaum. Variablen einer Klausel bekommen bei jeder Benutzung eine Nummer (X_5), damit sie sich nicht mit anderen vermischen.</p>
+                        <div data-wissen="w3-vorfahre" data-hoehe="8">
+<script type="text/plain" data-art="basis">
+elternteil(oskar, pia).
+elternteil(pia, tim).
+elternteil(tim, kim).
+vorfahre(X, Y) :- elternteil(X, Y).
+vorfahre(X, Y) :- elternteil(X, Z), vorfahre(Z, Y).
+</script>
+<script type="text/plain" data-art="anfragen">
+?- vorfahre(oskar, kim).
+?- vorfahre(V, kim).
+?- vorfahre(pia, oskar).
+</script>
+                        </div>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Vergleiche das Protokoll mit deiner Lösung von Aufgabe 1. Wo musste die Maschine zurückgehen?</li>
+                        <li>Zeichne auf dem Blatt den Ableitungsbaum für <code>?- vorfahre(oskar, kim).</code></li>
+                        <li>Warum antwortet die Maschine bei <code>?- vorfahre(pia, oskar).</code> „nein“? Wie viele Schritte braucht sie dafür?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 2">
+                        <template data-stufe="Lösung" data-halten><p>a) Klausel 4 macht aus vorfahre(oskar, kim) das Ziel elternteil(oskar, kim): kein Fakt passt (✗), also zurück (↩) und Klausel 5. Diese liefert elternteil(oskar, Z) mit Z = pia und dann vorfahre(pia, kim). Dort dasselbe: Klausel 4 scheitert, Klausel 5 führt über Z = tim zu vorfahre(tim, kim), und hier passt Klausel 4 mit Fakt 3: Antwort ja. b) Der Baum: Wurzel vorfahre(oskar, kim); linker Ast (Klausel 4) endet erfolglos bei elternteil(oskar, kim); rechter Ast (Klausel 5) über elternteil(oskar, pia) zu vorfahre(pia, kim), dort wieder links erfolglos, rechts über elternteil(pia, tim) zu vorfahre(tim, kim), links Erfolg über elternteil(tim, kim). c) Die Maschine sucht in 9 Schritten vergeblich alle Wege von Pia „abwärts“ ab (Tim, Kim) und findet nirgends Oskar. Was nicht ableitbar ist, gilt als falsch.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-w3-inferenz.pdf">📝 Blatt W3 · Aufgabe 2</a></p>
+                </div>
+            </section>
+
+            <section id="festhalten" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>So arbeitet die Inferenzmaschine</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Automatisierte Ableitung</h4>
+                        <ol>
+                            <li>Die Anfrage ist eine Liste von <strong>Zielen</strong>. Die Maschine bearbeitet immer das erste Ziel.</li>
+                            <li>Sie sucht in der Wissensbasis <strong>von oben nach unten</strong> eine Klausel, deren Kopf zum Ziel passt. „Passen“ heißt <strong>Unifikation</strong>: Variablen werden so belegt, dass Ziel und Kopf gleich werden (vorfahre(oskar, kim) und vorfahre(X, Y) mit X = oskar, Y = kim). Gleiche Namen müssen gleich sein, verschiedene Namen passen nie.</li>
+                            <li>Ein passender <strong>Fakt</strong> erfüllt das Ziel. Bei einer passenden <strong>Regel</strong> wird das Ziel durch den Rumpf ersetzt (mit den Belegungen); die neuen Ziele werden <strong>von links nach rechts</strong> bearbeitet.</li>
+                            <li>Scheitert ein Ziel, geht die Maschine zur letzten Stelle zurück, an der es noch eine andere Klausel gab: <strong>Backtracking</strong>. So durchsucht sie den Ableitungsbaum der Tiefe nach (<strong>Tiefensuche</strong>).</li>
+                            <li>Ist die Zielliste leer, ist eine <strong>Antwort</strong> gefunden. Sind alle Möglichkeiten erschöpft, lautet die Antwort „nein“.</li>
+                        </ol>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-w3-inferenz.pdf">📝 Blatt W3 · Aufgabe 3</a></p>
+                </div>
+            </section>
+
+            <section id="reihenfolge" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">⏱️</span><h2>Die Reihenfolge zählt<small>Aufgabe 4: die Landkarte schneller färben</small></h2></div>
+                <div class="phase-body">
+                    <p>In W2 hat die Inferenzmaschine für die Landkarte 7295 Schritte gebraucht. In der Regel stehen zuerst alle sieben <code>farbe(…)</code>-Ziele und erst danach die Prüfungen. Die Maschine wählt also für alle sieben Bezirke eine Farbe, bevor sie zum ersten Mal prüft, ob zwei Nachbarn gleich sind.</p>
+                    <div data-wissen="w3-karte" data-hoehe="12">
+<script type="text/plain" data-art="basis">
+farbe(rot). farbe(gruen). farbe(blau).
+
+% wie in W2: erst alle Farben wählen, dann prüfen
+spaet(OB, NB, OPF, OFR, MFR, UFR, SCHW) :-
+    farbe(OB), farbe(NB), farbe(OPF), farbe(OFR), farbe(MFR), farbe(UFR), farbe(SCHW),
+    OB \= NB, OB \= OPF, OB \= MFR, OB \= SCHW, NB \= OPF, OPF \= OFR, OPF \= MFR,
+    OFR \= MFR, OFR \= UFR, MFR \= UFR, MFR \= SCHW.
+
+% Aufgabe 4b: frueh(...) mit denselben Zielen in besserer Reihenfolge
+</script>
+<script type="text/plain" data-art="anfragen">
+?- spaet(OB, NB, OPF, OFR, MFR, UFR, SCHW).
+?- frueh(OB, NB, OPF, OFR, MFR, UFR, SCHW).
+</script>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Wie viele Schritte braucht <code>spaet</code>? Lass dir die Ableitung zeigen: Wo verschwendet die Maschine Arbeit?</li>
+                        <li>Schreibe <code>frueh</code>: dieselben Ziele, aber jede Prüfung so früh wie möglich, direkt nachdem beide Farben gewählt sind. Vergleiche die Schrittzahl.</li>
+                        <li>Ändert sich die Antwort? Was folgt daraus für „deklaratives Programmieren“?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 4">
+                        <template data-stufe="Tipp"><p>Beginne mit <code>farbe(OB), farbe(NB), OB \= NB, farbe(OPF), OB \= OPF, NB \= OPF, …</code></p></template>
+                        <template data-stufe="Lösung" data-halten><p>a) 7295 Schritte. Ist z. B. schon OB = NB gewählt, probiert die Maschine trotzdem alle 3<sup>5</sup> = 243 Färbungen der übrigen fünf Bezirke durch, bevor die erste Prüfung scheitert. b) <code>frueh(OB, NB, OPF, OFR, MFR, UFR, SCHW) :- farbe(OB), farbe(NB), OB \= NB, farbe(OPF), OB \= OPF, NB \= OPF, farbe(OFR), OPF \= OFR, farbe(MFR), OB \= MFR, OPF \= MFR, OFR \= MFR, farbe(UFR), OFR \= UFR, MFR \= UFR, farbe(SCHW), OB \= SCHW, MFR \= SCHW.</code> braucht nur 230 Schritte, also etwa ein Dreißigstel. c) Die Antworten bleiben gleich (6 Färbungen). Logisch ist die Reihenfolge egal, für die Rechenzeit nicht: Wer deklarativ programmiert, muss trotzdem wissen, wie die Inferenzmaschine sucht.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-w3-inferenz.pdf">📝 Blatt W3 · Aufgabe 4</a></p>
+                </div>
+            </section>
+
+            <section id="endlos" class="phase make">
+                <div class="phase-head"><span class="phase-icon">♾️</span><h2>Endlose Rekursion<small>Aufgabe 5: logisch richtig, trotzdem kein Ergebnis</small></h2></div>
+                <div class="phase-body">
+                    <p>Diese Wissensbasis ist logisch genauso richtig wie die aus Aufgabe 2. Nur die Ziele in Regel 5 sind vertauscht.</p>
+                    <div data-wissen="w3-endlos" data-hoehe="8">
+<script type="text/plain" data-art="basis">
+elternteil(oskar, pia).
+elternteil(pia, tim).
+elternteil(tim, kim).
+vorfahre(X, Y) :- elternteil(X, Y).
+vorfahre(X, Y) :- vorfahre(Z, Y), elternteil(X, Z).
+</script>
+<script type="text/plain" data-art="anfragen">
+?- vorfahre(oskar, kim).
+?- vorfahre(V, kim).
+</script>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Stelle beide Anfragen. Was passiert? Lass dir die Ableitung zeigen und erkläre, warum die Maschine nicht fertig wird.</li>
+                        <li>Wie muss man rekursive Regeln schreiben, damit die Inferenzmaschine sicher endet? Vergleiche mit rekursiven Methoden in Java.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 5">
+                        <template data-stufe="Lösung" data-halten><p>a) Beide Anfragen liefern zuerst die richtigen Antworten (ja bzw. Tim, Pia, Oskar), aber danach wird die Maschine nicht fertig und bricht bei Tiefe 400 ab (etwa 2000 Schritte statt 12). Grund: Sobald Klausel 4 nichts mehr liefert, ruft Klausel 5 als <em>erstes</em> Ziel wieder <code>vorfahre(Z, kim)</code> auf, also dieselbe Art von Frage, nur mit neuer Variable. Das Problem wird nie kleiner, die Suche nach „weiteren Antworten“ endet nie. b) Vor dem rekursiven Aufruf muss ein Ziel stehen, das das Problem verkleinert (hier: erst einen Schritt <code>elternteil</code> gehen), und der Abbruchfall steht vor der Rekursion. Genau wie in Java: erst Abbruchbedingung, dann Aufruf mit einem kleineren Problem.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-w3-inferenz.pdf">📝 Blatt W3 · Aufgabe 5</a></p>
+                </div>
+            </section>
+
+            <section id="grenzen" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">🧱</span><h2>Grenzen wissensbasierter Systeme<small>Aufgabe 6: Wann reicht Wissen von Hand nicht?</small></h2></div>
+                <div class="phase-body">
+                    <p>Versuche, eine Wissensbasis für diese Aufgabe zu schreiben: „Ist auf einem Foto (8 × 8 Pixel) eine handgeschriebene 7 zu sehen?“ Welche Fakten und Regeln bräuchtest du?</p>
+                    <div class="lw" data-loesungsweg="Aufgabe 6">
+                        <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Niemand kann die Regeln für „sieht aus wie eine 7“ vollständig aufschreiben: Jede Handschrift ist anders, Striche sind schräg, dick, unterbrochen. Wissensbasierte Systeme sind stark, wo Wissen klar formulierbar und das System abgeschlossen ist (Stammbaum, Fahrplan, Steuerrecht, Diagnoseregeln), und schwach bei Wahrnehmung, Unschärfe und Wissen, das niemand ausdrücklich kennt. Außerdem ist es mühsam, Expertenwissen in Regeln zu fassen (Wissenserwerb). Ab Station 1 lernen Maschinen deshalb aus <strong>Beispielen</strong>, statt Regeln zu bekommen. Dafür sind gelernte Modelle oft schwer zu erklären, was bei einer Wissensbasis leicht ist. Heute verbindet man beides, z. B. Sprachmodelle, die Fakten in einer Wissensdatenbank nachschlagen.</p></template>
+                    </div>
+                    <div class="uebergang"><strong>Weiter mit Station 1:</strong> Wenn man die Regeln nicht aufschreiben kann: Wie kann eine Maschine sie aus Beispielen selbst finden?</div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-w3-inferenz.pdf">📝 Blatt W3 · Aufgabe 6</a></p>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="w2-anfragen.html">← W2 Anfragen</a>
+                <a class="btn btn-primary" href="1-lernarten.html">1 Wie lernen Maschinen? →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-w3-inferenz-lsg.pdf">Lösung Blatt W3 (PDF)</a></p>
+                    <p><strong>Einordnung:</strong> eA LB 2: „untersuchen und beschreiben die automatisierte Ableitung durch eine Inferenzmaschine“. Unifikation und Backtracking werden am Protokoll beschrieben, nicht formal definiert. Der Ableitungsbaum (Suchbaum) wird von Hand gezeichnet.</p>
+                    <p><strong>Zahlen (geprüft):</strong> <code>?- vorfahre(oskar, pip).</code> in W1: 15 Schritte; Landkarte spät 7295, früh 230 Schritte (beide 6 Antworten); Fassung mit vertauschten Zielen: liefert die Antworten, bricht dann bei Tiefe 400 ab (1984 Schritte); richtige Fassung 12 Schritte, <code>vorfahre(pia, oskar)</code> 9 Schritte. Der Interpreter zählt jeden Zielaufruf als Schritt.</p>
+                    <p><strong>Stundenvorschlag:</strong> 1. Stunde: selbst Inferenzmaschine sein, Protokoll, Ableitungsbaum. 2. Stunde: Festhalten, Reihenfolge. 3. Stunde: endlose Rekursion, Grenzen, Übergang zum maschinellen Lernen (Station 1).</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de · <a href="https://edu-mrh.de/impressum.html#lizenz">CC BY-NC-SA 4.0</a> | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>
