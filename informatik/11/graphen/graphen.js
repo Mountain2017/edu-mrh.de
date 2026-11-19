@@ -358,19 +358,19 @@
     }
 
     // ------------------------------------------------------------------
-    // Breitensuche Schritt für Schritt (3.3): Feuerwerks-Graph von Blatt 3.3
+    // Breitensuche Schritt für Schritt (3.3): Nachrichtenketten-Graph von Blatt 3.3
     // Ablauf wie im Java-Projekt: holen, markieren, ausgeben, Nachbarn anstellen
     // ------------------------------------------------------------------
-    var FEUERWERK = {
+    var NACHRICHT = {
         knoten: {
-            A: { x: 330, y: 150 }, B: { x: 470, y: 70 }, C: { x: 220, y: 70 }, D: { x: 530, y: 190 },
-            E: { x: 250, y: 250 }, F: { x: 120, y: 150 }, G: { x: 370, y: 330 }, H: { x: 130, y: 330 },
-            I: { x: 30, y: 90 }, J: { x: 250, y: 400 }
+            A: { x: 62, y: 230 }, C: { x: 197, y: 80 }, F: { x: 208, y: 230 }, H: { x: 186, y: 380 },
+            B: { x: 354, y: 50 }, D: { x: 365, y: 150 }, G: { x: 365, y: 290 }, J: { x: 331, y: 405 },
+            E: { x: 488, y: 346 }, I: { x: 544, y: 188 }
         },
         kanten: [
-            { a: 'A', b: 'B' }, { a: 'A', b: 'C' }, { a: 'A', b: 'D' }, { a: 'A', b: 'E' }, { a: 'B', b: 'D' },
-            { a: 'C', b: 'F' }, { a: 'E', b: 'F' }, { a: 'E', b: 'H' }, { a: 'E', b: 'G' }, { a: 'F', b: 'I' },
-            { a: 'H', b: 'J' }, { a: 'G', b: 'J' }
+            { a: 'A', b: 'C' }, { a: 'A', b: 'F' }, { a: 'A', b: 'H' }, { a: 'C', b: 'B' }, { a: 'C', b: 'D' },
+            { a: 'F', b: 'D' }, { a: 'F', b: 'G' }, { a: 'H', b: 'G' }, { a: 'H', b: 'J' }, { a: 'B', b: 'D' },
+            { a: 'G', b: 'E' }, { a: 'J', b: 'E' }, { a: 'E', b: 'I' }
         ]
     };
 
@@ -389,7 +389,7 @@
         var text = box.querySelector('.bfs-text');
         var zustand;
 
-        Object.keys(FEUERWERK.knoten).sort().forEach(function (k) {
+        Object.keys(NACHRICHT.knoten).sort().forEach(function (k) {
             var o = document.createElement('option');
             o.value = o.textContent = k;
             auswahl.appendChild(o);
@@ -400,7 +400,7 @@
             zustand.warteschlange.forEach(function (k) { klassen[k] = 'wartend'; });
             zustand.besucht.forEach(function (k) { klassen[k] = 'besucht'; });
             if (zustand.aktuell) klassen[zustand.aktuell] = 'aktuell';
-            zeichne(svg, FEUERWERK, { form: 'kreis', radius: 22, klassen: klassen, hlKanten: zustand.baum });
+            zeichne(svg, NACHRICHT, { form: 'kreis', radius: 22, klassen: klassen, hlKanten: zustand.baum });
             text.innerHTML = '<p>' + meldung + '</p>' +
                 '<p><strong>Warteschlange:</strong> ' + (zustand.warteschlange.join(' ') || '(leer)') + '</p>' +
                 '<p><strong>Reihenfolge:</strong> ' + (zustand.besucht.join(' ') || '–') + '</p>';
@@ -421,7 +421,7 @@
             zustand.besucht.push(akt);
             zustand.schritt++;
             var neuDazu = [];
-            nachbarn(FEUERWERK, akt).forEach(function (n) {
+            nachbarn(NACHRICHT, akt).forEach(function (n) {
                 if (zustand.besucht.indexOf(n) === -1 && zustand.warteschlange.indexOf(n) === -1) {
                     zustand.warteschlange.push(n);
                     zustand.baum.push([akt, n]);
