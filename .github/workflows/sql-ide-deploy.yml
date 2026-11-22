@@ -16,6 +16,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Kaputte @types/sql.js 1.16.0 umgehen
+        run: |
+          # @types/sql.js 1.16.0 (19.11.2026) macht useOldExtensionFunctions fälschlich zur Pflicht
+          sed -i 's|"@types/sql.js": *"[^"]*"|"@types/sql.js": "1.4.11"|' package.json
+          grep '"@types/sql.js"' package.json
       - run: npm install
       - run: npm run build-embedded
       - name: Patch base URL in includeIDE.js
