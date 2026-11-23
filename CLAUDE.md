@@ -469,7 +469,7 @@ Kopf, Lösungen als Hash in `data-loesung`, Hash-Werkzeug im Lehrkräfte-Bereich
 13 `questions-on-the-text/` (→ AB, eigene Vorlage; verschlüsselter Online-Check
 `checks/check-1-questions-on-the-text.html`, unverlinkt), 13 `us-midterms/` (Selbstlernseite
 US-System + Midterms 2026, Stand der Zahlen 9.11.2026 in `us-midterms.js`: `SEATS`, `HISTORY`, `QSEATS`;
-Spiele-Station `#play`: Branch Blitz, Who's who, Nachfolge, Bill Quest, Rollenspiel Gridlock); W-Seminar „Time“ (12/13) in
+Spiele-Station `#play`: Branch Blitz, Who's who, Nachfolge, Bill Quest, Rollenspiel Gridlock), 13 `ireland/` (Selbstlernsequenz ca. 90 min, ohne Arbeitsblatt: Geschichte Irlands in „Moments“ (Kap. 1–6), Ursachenketten „Trace it back“, Identitäten (6 Personas), Schreibwerkstatt Speech/Article mit „assess“, historische oder moderne Stimme; Bilder nur als Links auf Wikipedia (Stand 11/2026 geprüft); Logik `ireland.js`, Speicher `localStorage 'irl13:'`); W-Seminar „Time“ (12/13) in
 `englisch/w-seminar-time/` (Kursplan siehe eigener Abschnitt: `w-seminar-time.html`,
 `research-question.html`, `research-methods.html`, Viable data `data-design.html`,
 `data-refine.html`, `data-evaluate.html` (Python im Browser, Daten in `data/`),

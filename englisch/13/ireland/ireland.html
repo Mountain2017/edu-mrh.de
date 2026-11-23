@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ireland: Moments That Made an Island | English – edu-mrh.de</title>
+    <meta name="description" content="Year 13 self-study sequence (about 90 minutes): the history of Ireland told in memorable moments, today's problems traced back to their roots, Irish identities at home and abroad – and a speech or article in which you assess.">
+
+    <!-- Gemeinsames Framework – NICHT entfernen -->
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <!-- Seitenlogik: Karte, Ogham, Diagramme, Spiele, Rollenkarten, Schreibwerkstatt (localStorage) -->
+    <script defer src="ireland.js"></script>
+
+    <style>
+        /* ============================================================
+           Ireland – page styling on top of the framework
+           Page accent = deep sea + stone. Green and orange are reserved
+           for the two traditions (green = nationalist/republican,
+           orange = unionist/loyalist), always with a text label.
+           ============================================================ */
+        :root {
+            --sea: #0f3d3e;
+            --sea-soft: #2d5f5d;
+            --sea-light: #e3efec;
+            --paper: #f6f3ec;
+            --stone: #e7e2d6;
+            --gold: #a16207;
+            --gold-light: #fef3c7;
+            --nat: #15803d;  --nat-light: #dcfce7;
+            --uni: #c2410c;  --uni-light: #ffedd5;
+            --line: #e2e8f0;
+            --ok: #047857;   --ok-light: #d1fae5;
+            --no: #b91c1c;   --no-light: #fee2e2;
+            --serif: Georgia, 'Times New Roman', serif;
+        }
+        .lead { font-size: 1.08rem; color: var(--dark-light); max-width: 52rem; }
+        .muted { color: var(--gray); font-size: .9rem; }
+        .stamp {
+            display: inline-flex; gap: .45rem; align-items: center; background: var(--gold-light);
+            color: #78350f; border-radius: var(--radius-full); padding: .3rem .9rem; font-size: .85rem; font-weight: 600;
+        }
+        .chapter-header { border-left-color: var(--sea); }
+        .chapter-header .chapter-number { background: var(--sea); }
+        .chapter-header h2 small { font-weight: 500; }
+        .chapter-header .time { display: block; margin-top: .4rem; font-size: .8rem; font-weight: 700; color: var(--sea-soft); text-transform: uppercase; letter-spacing: .04em; }
+        .chapter-header.write { border-left-color: var(--gold); }
+        .chapter-header.write .chapter-number { background: var(--gold); }
+        .sub { margin: 1.8rem 0 .6rem; font-size: 1.2rem; color: var(--sea); }
+        .sub small { font-weight: 500; color: var(--gray); font-size: .85rem; margin-left: .4rem; }
+        .nat { color: var(--nat); font-weight: 700; }
+        .uni { color: var(--uni); font-weight: 700; }
+
+        /* ---------- Story text ---------- */
+        .story { font-family: var(--serif); font-size: 1.08rem; line-height: 1.75; color: #1f2937; max-width: 50rem; }
+        .story p { margin: 0 0 .9rem; }
+        .story .dropcap::first-letter { float: left; font-size: 3.1rem; line-height: .9; padding: .25rem .5rem 0 0; color: var(--sea); font-weight: 700; }
+        .story strong { color: var(--sea); }
+        .story .yr { font-family: system-ui, sans-serif; font-size: .8rem; font-weight: 700; background: var(--stone); color: var(--sea); border-radius: 4px; padding: .05rem .35rem; white-space: nowrap; }
+
+        /* ---------- Route ---------- */
+        .route { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .7rem; margin: 1.2rem 0; }
+        .stop {
+            background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: .8rem .9rem;
+            text-decoration: none; color: var(--dark); display: block; transition: var(--transition-fast);
+        }
+        .stop:hover { border-color: var(--sea); box-shadow: var(--shadow); }
+        .stop .n { display: inline-flex; width: 26px; height: 26px; border-radius: 50%; background: var(--sea); color: #fff;
+                   align-items: center; justify-content: center; font-weight: 700; font-size: .82rem; margin-right: .35rem; }
+        .stop.write .n { background: var(--gold); }
+        .stop strong { font-size: .98rem; }
+        .stop p { margin: .35rem 0 0; font-size: .85rem; color: var(--gray); }
+        .stop .t { font-size: .74rem; font-weight: 700; color: var(--sea-soft); text-transform: uppercase; letter-spacing: .04em; }
+        .stop.done { background: var(--ok-light); border-color: var(--ok); }
+        .stop.done .n { background: var(--ok); }
+        .done-toggle {
+            display: inline-flex; align-items: center; gap: .4rem; margin-top: 1.4rem; padding: .45rem .9rem;
+            border-radius: var(--radius-full); border: 1px solid var(--gray-light); background: #fff; cursor: pointer;
+            font: inherit; font-size: .9rem; color: var(--dark-light);
+        }
+        .done-toggle[aria-pressed="true"] { background: var(--ok-light); border-color: var(--ok); color: var(--ok); font-weight: 600; }
+
+        /* ---------- Map ---------- */
+        .map-wrap { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 1.2rem; align-items: start; }
+        @media (max-width: 760px) { .map-wrap { grid-template-columns: 1fr; } .map-wrap svg { max-width: 300px; margin: 0 auto; } }
+        .irl-map { width: 100%; height: auto; display: block; background: #dbeafe; border-radius: var(--radius-md); }
+        .irl-map .land { fill: #f5f1e6; stroke: #64748b; stroke-width: 1.1; stroke-linejoin: round; }
+        .irl-map .ni { fill: #e9e3d3; stroke: #64748b; stroke-width: 1.1; transition: fill .5s; }
+        .irl-map .ni.on { fill: #cbd5e1; }
+        .irl-map .border { fill: none; stroke: #1e293b; stroke-width: 2; stroke-dasharray: 5 3; transition: opacity .5s; }
+        .irl-map .city { fill: #1e293b; }
+        .irl-map text { font-family: system-ui, sans-serif; font-size: 10px; fill: #1e293b; }
+        .irl-map .lbl-big { font-size: 12px; font-weight: 700; fill: #334155; letter-spacing: .05em; }
+        .irl-map .pin { cursor: pointer; }
+        .irl-map .pin circle { fill: var(--sea); stroke: #fff; stroke-width: 2; transition: r .2s; }
+        .irl-map .pin text { fill: #fff; font-weight: 700; font-size: 10px; text-anchor: middle; pointer-events: none; }
+        .irl-map .pin:hover circle, .irl-map .pin:focus circle { fill: var(--gold); }
+        .pin-list { list-style: none; padding: 0; margin: 0; display: grid; gap: .45rem; }
+        .pin-list a { display: flex; gap: .6rem; align-items: baseline; text-decoration: none; color: var(--dark); padding: .45rem .6rem; border-radius: var(--radius); background: #fff; border: 1px solid var(--line); }
+        .pin-list a:hover { border-color: var(--sea); }
+        .pin-list b { display: inline-flex; min-width: 22px; height: 22px; border-radius: 50%; background: var(--sea); color: #fff; justify-content: center; align-items: center; font-size: .78rem; }
+        .pin-list span { font-size: .9rem; }
+        .pin-list small { color: var(--gray); display: block; }
+
+        /* ---------- Moment card ---------- */
+        .moment {
+            display: grid; grid-template-columns: 120px minmax(0, 1fr); background: var(--sea); color: #f1f5f9;
+            border-radius: var(--radius-lg); overflow: hidden; margin: 1.4rem 0; box-shadow: var(--shadow-lg);
+        }
+        @media (max-width: 640px) { .moment { grid-template-columns: 1fr; } }
+        .moment .m-year {
+            background: var(--sea-soft); display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 1rem .5rem; font-family: var(--serif); text-align: center;
+        }
+        .moment .m-year b { font-size: 1.9rem; line-height: 1; color: #fff; }
+        .moment .m-year span { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: #cbd5e1; margin-top: .3rem; }
+        .moment .m-body { padding: 1.1rem 1.3rem; }
+        .moment .m-kicker { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: #fcd34d; font-weight: 700; }
+        .moment h3 { color: #fff; font-family: var(--serif); font-size: 1.35rem; margin: .2rem 0 .5rem; }
+        .moment .scene { font-family: var(--serif); font-size: 1.02rem; line-height: 1.7; color: #e2e8f0; margin: 0; }
+        .moment .scene em { color: #fff; }
+        .look { margin-top: .8rem; padding-top: .7rem; border-top: 1px solid rgba(255,255,255,.18); font-size: .88rem; }
+        .look > b { color: #fcd34d; margin-right: .3rem; }
+        .look a { color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,.45); }
+        .look a::after { content: ' ↗'; font-size: .8em; }
+        .look .q { display: block; color: #cbd5e1; font-size: .84rem; margin-top: .2rem; }
+        /* Image links outside moment cards */
+        .pics { font-size: .9rem; background: var(--paper); border-radius: var(--radius); padding: .6rem .9rem; margin: .8rem 0; }
+        .pics b { color: var(--sea); }
+        .pics a::after { content: ' ↗'; font-size: .8em; }
+
+        /* ---------- Echo / collect ---------- */
+        .echo { display: flex; gap: .8rem; align-items: flex-start; background: var(--gold-light); border-left: 5px solid var(--gold); border-radius: var(--radius); padding: .8rem 1rem; margin: 1.2rem 0; }
+        .echo .e-ic { font-size: 1.5rem; line-height: 1; }
+        .echo p { margin: 0; font-size: .96rem; color: #422006; }
+        .echo b { color: #78350f; }
+        .collect {
+            display: inline-flex; gap: .35rem; align-items: center; border: 1px dashed var(--gold); background: #fff; color: #78350f;
+            border-radius: var(--radius-full); padding: .3rem .8rem; font: inherit; font-size: .82rem; cursor: pointer; margin: .2rem .3rem .2rem 0;
+        }
+        .collect[aria-pressed="true"] { background: var(--gold); color: #fff; border-style: solid; }
+        .collect-row { margin: .4rem 0 0; }
+        .collect-row .muted { font-size: .82rem; margin-right: .3rem; }
+        #locker-badge {
+            position: fixed; right: 16px; bottom: 16px; z-index: 50; background: var(--gold); color: #fff; border-radius: var(--radius-full);
+            padding: .55rem 1rem; font-weight: 700; font-size: .9rem; box-shadow: var(--shadow-lg); text-decoration: none;
+        }
+        #locker-badge.bump { animation: bump .5s ease; }
+        @keyframes bump { 40% { transform: scale(1.18); } }
+
+        /* ---------- Generic widget box ---------- */
+        .widget { background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 1rem 1.1rem; margin: 1.2rem 0; }
+        .widget h4 { margin: 0 0 .3rem; color: var(--sea); }
+        .widget .how { font-size: .9rem; color: var(--gray); margin: 0 0 .7rem; }
+        .chip {
+            border: 1px solid var(--gray-light); background: #fff; border-radius: var(--radius-full); padding: .35rem .8rem;
+            font: inherit; font-size: .86rem; cursor: pointer; color: var(--dark-light); margin: .15rem;
+        }
+        .chip[aria-pressed="true"] { background: var(--sea); border-color: var(--sea); color: #fff; }
+        .chip:disabled { cursor: default; opacity: .9; }
+        .chip.good { background: var(--ok-light); border-color: var(--ok); color: var(--ok); font-weight: 600; }
+        .chip.miss { border: 2px dashed var(--ok); color: var(--ok); }
+        .chip.bad { background: var(--no-light); border-color: var(--no); color: var(--no); }
+        .fb { margin-top: .6rem; padding: .6rem .8rem; border-radius: var(--radius); font-size: .93rem; background: var(--paper); }
+        .fb.ok { background: var(--ok-light); }
+        .fb.no { background: var(--no-light); }
+        .fb:empty { display: none; }
+        .shake { animation: shake .35s; }
+        @keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        @media (prefers-reduced-motion: reduce) { .shake, #locker-badge.bump { animation: none; } }
+
+        /* ---------- Myth or fact ---------- */
+        .mf-card { display: grid; grid-template-columns: auto 1fr; gap: .4rem .9rem; align-items: start; padding: .7rem 0; border-bottom: 1px solid var(--line); }
+        .mf-card:last-child { border-bottom: 0; }
+        .mf-card .st { font-weight: 600; }
+        .mf-btns { display: flex; gap: .3rem; }
+        .mf-card .fb { grid-column: 1 / -1; margin-top: 0; }
+        .score { font-weight: 700; color: var(--sea); }
+
+        /* ---------- Ogham ---------- */
+        .ogham-in { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; }
+        .ogham-in input { font: inherit; padding: .45rem .7rem; border: 1px solid var(--gray-light); border-radius: var(--radius); max-width: 16rem; }
+        .ogham-out { overflow-x: auto; margin-top: .7rem; background: var(--paper); border-radius: var(--radius); padding: .5rem; }
+        .ogham-out svg { display: block; height: 110px; }
+        .ogham-key { font-size: .8rem; color: var(--gray); margin-top: .4rem; }
+
+        /* ---------- Land grid ---------- */
+        .land-grid { display: grid; grid-template-columns: repeat(20, 1fr); gap: 2px; max-width: 420px; margin: .6rem 0; }
+        .land-grid i { aspect-ratio: 1; background: var(--uni-light); border-radius: 2px; transition: background .4s; }
+        .land-grid i.c { background: var(--nat); }
+        .land-ctrl { display: flex; flex-wrap: wrap; gap: .3rem; }
+        .legend { display: flex; flex-wrap: wrap; gap: .3rem 1rem; font-size: .84rem; color: var(--dark-light); }
+        .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: .3rem; vertical-align: -1px; }
+        .big-num { font-family: var(--serif); font-size: 2.2rem; color: var(--nat); font-weight: 700; line-height: 1; }
+
+        /* ---------- Population chart ---------- */
+        .pop-svg { width: 100%; height: auto; display: block; }
+        .pop-svg .axis { stroke: #94a3b8; stroke-width: 1; }
+        .pop-svg .grid { stroke: #e2e8f0; stroke-width: 1; }
+        .pop-svg text { font-family: system-ui, sans-serif; font-size: 11px; fill: #475569; }
+        .pop-svg .line { fill: none; stroke: var(--sea); stroke-width: 3; stroke-linejoin: round; }
+        .pop-svg .famine { fill: var(--no-light); }
+        .pop-svg .dot { fill: var(--sea); }
+
+        /* ---------- Vote / sorter / road ---------- */
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+        @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+        .side { border-radius: var(--radius); padding: .8rem .9rem; font-size: .92rem; }
+        .side.pro { background: var(--sea-light); }
+        .side.con { background: var(--paper); }
+        .side h5 { margin: 0 0 .3rem; font-size: 1rem; }
+        .side ul { margin: .2rem 0 0 1.1rem; padding: 0; }
+        .vote-btns { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .8rem; }
+        .tally-bar { display: flex; height: 30px; border-radius: 6px; overflow: hidden; margin-top: .6rem; font-size: .85rem; font-weight: 700; color: #fff; }
+        .tally-bar div { display: flex; align-items: center; justify-content: center; transition: width .8s ease; }
+        .sort-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .4rem .8rem; align-items: center; padding: .55rem 0; border-bottom: 1px solid var(--line); }
+        .sort-row:last-of-type { border-bottom: 0; }
+        .sort-row .txt { font-size: .93rem; }
+        .sort-row .fb { grid-column: 1 / -1; margin: 0; font-size: .86rem; }
+        @media (max-width: 640px) { .sort-row { grid-template-columns: 1fr; } }
+        .chip.n-btn[aria-pressed="true"] { background: var(--nat); border-color: var(--nat); }
+        .chip.u-btn[aria-pressed="true"] { background: var(--uni); border-color: var(--uni); }
+        .road-svg { width: 100%; height: auto; display: block; border-radius: var(--radius); }
+        .road-svg .hide { opacity: 0; }
+        .road-svg g { transition: opacity .5s; }
+        .road-out { margin-top: .7rem; background: var(--paper); border-radius: var(--radius); padding: .8rem 1rem; font-size: .95rem; min-height: 5rem; }
+        .road-out h5 { margin: 0 0 .3rem; font-size: 1rem; color: var(--sea); }
+
+        /* ---------- Group tasks ---------- */
+        .group-task { border: 2px solid #7c3aed; border-radius: var(--radius-lg); padding: 1rem 1.2rem; margin: 1.4rem 0; background: #faf5ff; }
+        .group-task .gt-head { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; justify-content: space-between; }
+        .group-task h4 { margin: 0; color: #5b21b6; font-size: 1.15rem; }
+        .group-task .tag { background: #ede9fe; color: #5b21b6; border-radius: 4px; padding: .1rem .5rem; font-size: .78rem; font-weight: 700; }
+        .group-task ol { margin: .5rem 0 .5rem 1.2rem; padding: 0; font-size: .95rem; }
+        .roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .6rem; margin: .8rem 0; }
+        .roles details { background: #fff; border: 1px solid #ddd6fe; border-radius: var(--radius); padding: .6rem .8rem; font-size: .9rem; }
+        .roles summary { cursor: pointer; font-weight: 700; color: #5b21b6; }
+        .roles details[open] { box-shadow: var(--shadow); }
+        .roles .twist { margin-top: .5rem; background: var(--gold-light); border-radius: 6px; padding: .4rem .6rem; font-size: .85rem; }
+        .timer { display: inline-flex; align-items: center; gap: .4rem; }
+        .timer button { font: inherit; border: 1px solid #7c3aed; background: #fff; color: #5b21b6; border-radius: var(--radius-full); padding: .3rem .8rem; cursor: pointer; font-weight: 600; }
+        .timer button.run { background: #7c3aed; color: #fff; }
+        .timer output { font-variant-numeric: tabular-nums; font-weight: 700; color: #5b21b6; min-width: 3.2rem; }
+        .solo { font-size: .88rem; color: var(--dark-light); border-top: 1px dashed #c4b5fd; padding-top: .5rem; margin-top: .6rem; }
+
+        /* ---------- Trace it back ---------- */
+        .chain-pick { display: flex; flex-wrap: wrap; gap: .3rem; margin-bottom: .8rem; }
+        .chain-built { display: grid; gap: 0; margin-bottom: .8rem; }
+        .link-card { background: var(--sea-light); border-radius: var(--radius); padding: .6rem .8rem; font-size: .94rem; position: relative; }
+        .link-card.today { background: var(--sea); color: #fff; font-weight: 600; }
+        .link-card.root { background: var(--nat-light); border: 2px solid var(--nat); }
+        .link-card .lvl { font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; opacity: .75; display: block; }
+        .because { text-align: center; color: var(--sea-soft); font-size: .8rem; font-weight: 700; padding: .15rem 0; }
+        .pool { display: grid; gap: .4rem; }
+        .pool button { text-align: left; font: inherit; font-size: .92rem; background: #fff; border: 1px solid var(--gray-light); border-radius: var(--radius); padding: .55rem .8rem; cursor: pointer; }
+        .pool button:hover { border-color: var(--sea); }
+        .sprint-pool { display: flex; flex-wrap: wrap; gap: .4rem; }
+        .sprint-pool button { font: inherit; font-size: .9rem; background: #fff; border: 1px solid var(--gray-light); border-radius: var(--radius); padding: .5rem .7rem; cursor: pointer; }
+        .sprint-line { display: flex; flex-wrap: wrap; gap: .35rem; margin: .7rem 0; min-height: 2.4rem; }
+        .sprint-line span { background: var(--sea); color: #fff; border-radius: var(--radius); padding: .35rem .6rem; font-size: .85rem; }
+        .sprint-line span b { color: #fcd34d; margin-right: .3rem; }
+
+        /* ---------- Identity ---------- */
+        .id-bar { display: flex; height: 34px; border-radius: 6px; overflow: hidden; font-size: .78rem; font-weight: 700; color: #fff; margin: .5rem 0; }
+        .id-bar div { display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 .2rem; line-height: 1.1; }
+        .personas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; margin: .8rem 0; }
+        @media (max-width: 640px) { .personas { grid-template-columns: 1fr 1fr; } }
+        .persona-btn { font: inherit; text-align: left; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: .7rem .8rem; cursor: pointer; transition: var(--transition-fast); }
+        .persona-btn:hover { border-color: var(--sea); }
+        .persona-btn[aria-pressed="true"] { border-color: var(--sea); box-shadow: 0 0 0 2px var(--sea); }
+        .persona-btn .av { font-size: 1.6rem; display: block; }
+        .persona-btn b { display: block; }
+        .persona-btn small { color: var(--gray); }
+        .persona-btn.seen::after { content: '✓ explored'; display: block; font-size: .72rem; color: var(--ok); font-weight: 700; margin-top: .2rem; }
+        .persona-panel { background: var(--paper); border-radius: var(--radius-md); padding: 1rem 1.1rem; }
+        .persona-panel blockquote { font-family: var(--serif); font-size: 1.05rem; line-height: 1.6; margin: .3rem 0 .8rem; padding-left: .9rem; border-left: 4px solid var(--sea); color: #1f2937; }
+        .persona-panel .today-q { font-size: .92rem; background: #fff; border-radius: var(--radius); padding: .6rem .8rem; margin-top: .7rem; }
+
+        /* ---------- Writing workshop ---------- */
+        .task-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: .7rem; margin: .8rem 0; }
+        .task-card { font: inherit; text-align: left; background: #fff; border: 1px solid var(--line); border-top: 5px solid var(--sea-soft); border-radius: var(--radius-md); padding: .8rem .9rem; cursor: pointer; }
+        .task-card.hist { border-top-color: var(--gold); }
+        .task-card[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--sea), var(--shadow); }
+        .task-card .who { font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; color: var(--gold); }
+        .task-card.mod .who { color: var(--sea-soft); }
+        .task-card b { display: block; margin: .2rem 0; font-size: .98rem; }
+        .task-card span { font-size: .85rem; color: var(--dark-light); }
+        .mode-switch { display: inline-flex; border: 1px solid var(--gray-light); border-radius: var(--radius-full); overflow: hidden; }
+        .mode-switch button { border: 0; background: #fff; padding: .5rem 1rem; font: inherit; font-size: .92rem; cursor: pointer; color: var(--dark-light); }
+        .mode-switch button[aria-pressed="true"] { background: var(--sea); color: #fff; font-weight: 600; }
+        .brief { background: var(--sea); color: #f1f5f9; border-radius: var(--radius-md); padding: 1rem 1.2rem; margin: 1rem 0; }
+        .brief h4 { color: #fff; margin: 0 0 .4rem; font-family: var(--serif); font-size: 1.25rem; }
+        .brief p { margin: .3rem 0; font-size: .95rem; }
+        .brief b { color: #fcd34d; }
+        .brief a { color: #fff; }
+        .planner { display: grid; gap: .7rem; }
+        .planner label { font-weight: 600; font-size: .92rem; display: block; margin-bottom: .2rem; color: var(--sea); }
+        .planner label small { font-weight: 400; color: var(--gray); }
+        .planner textarea, .draft textarea { width: 100%; font: inherit; font-size: .95rem; border: 1px solid var(--gray-light); border-radius: var(--radius); padding: .5rem .7rem; min-height: 3.2rem; resize: vertical; }
+        .planner .pair { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; }
+        @media (max-width: 700px) { .planner .pair { grid-template-columns: 1fr; } }
+        .planner .counter { background: #fff7ed; border-radius: var(--radius); padding: .6rem; }
+        .locker-list { list-style: none; padding: 0; margin: .4rem 0; display: grid; gap: .35rem; }
+        .locker-list li { background: var(--gold-light); border-radius: var(--radius); padding: .4rem .7rem; font-size: .88rem; display: flex; gap: .5rem; justify-content: space-between; align-items: flex-start; }
+        .locker-list button { border: 0; background: none; cursor: pointer; color: #78350f; font-size: 1rem; line-height: 1; }
+        .phrases { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .6rem; font-size: .9rem; }
+        .phrases div { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: .6rem .8rem; }
+        .phrases h5 { margin: 0 0 .3rem; font-size: .92rem; color: var(--sea); }
+        .phrases ul { margin: 0 0 0 1rem; padding: 0; }
+        .model-para { font-family: var(--serif); line-height: 1.8; background: #fff; border-radius: var(--radius); padding: .8rem 1rem; border: 1px solid var(--line); }
+        .model-para .c1 { background: #fde68a; } .model-para .c2 { background: #bfdbfe; } .model-para .c3 { background: #bbf7d0; } .model-para .c4 { background: #fbcfe8; }
+        .checklist { list-style: none; padding: 0; margin: .3rem 0; display: grid; gap: .3rem; }
+        .checklist label { display: flex; gap: .5rem; align-items: flex-start; font-size: .92rem; cursor: pointer; }
+        .wc { font-size: .88rem; color: var(--gray); margin-top: .3rem; }
+        .wc b { color: var(--sea); }
+        .draft textarea { min-height: 16rem; font-family: var(--serif); font-size: 1rem; line-height: 1.7; }
+
+        /* ---------- Popcorn & sources ---------- */
+        .pop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .7rem; margin: .5rem 0 1rem; }
+        .pop { display: flex; flex-direction: column; gap: .3rem; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md); padding: .8rem .9rem; text-decoration: none; color: var(--dark); font-size: .88rem; transition: var(--transition-fast); }
+        .pop:hover { border-color: var(--sea); box-shadow: var(--shadow); transform: translateY(-2px); }
+        .pop strong { font-size: .98rem; color: var(--sea); }
+        .pop strong::after { content: ' ↗'; color: var(--gold); }
+        .pop .ch { align-self: flex-start; font-size: .72rem; font-weight: 700; border-radius: 4px; padding: .05rem .4rem; background: var(--stone); color: var(--sea); }
+        .sources-list { font-size: .85rem; color: var(--dark-light); columns: 2 320px; column-gap: 2rem; }
+        .sources-list li { break-inside: avoid; margin-bottom: .35rem; }
+        details.teacher { border: 1px dashed var(--gray-light); border-radius: var(--radius); padding: .6rem 1rem; background: #fff; margin-top: 1rem; }
+        details.teacher summary { cursor: pointer; font-weight: 600; color: var(--dark-light); }
+        .row-btns { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="icon"><a href="https://edu-mrh.de/">🇬🇧</a></span>
+                <span>edu-mrh English</span>
+            </div>
+            <div class="nav-links">
+                <a href="../../englisch.html#jahrgang-13" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>Ireland</h3>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#start">Start: the island in 5 minutes</a></li>
+            <li><a href="#ch1">1 · Stones and saints</a></li>
+            <li><a href="#ch2">2 · Conquest and plantation</a></li>
+            <li><a href="#ch3">3 · Hunger and exodus</a></li>
+            <li><a href="#ch4">4 · Rising and partition</a></li>
+            <li><a href="#ch5">5 · The Troubles and the peace</a></li>
+            <li><a href="#ch6">6 · Tiger, change, Brexit</a></li>
+            <li><a href="#trace">7 · Trace it back</a></li>
+            <li><a href="#identity">8 · Who are the Irish?</a></li>
+            <li><a href="#write">✍️ 9 · Your turn: assess</a></li>
+            <li><a href="#popcorn">🍿 Watch &amp; listen</a></li>
+            <li><a href="#sources">Sources &amp; teachers</a></li>
+        </ul>
+    </aside>
+
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <a href="#write" id="locker-badge" title="Your evidence locker for the writing task">⭐ Locker <span id="locker-count">0</span></a>
+
+    <main class="main-content">
+        <div class="container">
+
+            <section class="hero">
+                <h1 class="hero-title">Ireland: Moments That Made an Island</h1>
+                <p class="hero-subtitle">English · Year 13 · Gymnasium Bayern · self-study, about 90 minutes</p>
+                <p class="hero-description">Five thousand years, one small island, and – by a popular estimate – 70 million people worldwide who say it is part of who they are. This page tells Ireland's story as a chain of moments: a beam of light in a stone tomb, a gate slammed shut, a potato field turning black, a white handkerchief on a Derry street. Follow the chain, see how today's problems grow out of it – and then make up your own mind in a speech or an article.</p>
+                <p><span class="stamp">⭐ Collect evidence as you go: every “Keep” button puts a fact into your locker for the final writing task.</span></p>
+            </section>
+
+            <!-- ================= ROUTE ================= -->
+            <section id="route" class="mt-4">
+                <p class="lead">Work through the stops in order – the story builds up. Group tasks (👥) need two or three people; if you work alone, use the solo option. Your progress, your locker and your writing stay in <strong>this browser only</strong>.</p>
+                <div class="route">
+                    <a class="stop" href="#start" data-stop="start"><span class="t">5 min</span><br><span class="n">▶</span><strong>The island in 5 minutes</strong><p>Map, myths and facts.</p></a>
+                    <a class="stop" href="#ch1" data-stop="ch1"><span class="t">5 min</span><br><span class="n">1</span><strong>Stones and saints</strong><p>Newgrange, Patrick, monks – write your name in Ogham.</p></a>
+                    <a class="stop" href="#ch2" data-stop="ch2"><span class="t">10 min</span><br><span class="n">2</span><strong>Conquest and plantation</strong><p>Who owns the land? The Boyne and the gates of Derry.</p></a>
+                    <a class="stop" href="#ch3" data-stop="ch3"><span class="t">10 min</span><br><span class="n">3</span><strong>Hunger and exodus</strong><p>The Famine, the coffin ships, a gift from the Choctaw.</p></a>
+                    <a class="stop" href="#ch4" data-stop="ch4"><span class="t">12 min · 👥</span><br><span class="n">4</span><strong>Rising and partition</strong><p>1916 freeze frame, the Treaty vote, a line on the map.</p></a>
+                    <a class="stop" href="#ch5" data-stop="ch5"><span class="t">15 min · 👥</span><br><span class="n">5</span><strong>The Troubles and the peace</strong><p>Bloody Sunday, the deal of 1998, a radio phone-in.</p></a>
+                    <a class="stop" href="#ch6" data-stop="ch6"><span class="t">10 min</span><br><span class="n">6</span><strong>Tiger, change, Brexit</strong><p>Boom, bust, referendums, and a road trip across the border.</p></a>
+                    <a class="stop" href="#trace" data-stop="trace"><span class="t">8 min</span><br><span class="n">7</span><strong>Trace it back</strong><p>From today's headlines to their roots. Timeline sprint.</p></a>
+                    <a class="stop" href="#identity" data-stop="identity"><span class="t">7 min</span><br><span class="n">8</span><strong>Who are the Irish?</strong><p>Six people, six identities – and where they come from.</p></a>
+                    <a class="stop write" href="#write" data-stop="write"><span class="t">8 min + writing</span><br><span class="n">✍</span><strong>Your turn: assess</strong><p>Speech or article, historical or modern voice.</p></a>
+                </div>
+            </section>
+
+            <!-- ================= START ================= -->
+            <section id="start" class="mt-4">
+                <div class="chapter-header">
+                    <span class="chapter-number">▶</span>
+                    <h2>The island in 5 minutes</h2>
+                    <span class="time">≈ 5 min</span>
+                </div>
+                <p class="lead">One island, two states. The <strong>Republic of Ireland</strong> (capital Dublin, about 5.4 million people) is an independent country in the EU. <strong>Northern Ireland</strong> (capital Belfast, about 1.9 million) is part of the United Kingdom. The dashed line between them is only about 500 km long – and it has shaped more than a century of history.</p>
+
+                <div class="map-wrap">
+                    <svg class="irl-map" data-map="pins" viewBox="0 0 320 420" role="img" aria-label="Map of the island of Ireland with the border between Northern Ireland and the Republic, and numbered places from the story"></svg>
+                    <div>
+                        <p class="muted" style="margin-top:0">The places in this story. Click a number to jump to its chapter.</p>
+                        <ul class="pin-list" id="pin-list"></ul>
+                    </div>
+                </div>
+
+                <div class="widget" id="myth">
+                    <h4>Myth or fact? Test your gut feeling</h4>
+                    <p class="how">Decide quickly, then read the explanation. Don't worry about mistakes – each of these comes back later in the story.</p>
+                    <div id="mf-list"></div>
+                    <p class="score" id="mf-score"></p>
+                </div>
+                <button class="done-toggle" type="button" data-done="start">☐ Done with this stop</button>
+            </section>
+
+            <!-- ================= 1 STONES AND SAINTS ================= -->
+            <section id="ch1" class="mt-4">
+                <div class="chapter-header">
+                    <span class="chapter-number">1</span>
+                    <h2>Stones and saints <small class="muted">(3200 BC – AD 1169)</small></h2>
+                    <span class="time">≈ 5 min</span>
+                </div>
+                <div class="story">
+                    <p class="dropcap">Long before there was an England, a Britain or a United Kingdom, people on this island were building for eternity. Around <span class="yr">3200 BC</span> farmers in the Boyne Valley heaped up a giant mound of earth and stone and placed a small opening above its entrance. It is older than Stonehenge and older than the pyramids of Giza.</p>
+                    <p>Centuries later, Celtic-speaking peoples shaped the island's language, its legends and its laws. The Romans never came. Christianity did: a teenage boy from Roman Britain, kidnapped by Irish raiders and forced to herd sheep for six years, escaped – and came back as a missionary. Tradition says he arrived in <span class="yr">432</span>. His name was <strong>Patrick</strong>, and every 17 March the whole world wears green for a man who wasn't even Irish.</p>
+                    <p>While much of Europe sank into chaos, Irish monks copied books on rocks in the Atlantic and sent missionaries to Scotland, England and even to what is now Germany and Switzerland. Their most famous work, the <strong>Book of Kells</strong> (around 800), survived Viking raids. The Vikings, by the way, stayed and founded Dublin.</p>
+                </div>
+
+                <div class="moment">
+                    <div class="m-year"><b>21 Dec</b><span>every year<br>since 3200 BC</span></div>
+                    <div class="m-body">
+                        <div class="m-kicker">Moment</div>
+                        <h3>A beam of light in the dark</h3>
+                        <p class="scene">It is the shortest day of the year, just before nine in the morning. You stand in the pitch-black heart of Newgrange, 19 metres inside the mound. Then the sun rises over the hill – and a thin beam of gold creeps through the little roof-box, along the stone passage and across the floor. For about 17 minutes the chamber glows. Then it is dark again for another year. <em>Someone planned this, 5,000 years ago.</em></p>
+                        <div class="look"><b>Look closely:</b>
+                            <a href="https://en.wikipedia.org/wiki/Newgrange" target="_blank" rel="noopener">Newgrange</a> ·
+                            <a href="https://en.wikipedia.org/wiki/Book_of_Kells" target="_blank" rel="noopener">a page of the Book of Kells</a> ·
+                            <a href="https://en.wikipedia.org/wiki/Skellig_Michael" target="_blank" rel="noopener">the monks' rock, Skellig Michael</a>
+                            <span class="q">Find the roof-box above the entrance. On Skellig Michael, look for the stone “beehive” huts – would you have lived there?</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget" id="ogham">
+                    <h4>Write your name in Ogham</h4>
+                    <p class="how">Ireland's oldest script (from about the 4th century) was carved along the edge of standing stones: strokes to one side, the other side, across, or short notches for vowels. It is read from bottom to top – here from left to right.</p>
+                    <div class="ogham-in">
+                        <label for="ogham-name" class="sr-only">Your name</label>
+                        <input id="ogham-name" type="text" maxlength="20" placeholder="Your name" autocomplete="off">
+                        <span class="muted" id="ogham-latin"></span>
+                    </div>
+                    <div class="ogham-out"><svg id="ogham-svg" viewBox="0 0 200 110" aria-label="Your name in Ogham"></svg></div>
+                    <p class="ogham-key">Ogham has no letters for J, K, P, V, W, X, Y – they are replaced by the nearest sound (K → C, P → B, V/W → F, J/Y → I, X → CS).</p>
+                </div>
+
+                <div class="echo"><span class="e-ic">🔁</span><p><b>Echo today:</b> In the 1890s Irish nationalists rediscovered this “Gaelic” past – language, sports like hurling, old legends – to prove that Ireland was a nation of its own, not a corner of Britain. That idea will drive the fight for independence in chapter 4. And St Patrick's Day became the global festival of Irishness.</p></div>
+                <div class="collect-row"><span class="muted">Keep for your writing:</span>
+                    <button class="collect" type="button" data-collect="c1-old" data-text="Newgrange (c. 3200 BC) is older than the pyramids – Ireland has a culture of its own that is far older than British rule.">⭐ Ancient roots</button>
+                    <button class="collect" type="button" data-collect="c1-patrick" data-text="St Patrick was born in Roman Britain, kidnapped to Ireland, and came back as a missionary (trad. 432) – Ireland's national saint was an immigrant.">⭐ Patrick the immigrant</button>
+                </div>
+                <button class="done-toggle" type="button" data-done="ch1">☐ Done with this stop</button>
+            </section>
+
+            <!-- ================= 2 CONQUEST AND PLANTATION ================= -->
+            <section id="ch2" class="mt-4">
+                <div class="chapter-header">
+                    <span class="chapter-number">2</span>
+                    <h2>Conquest and plantation <small class="muted">(1169 – 1800)</small></h2>
+                    <span class="time">≈ 10 min</span>
+                </div>
+                <div class="story">
+                    <p class="dropcap">It began with an invitation. In <span class="yr">1169</span> an Irish king who had lost his throne asked Norman knights from Wales for help. They came, they won – and they stayed. Two years later the English king Henry II arrived to make sure they stayed loyal to him. For the next 750 years, Ireland's story would be tied to England's.</p>
+                    <p>Religion turned this into something deeper. When <strong>Henry VIII</strong> broke with Rome and made himself “King of Ireland” in <span class="yr">1541</span>, England became Protestant. Ireland stayed Catholic. From now on, your church showed whose side you were on.</p>
+                    <p>The north-east, the province of <strong>Ulster</strong>, was the most Gaelic and the most rebellious part of the island. After its last great Irish lords fled to the continent in 1607, the Crown took their land and handed it to settlers from Scotland and England: the <strong>Plantation of Ulster</strong> (from <span class="yr">1609</span>). They were Protestant, loyal to the Crown, and they built new towns like Derry, now with walls. The Catholic Irish were pushed onto poorer land at the edges – and watched.</p>
+                    <p>Rebellion in 1641 was followed by revenge: <strong>Oliver Cromwell</strong>'s army stormed Drogheda in <span class="yr">1649</span> and killed thousands. Then, in <span class="yr">1688</span>, England swapped its Catholic king, James II, for the Protestant <strong>William of Orange</strong>. James fled to Ireland to win his crown back. Two moments decided the war.</p>
+                </div>
+
+                <div class="moment">
+                    <div class="m-year"><b>1688</b><span>Derry<br>7 December</span></div>
+                    <div class="m-body">
+                        <div class="m-kicker">Moment</div>
+                        <h3>Thirteen boys and a gate</h3>
+                        <p class="scene">A Catholic army is marching on Derry. The city fathers can't decide whether to let it in. Then thirteen apprentice boys – teenagers – grab the keys, run to the Ferryquay Gate and slam it shut. The siege that follows lasts 105 days. People eat dogs, rats and candle wax; thousands die. The city never opens its gates. Their cry becomes a motto that you can still read on walls today: <em>“No surrender!”</em></p>
+                        <div class="look"><b>Look closely:</b>
+                            <a href="https://en.wikipedia.org/wiki/Siege_of_Derry" target="_blank" rel="noopener">the Siege of Derry</a> ·
+                            <a href="https://en.wikipedia.org/wiki/Battle_of_the_Boyne" target="_blank" rel="noopener">William at the Boyne (painting)</a> ·
+                            <a href="https://en.wikipedia.org/wiki/Plantation_of_Ulster" target="_blank" rel="noopener">map of the plantation</a>
+                            <span class="q">Remember William on his white horse. You will meet him again – painted on house walls in 21st-century Belfast.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="story">
+                    <p>On <span class="yr">1 July 1690</span> (12 July in today's calendar) William beat James at the <strong>Battle of the Boyne</strong>, not far from Newgrange. Protestant rule was secure. The Irish Parliament – Protestants only – now passed the <strong>Penal Laws</strong>: Catholics could not vote, sit in Parliament, become lawyers, own a good horse or buy land. Catholic priests had to say Mass in secret, at “Mass rocks” in the fields. Being Catholic and being Irish became almost the same thing.</p>
+                </div>
+
+                <div class="widget" id="land">
+                    <h4>Who owns Ireland?</h4>
+                    <p class="how">Each square is 1 % of Ireland's land. Click through the years. Keep in mind: the whole time, roughly three out of four people in Ireland were Catholic.</p>
+                    <div class="land-ctrl" role="group" aria-label="Choose year">
+                        <button class="chip" type="button" data-land="1641">1641</button>
+                        <button class="chip" type="button" data-land="1688">1688</button>
+                        <button class="chip" type="button" data-land="1703">1703</button>
+                        <button class="chip" type="button" data-land="1778">1778</button>
+                    </div>
+                    <div style="display:flex;flex-wrap:wrap;gap:1.2rem;align-items:center">
+                        <div class="land-grid" id="land-grid" aria-hidden="true"></div>
+                        <div><div class="big-num" id="land-num">59 %</div><div class="muted" id="land-txt"></div></div>
+                    </div>
+                    <div class="legend"><span><i style="background:var(--nat)"></i>owned by Catholics</span><span><i style="background:var(--uni-light)"></i>owned by Protestants (mostly new settlers and their heirs)</span></div>
+                </div>
+
+                <div class="echo"><span class="e-ic">🔁</span><p><b>Echo today:</b> Every July, members of the Protestant <span class="uni">Orange Order</span> march through Northern Irish towns to celebrate the Boyne, and on the “Eleventh Night” loyalists light huge bonfires. For them it is heritage; for many <span class="nat">nationalists</span> it feels like a victory parade over them. The two communities of Northern Ireland – one mostly Protestant and British, one mostly Catholic and Irish – go back to the Plantation.
+                    <br><span class="muted" style="color:#713f12">Look: <a href="https://en.wikipedia.org/wiki/Eleventh_Night" target="_blank" rel="noopener">Eleventh Night bonfire ↗</a> · <a href="https://en.wikipedia.org/wiki/Murals_in_Northern_Ireland" target="_blank" rel="noopener">murals in Northern Ireland ↗</a></span></p></div>
+                <div class="collect-row"><span class="muted">Keep:</span>
+                    <button class="collect" type="button" data-collect="c2-plant" data-text="Plantation of Ulster (from 1609): Protestant settlers from Scotland and England got the land in the north-east – the origin of Northern Ireland's two communities.">⭐ Plantation</button>
+                    <button class="collect" type="button" data-collect="c2-boyne" data-text="Battle of the Boyne (1690): William of Orange beat James II; still celebrated by Orange marches every 12 July.">⭐ The Boyne</button>
+                    <button class="collect" type="button" data-collect="c2-land" data-text="Penal Laws: Catholic land ownership fell from 59 % (1641) to about 5 % (1778), although about three quarters of the people were Catholic.">⭐ 59 % → 5 %</button>
+                </div>
+                <button class="done-toggle" type="button" data-done="ch2">☐ Done with this stop</button>
+            </section>
+
+            <!-- ================= 3 HUNGER AND EXODUS ================= -->
+            <section id="ch3" class="mt-4">
+                <div class="chapter-header">
+                    <span class="chapter-number">3</span>
+                    <h2>Hunger and exodus <small class="muted">(1798 – 1900)</small></h2>
+                    <span class="time">≈ 10 min</span>
+                </div>
+                <div class="story">
+                    <p class="dropcap">Not every rebel was Catholic. In <span class="yr">1798</span> the United Irishmen, led by the Protestant lawyer Wolfe Tone, rose up inspired by the French Revolution. They wanted “Catholic, Protestant and Dissenter” united as Irishmen. The rising was crushed, and London's answer was the <strong>Act of Union</strong> (<span class="yr">1801</span>): Ireland's parliament was closed, and Ireland became part of the United Kingdom.</p>
+                    <p>A Kerry lawyer, <strong>Daniel O'Connell</strong>, showed another way: peaceful mass protest. Hundreds of thousands came to his “monster meetings”, and in <span class="yr">1829</span> he won Catholic Emancipation – Catholics could finally sit in Parliament.</p>
+                    <p>But most Irish people were poor tenant farmers on tiny plots of rented land. One crop fed a family on a small field: the potato. About a third of the population ate almost nothing else. In <span class="yr">1845</span> a plant disease from America turned the potato fields black overnight. It came back the next year, and the next.</p>
+                </div>
+
+                <div class="moment">
+                    <div class="m-year"><b>1847</b><span>“Black '47”</span></div>
+                    <div class="m-body">
+                        <div class="m-kicker">Moment</div>
+                        <h3>Food leaving a starving country</h3>
+                        <p class="scene">Skibbereen, County Cork, winter 1847. An artist from the <em>Illustrated London News</em> walks through the town and draws what he sees: families in rags, a mother begging with a dead baby in her arms, coffins with a hinged bottom so that they can be used again and again. Meanwhile, at the harbours, ships are being loaded with grain, butter and cattle for England – food the starving cannot pay for. The government in London believes the market will sort it out.</p>
+                        <div class="look"><b>Look closely:</b>
+                            <a href="https://en.wikipedia.org/wiki/Great_Famine_(Ireland)" target="_blank" rel="noopener">Skibbereen, 1847 (drawing)</a> ·
+                            <a href="https://en.wikipedia.org/wiki/Jeanie_Johnston" target="_blank" rel="noopener">a famine ship (replica)</a> ·
+                            <a href="https://en.wikipedia.org/wiki/Irish_diaspora" target="_blank" rel="noopener">“Emigrants Leave Ireland” (1868)</a>
+                            <span class="q">How do the pictures show the people – as victims, as a crowd, as individuals? Who drew them, for whom?</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget" id="popchart">
+                    <h4>What happened to Ireland's population?</h4>
+                    <p class="how">In 1841 about 8.2 million people lived on the island. Make a guess first: what was the population 70 years later, in 1911?</p>
+                    <div class="vote-btns" id="pop-guess">
+                        <button class="chip" type="button" data-guess="up">It doubled (about 16 million)</button>
+                        <button class="chip" type="button" data-guess="same">About the same (8 million)</button>
+                        <button class="chip" type="button" data-guess="down">It fell by almost half (about 4.4 million)</button>
+                    </div>
+                    <svg class="pop-svg" id="pop-svg" viewBox="0 0 600 260" role="img" aria-label="Population of the island of Ireland 1841 to 2022"></svg>
+                    <div class="fb" id="pop-fb"></div>
+                </div>
+
+                <div class="story">
+                    <p>About <strong>one million people died</strong> between 1845 and 1852, and more than a million fled. Landlords sometimes paid the passage just to clear their land. On the worst “coffin ships” to Canada and America, one in five passengers died on the way. The emigrants did not stop when the famine ended: by 1911 the island had lost almost half its people. On <span class="yr">1 January 1892</span> a 17-year-old girl from Cork, <strong>Annie Moore</strong>, was the very first immigrant to be registered at New York's new Ellis Island station. Millions followed her.</p>
+                </div>
+
+                <div class="moment">
+                    <div class="m-year"><b>1847</b><span>Oklahoma</span></div>
+                    <div class="m-body">
+                        <div class="m-kicker">Moment</div>
+                        <h3>A gift from people who had nothing</h3>
+                        <p class="scene">In the spring of 1847, the Choctaw Nation hears about the hunger in Ireland. Only sixteen years earlier, the US government had forced them from their homeland on the “Trail of Tears”, and thousands died on the way. They collect what they can: <em>$170</em>, a huge sum for them, and send it to strangers across the ocean. Ireland never forgot. In 2017 a sculpture was unveiled in Midleton, County Cork: nine giant steel eagle feathers, shaped like an empty bowl. It is called <em>Kindred Spirits</em>.</p>
+                        <div class="look"><b>Look closely:</b>
+                            <a href="https://en.wikipedia.org/wiki/Kindred_Spirits_(sculpture)" target="_blank" rel="noopener">Kindred Spirits</a> ·
+                            <a href="https://en.wikipedia.org/wiki/Annie_Moore_(immigrant)" target="_blank" rel="noopener">Annie Moore</a> ·
+                            <a href="https://en.wikipedia.org/wiki/Daniel_O%27Connell" target="_blank" rel="noopener">Daniel O'Connell</a>
+                            <span class="q">Why do you think the sculptor chose an empty bowl?</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group-task">
+                    <div class="gt-head"><h4>👥 Freeze frame: the quay at Cobh, 1847</h4><span class="tag">optional · 3 people · 4 min</span></div>
+                    <ol>
+                        <li>Each of you secretly reads one role card.</li>
+                        <li>Build a still image (freeze frame): the moment the ship's bell rings. No words, no movement. Think about distance, height, gaze, hands.</li>
+                        <li>Classmates “tap” one of you on the shoulder – that person says one sentence: their inner thought.</li>
+                    </ol>
+                    <div class="roles">
+                        <details><summary>Role A: Bridget, 44, the mother</summary><p>You stay behind with the two youngest. Your husband is buried in a mass grave. You know you will almost certainly never see your daughter again. You want her to go – and you can't let go.</p></details>
+                        <details><summary>Role B: Mary, 17, the daughter</summary><p>You have a ticket to Boston and an address of a cousin you have never met. You are terrified of the ship and secretly excited about America. You promise to send money home.</p></details>
+                        <details><summary>Role C: Mr Walsh, the land agent</summary><p>Your landlord paid Mary's passage: one family less on the estate means one rent problem less. You tell yourself you are helping. You avoid the mother's eyes.</p></details>
+                    </div>
+                    <div class="timer" data-timer="240"><button type="button">▶ 4:00</button><output>4:00</output></div>
+                    <p class="solo"><b>Solo:</b> Write Mary's first letter home from Boston (5–6 sentences). What does she tell her mother – and what does she leave out?</p>
+                </div>
+
+                <div class="echo"><span class="e-ic">🔁</span><p><b>Echo today:</b> The Famine created the <b>Irish diaspora</b>. More than 30 million Americans – roughly one in ten – say they have Irish roots, six times the population of the Republic. That is why US presidents visit Ireland, why Chicago dyes its river green on 17 March, and why the USA helped to make peace in Northern Ireland. In Ireland itself, the Famine left a deep mistrust of British rule.</p></div>
+                <div class="collect-row"><span class="muted">Keep:</span>
+                    <button class="collect" type="button" data-collect="c3-famine" data-text="Great Famine (1845–52): about 1 million died, over 1 million emigrated – while food was still exported to Britain.">⭐ The Famine</button>
+                    <button class="collect" type="button" data-collect="c3-pop" data-text="The island's population fell from 8.2 million (1841) to 4.4 million (1911); even today (about 7 million) it is lower than in 1841.">⭐ 8.2 → 4.4 million</button>
+                    <button class="collect" type="button" data-collect="c3-diaspora" data-text="More than 30 million Americans (about one in ten) claim Irish roots – six times the population of the Republic of Ireland.">⭐ Diaspora</button>
+                    <button class="collect" type="button" data-collect="c3-choctaw" data-text="In 1847 the Choctaw Nation, just 16 years after the Trail of Tears, sent $170 to starving Ireland (sculpture Kindred Spirits, 2017).">⭐ The Choctaw gift</button>
+                </div>
+                <button class="done-toggle" type="button" data-done="ch3">☐ Done with this stop</button>
+            </section>
+
+            <!-- ================= 4 RISING AND PARTITION ================= -->
+            <section id="ch4" class="mt-4">
+                <div class="chapter-header">
+                    <span class="chapter-number">4</span>
+                    <h2>Rising and partition <small class="muted">(1912 – 1949)</small></h2>
+                    <span class="time">≈ 12 min</span>
+                </div>
+                <div class="story">
+                    <p class="dropcap">By 1900 most Irish people wanted <strong>Home Rule</strong>: their own parliament in Dublin, still under the Crown. London finally passed it in 1914. But in Ulster, the Protestant descendants of the planters were horrified. “Home Rule is Rome Rule,” they said. Almost half a million signed the <strong>Ulster Covenant</strong> (<span class="yr">1912</span>) – some, it is said, in their own blood – and an armed <span class="uni">Ulster Volunteer Force</span> was ready to fight. Then the First World War began, and Home Rule was put on hold.</p>
+                    <p>A small group of radicals decided not to wait.</p>
+                </div>
+
+                <div class="moment">
+                    <div class="m-year"><b>1916</b><span>Dublin<br>Easter Monday</span></div>
+                    <div class="m-body">
+                        <div class="m-kicker">Moment</div>
+                        <h3>A poet reads a proclamation</h3>
+                        <p class="scene">Noon, 24 April 1916. On the steps of the General Post Office in Dublin, a schoolteacher and poet, <em>Patrick Pearse</em>, reads out a proclamation to a puzzled crowd: “Irishmen and Irishwomen: In the name of God and of the dead generations …” – Ireland is a republic. About 1,500 rebels hold the city centre for six days. British artillery turns Dublin's main street into ruins. When the rebels surrender, many Dubliners jeer at them – some have husbands fighting for Britain in France.</p>
+                        <div class="look"><b>Look closely:</b>
+                            <a href="https://en.wikipedia.org/wiki/Proclamation_of_the_Irish_Republic" target="_blank" rel="noopener">the Proclamation</a> ·
+                            <a href="https://en.wikipedia.org/wiki/General_Post_Office,_Dublin" target="_blank" rel="noopener">the GPO today</a> ·
+                            <a href="https://en.wikipedia.org/wiki/Kilmainham_Gaol" target="_blank" rel="noopener">Kilmainham Gaol</a>
+                            <span class="q">Who does the Proclamation address – and who is unusual in that list for 1916?</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="story">
+                    <p>Then Britain made a fatal mistake. In May, it shot fourteen leaders in the yard of Kilmainham Gaol, one after another, over ten days (and one more in Cork). <strong>James Connolly</strong>, too badly wounded to stand, was tied to a chair and shot. The mood in Ireland turned. In the <span class="yr">1918</span> election the republican party <strong>Sinn Féin</strong> won 73 of 105 Irish seats; among its MPs was <strong>Constance Markievicz</strong>, the first woman ever elected to the British Parliament – she refused to take her seat. Instead, the winners set up their own parliament in Dublin, the Dáil, and the <strong>War of Independence</strong> (1919–21) began. Its mastermind was a young man from Cork, <strong>Michael Collins</strong>.</p>
+                </div>
+
+                <div class="group-task">
+                    <div class="gt-head"><h4>👥 Freeze frame in three shots: Easter 1916</h4><span class="tag">3 people · 5 min</span></div>
+                    <ol>
+                        <li>Read your role card. Build <b>three</b> freeze frames, one after the other, each held for 10 seconds: <b>(1)</b> Easter Monday, the Proclamation is read · <b>(2)</b> Saturday, the rebels are marched off through the jeering crowd · <b>(3)</b> May, news of the executions arrives.</li>
+                        <li>Show the <em>change</em> in how the people look at the rebels. Your audience (or your partner) describes what changes from shot to shot.</li>
+                    </ol>
+                    <div class="roles">
+                        <details><summary>Role A: a rebel</summary><p>You believe in the Republic. In shot 2 you are a prisoner being spat at. In shot 3 you are in a cell, hearing the shots in the yard each morning.</p></details>
+                        <details><summary>Role B: Mrs Kavanagh, a Dublin mother</summary><p>Your husband is a soldier in the British army in France. You think the rebels are traitors who stabbed your husband in the back. But in shot 3 … the executions make you think again.</p></details>
+                        <details><summary>Role C: a British officer</summary><p>You are just doing your job. In shot 1 you are surprised, in shot 2 you protect the prisoners from the crowd. In shot 3 you read the order for the next execution.</p></details>
+                    </div>
+                    <div class="timer" data-timer="300"><button type="button">▶ 5:00</button><output>5:00</output></div>
+                    <p class="solo"><b>Solo:</b> Write three short diary entries by Mrs Kavanagh – Monday, Saturday, and the day after Connolly's execution.</p>
+                </div>
+
+                <div class="widget" id="treaty">
+                    <h4>December 1921: you are in the Dáil. Accept the Treaty?</h4>
+                    <p class="how">After two years of guerrilla war, Collins and others negotiated a deal in London. Britain's prime minister threatened “immediate and terrible war” if they refused. Now the Dáil must decide. Read both sides, then vote.</p>
+                    <div class="two-col">
+                        <div class="side pro"><h5>Accept – Michael Collins</h5>
+                            <ul>
+                                <li>26 of 32 counties become the <b>Irish Free State</b>: own parliament, own army; British troops leave.</li>
+                                <li>“It gives us freedom – not the ultimate freedom that all nations desire, but the <b>freedom to achieve it</b>.”</li>
+                                <li>The alternative is a war Ireland cannot win.</li>
+                            </ul></div>
+                        <div class="side con"><h5>Reject – Éamon de Valera</h5>
+                            <ul>
+                                <li>Members of the Dáil must swear an <b>oath</b> to the British King. Ireland stays in the Empire.</li>
+                                <li>The north-east stays British – the island is <b>partitioned</b>.</li>
+                                <li>The Republic of 1916, for which men died, is betrayed.</li>
+                            </ul></div>
+                    </div>
+                    <div class="vote-btns">
+                        <button class="btn btn-primary" type="button" data-treaty="yes">I vote: accept</button>
+                        <button class="btn btn-outline" type="button" data-treaty="no">I vote: reject</button>
+                    </div>
+                    <div id="treaty-out"></div>
+                </div>
+
+                <div class="widget" id="partition">
+                    <h4>A line on the map</h4>
+                    <p class="how">Six of Ulster's nine counties became <strong>Northern Ireland</strong> (1921), with its own parliament in Belfast and inside the UK. Why six, not nine? With nine, unionists would have been only a slim majority; with six they had about two thirds.</p>
+                    <div class="land-ctrl" role="group" aria-label="Before or after partition">
+                        <button class="chip" type="button" data-part="0" aria-pressed="true">Before 1921: one country</button>
+                        <button class="chip" type="button" data-part="1">From 1921: partition</button>
+                    </div>
+                    <div class="map-wrap" style="margin-top:.7rem">
+                        <svg class="irl-map" data-map="partition" viewBox="0 0 320 420" role="img" aria-label="Map showing the border created in 1921"></svg>
+                        <div class="story" style="font-size:1rem">
+                            <p>Collins signed, knowing what it might cost him: “I have signed my actual death warrant,” he wrote. The Dáil accepted the Treaty by <strong>64 to 57</strong>. Former comrades now fought each other in a bitter <strong>Civil War</strong> (1922–23). Collins was shot dead in an ambush in his home county in August 1922, aged 31.</p>
+                            <p>In the south, de Valera later came to power by election, wrote a new constitution (<span class="yr">1937</span>) that gave the Catholic Church a “special position”, and in <span class="yr">1949</span> the state became the <strong>Republic of Ireland</strong>. In the north, unionists ran things for 50 years. Their first prime minister boasted in 1934: <em>“We are a Protestant Parliament and a Protestant State.”</em></p>
+                        </div>
+                    </div>
+                    <div class="pics"><b>Look:</b> <a href="https://en.wikipedia.org/wiki/Michael_Collins_(Irish_leader)" target="_blank" rel="noopener">Michael Collins</a> · <a href="https://en.wikipedia.org/wiki/Constance_Markievicz" target="_blank" rel="noopener">Constance Markievicz in uniform</a> · <a href="https://en.wikipedia.org/wiki/Anglo-Irish_Treaty" target="_blank" rel="noopener">the Treaty's signature page</a> · <a href="https://en.wikipedia.org/wiki/Partition_of_Ireland" target="_blank" rel="noopener">partition</a></div>
+                </div>
+
+                <div class="echo"><span class="e-ic">🔁</span><p><b>Echo today:</b> Ireland's two biggest parties of the 20th century, Fianna Fáil and Fine Gael, grew out of the two sides of the Civil War. And the border of 1921 is the same border that caused so much trouble in the Brexit talks a hundred years later.</p></div>
+                <div class="collect-row"><span class="muted">Keep:</span>
+                    <button class="collect" type="button" data-collect="c4-rising" data-text="Easter Rising 1916: at first unpopular; the execution of 15 leaders (Connolly shot tied to a chair) turned public opinion – Sinn Féin won 73 of 105 seats in 1918.">⭐ 1916 and the executions</button>
+                    <button class="collect" type="button" data-collect="c4-treaty" data-text="Anglo-Irish Treaty 1921: Collins called it “the freedom to achieve freedom”; de Valera rejected the oath and partition. Dáil vote 64–57, then Civil War 1922–23.">⭐ The Treaty</button>
+                    <button class="collect" type="button" data-collect="c4-partition" data-text="Partition 1921: six counties became Northern Ireland, drawn to give unionists about a two-thirds majority; “a Protestant Parliament and a Protestant State” (Craig, 1934).">⭐ Partition</button>
+                </div>
+                <button class="done-toggle" type="button" data-done="ch4">☐ Done with this stop</button>
+            </section>
+
+            <!-- ================= 5 TROUBLES AND PEACE ================= -->
+            <section id="ch5" class="mt-4">
+                <div class="chapter-header">
+                    <span class="chapter-number">5</span>
+                    <h2>The Troubles and the peace <small class="muted">(1968 – 1998)</small></h2>
+                    <span class="time">≈ 15 min</span>
+                </div>
+                <div class="story">
+                    <p class="dropcap">In Northern Ireland, about a third of the people were Catholic, and many felt like second-class citizens. Public housing and jobs often went to Protestants first. In <strong>Derry</strong>, a city with a Catholic majority, the voting districts were drawn so cleverly that unionists still controlled the council. Inspired by Martin Luther King in the USA, young Catholics started a <strong>civil rights movement</strong> in 1968: “One man, one vote!” Police beat the marchers – in front of TV cameras.</p>
+                    <p>Riots followed. In August <span class="yr">1969</span> the British army was sent in – at first, Catholic women brought the soldiers tea. That didn't last. The <span class="nat">IRA</span> (republicans who wanted a united Ireland by force) and <span class="uni">loyalist paramilitaries</span> (who wanted to keep Northern Ireland British by force) started a war of bombs and shootings. The British government locked up hundreds of suspects without trial. Then came the day that changed everything.</p>
+                </div>
+
+                <div class="moment">
+                    <div class="m-year"><b>1972</b><span>Derry<br>30 January</span></div>
+                    <div class="m-body">
+                        <div class="m-kicker">Moment</div>
+                        <h3>A white handkerchief</h3>
+                        <p class="scene">A Sunday afternoon civil rights march in the Bogside. British paratroopers open fire on unarmed people. A priest, <em>Father Edward Daly</em>, runs through the street, bent low, waving a blood-stained white handkerchief, while men carry a dying 17-year-old, Jackie Duddy, behind him. Twenty-six people are shot; fourteen die. The first official report clears the soldiers. Only in 2010 does a new inquiry find the killings “unjustified and unjustifiable”, and the British prime minister apologises in Parliament.</p>
+                        <div class="look"><b>Look closely:</b>
+                            <a href="https://en.wikipedia.org/wiki/Bloody_Sunday_(1972)" target="_blank" rel="noopener">Father Daly's handkerchief</a> ·
+                            <a href="https://en.wikipedia.org/wiki/Free_Derry_Corner" target="_blank" rel="noopener">Free Derry Corner</a> ·
+                            <a href="https://en.wikipedia.org/wiki/Peace_lines" target="_blank" rel="noopener">a Belfast “peace wall”</a>
+                            <span class="q">Why do you think this photo became the symbol of the day, rather than a picture of soldiers?</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="story">
+                    <p>After Bloody Sunday, hundreds of young men joined the IRA. The years that followed were the worst of <strong>the Troubles</strong>: car bombs in Belfast and in English cities, sectarian murders, soldiers on every corner, “peace walls” between Catholic and Protestant streets. In <span class="yr">1981</span> IRA prisoner <strong>Bobby Sands</strong> starved himself to death on hunger strike – after being elected to the British Parliament from his cell. Altogether, <strong>more than 3,500 people</strong> were killed.</p>
+                    <p>Peace came slowly, through people who talked when talking was dangerous: the Derry politician <strong>John Hume</strong>, the unionist leader <strong>David Trimble</strong>, US senator George Mitchell. Ceasefires came in 1994. On <span class="yr">10 April 1998</span>, Good Friday, after an all-night session, the parties signed the <strong>Good Friday Agreement</strong>. In May, people north and south voted on it: 71 % yes in Northern Ireland, 94 % in the Republic. Hume and Trimble received the Nobel Peace Prize.</p>
+                </div>
+
+                <div class="widget" id="gfa">
+                    <h4>Give and take: who gets what in the Good Friday Agreement?</h4>
+                    <p class="how">A peace deal works only if both sides can sell it at home. For each point: who did it mainly satisfy?</p>
+                    <div id="gfa-list"></div>
+                    <p class="score" id="gfa-score"></p>
+                </div>
+
+                <div class="group-task">
+                    <div class="gt-head"><h4>👥 Role play: radio phone-in, 21 May 1998</h4><span class="tag">3 people · 6 min</span></div>
+                    <ol>
+                        <li>Tomorrow Northern Ireland votes on the Good Friday Agreement. A radio show takes calls. Each of you secretly reads one card.</li>
+                        <li>The host runs the show (about 5 minutes) and must ask each caller at least one hard follow-up question.</li>
+                        <li>At the end, open the twist cards. Then each caller says how they will vote – and why.</li>
+                    </ol>
+                    <div class="roles">
+                        <details><summary>Role A: the host</summary><p>You are neutral and a bit provocative. Your job: make the callers explain their <em>reasons</em>, not just their feelings. Good questions: “And what would you say to someone who lost a family member?” – “What's your alternative?” – “What will happen if the vote is No?”</p></details>
+                        <details><summary>Role B: Sandra, 48, shop owner, Lisburn</summary><p>Protestant, unionist. Your shop window was blown out twice by IRA bombs. You want peace for your children – but the deal releases prisoners within two years and would put Sinn Féin, linked to the IRA, into government. Is that the price?</p><div class="twist"><b>Twist (open at the end):</b> Your son has just told you he wants to study in Dublin and has a Catholic girlfriend.</div></details>
+                        <details><summary>Role C: Declan, 39, nurse, Derry</summary><p>Catholic, nationalist. Your uncle was interned without trial in 1971. You dream of a united Ireland. The deal says Northern Ireland stays British as long as the majority wants it – does that mean giving up the dream?</p><div class="twist"><b>Twist (open at the end):</b> The deal says the border could go one day – if a majority votes for it. And you could be Irish citizen and live in the North without anyone stopping you.</div></details>
+                    </div>
+                    <div class="timer" data-timer="360"><button type="button">▶ 6:00</button><output>6:00</output></div>
+                    <p class="solo"><b>Solo:</b> Write what Sandra and Declan say on air (about 60 seconds each). Then decide: how does each of them vote?</p>
+                </div>
+
+                <div class="echo"><span class="e-ic">🔁</span><p><b>Echo today:</b> The Agreement still holds – a generation has grown up without the Troubles. But in 2026 Belfast still has dozens of peace walls (the goal to remove them all by 2023 was missed), children mostly go to separate Catholic or Protestant schools, and families of victims are still waiting for answers. The deal ended a war. Did it end the division?
+                    <br><span class="muted" style="color:#713f12">Look: <a href="https://en.wikipedia.org/wiki/Hands_Across_the_Divide" target="_blank" rel="noopener">Hands Across the Divide, Derry ↗</a> · <a href="https://en.wikipedia.org/wiki/Peace_Bridge_(Foyle)" target="_blank" rel="noopener">Peace Bridge, Derry ↗</a> · <a href="https://en.wikipedia.org/wiki/John_Hume" target="_blank" rel="noopener">John Hume ↗</a> · <a href="https://en.wikipedia.org/wiki/1981_Irish_hunger_strike" target="_blank" rel="noopener">1981 hunger strike ↗</a></span></p></div>
+                <div class="collect-row"><span class="muted">Keep:</span>
+                    <button class="collect" type="button" data-collect="c5-civil" data-text="Civil rights movement 1968: Catholics in Northern Ireland protested against discrimination in housing, jobs and voting (Derry) – police violence on TV.">⭐ Civil rights</button>
+                    <button class="collect" type="button" data-collect="c5-bloody" data-text="Bloody Sunday, Derry, 30 Jan 1972: paratroopers shot 26 unarmed marchers, 14 died; Saville Report 2010: “unjustified and unjustifiable”.">⭐ Bloody Sunday</button>
+                    <button class="collect" type="button" data-collect="c5-troubles" data-text="The Troubles (1969–98): more than 3,500 people killed; peace walls still divide parts of Belfast today.">⭐ 3,500 dead</button>
+                    <button class="collect" type="button" data-collect="c5-gfa" data-text="Good Friday Agreement (10 April 1998): power-sharing, consent principle, right to be Irish, British or both; approved by 71 % in the North and 94 % in the Republic.">⭐ Good Friday Agreement</button>
+                </div>
+                <button class="done-toggle" type="button" data-done="ch5">☐ Done with this stop</button>
+            </section>
+
+            <!-- ================= 6 TIGER, CHANGE, BREXIT ================= -->
+            <section id="ch6" class="mt-4">
+                <div class="chapter-header">
+                    <span class="chapter-number">6</span>
+                    <h2>Tiger, change, Brexit <small class="muted">(1973 – today)</small></h2>
+                    <span class="time">≈ 10 min</span>
+                </div>
+                <div class="story">
+                    <p class="dropcap">For most of the 20th century the Republic was poor, rural and deeply Catholic, and its young people left – to Britain, to America. Then came Europe. Ireland joined the EEC in <span class="yr">1973</span>, together with the UK. In the 1990s, low taxes for companies, EU money and a young, English-speaking workforce turned Ireland into the <strong>Celtic Tiger</strong>: Apple, Google and Meta set up their European headquarters in Dublin, and for the first time in centuries more people came than left.</p>
+                    <p>The Tiger crashed in <span class="yr">2008</span> – a property bubble burst, banks failed, and Ireland needed an €85 billion bailout. Young people emigrated again. The economy recovered, but one problem stayed: <strong>housing</strong>. Rents in Dublin are among the highest in Europe, and many people in their late twenties still live with their parents.</p>
+                    <p>Society changed even faster than the economy. Report after report revealed how children and young women had been abused in Church-run schools, homes and “Magdalene laundries”. The Church that had once stood for Irishness lost its authority. And then Ireland surprised the world.</p>
+                </div>
+
+                <div class="moment">
+                    <div class="m-year"><b>2015</b><span>Dublin<br>23 May</span></div>
+                    <div class="m-body">
+                        <div class="m-kicker">Moment</div>
+                        <h3>#HomeToVote</h3>
+                        <p class="scene">Thousands of young Irish emigrants fly and sail home from London, Berlin, Toronto and Sydney, posting their journeys online, just to cast one vote. The question: should two people be allowed to marry regardless of their sex? In the courtyard of Dublin Castle – for centuries the seat of British power – the crowd waits for the result. <em>62 % Yes.</em> Ireland becomes the first country in the world to introduce same-sex marriage by popular vote. Three years later, 66 % vote to legalise abortion.</p>
+                        <div class="look"><b>Look closely:</b>
+                            <a href="https://en.wikipedia.org/wiki/Thirty-fourth_Amendment_of_the_Constitution_of_Ireland" target="_blank" rel="noopener">2015 results map</a> ·
+                            <a href="https://en.wikipedia.org/wiki/Thirty-sixth_Amendment_of_the_Constitution_of_Ireland" target="_blank" rel="noopener">2018 results map</a> ·
+                            <a href="https://en.wikipedia.org/wiki/Magdalene_laundries_in_Ireland" target="_blank" rel="noopener">a Magdalene laundry</a>
+                            <span class="q">On the maps: how many constituencies voted No?</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="moment">
+                    <div class="m-year"><b>2011</b><span>Dublin Castle<br>18 May</span></div>
+                    <div class="m-body">
+                        <div class="m-kicker">Moment</div>
+                        <h3>Five words in Irish</h3>
+                        <p class="scene">The first visit by a British monarch to independent Ireland. Queen Elizabeth II has laid a wreath for the Irish who died fighting <em>against</em> Britain and bowed her head. She has visited Croke Park, where British forces killed fourteen people at a football match in 1920. Now, at the state banquet, she stands up and begins her speech in Irish: <em>“A Uachtaráin agus a chairde”</em> – “President and friends”. Ireland's president, Mary McAleese, can't help herself: “Wow,” she says.</p>
+                        <div class="look"><b>Look closely:</b>
+                            <a href="https://en.wikipedia.org/wiki/State_visit_by_Elizabeth_II_to_the_Republic_of_Ireland" target="_blank" rel="noopener">the state visit 2011</a> ·
+                            <a href="https://en.wikipedia.org/wiki/Croke_Park" target="_blank" rel="noopener">Croke Park</a>
+                            <span class="q">Why can a few words in a language very few people speak every day have so much power?</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="story">
+                    <p>Five years later, the UK voted for <strong>Brexit</strong> (<span class="yr">2016</span>). Northern Ireland voted 56 % to remain. Suddenly the forgotten border mattered again: it would now be the land border between the UK and the EU. Checks there were out of the question – the open border was part of the peace. So the checks moved to the ports between Great Britain and Northern Ireland: a “border in the Irish Sea”. Many unionists felt cut off from Britain; their biggest party boycotted the Northern Ireland government for two years. A new deal, the <strong>Windsor Framework</strong> (2023), eased the checks. In February 2024 <strong>Michelle O'Neill</strong> of Sinn Féin became First Minister – the first nationalist ever to lead Northern Ireland. In the 2021 census, for the first time, more people in Northern Ireland had a Catholic background than a Protestant one.</p>
+                </div>
+
+                <div class="widget" id="road">
+                    <h4>Road trip: drive from Dublin to Belfast</h4>
+                    <p class="how">Same road, same border near Newry. Choose a year and see what you would meet.</p>
+                    <div class="land-ctrl" role="group" aria-label="Choose a year">
+                        <button class="chip" type="button" data-road="1985">1985</button>
+                        <button class="chip" type="button" data-road="2008">2008</button>
+                        <button class="chip" type="button" data-road="2019">2019: the “what if”</button>
+                        <button class="chip" type="button" data-road="2026">2026</button>
+                    </div>
+                    <svg class="road-svg" id="road-svg" viewBox="0 0 600 170" role="img" aria-label="Border scene"></svg>
+                    <div class="road-out" id="road-out"><p class="muted" style="margin:0">Choose a year above.</p></div>
+                </div>
+
+                <div class="pics"><b>Look:</b> <a href="https://en.wikipedia.org/wiki/Brexit_and_the_Irish_border" target="_blank" rel="noopener">Brexit and the Irish border (map)</a> · <a href="https://en.wikipedia.org/wiki/Windsor_Framework" target="_blank" rel="noopener">Windsor Framework 2023</a> · <a href="https://en.wikipedia.org/wiki/Celtic_Tiger" target="_blank" rel="noopener">Celtic Tiger (growth chart)</a> · <a href="https://en.wikipedia.org/wiki/Kneecap_(band)" target="_blank" rel="noopener">Kneecap, Belfast rap in Irish</a></div>
+
+                <div class="echo"><span class="e-ic">🔁</span><p><b>Echo today:</b> Ireland, a country of emigrants for 150 years, is now a country of immigrants: in the 2022 census about one in five residents was born abroad. Most Irish people welcome this; but when a man attacked children outside a Dublin school in November 2023, the city saw its worst riots in decades, fuelled by anti-immigrant online campaigns. Meanwhile, the Irish language is cool again – about 1.9 million people say they can speak it, though only around 72,000 use it every day outside school. In October 2025 Catherine Connolly was elected president with 63 % of the first-preference votes.</p></div>
+                <div class="collect-row"><span class="muted">Keep:</span>
+                    <button class="collect" type="button" data-collect="c6-tiger" data-text="Celtic Tiger (1990s–2007): low company taxes and EU membership brought Apple, Google, Meta to Dublin; crash in 2008, €85 bn bailout; today a housing crisis.">⭐ Celtic Tiger</button>
+                    <button class="collect" type="button" data-collect="c6-ref" data-text="2015: first country to legalise same-sex marriage by popular vote (62 %); 2018: 66 % voted to legalise abortion – the Catholic Church lost its old power.">⭐ Referendums</button>
+                    <button class="collect" type="button" data-collect="c6-brexit" data-text="Brexit: Northern Ireland voted 56 % Remain; to keep the land border open, checks moved to the Irish Sea; Windsor Framework 2023; unionist protest and Stormont boycott 2022–24.">⭐ Brexit and the border</button>
+                    <button class="collect" type="button" data-collect="c6-queen" data-text="2011: Queen Elizabeth II opened her Dublin Castle speech in Irish and bowed her head at the Garden of Remembrance – a symbol of British–Irish reconciliation.">⭐ The Queen in Dublin</button>
+                    <button class="collect" type="button" data-collect="c6-new" data-text="2022 census: about one in five people in Ireland was born abroad – a country of emigrants has become a country of immigrants.">⭐ New Irish</button>
+                </div>
+                <button class="done-toggle" type="button" data-done="ch6">☐ Done with this stop</button>
+            </section>
+
+            <!-- ================= 7 TRACE IT BACK ================= -->
+            <section id="trace" class="mt-4">
+                <div class="chapter-header">
+                    <span class="chapter-number">7</span>
+                    <h2>Trace it back</h2>
+                    <span class="time">≈ 8 min</span>
+                </div>
+                <p class="lead">Today's headlines rarely explain themselves. Pick a present-day problem and build the chain backwards: click the card that answers “<em>Why?</em>” – step by step, until you hit the root. Do at least two chains.</p>
+
+                <div class="widget">
+                    <div class="chain-pick" id="chain-pick" role="group" aria-label="Choose a chain"></div>
+                    <div class="chain-built" id="chain-built"></div>
+                    <div class="pool" id="chain-pool"></div>
+                    <div class="fb" id="chain-fb"></div>
+                </div>
+
+                <div class="widget" id="sprint">
+                    <h4>⏱ Timeline sprint</h4>
+                    <p class="how">Click the events from oldest to newest. How fast can you get all ten right?</p>
+                    <div class="row-btns"><button class="btn btn-primary" type="button" id="sprint-start">Start</button><span class="muted" id="sprint-best"></span></div>
+                    <div class="sprint-line" id="sprint-line"></div>
+                    <div class="sprint-pool" id="sprint-pool"></div>
+                    <div class="fb" id="sprint-fb"></div>
+                </div>
+                <button class="done-toggle" type="button" data-done="trace">☐ Done with this stop</button>
+            </section>
+
+            <!-- ================= 8 IDENTITY ================= -->
+            <section id="identity" class="mt-4">
+                <div class="chapter-header">
+                    <span class="chapter-number">8</span>
+                    <h2>Who are the Irish?</h2>
+                    <span class="time">≈ 7 min</span>
+                </div>
+                <p class="lead">There is no single Irish identity. In Northern Ireland's 2021 census, people answered the question “How would you describe your national identity?” like this:</p>
+                <div class="id-bar" role="img" aria-label="National identity in Northern Ireland 2021: British only 31.9 percent, Irish only 29.1 percent, Northern Irish only 19.8 percent, other combinations 19.2 percent">
+                    <div style="width:31.9%;background:var(--uni)">British only<br>31.9 %</div>
+                    <div style="width:29.1%;background:var(--nat)">Irish only<br>29.1 %</div>
+                    <div style="width:19.8%;background:#475569">Northern Irish only<br>19.8 %</div>
+                    <div style="width:19.2%;background:#94a3b8">combinations &amp; other 19.2 %</div>
+                </div>
+                <p class="muted">Source: NISRA, Census 2021. Note the fast-growing group of people who call themselves “Northern Irish” – often young people who don't want to choose a side.</p>
+
+                <div class="widget">
+                    <h4>Six people, six identities</h4>
+                    <p class="how">Choose a person. Read what they say, then select the parts of the story that you think shaped their identity. Compare with our suggestion – there is no single right answer, but you should be able to explain your choices.</p>
+                    <div class="personas" id="personas"></div>
+                    <div class="persona-panel" id="persona-panel"><p class="muted" style="margin:0">Choose a person above.</p></div>
+                </div>
+
+                <div class="pics"><b>Look:</b> <a href="https://en.wikipedia.org/wiki/Irish_Americans" target="_blank" rel="noopener">map: where Irish Americans live</a> · <a href="https://en.wikipedia.org/wiki/Saint_Patrick%27s_Day" target="_blank" rel="noopener">St Patrick's Day around the world</a> · <a href="https://en.wikipedia.org/wiki/Mary_Robinson" target="_blank" rel="noopener">Mary Robinson</a>, president 1990–97, who kept a light burning in a window of her official residence for the Irish abroad</div>
+                <button class="done-toggle" type="button" data-done="identity">☐ Done with this stop</button>
+            </section>
+
+            <!-- ================= 9 WRITE ================= -->
+            <section id="write" class="mt-4">
+                <div class="chapter-header write">
+                    <span class="chapter-number">✍</span>
+                    <h2>Your turn: assess</h2>
+                    <span class="time">≈ 8 min planning + writing</span>
+                </div>
+                <div class="task-box">
+                    <h4>Your task</h4>
+                    <p>Write a <strong>speech</strong> or an <strong>article</strong> in which you <strong>assess</strong> one of the questions below.</p>
+                    <ul>
+                        <li><strong>Assess</strong> = weigh up the evidence and come to a clear judgement. You may take a strong position and argue in one direction.</li>
+                        <li>But you <strong>must take up at least one idea of the other side</strong> – the strongest one you can find – and refute it (or show why it matters less).</li>
+                        <li>Choose a <strong>historical voice</strong> (you speak or write as a real person at a real moment – you only know what happened up to that date!) or a <strong>modern voice</strong> (you, today).</li>
+                        <li>Use evidence from the story: dates, numbers, moments. Your ⭐ locker helps. Length: about 400 words, unless your teacher says otherwise.</li>
+                    </ul>
+                </div>
+
+                <div class="row-btns">
+                    <div class="mode-switch" role="group" aria-label="Choose voice">
+                        <button type="button" data-mode="hist" aria-pressed="true">🎩 Historical voice</button>
+                        <button type="button" data-mode="mod" aria-pressed="false">📱 Modern voice</button>
+                    </div>
+                    <div class="mode-switch" role="group" aria-label="Choose text type">
+                        <button type="button" data-form="speech" aria-pressed="true">🎤 Speech</button>
+                        <button type="button" data-form="article" aria-pressed="false">📰 Article</button>
+                    </div>
+                </div>
+                <div class="task-grid" id="task-grid"></div>
+                <div id="brief"></div>
+
+                <h3 class="sub">Plan <small>saved automatically in this browser</small></h3>
+                <div class="planner">
+                    <div class="pair">
+                        <div><label for="p-verdict">My verdict <small>(one sentence)</small></label><textarea id="p-verdict" data-plan="verdict"></textarea></div>
+                        <div><label for="p-hook">My hook <small>(a moment, a number, a question)</small></label><textarea id="p-hook" data-plan="hook"></textarea></div>
+                    </div>
+                    <div class="pair">
+                        <div><label for="p-a1">Argument 1 + evidence</label><textarea id="p-a1" data-plan="a1"></textarea></div>
+                        <div><label for="p-a2">Argument 2 + evidence</label><textarea id="p-a2" data-plan="a2"></textarea></div>
+                    </div>
+                    <div class="pair counter">
+                        <div><label for="p-c">The other side's strongest point</label><textarea id="p-c" data-plan="counter"></textarea></div>
+                        <div><label for="p-r">My refutation</label><textarea id="p-r" data-plan="refute"></textarea></div>
+                    </div>
+                    <div><label for="p-end">My ending <small>(call to action, image, outlook)</small></label><textarea id="p-end" data-plan="ending"></textarea></div>
+                </div>
+
+                <h3 class="sub">⭐ Your evidence locker</h3>
+                <ul class="locker-list" id="locker-list"></ul>
+                <p class="muted" id="locker-empty">Still empty. Use the “Keep” buttons in the chapters.</p>
+
+                <h3 class="sub">How to take on the other side</h3>
+                <div class="model-para">
+                    <span class="c1">Admittedly, critics have a point when they call today's St Patrick's Day a festival of green plastic hats and cheap beer.</span>
+                    <span class="c2">However, this overlooks</span>
+                    <span class="c3">what the day meant to those who first celebrated it abroad: for Famine emigrants in Boston and New York, marching through the streets was a way of saying, “We are here, and we are not ashamed.”</span>
+                    <span class="c4">Take away the plastic hats, and that message is still there – which is why the day deserves to be celebrated, not mocked.</span>
+                </div>
+                <p class="legend" style="margin-top:.4rem"><span><i style="background:#fde68a"></i>concede the point</span><span><i style="background:#bfdbfe"></i>turn</span><span><i style="background:#bbf7d0"></i>evidence</span><span><i style="background:#fbcfe8"></i>judgement</span></p>
+                <div class="phrases mt-2">
+                    <div><h5>Concede</h5><ul><li>Admittedly, …</li><li>Granted, …</li><li>Critics rightly point out that …</li><li>I do not deny that …</li></ul></div>
+                    <div><h5>Turn and refute</h5><ul><li>However, this overlooks …</li><li>Yet the evidence suggests otherwise: …</li><li>This may sound convincing, but …</li><li>But ask yourselves: …</li></ul></div>
+                    <div><h5>Judge</h5><ul><li>On balance, …</li><li>Weighing up …, I am convinced that …</li><li>The decisive point is …</li><li>All things considered, …</li></ul></div>
+                </div>
+
+                <h3 class="sub">Checklist <small id="check-title">speech</small></h3>
+                <ul class="checklist" id="checklist"></ul>
+
+                <h3 class="sub">Draft</h3>
+                <div class="draft">
+                    <label for="draft" class="sr-only">Your text</label>
+                    <textarea id="draft" data-plan="draft" placeholder="Write your speech or article here – or on paper."></textarea>
+                    <p class="wc">Words: <b id="wc">0</b> <span id="wc-hint"></span></p>
+                </div>
+                <div class="row-btns mt-2">
+                    <button type="button" class="btn btn-primary" id="copy-all">📋 Copy plan + text</button>
+                    <button type="button" class="btn btn-outline" id="save-txt">💾 Save as .txt</button>
+                    <button type="button" class="btn btn-outline" id="clear-all">Delete everything on this page</button>
+                    <span class="muted" id="copy-msg"></span>
+                </div>
+                <p class="muted mt-2">Everything you type stays in this browser on this device. Nothing is sent anywhere. Copy or save your text before you switch devices.</p>
+                <button class="done-toggle" type="button" data-done="write">☐ Done with this stop</button>
+            </section>
+
+            <!-- ================= POPCORN ================= -->
+            <section id="popcorn" class="mt-4">
+                <div class="chapter-header">
+                    <span class="chapter-number">🍿</span>
+                    <h2>Watch &amp; listen</h2>
+                </div>
+                <p class="lead">For later – films and songs that tell this story better than any textbook. Links go to Wikipedia; some films are rated 15/16+.</p>
+                <div class="pop-grid">
+                    <a class="pop" href="https://en.wikipedia.org/wiki/Derry_Girls" target="_blank" rel="noopener"><span class="ch">TV · comedy</span><strong>Derry Girls</strong><span>Teenagers in 1990s Derry, Troubles in the background. The final episode, “The Agreement”, is about the 1998 referendum.</span></a>
+                    <a class="pop" href="https://en.wikipedia.org/wiki/Belfast_(film)" target="_blank" rel="noopener"><span class="ch">Film · 2021</span><strong>Belfast</strong><span>Kenneth Branagh's childhood in 1969, the summer the Troubles began.</span></a>
+                    <a class="pop" href="https://en.wikipedia.org/wiki/Michael_Collins_(film)" target="_blank" rel="noopener"><span class="ch">Film · 1996</span><strong>Michael Collins</strong><span>From the GPO in 1916 to the ambush in 1922.</span></a>
+                    <a class="pop" href="https://en.wikipedia.org/wiki/The_Wind_That_Shakes_the_Barley_(film)" target="_blank" rel="noopener"><span class="ch">Film · 2006</span><strong>The Wind That Shakes the Barley</strong><span>Two brothers in the War of Independence – and on opposite sides of the Treaty.</span></a>
+                    <a class="pop" href="https://en.wikipedia.org/wiki/The_Banshees_of_Inisherin" target="_blank" rel="noopener"><span class="ch">Film · 2022</span><strong>The Banshees of Inisherin</strong><span>Two friends fall out on a tiny island in 1923, while the Civil War rumbles across the water.</span></a>
+                    <a class="pop" href="https://en.wikipedia.org/wiki/Brooklyn_(film)" target="_blank" rel="noopener"><span class="ch">Film · 2015</span><strong>Brooklyn</strong><span>A young woman leaves 1950s Ireland for New York – the emigrant's story.</span></a>
+                    <a class="pop" href="https://en.wikipedia.org/wiki/Kneecap_(film)" target="_blank" rel="noopener"><span class="ch">Film · 2024</span><strong>Kneecap</strong><span>West Belfast rappers fight for the Irish language. Loud, rude, political.</span></a>
+                    <a class="pop" href="https://en.wikipedia.org/wiki/Zombie_(The_Cranberries_song)" target="_blank" rel="noopener"><span class="ch">Song · 1994</span><strong>The Cranberries – Zombie</strong><span>Written after an IRA bomb killed two children in Warrington, England.</span></a>
+                    <a class="pop" href="https://en.wikipedia.org/wiki/Sunday_Bloody_Sunday" target="_blank" rel="noopener"><span class="ch">Song · 1983</span><strong>U2 – Sunday Bloody Sunday</strong><span>“How long must we sing this song?” – about Derry, 1972.</span></a>
+                    <a class="pop" href="https://en.wikipedia.org/wiki/The_Fields_of_Athenry" target="_blank" rel="noopener"><span class="ch">Song · 1979</span><strong>The Fields of Athenry</strong><span>A Famine ballad that Irish football and rugby fans still sing in stadiums.</span></a>
+                </div>
+            </section>
+
+            <!-- ================= SOURCES ================= -->
+            <section id="sources" class="mt-4">
+                <div class="chapter-header">
+                    <span class="chapter-number">§</span>
+                    <h2>Sources</h2>
+                </div>
+                <ul class="sources-list">
+                    <li>Image links: English Wikipedia articles on each subject (checked November 2026). The pictures are not copied onto this site; they open on Wikipedia.</li>
+                    <li>Population: Census of Ireland 1841–1911; CSO Census 2022 (Republic); NISRA Census 2021/2022 estimate (Northern Ireland).</li>
+                    <li>Land ownership: standard figures from J. G. Simms and later surveys (Catholic share 59 % 1641, 22 % 1688, 14 % 1703, about 5 % 1778).</li>
+                    <li>National identity and religious background in Northern Ireland: NISRA, Census 2021.</li>
+                    <li>Referendums: Referendum Commission / official results (2015: 62.07 % Yes; 2018: 66.40 % Yes); Good Friday Agreement referendums 1998.</li>
+                    <li>Bloody Sunday: Report of the Bloody Sunday Inquiry (Saville, 2010).</li>
+                    <li>Irish language: CSO Census 2022 (1,873,997 able to speak Irish; 71,968 daily outside education).</li>
+                    <li>Irish Americans: US Census Bureau; Presidential election 2025: official result (Connolly 63.4 % first preferences).</li>
+                </ul>
+
+                <details class="teacher">
+                    <summary>For teachers</summary>
+                    <p class="mt-2"><strong>Timing (90 min):</strong> start and chapters 1–3 ≈ 30 min, chapters 4–5 incl. group tasks ≈ 27 min, chapter 6 ≈ 10 min, trace it back + identities ≈ 15 min, choosing a task and planning ≈ 8 min. The writing itself (≈ 45 min) works as homework or in the next lesson. If time is short, skip the optional Cobh freeze frame and the timeline sprint.</p>
+                    <p><strong>Group tasks</strong> are built for groups of 3 (or 2: drop role C / the host's partner role). Students working alone have a written solo option for each. A good debrief for the 1916 freeze frame: “What changed between shot 2 and shot 3 – and why?” For the phone-in: collect the reasons for Yes and No on the board; they feed directly into the writing task (Hume task, peace walls task).</p>
+                    <p><strong>Writing task:</strong> four historical (Collins, Markievicz, Hume, Robinson) and four modern prompts, each as speech or article. The operator “assess” is used in a deliberately one-sided way here: a clear position is allowed, but at least one opposing argument must be taken up and refuted. Students can copy plan and text or save them as a .txt file to hand in.</p>
+                    <p><strong>Images</strong> are linked, not embedded (data protection): every “Look closely” link opens the Wikipedia article in a new tab, where the picture is the lead image or near the top. Facts as of November 2026.</p>
+                </details>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de · <a href="https://edu-mrh.de/impressum.html#lizenz">CC BY-NC-SA 4.0</a> | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+
+</body>
+</html>
