@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2.1 Bäume und geordnete Binärbäume | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Binärbäume, Informatik 12: Begriffe rund um Bäume, geordnete Binärbäume, Suchen und Einfügen von Hand. Mit Namen raten, Baum-Safari, Such-Sprint und Baumschule.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="../rekursive-datenstrukturen/datenstrukturen.css">
+    <link rel="stylesheet" href="baeume.css">
+    <script defer src="../rekursive-datenstrukturen/datenstrukturen.js"></script>
+    <script defer src="baeume.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🌳</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="binaerbaeume.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 2.1</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#raten">🔍 Namen raten</a></li>
+            <li><a href="#begriffe">📝 Begriffe</a></li>
+            <li><a href="#safari">🧭 Baum-Safari</a></li>
+            <li><a href="#geordnet">📝 Geordnet suchen</a></li>
+            <li><a href="#sprint">⚡ Such-Sprint</a></li>
+            <li><a href="#baumschule">🌱 Baumschule</a></li>
+            <li><a href="#nachdenken">💡 Nachdenken</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Binärbäume und Tiefensuche</div>
+            <ul class="sidebar-menu">
+                <li><a href="binaerbaeume.html">Übersicht und Abzeichen</a></li>
+                <li><a href="2-1-baeume.html">2.1 Bäume</a></li>
+                <li><a href="2-2-kompositum.html">2.2 Binärbaum als Kompositum</a></li>
+                <li><a href="2-3-traversierung.html">2.3 Traversierung</a></li>
+                <li><a href="2-4-hoehe.html">2.4 Höhe und Effizienz</a></li>
+                <li><a href="../tiefensuche/tiefensuche.html">2.5 Escape Room Tiefensuche</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero rd-hero">
+                <h1 class="hero-title">2.1 Bäume und geordnete Binärbäume</h1>
+                <p class="hero-subtitle">Binärbäume · Informatik 12 · ca. 90 Minuten</p>
+                <span class="rd-kompetenz">Du kannst: Bäume mit Fachbegriffen beschreiben, in einem geordneten Binärbaum von Hand suchen und einfügen und begründen, warum das so schnell geht.</span>
+                <div class="rd-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-2-1-baeume.pdf">📝 Arbeitsblatt 2.1 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-2-1-baeume.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="bb-ticket">
+                <h3>Ticket #2.1 · Server-Team Sternenstaub</h3>
+                <p>Im Online-Spiel <strong>Sternenstaub</strong> gibt es zwei Millionen Accounts. Beim Login sucht der Server den Namen in einer Liste, und das dauert manchmal mehrere Sekunden. Die Spielerinnen und Spieler sind sauer.</p>
+                <p><strong>Deine Mission für dieses Kapitel:</strong> ein Spielerverzeichnis bauen, das jeden Namen in höchstens 21 Schritten findet. Heute lernst du die Struktur kennen, mit der das klappt.</p>
+                <p class="bb-von">So arbeitest du: Lies jede Phase von oben nach unten, spiele die Spiele und fülle das Arbeitsblatt dort aus, wo der grüne Knopf 📝 darauf verweist. Für Abzeichen ist ein Spiel ganz geschafft. Lösungen zum Blatt findest du in den Kästen „Tipp / Lösung“.</p>
+            </div>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#raten">🔍 Einstieg</a><a class="p-note" href="#begriffe">📝 Festhalten</a><a class="p-investigate" href="#safari">🧭 Üben</a><a class="p-note" href="#geordnet">📝 Festhalten</a><a class="p-modify" href="#sprint">⚡ Üben</a><a class="p-idee" href="#nachdenken">💡 Nachdenken</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="raten" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Einstieg<small>Aufgabe 1: Namen raten</small></h2></div>
+                <div class="phase-body">
+                    <p>Bevor es um Bäume geht, ein Spiel. Die 1000 Namen sind alphabetisch sortiert. Du darfst nach einem Namen fragen und erfährst nur, ob der gesuchte Name früher oder später im Alphabet kommt. Spiele mindestens zwei Runden.</p>
+                    <div data-raten></div>
+                    <ol class="aufgaben">
+                        <li>Notiere, wie viele Fragen du gebraucht hast, und beschreibe deine Strategie in einem Satz.</li>
+                        <li>Wie viele Fragen braucht man mit der besten Strategie höchstens? Wie viele bei zwei Millionen Accounts?</li>
+                    </ol>
+                    <details class="denk"><summary>Denkanstoß zu b)</summary>
+                        <p>Jede Frage nach der Mitte halbiert den Bereich. Wie oft kann man 1000 halbieren, bis nur noch ein Name übrig ist? 2 hoch wie viel ist größer als 1000?</p>
+                    </details>
+                    <div class="lw" data-loesungsweg="Aufgabe 1b">
+                        <template data-stufe="Lösung" data-halten><p>Mit der Mitte-Strategie halbiert sich der Bereich bei jeder Frage. Nach 10 Fragen ist er kleiner als 1, denn 2<sup>10</sup> = 1024 &gt; 1000: also höchstens <strong>10 Fragen</strong>. Für 2 000 000 Accounts reichen <strong>21 Fragen</strong> (2<sup>21</sup> ≈ 2,1 Millionen). Eine Liste müsste im schlimmsten Fall alle 2 000 000 Namen prüfen.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-1-baeume.pdf">📝 Blatt 2.1 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="begriffe" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Bäume: die wichtigsten Begriffe</small></h2></div>
+                <div class="phase-body">
+                    <p>Beim Raten hast du in Gedanken einen <strong>Entscheidungsbaum</strong> abgelaufen: oben die erste Frage, dann je nach Antwort nach links (früher) oder rechts (später). Genau diese Struktur bauen wir als Datenstruktur nach. So sieht das Spielerverzeichnis mit den ersten elf Accounts aus:</p>
+                    <div data-baumbild="Mika Emil Tara Bo Ines Pia Zoe Dana Kai Ruby Vik" data-breite="640"></div>
+                    <div class="konzept">
+                        <h4>Merke: Bäume</h4>
+                        <ul>
+                            <li>Ein <strong>Baum</strong> besteht aus <strong>Knoten</strong> (hier: Accounts), die durch <strong>Kanten</strong> verbunden sind. In der Informatik wachsen Bäume nach unten.</li>
+                            <li>Der oberste Knoten ist die <strong>Wurzel</strong> (Mika). Jeder andere Knoten hat genau einen <strong>Elternknoten</strong> direkt über sich. Die Knoten direkt darunter sind seine <strong>Kinder</strong>.</li>
+                            <li>Knoten ohne Kinder heißen <strong>Blätter</strong> (Dana, Kai, Ruby, Vik), alle anderen <strong>innere Knoten</strong>.</li>
+                            <li>In einem <strong>Binärbaum</strong> hat jeder Knoten höchstens zwei Kinder: ein linkes und ein rechtes.</li>
+                            <li>Jeder Knoten ist die Wurzel eines <strong>Teilbaums</strong>: er selbst und alles, was unter ihm hängt. Emils linker Teilbaum besteht aus Bo und Dana.</li>
+                            <li>Ein <strong>Pfad</strong> folgt den Kanten. Zu jedem Knoten führt von der Wurzel genau ein Pfad.</li>
+                            <li>Die Wurzel liegt auf <strong>Ebene 1</strong>, ihre Kinder auf Ebene 2 usw. Die Anzahl der Ebenen ist die <strong>Höhe</strong> des Baums (hier 4).</li>
+                        </ul>
+                    </div>
+                    <div class="konzept">
+                        <h4>Merke: Ein Binärbaum ist rekursiv</h4>
+                        <p>Ein Binärbaum ist <strong>entweder leer oder</strong> er besteht aus einer Wurzel mit einem linken und einem rechten Teilbaum, die <strong>selbst wieder Binärbäume</strong> sind. Diese Definition benutzt sich selbst, wie die Liste in 1.3. Darum werden wir Bäume rekursiv programmieren.</p>
+                    </div>
+                    <p class="bb-fuss">Manche Bücher zählen die Ebenen ab 0 oder messen die Höhe in Kanten. Dann ist alles um 1 kleiner. Wir zählen Ebenen, weil die Höhe dann genau die Zahl der Vergleiche im schlimmsten Fall angibt.</p>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-1-baeume.pdf">📝 Blatt 2.1 · Merkkasten Bäume</a></p>
+                </div>
+            </section>
+
+            <section id="safari" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🧭</span><h2>Üben<small>Aufgabe 2: Baum-Safari</small></h2></div>
+                <div class="phase-body">
+                    <p>Neun Begriffe, neun Aufgaben. Klicke die passenden Knoten an (noch einmal klicken hebt die Markierung auf) und prüfe. Die kleinen grauen Quadrate kommen in Station 2.2 dran: Sie stehen dort, wo ein Teilbaum leer ist.</p>
+                    <div data-safari></div>
+                    <p>Übertrage danach die Antworten auf das Blatt (Aufgabe 2).</p>
+                    <div class="lw" data-loesungsweg="Aufgabe 2">
+                        <template data-stufe="Lösung" data-halten><p>Wurzel: Mika · Blätter: Dana, Kai, Ruby, Vik · Elternknoten von Kai: Ines · Kinder von Tara: Pia, Zoe · rechter Teilbaum von Emil: Ines, Kai · Ebene 3: Bo, Ines, Pia, Zoe · Höhe: 4</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-1-baeume.pdf">📝 Blatt 2.1 · Aufgabe 2</a></p>
+                </div>
+            </section>
+
+            <section id="geordnet" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Geordnete Binärbäume: suchen und einfügen</small></h2></div>
+                <div class="phase-body">
+                    <p>Schau dir das Verzeichnis noch einmal an: Emil, Bo, Ines, Dana und Kai stehen links von Mika und kommen im Alphabet alle <em>vor</em> Mika. Rechts stehen nur Namen, die <em>nach</em> Mika kommen. Das gilt nicht nur an der Wurzel, sondern an jedem Knoten.</p>
+                    <div class="konzept">
+                        <h4>Merke: Geordneter Binärbaum (Suchbaum)</h4>
+                        <p>Für <strong>jeden</strong> Knoten gilt: Alle Schlüssel im <strong>linken Teilbaum</strong> sind <strong>kleiner</strong>, alle im <strong>rechten Teilbaum</strong> sind <strong>größer</strong> als sein eigener Schlüssel. Jeder Schlüssel kommt höchstens einmal vor. Bei uns ist der Schlüssel der Name, „kleiner“ heißt „kommt im Alphabet früher“.</p>
+                    </div>
+                    <div class="code-paar">
+                        <div class="konzept">
+                            <h4>Vorgehensweise: Suchen</h4>
+                            <p>Beginne an der Wurzel und vergleiche den gesuchten Namen mit dem Namen im Knoten:</p>
+                            <ul class="bb-schritte">
+                                <li><span class="nr">①</span><span><strong>gleich</strong>: gefunden, fertig.</span></li>
+                                <li><span class="nr">②</span><span><strong>kleiner</strong>: Suche im linken Teilbaum weiter.</span></li>
+                                <li><span class="nr">③</span><span><strong>größer</strong>: Suche im rechten Teilbaum weiter.</span></li>
+                                <li><span class="nr">④</span><span>Der Teilbaum ist <strong>leer</strong>: Den Namen gibt es nicht.</span></li>
+                            </ul>
+                        </div>
+                        <div class="konzept">
+                            <h4>Vorgehensweise: Einfügen</h4>
+                            <p>Einfügen ist Suchen, das am leeren Platz nicht aufgibt:</p>
+                            <ul class="bb-schritte">
+                                <li><span class="nr">①</span><span><strong>gleich</strong>: Der Name ist schon vergeben. Nichts einfügen.</span></li>
+                                <li><span class="nr">②</span><span><strong>kleiner</strong>: Füge im linken Teilbaum ein.</span></li>
+                                <li><span class="nr">③</span><span><strong>größer</strong>: Füge im rechten Teilbaum ein.</span></li>
+                                <li><span class="nr">④</span><span>Der Teilbaum ist <strong>leer</strong>: Hier entsteht der neue Knoten. Er ist immer ein Blatt.</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="tipp"><strong>Warum so schnell?</strong> Bei jedem Vergleich gehst du nur in <em>einen</em> Teilbaum. Den anderen musst du nie ansehen. Die Suche braucht also höchstens so viele Vergleiche, wie der Baum Ebenen hat, genau wie beim Namen raten.</div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-1-baeume.pdf">📝 Blatt 2.1 · Seite 2, Merkkasten</a></p>
+                </div>
+            </section>
+
+            <section id="sprint" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">⚡</span><h2>Üben<small>Aufgabe 3: Such-Sprint</small></h2></div>
+                <div class="phase-body">
+                    <p>Fünf Logins, die Uhr läuft. Klicke den Suchweg Knoten für Knoten ab der Wurzel ab. Gibt es den Namen nicht, endet die Suche an einem leeren Platz (graues Quadrat): Den musst du dann anklicken. Rechts siehst du jeweils, welche Entscheidung ①–④ du getroffen hast.</p>
+                    <div data-suchsprint></div>
+                    <p>Bearbeite danach Aufgabe 3 auf dem Blatt: Suchwege für Ruby, Dana und Olaf.</p>
+                    <div class="lw" data-loesungsweg="Aufgabe 3">
+                        <template data-stufe="Lösung" data-halten><p><strong>Ruby:</strong> Mika → Tara → Pia → Ruby, 4 Vergleiche, gefunden. <strong>Dana:</strong> Mika → Emil → Bo → Dana, 4 Vergleiche, gefunden. <strong>Olaf:</strong> Mika → Tara → Pia → (linker Teilbaum von Pia ist leer), 3 Vergleiche, nicht vorhanden.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-1-baeume.pdf">📝 Blatt 2.1 · Aufgabe 3</a></p>
+                </div>
+            </section>
+
+            <section id="baumschule" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🌱</span><h2>Üben<small>Aufgabe 4: Baumschule</small></h2></div>
+                <div class="phase-body">
+                    <p>Jetzt pflanzt du selbst. Der orange markierte Name ist dran: Klicke den leeren Platz an, an dem er nach der Vorgehensweise ①–④ eingefügt wird. In Level 1 entsteht das Verzeichnis von oben. Level 2 bringt zufällige neue Accounts, Level 3 eine kleine Bot-Welle.</p>
+                    <div data-baumschule></div>
+                    <ol class="aufgaben">
+                        <li>Zeichne auf dem Blatt den Baum für die Reihenfolge Ole, Kim, Tom, Ben, Lia, Sam, Zara und gib seine Höhe an.</li>
+                        <li>Dieselben sieben Namen registrieren sich alphabetisch: Ben, Kim, Lia, Ole, Sam, Tom, Zara. Skizziere den Baum. Was fällt dir auf (Level 3)?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 4">
+                        <template data-stufe="Tipp"><p>Füge Name für Name ein und beginne jedes Mal an der Wurzel. Ole ist die Wurzel. Kim kommt vor Ole, also links.</p></template>
+                        <template data-stufe="Lösung" data-halten><p><strong>a)</strong> Ole ist die Wurzel. Links hängt Kim mit Ben (links) und Lia (rechts), rechts hängt Tom mit Sam (links) und Zara (rechts). Höhe 3: Jede Ebene ist voll.</p><div data-baumbild="Ole Kim Tom Ben Lia Sam Zara" data-breite="420"></div><p><strong>b)</strong> Jeder neue Name ist größer als alle bisherigen und landet ganz rechts: eine Kette mit Höhe 7. Der Baum ist zu einer <strong>Liste entartet</strong>, die Suche ist wieder so langsam wie in der Liste. Die Reihenfolge beim Einfügen bestimmt die Form!</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-1-baeume.pdf">📝 Blatt 2.1 · Aufgabe 4</a></p>
+                </div>
+            </section>
+
+            <section id="nachdenken" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Aufgabe 5: Ist das ein geordneter Binärbaum?</small></h2></div>
+                <div class="phase-body">
+                    <p>Eine Kollegin aus dem Server-Team hat Kai von Hand ins Verzeichnis eingetragen. Kai steht links unter Pia. Kai kommt doch vor Pia, also passt das, oder?</p>
+                    <div data-baumbild="Mika Emil Tara Bo Ines Pia Zoe" data-breite="460"></div>
+                    <div class="bb-quiz">
+                        <div class="bb-frage" data-richtig="2">
+                            <p>Wäre der Baum mit Kai links unter Pia noch ein geordneter Binärbaum?</p>
+                            <div class="bb-optionen"><button>Ja, denn Kai kommt vor Pia.</button><button>Ja, denn jeder Knoten hat höchstens zwei Kinder.</button><button>Nein, denn Kai stünde im rechten Teilbaum von Mika.</button></div>
+                            <p class="bb-erkl">Die Regel gilt für <em>jeden</em> Knoten und seinen <em>ganzen</em> Teilbaum, nicht nur für Eltern und Kind. Kai stünde rechts unter Mika, obwohl Kai vor Mika kommt. Die Suche nach Kai würde an Mika nach links abbiegen und Kai nie finden. Richtig wäre der Platz rechts unter Ines.</p>
+                        </div>
+                        <div class="bb-frage" data-richtig="1">
+                            <p>Wo steht in einem geordneten Binärbaum immer der alphabetisch erste Name?</p>
+                            <div class="bb-optionen"><button>in einem Blatt ganz links unten</button><button>am Ende des Wegs, der von der Wurzel immer nach links geht</button><button>immer in der Wurzel</button></div>
+                            <p class="bb-erkl">Von der Wurzel immer nach links, bis es links nicht weitergeht. Das muss kein Blatt sein: Bo ist der erste Name, hat aber rechts noch Dana.</p>
+                        </div>
+                    </div>
+                    <p>Besprecht zu zweit (ohne Schreibplatz): Ein <strong>sortiertes Array</strong> erlaubt auch das schnelle Raten aus Aufgabe 1 (binäre Suche). Warum nimmt das Server-Team trotzdem einen Baum?</p>
+                    <div class="lw lw-kurz" data-loesungsweg="">
+                        <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Suchen ginge im sortierten Array genauso schnell. Aber jede neue Registrierung müsste an die richtige Stelle, und dafür müssten im Schnitt eine Million Einträge um einen Platz verschoben werden. Im Baum entsteht der neue Knoten einfach an einem leeren Platz, nichts muss verschoben werden. Außerdem ist ein Array fest groß.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-1-baeume.pdf">📝 Blatt 2.1 · Aufgabe 5</a></p>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <p>Deine Abzeichen aus dieser Station:</p>
+                    <div data-abzeichen-wand="2.1"></div>
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🧩 2.2 Der Binärbaum als Kompositum</h4>
+                            <p>Jetzt wird programmiert. Die grauen Quadrate aus der Safari sind Abschlüsse wie in Station 1.4. Mit ihnen werden Suchen und Einfügen erstaunlich kurz.</p>
+                            <a class="btn btn-primary btn-sm" href="2-2-kompositum.html">Zu Station 2.2</a>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>🔁 Zum Wiederholen</h4>
+                            <p>Erkläre jemandem in einer Minute, warum die Suche im Verzeichnis nie mehr als vier Vergleiche braucht, obwohl elf Namen drinstehen.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="binaerbaeume.html">← Übersicht</a>
+                <a class="btn btn-primary" href="2-2-kompositum.html">Weiter: 2.2 Binärbaum als Kompositum →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-2-1-baeume-lsg.pdf">Lösung Blatt 2.1 (PDF)</a></p>
+                    <p><strong>Ablauf (Selbstlernen, ca. 90 min):</strong> Namen raten (10 min) → Merkkasten Begriffe + Safari (20 min) → Merkkasten Suchen/Einfügen (10 min) → Such-Sprint und Baumschule (30 min) → Nachdenken (15 min). Die Spiele prüfen sofort und erklären Fehler. Für das Blatt reicht, was auf der Seite steht.</p>
+                    <p><strong>Fortlaufendes Beispiel:</strong> Spielerverzeichnis des erfundenen Spiels „Sternenstaub“. Die elf Namen Mika, Emil, Tara, Bo, Ines, Pia, Zoe, Dana, Kai, Ruby, Vik (in dieser Reihenfolge) ergeben in allen Stationen, Blättern und Projekten denselben Baum (Höhe 4). Lou wird in 2.2 rechts unter Kai eingefügt.</p>
+                    <p><strong>Begriffe:</strong> Ebene ab 1, Höhe = Anzahl der Ebenen (leerer Baum 0). So entspricht die Höhe der Zahl der Vergleiche im schlimmsten Fall, und <code>hoehe()</code> in 2.4 liefert im Abschluss 0. Falls das Schulbuch Kanten zählt, ist der Hinweis auf der Seite der Anknüpfungspunkt.</p>
+                    <p><strong>Abzeichen</strong> liegen nur im Browser (<code>localStorage 'bbAbzeichen'</code>), keine Daten gehen an den Server.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de · <a href="https://edu-mrh.de/impressum.html#lizenz">CC BY-NC-SA 4.0</a> | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

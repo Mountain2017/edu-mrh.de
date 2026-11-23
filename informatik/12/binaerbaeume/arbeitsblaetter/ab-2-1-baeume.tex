@@ -1,0 +1,116 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{2.1}{Bäume und geordnete Binärbäume}
+
+Das Online-Spiel \textbf{Sternenstaub} hat zwei Millionen Accounts. Beim Login sucht der Server den Namen bisher in einer Liste. Du baust ein schnelleres Spielerverzeichnis. \web{Station 2.1}
+
+\begin{aufgabe}[Namen raten]{1}
+\begin{lueckentext}
+\textbf{a)} Ich habe \lsg[2.25cm]{z.\,B. 8} Fragen gebraucht. Meine Strategie:\lsgrest{immer nach dem Namen in der Mitte fragen.}
+\textbf{b)} Jede Frage nach der Mitte \lsg[5.25cm]{halbiert} den Bereich. Für 1000 Namen reichen deshalb höchstens \lsg[2.25cm]{10} Fragen, denn $2^{10} =$ \lsg[2.25cm]{1024}. Bei 2 Millionen Accounts sind es höchstens \lsg[2.25cm]{21} Fragen, eine Liste braucht bis zu \lsg[3.6cm]{2\,000\,000} Vergleiche.
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{merke}[Merke: Bäume]
+\begin{lueckentext}
+Ein Baum besteht aus \lsg[5.25cm]{Knoten}, die durch \lsg[5.25cm]{Kanten} verbunden sind. Der oberste Knoten heißt \lsg[5.25cm]{Wurzel}. Jeder andere Knoten hat genau einen \lsg[5.25cm]{Elternknoten}. Knoten ohne Kinder heißen \lsg[5.25cm]{Blätter}, alle anderen \lsg[5.25cm]{innere Knoten}. In einem \textbf{Binärbaum} hat jeder Knoten höchstens \lsg[2.25cm]{zwei} Kinder. Jeder Knoten bildet mit allem, was unter ihm hängt, einen \lsg[5.25cm]{Teilbaum}. Die Wurzel liegt auf Ebene 1. Die Anzahl der Ebenen ist die \lsg[5.25cm]{Höhe} des Baums.\par
+\textbf{Rekursiv:} Ein Binärbaum ist entweder \lsg[5.25cm]{leer} oder er besteht aus einer Wurzel mit einem linken und einem rechten Teilbaum, die selbst wieder \lsg[5.25cm]{Binärbäume} sind.
+\end{lueckentext}
+\end{merke}
+
+\begin{aufgabe}[Baum-Safari: das Spielerverzeichnis]{2}
+\begin{minipage}[t]{0.5\linewidth}
+\vspace{0pt}\centering
+\verzeichnisbaum[scale=0.98,every node/.append style={transform shape}]
+\end{minipage}\hfill
+\begin{minipage}[t]{0.47\linewidth}
+\vspace{0pt}\lueckentext
+Wurzel: \lsg[3.6cm]{Mika}\par
+Blätter: \lsgrest{Dana, Kai, Ruby, Vik}
+Elternknoten von Kai: \lsg[2.6cm]{Ines}\par
+Kinder von Tara: \lsg[4.2cm]{Pia, Zoe}\par
+Rechter Teilbaum von Emil: \lsgrest{Ines, Kai}
+Knoten auf Ebene 3: \lsgrest{Bo, Ines, Pia, Zoe}
+Höhe des Baums: \lsg[2.25cm]{4}
+\end{minipage}
+\end{aufgabe}
+
+\begin{merke}[Merke: Geordneter Binärbaum (Suchbaum)]
+\begin{lueckentext}
+Für \textbf{jeden} Knoten gilt: Alle Schlüssel im linken Teilbaum sind \lsg[5.25cm]{kleiner}, alle im rechten Teilbaum sind \lsg[5.25cm]{größer} als sein eigener Schlüssel. Jeder Schlüssel kommt nur einmal vor. (Hier: Schlüssel = Name, „kleiner“ = kommt im Alphabet früher.)\par
+\end{lueckentext}
+\begin{minipage}[t]{0.49\linewidth}
+\textbf{Vorgehensweise Suchen} (ab der Wurzel):\\
+\nr{1} gleich: gefunden.\\
+\nr{2} kleiner: im linken Teilbaum weitersuchen.\\
+\nr{3} größer: im rechten Teilbaum weitersuchen.\\
+\nr{4} Teilbaum leer: Den Namen gibt es nicht.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}
+\textbf{Vorgehensweise Einfügen} (ab der Wurzel):\\
+\nr{1} gleich: Name vergeben, nicht einfügen.\\
+\nr{2} kleiner: im linken Teilbaum einfügen.\\
+\nr{3} größer: im rechten Teilbaum einfügen.\\
+\nr{4} Teilbaum leer: Hier entsteht der neue Knoten.
+\end{minipage}\par\vspace{1mm}
+\begin{lueckentext}
+Der neue Knoten ist immer ein \lsg[5.25cm]{Blatt}. Die Suche geht bei jedem Vergleich in nur \lsg[2.25cm]{einen} Teilbaum, sie braucht also höchstens so viele Vergleiche, wie der Baum \lsg[5.25cm]{Ebenen} hat.
+\end{lueckentext}
+\end{merke}
+
+\newpage
+\begin{aufgabe}[Such-Sprint: Suchwege im Verzeichnis (Baum aus Aufgabe 2)]{3}
+{\small\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|l|X|c|c|}\hline
+gesucht & Suchweg (besuchte Knoten) & Vergleiche & gefunden? \\\hline
+Ruby & \schreibzeile\lsgtext{Mika → Tara → Pia → Ruby} & \lsgtext{4} & \lsgtext{ja} \\\hline
+Dana & \schreibzeile\lsgtext{Mika → Emil → Bo → Dana} & \lsgtext{4} & \lsgtext{ja} \\\hline
+Olaf & \schreibzeile\lsgtext{Mika → Tara → Pia → (links unter Pia leer)} & \lsgtext{3} & \lsgtext{nein} \\\hline
+\end{tabularx}}
+\end{aufgabe}
+
+\begin{aufgabe}[Baumschule]{4}
+\textbf{a)} Zeichne den Baum zur Reihenfolge \code{Ole Kim Tom Ben Lia Sam Zara}.\hfill Höhe: \lsg[2.25cm]{3}\par\vspace{1mm}
+\lsgkariert{6}{
+  \begin{scope}[baum,level distance=9mm,level 1/.style={sibling distance=44mm},level 2/.style={sibling distance=20mm},every node/.append style={draw=red!75!black,fill=white}]
+  \node[bk] at (8.5,-0.6) {Ole}
+    child {node[bk] {Kim} child {node[bk] {Ben}} child {node[bk] {Lia}}}
+    child {node[bk] {Tom} child {node[bk] {Sam}} child {node[bk] {Zara}}};
+  \end{scope}}\par\vspace{1mm}
+\textbf{b)} Skizziere den Baum für dieselben Namen alphabetisch.\hfill Höhe: \lsg[2.25cm]{7}\par\vspace{1mm}
+\begin{minipage}[t]{0.52\linewidth}
+\vspace{0pt}
+\lsgkarobox{8.5cm}{4cm}{
+  \foreach \n/\i in {Ben/0,Kim/1,Lia/2,Ole/3,Sam/4,Tom/5,Zara/6}{
+    \node[bk,minimum size=6mm,font=\tiny,draw=red!75!black,fill=white] (z\i) at (0.6+1.2*\i,-0.45-0.5*\i) {\n};}
+  \foreach \i [evaluate=\i as \j using int(\i+1)] in {0,...,5}{\draw[thick] (z\i) -- (z\j);}}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.45\linewidth}
+\vspace{0pt}\lueckentext
+Werden die Namen sortiert eingefügt,\par\lsgrest{hängt jeder neue Name ganz rechts:}
+\lsgrest{eine Kette, so langsam wie eine Liste}
+\lsgrest{(entarteter Baum).}
+\end{minipage}
+\end{aufgabe}
+
+\begin{aufgabe}[Ist das ein geordneter Binärbaum?]{5}
+\begin{minipage}[t]{0.38\linewidth}
+\vspace{0pt}\centering
+\begin{tikzpicture}[baum,level distance=8mm,level 1/.style={sibling distance=30mm},level 2/.style={sibling distance=15mm},level 3/.style={sibling distance=8mm},every node/.append style={scale=0.9}]
+\node[bk] {Mika}
+  child {node[bk] {Emil} child {node[bk] {Bo}} child {node[bk] {Ines}}}
+  child {node[bk] {Tara} child {node[bk] {Pia} child {node[bk] {Kai}} child[missing]} child {node[bk] {Zoe}}};
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.6\linewidth}
+\vspace{0pt}
+Jemand hat Kai von Hand links unter Pia eingetragen, „weil Kai vor Pia kommt“.\par\vspace{1mm}
+\kreuz{0} ja, geordnet\qquad \kreuz{1} nein, nicht geordnet, weil:\par
+\lsglinien{3}{Kai steht im rechten Teilbaum von Mika, kommt aber vor Mika. Die Suche nach Kai biegt bei Mika links ab und findet ihn nie.}
+\vspace{2mm}\begin{lueckentext}
+Kai gehört \lsgrest{rechts unter Ines.}
+\end{lueckentext}
+\end{minipage}
+\end{aufgabe}
+\end{document}

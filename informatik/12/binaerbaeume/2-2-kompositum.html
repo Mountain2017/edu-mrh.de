@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2.2 Der Binärbaum als Kompositum | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Binärbäume, Informatik 12: Der geordnete Binärbaum als Kompositum mit BaumElement, Knoten und Abschluss. Einfügen mit Rückgabe-Muster und Suchen programmieren, mit Aufruf-Verfolger und IDE-Coach.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/include/online-ide-embedded.css">
+    <script type="module" src="https://edu-mrh.de/embed/include/online-ide-embedded.js"></script>
+    <link rel="stylesheet" href="../rekursive-datenstrukturen/datenstrukturen.css">
+    <link rel="stylesheet" href="baeume.css">
+    <script defer src="../rekursive-datenstrukturen/datenstrukturen.js"></script>
+    <script defer src="baeume.js"></script>
+    <script defer src="ide-coach.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🌳</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="binaerbaeume.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 2.2</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#vergleich">🔍 Von der Liste zum Baum</a></li>
+            <li><a href="#muster">📝 Kompositum im Baum</a></li>
+            <li><a href="#verfolger">🧵 Aufruf-Verfolger</a></li>
+            <li><a href="#projekt">✏️ Projekt Spielerverzeichnis</a></li>
+            <li><a href="#selbst">🛠️ Selbst bauen</a></li>
+            <li><a href="#anders">💡 Nachdenken</a></li>
+            <li><a href="#ausblick">🚀 Wie geht es weiter?</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Binärbäume und Tiefensuche</div>
+            <ul class="sidebar-menu">
+                <li><a href="binaerbaeume.html">Übersicht und Abzeichen</a></li>
+                <li><a href="2-1-baeume.html">2.1 Bäume</a></li>
+                <li><a href="2-2-kompositum.html">2.2 Binärbaum als Kompositum</a></li>
+                <li><a href="2-3-traversierung.html">2.3 Traversierung</a></li>
+                <li><a href="2-4-hoehe.html">2.4 Höhe und Effizienz</a></li>
+                <li><a href="../tiefensuche/tiefensuche.html">2.5 Escape Room Tiefensuche</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero rd-hero">
+                <h1 class="hero-title">2.2 Der Binärbaum als Kompositum</h1>
+                <p class="hero-subtitle">Binärbäume · Informatik 12 · ca. 90 Minuten</p>
+                <span class="rd-kompetenz">Du kannst: einen geordneten Binärbaum als Kompositum modellieren und einfuegen und suchen rekursiv programmieren, ganz ohne Abfrage auf null.</span>
+                <div class="rd-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-2-2-kompositum.pdf">📝 Arbeitsblatt 2.2 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-2-2-kompositum.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="bb-ticket">
+                <h3>Ticket #2.2 · Server-Team Sternenstaub</h3>
+                <p>Die Idee mit dem Baum überzeugt das Team. Jetzt muss das Verzeichnis in Java laufen: <strong>einfuegen</strong> für jede Registrierung und <strong>suchen</strong> für jeden Login. Gute Nachricht: Das Bauprinzip kennst du schon von der Liste aus Station 1.4.</p>
+                <p class="bb-von">Erst verstehen (Aufgaben 1, 2 und 4 mit Aufruf-Verfolger), dann programmieren (Aufgaben 3 und 5 in der IDE). Der Coach unter der IDE zeigt dir, welche Teile schon funktionieren.</p>
+            </div>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#vergleich">🔍 Einstieg</a><a class="p-note" href="#muster">📝 Festhalten</a><a class="p-investigate" href="#verfolger">🧵 Üben</a><a class="p-modify" href="#projekt">✏️ Programmieren</a><a class="p-make" href="#selbst">🛠️ Selbst bauen</a><a class="p-idee" href="#anders">💡 Nachdenken</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="vergleich" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Einstieg<small>Aufgabe 1: Von der Liste zum Baum</small></h2></div>
+                <div class="phase-body">
+                    <p>Erinnere dich an die Liste als Kompositum (Station 1.4): Am Ende stand nicht <code>null</code>, sondern ein <strong>Abschluss</strong>. Knoten und Abschluss hatten die gemeinsame abstrakte Oberklasse <code>ListenElement</code>. Ein Baumknoten hat nun zwei Nachfolger. Mit <code>null</code> wären das doppelt so viele Sonderfälle, mit dem Kompositum bleibt alles beim Alten:</p>
+                    <div class="tab-scroll">
+                        <table class="rd-tab">
+                            <thead><tr><th></th><th>Liste (1.4)</th><th>Binärbaum (2.2)</th></tr></thead>
+                            <tbody>
+                                <tr><td>gemeinsamer Typ</td><td><code>ListenElement</code> «abstract»</td><td><code>BaumElement</code> «abstract»</td></tr>
+                                <tr><td>Knoten verweist auf</td><td><code>nachfolger</code></td><td><code>links</code> und <code>rechts</code></td></tr>
+                                <tr><td>dort, wo nichts mehr kommt</td><td>ein <code>Abschluss</code></td><td>ein <code>Abschluss</code> (die grauen Quadrate aus 2.1)</td></tr>
+                                <tr><td>Verwaltungsklasse</td><td><code>Liste</code> mit <code>anfang</code></td><td><code>Binaerbaum</code> mit <code>wurzel</code></td></tr>
+                                <tr><td>Daten</td><td><code>DatenElement</code> (Taxi)</td><td><code>DatenElement</code> (Spieler), jetzt mit <code>istGroesserAls</code></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Vervollständige das Klassendiagramm auf dem Blatt (Aufgabe 1a).</li>
+                        <li>Warum haben <code>links</code> und <code>rechts</code> den Typ <code>BaumElement</code> und nicht <code>Knoten</code> (Aufgabe 1b)?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 1">
+                        <template data-stufe="Tipp"><p>Was steht unter einem Blatt, zum Beispiel unter Dana?</p></template>
+                        <template data-stufe="Lösung" data-halten><p><strong>a)</strong> Knoten: <code>daten: DatenElement</code>, <code>links: BaumElement</code>, <code>rechts: BaumElement</code>. Knoten und Abschluss erben von <code>BaumElement</code> (Pfeil mit leerem Dreieck), Binaerbaum kennt <code>wurzel: BaumElement</code>, Spieler implementiert <code>DatenElement</code> (gestrichelter Pfeil). Alle drei Klassen haben die Methoden <code>einfuegen(d): BaumElement</code> und <code>suchen(d): DatenElement</code>.</p><p><strong>b)</strong> Unter einem Knoten kann ein Knoten <em>oder</em> ein Abschluss hängen. Nur der gemeinsame Typ <code>BaumElement</code> passt auf beide.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-2-kompositum.pdf">📝 Blatt 2.2 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="muster" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Das Kompositum im Baum, Aufgabe 2</small></h2></div>
+                <div class="phase-body">
+                    <p>So sieht das Verzeichnis als Objektstruktur aus: Jeder Knoten hat zwei Verweise. Wo ein Teilbaum leer ist, steht ein Abschluss-Objekt (grau). Kein einziger Verweis ist <code>null</code>.</p>
+                    <div data-baumbild="Mika Emil Tara Bo Ines Pia Zoe Dana Kai Ruby Vik" data-abschluesse data-breite="680"></div>
+                    <ol class="aufgaben">
+                        <li>Zähle die Abschlüsse im Bild. Zeichne auf dem Blatt die Objekte für einen Baum mit drei Spielern und ergänze die Regel: n Knoten haben … Abschlüsse (Aufgabe 2).</li>
+                    </ol>
+                    <div class="konzept">
+                        <h4>Merke: Rekursive Methoden im Kompositum in drei Fragen</h4>
+                        <ul class="bb-schritte">
+                            <li><span class="nr">?</span><span><strong>Was antwortet der Abschluss?</strong> Er beendet die Rekursion: Der Teilbaum ist leer.</span></li>
+                            <li><span class="nr">?</span><span><strong>Was tut der Knoten selbst?</strong> Zum Beispiel seinen Namen vergleichen.</span></li>
+                            <li><span class="nr">?</span><span><strong>Welches Kind fragt er, und was macht er mit der Antwort?</strong> Beim Suchen nur <em>ein</em> Kind, und er gibt dessen Antwort weiter.</span></li>
+                        </ul>
+                        <p>Kein Knoten muss fragen, ob unter ihm noch etwas kommt. Das erledigt der Abschluss.</p>
+                    </div>
+                    <div class="konzept">
+                        <h4>Merke: Das Rückgabe-Muster beim Einfügen</h4>
+                        <p>Der Abschluss weiß, dass hier der neue Knoten hingehört. Ändern kann er den Baum aber nicht, denn er kennt seinen Elternknoten nicht. Darum gibt jede <code>einfuegen</code>-Methode zurück, <strong>was danach an ihrer Stelle steht</strong>, und der Aufrufer <strong>trägt die Antwort ein</strong>:</p>
+                        <ul>
+                            <li>Der Abschluss antwortet mit dem <strong>neuen Knoten</strong>.</li>
+                            <li>Ein Knoten antwortet mit <strong>sich selbst</strong> (<code>this</code>), denn er bleibt an seinem Platz.</li>
+                            <li>Der Elternknoten trägt die Antwort als linkes bzw. rechtes Kind ein, das Verzeichnis als <code>wurzel</code>. Meist steht danach dasselbe Objekt da wie vorher. Nur einmal, direkt über dem Abschluss, ändert sich wirklich etwas.</li>
+                        </ul>
+                    </div>
+                    <div class="lw" data-loesungsweg="Aufgabe 2">
+                        <template data-stufe="Lösung" data-halten><p>Im Verzeichnis mit 11 Knoten stehen <strong>12 Abschlüsse</strong>. Allgemein: <strong>n Knoten haben n + 1 Abschlüsse</strong>. Jeder Knoten hat 2 Verweise, also gibt es 2n Verweise. n − 1 davon zeigen auf Knoten (jeder Knoten außer der Wurzel hat genau einen Elternknoten), die übrigen n + 1 auf Abschlüsse. Bei drei Spielern (Mika, Emil, Tara): 3 Knoten, 4 Abschlüsse.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-2-kompositum.pdf">📝 Blatt 2.2 · Aufgabe 2 und Merkkasten</a></p>
+                </div>
+            </section>
+
+            <section id="verfolger" class="phase investigate">
+                <div class="phase-head"><span class="phase-icon">🧵</span><h2>Üben<small>Aufgabe 4: Der Aufruf-Verfolger</small></h2></div>
+                <div class="phase-body">
+                    <p>Hier siehst du jeden Aufruf und jede Antwort. Rechts steht die Regel des Objekts, das gerade arbeitet, darunter der <strong>Aufrufstapel</strong>: Wer wartet gerade auf wen? Orange Kästchen zeigen Antworten. Gehe mit „Schritt“ durch.</p>
+                    <div data-verfolger></div>
+                    <ol class="aufgaben">
+                        <li><code>einfuegen(Lou)</code>: Fülle die Tabelle auf dem Blatt aus (Aufgabe 4a). Welcher Aufruf verändert den Baum wirklich?</li>
+                        <li><code>einfuegen(Kai)</code>: Warum entsteht kein zweiter Kai, und wer verhindert das?</li>
+                        <li><code>suchen(Olaf)</code>: Wie viele Knoten werden besucht? Warum wird der linke Teilbaum von Mika gar nicht angeschaut?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 4">
+                        <template data-stufe="Tipp"><p>Achte auf die Zeile „trägt die Antwort ein“. Nur einmal steht danach ein anderes Objekt an der Stelle als vorher.</p></template>
+                        <template data-stufe="Lösung" data-halten><p><strong>a)</strong> Mika → Antwort Knoten Mika → wird als <code>wurzel</code> eingetragen · Emil → Knoten Emil → Mikas <code>links</code> · Ines → Knoten Ines → Emils <code>rechts</code> · Kai → Knoten Kai → Ines’ <code>rechts</code> · Abschluss → neuer Knoten Lou → Kais <code>rechts</code>. Wirklich verändert wird der Baum nur durch Kai, der den neuen Knoten einträgt.</p><p><strong>b)</strong> Das Verzeichnis sucht vorher mit <code>suchen</code> und findet Kai: Antwort false, es wird gar kein Knoten gefragt. (Auch ohne diese Prüfung würde Knoten Kai bei gleichem Namen ① nichts ändern.)</p><p><strong>c)</strong> Drei Knoten: Mika, Tara, Pia. Olaf kommt nach Mika, also kann er nur rechts stehen. Den ganzen linken Teilbaum zu durchsuchen, wäre überflüssig.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-2-kompositum.pdf">📝 Blatt 2.2 · Aufgabe 4</a></p>
+                </div>
+            </section>
+
+            <section id="projekt" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">✏️</span><h2>Programmieren<small>Aufgaben 3 und 5: Projekt Spielerverzeichnis</small></h2></div>
+                <div class="phase-body">
+                    <p><code>Binaerbaum</code>, <code>BaumElement</code>, <code>DatenElement</code>, <code>Spieler</code> und der <code>BaumZeichner</code> sind vorbereitet. In <code>Knoten</code>, <code>Abschluss</code> und <code>Binaerbaum</code> stehen Platzhalter, die absichtlich falsche Werte liefern. Ersetze sie nach den TODO-Nummern (Strg + F „TODO“). Starte nach jedem Schritt die Tests.</p>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 3 (TODO 3a–c):</strong> <code>einfuegen</code> mit Rückgabe-Muster. Ergänze zuerst den Lückencode auf dem Blatt, dann in der IDE. Starte danach das Programm: Im Grafikfenster wächst das Verzeichnis aus 2.1, dazu Lou.</li>
+                        <li><strong>Aufgabe 5 (TODO 5a, 5b):</strong> <code>suchen</code> für den Login. Im Hauptprogramm kannst du den Namen beim Login ändern (Dana, Olaf, Aaron …).</li>
+                    </ol>
+                    <div class="stolper"><strong>Stolperstein:</strong> Schreibt ein Knoten <code>return links.einfuegen(d);</code>, gibt er die Antwort seines Kindes zurück statt sich selbst. Sein Elternknoten trägt dann das falsche Objekt ein, und ganze Teilbäume verschwinden. Der Test „Knoten.einfuegen() liefert sich selbst“ zeigt diesen Fehler.</div>
+                    <div class="ide-block" id="ide">
+                        <div class="ide-kopf"><h3>Projekt Spielerverzeichnis</h3></div>
+<!-- IDE-START p22 -->
+<div class="java-online" style="width:100%;height:620px" data-java-online="{ 'id': 'i12-22-spielerverzeichnis', 'speed': 1000000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true, 'withErrorList': true, 'jsonFilename': '12-2-2 Spielerverzeichnis.json', 'enableFileAccess': true, 'enableRunExitStatusAccess': true }">
+<script type="text/plain" title="Hauptprogramm.java">
+// Station 2.2: Das Spielerverzeichnis von Sternenstaub als geordneter Binärbaum.
+// Sobald TODO 3 erledigt ist, wächst im Grafikfenster der Baum aus Station 2.1.
+
+World welt = new World(800, 480);
+Binaerbaum verzeichnis = new Binaerbaum();
+
+// Aufgabe 3: die ersten elf Accounts, in dieser Reihenfolge registriert
+verzeichnis.einfuegen(new Spieler("Mika", 34));
+verzeichnis.einfuegen(new Spieler("Emil", 12));
+verzeichnis.einfuegen(new Spieler("Tara", 27));
+verzeichnis.einfuegen(new Spieler("Bo", 8));
+verzeichnis.einfuegen(new Spieler("Ines", 41));
+verzeichnis.einfuegen(new Spieler("Pia", 19));
+verzeichnis.einfuegen(new Spieler("Zoe", 3));
+verzeichnis.einfuegen(new Spieler("Dana", 22));
+verzeichnis.einfuegen(new Spieler("Kai", 15));
+verzeichnis.einfuegen(new Spieler("Ruby", 50));
+verzeichnis.einfuegen(new Spieler("Vik", 9));
+
+// Aufgabe 4: zwei neue Registrierungen
+println("Lou registriert sich: " + verzeichnis.einfuegen(new Spieler("Lou", 1)));
+println("Ein zweiter Kai registriert sich: " + verzeichnis.einfuegen(new Spieler("Kai", 1)));
+
+new BaumZeichner().zeichne(verzeichnis);
+
+// Aufgabe 5: Login. Probiere auch "Dana", "Olaf" und "Aaron".
+String login = "Ruby";
+DatenElement gefunden = verzeichnis.suchen(new Spieler(login));
+if (gefunden == null) {
+   println("Login " + login + ": Name unbekannt");
+} else {
+   Spieler s = (Spieler) gefunden;
+   println("Login " + login + ": Willkommen zurück! Level " + s.getLevel());
+}
+</script>
+<script type="text/plain" title="Binaerbaum.java">
+/**
+ * Das Spielerverzeichnis als geordneter Binärbaum. wurzel ist nie null:
+ * Im leeren Baum ist die Wurzel ein Abschluss.
+ */
+public class Binaerbaum {
+   private BaumElement wurzel;
+
+   public Binaerbaum() {
+      wurzel = new Abschluss();
+   }
+
+   public BaumElement getWurzel() {
+      return wurzel;
+   }
+
+   // Rückgabe false, wenn der Name schon vergeben ist
+   public boolean einfuegen(DatenElement d) {
+      if (suchen(d) != null) {
+         return false;
+      }
+      // TODO 3c (Aufgabe 3): wurzel.einfuegen(d) aufrufen – und die Rückgabe?
+      return true;
+   }
+
+   public DatenElement suchen(DatenElement d) {
+      return wurzel.suchen(d);
+   }
+}
+</script>
+<script type="text/plain" title="BaumElement.java">
+/**
+ * Gemeinsamer Typ von Knoten und Abschluss (Entwurfsmuster Kompositum,
+ * wie ListenElement in Station 1.4).
+ */
+public abstract class BaumElement {
+
+   // Fügt d ein. Rückgabe: das Element, das danach an dieser Stelle steht.
+   public abstract BaumElement einfuegen(DatenElement d);
+
+   // Sucht Daten mit demselben Schlüssel wie d.
+   // Rückgabe: die gespeicherten Daten oder null, wenn es sie nicht gibt.
+   public abstract DatenElement suchen(DatenElement d);
+}
+</script>
+<script type="text/plain" title="Knoten.java">
+/**
+ * Ein Knoten des Binärbaums: Daten und zwei Teilbäume. Links stehen die
+ * kleineren Schlüssel, rechts die größeren. links und rechts sind nie null:
+ * Wo ein Teilbaum leer ist, steht ein Abschluss.
+ * Suche (Strg + F) nach "TODO". Die Platzhalter liefern absichtlich falsche Werte.
+ */
+public class Knoten extends BaumElement {
+   private DatenElement daten;
+   private BaumElement links;
+   private BaumElement rechts;
+
+   public Knoten(DatenElement daten) {
+      this.daten = daten;
+      links = new Abschluss();
+      rechts = new Abschluss();
+   }
+
+   public DatenElement getDaten() {
+      return daten;
+   }
+
+   public BaumElement getLinks() {
+      return links;
+   }
+
+   public BaumElement getRechts() {
+      return rechts;
+   }
+
+   public BaumElement einfuegen(DatenElement d) {
+      // TODO 3b (Aufgabe 3): ① gleicher Name: nichts ändern
+      //                      ② d kleiner: links einfügen, Rückgabe eintragen
+      //                      ③ d größer: rechts einfügen, Rückgabe eintragen
+      return this;
+   }
+
+   public DatenElement suchen(DatenElement d) {
+      return null;    // TODO 5a (Aufgabe 5): Platzhalter ersetzen (① ② ③)
+   }
+}
+</script>
+<script type="text/plain" title="Abschluss.java">
+/**
+ * Der Abschluss steht überall dort, wo ein Teilbaum leer ist, auch im
+ * leeren Baum. Er hat weder Daten noch Teilbäume.
+ */
+public class Abschluss extends BaumElement {
+
+   public BaumElement einfuegen(DatenElement d) {
+      return this;    // TODO 3a (Aufgabe 3): ④ neuen Knoten erzeugen und zurückgeben
+   }
+
+   public DatenElement suchen(DatenElement d) {
+      return null;    // TODO 5b (Aufgabe 5): Stimmt das schon? Begründe!
+   }
+}
+</script>
+<script type="text/plain" title="DatenElement.java">
+/**
+ * Der Vertrag für alles, was im Verzeichnis stehen darf (wie in 1.3 und 1.4).
+ */
+public interface DatenElement {
+   String gibSchluesselwert();
+
+   boolean istGleich(DatenElement d);        // gleicher Schlüssel
+
+   boolean istGroesserAls(DatenElement d);   // eigener Schlüssel kommt im Alphabet später
+}
+</script>
+<script type="text/plain" title="Spieler.java">
+/**
+ * Ein Account im Online-Spiel Sternenstaub. Der Schlüssel ist der Name.
+ */
+public class Spieler implements DatenElement {
+   private String name;
+   private int level;
+
+   public Spieler(String name, int level) {
+      this.name = name;
+      this.level = level;
+   }
+
+   // Zum Suchen: ein Spieler, von dem man nur den Namen kennt
+   public Spieler(String name) {
+      this.name = name;
+      this.level = 0;
+   }
+
+   public String getName() {
+      return name;
+   }
+
+   public int getLevel() {
+      return level;
+   }
+
+   public String gibSchluesselwert() {
+      return name;
+   }
+
+   public boolean istGleich(DatenElement d) {
+      return name.equals(d.gibSchluesselwert());
+   }
+
+   // compareTo vergleicht Texte alphabetisch: Ergebnis > 0, wenn name später kommt
+   public boolean istGroesserAls(DatenElement d) {
+      return name.compareTo(d.gibSchluesselwert()) > 0;
+   }
+}
+</script>
+<script type="text/plain" title="BaumZeichner.java" data-online-ide="{ 'readOnly': true }">
+/**
+ * Zeichnet einen Binärbaum in die Welt. Fertig, muss nicht verändert werden.
+ * Knoten: orange Kreise. Abschlüsse: kleine graue Quadrate.
+ * Ab Ebene 6 wird nicht weiter gezeichnet (Pünktchen).
+ */
+public class BaumZeichner {
+
+   public void zeichne(Binaerbaum baum) {
+      zeichneTeilbaum(baum.getWurzel(), 400, 45, 200, 1);
+   }
+
+   private void zeichneTeilbaum(BaumElement e, double x, double y, double abstand, int ebene) {
+      if (e instanceof Knoten) {
+         Knoten k = (Knoten) e;
+         if (ebene > 6) {
+            Text t = new Text(x - 10, y - 20, 28, "…");
+            t.setFillColor(Color.white);
+            return;
+         }
+         zeichneAst(k.getLinks(), x, y, -abstand, ebene);
+         zeichneAst(k.getRechts(), x, y, abstand, ebene);
+         Circle c = new Circle(x, y, 30);
+         c.setFillColor(Color.orange);
+         c.setBorderColor(Color.white);
+         Text t = new Text(x, y - 11, 20, k.getDaten().gibSchluesselwert());
+         t.setAlignment(Alignment.center);
+         t.setFillColor(Color.black);
+      } else {
+         Rectangle q = new Rectangle(x - 7, y - 7, 14, 14);
+         q.setFillColor(Color.gray);
+         q.setBorderColor(Color.gray);
+      }
+   }
+
+   // Linie zum Kind; ein Abschluss hängt nur kurz unter dem Knoten
+   private void zeichneAst(BaumElement kind, double x, double y, double dx, int ebene) {
+      double zx = x + dx;
+      double zy = y + 75;
+      if (!(kind instanceof Knoten)) {
+         zx = x + dx / Math.abs(dx) * Math.min(Math.abs(dx), 28);
+         zy = y + 50;
+      }
+      Line l = new Line(x, y, zx, zy);
+      l.setBorderColor(Color.gray);
+      zeichneTeilbaum(kind, zx, zy, Math.abs(dx) / 2, ebene + 1);
+   }
+}
+</script>
+<script type="text/plain" title="BaumTest.java" data-online-ide="{ 'readOnly': true }">
+/**
+ * Selbsttest des Spielerverzeichnisses. Bitte nicht verändern!
+ * Starten: Klick auf das kleine Dreieck links neben "@Test"
+ * (ganz oben: alle Tests) oder auf der Website "Tests starten".
+ */
+public class BaumTest {
+
+   private String name(BaumElement e) {
+      if (e instanceof Knoten) {
+         return ((Knoten) e).getDaten().gibSchluesselwert();
+      }
+      return "Abschluss";
+   }
+
+   private BaumElement links(BaumElement e) {
+      if (e instanceof Knoten) {
+         return ((Knoten) e).getLinks();
+      }
+      return e;
+   }
+
+   private BaumElement rechts(BaumElement e) {
+      if (e instanceof Knoten) {
+         return ((Knoten) e).getRechts();
+      }
+      return e;
+   }
+
+   private Binaerbaum elf() {
+      Binaerbaum b = new Binaerbaum();
+      b.einfuegen(new Spieler("Mika", 34));
+      b.einfuegen(new Spieler("Emil", 12));
+      b.einfuegen(new Spieler("Tara", 27));
+      b.einfuegen(new Spieler("Bo", 8));
+      b.einfuegen(new Spieler("Ines", 41));
+      b.einfuegen(new Spieler("Pia", 19));
+      b.einfuegen(new Spieler("Zoe", 3));
+      b.einfuegen(new Spieler("Dana", 22));
+      b.einfuegen(new Spieler("Kai", 15));
+      b.einfuegen(new Spieler("Ruby", 50));
+      b.einfuegen(new Spieler("Vik", 9));
+      return b;
+   }
+
+   private Knoten dreiKnoten() {
+      // Mika, darunter Emil und Tara: nur mit Knoten.einfuegen gebaut
+      Knoten k = new Knoten(new Spieler("Mika", 34));
+      k.einfuegen(new Spieler("Emil", 12));
+      k.einfuegen(new Spieler("Tara", 27));
+      return k;
+   }
+
+   @Test
+   public void abschlussEinfuegen() {
+      BaumElement e = new Abschluss().einfuegen(new Spieler("Mika", 34));
+      Assertions.assertEquals("Mika", name(e), "Abschluss.einfuegen() muss einen neuen Knoten mit Mika zurückgeben.");
+   }
+
+   @Test
+   public void knotenLiefertSichSelbst() {
+      Knoten k = new Knoten(new Spieler("Mika", 34));
+      BaumElement e = k.einfuegen(new Spieler("Emil", 12));
+      Assertions.assertEquals("Emil", name(k.getLinks()), "Emil muss links unter Mika eingefügt werden.");
+      Assertions.assertTrue(e == k, "Knoten.einfuegen() muss sich selbst (this) zurückgeben.");
+   }
+
+   @Test
+   public void kleinerNachLinks() {
+      Knoten k = dreiKnoten();
+      Assertions.assertEquals("Emil", name(k.getLinks()), "Emil kommt im Alphabet vor Mika und gehört in den linken Teilbaum.");
+   }
+
+   @Test
+   public void groesserNachRechts() {
+      Knoten k = dreiKnoten();
+      Assertions.assertEquals("Tara", name(k.getRechts()), "Tara kommt im Alphabet nach Mika und gehört in den rechten Teilbaum.");
+   }
+
+   @Test
+   public void tieferEinfuegen() {
+      Knoten k = dreiKnoten();
+      k.einfuegen(new Spieler("Ines", 41));
+      Assertions.assertEquals("Ines", name(rechts(k.getLinks())), "Ines kommt vor Mika (links) und nach Emil (rechts): Sie muss rechts unter Emil hängen.");
+   }
+
+   @Test
+   public void gleicherNameNichtDoppelt() {
+      Knoten k = dreiKnoten();
+      Assertions.assertEquals("Emil", name(k.getLinks()), "Emil muss links unter Mika eingefügt werden.");
+      k.einfuegen(new Spieler("Emil", 1));
+      Assertions.assertEquals("Abschluss", name(links(k.getLinks())), "Emil gibt es schon: Unter Emil darf kein zweiter Knoten entstehen.");
+      Assertions.assertEquals("Abschluss", name(rechts(k.getLinks())), "Emil gibt es schon: Unter Emil darf kein zweiter Knoten entstehen.");
+   }
+
+   @Test
+   public void binaerbaumEinfuegen() {
+      Binaerbaum b = new Binaerbaum();
+      b.einfuegen(new Spieler("Mika", 34));
+      b.einfuegen(new Spieler("Emil", 12));
+      Assertions.assertEquals("Mika", name(b.getWurzel()), "Binaerbaum.einfuegen(): Nach dem ersten Einfügen muss die Wurzel ein Knoten sein. Trägst du die Rückgabe in wurzel ein?");
+      Assertions.assertEquals("Emil", name(links(b.getWurzel())), "Binaerbaum.einfuegen(): Emil muss links unter Mika hängen.");
+   }
+
+   @Test
+   public void elfAccounts() {
+      BaumElement w = elf().getWurzel();
+      Assertions.assertEquals("Dana", name(rechts(links(links(w)))), "Dana gehört rechts unter Bo.");
+      Assertions.assertEquals("Ruby", name(rechts(links(rechts(w)))), "Ruby gehört rechts unter Pia.");
+      Assertions.assertEquals("Vik", name(links(rechts(rechts(w)))), "Vik gehört links unter Zoe.");
+   }
+
+   @Test
+   public void suchenAbschluss() {
+      Assertions.assertTrue(new Abschluss().suchen(new Spieler("Kai")) == null, "Abschluss.suchen(): Im Abschluss ist nichts gespeichert.");
+   }
+
+   @Test
+   public void suchenWurzel() {
+      DatenElement x = elf().suchen(new Spieler("Mika"));
+      Assertions.assertTrue(x != null, "Mika steht in der Wurzel und muss gefunden werden.");
+      Assertions.assertEquals(34, ((Spieler) x).getLevel(), "suchen() muss die gespeicherten Daten zurückgeben (Mika hat Level 34), nicht den Suchbegriff.");
+   }
+
+   @Test
+   public void suchenTief() {
+      Binaerbaum b = elf();
+      DatenElement x = b.suchen(new Spieler("Ruby"));
+      Assertions.assertTrue(x != null, "Ruby (rechts unter Pia) muss gefunden werden.");
+      Assertions.assertEquals(50, ((Spieler) x).getLevel(), "Ruby hat Level 50.");
+      DatenElement y = b.suchen(new Spieler("Dana"));
+      Assertions.assertTrue(y != null, "Dana (rechts unter Bo) muss gefunden werden.");
+   }
+
+   @Test
+   public void suchenNichtVorhanden() {
+      Binaerbaum b = elf();
+      Assertions.assertTrue(b.suchen(new Spieler("Kai")) != null, "Kai muss gefunden werden. Erst danach zählt, ob Olaf und Aaron fehlen.");
+      Assertions.assertTrue(b.suchen(new Spieler("Olaf")) == null, "Olaf gibt es nicht: suchen() muss null liefern.");
+      Assertions.assertTrue(b.suchen(new Spieler("Aaron")) == null, "Aaron gibt es nicht: suchen() muss null liefern.");
+   }
+
+   @Test
+   public void doppelterName() {
+      Binaerbaum b = elf();
+      Assertions.assertTrue(b.suchen(new Spieler("Kai")) != null, "Kai muss gefunden werden: Erst muss suchen() funktionieren.");
+      Assertions.assertFalse(b.einfuegen(new Spieler("Kai", 1)), "Kai ist schon vergeben: einfuegen() muss false liefern.");
+      Assertions.assertEquals(15, ((Spieler) b.suchen(new Spieler("Kai"))).getLevel(), "Der erste Kai (Level 15) muss erhalten bleiben.");
+   }
+}
+</script>
+</div>
+<!-- IDE-ENDE p22 -->
+                        <p class="ide-downloads">💾 Eigenen Stand sichern: Diskettensymbol in der IDE-Leiste („Workspace in Datei speichern“), der Name <code>12-2-2 Spielerverzeichnis.json</code> ist schon vorgeschlagen. Laden: Ordnersymbol daneben. · <a href="Online-IDE/12-2-2%20Spielerverzeichnis.json" download>Ausgangsprojekt für online-ide.de</a></p>
+                    </div>
+                    <div class="coach" data-coach="i12-22-spielerverzeichnis"></div>
+                    <div class="lw" data-loesungsweg="TODO 3: einfuegen()">
+                        <template data-stufe="Tipp 1"><p>Abschluss (④): Hier ist der freie Platz. Erzeuge einen neuen Knoten mit den Daten und gib ihn zurück. Der Konstruktor von Knoten legt die beiden neuen Abschlüsse schon selbst an.</p></template>
+                        <template data-stufe="Tipp 2"><p>Knoten: ① gleicher Name (<code>daten.istGleich(d)</code>): sofort sich selbst zurückgeben. ② <code>daten.istGroesserAls(d)</code> heißt: Mein Name kommt später, also gehört d nach links. Rufe <code>links.einfuegen(d)</code> auf und trage die Antwort in <code>links</code> ein. ③ sonst dasselbe mit rechts. Am Ende: <code>return this;</code>. Binaerbaum: Antwort von <code>wurzel.einfuegen(d)</code> in <code>wurzel</code> eintragen.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="c">// Abschluss (3a)</span>
+<span class="k">public</span> BaumElement einfuegen(DatenElement d) {
+   <span class="k">return new</span> Knoten(d);                    <span class="c">// ④</span>
+}
+<span class="c">// Knoten (3b)</span>
+<span class="k">public</span> BaumElement einfuegen(DatenElement d) {
+   <span class="k">if</span> (daten.istGleich(d)) {                <span class="c">// ①</span>
+      <span class="k">return this</span>;
+   } <span class="k">else if</span> (daten.istGroesserAls(d)) {    <span class="c">// ②</span>
+      links = links.einfuegen(d);
+   } <span class="k">else</span> {                                 <span class="c">// ③</span>
+      rechts = rechts.einfuegen(d);
+   }
+   <span class="k">return this</span>;
+}
+<span class="c">// Binaerbaum (3c)</span>
+wurzel = wurzel.einfuegen(d);</pre></template>
+                    </div>
+                    <div class="lw" data-loesungsweg="TODO 5: suchen()">
+                        <template data-stufe="Tipp 1"><p>Gleicher Aufbau wie <code>einfuegen</code>, aber ohne etwas einzutragen: Der Knoten gibt bei ① seine Daten zurück, bei ② und ③ die Antwort genau eines Kindes.</p></template>
+                        <template data-stufe="Tipp 2"><p>Gib <code>daten</code> zurück, nicht <code>d</code>: <code>d</code> ist nur der Suchbegriff mit Level 0. Und warum stimmt <code>return null;</code> im Abschluss schon?</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="c">// Knoten (5a)</span>
+<span class="k">public</span> DatenElement suchen(DatenElement d) {
+   <span class="k">if</span> (daten.istGleich(d)) {                <span class="c">// ①</span>
+      <span class="k">return</span> daten;
+   } <span class="k">else if</span> (daten.istGroesserAls(d)) {    <span class="c">// ②</span>
+      <span class="k">return</span> links.suchen(d);
+   } <span class="k">else</span> {                                 <span class="c">// ③</span>
+      <span class="k">return</span> rechts.suchen(d);
+   }
+}
+<span class="c">// Abschluss (5b): Kommt die Suche hier an, gibt es den Namen nicht.</span>
+<span class="k">public</span> DatenElement suchen(DatenElement d) {
+   <span class="k">return null</span>;                             <span class="c">// ④</span>
+}</pre></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-2-kompositum.pdf">📝 Blatt 2.2 · Aufgaben 3 und 5</a></p>
+                </div>
+            </section>
+
+            <section id="selbst" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Selbst bauen<small>Für Schnelle: zwei neue Methoden</small></h2></div>
+                <div class="phase-body">
+                    <p>Erweitere <code>BaumElement</code> um eine abstrakte Methode, und schon verlangt der Compiler sie von Knoten und Abschluss. Plane jede Methode mit den drei Fragen aus dem Merkkasten.</p>
+                    <ol class="aufgaben">
+                        <li><strong>suchweg(d)</strong> gibt die Namen aller besuchten Knoten als Text zurück, z. B. <code>"Mika Tara Pia Ruby "</code>. Teste im Hauptprogramm mit <code>println(verzeichnis.suchweg(new Spieler("Ruby")));</code>.</li>
+                        <li><strong>kleinstes()</strong> liefert den alphabetisch ersten Namen (Bo). Trick: Gib dem Aufruf den bisher besten Kandidaten mit: <code>String kleinstes(String bisher)</code>.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="a) suchweg">
+                        <template data-stufe="Tipp"><p>Abschluss: Hier gibt es keinen Namen mehr, Antwort <code>""</code>. Knoten: eigener Name + Leerzeichen, und dann? Bei Gleichheit ist der Weg zu Ende.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="c">// BaumElement</span>
+<span class="k">public abstract</span> String suchweg(DatenElement d);
+<span class="c">// Knoten</span>
+<span class="k">public</span> String suchweg(DatenElement d) {
+   String ich = daten.gibSchluesselwert() + <span class="c">" "</span>;
+   <span class="k">if</span> (daten.istGleich(d)) {
+      <span class="k">return</span> ich;
+   } <span class="k">else if</span> (daten.istGroesserAls(d)) {
+      <span class="k">return</span> ich + links.suchweg(d);
+   } <span class="k">else</span> {
+      <span class="k">return</span> ich + rechts.suchweg(d);
+   }
+}
+<span class="c">// Abschluss</span>
+<span class="k">public</span> String suchweg(DatenElement d) {
+   <span class="k">return</span> <span class="c">""</span>;
+}
+<span class="c">// Binaerbaum</span>
+<span class="k">public</span> String suchweg(DatenElement d) {
+   <span class="k">return</span> wurzel.suchweg(d);
+}</pre></template>
+                    </div>
+                    <div class="lw" data-loesungsweg="b) kleinstes">
+                        <template data-stufe="Tipp"><p>Der kleinste Name steht am Ende des Wegs, der immer nach links geht. Jeder Knoten ist ein besserer Kandidat als alles darüber. Der Abschluss gibt den Kandidaten zurück, den er bekommen hat.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="c">// Knoten: ich bin besser als der bisherige Kandidat</span>
+<span class="k">public</span> String kleinstes(String bisher) {
+   <span class="k">return</span> links.kleinstes(daten.gibSchluesselwert());
+}
+<span class="c">// Abschluss: links geht es nicht weiter</span>
+<span class="k">public</span> String kleinstes(String bisher) {
+   <span class="k">return</span> bisher;
+}
+<span class="c">// Binaerbaum: im leeren Baum gibt es keinen kleinsten Namen</span>
+<span class="k">public</span> String kleinstes() {
+   <span class="k">return</span> wurzel.kleinstes(<span class="k">null</span>);
+}</pre></template>
+                    </div>
+                </div>
+            </section>
+
+            <section id="anders" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Besprecht mündlich, warum</small></h2></div>
+                <div class="phase-body">
+                    <p>Überlegt zu zweit, was jede Variante besser und was sie schlechter macht. Die Hinweise sind zum Nachlesen <em>nach</em> dem Gespräch: Halte dazu den Knopf gedrückt.</p>
+                    <div class="idee"><strong>Doppelt geprüft?</strong> <code>Binaerbaum.einfuegen</code> sucht vorher, ob der Name vergeben ist. Braucht der Knoten dann den Fall ① überhaupt noch?
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Über das Verzeichnis kommt ein doppelter Name nie bei einem Knoten an. Ohne ① würde ein gleicher Name aber in den rechten Teilbaum wandern, und der Baum hätte Duplikate, sobald jemand <code>Knoten.einfuegen</code> direkt aufruft (wie die Tests). Der Knoten sorgt selbst dafür, dass seine Regel gilt. Die Prüfung im Verzeichnis liefert dafür die Antwort true/false für die Registrierung.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Verwandlung statt Rückgabe:</strong> Könnte sich der Abschluss nicht einfach selbst in einen Knoten verwandeln?
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>In Java kann ein Objekt seine Klasse nicht wechseln. Ein Abschluss bleibt ein Abschluss. Deshalb erzeugt er einen neuen Knoten und meldet ihn zurück, und der Aufrufer ersetzt den Verweis.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Ein Abschluss für alle:</strong> Der Konstruktor von Knoten erzeugt zwei neue Abschlüsse. Würde auch ein einziger, gemeinsamer Abschluss reichen?
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Ja: Der Abschluss hat keine Attribute, also keinen eigenen Zustand. Alle Stellen könnten auf dasselbe Objekt zeigen, das spart bei zwei Millionen Accounts zwei Millionen Objekte. Das Muster heißt Einzelstück (Singleton).</p></template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Ausblick<small>Wie geht es weiter?</small></h2></div>
+                <div class="phase-body">
+                    <p>Deine Abzeichen aus dieser Station:</p>
+                    <div data-abzeichen-wand="2.2"></div>
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🔄 2.3 Traversierung</h4>
+                            <p>Suchen besucht nur einen Ast. Für die alphabetische Mitgliederliste oder ein Backup müssen aber alle Knoten an die Reihe kommen, nur in welcher Reihenfolge?</p>
+                            <a class="btn btn-primary btn-sm" href="2-3-traversierung.html">Zu Station 2.3</a>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>🔁 Rückblick</h4>
+                            <p>Vergleiche <code>Knoten.einfuegen</code> mit <code>Knoten.add</code> aus 1.4. Was ist gleich, was kommt dazu?</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="2-1-baeume.html">← 2.1 Bäume</a>
+                <a class="btn btn-primary" href="2-3-traversierung.html">Weiter: 2.3 Traversierung →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-2-2-kompositum-lsg.pdf">Lösung Blatt 2.2 (PDF)</a> <a class="btn btn-tex btn-sm" href="Online-IDE/LSG%2012-2-2%20Spielerverzeichnis.json" download>Lösungsprojekt (JSON)</a> <a class="btn btn-outline btn-sm" href="Online-IDE/12-2-2%20Spielerverzeichnis.json" download>Ausgangsprojekt (JSON)</a></p>
+                    <p><strong>Anschluss an 1.4:</strong> Namen und Muster wie bei der Liste: abstrakte Klasse <code>BaumElement</code>, <code>Knoten</code> mit <code>getDaten()</code>, <code>Abschluss</code>, Rückgabe-Muster <code>links = links.einfuegen(d)</code>. <code>suchen</code> liefert die Daten oder <code>null</code> wie <code>poll()</code>/<code>peek()</code> in 1.1. <code>DatenElement</code> hat den Vertragsteil <code>istGroesserAls</code> aus 1.3 (Selbst bauen). Anders als in 1.4 legt der Konstruktor von Knoten die beiden Abschlüsse selbst an.</p>
+                    <p><strong>Selbsttest:</strong> <code>BaumTest.java</code> (schreibgeschützt) mit 13 Tests. In der Vorlage bestehen nur <code>suchenAbschluss</code> (Abschluss.suchen ist mit <code>return null;</code> schon richtig, Aufgabe 5b fragt nach der Begründung) und <code>knotenLiefertSichSelbst</code> nicht, weil er zuerst prüft, ob Emil links eingefügt wurde.</p>
+                    <p><strong>Coach</strong> (Projekt-ID <code>i12-22-spielerverzeichnis</code>): erkennt Abfragen auf null, <code>return links.einfuegen(d)</code>, fehlendes Eintragen der Antwort, <code>return d</code> statt <code>return daten</code>, und hält endlose Rekursion an (Stapelgrenze 5000). Sind alle Tests grün, gibt es das Abzeichen „Wurzelwerk“.</p>
+                    <p><strong>BaumZeichner:</strong> fertige Hilfsklasse (schreibgeschützt), zeichnet mit <code>instanceof</code> und Cast. Sie durchläuft den Baum schon rekursiv, in 2.3 kann man fragen, in welcher Reihenfolge.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de · <a href="https://edu-mrh.de/impressum.html#lizenz">CC BY-NC-SA 4.0</a> | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

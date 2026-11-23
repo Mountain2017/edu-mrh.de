@@ -1,0 +1,405 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="https://edu-mrh.de/embed/include/online-ide-embedded.css"><script type="module" src="https://edu-mrh.de/embed/include/online-ide-embedded.js"></script>
+<!-- IDE-START p23 -->
+<div class="java-online" style="width:100%;height:700px" data-java-online="{ 'id': 'i12-23-traversierung-test-lsg', 'speed': 1000000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true, 'withErrorList': true, 'jsonFilename': '12-2-3 Traversierung.json', 'enableFileAccess': true, 'enableRunExitStatusAccess': true }">
+<script type="text/plain" title="Hauptprogramm.java">
+// Station 2.3: Alle Accounts besuchen – in drei Reihenfolgen.
+
+World welt = new World(800, 480);
+Binaerbaum verzeichnis = new Binaerbaum();
+verzeichnis.einfuegenAlle("Mika Emil Tara Bo Ines Pia Zoe Dana Kai Ruby Vik");
+
+// Aufgabe 3: drei Reihenfolgen (TODO 3a bis 3c)
+println("Inorder:   " + verzeichnis.inorder());
+println("Preorder:  " + verzeichnis.preorder());
+println("Postorder: " + verzeichnis.postorder());
+
+// Aufgabe 4: Wie viele Accounts gibt es? (TODO 4)
+println("Accounts:  " + verzeichnis.anzahl());
+
+// Aufgabe 5: Backup. Welche Reihenfolge baut beim Wiedereinlesen denselben Baum?
+String backup = verzeichnis.preorder();   // 5b: auch inorder() und postorder() ausprobieren
+Binaerbaum kopie = new Binaerbaum();
+kopie.einfuegenAlle(backup);
+println("Kopie in Preorder: " + kopie.preorder());
+println("Gleicher Aufbau wie das Original? " + kopie.preorder().equals(verzeichnis.preorder()));
+
+new BaumZeichner().zeichne(verzeichnis);  // 5c: kopie statt verzeichnis zeichnen
+</script>
+<script type="text/plain" title="Binaerbaum.java">
+/**
+ * Das Spielerverzeichnis als geordneter Binärbaum. wurzel ist nie null:
+ * Im leeren Baum ist die Wurzel ein Abschluss.
+ */
+public class Binaerbaum {
+   private BaumElement wurzel;
+
+   public Binaerbaum() {
+      wurzel = new Abschluss();
+   }
+
+   public BaumElement getWurzel() {
+      return wurzel;
+   }
+
+   // Rückgabe false, wenn der Name schon vergeben ist
+   public boolean einfuegen(DatenElement d) {
+      if (suchen(d) != null) {
+         return false;
+      }
+      wurzel = wurzel.einfuegen(d);
+      return true;
+   }
+
+   public DatenElement suchen(DatenElement d) {
+      return wurzel.suchen(d);
+   }
+
+   public String inorder() {
+      return wurzel.inorder();
+   }
+
+   public String preorder() {
+      return wurzel.preorder();
+   }
+
+   public String postorder() {
+      return wurzel.postorder();
+   }
+
+   public int anzahl() {
+      return wurzel.anzahl();
+   }
+
+   // Hilfsmethode für Experimente: fügt alle durch Leerzeichen getrennten Namen
+   // nacheinander ein (jeweils mit Level 1)
+   public void einfuegenAlle(String namen) {
+      String[] teile = namen.trim().split(" ");
+      for (int i = 0; i < teile.length; i++) {
+         if (teile[i].length() > 0) {
+            einfuegen(new Spieler(teile[i], 1));
+         }
+      }
+   }
+}
+</script>
+<script type="text/plain" title="BaumElement.java">
+/**
+ * Gemeinsamer Typ von Knoten und Abschluss (Entwurfsmuster Kompositum).
+ */
+public abstract class BaumElement {
+
+   // Fügt d ein. Rückgabe: das Element, das danach an dieser Stelle steht.
+   public abstract BaumElement einfuegen(DatenElement d);
+
+   // Rückgabe: die gespeicherten Daten mit gleichem Schlüssel oder null.
+   public abstract DatenElement suchen(DatenElement d);
+
+   // Alle Namen ab hier, jeder mit einem Leerzeichen dahinter
+   public abstract String inorder();      // links – ich – rechts
+
+   public abstract String preorder();     // ich – links – rechts
+
+   public abstract String postorder();    // links – rechts – ich
+
+   // Anzahl der Knoten ab hier
+   public abstract int anzahl();
+}
+</script>
+<script type="text/plain" title="Knoten.java">
+/**
+ * Ein Knoten des Binärbaums: Daten und zwei Teilbäume. Links stehen die
+ * kleineren Schlüssel, rechts die größeren. links und rechts sind nie null:
+ * Wo ein Teilbaum leer ist, steht ein Abschluss.
+ * Suche (Strg + F) nach "TODO". Die Platzhalter liefern absichtlich falsche Werte.
+ * einfuegen und suchen sind die Lösung aus Station 2.2.
+ */
+public class Knoten extends BaumElement {
+   private DatenElement daten;
+   private BaumElement links;
+   private BaumElement rechts;
+
+   public Knoten(DatenElement daten) {
+      this.daten = daten;
+      links = new Abschluss();
+      rechts = new Abschluss();
+   }
+
+   public DatenElement getDaten() {
+      return daten;
+   }
+
+   public BaumElement getLinks() {
+      return links;
+   }
+
+   public BaumElement getRechts() {
+      return rechts;
+   }
+
+   public BaumElement einfuegen(DatenElement d) {
+      if (daten.istGleich(d)) {                // ① gleicher Name:
+         return this;                          //    nichts ändern
+      } else if (daten.istGroesserAls(d)) {    // ② d ist kleiner:
+         links = links.einfuegen(d);           //    links einfügen
+      } else {                                 // ③ d ist größer:
+         rechts = rechts.einfuegen(d);         //    rechts einfügen
+      }
+      return this;
+   }
+
+   public DatenElement suchen(DatenElement d) {
+      if (daten.istGleich(d)) {                // ① gefunden:
+         return daten;                         //    gespeicherte Daten zurück
+      } else if (daten.istGroesserAls(d)) {    // ② d ist kleiner:
+         return links.suchen(d);               //    nur links weitersuchen
+      } else {                                 // ③ d ist größer:
+         return rechts.suchen(d);              //    nur rechts weitersuchen
+      }
+   }
+
+   public String inorder() {
+      return links.inorder() + daten.gibSchluesselwert() + " " + rechts.inorder();
+   }
+
+   public String preorder() {
+      return daten.gibSchluesselwert() + " " + links.preorder() + rechts.preorder();
+   }
+
+   public String postorder() {
+      return links.postorder() + rechts.postorder() + daten.gibSchluesselwert() + " ";
+   }
+
+   public int anzahl() {
+      return links.anzahl() + rechts.anzahl() + 1;
+   }
+}
+</script>
+<script type="text/plain" title="Abschluss.java">
+/**
+ * Der Abschluss steht überall dort, wo ein Teilbaum leer ist, auch im
+ * leeren Baum. Er hat weder Daten noch Teilbäume.
+ */
+public class Abschluss extends BaumElement {
+
+   public BaumElement einfuegen(DatenElement d) {
+      return new Knoten(d);                    // ④ hier ist der freie Platz
+   }
+
+   public DatenElement suchen(DatenElement d) {
+      return null;                             // ④ bis hierher nicht gefunden
+   }
+
+   // Ein leerer Teilbaum hat keine Namen.
+   public String inorder() {
+      return "";
+   }
+
+   public String preorder() {
+      return "";
+   }
+
+   public String postorder() {
+      return "";
+   }
+
+   public int anzahl() {
+      return 0;
+   }
+}
+</script>
+<script type="text/plain" title="DatenElement.java">
+/**
+ * Der Vertrag für alles, was im Verzeichnis stehen darf (wie in 1.3 und 1.4).
+ */
+public interface DatenElement {
+   String gibSchluesselwert();
+
+   boolean istGleich(DatenElement d);        // gleicher Schlüssel
+
+   boolean istGroesserAls(DatenElement d);   // eigener Schlüssel kommt im Alphabet später
+}
+</script>
+<script type="text/plain" title="Spieler.java">
+/**
+ * Ein Account im Online-Spiel Sternenstaub. Der Schlüssel ist der Name.
+ */
+public class Spieler implements DatenElement {
+   private String name;
+   private int level;
+
+   public Spieler(String name, int level) {
+      this.name = name;
+      this.level = level;
+   }
+
+   // Zum Suchen: ein Spieler, von dem man nur den Namen kennt
+   public Spieler(String name) {
+      this.name = name;
+      this.level = 0;
+   }
+
+   public String getName() {
+      return name;
+   }
+
+   public int getLevel() {
+      return level;
+   }
+
+   public String gibSchluesselwert() {
+      return name;
+   }
+
+   public boolean istGleich(DatenElement d) {
+      return name.equals(d.gibSchluesselwert());
+   }
+
+   // compareTo vergleicht Texte alphabetisch: Ergebnis > 0, wenn name später kommt
+   public boolean istGroesserAls(DatenElement d) {
+      return name.compareTo(d.gibSchluesselwert()) > 0;
+   }
+}
+</script>
+<script type="text/plain" title="BaumZeichner.java" data-online-ide="{ 'readOnly': true }">
+/**
+ * Zeichnet einen Binärbaum in die Welt. Fertig, muss nicht verändert werden.
+ * Knoten: orange Kreise. Abschlüsse: kleine graue Quadrate.
+ * Ab Ebene 6 wird nicht weiter gezeichnet (Pünktchen).
+ */
+public class BaumZeichner {
+
+   public void zeichne(Binaerbaum baum) {
+      zeichneTeilbaum(baum.getWurzel(), 400, 45, 200, 1);
+   }
+
+   private void zeichneTeilbaum(BaumElement e, double x, double y, double abstand, int ebene) {
+      if (e instanceof Knoten) {
+         Knoten k = (Knoten) e;
+         if (ebene > 6) {
+            Text t = new Text(x - 10, y - 20, 28, "…");
+            t.setFillColor(Color.white);
+            return;
+         }
+         zeichneAst(k.getLinks(), x, y, -abstand, ebene);
+         zeichneAst(k.getRechts(), x, y, abstand, ebene);
+         Circle c = new Circle(x, y, 30);
+         c.setFillColor(Color.orange);
+         c.setBorderColor(Color.white);
+         Text t = new Text(x, y - 11, 20, k.getDaten().gibSchluesselwert());
+         t.setAlignment(Alignment.center);
+         t.setFillColor(Color.black);
+      } else {
+         Rectangle q = new Rectangle(x - 7, y - 7, 14, 14);
+         q.setFillColor(Color.gray);
+         q.setBorderColor(Color.gray);
+      }
+   }
+
+   // Linie zum Kind; ein Abschluss hängt nur kurz unter dem Knoten
+   private void zeichneAst(BaumElement kind, double x, double y, double dx, int ebene) {
+      double zx = x + dx;
+      double zy = y + 75;
+      if (!(kind instanceof Knoten)) {
+         zx = x + dx / Math.abs(dx) * Math.min(Math.abs(dx), 28);
+         zy = y + 50;
+      }
+      Line l = new Line(x, y, zx, zy);
+      l.setBorderColor(Color.gray);
+      zeichneTeilbaum(kind, zx, zy, Math.abs(dx) / 2, ebene + 1);
+   }
+}
+</script>
+<script type="text/plain" title="TraversierungTest.java" data-online-ide="{ 'readOnly': true }">
+/**
+ * Selbsttest der Traversierungen. Bitte nicht verändern!
+ * Starten: Klick auf das kleine Dreieck links neben "@Test"
+ * (ganz oben: alle Tests) oder auf der Website "Tests starten".
+ */
+public class TraversierungTest {
+
+   private String name(BaumElement e) {
+      if (e instanceof Knoten) {
+         return ((Knoten) e).getDaten().gibSchluesselwert();
+      }
+      return "Abschluss";
+   }
+
+   private BaumElement links(BaumElement e) {
+      if (e instanceof Knoten) {
+         return ((Knoten) e).getLinks();
+      }
+      return e;
+   }
+
+   private BaumElement rechts(BaumElement e) {
+      if (e instanceof Knoten) {
+         return ((Knoten) e).getRechts();
+      }
+      return e;
+   }
+
+   private Binaerbaum elf() {
+      Binaerbaum b = new Binaerbaum();
+      b.einfuegen(new Spieler("Mika", 34));
+      b.einfuegen(new Spieler("Emil", 12));
+      b.einfuegen(new Spieler("Tara", 27));
+      b.einfuegen(new Spieler("Bo", 8));
+      b.einfuegen(new Spieler("Ines", 41));
+      b.einfuegen(new Spieler("Pia", 19));
+      b.einfuegen(new Spieler("Zoe", 3));
+      b.einfuegen(new Spieler("Dana", 22));
+      b.einfuegen(new Spieler("Kai", 15));
+      b.einfuegen(new Spieler("Ruby", 50));
+      b.einfuegen(new Spieler("Vik", 9));
+      return b;
+   }
+
+   private Binaerbaum drei() {
+      Binaerbaum b = new Binaerbaum();
+      b.einfuegenAlle("Mika Emil Tara");
+      return b;
+   }
+
+   @Test
+   public void inorderDrei() {
+      Assertions.assertEquals("Emil Mika Tara", drei().inorder().trim(), "Inorder: erst der linke Teilbaum, dann der Knoten, dann der rechte.");
+   }
+
+   @Test
+   public void inorderElf() {
+      Assertions.assertEquals("Bo Dana Emil Ines Kai Mika Pia Ruby Tara Vik Zoe", elf().inorder().trim(), "Inorder liefert alle Namen alphabetisch.");
+   }
+
+   @Test
+   public void preorderDrei() {
+      Assertions.assertEquals("Mika Emil Tara", drei().preorder().trim(), "Preorder: erst der Knoten, dann links, dann rechts.");
+   }
+
+   @Test
+   public void preorderElf() {
+      Assertions.assertEquals("Mika Emil Bo Dana Ines Kai Tara Pia Ruby Zoe Vik", elf().preorder().trim(), "Preorder des Verzeichnisses aus 2.1.");
+   }
+
+   @Test
+   public void postorderDrei() {
+      Assertions.assertEquals("Emil Tara Mika", drei().postorder().trim(), "Postorder: erst links, dann rechts, zuletzt der Knoten.");
+   }
+
+   @Test
+   public void postorderElf() {
+      Assertions.assertEquals("Dana Bo Kai Ines Emil Ruby Pia Vik Zoe Tara Mika", elf().postorder().trim(), "Postorder des Verzeichnisses aus 2.1.");
+   }
+
+   @Test
+   public void anzahlLeer() {
+      Assertions.assertEquals(0, new Binaerbaum().anzahl(), "Der leere Baum hat 0 Knoten: Was liefert der Abschluss?");
+   }
+
+   @Test
+   public void anzahlElf() {
+      Assertions.assertEquals(11, elf().anzahl(), "Das Verzeichnis hat 11 Accounts.");
+   }
+}
+</script>
+</div>
+<!-- IDE-ENDE p23 -->

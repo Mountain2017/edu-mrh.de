@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2.4 Höhe und Effizienz | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Binärbäume, Informatik 12: Höhe eines Binärbaums rekursiv berechnen, entartete und ausgewogene Bäume, Aufwand der Suche (logarithmisch vs. linear). Baum-Architekt und Bot-Alarm.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/include/online-ide-embedded.css">
+    <script type="module" src="https://edu-mrh.de/embed/include/online-ide-embedded.js"></script>
+    <link rel="stylesheet" href="../rekursive-datenstrukturen/datenstrukturen.css">
+    <link rel="stylesheet" href="baeume.css">
+    <script defer src="../rekursive-datenstrukturen/datenstrukturen.js"></script>
+    <script defer src="baeume.js"></script>
+    <script defer src="ide-coach.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🌳</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="binaerbaeume.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header"><h3>Station 2.4</h3></div>
+        <ul class="sidebar-menu">
+            <li><a href="#architekt">🔍 Baum-Architekt</a></li>
+            <li><a href="#merke">📝 Höhe und Aufwand</a></li>
+            <li><a href="#hoehe">✏️ hoehe() programmieren</a></li>
+            <li><a href="#bots">🤖 Bot-Alarm</a></li>
+            <li><a href="#selbst">🛠️ Ausgewogen einfügen</a></li>
+            <li><a href="#nachdenken">💡 Nachdenken</a></li>
+            <li><a href="#ausblick">🚀 Rückblick und Ausblick</a></li>
+        </ul>
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Binärbäume und Tiefensuche</div>
+            <ul class="sidebar-menu">
+                <li><a href="binaerbaeume.html">Übersicht und Abzeichen</a></li>
+                <li><a href="2-1-baeume.html">2.1 Bäume</a></li>
+                <li><a href="2-2-kompositum.html">2.2 Binärbaum als Kompositum</a></li>
+                <li><a href="2-3-traversierung.html">2.3 Traversierung</a></li>
+                <li><a href="2-4-hoehe.html">2.4 Höhe und Effizienz</a></li>
+                <li><a href="../tiefensuche/tiefensuche.html">2.5 Escape Room Tiefensuche</a></li>
+            </ul>
+        </div>
+    </aside>
+    <button class="mobile-menu-btn" id="mobileMenuBtn"><span></span><span></span><span></span></button>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="hero rd-hero">
+                <h1 class="hero-title">2.4 Höhe und Effizienz</h1>
+                <p class="hero-subtitle">Binärbäume · Informatik 12 · ca. 90 Minuten</p>
+                <span class="rd-kompetenz">Du kannst: die Höhe eines Binärbaums rekursiv berechnen, den Aufwand der Suche im ausgewogenen und im entarteten Baum abschätzen und einen Baum ausgewogen aufbauen.</span>
+                <div class="rd-actions">
+                    <a class="btn btn-ab" href="arbeitsblaetter/ab-2-4-hoehe.pdf">📝 Arbeitsblatt 2.4 (PDF)</a>
+                    <a class="btn btn-tex" href="arbeitsblaetter/ab-2-4-hoehe.tex">LaTeX-Quelle</a>
+                </div>
+            </section>
+
+            <div class="bb-ticket">
+                <h3>Ticket #2.4 · Server-Team Sternenstaub · DRINGEND</h3>
+                <p><strong>Bot-Alarm!</strong> Heute Nacht haben sich 500 Bots registriert, schön der Reihe nach: Bot001, Bot002, …, Bot500. Seitdem braucht der Login von Bot500 genauso lange wie früher in der Liste. Dabei sollte der Baum doch alles schneller machen.</p>
+                <p class="bb-von">Finde heraus, was passiert ist, miss es nach und repariere es. Das Werkzeug dafür ist die <strong>Höhe</strong> des Baums.</p>
+            </div>
+
+            <div class="phase-bar">
+                <a class="p-predict" href="#architekt">🔍 Einstieg</a><a class="p-note" href="#merke">📝 Festhalten</a><a class="p-modify" href="#hoehe">✏️ Programmieren</a><a class="p-problem" href="#bots">🤖 Untersuchen</a><a class="p-make" href="#selbst">🛠️ Selbst bauen</a><a class="p-idee" href="#nachdenken">💡 Nachdenken</a><a class="p-ausblick" href="#ausblick">🚀 Ausblick</a>
+            </div>
+
+            <section id="architekt" class="phase predict">
+                <div class="phase-head"><span class="phase-icon">🔍</span><h2>Einstieg<small>Aufgabe 1: Baum-Architekt</small></h2></div>
+                <div class="phase-body">
+                    <p>Dieselben Namen, verschiedene Reihenfolgen, ganz verschiedene Bäume. Du bestimmst, in welcher Reihenfolge sich die Accounts registrieren. Löse alle vier Aufträge. Unten siehst du, wie viele Vergleiche eine Suche im schlimmsten Fall und im Schnitt braucht.</p>
+                    <div data-architekt></div>
+                    <ol class="aufgaben">
+                        <li>Notiere für 7 Namen die kleinste und die größte mögliche Höhe und je eine Reihenfolge dazu.</li>
+                        <li>Welche Höhe ist mit 15 Namen mindestens nötig? Wie viele Knoten passen höchstens in einen Baum der Höhe 1, 2, 3, 4, … h?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 1">
+                        <template data-stufe="Tipp"><p>Ebene 1 hat Platz für einen Knoten, Ebene 2 für zwei, Ebene 3 für vier … Jede Ebene verdoppelt.</p></template>
+                        <template data-stufe="Lösung" data-halten><p><strong>a)</strong> Kleinste Höhe 3, z. B. Dio Ben Fin Ada Cem Eva Gil (die Mitte zuerst). Größte Höhe 7, z. B. alphabetisch Ada Ben … Gil, oder im Zickzack Ada Gil Ben Fin Cem Eva Dio.</p><p><strong>b)</strong> Mindestens Höhe 4. Ein Baum der Höhe h hat höchstens 1 + 2 + 4 + … + 2<sup>h−1</sup> = <strong>2<sup>h</sup> − 1</strong> Knoten: 1, 3, 7, 15, 31, …</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-4-hoehe.pdf">📝 Blatt 2.4 · Aufgabe 1</a></p>
+                </div>
+            </section>
+
+            <section id="merke" class="phase note">
+                <div class="phase-head"><span class="phase-icon">📝</span><h2>Festhalten<small>Höhe und Aufwand, Aufgabe 2</small></h2></div>
+                <div class="phase-body">
+                    <div class="konzept">
+                        <h4>Merke: Höhe und Aufwand der Suche</h4>
+                        <ul>
+                            <li>Die <strong>Höhe</strong> eines Baums ist die Anzahl seiner Ebenen. Eine Suche besucht auf jeder Ebene höchstens einen Knoten. Also gilt: <strong>Vergleiche im schlimmsten Fall = Höhe</strong>.</li>
+                            <li>Ein Baum der Höhe h hat höchstens <strong>2<sup>h</sup> − 1</strong> Knoten. Umgekehrt braucht man für n Knoten mindestens die Höhe <strong>log<sub>2</sub>(n + 1)</strong>, aufgerundet.</li>
+                            <li><strong>Ausgewogener Baum:</strong> Alle Ebenen bis auf die letzte sind voll. Die Höhe wächst nur <strong>logarithmisch</strong>: Doppelt so viele Accounts kosten einen einzigen Vergleich mehr.</li>
+                            <li><strong>Entarteter Baum:</strong> Jeder Knoten hat höchstens ein Kind, der Baum ist eine Kette mit Höhe n. Die Suche ist <strong>linear</strong> wie in der Liste. Das passiert zum Beispiel, wenn sortiert eingefügt wird.</li>
+                            <li>Die Form und damit die Geschwindigkeit hängen nur von der <strong>Reihenfolge beim Einfügen</strong> ab.</li>
+                        </ul>
+                    </div>
+                    <div data-wachstum></div>
+                    <ol class="aufgaben">
+                        <li>Fülle die Tabelle auf dem Blatt mit dem Rechner aus (Aufgabe 2). Wie viele Vergleiche braucht der Login bei zwei Millionen Accounts im ausgewogenen Baum?</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 2">
+                        <template data-stufe="Lösung" data-halten><p>n = 15: Liste 15, Kette 15, ausgewogen 4 · n = 1000: 1000, 1000, 10 · n = 1 000 000: 1 000 000, 1 000 000, 20 · n = 2 000 000: 2 000 000, 2 000 000, <strong>21</strong>. Das ist die Zahl aus dem Ticket in 2.1.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-4-hoehe.pdf">📝 Blatt 2.4 · Merkkasten und Aufgabe 2</a></p>
+                </div>
+            </section>
+
+            <section id="hoehe" class="phase modify">
+                <div class="phase-head"><span class="phase-icon">✏️</span><h2>Programmieren<small>Aufgabe 3: hoehe() rekursiv</small></h2></div>
+                <div class="phase-body">
+                    <p>Bevor das Programm die Höhe berechnet, rechnest du wie das Programm: von unten nach oben. Ein Abschluss hat die Höhe 0. Ein Knoten ist eine Ebene, darunter kommt der <em>höhere</em> seiner beiden Teilbäume.</p>
+                    <div data-baumbild="Mika Emil Tara Bo Ines Pia Zoe Dana Kai Ruby Vik" data-abschluesse data-breite="640"></div>
+                    <ol class="aufgaben">
+                        <li>Schreibe auf dem Blatt an jeden Knoten seine Höhe, angefangen bei den Blättern (Aufgabe 3a). Welche Traversierung benutzt du dabei?</li>
+                        <li>Ergänze den Code und programmiere TODO 3 in Knoten und Abschluss. Die Lösung von 2.3 ist schon eingebaut.</li>
+                    </ol>
+                    <div class="ide-block" id="ide">
+                        <div class="ide-kopf"><h3>Projekt Bot-Alarm</h3></div>
+<!-- IDE-START p24 -->
+<div class="java-online" style="width:100%;height:620px" data-java-online="{ 'id': 'i12-24-bot-alarm', 'speed': 1000000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true, 'withErrorList': true, 'jsonFilename': '12-2-4 Bot-Alarm.json', 'enableFileAccess': true, 'enableRunExitStatusAccess': true }">
+<script type="text/plain" title="Hauptprogramm.java">
+// Station 2.4: Bot-Alarm! Wie schnell ist das Verzeichnis wirklich?
+
+World welt = new World(800, 480);
+
+// Aufgabe 3: Höhe des Verzeichnisses (TODO 3)
+Binaerbaum verzeichnis = new Binaerbaum();
+verzeichnis.einfuegenAlle("Mika Emil Tara Bo Ines Pia Zoe Dana Kai Ruby Vik");
+println("Verzeichnis: " + verzeichnis.anzahl() + " Accounts, Höhe " + verzeichnis.hoehe());
+
+// Aufgabe 4: Die Bot-Welle. 500 Bots registrieren sich in alphabetischer Reihenfolge.
+String[] bots = new String[500];
+for (int i = 0; i < bots.length; i++) {
+   String nummer = "" + (i + 1);
+   while (nummer.length() < 3) {
+      nummer = "0" + nummer;
+   }
+   bots[i] = "Bot" + nummer;          // Bot001, Bot002, …, Bot500
+}
+Binaerbaum botBaum = new Binaerbaum();
+for (int i = 0; i < bots.length; i++) {
+   botBaum.einfuegen(new Spieler(bots[i], 1));
+}
+println("Bot-Welle: " + botBaum.anzahl() + " Accounts, Höhe " + botBaum.hoehe());
+Spieler.vergleiche = 0;
+botBaum.suchen(new Spieler("Bot500"));
+println("  Login von Bot500: " + Spieler.vergleiche + " Vergleiche");
+
+// Aufgabe 5: dieselben Bots in zufälliger Reihenfolge
+String[] gemischt = new String[bots.length];
+for (int i = 0; i < bots.length; i++) {
+   gemischt[i] = bots[i];
+}
+Random zufall = new Random();
+for (int i = gemischt.length - 1; i > 0; i--) {
+   int j = zufall.nextInt(i + 1);
+   String tausch = gemischt[i];
+   gemischt[i] = gemischt[j];
+   gemischt[j] = tausch;
+}
+Binaerbaum zufallsBaum = new Binaerbaum();
+for (int i = 0; i < gemischt.length; i++) {
+   zufallsBaum.einfuegen(new Spieler(gemischt[i], 1));
+}
+println("Zufällig: " + zufallsBaum.anzahl() + " Accounts, Höhe " + zufallsBaum.hoehe());
+Spieler.vergleiche = 0;
+zufallsBaum.suchen(new Spieler("Bot500"));
+println("  Login von Bot500: " + Spieler.vergleiche + " Vergleiche");
+
+// Aufgabe 6 (Selbst bauen): ausgewogen einfügen, immer zuerst die Mitte (TODO 6)
+Binaerbaum ausgewogen = new Binaerbaum();
+ausgewogen.ausgewogenEinfuegen(bots, 0, bots.length - 1);
+println("Ausgewogen: " + ausgewogen.anzahl() + " Accounts, Höhe " + ausgewogen.hoehe());
+Spieler.vergleiche = 0;
+ausgewogen.suchen(new Spieler("Bot500"));
+println("  Login von Bot500: " + Spieler.vergleiche + " Vergleiche");
+
+new BaumZeichner().zeichne(verzeichnis);   // auch: botBaum, zufallsBaum, ausgewogen
+</script>
+<script type="text/plain" title="Binaerbaum.java">
+/**
+ * Das Spielerverzeichnis als geordneter Binärbaum. wurzel ist nie null:
+ * Im leeren Baum ist die Wurzel ein Abschluss.
+ */
+public class Binaerbaum {
+   private BaumElement wurzel;
+
+   public Binaerbaum() {
+      wurzel = new Abschluss();
+   }
+
+   public BaumElement getWurzel() {
+      return wurzel;
+   }
+
+   // Rückgabe false, wenn der Name schon vergeben ist
+   public boolean einfuegen(DatenElement d) {
+      if (suchen(d) != null) {
+         return false;
+      }
+      wurzel = wurzel.einfuegen(d);
+      return true;
+   }
+
+   public DatenElement suchen(DatenElement d) {
+      return wurzel.suchen(d);
+   }
+
+   public String inorder() {
+      return wurzel.inorder();
+   }
+
+   public String preorder() {
+      return wurzel.preorder();
+   }
+
+   public String postorder() {
+      return wurzel.postorder();
+   }
+
+   public int anzahl() {
+      return wurzel.anzahl();
+   }
+
+   public int hoehe() {
+      return wurzel.hoehe();
+   }
+
+   // Hilfsmethode für Experimente: fügt alle durch Leerzeichen getrennten Namen
+   // nacheinander ein (jeweils mit Level 1)
+   public void einfuegenAlle(String namen) {
+      String[] teile = namen.trim().split(" ");
+      for (int i = 0; i < teile.length; i++) {
+         if (teile[i].length() > 0) {
+            einfuegen(new Spieler(teile[i], 1));
+         }
+      }
+   }
+
+   // Fügt sortiert[von] bis sortiert[bis] so ein, dass der Baum möglichst niedrig wird.
+   public void ausgewogenEinfuegen(String[] sortiert, int von, int bis) {
+      // TODO 6 (Aufgabe 6): ① leerer Bereich? ② Mitte einfügen ③ linke Hälfte ④ rechte Hälfte
+   }
+}
+</script>
+<script type="text/plain" title="BaumElement.java">
+/**
+ * Gemeinsamer Typ von Knoten und Abschluss (Entwurfsmuster Kompositum).
+ */
+public abstract class BaumElement {
+
+   // Fügt d ein. Rückgabe: das Element, das danach an dieser Stelle steht.
+   public abstract BaumElement einfuegen(DatenElement d);
+
+   // Rückgabe: die gespeicherten Daten mit gleichem Schlüssel oder null.
+   public abstract DatenElement suchen(DatenElement d);
+
+   // Alle Namen ab hier, jeder mit einem Leerzeichen dahinter
+   public abstract String inorder();      // links – ich – rechts
+
+   public abstract String preorder();     // ich – links – rechts
+
+   public abstract String postorder();    // links – rechts – ich
+
+   // Anzahl der Knoten ab hier
+   public abstract int anzahl();
+
+   // Zahl der Ebenen ab hier (Abschluss: 0)
+   public abstract int hoehe();
+}
+</script>
+<script type="text/plain" title="Knoten.java">
+/**
+ * Ein Knoten des Binärbaums: Daten und zwei Teilbäume. Links stehen die
+ * kleineren Schlüssel, rechts die größeren. links und rechts sind nie null:
+ * Wo ein Teilbaum leer ist, steht ein Abschluss.
+ * Suche (Strg + F) nach "TODO". Die Platzhalter liefern absichtlich falsche Werte.
+ * einfuegen und suchen sind die Lösung aus Station 2.2.
+ */
+public class Knoten extends BaumElement {
+   private DatenElement daten;
+   private BaumElement links;
+   private BaumElement rechts;
+
+   public Knoten(DatenElement daten) {
+      this.daten = daten;
+      links = new Abschluss();
+      rechts = new Abschluss();
+   }
+
+   public DatenElement getDaten() {
+      return daten;
+   }
+
+   public BaumElement getLinks() {
+      return links;
+   }
+
+   public BaumElement getRechts() {
+      return rechts;
+   }
+
+   public BaumElement einfuegen(DatenElement d) {
+      if (daten.istGleich(d)) {                // ① gleicher Name:
+         return this;                          //    nichts ändern
+      } else if (daten.istGroesserAls(d)) {    // ② d ist kleiner:
+         links = links.einfuegen(d);           //    links einfügen
+      } else {                                 // ③ d ist größer:
+         rechts = rechts.einfuegen(d);         //    rechts einfügen
+      }
+      return this;
+   }
+
+   public DatenElement suchen(DatenElement d) {
+      if (daten.istGleich(d)) {                // ① gefunden:
+         return daten;                         //    gespeicherte Daten zurück
+      } else if (daten.istGroesserAls(d)) {    // ② d ist kleiner:
+         return links.suchen(d);               //    nur links weitersuchen
+      } else {                                 // ③ d ist größer:
+         return rechts.suchen(d);              //    nur rechts weitersuchen
+      }
+   }
+
+   public String inorder() {
+      return links.inorder() + daten.gibSchluesselwert() + " " + rechts.inorder();
+   }
+
+   public String preorder() {
+      return daten.gibSchluesselwert() + " " + links.preorder() + rechts.preorder();
+   }
+
+   public String postorder() {
+      return links.postorder() + rechts.postorder() + daten.gibSchluesselwert() + " ";
+   }
+
+   public int anzahl() {
+      return links.anzahl() + rechts.anzahl() + 1;
+   }
+
+   public int hoehe() {
+      return 0;       // TODO 3 (Aufgabe 3): Platzhalter ersetzen
+   }
+}
+</script>
+<script type="text/plain" title="Abschluss.java">
+/**
+ * Der Abschluss steht überall dort, wo ein Teilbaum leer ist, auch im
+ * leeren Baum. Er hat weder Daten noch Teilbäume.
+ */
+public class Abschluss extends BaumElement {
+
+   public BaumElement einfuegen(DatenElement d) {
+      return new Knoten(d);                    // ④ hier ist der freie Platz
+   }
+
+   public DatenElement suchen(DatenElement d) {
+      return null;                             // ④ bis hierher nicht gefunden
+   }
+
+   // Ein leerer Teilbaum hat keine Namen.
+   public String inorder() {
+      return "";
+   }
+
+   public String preorder() {
+      return "";
+   }
+
+   public String postorder() {
+      return "";
+   }
+
+   public int anzahl() {
+      return 0;
+   }
+
+   public int hoehe() {
+      return -1;      // TODO 3 (Aufgabe 3): Platzhalter ersetzen
+   }
+}
+</script>
+<script type="text/plain" title="DatenElement.java">
+/**
+ * Der Vertrag für alles, was im Verzeichnis stehen darf (wie in 1.3 und 1.4).
+ */
+public interface DatenElement {
+   String gibSchluesselwert();
+
+   boolean istGleich(DatenElement d);        // gleicher Schlüssel
+
+   boolean istGroesserAls(DatenElement d);   // eigener Schlüssel kommt im Alphabet später
+}
+</script>
+<script type="text/plain" title="Spieler.java">
+/**
+ * Ein Account im Online-Spiel Sternenstaub. Der Schlüssel ist der Name.
+ */
+public class Spieler implements DatenElement {
+   private String name;
+   private int level;
+
+   // Zählt, wie oft istGleich aufgerufen wird: so viele Knoten hat eine Suche besucht.
+   public static int vergleiche = 0;
+
+   public Spieler(String name, int level) {
+      this.name = name;
+      this.level = level;
+   }
+
+   // Zum Suchen: ein Spieler, von dem man nur den Namen kennt
+   public Spieler(String name) {
+      this.name = name;
+      this.level = 0;
+   }
+
+   public String getName() {
+      return name;
+   }
+
+   public int getLevel() {
+      return level;
+   }
+
+   public String gibSchluesselwert() {
+      return name;
+   }
+
+   public boolean istGleich(DatenElement d) {
+      vergleiche++;
+      return name.equals(d.gibSchluesselwert());
+   }
+
+   // compareTo vergleicht Texte alphabetisch: Ergebnis > 0, wenn name später kommt
+   public boolean istGroesserAls(DatenElement d) {
+      return name.compareTo(d.gibSchluesselwert()) > 0;
+   }
+}
+</script>
+<script type="text/plain" title="BaumZeichner.java" data-online-ide="{ 'readOnly': true }">
+/**
+ * Zeichnet einen Binärbaum in die Welt. Fertig, muss nicht verändert werden.
+ * Knoten: orange Kreise. Abschlüsse: kleine graue Quadrate.
+ * Ab Ebene 6 wird nicht weiter gezeichnet (Pünktchen).
+ */
+public class BaumZeichner {
+
+   public void zeichne(Binaerbaum baum) {
+      zeichneTeilbaum(baum.getWurzel(), 400, 45, 200, 1);
+   }
+
+   private void zeichneTeilbaum(BaumElement e, double x, double y, double abstand, int ebene) {
+      if (e instanceof Knoten) {
+         Knoten k = (Knoten) e;
+         if (ebene > 6) {
+            Text t = new Text(x - 10, y - 20, 28, "…");
+            t.setFillColor(Color.white);
+            return;
+         }
+         zeichneAst(k.getLinks(), x, y, -abstand, ebene);
+         zeichneAst(k.getRechts(), x, y, abstand, ebene);
+         Circle c = new Circle(x, y, 30);
+         c.setFillColor(Color.orange);
+         c.setBorderColor(Color.white);
+         Text t = new Text(x, y - 11, 20, k.getDaten().gibSchluesselwert());
+         t.setAlignment(Alignment.center);
+         t.setFillColor(Color.black);
+      } else {
+         Rectangle q = new Rectangle(x - 7, y - 7, 14, 14);
+         q.setFillColor(Color.gray);
+         q.setBorderColor(Color.gray);
+      }
+   }
+
+   // Linie zum Kind; ein Abschluss hängt nur kurz unter dem Knoten
+   private void zeichneAst(BaumElement kind, double x, double y, double dx, int ebene) {
+      double zx = x + dx;
+      double zy = y + 75;
+      if (!(kind instanceof Knoten)) {
+         zx = x + dx / Math.abs(dx) * Math.min(Math.abs(dx), 28);
+         zy = y + 50;
+      }
+      Line l = new Line(x, y, zx, zy);
+      l.setBorderColor(Color.gray);
+      zeichneTeilbaum(kind, zx, zy, Math.abs(dx) / 2, ebene + 1);
+   }
+}
+</script>
+<script type="text/plain" title="HoeheTest.java" data-online-ide="{ 'readOnly': true }">
+/**
+ * Selbsttest zu Höhe und ausgewogenem Einfügen. Bitte nicht verändern!
+ * Starten: Klick auf das kleine Dreieck links neben "@Test"
+ * (ganz oben: alle Tests) oder auf der Website "Tests starten".
+ */
+public class HoeheTest {
+
+   private String name(BaumElement e) {
+      if (e instanceof Knoten) {
+         return ((Knoten) e).getDaten().gibSchluesselwert();
+      }
+      return "Abschluss";
+   }
+
+   private BaumElement links(BaumElement e) {
+      if (e instanceof Knoten) {
+         return ((Knoten) e).getLinks();
+      }
+      return e;
+   }
+
+   private BaumElement rechts(BaumElement e) {
+      if (e instanceof Knoten) {
+         return ((Knoten) e).getRechts();
+      }
+      return e;
+   }
+
+   private Binaerbaum elf() {
+      Binaerbaum b = new Binaerbaum();
+      b.einfuegen(new Spieler("Mika", 34));
+      b.einfuegen(new Spieler("Emil", 12));
+      b.einfuegen(new Spieler("Tara", 27));
+      b.einfuegen(new Spieler("Bo", 8));
+      b.einfuegen(new Spieler("Ines", 41));
+      b.einfuegen(new Spieler("Pia", 19));
+      b.einfuegen(new Spieler("Zoe", 3));
+      b.einfuegen(new Spieler("Dana", 22));
+      b.einfuegen(new Spieler("Kai", 15));
+      b.einfuegen(new Spieler("Ruby", 50));
+      b.einfuegen(new Spieler("Vik", 9));
+      return b;
+   }
+
+   @Test
+   public void hoeheLeer() {
+      Assertions.assertEquals(0, new Binaerbaum().hoehe(), "Der leere Baum hat keine Ebene: Höhe 0. Was liefert der Abschluss?");
+   }
+
+   @Test
+   public void hoeheEinKnoten() {
+      Binaerbaum b = new Binaerbaum();
+      b.einfuegenAlle("Mika");
+      Assertions.assertEquals(1, b.hoehe(), "Ein einzelner Knoten bildet eine Ebene: Höhe 1.");
+   }
+
+   @Test
+   public void hoeheElf() {
+      Assertions.assertEquals(4, elf().hoehe(), "Das Verzeichnis aus 2.1 hat vier Ebenen.");
+   }
+
+   @Test
+   public void hoeheEntartet() {
+      Binaerbaum b = new Binaerbaum();
+      b.einfuegenAlle("Ada Ben Cem Dio Eva");
+      Assertions.assertEquals(5, b.hoehe(), "Sortiert eingefügt entsteht eine Kette: fünf Namen, fünf Ebenen.");
+   }
+
+   @Test
+   public void hoeheSchief() {
+      Binaerbaum b = new Binaerbaum();
+      b.einfuegenAlle("Mika Bo Zoe Xia Wim");
+      Assertions.assertEquals(4, b.hoehe(), "Der längste Ast zählt: Mika – Zoe – Xia – Wim.");
+   }
+
+   @Test
+   public void ausgewogenSieben() {
+      Binaerbaum b = new Binaerbaum();
+      String[] namen = "Ada Ben Cem Dio Eva Fin Gil".split(" ");
+      b.ausgewogenEinfuegen(namen, 0, 6);
+      Assertions.assertEquals(7, b.anzahl(), "Alle sieben Namen müssen eingefügt werden.");
+      Assertions.assertEquals(3, b.hoehe(), "Sieben Namen passen in drei Ebenen.");
+      Assertions.assertEquals("Dio", name(b.getWurzel()), "Die Mitte (Dio) muss die Wurzel werden.");
+   }
+
+   @Test
+   public void ausgewogenZehn() {
+      Binaerbaum b = new Binaerbaum();
+      String[] namen = "Ada Ben Cem Dio Eva Fin Gil Hal Ida Jo".split(" ");
+      b.ausgewogenEinfuegen(namen, 0, 9);
+      Assertions.assertEquals(10, b.anzahl(), "Alle zehn Namen müssen eingefügt werden.");
+      Assertions.assertEquals(4, b.hoehe(), "Zehn Namen passen in vier Ebenen.");
+   }
+}
+</script>
+</div>
+<!-- IDE-ENDE p24 -->
+                        <p class="ide-downloads">💾 Eigenen Stand sichern: Diskettensymbol in der IDE-Leiste, der Name <code>12-2-4 Bot-Alarm.json</code> ist schon vorgeschlagen. · <a href="Online-IDE/12-2-4%20Bot-Alarm.json" download>Ausgangsprojekt für online-ide.de</a> · Das Programm braucht wegen der 500 Bots ein paar Sekunden.</p>
+                    </div>
+                    <div class="coach" data-coach="i12-24-bot-alarm"></div>
+                    <div class="lw" data-loesungsweg="Aufgabe 3: hoehe()">
+                        <template data-stufe="Tipp 1"><p>Abschluss: kein Knoten, keine Ebene. Knoten: Frag beide Kinder nach ihrer Höhe. Welche Antwort zählt?</p></template>
+                        <template data-stufe="Tipp 2"><p><code>Math.max(a, b)</code> liefert die größere der beiden Zahlen. Und der Knoten selbst ist eine Ebene mehr.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="c">// Knoten: erst beide Teilbäume, dann ich (Postorder)</span>
+<span class="k">public int</span> hoehe() {
+   <span class="k">return</span> 1 + Math.max(links.hoehe(), rechts.hoehe());
+}
+<span class="c">// Abschluss</span>
+<span class="k">public int</span> hoehe() {
+   <span class="k">return</span> 0;
+}</pre><p>Höhen im Verzeichnis: Mika 4, Emil 3, Tara 3, Bo 2, Ines 2, Pia 2, Zoe 2, Dana 1, Kai 1, Ruby 1, Vik 1. Man rechnet von unten nach oben: Postorder.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-4-hoehe.pdf">📝 Blatt 2.4 · Aufgabe 3</a></p>
+                </div>
+            </section>
+
+            <section id="bots" class="phase problem">
+                <div class="phase-head"><span class="phase-icon">🤖</span><h2>Untersuchen<small>Aufgaben 4 und 5: Was die Bots angerichtet haben</small></h2></div>
+                <div class="phase-body">
+                    <p>Das Hauptprogramm spielt die Nacht nach: 500 Bots registrieren sich alphabetisch. Danach misst es Höhe und Vergleiche beim Login von Bot500. <code>Spieler.vergleiche</code> zählt, wie oft <code>istGleich</code> aufgerufen wird, also wie viele Knoten die Suche besucht.</p>
+                    <ol class="aufgaben">
+                        <li><strong>Aufgabe 4:</strong> Starte das Programm und notiere Höhe und Vergleiche der Bot-Welle. Erkläre mit einer Skizze der ersten vier Bots, was passiert ist.</li>
+                        <li><strong>Aufgabe 5:</strong> Das Programm fügt dieselben Bots auch in zufälliger Reihenfolge ein. Starte dreimal und notiere die Höhen. Vergleiche mit dem bestmöglichen Wert für 500 Knoten.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgaben 4 und 5">
+                        <template data-stufe="Lösung" data-halten><p><strong>4:</strong> Höhe 500, Login von Bot500: 500 Vergleiche. Jeder neue Bot ist größer als alle bisherigen und wird ganz rechts angehängt: Bot001 → Bot002 → Bot003 → Bot004 … eine Kette, also eine Liste.</p><p><strong>5:</strong> Zufällig: Höhe meist zwischen 15 und 22, Login von Bot500 meist unter 20 Vergleichen. Bestmöglich wäre log<sub>2</sub>(501) ≈ 8,97, aufgerundet Höhe 9. Zufall ist nicht perfekt, aber weit weg vom schlimmsten Fall.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-4-hoehe.pdf">📝 Blatt 2.4 · Aufgaben 4 und 5</a></p>
+                </div>
+            </section>
+
+            <section id="selbst" class="phase make">
+                <div class="phase-head"><span class="phase-icon">🛠️</span><h2>Selbst bauen<small>Aufgabe 6: Ausgewogen einfügen</small></h2></div>
+                <div class="phase-body">
+                    <p>Die Bots sind nun mal alphabetisch sortiert. Kann man sie trotzdem so einfügen, dass der Baum so niedrig wie möglich wird? Dein Rezept aus dem Baum-Architekten hilft: <strong>erst die Mitte</strong>.</p>
+                    <div class="konzept">
+                        <h4>Vorgehensweise: ausgewogen einfügen aus einem sortierten Array (Bereich von … bis)</h4>
+                        <ul class="bb-schritte">
+                            <li><span class="nr">①</span><span>Ist der Bereich leer (von &gt; bis), ist nichts zu tun.</span></li>
+                            <li><span class="nr">②</span><span>Füge das mittlere Element ein: Index <code>mitte = (von + bis) / 2</code>.</span></li>
+                            <li><span class="nr">③</span><span>Füge die linke Hälfte (von bis mitte − 1) genauso ein.</span></li>
+                            <li><span class="nr">④</span><span>Füge die rechte Hälfte (mitte + 1 bis bis) genauso ein.</span></li>
+                        </ul>
+                        <p>„Genauso“ heißt: Die Methode ruft sich selbst mit einem kleineren Bereich auf.</p>
+                    </div>
+                    <ol class="aufgaben">
+                        <li>Notiere auf dem Blatt, in welcher Reihenfolge Ada, Ben, Cem, Dio, Eva, Fin, Gil eingefügt werden. Woher kennst du diese Reihenfolge?</li>
+                        <li>Programmiere TODO 6 (<code>ausgewogenEinfuegen</code> in Binaerbaum) und vergleiche die drei Bäume aus 500 Bots.</li>
+                    </ol>
+                    <div class="lw" data-loesungsweg="Aufgabe 6">
+                        <template data-stufe="Tipp 1"><p>Reihenfolge: zuerst Dio (Mitte von 7), dann die Mitte der linken Hälfte Ada–Cem …</p></template>
+                        <template data-stufe="Tipp 2"><p>Code: ① <code>if (von &gt; bis) { return; }</code> ② <code>einfuegen(new Spieler(sortiert[mitte], 1));</code> ③ und ④: zwei rekursive Aufrufe mit den Bereichsgrenzen aus der Vorgehensweise.</p></template>
+                        <template data-stufe="Lösung" data-halten><p><strong>a)</strong> Dio, Ben, Ada, Cem, Fin, Eva, Gil. Das ist die <strong>Preorder</strong> des perfekten Baums: erst der Knoten, dann links, dann rechts.</p><pre class="jv"><span class="k">public void</span> ausgewogenEinfuegen(String[] sortiert, <span class="k">int</span> von, <span class="k">int</span> bis) {
+   <span class="k">if</span> (von &gt; bis) {                                  <span class="c">// ①</span>
+      <span class="k">return</span>;
+   }
+   <span class="k">int</span> mitte = (von + bis) / 2;
+   einfuegen(<span class="k">new</span> Spieler(sortiert[mitte], 1));       <span class="c">// ②</span>
+   ausgewogenEinfuegen(sortiert, von, mitte - 1);    <span class="c">// ③</span>
+   ausgewogenEinfuegen(sortiert, mitte + 1, bis);    <span class="c">// ④</span>
+}</pre><p><strong>b)</strong> 500 Bots ausgewogen: Höhe 9, Login von Bot500 mit 9 Vergleichen.</p></template>
+                    </div>
+                    <p><a class="ab-verweis" href="arbeitsblaetter/ab-2-4-hoehe.pdf">📝 Blatt 2.4 · Aufgabe 6</a></p>
+                </div>
+            </section>
+
+            <section id="nachdenken" class="phase idee">
+                <div class="phase-head"><span class="phase-icon">💡</span><h2>Nachdenken<small>Besprecht mündlich, warum</small></h2></div>
+                <div class="phase-body">
+                    <div class="idee"><strong>Im echten Betrieb</strong> registrieren sich die Accounts nicht alle auf einmal, man kann sie also nicht vorher sortieren und ausgewogen einfügen. Was könnte das Verzeichnis tun, damit es trotzdem nicht entartet?
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Es gibt Bäume, die sich beim Einfügen selbst ausgleichen: AVL-Bäume oder Rot-Schwarz-Bäume. Wird ein Ast zu lang, drehen sie ein paar Knoten um (Rotation), ohne die Ordnung links kleiner, rechts größer zu verletzen. Die Höhe bleibt dann immer logarithmisch. Javas <code>TreeMap</code> ist so ein Rot-Schwarz-Baum. Das gehört nicht zum Lehrplan, ist aber genau die Antwort auf die Bot-Welle.</p></template>
+                        </div>
+                    </div>
+                    <div class="idee"><strong>Ein Bot weniger:</strong> Wenn ausgerechnet der Name in der Wurzel gelöscht würde, was wäre dann schwierig?
+                        <div class="lw lw-kurz" data-loesungsweg="">
+                            <template data-stufe="Hinweis zum Nachlesen" data-halten><p>Die Wurzel hat zwei Teilbäume, und beide müssen erhalten bleiben. Man ersetzt sie durch den größten Namen ihres linken (oder den kleinsten ihres rechten) Teilbaums. Der passt genau dazwischen, die Ordnung bleibt erhalten.</p></template>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ausblick" class="phase ausblick">
+                <div class="phase-head"><span class="phase-icon">🚀</span><h2>Rückblick und Ausblick<small>Mission erfüllt?</small></h2></div>
+                <div class="phase-body">
+                    <p>Deine Abzeichen aus dieser Station:</p>
+                    <div data-abzeichen-wand="2.4"></div>
+                    <div class="konzept">
+                        <h4>Checkliste Binärbäume: Ich kann …</h4>
+                        <ul class="bb-checkliste">
+                            <li>Bäume mit Wurzel, Blatt, innerem Knoten, Teilbaum, Ebene und Höhe beschreiben (2.1).</li>
+                            <li>in einem geordneten Binärbaum von Hand suchen und einfügen (2.1).</li>
+                            <li>den Binärbaum als Kompositum modellieren und <code>einfuegen</code> und <code>suchen</code> programmieren (2.2).</li>
+                            <li>Preorder, Inorder und Postorder bestimmen, programmieren und ihren Zweck nennen (2.3).</li>
+                            <li>die Höhe rekursiv berechnen und den Aufwand der Suche im ausgewogenen und entarteten Baum vergleichen (2.4).</li>
+                        </ul>
+                    </div>
+                    <div class="weiter-grid">
+                        <div class="weiter-karte">
+                            <h4>🕳️ 2.5 Escape Room: Die Tiefen von Sternenstaub</h4>
+                            <p>Sternenstaub bekommt eine Höhlenwelt, und du steckst darin fest. Mit Tiefensuche kommst du wieder heraus. Ein Baum ist nämlich nur ein besonders braver Graph.</p>
+                            <a class="btn btn-primary btn-sm" href="../tiefensuche/tiefensuche.html">Zum Escape Room</a>
+                        </div>
+                        <div class="weiter-karte">
+                            <h4>🏅 Alle Abzeichen</h4>
+                            <p>Auf der Übersichtsseite siehst du alle Abzeichen des Kapitels.</p>
+                            <a class="btn btn-outline btn-sm" href="binaerbaeume.html#abzeichen">Zur Abzeichen-Wand</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="2-3-traversierung.html">← 2.3 Traversierung</a>
+                <a class="btn btn-primary" href="../tiefensuche/tiefensuche.html">Weiter: 2.5 Escape Room →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-2-4-hoehe-lsg.pdf">Lösung Blatt 2.4 (PDF)</a> <a class="btn btn-tex btn-sm" href="Online-IDE/LSG%2012-2-4%20Bot-Alarm.json" download>Lösungsprojekt (JSON)</a> <a class="btn btn-outline btn-sm" href="Online-IDE/12-2-4%20Bot-Alarm.json" download>Ausgangsprojekt (JSON)</a></p>
+                    <p><strong>Messwerte (Lösungsprojekt):</strong> Verzeichnis 11 Accounts, Höhe 4. Bot-Welle Höhe 500, 500 Vergleiche. Zufällig je nach Lauf etwa Höhe 15–22 (gemessen z. B. 18, Login 12 Vergleiche). Ausgewogen Höhe 9, 9 Vergleiche. Laufzeit etwa 4 Sekunden (125 000 rekursive Aufrufe für die Kette).</p>
+                    <p><strong>Selbsttest:</strong> <code>HoeheTest.java</code> mit 7 Tests (5 zu <code>hoehe</code>, 2 zu <code>ausgewogenEinfuegen</code>). <code>Spieler.vergleiche</code> ist ein statisches Attribut, das in <code>istGleich</code> hochgezählt wird. Stapelgrenze des Coachs 5000 (Kette mit 500 Ebenen ist erlaubt).</p>
+                    <p><strong>Höhe:</strong> Ebenen gezählt, leerer Baum 0 (siehe 2.1). Selbstausgleichende Bäume (AVL, Rot-Schwarz) nur als Ausblick zum Nachlesen.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de · <a href="https://edu-mrh.de/impressum.html#lizenz">CC BY-NC-SA 4.0</a> | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

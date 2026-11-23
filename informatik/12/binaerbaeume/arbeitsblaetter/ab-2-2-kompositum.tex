@@ -1,0 +1,139 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{2.2}{Der Binärbaum als Kompositum}
+
+Das Spielerverzeichnis wird in Java gebaut, nach demselben Muster wie die Liste aus Station 1.4. \web{Station 2.2, Aufruf-Verfolger und Projekt Spielerverzeichnis}
+
+\begin{aufgabe}[Klassendiagramm]{1}
+\textbf{a)} Ergänze die Datentypen der Attribute und zeichne alle Vererbungspfeile ein.\par\vspace{1mm}
+\centering
+\begin{tikzpicture}[font=\scriptsize,node distance=6mm]
+  \node[klasse,text width=3.6cm] (bb) {\textbf{Binaerbaum}\nodepart{second}- wurzel: \lsg[1.9cm]{BaumElement}\nodepart{third}+ einfuegen(d: DatenElement): boolean\\+ suchen(d: DatenElement): DatenElement};
+  \node[klasse,text width=4.6cm,right=10mm of bb] (be) {\textit{\textbf{BaumElement}}\\{\tiny«abstract»}\nodepart{second}\phantom{x}\nodepart{third}+ einfuegen(d: DatenElement): BaumElement\\+ suchen(d: DatenElement): DatenElement};
+  \node[klasse,text width=3.6cm,right=10mm of be] (de) {{\tiny«interface»}\\\textbf{DatenElement}\nodepart{second}\phantom{x}\nodepart{third}+ gibSchluesselwert(): String\\+ istGleich(d): boolean\\+ istGroesserAls(d): boolean};
+  \node[klasse,text width=4.3cm,below=12mm of be.south west,anchor=north east,xshift=8mm] (kn) {\textbf{Knoten}\nodepart{second}- daten: \lsg[2cm]{DatenElement}\\- links: \lsg[2cm]{BaumElement}\\- rechts: \lsg[2cm]{BaumElement}\nodepart{third}+ einfuegen(d: DatenElement): BaumElement\\+ suchen(d: DatenElement): DatenElement};
+  \node[klasse,text width=4.3cm,below=12mm of be.south east,anchor=north west,xshift=-8mm] (ab) {\textbf{Abschluss}\nodepart{second}\phantom{x}\nodepart{third}+ einfuegen(d: DatenElement): BaumElement\\+ suchen(d: DatenElement): DatenElement};
+  \node[klasse,text width=3.6cm,below=12mm of de] (sp) {\textbf{Spieler}\nodepart{second}- name: String\\- level: int\nodepart{third}+ getLevel(): int\\…};
+  \draw[implementiert] (sp) -- (de);
+  \draw[erbt,lsgbild] (kn.north) -- ++(0,0.35) -| ([xshift=-6mm]be.south);
+  \draw[erbt,lsgbild] (ab.north) -- ++(0,0.35) -| ([xshift=6mm]be.south);
+\end{tikzpicture}\par\vspace{1mm}
+\raggedright
+\textbf{b)} Warum haben \code{links} und \code{rechts} den Typ \code{BaumElement} und nicht \code{Knoten}?\par
+\lsglinien{2}{Unter einem Knoten kann ein Knoten oder ein Abschluss hängen. Nur der gemeinsame Typ BaumElement passt auf beide.}
+\end{aufgabe}
+
+\begin{aufgabe}[Objektdiagramm: Mika, Emil und Tara]{2}
+\begin{minipage}[t]{0.62\linewidth}
+\vspace{0pt}
+Zeichne alle Verweise ein. Kein Verweis ist \code{null}!\par\vspace{1mm}
+\begin{tikzpicture}[font=\scriptsize]
+  \node[pobj] (v) at (0,0) {verzeichnis: Binaerbaum\\[1pt] wurzel};
+  \node[obj] (k1) at (4.6,0) {k1: Knoten \nodepart{second} daten = Mika\\ links \quad rechts};
+  \node[obj] (k2) at (2.2,-1.5) {k2: Knoten \nodepart{second} daten = Emil\\ links \quad rechts};
+  \node[obj] (k3) at (7,-1.5) {k3: Knoten \nodepart{second} daten = Tara\\ links \quad rechts};
+  \foreach \i/\x in {1/0.9,2/3.4,3/5.8,4/8.2} \node[aobj] (a\i) at (\x,-3) {a\i: Abschluss};
+  \draw[lsgzeiger] (v.east) -- (k1.west);
+  \draw[lsgzeiger] ([xshift=-4mm]k1.south) -- (k2.north);
+  \draw[lsgzeiger] ([xshift=4mm]k1.south) -- (k3.north);
+  \draw[lsgzeiger] ([xshift=-4mm]k2.south) -- (a1.north);
+  \draw[lsgzeiger] ([xshift=4mm]k2.south) -- (a2.north);
+  \draw[lsgzeiger] ([xshift=-4mm]k3.south) -- (a3.north);
+  \draw[lsgzeiger] ([xshift=4mm]k3.south) -- (a4.north);
+  \ifloesung\else\path (0,0);\fi
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.35\linewidth}
+\vspace{0pt}\lueckentext
+3 Knoten brauchen \lsg[2.25cm]{4} Abschlüsse.\par
+Das Verzeichnis mit 11 Accounts hat \lsg[2.25cm]{12} Abschlüsse.\par
+Allgemein: n Knoten haben \lsg[2.25cm]{n + 1} Abschlüsse.
+\end{minipage}
+\end{aufgabe}
+
+\begin{merke}[Merke: Rekursive Methoden im Kompositum]
+\begin{lueckentext}
+\textbf{Drei Fragen:} Was antwortet der \lsg[5.25cm]{Abschluss} (Ende der Rekursion)? Was tut der Knoten \lsg[3.5cm]{selbst}? Welches Kind fragt er, und was macht er mit der \lsg[5.25cm]{Antwort}?\par
+\textbf{Rückgabe-Muster:} Jede \code{einfuegen}-Methode gibt zurück, was \lsg[5.25cm]{danach an ihrer Stelle steht}: Der Abschluss den \lsg[5.25cm]{neuen Knoten}, ein Knoten \lsg[5.25cm]{sich selbst (this)}. Der Aufrufer \lsg[5.25cm]{trägt die Antwort ein}, z.\,B. \code{links = links.einfuegen(d);}
+\end{lueckentext}
+\end{merke}
+
+\newpage
+\begin{aufgabe}[Einfügen programmieren (TODO 3a–c)]{3}
+\begin{minipage}[t]{0.56\linewidth}
+\vspace{0pt}
+\begin{javaluecke}[basicstyle=\linespread{1.5}\footnotesize\ttfamily]
+// Knoten (3b)
+public BaumElement einfuegen(DatenElement d) {
+   if (daten.istGleich(d)) {           // §\nr{1}§
+      return §\lsg[1.6cm]{this}§;
+   } else if (§\lsg[3.6cm]{daten.istGroesserAls(d)}§) {   // §\nr{2}§
+      links = §\lsg[3.6cm]{links.einfuegen(d)}§;
+   } else {                            // §\nr{3}§
+      §\lsg[5.6cm]{rechts = rechts.einfuegen(d)}§;
+   }
+   return this;
+}
+\end{javaluecke}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.42\linewidth}
+\vspace{0pt}
+\begin{javaluecke}[basicstyle=\linespread{1.5}\footnotesize\ttfamily]
+// Abschluss (3a)
+public BaumElement einfuegen(
+                DatenElement d) {
+   return §\lsg[3.2cm]{new Knoten(d)}§; // §\nr{4}§
+}
+// Binaerbaum (3c), nach der Prüfung
+§\lsg[5cm]{wurzel = wurzel.einfuegen(d)}§;
+return true;
+\end{javaluecke}
+\end{minipage}
+\end{aufgabe}
+
+\begin{aufgabe}[Aufrufe verfolgen: verzeichnis.einfuegen(Lou)]{4}
+\textbf{a)} Fülle die Tabelle mit dem Aufruf-Verfolger aus (Baum aus Station 2.1, Lou kommt nach Kai).\par\vspace{1mm}
+{\small\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|>{\ttfamily}l|l|X|}\hline
+\textrm{Aufruf} & Antwort (Rückgabe) & wird eingetragen als … \\\hline
+Mika.einfuegen(Lou) & \lsgtext{Knoten Mika} & \schreibzeile\lsgtext{\code{wurzel} von verzeichnis (unverändert)} \\\hline
+Emil.einfuegen(Lou) & \lsgtext{Knoten Emil} & \schreibzeile\lsgtext{\code{links} von Mika (unverändert)} \\\hline
+\lsgtext{Ines.einfuegen(Lou)} & \lsgtext{Knoten Ines} & \schreibzeile\lsgtext{\code{rechts} von Emil (unverändert)} \\\hline
+\lsgtext{Kai.einfuegen(Lou)} & \lsgtext{Knoten Kai} & \schreibzeile\lsgtext{\code{rechts} von Ines (unverändert)} \\\hline
+\lsgtext{Abschluss.einfuegen(Lou)} & \lsgtext{neuer Knoten Lou} & \schreibzeile\lsgtext{\code{rechts} von Kai: Jetzt hängt Lou im Baum!} \\\hline
+\end{tabularx}}\par\vspace{1mm}
+\begin{lueckentext}
+\textbf{b)} Wirklich verändert wird der Baum nur von \lsgrest{Kai, der die Antwort des Abschlusses (Knoten Lou) einträgt.}
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{aufgabe}[Suchen programmieren (TODO 5a, 5b)]{5}
+\begin{minipage}[t]{0.56\linewidth}
+\vspace{0pt}
+\begin{javaluecke}[basicstyle=\linespread{1.5}\footnotesize\ttfamily]
+// Knoten (5a)
+public DatenElement suchen(DatenElement d) {
+   if (daten.istGleich(d)) {           // §\nr{1}§
+      return §\lsg[2cm]{daten}§;
+   } else if (daten.istGroesserAls(d)) {  // §\nr{2}§
+      return §\lsg[3.6cm]{links.suchen(d)}§;
+   } else {                            // §\nr{3}§
+      return §\lsg[3.6cm]{rechts.suchen(d)}§;
+   }
+}
+\end{javaluecke}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.42\linewidth}
+\vspace{0pt}\lueckentext
+\textbf{b)} Abschluss: \code{return null;} \nr{4} ist schon richtig, weil\par
+\lsgrest{die Suche hier im leeren Teilbaum}
+\lsgrest{angekommen ist: Den Namen gibt es nicht.}
+\textbf{c)} Knoten-Aufrufe von \code{suchen}:\par
+für Ruby: \lsg[2.25cm]{4}\quad für Olaf: \lsg[2.25cm]{3}\par
+Warum nicht \code{return d;} bei \nr{1}?\par
+\lsgrest{d ist nur der Suchbegriff (Level 0),}
+\lsgrest{daten hat das gespeicherte Level.}
+\end{minipage}
+\end{aufgabe}
+\end{document}
