@@ -1,0 +1,180 @@
+/* ==========================================================================
+   Escape Room „Die Tiefen von Sternenstaub“ (Informatik 12, Station 2.5)
+   Freies Design im Rahmen von embed/style.css: dunkle Höhle, Fackellicht.
+   ========================================================================== */
+:root {
+    --es-nacht: #0b1020;
+    --es-fels: #1b2236;
+    --es-fels-hell: #2a3350;
+    --es-rand: #3b4566;
+    --es-text: #e5e7eb;
+    --es-leise: #9aa3b8;
+    --es-fackel: #f59e0b;
+    --es-glut: #fbbf24;
+    --es-moos: #34d399;
+    --es-blut: #fb7185;
+    --es-wasser: #60a5fa;
+}
+
+.es-seite { background: radial-gradient(1200px 600px at 20% -10%, #1e293b 0%, var(--es-nacht) 60%) fixed; color: var(--es-text); border-radius: 16px; padding: 1.5rem; margin: 1rem 0 2rem; box-shadow: 0 20px 40px rgba(0,0,0,.35); }
+.es-seite h1, .es-seite h2, .es-seite h3, .es-seite h4 { color: #fff; }
+.es-seite a { color: var(--es-glut); }
+.es-seite code { background: rgba(255,255,255,.08); color: #fde68a; padding: .05rem .3rem; border-radius: 4px; }
+.es-hero { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.es-hero h1 { margin: 0; font-size: 2rem; letter-spacing: .01em; text-shadow: 0 0 18px rgba(245,158,11,.35); }
+.es-hero p { margin: .3rem 0 0; color: var(--es-leise); }
+.es-hero .es-aktionen { display: flex; flex-wrap: wrap; gap: .5rem; }
+.es-btn-ab { display: inline-block; padding: .45rem .9rem; border-radius: 999px; background: var(--es-moos); color: #052e1c !important; font-weight: 700; text-decoration: none; }
+.es-btn-tex { display: inline-block; padding: .45rem .9rem; border-radius: 999px; background: var(--es-fels-hell); color: var(--es-text) !important; font-weight: 600; text-decoration: none; border: 1px solid var(--es-rand); }
+
+/* Kopf: Uhr und Raumpfad */
+.es-kopf { position: sticky; top: 64px; z-index: 5; background: rgba(11,16,32,.92); backdrop-filter: blur(4px); border: 1px solid var(--es-rand); border-radius: 12px; padding: .6rem .8rem; margin-bottom: 1rem; }
+.es-kopf-zeile { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin-bottom: .5rem; }
+.es-uhr { font-family: ui-monospace, Consolas, monospace; font-size: 1.15rem; font-weight: 700; color: var(--es-glut); }
+.es-chip { font-size: .82rem; color: var(--es-leise); background: var(--es-fels); border: 1px solid var(--es-rand); border-radius: 999px; padding: .1rem .6rem; }
+.es-pfad { list-style: none; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: .35rem; margin: 0; padding: 0; }
+.es-pfad button { width: 100%; display: flex; flex-direction: column; align-items: center; gap: .1rem; background: var(--es-fels); border: 1px solid var(--es-rand); color: var(--es-text); border-radius: 10px; padding: .35rem .2rem; cursor: pointer; font: inherit; font-size: .75rem; }
+.es-pfad button:disabled { opacity: .45; cursor: not-allowed; }
+.es-pfad .es-pfad-icon { font-size: 1.15rem; }
+.es-pfad .es-pfad-name { line-height: 1.15; text-align: center; }
+.es-pfad li.geloest button { border-color: var(--es-moos); }
+.es-pfad li.geloest .es-pfad-name::after { content: " ✓"; color: var(--es-moos); }
+.es-pfad li.aktiv button { background: #3a2a0a; border-color: var(--es-fackel); box-shadow: 0 0 12px rgba(245,158,11,.4); }
+
+/* Räume */
+.es-raum { background: linear-gradient(180deg, var(--es-fels) 0%, #151b2d 100%); border: 1px solid var(--es-rand); border-radius: 14px; padding: 1.1rem 1.2rem 1.3rem; }
+.es-raum h2 { margin: .1rem 0 .5rem; font-size: 1.5rem; }
+.es-raum-nr { font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--es-fackel); font-weight: 700; }
+.es-story { font-style: italic; color: #cbd5e1; border-left: 3px solid var(--es-fackel); padding-left: .8rem; }
+.es-auftrag { color: var(--es-text); }
+.es-start ul { margin: .4rem 0 1rem 1.2rem; }
+.es-feld { margin: .8rem 0; }
+.es-raster { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 1rem; align-items: start; }
+.es-klein { margin: .2rem 0 .4rem; font-size: .95rem; color: var(--es-glut); }
+.es-info { color: #cbd5e1; font-size: .95rem; min-height: 2.6rem; }
+.es-fuss { color: var(--es-leise); font-size: .82rem; }
+.es-regel { background: rgba(245,158,11,.08); border: 1px dashed var(--es-fackel); border-radius: 10px; padding: .6rem .9rem; margin-bottom: .6rem; }
+.es-regel ol { margin: .3rem 0 0 1.2rem; }
+
+/* Knöpfe und Eingaben */
+.es-knoepfe { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: .6rem 0; }
+.es-knopf { border: 2px solid var(--es-fackel); background: transparent; color: var(--es-glut); border-radius: 999px; padding: .38rem .95rem; font: inherit; font-weight: 700; cursor: pointer; }
+.es-knopf:hover:not(:disabled), .es-knopf:focus-visible { background: rgba(245,158,11,.15); outline: none; }
+.es-knopf.haupt { background: var(--es-fackel); color: #1c1203; }
+.es-knopf.haupt:hover:not(:disabled) { background: var(--es-glut); }
+.es-knopf.klein { font-size: .82rem; padding: .25rem .7rem; border-width: 1px; }
+.es-knopf:disabled { opacity: .4; cursor: not-allowed; }
+.es-knopf.taste { min-width: 2.8rem; font-size: 1.1rem; }
+.es-wort, .es-ziffer { background: #0f172a; border: 2px solid var(--es-rand); color: #fff; border-radius: 8px; padding: .35rem .6rem; font: inherit; font-weight: 700; letter-spacing: .05em; }
+.es-ziffer { width: 4rem; text-align: center; }
+.es-wort:focus, .es-ziffer:focus { border-color: var(--es-fackel); outline: none; }
+.es-seite select { background: #0f172a; color: #fff; border: 2px solid var(--es-rand); border-radius: 8px; padding: .3rem .4rem; font: inherit; max-width: 100%; }
+.es-seite select.richtig { border-color: var(--es-moos); }
+.es-seite select.falsch { border-color: var(--es-blut); }
+.es-meldung { min-height: 1.4rem; margin: .5rem 0 0; border-radius: 8px; }
+.es-meldung:not(:empty) { padding: .5rem .8rem; background: rgba(255,255,255,.06); }
+.es-meldung.gut { background: rgba(52,211,153,.15); color: #a7f3d0; }
+.es-meldung.schlecht { background: rgba(251,113,133,.15); color: #fecdd3; }
+
+/* Karte */
+.es-karte { background: radial-gradient(circle at 50% 40%, #182035 0%, #0a0f1c 75%); border: 1px solid var(--es-rand); border-radius: 12px; overflow: hidden; }
+.es-svg { display: block; width: 100%; height: auto; max-height: 460px; }
+.es-gang { stroke: #4b5675; stroke-width: 9; stroke-linecap: round; }
+.es-gang.faden { stroke: #b45309; }
+.es-gang.welle { stroke: var(--es-wasser); }
+.es-gang.faden.welle { stroke: #a78bfa; }
+.es-hoehle circle { fill: #374151; stroke: #6b7280; stroke-width: 3; transition: fill .25s; }
+.es-hoehle text { fill: #e5e7eb; text-anchor: middle; dominant-baseline: central; pointer-events: none; font: 700 17px/1 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.es-hoehle .es-unter { font-size: 12px; font-weight: 800; fill: #fde68a; }
+.es-hoehle.nebel circle { fill: #111827; stroke: #374151; stroke-dasharray: 4 4; }
+.es-hoehle.nebel text { fill: #6b7280; }
+.es-hoehle.besucht circle { fill: #14532d; stroke: var(--es-moos); }
+.es-hoehle.hier circle { fill: #78350f; stroke: var(--es-glut); stroke-width: 5; filter: drop-shadow(0 0 8px rgba(251,191,36,.8)); }
+.es-hoehle.geist circle { fill: #4c1d95; stroke: #c4b5fd; }
+.es-hoehle.ausgang circle { stroke: #fef3c7; stroke-width: 4; }
+.es-hoehle.klickbar { cursor: pointer; }
+.es-hoehle.klickbar:hover circle, .es-hoehle.klickbar:focus circle { stroke: #fff; }
+.es-hoehle:focus { outline: none; }
+.es-karte.verdeckt .es-svg { filter: blur(14px) brightness(.4); }
+
+/* Faden, Inschrift, Stapel */
+.es-faden { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem; margin: .6rem 0 .2rem; }
+.es-faden-titel { color: var(--es-leise); font-weight: 700; margin-right: .2rem; }
+.es-faden-knoten { background: #b45309; color: #fff; border-radius: 999px; min-width: 1.7rem; text-align: center; font-weight: 800; padding: .05rem .4rem; }
+.es-faden-knoten.oben { background: var(--es-glut); color: #1c1203; }
+.es-faden-strich { color: #b45309; font-weight: 800; }
+.es-faden-leer { color: var(--es-leise); font-style: italic; }
+.es-inschrift { margin: .4rem 0; }
+.es-code { font-family: ui-monospace, Consolas, monospace; letter-spacing: .12em; color: var(--es-glut); font-size: 1.1rem; }
+.es-code-block { background: #0f172a; border: 1px solid var(--es-rand); border-radius: 10px; padding: .6rem .7rem; font-size: .8rem; line-height: 1.6; overflow-x: auto; color: #cbd5e1; margin: 0 0 .6rem; white-space: pre; }
+.es-code-block span { display: block; padding: 0 .3rem; border-radius: 4px; }
+.es-code-block span.an { background: #3a2a0a; color: #fde68a; }
+.es-stapel { display: flex; flex-direction: column-reverse; gap: .3rem; }
+.es-rahmen { display: flex; justify-content: space-between; gap: .5rem; background: #1f2937; border: 1px solid var(--es-rand); border-radius: 8px; padding: .3rem .6rem; font-size: .85rem; }
+.es-rahmen.oben { border-color: var(--es-fackel); background: #3a2a0a; }
+.es-rahmen span { color: var(--es-leise); font-size: .78rem; font-style: italic; }
+.es-leer { color: var(--es-leise); font-style: italic; }
+
+/* Schlösser, Fragen */
+.es-schloss { background: rgba(255,255,255,.04); border: 1px solid var(--es-rand); border-radius: 12px; padding: .8rem 1rem; margin-top: .8rem; }
+.es-schloss ol { margin: .5rem 0 .6rem 1.2rem; }
+.es-schloss li { margin: .35rem 0; }
+.es-ausgang { border-color: var(--es-glut); box-shadow: 0 0 20px rgba(251,191,36,.15); }
+.es-teile { display: grid; gap: .7rem; margin-top: .8rem; }
+.es-frage { background: rgba(255,255,255,.04); border: 1px solid var(--es-rand); border-radius: 10px; padding: .6rem .8rem; }
+.es-frage > p:first-child { margin-top: 0; font-weight: 600; }
+.es-optionen { display: flex; flex-wrap: wrap; gap: .4rem; }
+.es-optionen button { background: #0f172a; color: var(--es-text); border: 2px solid var(--es-rand); border-radius: 8px; padding: .35rem .7rem; font: inherit; font-size: .92rem; text-align: left; cursor: pointer; }
+.es-optionen button:hover:not(:disabled) { border-color: var(--es-fackel); }
+.es-optionen button.richtig { border-color: var(--es-moos); background: rgba(52,211,153,.15); }
+.es-optionen button.falsch { border-color: var(--es-blut); text-decoration: line-through; opacity: .7; }
+.es-erkl { margin: .5rem 0 0; color: #a7f3d0; font-size: .93rem; }
+.es-tafel-wrap { overflow-x: auto; }
+.es-tafel { border-collapse: collapse; font-family: ui-monospace, Consolas, monospace; background: #111827; margin: 0 auto; }
+.es-tafel th, .es-tafel td { border: 1px solid #374151; padding: .3rem .45rem; text-align: center; min-width: 1.9rem; color: #6b7280; background: transparent; }
+.es-tafel thead th { color: var(--es-glut) !important; background: #0f172a; }
+.es-tafel tbody th { color: var(--es-glut); }
+.es-tafel td.x { color: #fde68a; font-weight: 800; }
+.es-tafel tr { cursor: pointer; }
+.es-tafel tr.an td, .es-tafel tr.an th { background: #3a2a0a; }
+.es-tasten { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .4rem; }
+.es-schlosscode-wrap { overflow-x: auto; background: #0f172a; border: 1px solid var(--es-rand); border-radius: 10px; padding: .6rem .8rem; }
+.es-schlosscode { font-family: ui-monospace, Consolas, monospace; font-size: .82rem; color: #cbd5e1; min-width: 640px; }
+.es-cz { white-space: pre; line-height: 2.1; }
+.es-cz select { font-family: ui-monospace, Consolas, monospace; font-size: .8rem; padding: .1rem .3rem; }
+
+/* Tipps, Erkenntnis, Urkunde */
+.es-tipps { margin-top: .8rem; }
+.es-tipp { background: rgba(245,158,11,.1); border-left: 3px solid var(--es-fackel); padding: .4rem .7rem; border-radius: 0 8px 8px 0; margin: .3rem 0; }
+.es-erkenntnis { margin-top: 1rem; background: linear-gradient(160deg, rgba(52,211,153,.12), rgba(96,165,250,.1)); border: 1px solid var(--es-moos); border-radius: 12px; padding: .8rem 1rem; animation: es-auf .5s ease-out; }
+.es-erk-titel { font-weight: 800; color: #a7f3d0; margin-bottom: .3rem; }
+.es-blatt { color: #fde68a; font-weight: 600; }
+@keyframes es-auf { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.es-urkunde { margin-top: .8rem; text-align: center; background: linear-gradient(160deg, #fef3c7, #fde68a); color: #1c1203; border-radius: 14px; padding: 1.2rem; border: 3px double #b45309; }
+.es-urk-titel { font-size: 1.8rem; font-weight: 800; }
+.es-urk-zeit { font-size: 1.2rem; font-weight: 700; }
+.es-urkunde .es-knopf { color: #78350f; border-color: #b45309; }
+
+/* Finale (IDE) */
+.es-finale { background: #fff; color: #1e293b; border-radius: 14px; padding: 1rem 1.1rem; margin: 1.2rem 0; position: relative; border: 3px solid var(--es-fackel); }
+.es-finale h2 { color: #78350f; margin-top: 0; }
+.es-finale.es-gesperrt .es-finale-inhalt { filter: blur(3px) grayscale(.7); pointer-events: none; user-select: none; }
+.es-sperre { display: none; position: absolute; inset: 0; z-index: 3; align-items: center; justify-content: center; text-align: center; background: rgba(11,16,32,.75); color: #fff; border-radius: 12px; font-weight: 700; font-size: 1.1rem; padding: 1rem; }
+.es-finale.es-gesperrt .es-sperre { display: flex; }
+
+@media (max-width: 900px) {
+    .es-raster { grid-template-columns: 1fr; }
+    .es-pfad { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+    .es-seite { padding: .8rem; border-radius: 10px; }
+    .es-raum { padding: .8rem; }
+    .es-hero h1 { font-size: 1.5rem; }
+    .es-kopf { top: 56px; }
+}
+@media print {
+    body * { visibility: hidden; }
+    .es-urkunde, .es-urkunde * { visibility: visible; }
+    .es-urkunde { position: absolute; left: 0; top: 0; width: 100%; }
+    .es-urkunde .es-knopf { display: none; }
+}

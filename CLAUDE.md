@@ -381,7 +381,28 @@ gemeinsamen Designs ist also die Root-Datei).
   Tresor-Kette, Fraktalbaum; Aufruf-Labor `algorithmen.js`; Blatt 1.5 nutzt den Antwortplatz-Block
   der `ab-vorlage.tex` über `\def\antwortplatzacht{}`, 1.1–1.4 bleiben beim alten; `material/` Rohmaterial, nur lokal);
   älter: `12/rekursion-queue-listen/`
-- 12 sonst: `12/binaerbaeume/`, `12/tiefensuche/`, `12/nebenlaeufigkeit/`
+- 12 Binärbäume (neues Format, → AB, Selbstlernmodul 4–6 Std., Kapitel 2): `12/binaerbaeume/binaerbaeume.html`
+  (Übersicht, Abzeichen-Wand) mit 2.1 Bäume (Begriffe, Suchen/Einfügen von Hand), 2.2 Kompositum (`einfuegen`
+  mit Rückgabe-Muster, `suchen` liefert Daten oder null; Projekt `12-2-2 Spielerverzeichnis`), 2.3 Traversierung
+  (Pre-/In-/Postorder als String-Rückgabe, `anzahl`, Backup-Experiment; `12-2-3 Traversierung`), 2.4 Höhe und
+  Effizienz (`hoehe` mit Ebenen, leerer Baum 0; Bot-Welle, `ausgewogenEinfuegen`; `12-2-4 Bot-Alarm`).
+  Fortlaufendes Beispiel: Spielerverzeichnis des erfundenen Spiels „Sternenstaub“, elf Namen Mika Emil Tara Bo Ines
+  Pia Zoe Dana Kai Ruby Vik (Höhe 4) auf allen Seiten, Blättern und in allen Projekten gleich. Spiele/Werkzeuge in
+  `baeume.js` (Namen raten, Safari, Such-Sprint, Baumschule, Aufruf-Verfolger, Umrundung, Rennen, Backup-Labor,
+  Architekt, Wachstum, Abzeichen in `localStorage 'bbAbzeichen'`), Stil `baeume.css` auf
+  `../rekursive-datenstrukturen/datenstrukturen.css` (Lösungsweg aus `datenstrukturen.js`), Coach `ide-coach.js`
+  (Regeln für 2.2–2.5, meldet `coach-gruen` für Abzeichen). Blätter mit eigener `ab-vorlage.tex` (Baum-Stile `baum`,
+  `bk`, `\verzeichnisbaum`). **IDE-Code nur im Generator ändern:** `material/generator/gen_ide.py` (nur lokal,
+  im Repo-Root aufrufen) schreibt JSON und LSG-JSON und die Blöcke zwischen `<!-- IDE-START p22..p25 -->`.
+  Alte Seiten `binbaum.html`/`index.html` leiten weiter
+- 12 Tiefensuche (2.5, Escape Room, kurzes Logbuch-Blatt `ab-2-5-tiefensuche` mit der Vorlage aus `../binaerbaeume/`):
+  `12/tiefensuche/tiefensuche.html` „Die Tiefen von Sternenstaub“, 7 Räume in `escape.js`/`escape.css` (Regel und
+  Backtracking, Aufrufstapel, besucht/Baum = Preorder, Adjazenzmatrix, Code-Schloss ①–⑥, Tiefen- vs. Breitensuche,
+  Finale in Java mit Graph-Klasse aus Klasse 11, Projekt `12-2-5 Tiefensuche`). Stand in `localStorage 'tsEscape'`,
+  `?offen` öffnet alle Räume. Lösungswörter nur als Zeichencodes im Code, nie im Klartext auf die Seite; Höhlen im
+  Finale umnummeriert, damit die Buchstaben nach Nummer das Wort nicht verraten. Alte `index.html` und
+  `Protocol_DFS_MicroSteps.html` leiten weiter
+- 12 sonst: `12/nebenlaeufigkeit/`
 - 13 Formale Sprachen (neues Format, → AB): `13/formale-sprachen/`
   (1.1 Syntax und Semantik, 1.2 Formale Sprachen, 1.3 Syntaxdiagramme, 1.4 EBNF,
   1.5 Endliche Automaten mit Java-Projekt `Online-IDE/13-1-5 Automat.json` + Coach (Übergangstabelle),

@@ -1,0 +1,58 @@
+\documentclass[11pt,a4paper]{article}
+% Gemeinsame Vorlage des Kapitels (Binärbäume und Tiefensuche)
+\input{../../binaerbaeume/arbeitsblaetter/ab-vorlage}
+\begin{document}
+\abtitel{2.5}{Escape Room Tiefensuche: Logbuch}
+
+Die Räume bringen dir die Tiefensuche bei. Notiere nach jedem Raum, was du mitnimmst und woran es anknüpft. \web{Station 2.5}
+
+\begin{aufgabe}[Raum 1 · Fackelschein \quad Raum 2 · Der rote Faden \hfill Anschluss: Station 1.5]{1}
+\begin{lueckentext}
+Wandinschrift: \lsg[3.4cm]{LATERNE} \ Die Tiefensuche geht immer so \lsg[2.6cm]{tief} wie möglich.\par
+In einer Sackgasse geht sie\lsgrest{zurück zur vorigen Höhle (am Faden): Backtracking.}
+Der Faden ist in Java der \lsg[5.25cm]{Aufrufstapel}. Weitergehen in eine Höhle ist ein \lsg[5.25cm]{rekursiver Aufruf}, zurückgehen heißt:\lsgrest{Der Aufruf endet (return).}
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{aufgabe}[Raum 3 · Der Kreisgang \hfill Anschluss: Station 2.3]{2}
+\begin{lueckentext}
+Die Tiefensuche braucht ein Feld \code{boolean[]} \lsg[3cm]{besucht}, weil es in Graphen \lsg[3.6cm]{Kreise} geben kann. Die Tiefensuche in einem Baum ist die \lsg[3.6cm]{Preorder}.\par Im Binärbaum braucht man kein besucht, weil\lsgrest{die Verweise nur nach unten zeigen (keine Kreise).}
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{aufgabe}[Raum 4 · Die Steintafel \hfill Anschluss: Klasse 11, Graphen]{3}
+\begin{lueckentext}
+Reihenfolge: \lsg[6.75cm]{0 – 4 – 1 – 3 – 5 – 2 – 6} \quad Die Nachbarn von Höhle \code{k} sind alle \code{i} mit \lsg[4.5cm]{adja[k][i] == true}.\par Die kleinste Nummer kommt zuerst dran, weil\lsgrest{die for-Schleife i = 0, 1, 2, … prüft.}
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{aufgabe}[Raum 5 · Das Code-Schloss (dieselben Zeilen brauchst du im Finale)]{4}
+\begin{javaluecke}[basicstyle=\linespread{1.45}\scriptsize\ttfamily]
+boolean tiefensucheRekursiv(int aktuellerKnoten, int zielKnoten, boolean[] besucht) {
+   §\lsg[6cm]{besucht[aktuellerKnoten] = true}§;                       // §\nr{1}§
+   if (§\lsg[5.2cm]{aktuellerKnoten == zielKnoten}§) {                    // §\nr{2}§
+      return true;
+   }
+   §\lsg[6cm]{for (int i = 0; i < anzKnoten; i++)}§ {                     // §\nr{3}§
+      if (§\lsg[6cm]{adja[aktuellerKnoten][i] \&\& !besucht[i]}§) {         // §\nr{4}§
+         if (§\lsg[6.2cm]{tiefensucheRekursiv(i, zielKnoten, besucht)}§) { // §\nr{5}§
+            return true;
+         }
+      }
+   }
+   §\lsg[3cm]{return false}§;                                             // §\nr{6}§
+}
+\end{javaluecke}
+\end{aufgabe}
+
+\begin{aufgabe}[Raum 6 · Zwei Wege \quad Raum 7 · Tageslicht \hfill Anschluss: Klasse 11, Breitensuche]{5}
+{\small\renewcommand{\arraystretch}{1.05}
+\begin{tabularx}{\linewidth}{|l|X|X|}\hline
+ & Tiefensuche (Tilda) & Breitensuche (Bruno) \\\hline
+merkt sich die nächsten Höhlen in … & \schreibzeile\lsgtext{Stapel (Aufrufstapel)} & \lsgtext{Warteschlange (Queue)} \\\hline
+Weg vom Eingang zum Ausgang & \schreibzeile\lsgtext{5 Gänge} & \lsgtext{3 Gänge} \\\hline
+findet immer den Weg mit den wenigsten Gängen? & \schreibzeile\lsgtext{nein} & \lsgtext{ja} \\\hline
+\end{tabularx}}\par\vspace{1.5mm}
+Lösungswort: \lsg[5.25cm]{TAGESLICHT} \hfill Zeit: \lsg[2.25cm]{} \quad Fackel-Tipps: \lsg[2.25cm]{}
+\end{aufgabe}
+\end{document}

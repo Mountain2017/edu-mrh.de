@@ -1,0 +1,125 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{2.3}{Traversierung: alle Knoten besuchen}
+
+Mitgliederliste, Backup, Statistik: Jeder Account muss genau einmal an die Reihe kommen. So einen Durchlauf nennt man \textbf{Traversierung}. \web{Station 2.3, Umrundung, Rennen, Backup-Labor}
+
+\begin{aufgabe}[Die Umrundung]{1}
+\begin{minipage}[t]{0.47\linewidth}
+\vspace{0pt}\centering
+\begin{tikzpicture}[scale=1.05]
+\begin{scope}[baum]
+\node[bk] (Mika) at (0,0) {Mika}
+  child {node[bk] {Emil}
+    child {node[bk] {Bo} child[missing] child {node[bk] {Dana}}}
+    child {node[bk] {Ines} child[missing] child {node[bk] {Kai}}}}
+  child {node[bk] {Tara}
+    child {node[bk] {Pia} child[missing] child {node[bk] {Ruby}}}
+    child {node[bk] {Zoe} child {node[bk] {Vik}} child[missing]}};
+\end{scope}
+\draw[densely dashed,gray,thick,rounded corners=1.5mm,-{Stealth[length=2mm]}] (-9mm,4mm) -- (-5.4mm,0.0mm) -- (-23.4mm,-9.0mm) -- (-32.4mm,-18.0mm) -- (-27.0mm,-23.4mm) -- (-27.9mm,-27.0mm) -- (-22.5mm,-32.4mm) -- (-17.1mm,-27.0mm) -- (-21.6mm,-18.0mm) -- (-18.0mm,-14.4mm) -- (-14.4mm,-18.0mm) -- (-9.0mm,-23.4mm) -- (-9.9mm,-27.0mm) -- (-4.5mm,-32.4mm) -- (0.9mm,-27.0mm) -- (-3.6mm,-18.0mm) -- (-12.6mm,-9.0mm) -- (0.0mm,-5.4mm) -- (12.6mm,-9.0mm) -- (3.6mm,-18.0mm) -- (9.0mm,-23.4mm) -- (8.1mm,-27.0mm) -- (13.5mm,-32.4mm) -- (18.9mm,-27.0mm) -- (14.4mm,-18.0mm) -- (18.0mm,-14.4mm) -- (21.6mm,-18.0mm) -- (17.1mm,-27.0mm) -- (22.5mm,-32.4mm) -- (27.9mm,-27.0mm) -- (27.0mm,-23.4mm) -- (32.4mm,-18.0mm) -- (23.4mm,-9.0mm) -- (5.4mm,0.0mm) -- (9mm,4mm);
+\node[font=\tiny,gray] at (-12mm,5mm) {Start};
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.5\linewidth}
+\vspace{0pt}
+Der Wanderer läuft gestrichelt um den Baum und kommt an jedem Knoten dreimal vorbei: links, unten und rechts. Notiere die Reihenfolge, in der er die Fähnchen erreicht.\par\vspace{1mm}
+\begin{lueckentext}
+\textbf{Fähnchen links (Preorder):}\par\lsgrest{\footnotesize Mika Emil Bo Dana Ines Kai Tara Pia Ruby Zoe Vik}
+\textbf{Fähnchen unten (Inorder):}\par\lsgrest{\footnotesize Bo Dana Emil Ines Kai Mika Pia Ruby Tara Vik Zoe}
+\textbf{Fähnchen rechts (Postorder):}\par\lsgrest{\footnotesize Dana Bo Kai Ines Emil Ruby Pia Vik Zoe Tara Mika}
+\end{lueckentext}
+\end{minipage}
+\end{aufgabe}
+
+\begin{merke}[Merke: Traversierungen]
+Jeder Knoten durchläuft seinen linken Teilbaum, seinen rechten Teilbaum und verarbeitet sich selbst. Links kommt immer vor rechts.\par\vspace{1mm}
+{\small\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\linewidth}{|l|p{3.6cm}|X|}\hline
+\textbf{Traversierung} & \textbf{Reihenfolge} & \textbf{typischer Zweck} \\\hline
+Preorder & \schreibzeile\lsgtext{ich – links – rechts} & \lsgtext{Kopie, Backup: jeder Knoten vor seinen Nachkommen} \\\hline
+Inorder & \schreibzeile\lsgtext{links – ich – rechts} & \lsgtext{sortierte Ausgabe (Mitgliederliste)} \\\hline
+Postorder & \schreibzeile\lsgtext{links – rechts – ich} & \lsgtext{erst die Teilbäume: Anzahl, Höhe berechnen, abbauen} \\\hline
+\end{tabularx}}\par\vspace{1mm}
+\textbf{Vorgehensweise von Hand (Umrundungstrick):} \nr{1} Linie gegen den Uhrzeigersinn dicht um den Baum ziehen, Start links der Wurzel. \nr{2} An jeden Knoten ein Fähnchen: links (Pre), unten (In) oder rechts (Post). \nr{3} Der Linie folgen und jeden Knoten notieren, sobald sein Fähnchen erreicht ist.\par
+\begin{lueckentext}
+\textbf{Im Kompositum:} Der Abschluss antwortet mit \lsg[3.5cm]{"" (leerem Text)}. Der Knoten fragt \lsg[3.5cm]{beide} Kinder und setzt ihre Antworten mit seinem eigenen Namen zusammen.
+\end{lueckentext}
+\end{merke}
+
+\begin{aufgabe}[Ein ungleichmäßiger Baum (Reihenfolge-Rennen zum Üben)]{2}
+\begin{minipage}[t]{0.4\linewidth}
+\vspace{0pt}\centering
+\begin{tikzpicture}[baum,level distance=8.5mm,level 1/.style={sibling distance=34mm},level 2/.style={sibling distance=17mm},level 3/.style={sibling distance=9mm}]
+\node[bk] {Hugo}
+  child {node[bk] {Cleo} child[missing] child {node[bk] {Finn} child[missing] child {node[bk] {Gina}}}}
+  child {node[bk] {Sam} child {node[bk] {Olli}} child {node[bk] {Yuri} child {node[bk] {Wim}} child[missing]}};
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.57\linewidth}
+\vspace{0pt}\lueckentext
+Preorder:\lsgrest{Hugo Cleo Finn Gina Sam Olli Yuri Wim}
+Inorder:\lsgrest{Cleo Finn Gina Hugo Olli Sam Wim Yuri}
+Postorder:\lsgrest{Gina Finn Cleo Olli Wim Yuri Sam Hugo}
+\end{minipage}
+\end{aufgabe}
+
+\newpage
+\begin{aufgabe}[Traversierungen programmieren (TODO 3a–d)]{3}
+\begin{javaluecke}[basicstyle=\linespread{1.5}\footnotesize\ttfamily]
+// Knoten: den eigenen Namen samt Leerzeichen liefert  daten.gibSchluesselwert() + " "
+public String inorder() {     // links – ich – rechts
+   return §\lsgrest{links.inorder() + daten.gibSchluesselwert() + " " + rechts.inorder();}§
+}
+public String preorder() {    // ich – links – rechts
+   return §\lsgrest{daten.gibSchluesselwert() + " " + links.preorder() + rechts.preorder();}§
+}
+public String postorder() {   // links – rechts – ich
+   return §\lsgrest{links.postorder() + rechts.postorder() + daten.gibSchluesselwert() + " ";}§
+}
+\end{javaluecke}
+\begin{lueckentext}
+\textbf{d)} Im Abschluss steht schon \code{return "";}, weil \lsgrest{ein leerer Teilbaum keine Namen hat.}
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{aufgabe}[Accounts zählen (TODO 4)]{4}
+\begin{lueckentext}
+Knoten: \code{return} \lsg[7cm]{links.anzahl() + rechts.anzahl() + 1}\code{;} \quad Abschluss: \code{return} \lsg[2.25cm]{0}\code{;}\par
+In \code{anzahl()} steckt die Reihenfolge \lsg[3.6cm]{Postorder}. Begründung:\par\lsgrest{Der Knoten braucht erst die Antworten beider Teilbäume, dann zählt er sich dazu.}
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{aufgabe}[Welche Reihenfolge taugt als Backup?]{5}
+Nach einem Serverneustart wird das Verzeichnis aus der gespeicherten Namensliste wieder aufgebaut: Name für Name mit \code{einfuegen}. Es soll genau derselbe Baum entstehen.\par\vspace{1mm}
+\textbf{a)} Meine Vermutung: \kreuz{1} Preorder \quad \kreuz{0} Inorder \quad \kreuz{0} Postorder\par\vspace{1mm}
+\textbf{b)} Teste alle drei (Backup-Labor oder Projekt):\par\vspace{1mm}
+{\small\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|l|c|c|X|}\hline
+Backup in & gleicher Baum? & Höhe der Kopie & Was fällt auf? \\\hline
+Preorder & \lsgtext{ja} & \lsgtext{4} & \schreibzeile\lsgtext{Mika wird wieder die Wurzel.} \\\hline
+Inorder & \lsgtext{nein} & \lsgtext{11} & \schreibzeile\lsgtext{alphabetisch sortiert: eine Kette} \\\hline
+Postorder & \lsgtext{nein} & \lsgtext{5} & \schreibzeile\lsgtext{Dana wird die Wurzel.} \\\hline
+\end{tabularx}}\par\vspace{1mm}
+\textbf{c)} Begründe, warum Preorder funktioniert:
+\lsglinien{2}{In der Preorder steht jeder Knoten vor allen Knoten seines Teilbaums. Beim Einfügen stehen seine Vorfahren schon an ihrem Platz und führen ihn genau an seine alte Stelle.}
+\end{aufgabe}
+
+\begin{aufgabe}[Selbst bauen: rückwärts]{6}
+\begin{minipage}[t]{0.42\linewidth}
+\vspace{0pt}
+Das Preorder-Backup eines anderen Servers lautet:\par\code{Ole Kim Ben Lia Tom Sam Zara}\par
+Zeichne das Verzeichnis.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.55\linewidth}
+\vspace{0pt}
+\lsgkarobox{9cm}{3cm}{
+  \begin{scope}[baum,level distance=9mm,level 1/.style={sibling distance=38mm},level 2/.style={sibling distance=19mm},every node/.append style={draw=red!75!black}]
+  \node[bk] at (4.5,-0.55) {Ole}
+    child {node[bk] {Kim} child {node[bk] {Ben}} child {node[bk] {Lia}}}
+    child {node[bk] {Tom} child {node[bk] {Sam}} child {node[bk] {Zara}}};
+  \end{scope}}
+\end{minipage}
+\end{aufgabe}
+\end{document}

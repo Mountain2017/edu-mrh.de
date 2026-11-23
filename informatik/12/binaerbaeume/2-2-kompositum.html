@@ -529,7 +529,9 @@ public class BaumTest {
    public void suchenWurzel() {
       DatenElement x = elf().suchen(new Spieler("Mika"));
       Assertions.assertTrue(x != null, "Mika steht in der Wurzel und muss gefunden werden.");
-      Assertions.assertEquals(34, ((Spieler) x).getLevel(), "suchen() muss die gespeicherten Daten zurückgeben (Mika hat Level 34), nicht den Suchbegriff.");
+      if (x != null) {
+         Assertions.assertEquals(34, ((Spieler) x).getLevel(), "suchen() muss die gespeicherten Daten zurückgeben (Mika hat Level 34), nicht den Suchbegriff.");
+      }
    }
 
    @Test
@@ -537,7 +539,9 @@ public class BaumTest {
       Binaerbaum b = elf();
       DatenElement x = b.suchen(new Spieler("Ruby"));
       Assertions.assertTrue(x != null, "Ruby (rechts unter Pia) muss gefunden werden.");
-      Assertions.assertEquals(50, ((Spieler) x).getLevel(), "Ruby hat Level 50.");
+      if (x != null) {
+         Assertions.assertEquals(50, ((Spieler) x).getLevel(), "Ruby hat Level 50.");
+      }
       DatenElement y = b.suchen(new Spieler("Dana"));
       Assertions.assertTrue(y != null, "Dana (rechts unter Bo) muss gefunden werden.");
    }
@@ -555,7 +559,10 @@ public class BaumTest {
       Binaerbaum b = elf();
       Assertions.assertTrue(b.suchen(new Spieler("Kai")) != null, "Kai muss gefunden werden: Erst muss suchen() funktionieren.");
       Assertions.assertFalse(b.einfuegen(new Spieler("Kai", 1)), "Kai ist schon vergeben: einfuegen() muss false liefern.");
-      Assertions.assertEquals(15, ((Spieler) b.suchen(new Spieler("Kai"))).getLevel(), "Der erste Kai (Level 15) muss erhalten bleiben.");
+      DatenElement kai = b.suchen(new Spieler("Kai"));
+      if (kai != null) {
+         Assertions.assertEquals(15, ((Spieler) kai).getLevel(), "Der erste Kai (Level 15) muss erhalten bleiben.");
+      }
    }
 }
 </script>
@@ -708,7 +715,7 @@ wurzel = wurzel.einfuegen(d);</pre></template>
                     <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
                     <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-2-2-kompositum-lsg.pdf">Lösung Blatt 2.2 (PDF)</a> <a class="btn btn-tex btn-sm" href="Online-IDE/LSG%2012-2-2%20Spielerverzeichnis.json" download>Lösungsprojekt (JSON)</a> <a class="btn btn-outline btn-sm" href="Online-IDE/12-2-2%20Spielerverzeichnis.json" download>Ausgangsprojekt (JSON)</a></p>
                     <p><strong>Anschluss an 1.4:</strong> Namen und Muster wie bei der Liste: abstrakte Klasse <code>BaumElement</code>, <code>Knoten</code> mit <code>getDaten()</code>, <code>Abschluss</code>, Rückgabe-Muster <code>links = links.einfuegen(d)</code>. <code>suchen</code> liefert die Daten oder <code>null</code> wie <code>poll()</code>/<code>peek()</code> in 1.1. <code>DatenElement</code> hat den Vertragsteil <code>istGroesserAls</code> aus 1.3 (Selbst bauen). Anders als in 1.4 legt der Konstruktor von Knoten die beiden Abschlüsse selbst an.</p>
-                    <p><strong>Selbsttest:</strong> <code>BaumTest.java</code> (schreibgeschützt) mit 13 Tests. In der Vorlage bestehen nur <code>suchenAbschluss</code> (Abschluss.suchen ist mit <code>return null;</code> schon richtig, Aufgabe 5b fragt nach der Begründung) und <code>knotenLiefertSichSelbst</code> nicht, weil er zuerst prüft, ob Emil links eingefügt wurde.</p>
+                    <p><strong>Selbsttest:</strong> <code>BaumTest.java</code> (schreibgeschützt) mit 13 Tests. In der Vorlage besteht nur <code>suchenAbschluss</code>: <code>Abschluss.suchen</code> ist mit <code>return null;</code> schon richtig, Aufgabe 5b fragt nach der Begründung.</p>
                     <p><strong>Coach</strong> (Projekt-ID <code>i12-22-spielerverzeichnis</code>): erkennt Abfragen auf null, <code>return links.einfuegen(d)</code>, fehlendes Eintragen der Antwort, <code>return d</code> statt <code>return daten</code>, und hält endlose Rekursion an (Stapelgrenze 5000). Sind alle Tests grün, gibt es das Abzeichen „Wurzelwerk“.</p>
                     <p><strong>BaumZeichner:</strong> fertige Hilfsklasse (schreibgeschützt), zeichnet mit <code>instanceof</code> und Cast. Sie durchläuft den Baum schon rekursiv, in 2.3 kann man fragen, in welcher Reihenfolge.</p>
                 </details>

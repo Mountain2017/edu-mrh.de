@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2.5 Escape Room Tiefensuche | Informatik – edu-mrh.de</title>
+    <meta name="description" content="Informatik 12: Escape Room „Die Tiefen von Sternenstaub“. Tiefensuche in Graphen in sieben Räumen spielerisch entdecken: Regel und Backtracking, Aufrufstapel, besucht-Feld, Adjazenzmatrix, Code und Vergleich mit der Breitensuche, zum Schluss in Java.">
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/include/online-ide-embedded.css">
+    <script type="module" src="https://edu-mrh.de/embed/include/online-ide-embedded.js"></script>
+    <link rel="stylesheet" href="../rekursive-datenstrukturen/datenstrukturen.css">
+    <link rel="stylesheet" href="escape.css">
+    <script defer src="escape.js"></script>
+    <script defer src="../rekursive-datenstrukturen/datenstrukturen.js"></script>
+    <script defer src="../binaerbaeume/ide-coach.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><span class="icon"><a href="https://edu-mrh.de/">🕳️</a></span><span>edu-mrh Informatik</span></div>
+            <div class="nav-links">
+                <a href="../binaerbaeume/binaerbaeume.html" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content" style="margin-left:0">
+        <div class="container">
+            <div class="es-seite">
+                <div class="es-hero">
+                    <div>
+                        <h1>🕳️ Die Tiefen von Sternenstaub</h1>
+                        <p>Escape Room Tiefensuche · Binärbäume und Tiefensuche, Station 2.5 · Informatik 12 · ca. 90 Minuten</p>
+                    </div>
+                    <div class="es-aktionen">
+                        <a class="es-btn-ab" href="arbeitsblaetter/ab-2-5-tiefensuche.pdf">📝 Blatt 2.5 (Logbuch)</a>
+                        <a class="es-btn-tex" href="arbeitsblaetter/ab-2-5-tiefensuche.tex">LaTeX-Quelle</a>
+                    </div>
+                </div>
+                <div id="escape"><p>Der Escape Room braucht JavaScript.</p></div>
+            </div>
+
+            <section id="finale" class="es-finale es-gesperrt">
+                <div class="es-sperre">🔒 Das Terminal öffnet sich in Raum 7. Löse zuerst die Räume 1 bis 6.</div>
+                <div class="es-finale-inhalt">
+                    <h2>☀️ Raum 7: Das Terminal zum Ausgang</h2>
+                    <p>Hier liegt das echte Höhlensystem: zehn Höhlen, als Adjazenzmatrix gespeichert wie in Klasse 11. Programmiere in <code>Graph.java</code> die Methode <code>tiefensucheRekursiv</code> (TODO 1 bis 3, Schritte ① bis ⑥ wie im Code-Schloss) und starte das Programm. Die Buchstaben der betretenen Höhlen ergeben das Wort für die letzte Tür oben im Spielfeld.</p>
+                    <div class="ide-block">
+<!-- IDE-START p25 -->
+<div class="java-online" style="width:100%;height:620px" data-java-online="{ 'id': 'i12-25-tiefensuche', 'speed': 1000000, 'withBottomPanel': true, 'withFileList': true, 'withConsole': true, 'withErrorList': true, 'jsonFilename': '12-2-5 Tiefensuche.json', 'enableFileAccess': true, 'enableRunExitStatusAccess': true }">
+<script type="text/plain" title="Hauptprogramm.java">
+// Station 2.5 – Finale: Der Ausgang.
+// Die Höhlen von Sternenstaub als Graph, gespeichert als Adjazenzmatrix
+// (wie in Klasse 11, Station 3.2). Höhle 0 ist der Start, Höhle 9 der Ausgang.
+
+World welt = new World(800, 600);
+Graph hoehlen = new Graph();
+
+hoehlen.tiefensuche(0, 9);
+
+// Danach: Gib das Lösungswort im Escape Room ein.
+// Zum Vergleich (Raum 6): hoehlen.breitensuche(0, 9);
+</script>
+<script type="text/plain" title="Graph.java">
+/**
+ * Die Höhlen als Graph mit Adjazenzmatrix (wie in Klasse 11).
+ * Suche (Strg + F) nach "TODO".
+ */
+public class Graph {
+   Knoten[] knoten;     // knoten[i] ist die Höhle mit der Nummer i
+   boolean[][] adja;    // adja[start][ende] ist true, wenn es einen Gang gibt
+   int maxAnzahl = 20;
+   int anzKnoten = 10;
+
+   Graph() {
+      knoten = new Knoten[maxAnzahl];
+      adja = new boolean[maxAnzahl][maxAnzahl];
+      int[] x = {90, 500, 360, 300, 450, 560, 110, 640, 270, 710};
+      int[] y = {90, 230, 420, 250, 60, 430, 330, 90, 70, 520};
+      String buchstaben = "TEGSIHACLT";
+      for (int i = 0; i < anzKnoten; i++) {
+         knoten[i] = new Knoten(x[i], y[i], i, "" + buchstaben.charAt(i));
+      }
+      kanteHinzufuegen(0, 6);
+      kanteHinzufuegen(0, 8);
+      kanteHinzufuegen(1, 2);
+      kanteHinzufuegen(1, 3);
+      kanteHinzufuegen(2, 5);
+      kanteHinzufuegen(2, 6);
+      kanteHinzufuegen(3, 6);
+      kanteHinzufuegen(3, 8);
+      kanteHinzufuegen(4, 7);
+      kanteHinzufuegen(4, 8);
+      kanteHinzufuegen(5, 9);
+   }
+
+   /**
+    * Startet die Tiefensuche (fertig): legt das Gedächtnis an und ruft die Rekursion auf.
+    */
+   void tiefensuche(int startKnoten, int zielKnoten) {
+      boolean[] besucht = new boolean[anzKnoten];
+      for (int i = 0; i < anzKnoten; i++) {
+         knoten[i].setFillColor(Color.gray);
+      }
+      print("Buchstaben auf dem Weg: ");
+      boolean gefunden = tiefensucheRekursiv(startKnoten, zielKnoten, besucht);
+      println("");
+      if (gefunden) {
+         println("Ausgang gefunden!");
+      } else {
+         println("Kein Weg zum Ausgang gefunden.");
+      }
+   }
+
+   /**
+    * Die rekursive Tiefensuche. Rückgabe true, sobald das Ziel erreicht ist.
+    * Die Schritte ① bis ⑥ stehen auf dem Blatt und im Code-Schloss (Raum 5).
+    */
+   boolean tiefensucheRekursiv(int aktuellerKnoten, int zielKnoten, boolean[] besucht) {
+      // TODO 1 (Finale): ① Höhle als besucht markieren
+      knoten[aktuellerKnoten].betreten();          // färbt die Höhle grün und gibt ihren Buchstaben aus
+
+      // TODO 2: ② Ziel erreicht? Dann true zurückgeben
+
+      // TODO 3: ③ alle Höhlen i durchgehen,
+      //         ④ ist i ein Nachbar und noch nicht besucht,
+      //         ⑤ dort weitersuchen – und true weitergeben, wenn das Ziel gefunden wurde
+
+      return false;                                // ⑥ Sackgasse: zurück
+   }
+
+   /**
+    * Breitensuche aus Klasse 11 (fertig, zum Vergleich in Raum 6).
+    */
+   void breitensuche(int startKnoten, int zielKnoten) {
+      LinkedList<Integer> besuchteKnoten = new LinkedList<Integer>();
+      LinkedList<Integer> warteschlange = new LinkedList<Integer>();
+      for (int i = 0; i < anzKnoten; i++) {
+         knoten[i].setFillColor(Color.gray);
+      }
+      print("Buchstaben auf dem Weg: ");
+      int aktuellerKnoten = startKnoten;
+      warteschlange.add(aktuellerKnoten);
+      while (aktuellerKnoten != zielKnoten && !warteschlange.isEmpty()) {
+         aktuellerKnoten = warteschlange.poll();
+         besuchteKnoten.add(aktuellerKnoten);
+         knoten[aktuellerKnoten].betreten();
+         for (int i = 0; i < anzKnoten; i++) {
+            if (adja[aktuellerKnoten][i] && !besuchteKnoten.contains(i) && !warteschlange.contains(i)) {
+               warteschlange.addLast(i);
+            }
+         }
+      }
+      println("");
+   }
+
+   // ----- fertige Methoden wie in Klasse 11, müssen nicht verändert werden -----
+
+   // Fügt einen ungerichteten Gang zwischen start und ende hinzu.
+   void kanteHinzufuegen(int start, int ende) {
+      adja[start][ende] = true;
+      adja[ende][start] = true;
+      zeichneKante(start, ende);
+   }
+
+   // Gibt die Adjazenzmatrix mit X (Gang) und O (kein Gang) aus.
+   void printAdja() {
+      for (int zeile = 0; zeile < anzKnoten; zeile++) {
+         for (int spalte = 0; spalte < anzKnoten; spalte++) {
+            if (adja[zeile][spalte]) {
+               print("X ");
+            } else {
+               print("O ");
+            }
+         }
+         println("");
+      }
+   }
+
+   // Zeichnet einen Gang als halbtransparenten Balken.
+   void zeichneKante(int start, int ende) {
+      double startX = knoten[start].getCenterX();
+      double startY = knoten[start].getCenterY();
+      double endeX = knoten[ende].getCenterX();
+      double endeY = knoten[ende].getCenterY();
+      double abstand = Vector2.distance(startX, startY, endeX, endeY);
+      double winkel = new Vector2(endeX - startX, endeY - startY).getAngleDeg();
+      Rectangle balken = new Rectangle(startX, startY, 10, abstand);
+      balken.setFillColor(Color.white);
+      balken.setAlpha(0.5);
+      balken.rotate(90 - winkel, startX, startY);
+      knoten[start].bringeNachVorne();
+      knoten[ende].bringeNachVorne();
+   }
+}
+</script>
+<script type="text/plain" title="Knoten.java">
+/**
+ * Eine Höhle: ein Kreis mit Nummer und einem Buchstaben an der Wand.
+ * Fertig, muss nicht verändert werden.
+ */
+class Knoten extends Circle {
+   private String knotenname;
+   private String buchstabe;
+   private Text beschriftung;
+
+   Knoten(double x, double y, int nummer, String buchstabe) {
+      super(x, y, 32);
+      this.knotenname = "" + nummer;
+      this.buchstabe = buchstabe;
+      setFillColor(Color.gray);
+      setBorderColor(Color.white);
+      beschriftung = new Text(x, y - 14, 24, knotenname);
+      beschriftung.setAlignment(Alignment.center);
+      beschriftung.setFillColor(Color.white);
+   }
+
+   String getKnotenname() {
+      return knotenname;
+   }
+
+   // Die Suche betritt die Höhle: grün färben, Buchstaben zeigen und ausgeben
+   void betreten() {
+      setFillColor(Color.green);
+      beschriftung.setText(knotenname + ":" + buchstabe);
+      print(buchstabe);
+   }
+
+   void bringeNachVorne() {
+      bringToFront();
+      beschriftung.bringToFront();
+   }
+}
+</script>
+</div>
+<!-- IDE-ENDE p25 -->
+                        <p class="ide-downloads">💾 Stand sichern: Diskettensymbol in der IDE-Leiste (<code>12-2-5 Tiefensuche.json</code>). · <a href="Online-IDE/12-2-5%20Tiefensuche.json" download>Ausgangsprojekt für online-ide.de</a></p>
+                    </div>
+                    <div class="coach" data-coach="i12-25-tiefensuche"></div>
+                    <div class="lw" data-loesungsweg="Finale: tiefensucheRekursiv">
+                        <template data-stufe="Tipp"><p>Die sechs Zeilen aus dem Code-Schloss (Raum 5) gehören genau so in die Methode. Zwischen ① und ② steht schon <code>knoten[aktuellerKnoten].betreten();</code>, das die Höhle grün färbt und ihren Buchstaben ausgibt.</p></template>
+                        <template data-stufe="Lösung" data-halten><pre class="jv"><span class="k">boolean</span> tiefensucheRekursiv(<span class="k">int</span> aktuellerKnoten, <span class="k">int</span> zielKnoten, <span class="k">boolean</span>[] besucht) {
+   besucht[aktuellerKnoten] = <span class="k">true</span>;             <span class="c">// ①</span>
+   knoten[aktuellerKnoten].betreten();
+   <span class="k">if</span> (aktuellerKnoten == zielKnoten) {         <span class="c">// ②</span>
+      <span class="k">return true</span>;
+   }
+   <span class="k">for</span> (<span class="k">int</span> i = 0; i &lt; anzKnoten; i++) {        <span class="c">// ③</span>
+      <span class="k">if</span> (adja[aktuellerKnoten][i] &amp;&amp; !besucht[i]) {        <span class="c">// ④</span>
+         <span class="k">if</span> (tiefensucheRekursiv(i, zielKnoten, besucht)) { <span class="c">// ⑤</span>
+            <span class="k">return true</span>;
+         }
+      }
+   }
+   <span class="k">return false</span>;                                <span class="c">// ⑥</span>
+}</pre></template>
+                    </div>
+                </div>
+            </section>
+
+            <div class="station-nav">
+                <a class="btn btn-outline" href="../binaerbaeume/2-4-hoehe.html">← 2.4 Höhe und Effizienz</a>
+                <a class="btn btn-primary" href="../binaerbaeume/binaerbaeume.html#abzeichen">Zur Übersicht des Kapitels →</a>
+            </div>
+
+            <section class="mt-4 mb-4 lehrkraft">
+                <details>
+                    <summary><strong>Für Lehrkräfte: Lösungen und Hinweise</strong></summary>
+                    <p class="mt-2"><a class="btn btn-tex btn-sm" href="arbeitsblaetter/ab-2-5-tiefensuche-lsg.pdf">Lösung Blatt 2.5 (PDF)</a> <a class="btn btn-tex btn-sm" href="Online-IDE/LSG%2012-2-5%20Tiefensuche.json" download>Lösungsprojekt (JSON)</a> <a class="btn btn-outline btn-sm" href="Online-IDE/12-2-5%20Tiefensuche.json" download>Ausgangsprojekt (JSON)</a> <a class="btn btn-outline btn-sm" href="tiefensuche.html?offen">Alle Räume offen (Vorschau)</a></p>
+                    <p><strong>Idee:</strong> Die Räume vermitteln die Kernkompetenzen, das Blatt 2.5 („Logbuch“) hält nur die Verbindungsstellen fest: Regel und Backtracking (Raum 1), Aufrufstapel aus 1.5 (Raum 2), besucht-Feld, Baum als kreisfreier Graph, Tiefensuche im Baum = Preorder aus 2.3 (Raum 3), Adjazenzmatrix aus Klasse 11 (Raum 4), Java-Code ①–⑥ (Raum 5), Vergleich mit der Breitensuche aus Klasse 11 (Raum 6), Implementierung (Raum 7).</p>
+                    <p><strong>Lösungen:</strong> Alle Codes, Reihenfolgen und das Lösungswort stehen in der Lösung zu Blatt 2.5 (nicht hier, damit der Escape Room spannend bleibt).</p>
+                    <p><strong>Spielregeln:</strong> Zeit läuft ab „Expedition starten“, jeder Fackel-Tipp kostet 2 Minuten. Stand nur im Browser (<code>localStorage 'tsEscape'</code>), „Neu starten“ setzt ihn zurück. Mit <code>?offen</code> an der Adresse sind alle Räume frei (Vorschau, Wiederholung). Die Urkunde lässt sich drucken (nur die Urkunde wird gedruckt).</p>
+                    <p><strong>Java-Projekt:</strong> Graph-Klasse wie in Klasse 11 (<code>adja</code>, <code>anzKnoten</code>, <code>kanteHinzufuegen</code>, fertige <code>breitensuche</code> zum Vergleich). Der Coach (Projekt-ID <code>i12-25-tiefensuche</code>) erkennt endlose Rekursion ohne besucht-Markierung (Stapelgrenze 2000), vorzeitiges <code>return false</code> in der Schleife und fehlendes Weitergeben von <code>true</code>.</p>
+                    <p><strong>Frühere Fassung:</strong> Die alten Seiten <code>index.html</code> und <code>Protocol_DFS_MicroSteps.html</code> leiten hierher weiter. Das alte Projekt <code>12-2-2 Tiefensuche.json</code> liegt weiter im Ordner.</p>
+                </details>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de · <a href="https://edu-mrh.de/impressum.html#lizenz">CC BY-NC-SA 4.0</a> | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a></p>
+        </div>
+    </footer>
+</body>
+</html>

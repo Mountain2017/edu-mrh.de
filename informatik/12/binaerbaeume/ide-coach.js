@@ -221,7 +221,7 @@
             hoeheEinKnoten: { titel: 'hoehe() eines Knotens', hinweis: function () { return 'Ein Knoten ist eine Ebene, darunter kommt die größere der beiden Teilbaum-Höhen: 1 + Math.max(…, …).'; } },
             hoeheElf: { titel: 'hoehe() des Verzeichnisses (4)', hinweis: function (c) {
                 var r = methode(c.datei('Knoten.java'), 'int\\s+hoehe\\s*\\(');
-                if (r && /hoehe\s*\(\s*\)\s*\+\s*\w+\s*\.\s*hoehe/.test(r)) return 'Du addierst die Höhen der Teilbäume. Die Höhe hängt aber nur am LÄNGEREN Ast: Math.max statt +.';
+                if (r && !/Math\s*\.\s*max/.test(r)) return 'Die Höhe hängt nur am LÄNGEREN Ast. Addierst du die beiden Höhen? Nimm stattdessen die größere: Math.max(l, r).';
                 return 'Rufen beide Teilbäume hoehe() auf, und nimmst du die größere Antwort?'; } },
             hoeheEntartet: { titel: 'hoehe() einer Kette (5)', hinweis: function () { return 'In einer Kette hat jeder Knoten nur ein Kind. Die andere Seite ist ein Abschluss mit Höhe 0.'; } },
             hoeheSchief: { titel: 'hoehe() eines schiefen Baums (4)', hinweis: function () { return 'Es zählt der längste Ast, egal ob links oder rechts.'; } },

@@ -1,0 +1,132 @@
+\documentclass[11pt,a4paper]{article}
+\input{ab-vorlage}
+\begin{document}
+\abtitel{2.4}{Höhe und Effizienz}
+
+\textbf{Bot-Alarm!} 500 Bots haben sich alphabetisch registriert: Bot001, Bot002, …, Bot500. Seitdem ist der Login von Bot500 so langsam wie früher in der Liste. \web{Station 2.4, Baum-Architekt und Projekt Bot-Alarm}
+
+\begin{aufgabe}[Baum-Architekt]{1}
+\begin{lueckentext}
+\textbf{a)} Mit den 7 Namen Ada, Ben, Cem, Dio, Eva, Fin, Gil ist die kleinste Höhe \lsg[2.25cm]{3}, zum Beispiel mit der Reihenfolge\lsgrest{Dio Ben Fin Ada Cem Eva Gil}
+Die größte Höhe ist \lsg[2.25cm]{7}, zum Beispiel mit\lsgrest{Ada Ben Cem Dio Eva Fin Gil}
+\textbf{b)} Für 15 Namen ist mindestens die Höhe \lsg[2.25cm]{4} nötig.
+\end{lueckentext}\par\vspace{1mm}
+\textbf{c)} So viele Knoten passen höchstens in einen Baum der Höhe h:\par\vspace{1mm}
+{\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{|l|*{6}{>{\centering\arraybackslash}p{1.3cm}|}>{\centering\arraybackslash}p{2.2cm}|}\hline
+Höhe h & 1 & 2 & 3 & 4 & 5 & 10 & h \\\hline
+höchstens Knoten & \lsgtext{1} & \lsgtext{3} & \lsgtext{7} & \lsgtext{15} & \lsgtext{31} & \lsgtext{1023} & \schreibzeile\lsgtext{$2^h - 1$} \\\hline
+\end{tabular}}
+\end{aufgabe}
+
+\begin{merke}[Merke: Höhe und Aufwand der Suche]
+\begin{lueckentext}
+Eine Suche besucht auf jeder Ebene höchstens \lsg[2.25cm]{einen} Knoten. Also gilt: Vergleiche im schlimmsten Fall $=$ \lsg[5.25cm]{Höhe}.\par
+\textbf{Ausgewogen:} Alle Ebenen bis auf die letzte sind voll. Für n Knoten ist die Höhe etwa \lsg[3.5cm]{$\log_2(n+1)$}, aufgerundet. Die Suche wächst \lsg[5.25cm]{logarithmisch}: Doppelt so viele Accounts kosten nur \lsg[3.5cm]{einen} Vergleich mehr.\par
+\textbf{Entartet:} Jeder Knoten hat höchstens ein Kind, der Baum ist eine \lsg[3.5cm]{Kette} mit Höhe n. Die Suche wächst \lsg[5.25cm]{linear} wie in der Liste. Das passiert zum Beispiel, wenn die Namen \lsg[3.5cm]{sortiert} eingefügt werden.\par
+Die Form des Baums hängt nur von der \lsg[5.25cm]{Reihenfolge} beim Einfügen ab.
+\end{lueckentext}
+\end{merke}
+
+\begin{aufgabe}[Wie viele Vergleiche im schlimmsten Fall? (Rechner auf der Website)]{2}
+{\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{|l|*{4}{>{\centering\arraybackslash}X|}}\hline
+Anzahl Accounts n & 15 & 1000 & 1 000 000 & 2 000 000 \\\hline
+Liste & \lsgtext{15} & \lsgtext{1000} & \lsgtext{1 000 000} & \schreibzeile\lsgtext{2 000 000} \\\hline
+entarteter Baum & \lsgtext{15} & \lsgtext{1000} & \lsgtext{1 000 000} & \schreibzeile\lsgtext{2 000 000} \\\hline
+ausgewogener Baum & \lsgtext{4} & \lsgtext{10} & \lsgtext{20} & \schreibzeile\lsgtext{21} \\\hline
+\end{tabularx}}
+\end{aufgabe}
+
+\newpage
+\begin{aufgabe}[Die Höhe rekursiv berechnen (TODO 3)]{3}
+\begin{minipage}[t]{0.52\linewidth}
+\vspace{0pt}
+\textbf{a)} Schreibe in jedes Kästchen die Höhe des Teilbaums, der an diesem Knoten beginnt. Fang unten an!\par\vspace{1mm}
+\centering
+\begin{tikzpicture}[baum,scale=1.05]
+\node[bk] (Mika) {Mika}
+  child {node[bk] (Emil) {Emil}
+    child {node[bk] (Bo) {Bo} child[missing] child {node[bk] (Dana) {Dana}}}
+    child {node[bk] (Ines) {Ines} child[missing] child {node[bk] (Kai) {Kai}}}}
+  child {node[bk] (Tara) {Tara}
+    child {node[bk] (Pia) {Pia} child[missing] child {node[bk] (Ruby) {Ruby}}}
+    child {node[bk] (Zoe) {Zoe} child {node[bk] (Vik) {Vik}} child[missing]}};
+\foreach \n/\h in {Mika/4,Emil/3,Tara/3,Bo/2,Ines/2,Pia/2,Zoe/2,Dana/1,Kai/1,Ruby/1,Vik/1}
+  \node[draw,fill=white,minimum size=3.6mm,inner sep=0pt,font=\scriptsize\bfseries,anchor=south west] at ([xshift=-0.8mm,yshift=-0.8mm]\n.north east) {\lsgtext{\h}};
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.45\linewidth}
+\vspace{0pt}
+\begin{lueckentext}
+Dabei rechnet man von unten nach oben, also in \lsg[3.5cm]{Postorder}.\par
+\end{lueckentext}
+\textbf{b)} Ergänze den Code.\par
+\begin{javaluecke}[basicstyle=\linespread{1.5}\footnotesize\ttfamily]
+// Knoten
+public int hoehe() {
+   int l = §\lsg[3.2cm]{links.hoehe()}§;
+   int r = §\lsg[3.2cm]{rechts.hoehe()}§;
+   return §\lsg[3.8cm]{1 + Math.max(l, r)}§;
+}
+// Abschluss
+public int hoehe() {
+   return §\lsg[1.8cm]{0}§;
+}
+\end{javaluecke}
+\end{minipage}
+\end{aufgabe}
+
+\begin{aufgabe}[Die Bot-Welle nachspielen (Projekt)]{4}
+\begin{minipage}[t]{0.38\linewidth}
+\vspace{0pt}
+\textbf{a)} Skizze: Bot001 bis Bot004, alphabetisch eingefügt.\par\vspace{1mm}
+\lsgkarobox{6cm}{2.5cm}{
+  \foreach \n/\i in {001/0,002/1,003/2,004/3}{\node[bk,minimum size=5.5mm,font=\tiny,draw=red!75!black,fill=white] (b\i) at (0.6+1.45*\i,-0.4-0.55*\i) {\n};}
+  \foreach \i [evaluate=\i as \j using int(\i+1)] in {0,1,2}{\draw[thick] (b\i) -- (b\j);}}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.59\linewidth}
+\vspace{0pt}\lueckentext
+\textbf{b)} Bot-Welle: Höhe \lsg[2.25cm]{500}, Login Bot500: \lsg[2.25cm]{500} Vergleiche.\par
+Grund:\lsgrest{Jeder neue Bot ist größer als alle bisherigen}
+\lsgrest{und hängt ganz rechts: eine Kette.}
+\end{minipage}
+\end{aufgabe}
+
+\begin{aufgabe}[Dieselben Bots in zufälliger Reihenfolge (Projekt)]{5}
+\begin{lueckentext}
+Drei Läufe: Höhe \lsg[1.5cm]{18}, \lsg[1.5cm]{20}, \lsg[1.5cm]{17}. Bestmöglich wäre für 500 Knoten die Höhe \lsg[2.25cm]{9}. Vergleich:\lsgrest{nicht perfekt, aber weit weg von 500.}
+\end{lueckentext}
+\end{aufgabe}
+
+\begin{aufgabe}[Selbst bauen: ausgewogen einfügen (TODO 6)]{6}
+\begin{minipage}[t]{0.42\linewidth}
+\vspace{0pt}
+\textbf{Vorgehensweise} für ein sortiertes Array (Bereich \code{von} bis \code{bis}):\par
+\nr{1} Bereich leer? Dann fertig.\\
+\nr{2} das mittlere Element einfügen\\
+\nr{3} die linke Hälfte genauso\\
+\nr{4} die rechte Hälfte genauso\par\vspace{1mm}
+\begin{lueckentext}
+\textbf{a)} Ada … Gil werden so eingefügt:\par\lsgrest{Dio Ben Ada Cem Fin Eva Gil}
+Das ist die \lsg[3cm]{Preorder} des fertigen Baums.
+\end{lueckentext}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.55\linewidth}
+\vspace{0pt}
+\textbf{b)} Ergänze den Code.\par
+\begin{javaluecke}[basicstyle=\linespread{1.5}\footnotesize\ttfamily]
+public void ausgewogenEinfuegen(
+        String[] sortiert, int von, int bis) {
+   if (§\lsg[2.4cm]{von > bis}§) {           // §\nr{1}§
+      return;
+   }
+   int mitte = §\lsg[3cm]{(von + bis) / 2}§;
+   einfuegen(new Spieler(sortiert[mitte], 1));  // §\nr{2}§
+   ausgewogenEinfuegen(sortiert, §\lsg[2.5cm]{von, mitte - 1}§); //§\nr{3}§
+   ausgewogenEinfuegen(sortiert, §\lsg[2.5cm]{mitte + 1, bis}§); //§\nr{4}§
+}
+\end{javaluecke}
+\end{minipage}
+\end{aufgabe}
+\end{document}
