@@ -17,6 +17,11 @@ deployt automatisch per FTPS auf edu-mrh.de. Details: [README.md](README.md).
   die Zeile `<script defer src="/sidebar-anker.js"></script>` (in den Vorlagen
   enthalten). Grund: `embed/script.js` springt nur zu `.content-section`-
   Abschnitten (Tab-Modus) und schluckt alle anderen `#`-Klicks.
+- **Fertige Einzeldateien von Kolleg:innen** (z. B. Trainer von Peter Sobek) mit
+  `python3 tools/fremdseite-einbinden.py QUELLE ZIEL --titel … --autor … --uebersicht <themenseite>.html
+  [--nachweis "Illustrationen erstellt mit Canva"]` anbinden (Kopfleiste, Fußzeile mit Urhebervermerk,
+  controls.js, Titel) und prüfen; `--pruefen DATEI…` meldet nur (fremde Ladevorgänge = Fehler, Exit 1).
+  Danach von Hand: Themenseite, Karte, `LICENSE.md`, Inhaltsindex; Bildlizenzen und Schulbuchtexte prüfen.
 - Neue Seiten auf der Fachseite (`<fach>/<fach>.html`) als Karte verlinken;
   neue Fächer zusätzlich in `index.html` (Sidebar + info-grid-Karte).
 - **KI-Prompt** auf `contribute.html#ai-template` (`<pre id="prompt-text">`, HTML-escaped)
@@ -339,7 +344,7 @@ Wo was liegt (Stand 2026-10). `→ AB` = LaTeX-Arbeitsblätter in `arbeitsblaett
 
 **Gerüst**: `index.html` (Startseite), `checks/auswertung/` (Auswertung aller Online-Checks), `style.css`, `script.js`, `controls.js`,
 `sidebar-anker.js`, `mobileMenu.js`, `baseScript.js`, `templates/`,
-`tools/` (Geheim-Ordner verknüpfen), `geheim/` (nur lokal, s. o.),
+`tools/` (Geheim-Ordner verknüpfen, `fremdseite-einbinden.py`), `geheim/` (nur lokal, s. o.),
 `contribute.html`, `impressum.html`, `datenschutz.html`, `LICENSE.md`, `robots.txt` (sperrt nur KI-Trainings-Crawler,
 maschinenlesbarer TDM-Vorbehalt, dazu `.well-known/tdmrep.json`), `Online-IDE API-Documentation.txt`, `.github/workflows/`
 (FTPS-Deploy aller versionierten Dateien inkl. `.md`, Online-IDE, SQL-IDE, Snap!, Pyodide;
