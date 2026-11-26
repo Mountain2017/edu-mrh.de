@@ -43,9 +43,10 @@ der Vorbehalt in `robots.txt` und `.well-known/tdmrep.json` erklärt.
 
 - **Beiträge von Kolleg:innen** stehen unter der Lizenz, die auf der jeweiligen
   Seite steht. Ohne Angabe liegen alle Rechte bei den Urheber:innen, z. B. beim
-  Energie-Trainer (`physik/9/energie/energie-trainer.html`) und
-  Gravitations-Trainer (`physik/11/gravitation/gravitation-trainer.html`) von
-  Peter Sobek.
+  Energie-Trainer (`physik/9/energie/energie-trainer.html`),
+  Arbeit-Trainer (`physik/9/arbeit/arbeit-trainer.html`, Illustrationen mit
+  Canva erstellt) und Gravitations-Trainer
+  (`physik/11/gravitation/gravitation-trainer.html`) von Peter Sobek.
 - **Fremdes Material mit Quellenangabe** (z. B. zitierte Texte, Bildschirmfotos
   aus der Kara-Onlinehilfe in `informatik/12/nebenlaeufigkeit/`).
 - **Software und Schriften Dritter** mit ihren eigenen Lizenzen, u. a.
