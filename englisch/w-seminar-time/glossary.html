@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glossary: Measures and Methods | W-Seminar English 12 – edu-mrh.de</title>
+    <meta name="description" content="W-Seminar 'Time' (English, Year 12): glossary of statistical measures and research methods, sorted by the question they answer – data types, centre and spread, charts and box plots, effect sizes (Cohen's d, r, η², Cramér's V), significance (p, confidence intervals, power), tests (t-test, ANOVA, Mann–Whitney U, χ²), measurement quality (Cronbach's α, κ), study design, qualitative coding and meta-analysis.">
+
+    <link rel="icon" type="image/png" href="https://edu-mrh.de/embed/icons/favicon.png">
+    <link rel="stylesheet" href="https://edu-mrh.de/embed/style.css">
+    <link rel="stylesheet" href="viable-data.css">
+    <script defer src="https://edu-mrh.de/embed/script.js"></script>
+    <script defer src="/sidebar-anker.js"></script>
+    <script defer src="viable-data.js"></script>
+    <script defer src="glossary.js"></script>
+
+    <style>
+        /* hero: box-plot anatomy + search */
+        .hero-d h1 { font-size: clamp(2.6rem, 5.2vw, 4.2rem); }
+        .bp svg { width: 100%; height: auto; display: block; }
+        .bp text { font: 12px var(--sans); fill: #cfd2f5; text-anchor: middle; }
+        .bp text.k { font: 600 13px var(--sans); fill: #fff; }
+        .bp text.s { font-size: 11px; fill: #aeb3e3; }
+        .gfind { margin-top: 2.25rem; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .5rem 1rem; align-items: center; }
+        .gfind input { width: 100%; box-sizing: border-box; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.25); border-radius: 99px; color: #fff; font: 1.05rem var(--sans); padding: .7rem 1.1rem; }
+        .gfind input::placeholder { color: #9ea3d6; }
+        .gfind .cnt { font-size: .9rem; color: #cfd2f5; font-variant-numeric: tabular-nums; }
+        .gnav { list-style: none; padding: 0; margin: 1.25rem 0 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; }
+        .gnav a { display: block; height: 100%; box-sizing: border-box; text-decoration: none; border: 1px solid rgba(255,255,255,.18); border-left: 4px solid var(--c); border-radius: 10px; padding: .5rem .7rem; color: #cfd2f5; background: rgba(255,255,255,.04); font-size: .82rem; line-height: 1.35; }
+        .gnav a b { display: block; color: #fff; font-family: var(--serif); font-size: 1rem; }
+        .gnav a:hover, .gnav a:focus-visible { border-color: var(--brass); border-left-color: var(--c); outline: none; color: #fff; }
+        .legend-g { display: flex; flex-wrap: wrap; gap: .4rem 1.25rem; margin-top: 1rem; font-size: .85rem; color: #cfd2f5; align-items: center; }
+
+        /* section heads */
+        .gq { font-family: var(--serif); font-style: italic; font-size: 1.15rem; color: var(--c); margin: 0 0 .25rem; }
+        .js .sec.g-empty, .js .band.g-empty { display: none; }
+        .g-none { max-width: 1120px; margin: 2rem auto; padding: 0 2rem; font-size: 1.05rem; }
+
+        /* term cards */
+        .terms { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr)); gap: .9rem; margin-top: 1.5rem; }
+        .term { background: #fff; border: 1px solid var(--line); border-top: 4px solid var(--c); border-radius: 14px; padding: .95rem 1.1rem 1rem; font-size: .92rem; scroll-margin-top: 90px; min-width: 0; }
+        .term[hidden] { display: none; }
+        .t .term h4 { margin: 0 0 .4rem; font-size: 1.15rem; line-height: 1.25; color: var(--ink); }
+        .term h4 .de { display: block; font-family: var(--sans); font-size: .8rem; margin-top: .1rem; }
+        .term p { margin: .35rem 0 0; line-height: 1.5; }
+        .term p b { color: var(--c); }
+        .term p.cf b { color: var(--warn); }
+        .term .f { font-family: var(--mono); font-size: .84rem; background: #f3f4fa; border-radius: 6px; padding: .3rem .5rem; margin-top: .45rem; overflow-x: auto; white-space: nowrap; }
+        .term .meta { display: flex; flex-wrap: wrap; gap: .35rem .6rem; align-items: center; margin-top: .65rem; padding-top: .5rem; border-top: 1px solid var(--line); font-size: .78rem; }
+        .term .meta a { font-weight: 600; text-decoration: none; }
+        .term .meta code { font-size: .76rem; }
+        .term .meta code.home { background: #fff7e6; }
+        .lv { border-radius: 99px; padding: .05rem .55rem; font-weight: 600; font-size: .74rem; }
+        .lv.u { background: #ecfdf5; color: var(--ok); }
+        .lv.r { background: #eef0f7; color: var(--ink-soft); }
+        .legend-g .lv { font-size: .8rem; }
+        .term:target { box-shadow: 0 0 0 3px var(--brass); }
+        .term.mine { box-shadow: 0 0 0 2px var(--c); }
+        .term.mine { position: relative; }
+        .term.mine::after { content: '★'; position: absolute; top: .55rem; right: .75rem; color: var(--c); font-size: 1rem; }
+
+        /* decision table */
+        .t table.dt.which td, .t table.dt.which th { vertical-align: middle; }
+        .t table.dt.which td a { font-weight: 600; text-decoration: none; }
+        .t table.dt.which td small { display: block; color: var(--ink-soft); }
+        .t table.dt.which th[scope=row] { background: #fafbfe; font-weight: 600; }
+
+        /* results lines */
+        .rlines { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+        .rline { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.16); border-radius: 14px; padding: 1.1rem 1.2rem; min-width: 0; }
+        .rline .ctx { font-size: .85rem; color: #aeb3e3; margin: 0 0 .35rem; }
+        .rline .ln { font-family: var(--serif); font-size: 1.3rem; color: var(--brass); line-height: 1.35; margin: 0 0 .6rem; }
+        .rline .kv { --c: #fff; color: #dfe2ff; font-size: .88rem; }
+        .rline .kv dt { color: #fff; font-family: var(--mono); font-size: .84rem; }
+        .rline .kv a { color: #c7cbff; }
+        .rline .say { font-size: .88rem; color: #cfd2f5; margin: .6rem 0 0; border-top: 1px solid rgba(255,255,255,.14); padding-top: .5rem; }
+
+        @media (max-width: 1024px) { .gnav { grid-template-columns: repeat(3, minmax(0, 1fr)); } .rlines { grid-template-columns: 1fr; } }
+        @media (max-width: 640px) {
+            .gnav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .gfind { grid-template-columns: 1fr; }
+            .g-none { padding: 0 1rem; }
+        }
+        @media print {
+            .gfind, .trackbar, .mobile-menu-btn, .sidebar, .navbar { display: none !important; }
+            .term { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="icon"><a href="https://edu-mrh.de/">🇬🇧</a></span>
+                <span>edu-mrh English</span>
+            </div>
+            <div class="nav-links">
+                <a href="w-seminar-time.html#materials" class="btn btn-outline">Übersicht</a>
+                <a href="https://edu-mrh.de/impressum.html" class="btn btn-outline">Impressum</a>
+                <a href="https://edu-mrh.de/datenschutz.html" class="btn btn-outline">Datenschutz</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content t">
+
+        <!-- ============================ HERO ============================ -->
+        <header class="hero-d" id="start">
+            <div class="t-wrap">
+                <div class="hero-grid">
+                    <div>
+                        <p class="kicker">W-Seminar English, Year 12 · Time · Glossary for M4 and M5</p>
+                        <h1>Every number answers one question.</h1>
+                        <p class="lead">Mean, SD, d, p, α, κ, χ² … Here every measure and method of the seminar is sorted by the question it answers – each with what it does, what you use it for and what to watch out for. Look things up while you design a study, evaluate your data or read a published paper.</p>
+                    </div>
+                    <div class="bp">
+                        <svg viewBox="0 0 520 210" role="img" aria-label="Anatomy of a box plot: the box runs from the first quartile Q1 (25 %) to the third quartile Q3 (75 %), the line inside is the median (50 %). The width of the box is the interquartile range, the middle 50 % of the data. Whiskers reach out to the lowest and highest values within 1.5 IQR of the box; a point beyond is an outlier.">
+                            <line x1="70" y1="120" x2="180" y2="120" stroke="#eef0ff" stroke-width="2"/>
+                            <line x1="320" y1="120" x2="410" y2="120" stroke="#eef0ff" stroke-width="2"/>
+                            <line x1="70" y1="106" x2="70" y2="134" stroke="#eef0ff" stroke-width="2"/>
+                            <line x1="410" y1="106" x2="410" y2="134" stroke="#eef0ff" stroke-width="2"/>
+                            <rect x="180" y="92" width="140" height="56" rx="4" fill="rgba(217,171,47,.22)" stroke="#d9ab2f" stroke-width="2"/>
+                            <line x1="240" y1="92" x2="240" y2="148" stroke="#d9ab2f" stroke-width="4"/>
+                            <circle cx="470" cy="120" r="5" fill="none" stroke="#eef0ff" stroke-width="2"/>
+                            <g stroke="#7d82bd" stroke-dasharray="3 3"><line x1="180" y1="80" x2="180" y2="90"/><line x1="240" y1="80" x2="240" y2="90"/><line x1="320" y1="80" x2="320" y2="90"/></g>
+                            <text class="k" x="180" y="56">Q1</text><text class="s" x="180" y="72">25 %</text>
+                            <text class="k" x="240" y="56">median</text><text class="s" x="240" y="72">50 %</text>
+                            <text class="k" x="320" y="56">Q3</text><text class="s" x="320" y="72">75 %</text>
+                            <text x="470" y="100">outlier</text>
+                            <text x="70" y="156">lowest</text>
+                            <text x="410" y="156">highest</text>
+                            <path d="M180 160 v6 h140 v-6" fill="none" stroke="#d9ab2f" stroke-width="1.5"/>
+                            <text class="k" x="250" y="186">IQR = Q3 − Q1</text><text class="s" x="250" y="202">the middle 50 % of the data</text>
+                        </svg>
+                        <p class="hero-cap">Five numbers in one picture. The whiskers reach the most extreme values within 1.5 × IQR of the box; anything beyond is drawn as a single point – an outlier to check, not to delete. → <a href="#g-boxplot" style="color:#fff">box plot</a></p>
+                    </div>
+                </div>
+
+                <div class="gfind">
+                    <input type="search" id="g-search" placeholder="Find a term – e.g. “standard deviation”, “kappa”, “Varianz”" aria-label="Search the glossary" autocomplete="off">
+                    <span class="cnt" id="g-count" aria-live="polite"></span>
+                </div>
+                <ul class="gnav">
+                    <li><a href="#data" style="--c: var(--s4)"><b>Data and variables</b>What kind of numbers?</a></li>
+                    <li><a href="#centre" style="--c: var(--s1)"><b>Centre</b>Where is the middle?</a></li>
+                    <li><a href="#spread" style="--c: var(--s2)"><b>Spread and shape</b>How far apart?</a></li>
+                    <li><a href="#show" style="--c: var(--s3)"><b>Show the data</b>Which chart?</a></li>
+                    <li><a href="#size" style="--c: var(--s5)"><b>Effect size</b>How big?</a></li>
+                    <li><a href="#relate" style="--c: var(--s1)"><b>Relationships</b>Do two things go together?</a></li>
+                    <li><a href="#chance" style="--c: var(--s2)"><b>Significance</b>Could it be chance?</a></li>
+                    <li><a href="#tests" style="--c: var(--s3)"><b>Tests</b>Which test fits?</a></li>
+                    <li><a href="#read" style="--c: var(--brass)"><b>Read a results line</b>t(54) = 2.72, p = .009 …</a></li>
+                    <li><a href="#quality" style="--c: var(--s4)"><b>Quality</b>Does it measure well?</a></li>
+                    <li><a href="#design" style="--c: var(--obj)"><b>Study design</b>Is the comparison fair?</a></li>
+                    <li><a href="#words" style="--c: var(--s6)"><b>Words, not numbers</b>Interviews and texts</a></li>
+                    <li><a href="#studies" style="--c: var(--s5)"><b>Combining studies</b>What do many studies say?</a></li>
+                </ul>
+                <div class="legend-g">
+                    <span><span class="lv u">you use it</span> worked with on the Viable data pages</span>
+                    <span><span class="lv r">recognise it</span> you’ll meet it in published studies – know what it tells you</span>
+                    <span><code>statistics.…</code> runs in the Python cells · <code class="home" style="background:#fff7e6;color:var(--ink)">scipy.stats.…</code> on your own computer</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="t-wrap" style="padding-top:1.25rem">
+            <div class="trackbar" data-label="Highlight for:" style="margin-top:0"></div>
+        </div>
+        <p class="g-none" id="g-none" hidden>No term matches your search. Try a shorter word, the German term or a symbol such as <code>d</code> or <code>κ</code>.</p>
+
+        <!-- ============================ DATA ============================ -->
+        <section class="sec" id="data" data-group style="--c: var(--s4)">
+            <div class="t-wrap">
+                <p class="gq">What kind of numbers do you have?</p>
+                <h2>Data and variables</h2>
+                <p class="lead">Before any calculation: what you measured, on whom, and on which kind of scale. The level of measurement decides which average, which chart and which test you may use.</p>
+                <div class="terms">
+                    <article class="term" id="g-levels" data-also="scale level nominal ordinal interval ratio metric categorical numeric">
+                        <h4>Levels of measurement <span class="de">Skalenniveau</span></h4>
+                        <p><b>nominal</b> categories without order (music condition) · <b>ordinal</b> order, but unequal steps (1–5 agreement) · <b>interval / ratio</b> (“metric”) equal steps (minutes, hours; ratio has a true zero).</p>
+                        <p><b>Use for</b> choosing the right average, chart and test.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-design.html#types">→ Kinds of data</a><a href="data-evaluate.html#choose">→ Which analysis?</a></div>
+                    </article>
+                    <article class="term" id="g-variables" data-also="IV DV predictor outcome">
+                        <h4>Independent and dependent variable <span class="de">unabhängige / abhängige Variable</span></h4>
+                        <p>The <b>independent variable</b> is what you change or group by (fast vs. slow music). The <b>dependent variable</b> is what you measure (estimated waiting time).</p>
+                        <p><b>Use for</b> writing a clear hypothesis: “IV affects DV”.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-design.html#design">→ Design</a></div>
+                    </article>
+                    <article class="term" id="g-sample" data-also="n N population sample size Grundgesamtheit">
+                        <h4>Population and sample <span class="de">Grundgesamtheit, Stichprobe</span></h4>
+                        <p>The population is everyone your claim is about; the sample is the people you actually measured. <i>n</i> = sample size (<i>N</i> often = the whole sample, <i>n</i> = one group).</p>
+                        <p class="cf"><b>Careful</b> claim only as far as your sample reaches.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-design.html#sample">→ Sample size</a></div>
+                    </article>
+                    <article class="term" id="g-construct" data-also="operationalization operationalise measure">
+                        <h4>Construct and operationalisation <span class="de">Konstrukt, Operationalisierung</span></h4>
+                        <p>A construct is an abstract idea (time pressure). Operationalisation is the exact way you turn it into a number (five items, 1–5, mean score).</p>
+                        <p><b>Use for</b> making your question measurable – and judging validity.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-design.html#design">→ Design</a></div>
+                    </article>
+                    <article class="term" id="g-item" data-also="reversed item reverse coded score sum score">
+                        <h4>Item, scale and score <span class="de">Item, Skala, Skalenwert</span></h4>
+                        <p>An item is one question; a scale is several items that measure one construct; the score is their mean or sum. Reversed items are flipped first (on 1–5: 6 − answer).</p>
+                        <p><b>Use for</b> measuring attitudes more reliably than with one question.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-refine.html#checks">→ Refine</a></div>
+                    </article>
+                    <article class="term" id="g-likert" data-also="rating scale agree disagree">
+                        <h4>Likert scale <span class="de">Likert-Skala</span></h4>
+                        <p>Answer format from “strongly disagree” to “strongly agree”, usually 5 or 7 steps.</p>
+                        <p><b>Use for</b> attitudes and feelings in surveys.</p>
+                        <p class="cf"><b>Careful</b> one item is ordinal; the mean of several items is usually treated as numeric.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-design.html#types">→ Kinds of data</a></div>
+                    </article>
+                    <article class="term" id="g-codebook" data-also="cleaning log exclusion data cleaning">
+                        <h4>Codebook and cleaning log <span class="de">Codebuch, Bereinigungsprotokoll</span></h4>
+                        <p>The codebook says what each column means (question, unit, range, reversed items). The cleaning log lists every excluded row and why.</p>
+                        <p><b>Use for</b> making your analysis checkable; both go into the appendix.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#clean">→ Clean first</a></div>
+                    </article>
+                    <article class="term" id="g-missing" data-also="missing data NA empty cells complete cases">
+                        <h4>Missing values <span class="de">fehlende Werte</span></h4>
+                        <p>Empty cells. Decide by a rule: drop the person from all analyses, or only from the ones that need the missing value.</p>
+                        <p class="cf"><b>Careful</b> report how many are missing – and whether they are missing for a reason (people skipping an uncomfortable question).</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#clean">→ Clean first</a></div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ CENTRE ============================ -->
+        <section class="sec" id="centre" data-group style="--c: var(--s1)">
+            <div class="t-wrap">
+                <p class="gq">Where is the middle?</p>
+                <h2>Centre</h2>
+                <p class="lead">One number for the typical value. Which one fits depends on the level of measurement and on outliers – always report a measure of spread with it.</p>
+                <div class="terms">
+                    <article class="term" id="g-mean" data-also="average arithmetic mean M x-bar">
+                        <h4>Mean <span class="de">Mittelwert, arithmetisches Mittel</span></h4>
+                        <p>Sum of all values ÷ n. Written <i>M</i> or x̄.</p>
+                        <div class="f">M = Σx / n</div>
+                        <p><b>Use for</b> the typical value of numeric data – fast-music group: M = 2.60 min.</p>
+                        <p class="cf"><b>Careful</b> one extreme value pulls it away; compare with the median.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#clean">→ Describe</a><code>statistics.mean</code></div>
+                    </article>
+                    <article class="term" id="g-median" data-also="Mdn middle value Zentralwert">
+                        <h4>Median <span class="de">Median, Zentralwert</span></h4>
+                        <p>The middle value when the data are sorted (with even n: mean of the two middle values). Half lie below, half above.</p>
+                        <p><b>Use for</b> ordinal or skewed data and data with outliers (reaction times, income).</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#clean">→ Describe</a><code>statistics.median</code></div>
+                    </article>
+                    <article class="term" id="g-mode" data-also="most frequent Modalwert">
+                        <h4>Mode <span class="de">Modus, Modalwert</span></h4>
+                        <p>The most frequent value or category.</p>
+                        <p><b>Use for</b> nominal data – “the most common answer was …”.</p>
+                        <div class="meta"><span class="lv u">you use it</span><code>statistics.multimode</code></div>
+                    </article>
+                    <article class="term" id="g-weighted" data-also="weighted average weighting">
+                        <h4>Weighted mean <span class="de">gewichteter Mittelwert</span></h4>
+                        <p>Each value counts according to its weight, e.g. the n of a study.</p>
+                        <div class="f">M = Σ(w·x) / Σw</div>
+                        <p><b>Use for</b> combining studies or groups of different size.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#studies">→ Combine studies</a></div>
+                    </article>
+                    <article class="term" id="g-trimmed" data-also="trimmed mean robust">
+                        <h4>Trimmed mean <span class="de">getrimmter Mittelwert</span></h4>
+                        <p>The mean after cutting off e.g. the highest and lowest 10 % of values.</p>
+                        <p><b>Use for</b> a robust compromise between mean and median (used in sports judging).</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ SPREAD ============================ -->
+        <section class="sec" id="spread" data-group style="--c: var(--s2)">
+            <div class="t-wrap">
+                <p class="gq">How far apart are the values?</p>
+                <h2>Spread and shape</h2>
+                <p class="lead">Two groups can have the same mean and still look completely different. Spread tells you how much people vary; shape tells you whether the mean is a fair summary at all.</p>
+                <div class="terms">
+                    <article class="term" id="g-range" data-also="min max minimum maximum Spannweite">
+                        <h4>Range <span class="de">Spannweite</span></h4>
+                        <p>Largest minus smallest value.</p>
+                        <p><b>Use for</b> a quick first look and spotting impossible values.</p>
+                        <p class="cf"><b>Careful</b> depends on just two values – the most extreme ones.</p>
+                        <div class="meta"><span class="lv u">you use it</span><code>max(v) - min(v)</code></div>
+                    </article>
+                    <article class="term" id="g-variance" data-also="s² s2 sigma squared Varianz">
+                        <h4>Variance <span class="de">Varianz</span></h4>
+                        <p>Average squared distance from the mean. For a sample, divide by n − 1.</p>
+                        <div class="f">s² = Σ(x − M)² / (n − 1)</div>
+                        <p><b>Use for</b> building block of SD, Cronbach’s α, ANOVA. Its unit is squared (min²), so it is hard to read on its own.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-refine.html#checks">→ α formula</a><code>statistics.variance</code></div>
+                    </article>
+                    <article class="term" id="g-sd" data-also="SD s sigma standard deviation Standardabweichung">
+                        <h4>Standard deviation (SD) <span class="de">Standardabweichung</span></h4>
+                        <p>Square root of the variance – the typical distance from the mean, in the unit of the data. Fast-music group: SD = 0.61 min.</p>
+                        <p><b>Use for</b> reporting with every mean: “M = 2.60, SD = 0.61”. In roughly normal data about 68 % lie within ±1 SD, about 95 % within ±2 SD.</p>
+                        <p class="cf"><b>Careful</b> misleading for strongly skewed data – use the IQR.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#clean">→ Describe</a><code>statistics.stdev</code></div>
+                    </article>
+                    <article class="term" id="g-quartiles" data-also="Q1 Q3 quartile percentile quantile Perzentil">
+                        <h4>Quartiles and percentiles <span class="de">Quartile, Perzentile</span></h4>
+                        <p>Q1, Q2 (= median) and Q3 cut the sorted data into four equal parts. The 90th percentile is the value that 90 % lie below.</p>
+                        <p class="cf"><b>Careful</b> programs use slightly different methods – small differences are normal.</p>
+                        <div class="meta"><span class="lv u">you use it</span><code>statistics.quantiles(v, n=4, method="inclusive")</code></div>
+                    </article>
+                    <article class="term" id="g-iqr" data-also="IQR interquartile range Interquartilsabstand">
+                        <h4>Interquartile range (IQR) <span class="de">Interquartilsabstand</span></h4>
+                        <p>Q3 − Q1: the range of the middle 50 %. Not affected by outliers.</p>
+                        <p><b>Use for</b> the spread of ordinal or skewed data – the partner of the median; the box in a box plot.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="#start">→ box plot above</a></div>
+                    </article>
+                    <article class="term" id="g-outlier" data-also="extreme value 1.5 IQR rule Tukey Ausreißer">
+                        <h4>Outlier <span class="de">Ausreißer</span></h4>
+                        <p>A value far from the rest. Common rule: below Q1 − 1.5·IQR or above Q3 + 1.5·IQR.</p>
+                        <p><b>Use for</b> checking: typo, impossible value – or a real, unusual person?</p>
+                        <p class="cf"><b>Careful</b> exclude only by a rule fixed beforehand, and report it.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#clean">→ Clean first</a></div>
+                    </article>
+                    <article class="term" id="g-skew" data-also="skewed skewness tail asymmetric Schiefe">
+                        <h4>Skewness <span class="de">Schiefe</span></h4>
+                        <p>A lopsided distribution with a long tail on one side (right-skewed: reaction times, income). Then mean and median drift apart.</p>
+                        <p><b>Use for</b> deciding on median + IQR and rank-based tests instead of mean + SD.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="#g-hist">→ histogram</a></div>
+                    </article>
+                    <article class="term" id="g-normal" data-also="bell curve Gaussian Gauss Normalverteilung">
+                        <h4>Normal distribution <span class="de">Normalverteilung</span></h4>
+                        <p>The symmetric bell curve. Many measures (height, test scores) come close to it.</p>
+                        <p><b>Use for</b> t-test and ANOVA assume roughly normal data – or large groups (about 30+ each).</p>
+                        <p class="cf"><b>Careful</b> check with a histogram, not by assumption.</p>
+                        <div class="meta"><span class="lv r">recognise it</span><code>statistics.NormalDist</code></div>
+                    </article>
+                    <article class="term" id="g-z" data-also="z score standard score standardised Standardwert">
+                        <h4>z-score <span class="de">z-Wert, Standardwert</span></h4>
+                        <p>How many SDs a value lies above or below the mean.</p>
+                        <div class="f">z = (x − M) / SD</div>
+                        <p><b>Use for</b> comparing values from different scales; |z| &gt; 3 is very rare in normal data.</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ SHOW ============================ -->
+        <section class="sec" id="show" data-group style="--c: var(--s3)">
+            <div class="t-wrap">
+                <p class="gq">How do you make it visible?</p>
+                <h2>Show the data</h2>
+                <p class="lead">A good chart answers one question at a glance – and shows problems that numbers hide (remember Anscombe’s quartet). One chart per research question; label the axes with units and give n.</p>
+                <div class="terms">
+                    <article class="term" id="g-freq" data-also="frequency counts Häufigkeit">
+                        <h4>Frequency table <span class="de">Häufigkeitstabelle</span></h4>
+                        <p>Count and percentage per category or value range.</p>
+                        <p><b>Use for</b> the first look at every variable; categorical results.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#counts">→ Counts</a></div>
+                    </article>
+                    <article class="term" id="g-bar" data-also="bar chart column chart Säulendiagramm">
+                        <h4>Bar chart <span class="de">Balken-/Säulendiagramm</span></h4>
+                        <p>One bar per category; the height shows a count, a share or a mean.</p>
+                        <p><b>Use for</b> comparing categories or group means.</p>
+                        <p class="cf"><b>Careful</b> the axis must start at 0; for means add error bars or show the single values.</p>
+                        <div class="meta"><span class="lv u">you use it</span><code>edu.bars</code></div>
+                    </article>
+                    <article class="term" id="g-hist" data-also="histogram bins distribution Histogramm">
+                        <h4>Histogram <span class="de">Histogramm</span></h4>
+                        <p>A numeric variable cut into ranges (bins); the bars touch.</p>
+                        <p><b>Use for</b> seeing the shape: symmetric, skewed, two peaks, gaps, outliers.</p>
+                        <p class="cf"><b>Careful</b> the bin width changes the picture – try two.</p>
+                        <div class="meta"><span class="lv u">you use it</span><code>edu.hist</code></div>
+                    </article>
+                    <article class="term" id="g-boxplot" data-also="box plot boxplot box-and-whisker whisker five-number summary">
+                        <h4>Box plot <span class="de">Boxplot</span></h4>
+                        <p>Median, quartiles, whiskers and outliers in one picture (see <a href="#start">top of the page</a>).</p>
+                        <p><b>Use for</b> comparing several groups side by side; gains in pre/post designs.</p>
+                        <p class="cf"><b>Careful</b> hides n and two-peaked shapes – add the n per group, or the single points.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#compare">→ Compare groups</a><code>edu.boxplot</code></div>
+                    </article>
+                    <article class="term" id="g-scatter" data-also="scatter plot scatterplot dot plot Streudiagramm Punktwolke">
+                        <h4>Scatter plot <span class="de">Streudiagramm</span></h4>
+                        <p>One dot per person, one variable on each axis.</p>
+                        <p><b>Use for</b> direction, strength, shape and outliers of a relationship – always before computing r.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#relate">→ Relate</a><code>edu.scatter</code></div>
+                    </article>
+                    <article class="term" id="g-linechart" data-also="line chart time series trend Liniendiagramm">
+                        <h4>Line chart <span class="de">Liniendiagramm</span></h4>
+                        <p>Values over time or over ordered steps, connected by lines.</p>
+                        <p><b>Use for</b> trends, pre/post, shares per decade.</p>
+                        <p class="cf"><b>Careful</b> never connect categories without an order; mark method breaks.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#counts">→ Trends</a><code>edu.line</code></div>
+                    </article>
+                    <article class="term" id="g-crosstab" data-also="cross-tab crosstab contingency table two-way table Kreuztabelle">
+                        <h4>Contingency table <span class="de">Kreuztabelle, Kontingenztafel</span></h4>
+                        <p>Counts for two categorical variables at once, e.g. year group × early/late type; best with row percentages.</p>
+                        <p><b>Use for</b> categorical comparisons; the basis of the χ² test; person × theme tables in interviews.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#themes">→ Themes</a></div>
+                    </article>
+                    <article class="term" id="g-errorbars" data-also="error bars whiskers SE CI Fehlerbalken">
+                        <h4>Error bars <span class="de">Fehlerbalken</span></h4>
+                        <p>Lines above and below a mean. They may show the SD, the standard error or a 95 % confidence interval.</p>
+                        <p class="cf"><b>Careful</b> always say which – the three differ a lot.</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                    <article class="term" id="g-pie" data-also="pie chart Kreisdiagramm Tortendiagramm">
+                        <h4>Pie chart <span class="de">Kreisdiagramm</span></h4>
+                        <p>Shares of one whole as slices.</p>
+                        <p class="cf"><b>Careful</b> only for few categories; angles are hard to compare – a bar chart is usually clearer.</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ SIZE ============================ -->
+        <section class="sec" id="size" data-group style="--c: var(--s5)">
+            <div class="t-wrap">
+                <p class="gq">How big is the effect?</p>
+                <h2>Effect size</h2>
+                <p class="lead">The p-value says whether chance is a plausible explanation. The effect size says whether the difference matters. Report both – the effect size first. The thresholds (small, medium, large) are rough guides from Cohen, not laws.</p>
+                <div class="terms">
+                    <article class="term" id="g-rawdiff" data-also="difference in means mean difference unstandardised" data-fits="experiment survey test existing">
+                        <h4>Raw difference <span class="de">Mittelwertsdifferenz</span></h4>
+                        <p>The difference between two means in the original unit: slow vs. fast music = 0.45 minutes.</p>
+                        <p><b>Use for</b> the easiest result to understand – always report it when the unit means something.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#compare">→ Compare groups</a></div>
+                    </article>
+                    <article class="term" id="g-pp" data-also="percentage points percent per cent Prozentpunkte" data-fits="coding existing survey">
+                        <h4>Percentage points vs. percent <span class="de">Prozentpunkte</span></h4>
+                        <p>From 20 % to 30 % is +10 percentage points – but +50 percent.</p>
+                        <p><b>Use for</b> describing changes in shares without exaggerating.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#counts">→ Counts</a></div>
+                    </article>
+                    <article class="term" id="g-d" data-also="Cohen's d Cohens d standardised mean difference SMD" data-fits="experiment survey test existing">
+                        <h4>Cohen’s d <span class="de">Effektstärke d</span></h4>
+                        <p>Difference between two means in units of SD.</p>
+                        <div class="f">d = (M₁ − M₂) / SD<sub>pooled</sub></div>
+                        <p><b>Use for</b> group differences independent of the scale; comparing studies. 0.2 small · 0.5 medium · 0.8 large. Music: d = 0.73.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#compare">→ Compare groups</a></div>
+                    </article>
+                    <article class="term" id="g-g" data-also="Hedges g Hedges' g" data-fits="existing">
+                        <h4>Hedges’ g</h4>
+                        <p>Cohen’s d with a small correction for small samples (slightly smaller).</p>
+                        <p><b>Use for</b> read it like d; common in meta-analyses.</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                    <article class="term" id="g-r2" data-also="r squared R² coefficient of determination explained variance Bestimmtheitsmaß" data-fits="survey existing test">
+                        <h4>r and r² as effect size <span class="de">Bestimmtheitsmaß r²</span></h4>
+                        <p>|r| ≈ .1 small · .3 medium · .5 large. r² = share of the variation that the other variable “explains”.</p>
+                        <p><b>Use for</b> chronotype and sleep: r = −.48 → r² ≈ .23, about 23 %.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#relate">→ Relate</a></div>
+                    </article>
+                    <article class="term" id="g-eta" data-also="eta squared η² partial eta" data-fits="experiment">
+                        <h4>η² (eta squared) <span class="de">Eta-Quadrat</span></h4>
+                        <p>Share of the variation explained by group membership in an ANOVA, 0 to 1.</p>
+                        <p><b>Use for</b> effect size with 3+ groups. .01 small · .06 medium · .14 large. Fast / slow / silence: η² = .12.</p>
+                        <div class="meta"><span class="lv r">recognise it</span><a href="#g-anova">→ ANOVA</a></div>
+                    </article>
+                    <article class="term" id="g-cramer" data-also="Cramér's V Cramers V phi φ association" data-fits="survey coding existing">
+                        <h4>Cramér’s V and φ (phi) <span class="de">Cramérs V</span></h4>
+                        <p>Strength of the association between two categorical variables, 0 to 1. For a 2 × 2 table V = φ.</p>
+                        <p><b>Use for</b> effect size after a χ² test. In a 2 × 2 table: .1 small · .3 medium · .5 large.</p>
+                        <div class="meta"><span class="lv r">recognise it</span><a href="#g-chi">→ χ² test</a></div>
+                    </article>
+                    <article class="term" id="g-or" data-also="odds ratio OR Chancenverhältnis" data-fits="existing">
+                        <h4>Odds ratio <span class="de">Chancenverhältnis</span></h4>
+                        <p>The odds in one group divided by the odds in the other. 1 = no difference; 2 = twice the odds.</p>
+                        <p><b>Use for</b> yes/no outcomes – common in medicine and psychology papers.</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ RELATE ============================ -->
+        <section class="sec" id="relate" data-group style="--c: var(--s1)">
+            <div class="t-wrap">
+                <p class="gq">Do two things go together?</p>
+                <h2>Relationships</h2>
+                <p class="lead">Correlations describe whether two variables rise and fall together; regression describes by how much. Neither shows cause and effect on its own.</p>
+                <div class="terms">
+                    <article class="term" id="g-pearson" data-also="Pearson r correlation coefficient Korrelationskoeffizient" data-fits="survey existing test">
+                        <h4>Pearson’s r <span class="de">Korrelationskoeffizient nach Pearson</span></h4>
+                        <p>Strength and direction of a straight-line relationship between two numeric variables, from −1 through 0 to +1.</p>
+                        <p><b>Use for</b> chronotype and school-night sleep: r = −.48.</p>
+                        <p class="cf"><b>Careful</b> only straight lines; one outlier can make or break it – look at the scatter plot.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#relate">→ Relate</a><code>statistics.correlation</code></div>
+                    </article>
+                    <article class="term" id="g-spearman" data-also="Spearman rho ρ rank correlation Rangkorrelation" data-fits="survey existing test">
+                        <h4>Spearman’s ρ (rho) <span class="de">Rangkorrelation</span></h4>
+                        <p>Pearson’s r computed on ranks instead of values.</p>
+                        <p><b>Use for</b> ordinal answers (1–5), curved but steady relationships, outliers. Chronotype and sleep: ρ = −.46.</p>
+                        <div class="meta"><span class="lv u">you use it</span><code>statistics.correlation(x, y, method="ranked")</code></div>
+                    </article>
+                    <article class="term" id="g-kendall" data-also="Kendall tau τ">
+                        <h4>Kendall’s τ (tau) <span class="de">Kendalls Tau</span></h4>
+                        <p>Another rank correlation; its values are usually smaller than ρ.</p>
+                        <p><b>Use for</b> small samples with many tied ranks.</p>
+                        <div class="meta"><span class="lv r">recognise it</span><code class="home">scipy.stats.kendalltau</code></div>
+                    </article>
+                    <article class="term" id="g-matrix" data-also="correlation matrix Korrelationsmatrix">
+                        <h4>Correlation matrix <span class="de">Korrelationsmatrix</span></h4>
+                        <p>A table of r for every pair of variables.</p>
+                        <p><b>Use for</b> an overview of many survey variables.</p>
+                        <p class="cf"><b>Careful</b> many pairs = many chances for chance hits (<a href="#g-phack">fishing</a>).</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#relate">→ Relate</a></div>
+                    </article>
+                    <article class="term" id="g-regression" data-also="linear regression slope intercept line of best fit Regressionsgerade">
+                        <h4>Linear regression <span class="de">lineare Regression</span></h4>
+                        <p>The straight line y = a + b·x that fits the dots best. The slope b says how much y changes per unit of x.</p>
+                        <p><b>Use for</b> predictions and “how much”: sleep ≈ 8.98 − 0.40 × chronotype, so each scale point towards “owl” goes with about 24 minutes less sleep.</p>
+                        <div class="meta"><span class="lv r">recognise it</span><code>statistics.linear_regression</code></div>
+                    </article>
+                    <article class="term" id="g-multreg" data-also="multiple regression control for covariate beta predictors">
+                        <h4>Multiple regression <span class="de">multiple Regression</span></h4>
+                        <p>Several predictors at once; each coefficient shows the effect of one variable while the others are held constant.</p>
+                        <p><b>Use for</b> “controlling for” third variables in survey and existing data (age, gender, screen time …).</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                    <article class="term" id="g-causation" data-also="correlation is not causation causality third variable reverse causation Kausalität">
+                        <h4>Correlation ≠ causation <span class="de">Korrelation ist nicht Kausalität</span></h4>
+                        <p>A correlation can come from a <a href="#g-confound">third variable</a>, from the reverse direction or from chance.</p>
+                        <p><b>Use for</b> careful wording: “is associated with”, not “causes”. Only an experiment with <a href="#g-randassign">random assignment</a> shows cause.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#relate">→ Relate</a></div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ CHANCE ============================ -->
+        <section class="sec" id="chance" data-group style="--c: var(--s2)">
+            <div class="t-wrap">
+                <p class="gq">Could it be chance?</p>
+                <h2>Significance and uncertainty</h2>
+                <p class="lead">Every sample is a bit off, just by luck. Inferential statistics ask: if there were no effect at all, how surprising would your result be – and how precise is your estimate?</p>
+                <div class="warnbox"><b>Same letter, different meaning.</b> <b>α</b> = significance level <em>or</em> Cronbach’s α · <b>p</b> = p-value <em>or</em> item difficulty · <b>r</b> = correlation <em>or</em> item–rest correlation. Always name the measure: “Cronbach’s α = .84”, “p = .009”.</div>
+                <div class="terms">
+                    <article class="term" id="g-h0" data-also="null hypothesis alternative hypothesis H0 H1 Nullhypothese">
+                        <h4>Null and alternative hypothesis <span class="de">Nullhypothese H₀, Alternativhypothese H₁</span></h4>
+                        <p>H₀: there is no effect (the music makes no difference). H₁: your claim. A test asks how well the data fit H₀.</p>
+                        <p><b>Use for</b> understanding what every test and p-value refers to.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#compare">→ Permutation test</a></div>
+                    </article>
+                    <article class="term" id="g-p" data-also="p value p-value probability significance Signifikanz">
+                        <h4>p-value <span class="de">p-Wert</span></h4>
+                        <p>The probability of a result at least as extreme as yours <em>if H₀ were true</em>. Small p → chance alone is an unlikely explanation.</p>
+                        <p class="cf"><b>Careful</b> p is not the probability that H₀ is true, and says nothing about size. p = .06 and p = .04 are almost the same evidence.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#compare">→ Compare groups</a></div>
+                    </article>
+                    <article class="term" id="g-alpha" data-also="significance level alpha .05 0.05 statistically significant Signifikanzniveau">
+                        <h4>Significance level α <span class="de">Signifikanzniveau</span></h4>
+                        <p>A threshold fixed beforehand, usually .05. If p &lt; α, the result is called “statistically significant”.</p>
+                        <p class="cf"><b>Careful</b> not the same as <a href="#g-cronbach">Cronbach’s α</a>.</p>
+                        <div class="meta"><span class="lv u">you use it</span></div>
+                    </article>
+                    <article class="term" id="g-relevance" data-also="practical significance statistical significance relevance praktische Bedeutsamkeit">
+                        <h4>Significant ≠ important <span class="de">statistische vs. praktische Bedeutsamkeit</span></h4>
+                        <p>With 10,000 people a tiny difference becomes significant; with 20 people a big one may not.</p>
+                        <p><b>Use for</b> always reporting the <a href="#size">effect size</a> next to p, and discussing whether the effect matters.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#compare">→ Compare groups</a></div>
+                    </article>
+                    <article class="term" id="g-errors" data-also="type I error type II error false positive false negative beta Fehler 1. Art 2. Art">
+                        <h4>Type I and Type II error <span class="de">Fehler 1. und 2. Art</span></h4>
+                        <p><b>Type I</b> false alarm: you “find” an effect that isn’t there (happens with probability α). <b>Type II</b> miss: a real effect stays undetected (probability β).</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                    <article class="term" id="g-power" data-also="statistical power 80% beta sample size planning Teststärke" data-fits="experiment survey test">
+                        <h4>Power <span class="de">Teststärke</span></h4>
+                        <p>The chance of finding an effect that really exists (1 − β). Grows with n and with the size of the effect.</p>
+                        <p><b>Use for</b> planning n: aim for about 80 %. d = 0.5 needs about 64 people per group.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-refine.html#checks">→ Power simulation</a></div>
+                    </article>
+                    <article class="term" id="g-se" data-also="standard error SE SEM Standardfehler">
+                        <h4>Standard error (SE) <span class="de">Standardfehler</span></h4>
+                        <p>How much a mean would vary from sample to sample. Shrinks as n grows.</p>
+                        <div class="f">SE = SD / √n</div>
+                        <p><b>Use for</b> the building block of confidence intervals and t-tests.</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                    <article class="term" id="g-ci" data-also="confidence interval CI 95% Konfidenzintervall Vertrauensintervall">
+                        <h4>Confidence interval (CI) <span class="de">Konfidenzintervall</span></h4>
+                        <p>A range of plausible values for the true effect. Music: difference 0.45 min, 95 % CI [0.12, 0.77].</p>
+                        <p><b>Use for</b> showing precision: narrow = precise. If a CI for a difference excludes 0, then p &lt; .05.</p>
+                        <p class="cf"><b>Careful</b> strictly: 95 % of intervals built this way contain the true value.</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                    <article class="term" id="g-sided" data-also="one-sided two-sided one-tailed two-tailed einseitig zweiseitig">
+                        <h4>One- and two-sided tests <span class="de">ein- und zweiseitiger Test</span></h4>
+                        <p>Two-sided counts extreme results in both directions (the default). One-sided counts only the predicted direction.</p>
+                        <p class="cf"><b>Careful</b> one-sided only if you fixed the direction before seeing the data.</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                    <article class="term" id="g-perm" data-also="permutation test randomisation test shuffle labels Permutationstest" data-fits="experiment survey test existing coding">
+                        <h4>Permutation test <span class="de">Permutationstest</span></h4>
+                        <p>Shuffle the group labels many times; the share of shuffles with a difference at least as big as yours is p.</p>
+                        <p><b>Use for</b> almost anything – means, medians, shares, r (shuffle one column) – with few assumptions. Your tool for “could it be chance?”.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#compare">→ Compare groups</a></div>
+                    </article>
+                    <article class="term" id="g-boot" data-also="bootstrap resampling with replacement">
+                        <h4>Bootstrap <span class="de">Bootstrap-Verfahren</span></h4>
+                        <p>Draw many new samples <em>with replacement</em> from your own data and compute the measure each time; the middle 95 % of the results form a CI.</p>
+                        <p><b>Use for</b> confidence intervals for any measure, by simulation.</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                    <article class="term" id="g-multiple" data-also="multiple testing multiple comparisons Bonferroni correction alpha inflation">
+                        <h4>Multiple testing and Bonferroni <span class="de">multiples Testen, Bonferroni-Korrektur</span></h4>
+                        <p>20 tests at α = .05 → about one false alarm, even with no real effects. Bonferroni: use α ÷ number of tests (10 tests → .005).</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#nothing">→ Don’t go fishing</a></div>
+                    </article>
+                    <article class="term" id="g-phack" data-also="p-hacking fishing data dredging garden of forking paths">
+                        <h4>p-hacking, fishing <span class="de">p-Hacking</span></h4>
+                        <p>Trying variables, exclusions or analyses until something has p &lt; .05.</p>
+                        <p><b>Use for</b> knowing what to avoid: fix hypotheses and analyses in advance (<a href="#g-prereg">pre-registration</a>).</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#nothing">→ Don’t go fishing</a></div>
+                    </article>
+                    <article class="term" id="g-exploratory" data-also="confirmatory exploratory konfirmatorisch explorativ">
+                        <h4>Confirmatory vs. exploratory <span class="de">konfirmatorisch, explorativ</span></h4>
+                        <p>Confirmatory = testing hypotheses planned beforehand. Exploratory = looking around for patterns afterwards.</p>
+                        <p><b>Use for</b> labelling results honestly: exploratory findings are ideas for the next study.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#nothing">→ Found nothing?</a></div>
+                    </article>
+                    <article class="term" id="g-teststat" data-also="test statistic t F chi U H Prüfgröße Teststatistik">
+                        <h4>Test statistic <span class="de">Prüfgröße</span></h4>
+                        <p>One number (t, F, χ², U, H) that sums up how far the data are from H₀. Software turns it into p.</p>
+                        <div class="meta"><span class="lv r">recognise it</span><a href="#read">→ Read a results line</a></div>
+                    </article>
+                    <article class="term" id="g-df" data-also="degrees of freedom df Freiheitsgrade">
+                        <h4>Degrees of freedom (df) <span class="de">Freiheitsgrade</span></h4>
+                        <p>The number in brackets after t, F or χ². It depends on n and the number of groups – e.g. for two groups in a t-test: df = n − 2.</p>
+                        <p><b>Use for</b> reading and reporting results; software computes it.</p>
+                        <div class="meta"><span class="lv r">recognise it</span><a href="#read">→ Read a results line</a></div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ TESTS ============================ -->
+        <section class="sec" id="tests" data-group style="--c: var(--s3)">
+            <div class="t-wrap">
+                <p class="gq">Which test fits your data?</p>
+                <h2>Significance tests</h2>
+                <p class="lead">Classical tests all answer “could it be chance?” for one kind of design and data. Find your row (what you compare) and your column (what kind of data) – and you have the name you’ll read in published studies.</p>
+                <div class="scroll-x">
+                    <table class="dt which">
+                        <thead><tr><th>You compare …</th><th>numeric, roughly normal</th><th>ordinal (1–5) or skewed</th><th>categories (counts)</th></tr></thead>
+                        <tbody>
+                            <tr><th scope="row">2 groups, different people</th><td><a href="#g-ttest">t-test</a> (Welch)<small>effect: d</small></td><td><a href="#g-mwu">Mann–Whitney U</a></td><td><a href="#g-chi">χ² test</a> / <a href="#g-fisher">Fisher’s exact</a><small>effect: φ</small></td></tr>
+                            <tr><th scope="row">same people, 2 times or conditions</th><td><a href="#g-paired">paired t-test</a><small>effect: d</small></td><td><a href="#g-wilcoxon">Wilcoxon signed-rank</a></td><td><a href="#g-mcnemar">McNemar test</a></td></tr>
+                            <tr><th scope="row">3+ groups, different people</th><td><a href="#g-anova">one-way ANOVA</a><small>effect: η²</small></td><td><a href="#g-kw">Kruskal–Wallis</a></td><td><a href="#g-chi">χ² test</a><small>effect: Cramér’s V</small></td></tr>
+                            <tr><th scope="row">same people, 3+ times or conditions</th><td><a href="#g-rmanova">repeated-measures ANOVA</a></td><td><a href="#g-friedman">Friedman test</a></td><td>Cochran’s Q <small>(rare)</small></td></tr>
+                            <tr><th scope="row">two variables together</th><td><a href="#g-pearson">Pearson r</a>, <a href="#g-regression">regression</a></td><td><a href="#g-spearman">Spearman ρ</a></td><td><a href="#g-chi">χ² test</a><small>effect: Cramér’s V</small></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tipbox"><b>In this seminar</b> the <a href="#g-perm">permutation test</a> covers every cell of this table: shuffle the labels (or one column) and count. Report it as it is – “permutation test, 5,000 shuffles, p = .01”. The table helps you <em>read</em> studies, and choose a classical test if you analyse at home (<code>scipy.stats</code>, module M5).</div>
+                <div class="terms">
+                    <article class="term" id="g-param" data-also="parametric non-parametric nonparametric rank-based distribution-free">
+                        <h4>Parametric vs. non-parametric <span class="de">parametrisch / nichtparametrisch</span></h4>
+                        <p>Parametric tests (t, ANOVA, Pearson) use means and assume roughly normal data. Non-parametric tests (U, Wilcoxon, Kruskal–Wallis, Spearman) use ranks.</p>
+                        <p><b>Use for</b> ordinal or skewed data and small samples → non-parametric.</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                    <article class="term" id="g-ttest" data-also="t test Student Welch independent samples unpaired t-Test" data-fits="experiment survey test">
+                        <h4>t-test (independent groups) <span class="de">t-Test für unabhängige Stichproben</span></h4>
+                        <p>Compares the means of two groups of different people. Welch’s version does not assume equal SDs – the safe default.</p>
+                        <p><b>Use for</b> fast vs. slow music: t(54) = 2.72, p = .009. Effect size: d.</p>
+                        <div class="meta"><span class="lv r">recognise it</span><code class="home">scipy.stats.ttest_ind(a, b, equal_var=False)</code></div>
+                    </article>
+                    <article class="term" id="g-paired" data-also="paired t-test dependent samples repeated pre post t-Test abhängige" data-fits="test experiment">
+                        <h4>Paired t-test <span class="de">t-Test für abhängige Stichproben</span></h4>
+                        <p>The same people measured twice (pre/post, two conditions); tests whether the mean of the differences is 0.</p>
+                        <p><b>Use for</b> within-subjects designs.</p>
+                        <div class="meta"><span class="lv r">recognise it</span><code class="home">scipy.stats.ttest_rel</code></div>
+                    </article>
+                    <article class="term" id="g-anova" data-also="ANOVA analysis of variance F test post hoc Tukey Varianzanalyse" data-fits="experiment survey">
+                        <h4>One-way ANOVA <span class="de">einfaktorielle Varianzanalyse</span></h4>
+                        <p>Compares three or more group means in one test (statistic F). Significant = at least one group differs; post-hoc tests (e.g. Tukey) show which.</p>
+                        <p><b>Use for</b> fast / slow / silence: F(2, 81) = 5.29, p = .007, η² = .12.</p>
+                        <div class="meta"><span class="lv r">recognise it</span><code class="home">scipy.stats.f_oneway</code></div>
+                    </article>
+                    <article class="term" id="g-rmanova" data-also="repeated measures ANOVA within Messwiederholung" data-fits="experiment test">
+                        <h4>Repeated-measures ANOVA <span class="de">Varianzanalyse mit Messwiederholung</span></h4>
+                        <p>Like the one-way ANOVA, but the same people take part in all conditions or are measured 3+ times.</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                    <article class="term" id="g-twoway" data-also="two-way ANOVA factorial interaction effect main effect Wechselwirkung" data-fits="experiment">
+                        <h4>Two-way ANOVA and interaction <span class="de">zweifaktorielle Varianzanalyse, Wechselwirkung</span></h4>
+                        <p>Two factors at once (music × age group). An interaction means the effect of one factor depends on the other.</p>
+                        <p><b>Use for</b> reading studies: “the effect of music was stronger in younger students”.</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                    <article class="term" id="g-mwu" data-also="Mann-Whitney U Wilcoxon rank-sum U-Test" data-fits="survey experiment test">
+                        <h4>Mann–Whitney U test <span class="de">U-Test</span></h4>
+                        <p>Two independent groups, compared by ranks instead of values: do values in one group tend to be higher?</p>
+                        <p><b>Use for</b> ordinal or skewed data. Fast vs. slow music: U = 539, p = .016.</p>
+                        <div class="meta"><span class="lv r">recognise it</span><code class="home">scipy.stats.mannwhitneyu</code></div>
+                    </article>
+                    <article class="term" id="g-wilcoxon" data-also="Wilcoxon signed-rank paired ranks Vorzeichen-Rang-Test" data-fits="test experiment">
+                        <h4>Wilcoxon signed-rank test <span class="de">Wilcoxon-Vorzeichen-Rang-Test</span></h4>
+                        <p>The rank version of the paired t-test: same people, two measurements.</p>
+                        <div class="meta"><span class="lv r">recognise it</span><code class="home">scipy.stats.wilcoxon</code></div>
+                    </article>
+                    <article class="term" id="g-kw" data-also="Kruskal-Wallis H test" data-fits="survey experiment">
+                        <h4>Kruskal–Wallis test <span class="de">Kruskal-Wallis-Test</span></h4>
+                        <p>The rank version of the one-way ANOVA: three or more independent groups. Statistic H.</p>
+                        <div class="meta"><span class="lv r">recognise it</span><code class="home">scipy.stats.kruskal</code></div>
+                    </article>
+                    <article class="term" id="g-friedman" data-also="Friedman test repeated ranks" data-fits="experiment">
+                        <h4>Friedman test <span class="de">Friedman-Test</span></h4>
+                        <p>The rank version of the repeated-measures ANOVA.</p>
+                        <div class="meta"><span class="lv r">recognise it</span><code class="home">scipy.stats.friedmanchisquare</code></div>
+                    </article>
+                    <article class="term" id="g-chi" data-also="chi-square chi squared χ² test of independence qi square qui square Chi-Quadrat-Test" data-fits="survey coding existing">
+                        <h4>χ² test of independence <span class="de">Chi-Quadrat-Unabhängigkeitstest</span></h4>
+                        <p>Two categorical variables in a <a href="#g-crosstab">contingency table</a>: compares the observed counts with the counts expected if the variables were unrelated.</p>
+                        <p><b>Use for</b> shares across groups. Rule: expected count ≥ 5 in each cell, otherwise Fisher’s exact test. Effect: Cramér’s V.</p>
+                        <div class="meta"><span class="lv r">recognise it</span><code class="home">scipy.stats.chi2_contingency</code></div>
+                    </article>
+                    <article class="term" id="g-chigof" data-also="chi-square goodness of fit Anpassungstest" data-fits="survey coding">
+                        <h4>χ² goodness-of-fit test <span class="de">Chi-Quadrat-Anpassungstest</span></h4>
+                        <p>One categorical variable against expected shares, e.g. “are the four answer options chosen equally often?”</p>
+                        <div class="meta"><span class="lv r">recognise it</span><code class="home">scipy.stats.chisquare</code></div>
+                    </article>
+                    <article class="term" id="g-fisher" data-also="Fisher exact test small counts 2x2" data-fits="survey coding">
+                        <h4>Fisher’s exact test <span class="de">exakter Test nach Fisher</span></h4>
+                        <p>Like the χ² test for a 2 × 2 table, but exact – for small counts.</p>
+                        <div class="meta"><span class="lv r">recognise it</span><code class="home">scipy.stats.fisher_exact</code></div>
+                    </article>
+                    <article class="term" id="g-mcnemar" data-also="McNemar paired yes no before after" data-fits="survey test">
+                        <h4>McNemar test <span class="de">McNemar-Test</span></h4>
+                        <p>Yes/no answers of the same people at two times (before/after a lesson): did more people switch one way than the other?</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                    <article class="term" id="g-cortest" data-also="significance of r correlation test p for r" data-fits="survey existing">
+                        <h4>Testing a correlation <span class="de">Signifikanztest für r</span></h4>
+                        <p>H₀: r = 0 in the population. Software gives p – or shuffle one column (permutation).</p>
+                        <p><b>Use for</b> chronotype and sleep: r(120) = −.48, p &lt; .001.</p>
+                        <div class="meta"><span class="lv r">recognise it</span><code class="home">scipy.stats.pearsonr</code><code class="home">scipy.stats.spearmanr</code></div>
+                    </article>
+                    <article class="term" id="g-shapiro" data-also="Shapiro-Wilk normality test Normalverteilungstest">
+                        <h4>Normality check (Shapiro–Wilk) <span class="de">Test auf Normalverteilung</span></h4>
+                        <p>Tests whether data deviate from a normal distribution.</p>
+                        <p class="cf"><b>Careful</b> with large n it flags harmless deviations, with small n it misses big ones – look at the <a href="#g-hist">histogram</a>.</p>
+                        <div class="meta"><span class="lv r">recognise it</span><code class="home">scipy.stats.shapiro</code></div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ READ ============================ -->
+        <section class="band" id="read" data-group>
+            <div class="t-wrap">
+                <h2>Read a results line</h2>
+                <p class="lead">Papers pack a whole analysis into one line. Here are five lines computed from our practice data – piece by piece. Values that can’t exceed 1 (p, r, η², V) are written without the leading zero: p = .009.</p>
+                <div class="rlines">
+                    <div class="rline">
+                        <p class="ctx">Fast vs. slow music, 28 + 28 students (<code style="background:none;color:#aeb3e3">experiment-main.csv</code>)</p>
+                        <p class="ln">t(54) = 2.72, p = .009, d = 0.73, 95 % CI [0.12, 0.77]</p>
+                        <dl class="kv">
+                            <dt>t</dt><dd><a href="#g-ttest">t-test</a>: the test statistic</dd>
+                            <dt>(54)</dt><dd><a href="#g-df">df</a> = 28 + 28 − 2</dd>
+                            <dt>p = .009</dt><dd>such a difference would be rare if music made no difference</dd>
+                            <dt>d = 0.73</dt><dd><a href="#g-d">effect size</a>: medium to large</dd>
+                            <dt>[0.12, 0.77]</dt><dd><a href="#g-ci">CI</a> for the difference in minutes; excludes 0</dd>
+                        </dl>
+                        <p class="say">The permutation test on the same data gave p ≈ .01 – the same conclusion.</p>
+                    </div>
+                    <div class="rline">
+                        <p class="ctx">Fast vs. slow vs. silence, 84 students</p>
+                        <p class="ln">F(2, 81) = 5.29, p = .007, η² = .12</p>
+                        <dl class="kv">
+                            <dt>F</dt><dd><a href="#g-anova">ANOVA</a>: the test statistic</dd>
+                            <dt>(2, 81)</dt><dd>df: 3 groups − 1; 84 people − 3 groups</dd>
+                            <dt>p = .007</dt><dd>at least one group differs – not yet which</dd>
+                            <dt>η² = .12</dt><dd><a href="#g-eta">12 % of the variation</a> goes with the condition</dd>
+                        </dl>
+                        <p class="say">Next step in a paper: post-hoc comparisons to find which groups differ.</p>
+                    </div>
+                    <div class="rline">
+                        <p class="ctx">Fast vs. slow music, rank-based</p>
+                        <p class="ln">U = 539, p = .016</p>
+                        <dl class="kv">
+                            <dt>U</dt><dd><a href="#g-mwu">Mann–Whitney U</a>: counts how often a value from one group beats one from the other (28 × 28 = 784 pairs)</dd>
+                            <dt>p = .016</dt><dd>same direction as the t-test, slightly weaker – ranks ignore how far apart values are</dd>
+                        </dl>
+                    </div>
+                    <div class="rline">
+                        <p class="ctx">Chronotype and school-night sleep, 122 students (<code style="background:none;color:#aeb3e3">survey-main.csv</code>)</p>
+                        <p class="ln">r(120) = −.48, p &lt; .001, 95 % CI [−.60, −.33]</p>
+                        <dl class="kv">
+                            <dt>r = −.48</dt><dd><a href="#g-pearson">correlation</a>: later types sleep less; medium to large</dd>
+                            <dt>(120)</dt><dd>df = n − 2</dd>
+                            <dt>p &lt; .001</dt><dd>very small p is reported as “&lt; .001”</dd>
+                            <dt>[−.60, −.33]</dt><dd>plausible range for the true r</dd>
+                        </dl>
+                        <p class="say">Still cross-sectional: no proof that chronotype causes short sleep.</p>
+                    </div>
+                    <div class="rline">
+                        <p class="ctx">Evening types (chronotype ≥ 3.5) in Years 10, 11 and 12, 125 students</p>
+                        <p class="ln">χ²(2, N = 125) = 1.02, p = .60, V = .09</p>
+                        <dl class="kv">
+                            <dt>χ²</dt><dd><a href="#g-chi">chi-square test</a> on a 3 × 2 table</dd>
+                            <dt>(2, N = 125)</dt><dd>df = (3 − 1) × (2 − 1); N = all people</dd>
+                            <dt>p = .60</dt><dd>differences this size are common by chance</dd>
+                            <dt>V = .09</dt><dd><a href="#g-cramer">Cramér’s V</a>: very weak association</dd>
+                        </dl>
+                        <p class="say">No evidence for a difference – which is not proof that there is none.</p>
+                    </div>
+                    <div class="rline">
+                        <p class="ctx">The same results in a sentence</p>
+                        <p class="ln" style="font-size:1.05rem;color:#eef0ff">Students who waited with fast music estimated the wait as shorter (M = 2.60, SD = 0.61) than students who waited with slow music (M = 3.04, SD = 0.62), t(54) = 2.72, p = .009, d = 0.73.</p>
+                        <p class="say">Words first, numbers in brackets or at the end of the sentence. Descriptive values, test, p and effect size – in that order.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ QUALITY ============================ -->
+        <section class="sec" id="quality" data-group style="--c: var(--s4)">
+            <div class="t-wrap">
+                <p class="gq">Does your instrument measure well?</p>
+                <h2>Quality of measurement</h2>
+                <p class="lead">No test can rescue bad measurement. These criteria and numbers tell you whether your questionnaire, test or coding scheme is good enough – check them in the pilot.</p>
+                <div class="terms">
+                    <article class="term" id="g-objectivity" data-also="objectivity Objektivität quality criteria">
+                        <h4>Objectivity <span class="de">Objektivität</span></h4>
+                        <p>The result doesn’t depend on who runs, scores or interprets the measurement.</p>
+                        <p><b>Use for</b> standard instructions, scoring keys, coding rules.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-design.html#criteria">→ Quality criteria</a></div>
+                    </article>
+                    <article class="term" id="g-reliability" data-also="reliability consistency precision Reliabilität Zuverlässigkeit">
+                        <h4>Reliability <span class="de">Reliabilität</span></h4>
+                        <p>The measurement is consistent and precise: repeated, it gives the same result. Kinds: internal consistency (α), test–retest, between raters (κ).</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-design.html#criteria">→ Quality criteria</a></div>
+                    </article>
+                    <article class="term" id="g-validity" data-also="validity content construct criterion Validität Gültigkeit">
+                        <h4>Validity <span class="de">Validität</span></h4>
+                        <p>It measures what it claims to measure. Kinds: content (covers the whole construct), construct (fits theory), criterion (agrees with an outside measure).</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-design.html#criteria">→ Quality criteria</a></div>
+                    </article>
+                    <article class="term" id="g-intext" data-also="internal validity external validity generalisability interne externe Validität">
+                        <h4>Internal and external validity <span class="de">interne / externe Validität</span></h4>
+                        <p><b>Internal</b>: does the design support the causal claim (control group, random assignment)? <b>External</b>: do the results hold beyond your sample and setting?</p>
+                        <p><b>Use for</b> structuring the limitations section.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#write">→ Limitations</a></div>
+                    </article>
+                    <article class="term" id="g-cronbach" data-also="Cronbach's alpha internal consistency scale reliability" data-fits="survey">
+                        <h4>Cronbach’s α <span class="de">Cronbachs Alpha</span></h4>
+                        <p>Internal consistency: do the items of a scale move together? 0 to 1; aim ≥ .70. Refined time-pressure scale: α = .84.</p>
+                        <p class="cf"><b>Careful</b> rises with more items; above .95 the items may just repeat each other.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-refine.html#checks">→ Check the numbers</a></div>
+                    </article>
+                    <article class="term" id="g-kr20" data-also="KR-20 Kuder-Richardson test reliability" data-fits="test">
+                        <h4>KR-20 <span class="de">Kuder-Richardson-Formel 20</span></h4>
+                        <p>Cronbach’s α for items scored right/wrong; aim ≥ .70.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-refine.html#checks">→ Check the numbers</a></div>
+                    </article>
+                    <article class="term" id="g-difficulty" data-also="item difficulty p facility Itemschwierigkeit" data-fits="test">
+                        <h4>Item difficulty p <span class="de">Itemschwierigkeit</span></h4>
+                        <p>Share of people who solved an item. Useful between .20 and .80.</p>
+                        <p class="cf"><b>Careful</b> not a p-value – and high p means <em>easy</em>.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-refine.html#checks">→ Item analysis</a></div>
+                    </article>
+                    <article class="term" id="g-itemrest" data-also="item-rest correlation item-total discrimination Trennschärfe" data-fits="survey test">
+                        <h4>Item–rest correlation <span class="de">Trennschärfe</span></h4>
+                        <p>r between one item and the sum of all other items; aim ≥ .30.</p>
+                        <p><b>Use for</b> finding weak items: low or negative → unclear, off-topic or not reversed.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-refine.html#checks">→ Item analysis</a></div>
+                    </article>
+                    <article class="term" id="g-retest" data-also="test-retest reliability stability Retest-Reliabilität" data-fits="survey test">
+                        <h4>Test–retest reliability <span class="de">Retest-Reliabilität</span></h4>
+                        <p>Same people, same instrument, twice (e.g. two weeks apart); the correlation of the two results.</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                    <article class="term" id="g-agree" data-also="percent agreement inter-rater intercoder Übereinstimmung" data-fits="coding interview">
+                        <h4>Percent agreement <span class="de">prozentuale Übereinstimmung</span></h4>
+                        <p>Share of segments that two coders coded the same way.</p>
+                        <p class="cf"><b>Careful</b> inflated by chance, especially with few categories – use κ.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-refine.html#checks">→ Two coders</a></div>
+                    </article>
+                    <article class="term" id="g-kappa" data-also="Cohen's kappa κ inter-rater reliability intercoder" data-fits="coding interview">
+                        <h4>Cohen’s κ (kappa) <span class="de">Cohens Kappa</span></h4>
+                        <p>Agreement between two coders, corrected for the agreement expected by chance. 0 = chance level, 1 = perfect; aim ≥ .80.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-refine.html#checks">→ Two coders</a></div>
+                    </article>
+                    <article class="term" id="g-manip" data-also="manipulation check" data-fits="experiment">
+                        <h4>Manipulation check <span class="de">Manipulationscheck</span></h4>
+                        <p>Did the manipulation work? (Did the fast music actually feel faster?)</p>
+                        <p><b>Use for</b> interpreting results – without it a null result tells you nothing.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-refine.html#enough">→ Good enough?</a></div>
+                    </article>
+                    <article class="term" id="g-ceiling" data-also="ceiling effect floor effect Deckeneffekt Bodeneffekt" data-fits="test survey">
+                        <h4>Ceiling and floor effects <span class="de">Decken- und Bodeneffekt</span></h4>
+                        <p>Many people at the top (test too easy) or bottom (too hard) of the scale – no room left to show differences.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-refine.html#checks">→ Item analysis</a></div>
+                    </article>
+                    <article class="term" id="g-socdes" data-also="social desirability response bias soziale Erwünschtheit" data-fits="survey interview">
+                        <h4>Social desirability <span class="de">soziale Erwünschtheit</span></h4>
+                        <p>People answer the way they want to be seen (homework time, phone use).</p>
+                        <p><b>Use for</b> wording and setup: anonymous, neutral questions, no judging tone.</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ DESIGN ============================ -->
+        <section class="sec" id="design" data-group style="--c: var(--obj)">
+            <div class="t-wrap">
+                <p class="gq">Is the comparison fair?</p>
+                <h2>Study design</h2>
+                <p class="lead">Processes that decide what your data can show – planned before you collect anything. Most limitations in a Seminararbeit come from here, not from the statistics.</p>
+                <div class="terms">
+                    <article class="term" id="g-hypothesis" data-also="hypothesis prediction claim Hypothese">
+                        <h4>Hypothesis <span class="de">Hypothese</span></h4>
+                        <p>A testable claim with a direction, fixed before you collect data: “Students who wait with fast music estimate the wait as shorter.”</p>
+                        <p><b>Use for</b> your question, version 3 (W6).</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-design.html#design">→ Design</a></div>
+                    </article>
+                    <article class="term" id="g-randsample" data-also="random sample convenience sample sampling Zufallsstichprobe Gelegenheitsstichprobe" data-fits="survey">
+                        <h4>Random vs. convenience sample <span class="de">Zufalls- / Gelegenheitsstichprobe</span></h4>
+                        <p>Random: everyone in the population has the same chance to take part. Convenience: whoever is available (your school, your friends).</p>
+                        <p class="cf"><b>Careful</b> Seminar studies are almost always convenience samples – limit your claims.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-design.html#sample">→ Sample</a></div>
+                    </article>
+                    <article class="term" id="g-selfsel" data-also="self-selection sampling bias volunteers Selbstselektion" data-fits="survey interview">
+                        <h4>Self-selection <span class="de">Selbstselektion</span></h4>
+                        <p>Volunteers differ from those who don’t take part (more interested, more organised).</p>
+                        <p><b>Use for</b> your limitations: who answered – and who didn’t?</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#write">→ Limitations</a></div>
+                    </article>
+                    <article class="term" id="g-randassign" data-also="random assignment randomisation randomization Randomisierung Zufallszuteilung" data-fits="experiment">
+                        <h4>Random assignment <span class="de">Zufallszuteilung, Randomisierung</span></h4>
+                        <p>Chance decides who gets which condition. All other differences between people then even out.</p>
+                        <p><b>Use for</b> the only way to show cause and effect.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-design.html#design">→ Experiment</a></div>
+                    </article>
+                    <article class="term" id="g-control" data-also="control group comparison group Kontrollgruppe" data-fits="experiment test">
+                        <h4>Control group <span class="de">Kontrollgruppe</span></h4>
+                        <p>Same procedure, without the treatment.</p>
+                        <p><b>Use for</b> separating the effect from practice, time passing or expectations.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#change">→ Track a change</a></div>
+                    </article>
+                    <article class="term" id="g-between" data-also="between-subjects within-subjects repeated measures design" data-fits="experiment">
+                        <h4>Between- vs. within-subjects <span class="de">Vergleich zwischen / innerhalb von Personen</span></h4>
+                        <p>Between: different people in each condition. Within: the same people in all conditions.</p>
+                        <p><b>Use for</b> within needs fewer people – but risks order effects (→ counterbalancing).</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-design.html#design">→ Experiment</a></div>
+                    </article>
+                    <article class="term" id="g-counter" data-also="counterbalancing order effects Ausbalancieren" data-fits="experiment">
+                        <h4>Counterbalancing <span class="de">Ausbalancieren</span></h4>
+                        <p>Vary the order of conditions (half AB, half BA) so order effects cancel out.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-design.html#design">→ Experiment</a></div>
+                    </article>
+                    <article class="term" id="g-blind" data-also="blinding blind double-blind Verblindung doppelblind" data-fits="experiment">
+                        <h4>Blinding <span class="de">Verblindung</span></h4>
+                        <p>Participants (and in a double-blind study also the experimenter) don’t know the condition or the hypothesis.</p>
+                        <p><b>Use for</b> preventing expectations from shaping the results.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-design.html#design">→ Experiment</a></div>
+                    </article>
+                    <article class="term" id="g-confound" data-also="confounding variable confounder third variable Störvariable Konfundierung" data-fits="experiment survey existing">
+                        <h4>Confounding variable <span class="de">Störvariable</span></h4>
+                        <p>A third variable that changes along with the one you study (fast music only played in the morning) and creates a fake effect.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-design.html#design">→ Design</a></div>
+                    </article>
+                    <article class="term" id="g-pilot" data-also="pilot study pretest trial run Pilotstudie Vortest">
+                        <h4>Pilot study <span class="de">Pilotstudie, Vortest</span></h4>
+                        <p>A small trial run to find problems before the main study. Pilot data are not results.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-refine.html#pilot">→ Run a pilot</a></div>
+                    </article>
+                    <article class="term" id="g-prereg" data-also="pre-registration preregistration analysis plan data plan Präregistrierung">
+                        <h4>Pre-registration <span class="de">Präregistrierung</span></h4>
+                        <p>Hypotheses, n and analyses written down – with a date – before collecting data.</p>
+                        <p><b>Use for</b> your data plan: it protects you against fishing.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-design.html#plan">→ Data plan</a></div>
+                    </article>
+                    <article class="term" id="g-practice" data-also="retest effect practice effect testing effect Übungseffekt" data-fits="test">
+                        <h4>Practice effect <span class="de">Übungseffekt</span></h4>
+                        <p>People do better the second time just because they did the test before.</p>
+                        <p><b>Use for</b> explaining why pre/post designs need a control group.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#change">→ Track a change</a></div>
+                    </article>
+                    <article class="term" id="g-regmean" data-also="regression to the mean regression toward the mean Regression zur Mitte" data-fits="test">
+                        <h4>Regression to the mean <span class="de">Regression zur Mitte</span></h4>
+                        <p>Extreme scores tend to be less extreme the next time – the weakest students improve even without help.</p>
+                        <p><b>Use for</b> another reason for a control group.</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                    <article class="term" id="g-cross" data-also="cross-sectional longitudinal cohort Querschnitt Längsschnitt" data-fits="survey existing interview">
+                        <h4>Cross-sectional vs. longitudinal <span class="de">Querschnitt / Längsschnitt</span></h4>
+                        <p>Cross-sectional: one moment, different groups (Year 5 vs. Year 12). Longitudinal: the same people over time.</p>
+                        <p class="cf"><b>Careful</b> cross-sectional data can’t separate age from generation.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#relate">→ Relate</a></div>
+                    </article>
+                    <article class="term" id="g-consent" data-also="informed consent anonymisation anonymization ethics data protection Einwilligung">
+                        <h4>Informed consent and anonymisation <span class="de">Einwilligung, Anonymisierung</span></h4>
+                        <p>Participants know what happens and why, take part voluntarily and can stop at any time (under 18: parents too). Data carry codes, not names.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-design.html#ethics">→ Ethics</a></div>
+                    </article>
+                    <article class="term" id="g-replication" data-also="replication replicate reproducibility Replikation">
+                        <h4>Replication <span class="de">Replikation</span></h4>
+                        <p>Repeating a study to see whether the result holds. One study is never the final word.</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ WORDS ============================ -->
+        <section class="sec" id="words" data-group style="--c: var(--s6)">
+            <div class="t-wrap">
+                <p class="gq">How do you analyse what people say or write?</p>
+                <h2>Words, not numbers</h2>
+                <p class="lead">Interviews and texts are analysed by coding: systematic labels instead of means and p-values. The result is a well-documented pattern – which themes come up, in whom, and where the pattern breaks.</p>
+                <div class="terms">
+                    <article class="term" id="g-transcript" data-also="transcript transcription Transkript" data-fits="interview">
+                        <h4>Transcript <span class="de">Transkript</span></h4>
+                        <p>Written record of an interview, with line numbers and fixed rules (pauses, dialect, laughter).</p>
+                        <p><b>Use for</b> quoting with a source: “(P1, l. 31)”.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-refine.html#checks">→ Pilot interview</a></div>
+                    </article>
+                    <article class="term" id="g-segment" data-also="segment unit of analysis coding unit Analyseeinheit" data-fits="coding interview">
+                        <h4>Unit of analysis <span class="de">Analyseeinheit</span></h4>
+                        <p>The piece you code: a sentence, an answer, a song line. Decided before coding.</p>
+                        <div class="meta"><span class="lv u">you use it</span></div>
+                    </article>
+                    <article class="term" id="g-code" data-also="code category coding Kode Kategorie" data-fits="coding interview">
+                        <h4>Code and category <span class="de">Kode, Kategorie</span></h4>
+                        <p>A code is a label for what a segment is about; categories group related codes.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#themes">→ Themes</a></div>
+                    </article>
+                    <article class="term" id="g-catsystem" data-also="category system coding guide coding scheme codebook anchor example Kategoriensystem Kodierleitfaden Mayring" data-fits="coding interview">
+                        <h4>Coding guide <span class="de">Kategoriensystem, Kodierleitfaden</span></h4>
+                        <p>Each category with a definition, an anchor example and a rule for borderline cases.</p>
+                        <p><b>Use for</b> objectivity and good κ – a second coder can work with it alone.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-refine.html#checks">→ Two coders</a></div>
+                    </article>
+                    <article class="term" id="g-dedind" data-also="deductive inductive coding top-down bottom-up deduktiv induktiv" data-fits="coding interview">
+                        <h4>Deductive vs. inductive coding <span class="de">deduktive / induktive Kategorienbildung</span></h4>
+                        <p>Deductive: categories from theory, fixed before reading. Inductive: categories emerge from the material. Often both.</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                    <article class="term" id="g-theme" data-also="theme pattern thematic analysis Thema" data-fits="interview">
+                        <h4>Theme <span class="de">Thema, Muster</span></h4>
+                        <p>A pattern across several people: what comes up, and in whom.</p>
+                        <p><b>Use for</b> reporting “3 of 4 Year 5 students …” with a quote – no percentages of four people.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#themes">→ Themes</a></div>
+                    </article>
+                    <article class="term" id="g-deviant" data-also="deviant case negative case exception abweichender Fall" data-fits="interview coding">
+                        <h4>Deviant case <span class="de">abweichender Fall</span></h4>
+                        <p>Someone who doesn’t fit the pattern. Report and explain it – that makes the pattern credible.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#themes">→ Themes</a></div>
+                    </article>
+                    <article class="term" id="g-saturation" data-also="saturation theoretical saturation Sättigung" data-fits="interview">
+                        <h4>Saturation <span class="de">Sättigung</span></h4>
+                        <p>New interviews bring no new themes – a good reason to stop interviewing.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-design.html#design">→ Interview</a></div>
+                    </article>
+                    <article class="term" id="g-member" data-also="member check respondent validation kommunikative Validierung" data-fits="interview">
+                        <h4>Member check <span class="de">kommunikative Validierung</span></h4>
+                        <p>Participants read your summary of their interview: did you understand them correctly?</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-design.html#design">→ Interview</a></div>
+                    </article>
+                    <article class="term" id="g-triang" data-also="triangulation mixed methods Triangulation">
+                        <h4>Triangulation <span class="de">Triangulation</span></h4>
+                        <p>Several methods, sources or coders on the same question (survey + interviews). Where they agree, the result is stronger.</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ STUDIES ============================ -->
+        <section class="sec" id="studies" data-group style="--c: var(--s5)">
+            <div class="t-wrap">
+                <p class="gq">What do many studies say together?</p>
+                <h2>Combining studies</h2>
+                <p class="lead">Published studies can be your data. Then the same rules apply as for people: a fixed search rule, a fixed extraction sheet and an honest look at what is missing.</p>
+                <div class="terms">
+                    <article class="term" id="g-review" data-also="literature review systematic review narrative review Übersichtsarbeit" data-fits="existing">
+                        <h4>Literature review vs. systematic review <span class="de">Literaturüberblick / systematische Übersichtsarbeit</span></h4>
+                        <p>A literature review tells the state of research. A systematic review uses a fixed search rule and inclusion criteria and reports every study found.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-design.html#theory">→ Studies as data</a></div>
+                    </article>
+                    <article class="term" id="g-inclusion" data-also="search rule search string inclusion criteria exclusion criteria Einschlusskriterien" data-fits="existing">
+                        <h4>Search rule and inclusion criteria <span class="de">Suchregel, Einschlusskriterien</span></h4>
+                        <p>Where and with which search string you search, and which studies count (age group, measure, language, years). Fixed before searching.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-refine.html#enough">→ Good enough?</a></div>
+                    </article>
+                    <article class="term" id="g-extraction" data-also="extraction sheet data extraction coding sheet Extraktionsbogen" data-fits="existing">
+                        <h4>Extraction sheet <span class="de">Extraktionsbogen</span></h4>
+                        <p>One row per study: authors, year, n, design, measure, result, effect size.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#studies">→ Combine studies</a></div>
+                    </article>
+                    <article class="term" id="g-meta" data-also="meta-analysis meta analysis pooled effect Metaanalyse" data-fits="existing">
+                        <h4>Meta-analysis <span class="de">Metaanalyse</span></h4>
+                        <p>Combines the effect sizes of many studies into one <a href="#g-weighted">weighted mean</a> effect; bigger studies count more.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#studies">→ Combine studies</a></div>
+                    </article>
+                    <article class="term" id="g-moderator" data-also="moderator subgroup analysis Moderatorvariable" data-fits="existing experiment survey">
+                        <h4>Moderator, subgroup analysis <span class="de">Moderatorvariable</span></h4>
+                        <p>A variable that changes the size of an effect – e.g. how time was measured (last week vs. last decade).</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#studies">→ Combine studies</a></div>
+                    </article>
+                    <article class="term" id="g-hetero" data-also="heterogeneity I² I2 Heterogenität" data-fits="existing">
+                        <h4>Heterogeneity (I²) <span class="de">Heterogenität</span></h4>
+                        <p>How much study results differ beyond chance. High I² → one mean effect hides real differences; look for moderators.</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                    <article class="term" id="g-pubbias" data-also="publication bias file drawer Publikationsbias" data-fits="existing">
+                        <h4>Publication bias <span class="de">Publikationsbias</span></h4>
+                        <p>Significant results get published more often, so the published literature overestimates effects.</p>
+                        <p><b>Use for</b> spotting warning signs: small studies with huge effects.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="data-evaluate.html#studies">→ Combine studies</a></div>
+                    </article>
+                    <article class="term" id="g-forest" data-also="forest plot Forest-Plot" data-fits="existing">
+                        <h4>Forest plot</h4>
+                        <p>One line per study (effect size with CI); a diamond at the bottom shows the combined effect.</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                    <article class="term" id="g-funnel" data-also="funnel plot Trichterdiagramm" data-fits="existing">
+                        <h4>Funnel plot <span class="de">Trichterdiagramm</span></h4>
+                        <p>Effect size against study size. Without bias the dots form a symmetric funnel; a missing corner hints at publication bias.</p>
+                        <div class="meta"><span class="lv r">recognise it</span></div>
+                    </article>
+                    <article class="term" id="g-peer" data-also="peer review peer-reviewed Begutachtung" data-fits="existing">
+                        <h4>Peer review <span class="de">Begutachtung</span></h4>
+                        <p>Experts check a study before it is published – a quality filter, not a guarantee.</p>
+                        <div class="meta"><span class="lv u">you use it</span><a href="research-methods.html">→ Research methods</a></div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================ MATERIALS ============================ -->
+        <section class="dl" id="materials">
+            <div class="t-wrap">
+                <h2>Where you practise this</h2>
+                <p class="small">All examples on this page are computed from the invented practice data of the viable-data pages.</p>
+                <div class="dl-list">
+                    <a href="data-design.html"><b>Viable data 1: Design</b><span>Criteria, data types, sample, data plan</span></a>
+                    <a href="data-refine.html"><b>Viable data 2: Refine</b><span>Pilot, α, item analysis, κ, power</span></a>
+                    <a href="data-evaluate.html"><b>Viable data 3: Evaluate</b><span>Describe, compare, correlate, diagnose</span></a>
+                    <a href="w-seminar-time.html#materials"><b>Seminar overview</b><span>All modules and materials</span></a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 edu-mrh.de · <a href="https://edu-mrh.de/impressum.html#lizenz">CC BY-NC-SA 4.0</a> | <a href="https://edu-mrh.de/impressum.html">Impressum</a> | <a href="https://edu-mrh.de/datenschutz.html">Datenschutz</a> | <a href="https://edu-mrh.de/">Startseite</a></p>
+        </div>
+    </footer>
+
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+        <span></span><span></span><span></span>
+    </button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Glossary</h3>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Close sidebar">✕</button>
+        </div>
+        <nav class="sidebar-menu">
+            <ul>
+                <li><a href="#start">Start and search</a></li>
+                <li><a href="#data">Data and variables</a></li>
+                <li><a href="#centre">Centre</a></li>
+                <li><a href="#spread">Spread and shape</a></li>
+                <li><a href="#show">Show the data</a></li>
+                <li><a href="#size">Effect size</a></li>
+                <li><a href="#relate">Relationships</a></li>
+                <li><a href="#chance">Significance</a></li>
+                <li><a href="#tests">Which test?</a></li>
+                <li><a href="#read">Read a results line</a></li>
+                <li><a href="#quality">Quality of measurement</a></li>
+                <li><a href="#design">Study design</a></li>
+                <li><a href="#words">Words, not numbers</a></li>
+                <li><a href="#studies">Combining studies</a></li>
+                <li><a href="data-design.html">→ Viable data 1: Design</a></li>
+                <li><a href="data-refine.html">→ Viable data 2: Refine</a></li>
+                <li><a href="data-evaluate.html">→ Viable data 3: Evaluate</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+</body>
+</html>

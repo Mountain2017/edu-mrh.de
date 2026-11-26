@@ -217,7 +217,7 @@ QR-Codes (nicht löschen).
 | M1 Orientierung | Seminarregeln, Bewertung, Backups; Dimensionen von Zeit | `w-seminar-time.html`, W1–W3 | fertig |
 | M2 Forschungsfrage | Frage vs. These, Marker, Eingrenzung, 1–3 Optionen | `research-question.html`, W4 | fertig |
 | M3 Recherche | 5 Leitfragen (refinery questions), Suchstrings, Orte, Lesen/Notieren, Quellencheck | `research-methods.html`, W5, Check 1 | fertig |
-| M4 Viable data | Gütekriterien, Datentypen (Umfrage, Test, Experiment, Interview inkl. Experteninterview, Textcodierung, vorhandene Daten), theoretische Arbeiten ohne Teilnehmende (`data-design.html#theory`: Studien als Daten/Forschungssynthese, Neu-Rahmung vorhandener Werke; Beispiel „Vergeht die Zeit mit dem Alter schneller?“, `data/review-age.csv`), Studiendesign, Pilot + Verfeinern (α, Itemanalyse, κ, Power, Redeanteil im Interview, Suchregel/Extraktionsbogen, Experten-Check), Auswerten (d, Permutationstest, r, Nullbefund, Studien kombinieren, Themen in Interviews); Experten als Quelle auch in M3 (`research-methods.html#expert`) | `data-design.html`, `data-refine.html`, `data-evaluate.html`, W6 (Design your study), W7 (Refine and evaluate), Folien `material/PowerPoint/W-Seminar-Time-Session4.pptx` (29 Folien, Stand 2026-11-12 mit Interview, Studien als Daten, Frageversionen; Website-Änderungen dort nachziehen), Check 2 | fertig |
+| M4 Viable data | Gütekriterien, Datentypen (Umfrage, Test, Experiment, Interview inkl. Experteninterview, Textcodierung, vorhandene Daten), theoretische Arbeiten ohne Teilnehmende (`data-design.html#theory`: Studien als Daten/Forschungssynthese, Neu-Rahmung vorhandener Werke; Beispiel „Vergeht die Zeit mit dem Alter schneller?“, `data/review-age.csv`), Studiendesign, Pilot + Verfeinern (α, Itemanalyse, κ, Power, Redeanteil im Interview, Suchregel/Extraktionsbogen, Experten-Check), Auswerten (d, Permutationstest, r, Nullbefund, Studien kombinieren, Themen in Interviews); Experten als Quelle auch in M3 (`research-methods.html#expert`) | `data-design.html`, `data-refine.html`, `data-evaluate.html`, Glossar `glossary.html` (alle Maße, Tests und Verfahren nach Leitfrage gruppiert, „you use it“/„recognise it“, Testwahl-Tabelle, „Read a results line“; auch für M5), W6 (Design your study), W7 (Refine and evaluate), Folien `material/PowerPoint/W-Seminar-Time-Session4.pptx` (29 Folien, Stand 2026-11-12 mit Interview, Studien als Daten, Frageversionen; Website-Änderungen dort nachziehen), Check 2 | fertig |
 | M5 Statistik | Auswertung mit Python (Grundlagen-Skripte); erste Python-Zellen schon in M4 | geplant (12/2) | offen |
 | M6 Quellen einbauen | Zitieren, Paraphrasieren, MLA, Quellen in die eigene Argumentation integrieren | geplant, Check 3 | offen |
 | M7 Werkzeuge | LaTeX/Overleaf, Git, Kanban | geplant, wenn Ideen stehen | offen |
@@ -244,7 +244,8 @@ QR-Codes (nicht löschen).
   plus je Seite `data-*.js`. Übungsdaten (erfunden, so konstruiert, dass jede Aufgabe ihr
   Problem zeigt) in `data/*.csv`; die Zahlen in den Seitentexten („Compare with our
   findings“, Musterformulierungen) passen genau zu diesen Dateien – Daten nur zusammen mit
-  den Texten ändern. **Python-Zellen**: `<div class="py" data-py="<id>" data-files="data/x.csv">
+  den Texten ändern (auch die Beispielwerte in `glossary.html`, dort u. a. t, F, U, χ², CI mit scipy aus
+  `experiment-main.csv`/`survey-main.csv` berechnet). **Python-Zellen**: `<div class="py" data-py="<id>" data-files="data/x.csv">
   <script type="text/plain">…</script></div>`, laufen in `py-worker.js` (Pyodide, nur
   Standardbibliothek + Modul `edu` für Diagramme: bars, hist, scatter, boxplot, line, table).
   Pyodide liegt selbst gehostet unter `/embed/pyodide/` (Workflow `deploy-pyodide.yml`);
@@ -472,7 +473,7 @@ US-System + Midterms 2026, Stand der Zahlen 9.11.2026 in `us-midterms.js`: `SEAT
 Spiele-Station `#play`: Branch Blitz, Who's who, Nachfolge, Bill Quest, Rollenspiel Gridlock), 13 `ireland/` (Selbstlernsequenz ca. 90 min, ohne Arbeitsblatt: Geschichte Irlands in „Moments“ (Kap. 1–6), Ursachenketten „Trace it back“, Identitäten (6 Personas), Schreibwerkstatt Speech/Article mit „assess“, historische oder moderne Stimme; Bilder nur als Links auf Wikipedia (Stand 11/2026 geprüft); Logik `ireland.js`, Speicher `localStorage 'irl13:'`); W-Seminar „Time“ (12/13) in
 `englisch/w-seminar-time/` (Kursplan siehe eigener Abschnitt: `w-seminar-time.html`,
 `research-question.html`, `research-methods.html`, Viable data `data-design.html`,
-`data-refine.html`, `data-evaluate.html` (Python im Browser, Daten in `data/`),
+`data-refine.html`, `data-evaluate.html` (Python im Browser, Daten in `data/`), Glossar `glossary.html`,
 `checks/check-1-research-methods.html` (verschlüsselt), Auswertung zentral in
 `/checks/auswertung/`; → AB `ws-w1` bis `ws-w7`, eigene Vorlage; Modulübersicht ganz unten
 auf `w-seminar-time.html#materials`)
