@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompt-Generator – Handreichungen psychische Gesundheit</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main class="container narrow">
+  <h1>Prompt-Generator</h1>
+  <p>Für Themen, die (noch) nicht in der Bibliothek stehen. Der Generator baut einen mehrstufigen Prompt, der zum gewählten KI-Werkzeug passt. Er enthält den geprüften bayerischen Rechtsrahmen und eine geprüfte Quellenliste und verbietet erfundene Links. Am Ende prüft die KI ihren Text selbst.</p>
+  <div class="callout warn"><strong>Das Ergebnis ist ungeprüft.</strong> Es ersetzt keine von der Schulpsychologie geprüfte Handreichung und sollte vor der Weitergabe an andere gegengelesen werden. Keine Namen oder erkennbaren Details von Schülerinnen und Schülern eingeben.</div>
+
+  <form id="gen-form" onsubmit="return false">
+    <div class="step card">
+      <div class="step-head"><span class="step-num">1</span><h2>Thema</h2></div>
+      <label for="thema">Zu welcher Erkrankung oder Belastung brauchst du Informationen?</label>
+      <input type="text" id="thema" placeholder="z. B. Angststörungen, Zwangsstörung, Selektiver Mutismus …" autocomplete="off">
+      <p id="lib-hint" class="callout hidden" style="margin-bottom:0"></p>
+    </div>
+
+    <div class="step card">
+      <div class="step-head"><span class="step-num">2</span><h2>Mit welchem KI-Werkzeug arbeitest du?</h2></div>
+      <div class="tool-grid" id="tools"></div>
+      <p id="tool-info" class="callout violet" style="margin-bottom:.4rem"></p>
+      <label style="font-weight:400;display:flex;gap:.5rem;align-items:center;margin-top:.6rem"><input type="checkbox" id="web"> Mein Werkzeug kann bei dieser Nutzung im Internet suchen (Websuche ist aktiv)</label>
+    </div>
+
+    <div class="step card">
+      <div class="step-head"><span class="step-num">3</span><h2>Was brauchst du?</h2></div>
+      <div class="mode-grid">
+        <div class="tool-option"><input type="radio" name="mode" id="m-kurz" value="kurz" checked><label for="m-kurz"><strong>Nur Kurzfassung</strong><span>2–3 Seiten zum Nachschlagen · 3 Schritte</span></label></div>
+        <div class="tool-option"><input type="radio" name="mode" id="m-komplett" value="komplett"><label for="m-komplett"><strong>Komplette Handreichung</strong><span>ausführliche Fassung + Kurzfassung · 5 Schritte</span></label></div>
+        <div class="tool-option"><input type="radio" name="mode" id="m-kapitel" value="kapitel"><label for="m-kapitel"><strong>Einzelnes Kapitel</strong><span>z. B. nur „Kommunikation“ · 2 Schritte</span></label></div>
+      </div>
+      <div id="kapitel-wrap" class="hidden" style="margin-top:.8rem">
+        <label for="kapitel">Kapitel</label>
+        <select id="kapitel">
+          <option value="1">1 – Die Thematik verstehen</option>
+          <option value="2">2 – Beobachtbare Hinweise im Schulalltag</option>
+          <option value="3">3 – Stärken und Ressourcen</option>
+          <option value="4" selected>4 – Kommunikation mit Schülerinnen und Schülern</option>
+          <option value="5">5 – Unterrichtsgestaltung (mit 15 Sofort-Maßnahmen)</option>
+          <option value="6">6 – Typische Stolpersteine</option>
+          <option value="7">7 – Schulische Veranstaltungen</option>
+          <option value="8">8 – Zusammenarbeit mit Eltern</option>
+          <option value="9">9 – Leistungsnachweise und Prüfungen</option>
+          <option value="10">10 – Weiterführende Informationen</option>
+        </select>
+      </div>
+      <div class="row" style="margin-top:.9rem">
+        <div><label for="fokus">Schwerpunkt</label>
+          <select id="fokus"><option value="beide">alle Jahrgangsstufen (5–13)</option><option value="sek1">Unter- und Mittelstufe (5–11)</option><option value="sek2">Oberstufe / Qualifikationsphase (12–13)</option></select></div>
+        <div><label for="anlass">Anlass</label>
+          <select id="anlass"><option value="allgemein">allgemein informieren</option><option value="konkret">konkreter Anlass in meiner Klasse (anonym)</option></select></div>
+      </div>
+    </div>
+  </form>
+
+  <div class="step">
+    <div class="step-head"><span class="step-num">4</span><h2>Deine Prompts</h2></div>
+
+    <div id="variant-assistant" class="card hidden" style="margin-bottom:1.2rem">
+      <h3 style="margin-top:0">Variante A (empfohlen): Einmal einen Handreichungs-Assistenten einrichten</h3>
+      <p>Eine Person richtet den Assistenten einmal ein und teilt ihn mit dem Kollegium. Danach genügt es, nur noch das Thema einzutippen. Der Anweisungstext ist allgemein gehalten und gilt für jedes Thema.</p>
+      <div class="howto"><h4>So geht’s</h4><ol id="assistant-steps"></ol>
+        <p style="margin:.4rem 0 0"><strong>Name-Vorschlag:</strong> <span id="assistant-name"></span><br><strong>Erste Eingabe danach z. B.:</strong> „Angststörungen, Kurzfassung, Schwerpunkt Mittelstufe“</p></div>
+      <div class="prompt-box" id="pb-a">
+        <header><div><h4>Anweisungen für den Assistenten</h4><p>in das Feld für Anweisungen / Rollenbeschreibung einfügen</p></div>
+          <div class="toolbar"><button class="btn btn-sm" data-expand="pb-a">Ganz anzeigen</button><button class="btn btn-sm btn-primary" data-copy-target="assistant-text">Kopieren</button></div></header>
+        <pre id="assistant-text"></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0" id="variant-b-title">Prompts nacheinander einfügen</h3>
+      <p class="muted">Jeweils in <strong>denselben Chat</strong> einfügen und die Antwort abwarten, bevor der nächste Schritt kommt.</p>
+      <div id="steps-out"></div>
+    </div>
+  </div>
+
+  <div class="step card">
+    <div class="step-head"><span class="step-num">5</span><h2>Bevor du das Ergebnis nutzt</h2></div>
+    <ul class="checklist">
+      <li>Zahlen und Kernaussagen mit mindestens einer Quelle aus der Liste abgleichen.</li>
+      <li>Jeden Link anklicken: Funktioniert er? Ist die Seite seriös und aktuell?</li>
+      <li>Keine Diagnose-Sprache, keine Therapie- oder Medikamentenempfehlungen?</li>
+      <li>Aussagen zu Nachteilsausgleich und Notenschutz nur im Rahmen des <a href="bausteine.html#b-nta">Bausteins</a>?</li>
+      <li>Bei möglicher Gefährdung: Verweis auf die <a href="bausteine.html#b-krise">Krisenbox</a> vorhanden?</li>
+      <li>Das Dokument kennzeichnen: „KI-erstellt, ungeprüft – [Tool], [Datum]“.</li>
+      <li>Vor der Weitergabe an Kolleginnen und Kollegen die Schulpsychologie drüberschauen lassen. Nicht an Eltern oder Schülerinnen und Schüler weitergeben.</li>
+    </ul>
+  </div>
+</main>
+<script src="js/data.js"></script>
+<script src="js/bausteine.js"></script>
+<script src="js/app.js"></script>
+<script src="js/generator.js"></script>
+<script>
+  HR.layout("generator");
+  HR.initGenerator();
+</script>
+</body>
+</html>
